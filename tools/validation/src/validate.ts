@@ -8,7 +8,7 @@ interface GrammarRecord extends Provenanced { prerequisiteIds?:string[]; contras
 interface EntityRef { kind:string; id:string; }
 interface SentenceRecord extends Provenanced { grammarIds?:string[]; entityRefs?:EntityRef[]; }
 interface CanDoRecord extends Provenanced { grammarIds?:string[]; sentenceIds?:string[]; prerequisiteIds?:string[]; }
-interface CourseUnitRecord extends Provenanced { canDoId?:string; prerequisiteUnitIds?:string[]; grammarIds?:string[]; sentenceIds?:string[]; vocabularyIds?:string[]; }
+interface CourseUnitRecord extends Provenanced { canDoId?:string; prerequisiteUnitIds?:string[]; grammarIds?:string[]; sentenceIds?:string[]; vocabularyIds?:string[]; conjugationLexemeIds?:string[]; }
 interface Seed {
   sourceIds?:string[]; lexemes?:Provenanced[]; senses?:Provenanced[]; kanji?:Provenanced[]; audioAssets?:Provenanced[];
   grammar?:GrammarRecord[]; sentences?:SentenceRecord[]; canDos?:CanDoRecord[]; courseUnits?:CourseUnitRecord[];
@@ -75,6 +75,7 @@ for(const unit of seed.courseUnits ?? []){
   for(const id of unit.grammarIds ?? [])requireRef(grammarIds,id,"courseUnits/"+unit.id+"/grammarIds");
   for(const id of unit.sentenceIds ?? [])requireRef(sentenceIds,id,"courseUnits/"+unit.id+"/sentenceIds");
   for(const id of unit.vocabularyIds ?? [])requireRef(lexemeIds,id,"courseUnits/"+unit.id+"/vocabularyIds");
+  for(const id of unit.conjugationLexemeIds ?? [])requireRef(lexemeIds,id,"courseUnits/"+unit.id+"/conjugationLexemeIds");
 }
 
 if(violations.length){
