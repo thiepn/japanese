@@ -17,14 +17,8 @@ interface StudyPromptBase {
   contextId?: string;
 }
 
-export interface ChoiceStudyPrompt extends StudyPromptBase {
-  promptType: "choice";
-  choices: string[];
-}
-export interface TypedStudyPrompt extends StudyPromptBase {
-  promptType: "typed";
-  placeholder?: string;
-}
+export interface ChoiceStudyPrompt extends StudyPromptBase { promptType: "choice"; choices: string[]; }
+export interface TypedStudyPrompt extends StudyPromptBase { promptType: "typed"; placeholder?: string; }
 export type StudyPrompt = ChoiceStudyPrompt | TypedStudyPrompt;
 
 export interface GradeResult {
@@ -67,7 +61,7 @@ export function createStudyEvent(input: StudyEventInput): StudyEvent {
     responseTimeMs: input.responseTimeMs,
     attempts: 1,
     ...(input.hintsUsed === undefined ? {} : { hintsUsed: input.hintsUsed }),
-    ...(input.contextId === undefined ? {} : { contextId: input.contextId }),
+    ...(input.prompt.contextId === undefined ? {} : { contextId: input.prompt.contextId }),
     ...(input.baseRevision === undefined ? {} : { baseRevision: input.baseRevision }),
     metadata: { promptId: input.prompt.id }
   };
