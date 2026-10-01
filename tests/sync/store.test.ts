@@ -1,14 +1,26 @@
-import { describe,expect,it } from "vitest";
+import { describe, expect, it } from "vitest";
+import { JAPANESE_APP_ID } from "../../packages/sync-protocol/src/index";
 import { InMemorySyncStore } from "../../services/api/src/sync-store";
 
-describe("sync store",()=>{
-  it("is idempotent and exposes cursor-based pull",()=>{
-    const store=new InMemorySyncStore();
-    const request={protocolVersion:1 as const,deviceId:"phone",operations:[{operationId:"op-1",entityType:"study_event",operationType:"append" as const,payload:{id:"evt-1"},clientTimestamp:"2026-10-01T12:00:00Z"}]};
-    expect(store.push(request)).toEqual({accepted:1,duplicates:0});
-    expect(store.push(request)).toEqual({accepted:0,duplicates:1});
-    const first=store.pull(null);
+describe("THIEPN Core Sync v1 conformance harness", () => {
+  it("applies mutations idempotently and exposes opaque cursor pull", () => {
+    const store = new InMemorySyncStore();
+    const request = {
+      protocol_version: 1 as const, device_id: "phone", app_id: JAPANESE_APP_ID,
+      mutations: [{ mutation_id: "mutation-1", primitive: "event" as const, resource_type: "study_event", resource_id: "event-1", operation: "append" as const, schema_version: 1, data: { id: "event-1" } }]
+    };
+    expect(store.push(request).results[0]?.status).toBe("applied");
+    expect(store.push(request).results[0]?.status).toBe("already_applied");
+    const first = store.pull({ protocol_version: 1, device_id: "laptop", cursor: null });
     expect(first.changes).toHaveLength(1);
-    expect(store.pull(first.nextCursor).changes).toHaveLength(0);
+    expect(first.next_cursor).toMatch(/^v1:/);
+    expect(store.pull({ protocol_version: 1, device_id: "laptop", cursor: first.next_cursor }).changes).toHaveLength(0);
+  });
+
+  it("rejects mutation ID reuse with changed content", () => {
+    const store = new InMemorySyncStore();
+    const base = { protocol_version: 1 as const, device_id: "phone", app_id: JAPANESE_APP_ID };
+    store.push({ ...base, mutations: [{ mutation_id: "same", primitive: "event", resource_type: "study_event", resource_id: "event-1", operation: "append", schema_version: 1, data: { a: 1 } }] });
+    expect(() => store.push({ ...base, mutations: [{ mutation_id: "same", primitive: "event", resource_type: "study_event", resource_id: "event-1", operation: "append", schema_version: 1, data: { a: 2 } }] })).toThrow("MUTATION_ID_REUSE");
   });
 });

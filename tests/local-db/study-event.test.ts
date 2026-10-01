@@ -4,16 +4,16 @@ import { acknowledgeOutbox, databaseNameForAccount, getSyncCursor, listOutbox, l
 import type { StudyEvent } from "../../packages/domain/src/index";
 
 describe("account-scoped local persistence", () => {
-  it("atomically stores StudyEvent evidence and its sync operation", async () => {
+  it("atomically stores StudyEvent evidence and its Core Sync event mutation", async () => {
     const event: StudyEvent = {
       id: "evt-local-1", userId: "user-a", deviceId: "phone", occurredAt: "2026-10-01T12:00:00Z",
-      activity: "review", primaryTarget: { kind: "lexeme", id: "lex-taberu" },
-      skillDimension: "meaning_recognition", result: "correct"
+      activity: "review", primaryTarget: { kind: "lexeme", id: "lex-taberu" }, skillDimension: "meaning_recognition", result: "correct"
     };
-    const operation = await saveStudyEvent(event);
+    const mutation = await saveStudyEvent(event);
     expect((await listStudyEvents("user-a")).map((item) => item.id)).toContain("evt-local-1");
-    expect((await listOutbox("user-a")).map((item) => item.operationId)).toContain(operation.operationId);
-    await acknowledgeOutbox("user-a", [operation.operationId]);
+    expect(mutation.data.data).not.toHaveProperty("userId");
+    expect((await listOutbox("user-a")).map((item) => item.mutation_id)).toContain(mutation.mutation_id);
+    await acknowledgeOutbox("user-a", [mutation.mutation_id]);
     expect(await listOutbox("user-a")).toHaveLength(0);
   });
 
@@ -22,9 +22,9 @@ describe("account-scoped local persistence", () => {
     expect(await listStudyEvents("user-b")).toHaveLength(0);
   });
 
-  it("persists the server pull cursor separately per account", async () => {
-    await setSyncCursor("user-a", "42");
-    expect(await getSyncCursor("user-a")).toBe("42");
+  it("persists opaque server pull cursors separately per account", async () => {
+    await setSyncCursor("user-a", "v1:42");
+    expect(await getSyncCursor("user-a")).toBe("v1:42");
     expect(await getSyncCursor("user-b")).toBeNull();
   });
 });

@@ -1,15 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { dedupeOperations } from "../../packages/sync-protocol/src/index";
+import { dedupeMutations } from "../../packages/sync-protocol/src/index";
 
-describe("sync operation idempotency", () => {
-  it("drops duplicate operation IDs before transport", () => {
-    const operation = {
-      operationId: "op-1",
-      entityType: "study_event",
-      operationType: "append" as const,
-      payload: { id: "evt-1" },
-      clientTimestamp: "2026-10-01T12:00:00Z"
+describe("Core Sync mutation idempotency", () => {
+  it("drops duplicate mutation IDs before transport", () => {
+    const mutation = {
+      mutation_id: "mutation-1", primitive: "event" as const, resource_type: "study_event", resource_id: "event-1", operation: "append" as const,
+      schema_version: 1, data: { value: true }
     };
-    expect(dedupeOperations([operation, operation])).toHaveLength(1);
+    expect(dedupeMutations([mutation, mutation])).toHaveLength(1);
   });
 });
