@@ -8,20 +8,52 @@ Shared THIEPN Account session handoff and production Core transport remain platf
 
 ## P1 — Foundation Learning Engine & Study Player
 
-P1.3 completed the kana system and event-derived mastery model.
+**Implementation complete.** P1 established the reusable Study Player, kana foundation, canonical starter lexicon, kanji-in-vocabulary model, source-provenanced pronunciation audio, independent listening evidence, FSRS-backed review flow and desktop/mobile PWA certification.
 
-P1.4 added a canonical source-provenanced starter lexicon, persistent lexeme/sense/kanji storage, kanji-in-vocabulary teaching, staged meaning → reading → active-use evidence, and one Today queue that interleaves words with kana without immediately tripling review load.
+The final physical-device Android/PWA hardware pass remains a release-certification task, not an architectural dependency. See `docs/P1_5_MOBILE_CERTIFICATION.md`.
 
-P1.5 adds pinned native pronunciation recordings for the starter lexicon, browser audio caching, independent vocabulary-listening evidence, mora-timing perception for っ / ッ / long vowels / ん, replay/slow/shadow controls, mobile-safe Study Player ergonomics and a repeated desktop/mobile Chromium certification matrix.
+## P2 — Grammar, Sentence Knowledge & Structured A1 Course
 
-### P1 release gate
+**Core implementation complete.**
 
-Automated implementation and browser certification can be closed by CI. The final physical-device gate remains deliberately separate because emulation cannot prove hardware audio, real PWA installation or OS interruption behavior. Use `docs/P1_5_MOBILE_CERTIFICATION.md`.
+P2 establishes the reusable architecture required for structured language learning beyond isolated words:
 
-## Next: P2 — Grammar, Sentence Knowledge & Structured A1 Course
+- canonical grammar concepts with concise mental models, formations, uses, prerequisites and contrasts;
+- canonical sentence entities with reading, translation, token/entity links, grammar links, register and level metadata;
+- Can-do descriptors separated from the linguistic concepts that support them;
+- a structured A1 course graph with soft prerequisite edges;
+- grammar comprehension and contextual-form evidence as separate learner dimensions;
+- sentence comprehension and production as separate learner dimensions;
+- reusable grammar/sentence lessons rendered through the same Study Player;
+- course progress projected from StudyEvents rather than stored as an independent completion database;
+- A1 items entering the same Today queue and FSRS system used by Foundation learning;
+- grammar and sentence search in the canonical local content database;
+- structural validation for grammar, sentence, Can-do and course-graph references.
 
-P2 should move from isolated Foundation entities to reusable sentence-backed grammar and capability lessons while keeping the same learner state. The first P2 slice should establish canonical grammar objects, sentence/entity linking, prerequisite/contrast relations, controlled contextual exercises and a real A1 lesson graph. It should not create a separate grammar progress system.
+Initial P2 content package: 36 starter lexemes, 15 grammar concepts, 22 linked sentences, 8 Can-do descriptors and 8 capability-centered A1 units.
+
+### Next: P2.5 — A1 Breadth, Conjugation & Assessment Completion
+
+Expand the existing course graph to broader functional A1 coverage without changing the architecture:
+
+- demonstratives and location expressions;
+- verb/adjective conjugation model rather than storing each surface form as an unrelated fact;
+- time, numbers and counters;
+- family, food, shopping, transport, routines and immediate-needs vocabulary;
+- sentence-final ね / よ and basic pragmatic choice;
+- more question-word patterns;
+- negative/past adjective and noun predicates;
+- high-frequency polite requests and classroom/clarification language;
+- larger sentence bank with controlled lexical coverage;
+- unit-level delayed assessment and Can-do evidence;
+- A1 milestone assessment that reports reading, listening, interaction, production and writing separately.
+
+P2.5 should finish the practical beginner breadth before deeper immersion work.
+
+## P3 — Reader, Connected Listening & A1→A2 Immersion Bridge
+
+After A1 breadth is stable, P3 should use the same sentence/grammar/lexeme graph for graded reading, morphology-aware text support, connected listening and the first real immersion transition. It must not create separate known-word or reader-progress truth.
 
 ## Later
 
-P3+ expands Reader/listening depth, A2 → B1 immersion transition, private-source ingestion, production skills, AI conversation/writing and advanced assessment only after the unified learner loop is stable.
+Later phases expand A2→B1 immersion, private-source ingestion, writing/speaking production, AI conversation, adaptive remediation, advanced assessment and specialized authentic-language workflows.
