@@ -41,8 +41,10 @@ export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
   const unseenKana=foundationPrompts.filter((prompt)=>!byId.has(traceIdFor(prompt)));
   const unseenVocabulary=vocabularyMeaningPrompts.filter((prompt)=>!byId.has(traceIdFor(prompt)));
   const readyApplication=application.filter((prompt)=>!byId.has(traceIdFor(prompt))&&hasPrerequisiteEvidence(prompt,byId));
+  if(due.length>=MAX_DUE_PER_SESSION)return insertFirstExposureLessons(due.slice(0,MAX_QUEUE_SIZE),byId);
+
   const queue:StudyPrompt[]=[];
-  queue.push(...due.slice(0,Math.min(MAX_DUE_PER_SESSION,MAX_QUEUE_SIZE)));
+  queue.push(...due);
   addUnique(queue,selectDiverseTargets(readyApplication,Math.min(APPLICATION_ITEMS_PER_SESSION,slots(queue))));
   addUnique(queue,unseenKana.slice(0,Math.min(NEW_KANA_PER_SESSION,slots(queue))));
   addUnique(queue,unseenVocabulary.slice(0,Math.min(NEW_VOCAB_PER_SESSION,slots(queue))));
@@ -58,10 +60,11 @@ export async function getStudySummary(now=new Date()):Promise<StudySummary>{
   const learnedKana=foundationPrompts.filter((prompt)=>byId.has(traceIdFor(prompt))).length;
   const learnedVocabulary=vocabularyMeaningPrompts.filter((prompt)=>byId.has(traceIdFor(prompt))).length;
   const application=[...foundationApplicationPrompts,...vocabularyApplicationPrompts].filter((prompt)=>!byId.has(traceIdFor(prompt))&&hasPrerequisiteEvidence(prompt,byId)).length;
+  const pauseNew=due>=MAX_DUE_PER_SESSION;
   return {
     due,
-    newKana:Math.min(NEW_KANA_PER_SESSION,Math.max(0,FOUNDATION_TOTAL_ITEMS-learnedKana)),
-    newVocabulary:Math.min(NEW_VOCAB_PER_SESSION,Math.max(0,VOCABULARY_TOTAL-learnedVocabulary)),
+    newKana:pauseNew?0:Math.min(NEW_KANA_PER_SESSION,Math.max(0,FOUNDATION_TOTAL_ITEMS-learnedKana)),
+    newVocabulary:pauseNew?0:Math.min(NEW_VOCAB_PER_SESSION,Math.max(0,VOCABULARY_TOTAL-learnedVocabulary)),
     application:Math.min(APPLICATION_ITEMS_PER_SESSION,application),
     learnedKana,totalKana:FOUNDATION_TOTAL_ITEMS,learnedVocabulary,totalVocabulary:VOCABULARY_TOTAL,memoryTraces:traces.length
   };
@@ -128,18 +131,20 @@ function insertFirstExposureLessons(queue:StudyPrompt[],byId:Map<string,Awaited<
   return steps;
 }
 
-function hasPrerequisiteEvidence(prompt:StudyPrompt,byId:Map<string,unknown>):boolean{
+function hasPrerequisiteEvidence(prompt:StudyPrompt,byId:Map<string,unknown>):boolean{return isApplicationPromptReady(prompt,new Set(byId.keys()));}
+
+export function isApplicationPromptReady(prompt:StudyPrompt,traceIds:ReadonlySet<string>):boolean{
   if(prompt.primaryTarget.kind==="lexeme"){
     const meaning="lexeme:"+prompt.primaryTarget.id+":meaning_recognition:written-to-meaning";
-    if(prompt.skill==="reading")return byId.has(meaning);
-    if(prompt.skill==="active_use"){const reading="lexeme:"+prompt.primaryTarget.id+":reading:word-to-reading";return byId.has(meaning)&&byId.has(reading);}
+    if(prompt.skill==="reading")return traceIds.has(meaning);
+    if(prompt.skill==="active_use"){const reading="lexeme:"+prompt.primaryTarget.id+":reading:word-to-reading";return traceIds.has(meaning)&&traceIds.has(reading);}
     return true;
   }
   const target=prompt.primaryTarget.id;
-  if(target==="hiragana-small-tsu")return byId.has("kana:hiragana-small-tsu:reading:sokuon-reading");
-  if(target==="katakana-small-tsu")return byId.has("kana:katakana-small-tsu:reading:sokuon-reading");
-  if(target==="katakana-long-vowel-mark")return byId.has("kana:katakana-long-vowel-mark:reading:long-vowel-reading");
-  return byId.has(prompt.primaryTarget.kind+":"+target+":recognition:kana-to-sound");
+  if(target==="hiragana-small-tsu")return traceIds.has("kana:hiragana-small-tsu:reading:sokuon-reading");
+  if(target==="katakana-small-tsu")return traceIds.has("kana:katakana-small-tsu:reading:sokuon-reading");
+  if(target==="katakana-long-vowel-mark")return traceIds.has("kana:katakana-long-vowel-mark:reading:long-vowel-reading");
+  return traceIds.has(prompt.primaryTarget.kind+":"+target+":recognition:kana-to-sound");
 }
 
 function isDue(prompt:StudyPrompt,byId:Map<string,Awaited<ReturnType<typeof listMemoryTraces>>[number]>,now:Date):boolean{
