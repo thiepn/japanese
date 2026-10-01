@@ -1,13 +1,2243 @@
 {
-  "version": "0.0.1",
-  "lexemes": [
-    { "id": "lex-taberu", "canonicalForm": "食べる", "reading": "たべる", "gloss": "to eat" },
-    { "id": "lex-gakkou", "canonicalForm": "学校", "reading": "がっこう", "gloss": "school" },
-    { "id": "lex-benkyou", "canonicalForm": "勉強する", "reading": "べんきょうする", "gloss": "to study" }
+  "schemaVersion": 2,
+  "version": "0.1.0",
+  "sourceIds": [
+    "thiepn-original"
   ],
-  "grammar": [{ "id": "grammar-teiru", "label": "〜ている", "summary": "ongoing action / resulting state" }],
+  "lexemes": [
+    {
+      "id": "lex-ie",
+      "canonicalForm": "家",
+      "forms": [
+        {
+          "text": "家",
+          "script": "mixed"
+        },
+        {
+          "text": "いえ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "いえ"
+        }
+      ],
+      "senseIds": [
+        "sense-ie-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-家",
+          "position": 0,
+          "readingInWord": "いえ"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "home"
+      ],
+      "priority": 1,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-ue",
+      "canonicalForm": "上",
+      "forms": [
+        {
+          "text": "上",
+          "script": "mixed"
+        },
+        {
+          "text": "うえ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "うえ"
+        }
+      ],
+      "senseIds": [
+        "sense-ue-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-上",
+          "position": 0,
+          "readingInWord": "うえ"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "position"
+      ],
+      "priority": 2,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-hito",
+      "canonicalForm": "人",
+      "forms": [
+        {
+          "text": "人",
+          "script": "mixed"
+        },
+        {
+          "text": "ひと",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ひと"
+        }
+      ],
+      "senseIds": [
+        "sense-hito-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-人",
+          "position": 0,
+          "readingInWord": "ひと"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "people"
+      ],
+      "priority": 3,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-nihon",
+      "canonicalForm": "日本",
+      "forms": [
+        {
+          "text": "日本",
+          "script": "mixed"
+        },
+        {
+          "text": "にほん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "にほん"
+        }
+      ],
+      "senseIds": [
+        "sense-nihon-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-日",
+          "position": 0,
+          "readingInWord": "に"
+        },
+        {
+          "kanjiId": "kanji-本",
+          "position": 1,
+          "readingInWord": "ほん"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "place"
+      ],
+      "priority": 4,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-nihongo",
+      "canonicalForm": "日本語",
+      "forms": [
+        {
+          "text": "日本語",
+          "script": "mixed"
+        },
+        {
+          "text": "にほんご",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "にほんご"
+        }
+      ],
+      "senseIds": [
+        "sense-nihongo-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-日",
+          "position": 0,
+          "readingInWord": "に"
+        },
+        {
+          "kanjiId": "kanji-本",
+          "position": 1,
+          "readingInWord": "ほん"
+        },
+        {
+          "kanjiId": "kanji-語",
+          "position": 2,
+          "readingInWord": "ご"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "language"
+      ],
+      "priority": 5,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-gakkou",
+      "canonicalForm": "学校",
+      "forms": [
+        {
+          "text": "学校",
+          "script": "mixed"
+        },
+        {
+          "text": "がっこう",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "がっこう"
+        }
+      ],
+      "senseIds": [
+        "sense-gakkou-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-学",
+          "position": 0,
+          "readingInWord": "がく"
+        },
+        {
+          "kanjiId": "kanji-校",
+          "position": 1,
+          "readingInWord": "こう"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "school"
+      ],
+      "priority": 6,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-gakusei",
+      "canonicalForm": "学生",
+      "forms": [
+        {
+          "text": "学生",
+          "script": "mixed"
+        },
+        {
+          "text": "がくせい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "がくせい"
+        }
+      ],
+      "senseIds": [
+        "sense-gakusei-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-学",
+          "position": 0,
+          "readingInWord": "がく"
+        },
+        {
+          "kanjiId": "kanji-生",
+          "position": 1,
+          "readingInWord": "せい"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "people",
+        "school"
+      ],
+      "priority": 7,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-sensei",
+      "canonicalForm": "先生",
+      "forms": [
+        {
+          "text": "先生",
+          "script": "mixed"
+        },
+        {
+          "text": "せんせい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "せんせい"
+        }
+      ],
+      "senseIds": [
+        "sense-sensei-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-先",
+          "position": 0,
+          "readingInWord": "せん"
+        },
+        {
+          "kanjiId": "kanji-生",
+          "position": 1,
+          "readingInWord": "せい"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "people",
+        "school"
+      ],
+      "priority": 8,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-tomodachi",
+      "canonicalForm": "友達",
+      "forms": [
+        {
+          "text": "友達",
+          "script": "mixed"
+        },
+        {
+          "text": "ともだち",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ともだち"
+        }
+      ],
+      "senseIds": [
+        "sense-tomodachi-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-友",
+          "position": 0,
+          "readingInWord": "とも"
+        },
+        {
+          "kanjiId": "kanji-達",
+          "position": 1,
+          "readingInWord": "だち"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "people"
+      ],
+      "priority": 9,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-mizu",
+      "canonicalForm": "水",
+      "forms": [
+        {
+          "text": "水",
+          "script": "mixed"
+        },
+        {
+          "text": "みず",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "みず"
+        }
+      ],
+      "senseIds": [
+        "sense-mizu-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-水",
+          "position": 0,
+          "readingInWord": "みず"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "food"
+      ],
+      "priority": 10,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-ocha",
+      "canonicalForm": "お茶",
+      "forms": [
+        {
+          "text": "お茶",
+          "script": "mixed"
+        },
+        {
+          "text": "おちゃ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "おちゃ"
+        }
+      ],
+      "senseIds": [
+        "sense-ocha-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-茶",
+          "position": 0,
+          "readingInWord": "ちゃ"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "food"
+      ],
+      "priority": 11,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-gohan",
+      "canonicalForm": "ご飯",
+      "forms": [
+        {
+          "text": "ご飯",
+          "script": "mixed"
+        },
+        {
+          "text": "ごはん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ごはん"
+        }
+      ],
+      "senseIds": [
+        "sense-gohan-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-飯",
+          "position": 0,
+          "readingInWord": "はん"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "food"
+      ],
+      "priority": 12,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-taberu",
+      "canonicalForm": "食べる",
+      "forms": [
+        {
+          "text": "食べる",
+          "script": "mixed"
+        },
+        {
+          "text": "たべる",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "たべる"
+        }
+      ],
+      "senseIds": [
+        "sense-taberu-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-食",
+          "position": 0,
+          "readingInWord": "た"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "verb",
+        "food"
+      ],
+      "priority": 13,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-nomu",
+      "canonicalForm": "飲む",
+      "forms": [
+        {
+          "text": "飲む",
+          "script": "mixed"
+        },
+        {
+          "text": "のむ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "のむ"
+        }
+      ],
+      "senseIds": [
+        "sense-nomu-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-飲",
+          "position": 0,
+          "readingInWord": "の"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "verb",
+        "food"
+      ],
+      "priority": 14,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-miru",
+      "canonicalForm": "見る",
+      "forms": [
+        {
+          "text": "見る",
+          "script": "mixed"
+        },
+        {
+          "text": "みる",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "みる"
+        }
+      ],
+      "senseIds": [
+        "sense-miru-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-見",
+          "position": 0,
+          "readingInWord": "み"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "verb"
+      ],
+      "priority": 15,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kiku",
+      "canonicalForm": "聞く",
+      "forms": [
+        {
+          "text": "聞く",
+          "script": "mixed"
+        },
+        {
+          "text": "きく",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "きく"
+        }
+      ],
+      "senseIds": [
+        "sense-kiku-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-聞",
+          "position": 0,
+          "readingInWord": "き"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "verb"
+      ],
+      "priority": 16,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-yomu",
+      "canonicalForm": "読む",
+      "forms": [
+        {
+          "text": "読む",
+          "script": "mixed"
+        },
+        {
+          "text": "よむ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "よむ"
+        }
+      ],
+      "senseIds": [
+        "sense-yomu-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-読",
+          "position": 0,
+          "readingInWord": "よ"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "verb"
+      ],
+      "priority": 17,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kaku",
+      "canonicalForm": "書く",
+      "forms": [
+        {
+          "text": "書く",
+          "script": "mixed"
+        },
+        {
+          "text": "かく",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かく"
+        }
+      ],
+      "senseIds": [
+        "sense-kaku-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-書",
+          "position": 0,
+          "readingInWord": "か"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "verb"
+      ],
+      "priority": 18,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-iku",
+      "canonicalForm": "行く",
+      "forms": [
+        {
+          "text": "行く",
+          "script": "mixed"
+        },
+        {
+          "text": "いく",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "いく"
+        }
+      ],
+      "senseIds": [
+        "sense-iku-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-行",
+          "position": 0,
+          "readingInWord": "い"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "verb",
+        "movement"
+      ],
+      "priority": 19,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kuru",
+      "canonicalForm": "来る",
+      "forms": [
+        {
+          "text": "来る",
+          "script": "mixed"
+        },
+        {
+          "text": "くる",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "くる"
+        }
+      ],
+      "senseIds": [
+        "sense-kuru-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-来",
+          "position": 0,
+          "readingInWord": "く"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "verb",
+        "movement"
+      ],
+      "priority": 20,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kaeru",
+      "canonicalForm": "帰る",
+      "forms": [
+        {
+          "text": "帰る",
+          "script": "mixed"
+        },
+        {
+          "text": "かえる",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かえる"
+        }
+      ],
+      "senseIds": [
+        "sense-kaeru-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-帰",
+          "position": 0,
+          "readingInWord": "かえ"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "verb",
+        "movement"
+      ],
+      "priority": 21,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-hanasu",
+      "canonicalForm": "話す",
+      "forms": [
+        {
+          "text": "話す",
+          "script": "mixed"
+        },
+        {
+          "text": "はなす",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "はなす"
+        }
+      ],
+      "senseIds": [
+        "sense-hanasu-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-話",
+          "position": 0,
+          "readingInWord": "はな"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "verb",
+        "communication"
+      ],
+      "priority": 22,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kau",
+      "canonicalForm": "買う",
+      "forms": [
+        {
+          "text": "買う",
+          "script": "mixed"
+        },
+        {
+          "text": "かう",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かう"
+        }
+      ],
+      "senseIds": [
+        "sense-kau-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-買",
+          "position": 0,
+          "readingInWord": "か"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "verb",
+        "shopping"
+      ],
+      "priority": 23,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-ookii",
+      "canonicalForm": "大きい",
+      "forms": [
+        {
+          "text": "大きい",
+          "script": "mixed"
+        },
+        {
+          "text": "おおきい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "おおきい"
+        }
+      ],
+      "senseIds": [
+        "sense-ookii-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-大",
+          "position": 0,
+          "readingInWord": "おお"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "adjective"
+      ],
+      "priority": 24,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-chiisai",
+      "canonicalForm": "小さい",
+      "forms": [
+        {
+          "text": "小さい",
+          "script": "mixed"
+        },
+        {
+          "text": "ちいさい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ちいさい"
+        }
+      ],
+      "senseIds": [
+        "sense-chiisai-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-小",
+          "position": 0,
+          "readingInWord": "ちい"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "adjective"
+      ],
+      "priority": 25,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-ima",
+      "canonicalForm": "今",
+      "forms": [
+        {
+          "text": "今",
+          "script": "mixed"
+        },
+        {
+          "text": "いま",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "いま"
+        }
+      ],
+      "senseIds": [
+        "sense-ima-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-今",
+          "position": 0,
+          "readingInWord": "いま"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "time"
+      ],
+      "priority": 26,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kyou",
+      "canonicalForm": "今日",
+      "forms": [
+        {
+          "text": "今日",
+          "script": "mixed"
+        },
+        {
+          "text": "きょう",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "きょう"
+        }
+      ],
+      "senseIds": [
+        "sense-kyou-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-今",
+          "position": 0,
+          "readingNote": "今日 has a conventional word-level reading きょう; do not split it into independent character readings here."
+        },
+        {
+          "kanjiId": "kanji-日",
+          "position": 1,
+          "readingNote": "今日 has a conventional word-level reading きょう; do not split it into independent character readings here."
+        }
+      ],
+      "tags": [
+        "foundation",
+        "time"
+      ],
+      "priority": 27,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-ashita",
+      "canonicalForm": "明日",
+      "forms": [
+        {
+          "text": "明日",
+          "script": "mixed"
+        },
+        {
+          "text": "あした",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "あした"
+        }
+      ],
+      "senseIds": [
+        "sense-ashita-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-明",
+          "position": 0,
+          "readingNote": "明日 is commonly read あした in everyday speech; treat this as a whole-word reading at this stage."
+        },
+        {
+          "kanjiId": "kanji-日",
+          "position": 1,
+          "readingNote": "明日 is commonly read あした in everyday speech; treat this as a whole-word reading at this stage."
+        }
+      ],
+      "tags": [
+        "foundation",
+        "time"
+      ],
+      "priority": 28,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-densha",
+      "canonicalForm": "電車",
+      "forms": [
+        {
+          "text": "電車",
+          "script": "mixed"
+        },
+        {
+          "text": "でんしゃ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "でんしゃ"
+        }
+      ],
+      "senseIds": [
+        "sense-densha-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-電",
+          "position": 0,
+          "readingInWord": "でん"
+        },
+        {
+          "kanjiId": "kanji-車",
+          "position": 1,
+          "readingInWord": "しゃ"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "travel"
+      ],
+      "priority": 29,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-eki",
+      "canonicalForm": "駅",
+      "forms": [
+        {
+          "text": "駅",
+          "script": "mixed"
+        },
+        {
+          "text": "えき",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "えき"
+        }
+      ],
+      "senseIds": [
+        "sense-eki-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-駅",
+          "position": 0,
+          "readingInWord": "えき"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "travel"
+      ],
+      "priority": 30,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-suki",
+      "canonicalForm": "好き",
+      "forms": [
+        {
+          "text": "好き",
+          "script": "mixed"
+        },
+        {
+          "text": "すき",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "すき"
+        }
+      ],
+      "senseIds": [
+        "sense-suki-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-好",
+          "position": 0,
+          "readingInWord": "す"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "preference"
+      ],
+      "priority": 31,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-hon",
+      "canonicalForm": "本",
+      "forms": [
+        {
+          "text": "本",
+          "script": "mixed"
+        },
+        {
+          "text": "ほん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ほん"
+        }
+      ],
+      "senseIds": [
+        "sense-hon-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-本",
+          "position": 0,
+          "readingInWord": "ほん"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "objects"
+      ],
+      "priority": 32,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-namae",
+      "canonicalForm": "名前",
+      "forms": [
+        {
+          "text": "名前",
+          "script": "mixed"
+        },
+        {
+          "text": "なまえ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "なまえ"
+        }
+      ],
+      "senseIds": [
+        "sense-namae-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-名",
+          "position": 0,
+          "readingInWord": "な"
+        },
+        {
+          "kanjiId": "kanji-前",
+          "position": 1,
+          "readingInWord": "まえ"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "identity"
+      ],
+      "priority": 33,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-nani",
+      "canonicalForm": "何",
+      "forms": [
+        {
+          "text": "何",
+          "script": "mixed"
+        },
+        {
+          "text": "なに",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "なに"
+        }
+      ],
+      "senseIds": [
+        "sense-nani-1"
+      ],
+      "kanjiLinks": [
+        {
+          "kanjiId": "kanji-何",
+          "position": 0,
+          "readingInWord": "なに"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "question"
+      ],
+      "priority": 34,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    }
+  ],
+  "senses": [
+    {
+      "id": "sense-ie-1",
+      "lexemeId": "lex-ie",
+      "glosses": [
+        "house",
+        "home"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-ue-1",
+      "lexemeId": "lex-ue",
+      "glosses": [
+        "above",
+        "on top"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-hito-1",
+      "lexemeId": "lex-hito",
+      "glosses": [
+        "person"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-nihon-1",
+      "lexemeId": "lex-nihon",
+      "glosses": [
+        "Japan"
+      ],
+      "partOfSpeech": [
+        "proper noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-nihongo-1",
+      "lexemeId": "lex-nihongo",
+      "glosses": [
+        "Japanese language"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-gakkou-1",
+      "lexemeId": "lex-gakkou",
+      "glosses": [
+        "school"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-gakusei-1",
+      "lexemeId": "lex-gakusei",
+      "glosses": [
+        "student"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-sensei-1",
+      "lexemeId": "lex-sensei",
+      "glosses": [
+        "teacher",
+        "instructor"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-tomodachi-1",
+      "lexemeId": "lex-tomodachi",
+      "glosses": [
+        "friend"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-mizu-1",
+      "lexemeId": "lex-mizu",
+      "glosses": [
+        "water"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-ocha-1",
+      "lexemeId": "lex-ocha",
+      "glosses": [
+        "tea"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-gohan-1",
+      "lexemeId": "lex-gohan",
+      "glosses": [
+        "meal",
+        "cooked rice"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-taberu-1",
+      "lexemeId": "lex-taberu",
+      "glosses": [
+        "to eat"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-nomu-1",
+      "lexemeId": "lex-nomu",
+      "glosses": [
+        "to drink"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-miru-1",
+      "lexemeId": "lex-miru",
+      "glosses": [
+        "to see",
+        "to watch"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kiku-1",
+      "lexemeId": "lex-kiku",
+      "glosses": [
+        "to hear",
+        "to listen",
+        "to ask"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-yomu-1",
+      "lexemeId": "lex-yomu",
+      "glosses": [
+        "to read"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kaku-1",
+      "lexemeId": "lex-kaku",
+      "glosses": [
+        "to write"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-iku-1",
+      "lexemeId": "lex-iku",
+      "glosses": [
+        "to go"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kuru-1",
+      "lexemeId": "lex-kuru",
+      "glosses": [
+        "to come"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kaeru-1",
+      "lexemeId": "lex-kaeru",
+      "glosses": [
+        "to return",
+        "to go home"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-hanasu-1",
+      "lexemeId": "lex-hanasu",
+      "glosses": [
+        "to speak",
+        "to talk"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kau-1",
+      "lexemeId": "lex-kau",
+      "glosses": [
+        "to buy"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-ookii-1",
+      "lexemeId": "lex-ookii",
+      "glosses": [
+        "big",
+        "large"
+      ],
+      "partOfSpeech": [
+        "i-adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-chiisai-1",
+      "lexemeId": "lex-chiisai",
+      "glosses": [
+        "small",
+        "little"
+      ],
+      "partOfSpeech": [
+        "i-adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-ima-1",
+      "lexemeId": "lex-ima",
+      "glosses": [
+        "now"
+      ],
+      "partOfSpeech": [
+        "noun",
+        "adverb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kyou-1",
+      "lexemeId": "lex-kyou",
+      "glosses": [
+        "today"
+      ],
+      "partOfSpeech": [
+        "noun",
+        "adverb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-ashita-1",
+      "lexemeId": "lex-ashita",
+      "glosses": [
+        "tomorrow"
+      ],
+      "partOfSpeech": [
+        "noun",
+        "adverb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-densha-1",
+      "lexemeId": "lex-densha",
+      "glosses": [
+        "train"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-eki-1",
+      "lexemeId": "lex-eki",
+      "glosses": [
+        "station"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-suki-1",
+      "lexemeId": "lex-suki",
+      "glosses": [
+        "liked",
+        "favorite"
+      ],
+      "partOfSpeech": [
+        "na-adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-hon-1",
+      "lexemeId": "lex-hon",
+      "glosses": [
+        "book"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-namae-1",
+      "lexemeId": "lex-namae",
+      "glosses": [
+        "name"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-nani-1",
+      "lexemeId": "lex-nani",
+      "glosses": [
+        "what"
+      ],
+      "partOfSpeech": [
+        "pronoun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    }
+  ],
+  "kanji": [
+    {
+      "id": "kanji-家",
+      "literal": "家",
+      "meanings": [
+        "house",
+        "home"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-上",
+      "literal": "上",
+      "meanings": [
+        "up",
+        "above"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-人",
+      "literal": "人",
+      "meanings": [
+        "person"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-日",
+      "literal": "日",
+      "meanings": [
+        "day",
+        "sun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-本",
+      "literal": "本",
+      "meanings": [
+        "book",
+        "origin"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-語",
+      "literal": "語",
+      "meanings": [
+        "language",
+        "word"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-学",
+      "literal": "学",
+      "meanings": [
+        "study",
+        "learning"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-校",
+      "literal": "校",
+      "meanings": [
+        "school"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-生",
+      "literal": "生",
+      "meanings": [
+        "life",
+        "student"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-先",
+      "literal": "先",
+      "meanings": [
+        "ahead",
+        "previous"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-友",
+      "literal": "友",
+      "meanings": [
+        "friend"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-達",
+      "literal": "達",
+      "meanings": [
+        "reach",
+        "plural/friend compound"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-水",
+      "literal": "水",
+      "meanings": [
+        "water"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-茶",
+      "literal": "茶",
+      "meanings": [
+        "tea"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-飯",
+      "literal": "飯",
+      "meanings": [
+        "meal",
+        "rice"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-食",
+      "literal": "食",
+      "meanings": [
+        "eat",
+        "food"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-飲",
+      "literal": "飲",
+      "meanings": [
+        "drink"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-見",
+      "literal": "見",
+      "meanings": [
+        "see",
+        "look"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-聞",
+      "literal": "聞",
+      "meanings": [
+        "hear",
+        "listen",
+        "ask"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-読",
+      "literal": "読",
+      "meanings": [
+        "read"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-書",
+      "literal": "書",
+      "meanings": [
+        "write"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-行",
+      "literal": "行",
+      "meanings": [
+        "go"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-来",
+      "literal": "来",
+      "meanings": [
+        "come"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-帰",
+      "literal": "帰",
+      "meanings": [
+        "return",
+        "go home"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-話",
+      "literal": "話",
+      "meanings": [
+        "talk",
+        "speak"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-買",
+      "literal": "買",
+      "meanings": [
+        "buy"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-大",
+      "literal": "大",
+      "meanings": [
+        "big",
+        "large"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-小",
+      "literal": "小",
+      "meanings": [
+        "small"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-今",
+      "literal": "今",
+      "meanings": [
+        "now"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-明",
+      "literal": "明",
+      "meanings": [
+        "bright",
+        "next"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-電",
+      "literal": "電",
+      "meanings": [
+        "electricity"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-車",
+      "literal": "車",
+      "meanings": [
+        "vehicle",
+        "car"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-駅",
+      "literal": "駅",
+      "meanings": [
+        "station"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-好",
+      "literal": "好",
+      "meanings": [
+        "like",
+        "fond"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-名",
+      "literal": "名",
+      "meanings": [
+        "name"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-前",
+      "literal": "前",
+      "meanings": [
+        "front",
+        "before"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "kanji-何",
+      "literal": "何",
+      "meanings": [
+        "what"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    }
+  ],
+  "grammar": [
+    {
+      "id": "grammar-teiru",
+      "label": "〜ている",
+      "summary": "ongoing action / resulting state",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    }
+  ],
   "sentences": [
-    { "id": "sentence-1", "text": "学校で日本語を勉強しています。" },
-    { "id": "sentence-2", "text": "毎朝パンを食べます。" }
+    {
+      "id": "sentence-1",
+      "text": "学校で日本語を勉強しています。",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-2",
+      "text": "毎朝パンを食べます。",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    }
   ]
 }

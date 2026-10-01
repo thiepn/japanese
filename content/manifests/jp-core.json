@@ -1,12 +1,16 @@
 {
   "id": "jp-core",
-  "version": "0.0.1",
-  "schemaVersion": 1,
+  "version": "0.1.0",
+  "schemaVersion": 2,
   "minimumAppVersion": "0.0.1",
   "sizeBytes": 0,
-  "sha256": "P0-PLACEHOLDER",
+  "sha256": "P1.4-GENERATED-AT-BUILD",
   "dependencies": [],
-  "sources": ["thiepn-original"],
-  "licenses": ["THIEPN-owned original content"],
+  "sources": [
+    "thiepn-original"
+  ],
+  "licenses": [
+    "THIEPN-owned original content"
+  ],
   "createdAt": "2026-10-01T00:00:00Z"
 }
