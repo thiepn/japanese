@@ -42,7 +42,7 @@ function makeMeaningPrompt(item:VocabularyStudyItem,index:number,all:readonly Vo
     displayAnswer:item.meaning,
     explanation:`${item.lexeme.canonicalForm}（${item.reading}） means ${item.meaning}.`,
     contextId:contextId(item.lexeme),
-    sourceId:item.lexeme.sourceIds[0],
+    sourceId:sourceIdFor(item.lexeme),
     contentVersion:coreContent.version
   };
 }
@@ -63,7 +63,7 @@ function makeReadingPrompt(item:VocabularyStudyItem):StudyPrompt {
     explanation:`${item.lexeme.canonicalForm} is read ${item.reading}.`,
     contextId:contextId(item.lexeme),
     answerNormalization:"japanese",
-    sourceId:item.lexeme.sourceIds[0],
+    sourceId:sourceIdFor(item.lexeme),
     contentVersion:coreContent.version
   };
 }
@@ -85,7 +85,7 @@ function makeActiveUsePrompt(item:VocabularyStudyItem):StudyPrompt {
     explanation:`${item.meaning} → ${item.lexeme.canonicalForm}（${item.reading}）`,
     contextId:contextId(item.lexeme),
     answerNormalization:"japanese",
-    sourceId:item.lexeme.sourceIds[0],
+    sourceId:sourceIdFor(item.lexeme),
     contentVersion:coreContent.version
   };
 }
@@ -120,3 +120,5 @@ function makeVocabularyLesson(lexeme:Lexeme):StudyLesson {
 }
 
 function contextId(lexeme:Lexeme):string { return `vocab-${lexeme.id}`; }
+
+function sourceIdFor(lexeme:Lexeme):string { const sourceId=lexeme.sourceIds[0]; if(!sourceId)throw new Error(`MISSING_SOURCE:${lexeme.id}`); return sourceId; }
