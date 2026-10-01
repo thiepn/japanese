@@ -195,3 +195,22 @@ function Stat({value,label}:{value:number|string;label:string}){return <div clas
 function Placeholder({title,body}:{title:string;body:string}){return <section className="hero"><p className="eyebrow">{title.toUpperCase()}</p><h1>{title}</h1><p>{body}</p></section>;}
 function percent(value:number):string{return Math.round(value*100)+"%";}
 function statusLabel(status:CourseUnitProgress["status"]):string{return status==="mastered"?"Mastered":status==="learning"?"Learning":status==="challenging"?"Challenging":"Ready";}
+function assessmentCanStart(unit:CourseUnitProgress):boolean{return ["ready","in_progress","passed","needs_review"].includes(unit.assessment.status);}
+function assessmentLabel(unit:CourseUnitProgress):string{
+  const a=unit.assessment;
+  if(a.status==="passed")return "delayed check passed "+Math.round((a.score??0)*100)+"%";
+  if(a.status==="needs_review")return "delayed check "+Math.round((a.score??0)*100)+"% · retry";
+  if(a.status==="in_progress")return "delayed check in progress";
+  if(a.status==="ready")return "delayed check ready";
+  if(a.status==="waiting"&&a.availableAt)return "delayed check after "+new Date(a.availableAt).toLocaleString();
+  return "delayed check unlocks after first-pass coverage";
+}
+function assessmentActionLabel(unit:CourseUnitProgress):string{
+  const a=unit.assessment;
+  if(a.status==="passed")return "Retake check";
+  if(a.status==="needs_review")return "Retry check";
+  if(a.status==="in_progress")return "Continue check";
+  if(a.status==="ready")return "Take delayed check";
+  if(a.status==="waiting")return "Delayed check waiting";
+  return "Delayed check locked";
+}
