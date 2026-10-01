@@ -5,7 +5,7 @@ import { starterVocabulary,vocabularyApplicationPrompts,vocabularyMeaningPrompts
 describe("production starter vocabulary",()=>{
   it("ships a source-provenanced starter lexicon",()=>{
     expect(starterLexemes).toHaveLength(34);
-    expect(coreContent.version).toBe("0.1.0");
+    expect(coreContent.version).toBe("0.2.0");
     expect(starterLexemes.every((lexeme)=>lexeme.sourceIds.includes("thiepn-original"))).toBe(true);
     expect(coreContent.senses.every((sense)=>sense.sourceIds.includes("thiepn-original"))).toBe(true);
     expect(coreContent.kanji.every((kanji)=>kanji.sourceIds.includes("thiepn-original"))).toBe(true);
@@ -19,10 +19,10 @@ describe("production starter vocabulary",()=>{
     const lesson=vocabularyLessons["vocab-lex-taberu"];
     expect(lesson?.examples?.some((example)=>example.expression.startsWith("食"))).toBe(true);
   });
-  it("creates meaning, reading and active-use evidence as independent dimensions",()=>{
+  it("creates meaning, reading, listening and active-use evidence as independent dimensions",()=>{
     for(const item of starterVocabulary){
       const prompts=[...vocabularyMeaningPrompts,...vocabularyApplicationPrompts].filter((prompt)=>prompt.primaryTarget.id===item.lexeme.id);
-      expect(new Set(prompts.map((prompt)=>prompt.skill))).toEqual(new Set(["meaning_recognition","reading","active_use"]));
+      expect(new Set(prompts.map((prompt)=>prompt.skill))).toEqual(new Set(["meaning_recognition","reading","audio_recognition","active_use"]));
     }
   });
   it("does not invent per-character readings for whole-word readings such as 今日",()=>{
@@ -34,6 +34,6 @@ describe("production starter vocabulary",()=>{
   it("carries source and content version onto study prompts",()=>{
     const prompt=vocabularyMeaningPrompts.find((item)=>item.primaryTarget.id==="lex-taberu");
     expect(prompt?.sourceId).toBe("thiepn-original");
-    expect(prompt?.contentVersion).toBe("0.1.0");
+    expect(prompt?.contentVersion).toBe("0.2.0");
   });
 });
