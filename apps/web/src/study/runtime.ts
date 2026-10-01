@@ -5,20 +5,22 @@ import { createFsrsScheduler, type ReviewGrade } from "@thiepn/scheduler";
 import { createStudyEvent, type StudyPrompt, type StudyStep } from "@thiepn/study-player";
 import { pronunciationLessons, pronunciationPerceptionPrompts } from "./audioPrompts";
 import { FOUNDATION_TOTAL_ITEMS, foundationApplicationPrompts, foundationLessons, foundationPrompts } from "./foundationPrompts";
+import { a1Course, allGrammarCoursePrompts, courseUnitPrompts, courseUnitSession, grammarCourseLessons, isGrammarCoursePromptReady, selectNewCoursePrompts } from "./grammarCourse";
 import { VOCABULARY_TOTAL, vocabularyApplicationPrompts, vocabularyLessons, vocabularyMeaningPrompts } from "./vocabulary";
 
 export const DEVELOPMENT_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
-export const DEVELOPMENT_DEVICE_ID="p1-local-browser";
+export const DEVELOPMENT_DEVICE_ID="p2-local-browser";
 
 const scheduler=createFsrsScheduler();
 const NEW_KANA_PER_SESSION=5;
 const NEW_VOCAB_PER_SESSION=2;
-const APPLICATION_ITEMS_PER_SESSION=4;
-const MAX_QUEUE_SIZE=14;
-const MAX_DUE_PER_SESSION=10;
+const APPLICATION_ITEMS_PER_SESSION=3;
+const COURSE_ITEMS_PER_SESSION=2;
+const MAX_QUEUE_SIZE=16;
+const MAX_DUE_PER_SESSION=11;
 
 export interface StudySummary {
-  due:number; newKana:number; newVocabulary:number; listening:number; application:number;
+  due:number; newKana:number; newVocabulary:number; listening:number; application:number; course:number;
   learnedKana:number; totalKana:number; learnedVocabulary:number; totalVocabulary:number; memoryTraces:number;
 }
 
@@ -26,48 +28,69 @@ export interface KanaMasterySummary {
   overall:number; hiragana:number; katakana:number; recognition:number; readingRecall:number; formSelection:number; listening:number;
   confidence:number; accuracy:number; matureSkills:number; expectedSkills:number; evidenceCount:number;
 }
-
 export interface VocabularyMasterySummary {
   overall:number; meaning:number; reading:number; listening:number; activeUse:number; confidence:number; accuracy:number;
   matureSkills:number; expectedSkills:number; evidenceCount:number;
 }
+export interface GrammarMasterySummary {
+  overall:number; comprehension:number; formSelection:number; confidence:number; accuracy:number;
+  matureSkills:number; expectedSkills:number; evidenceCount:number;
+}
+export interface SentenceMasterySummary {
+  overall:number; comprehension:number; production:number; confidence:number; accuracy:number;
+  matureSkills:number; expectedSkills:number; evidenceCount:number;
+}
+export type CourseUnitStatus="ready"|"challenging"|"learning"|"mastered";
+export interface CourseUnitProgress {
+  id:string; order:number; title:string; canDo:string; status:CourseUnitStatus; mastery:number; evidenceCount:number;
+}
 
-function allApplicationPrompts():StudyPrompt[]{
+function foundationApplicationPool():StudyPrompt[]{
   return [...pronunciationPerceptionPrompts,...foundationApplicationPrompts,...vocabularyApplicationPrompts];
+}
+function allPrompts():StudyPrompt[]{
+  return [...foundationPrompts,...vocabularyMeaningPrompts,...foundationApplicationPool(),...allGrammarCoursePrompts];
 }
 
 export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
   const traces=await listMemoryTraces(DEVELOPMENT_ACCOUNT_ID);
   const byId=new Map(traces.map((trace)=>[trace.id,trace]));
-  const primary=[...foundationPrompts,...vocabularyMeaningPrompts];
-  const application=allApplicationPrompts();
-  const all=[...primary,...application];
+  const traceIds=new Set(byId.keys());
+  const all=allPrompts();
   const due=all.filter((prompt)=>isDue(prompt,byId,now)).sort((a,b)=>dueAt(a,byId)-dueAt(b,byId));
-  const unseenKana=foundationPrompts.filter((prompt)=>!byId.has(traceIdFor(prompt)));
-  const unseenVocabulary=vocabularyMeaningPrompts.filter((prompt)=>!byId.has(traceIdFor(prompt)));
-  const readyApplication=application.filter((prompt)=>!byId.has(traceIdFor(prompt))&&hasPrerequisiteEvidence(prompt,byId));
   if(due.length>=MAX_DUE_PER_SESSION)return insertFirstExposureLessons(due.slice(0,MAX_QUEUE_SIZE),byId);
 
+  const unseenKana=foundationPrompts.filter((prompt)=>!byId.has(traceIdFor(prompt)));
+  const unseenVocabulary=vocabularyMeaningPrompts.filter((prompt)=>!byId.has(traceIdFor(prompt)));
+  const readyApplication=foundationApplicationPool().filter((prompt)=>!byId.has(traceIdFor(prompt))&&isApplicationPromptReady(prompt,traceIds));
+  const readyCourse=selectNewCoursePrompts(traceIds,COURSE_ITEMS_PER_SESSION);
   const queue:StudyPrompt[]=[];
-  queue.push(...due);
+
+  addUnique(queue,due);
   addUnique(queue,selectBalancedApplications(readyApplication,Math.min(APPLICATION_ITEMS_PER_SESSION,slots(queue))));
+  addUnique(queue,readyCourse);
   addUnique(queue,unseenKana.slice(0,Math.min(NEW_KANA_PER_SESSION,slots(queue))));
   addUnique(queue,unseenVocabulary.slice(0,Math.min(NEW_VOCAB_PER_SESSION,slots(queue))));
   if(queue.length<MAX_QUEUE_SIZE)addUnique(queue,due.slice(0,MAX_QUEUE_SIZE));
   return insertFirstExposureLessons(queue,byId);
 }
 
+export async function buildCourseUnitSession(unitId:string):Promise<StudyStep[]>{
+  return courseUnitSession(unitId);
+}
+
 export async function getStudySummary(now=new Date()):Promise<StudySummary>{
   const traces=await listMemoryTraces(DEVELOPMENT_ACCOUNT_ID);
   const byId=new Map(traces.map((trace)=>[trace.id,trace]));
-  const applications=allApplicationPrompts();
-  const all=[...foundationPrompts,...applications,...vocabularyMeaningPrompts];
+  const traceIds=new Set(byId.keys());
+  const all=allPrompts();
   const due=all.filter((prompt)=>isDue(prompt,byId,now)).length;
   const learnedKana=foundationPrompts.filter((prompt)=>byId.has(traceIdFor(prompt))).length;
   const learnedVocabulary=vocabularyMeaningPrompts.filter((prompt)=>byId.has(traceIdFor(prompt))).length;
-  const ready=applications.filter((prompt)=>!byId.has(traceIdFor(prompt))&&hasPrerequisiteEvidence(prompt,byId));
+  const ready=foundationApplicationPool().filter((prompt)=>!byId.has(traceIdFor(prompt))&&isApplicationPromptReady(prompt,traceIds));
   const listeningReady=ready.filter(isListeningPrompt).length;
   const nonListeningReady=ready.length-listeningReady;
+  const course=selectNewCoursePrompts(traceIds,COURSE_ITEMS_PER_SESSION).length;
   const pauseNew=due>=MAX_DUE_PER_SESSION;
   return {
     due,
@@ -75,6 +98,7 @@ export async function getStudySummary(now=new Date()):Promise<StudySummary>{
     newVocabulary:pauseNew?0:Math.min(NEW_VOCAB_PER_SESSION,Math.max(0,VOCABULARY_TOTAL-learnedVocabulary)),
     listening:Math.min(2,listeningReady),
     application:Math.min(2,nonListeningReady),
+    course:pauseNew?0:course,
     learnedKana,totalKana:FOUNDATION_TOTAL_ITEMS,learnedVocabulary,totalVocabulary:VOCABULARY_TOTAL,memoryTraces:traces.length
   };
 }
@@ -96,7 +120,7 @@ export async function getKanaMasterySummary():Promise<KanaMasterySummary>{
     overall:scoreFor(expected,state),hiragana:scoreFor(hiragana,state),katakana:scoreFor(katakana,state),
     recognition:scoreFor(recognition,state),readingRecall:scoreFor(readingRecall,state),formSelection:scoreFor(formSelection,state),listening:scoreFor(listening,state),
     confidence:meanConfidence(projections,expected.length),accuracy:accuracyFor(graded),
-    matureSkills:projections.filter((item)=>item.estimate>=0.72&&item.confidence>=0.35).length,expectedSkills:expected.length,evidenceCount:graded.length
+    matureSkills:matureCount(projections),expectedSkills:expected.length,evidenceCount:graded.length
   };
 }
 
@@ -114,8 +138,61 @@ export async function getVocabularyMasterySummary():Promise<VocabularyMasterySum
   return {
     overall:scoreFor(expected,state),meaning:scoreFor(meaning,state),reading:scoreFor(reading,state),listening:scoreFor(listening,state),activeUse:scoreFor(active,state),
     confidence:meanConfidence(projections,expected.length),accuracy:accuracyFor(graded),
-    matureSkills:projections.filter((item)=>item.estimate>=0.72&&item.confidence>=0.35).length,expectedSkills:expected.length,evidenceCount:graded.length
+    matureSkills:matureCount(projections),expectedSkills:expected.length,evidenceCount:graded.length
   };
+}
+
+export async function getGrammarMasterySummary():Promise<GrammarMasterySummary>{
+  const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
+  const state=replayStudyEvents(events);
+  const expected=uniqueSkillPrompts(allGrammarCoursePrompts.filter((prompt)=>prompt.primaryTarget.kind==="grammar"));
+  const comprehension=expected.filter((prompt)=>prompt.skill==="comprehension");
+  const formSelection=expected.filter((prompt)=>prompt.skill==="form_selection");
+  const projections=projectionsFor(expected,state);
+  const graded=gradedEvents(events,"grammar");
+  return {
+    overall:scoreFor(expected,state),comprehension:scoreFor(comprehension,state),formSelection:scoreFor(formSelection,state),
+    confidence:meanConfidence(projections,expected.length),accuracy:accuracyFor(graded),
+    matureSkills:matureCount(projections),expectedSkills:expected.length,evidenceCount:graded.length
+  };
+}
+
+export async function getSentenceMasterySummary():Promise<SentenceMasterySummary>{
+  const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
+  const state=replayStudyEvents(events);
+  const expected=uniqueSkillPrompts(allGrammarCoursePrompts.filter((prompt)=>prompt.primaryTarget.kind==="sentence"));
+  const comprehension=expected.filter((prompt)=>prompt.skill==="comprehension");
+  const production=expected.filter((prompt)=>prompt.skill==="production");
+  const projections=projectionsFor(expected,state);
+  const graded=gradedEvents(events,"sentence");
+  return {
+    overall:scoreFor(expected,state),comprehension:scoreFor(comprehension,state),production:scoreFor(production,state),
+    confidence:meanConfidence(projections,expected.length),accuracy:accuracyFor(graded),
+    matureSkills:matureCount(projections),expectedSkills:expected.length,evidenceCount:graded.length
+  };
+}
+
+export async function getCourseProgress():Promise<CourseUnitProgress[]>{
+  const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
+  const state=replayStudyEvents(events);
+  const traces=await listMemoryTraces(DEVELOPMENT_ACCOUNT_ID);
+  const traceIds=new Set(traces.map((trace)=>trace.id));
+  const statuses=new Map<string,CourseUnitStatus>();
+  const result:CourseUnitProgress[]=[];
+  for(const view of a1Course){
+    const prompts=uniqueSkillPrompts(courseUnitPrompts(view.unit.id).filter((prompt)=>prompt.skill!=="production"));
+    const projections=projectionsFor(prompts,state);
+    const mastery=scoreFor(prompts,state);
+    const allEstablished=prompts.length>0&&prompts.every((prompt)=>(state.mastery[entityKey(prompt.primaryTarget,prompt.skill)]?.estimate??0)>=0.55);
+    const hasEvidence=prompts.some((prompt)=>traceIds.has(traceIdFor(prompt)));
+    const prereqsReady=view.unit.prerequisiteUnitIds.every((id)=>{
+      const status=statuses.get(id);return status==="learning"||status==="mastered";
+    });
+    const status:CourseUnitStatus=allEstablished?"mastered":hasEvidence?"learning":prereqsReady?"ready":"challenging";
+    statuses.set(view.unit.id,status);
+    result.push({id:view.unit.id,order:view.unit.order,title:view.unit.title,canDo:view.canDo,status,mastery,evidenceCount:projections.reduce((sum,item)=>sum+item.evidenceCount,0)});
+  }
+  return result;
 }
 
 export async function recordStudyAnswer(input:{prompt:StudyPrompt;response:string;result:"correct"|"incorrect";responseTimeMs:number}):Promise<void>{
@@ -129,9 +206,8 @@ export async function recordStudyAnswer(input:{prompt:StudyPrompt;response:strin
 }
 
 function insertFirstExposureLessons(queue:StudyPrompt[],byId:Map<string,Awaited<ReturnType<typeof listMemoryTraces>>[number]>):StudyStep[]{
-  const lessons={...foundationLessons,...vocabularyLessons,...pronunciationLessons};
-  const allPrompts=[...foundationPrompts,...vocabularyMeaningPrompts,...allApplicationPrompts()];
-  const promptByTrace=new Map(allPrompts.map((prompt)=>[traceIdFor(prompt),prompt]));
+  const lessons={...foundationLessons,...vocabularyLessons,...pronunciationLessons,...grammarCourseLessons};
+  const promptByTrace=new Map(allPrompts().map((prompt)=>[traceIdFor(prompt),prompt]));
   const seenContexts=new Set<string>();
   for(const trace of byId.values()){const prompt=promptByTrace.get(trace.id);if(prompt?.contextId)seenContexts.add(prompt.contextId);}
   const steps:StudyStep[]=[];const inserted=new Set<string>();
@@ -143,9 +219,8 @@ function insertFirstExposureLessons(queue:StudyPrompt[],byId:Map<string,Awaited<
   return steps;
 }
 
-function hasPrerequisiteEvidence(prompt:StudyPrompt,byId:Map<string,unknown>):boolean{return isApplicationPromptReady(prompt,new Set(byId.keys()));}
-
 export function isApplicationPromptReady(prompt:StudyPrompt,traceIds:ReadonlySet<string>):boolean{
+  if(prompt.primaryTarget.kind==="grammar"||prompt.primaryTarget.kind==="sentence")return isGrammarCoursePromptReady(prompt,traceIds);
   if(prompt.primaryTarget.kind==="lexeme"){
     const meaning="lexeme:"+prompt.primaryTarget.id+":meaning_recognition:written-to-meaning";
     if(prompt.skill==="reading"||prompt.skill==="audio_recognition")return traceIds.has(meaning);
@@ -153,6 +228,7 @@ export function isApplicationPromptReady(prompt:StudyPrompt,traceIds:ReadonlySet
     return true;
   }
   if(prompt.cueFamily==="sokuon-audio-discrimination")return traceIds.has("kana:hiragana-small-tsu:reading:sokuon-reading");
+  if(prompt.cueFamily==="katakana-sokuon-audio-discrimination")return traceIds.has("kana:katakana-small-tsu:reading:sokuon-reading");
   if(prompt.cueFamily==="long-vowel-audio-discrimination")return traceIds.has("kana:hiragana-あ:recognition:kana-to-sound")&&traceIds.has("kana:hiragana-ば:recognition:kana-to-sound");
   if(prompt.cueFamily==="moraic-n-audio-discrimination")return traceIds.has("kana:hiragana-ん:recognition:kana-to-sound");
   const target=prompt.primaryTarget.id;
@@ -169,7 +245,6 @@ function isDue(prompt:StudyPrompt,byId:Map<string,Awaited<ReturnType<typeof list
 function dueAt(prompt:StudyPrompt,byId:Map<string,Awaited<ReturnType<typeof listMemoryTraces>>[number]>):number{return new Date(byId.get(traceIdFor(prompt))?.card.due??"9999-12-31T00:00:00Z").getTime();}
 function slots(queue:StudyPrompt[]):number{return Math.max(0,MAX_QUEUE_SIZE-queue.length);}
 function addUnique(queue:StudyPrompt[],items:readonly StudyPrompt[]):void{for(const item of items){if(queue.length>=MAX_QUEUE_SIZE)break;if(!queue.some((existing)=>existing.id===item.id))queue.push(item);}}
-
 function selectBalancedApplications(prompts:StudyPrompt[],limit:number):StudyPrompt[]{
   const selected:StudyPrompt[]=[];const targets=new Set<string>();
   const preferredSkills=["audio_recognition","reading","listening","form_selection","active_use"] as const;
@@ -186,13 +261,13 @@ function selectBalancedApplications(prompts:StudyPrompt[],limit:number):StudyPro
   for(const prompt of prompts){if(selected.includes(prompt))continue;selected.push(prompt);if(selected.length>=limit)break;}
   return selected;
 }
-
 function uniqueSkillPrompts(prompts:StudyPrompt[]):StudyPrompt[]{const seen=new Set<string>();return prompts.filter((prompt)=>{const key=entityKey(prompt.primaryTarget,prompt.skill);if(seen.has(key))return false;seen.add(key);return true;});}
 function projectionsFor(prompts:StudyPrompt[],state:LearnerState){return prompts.map((prompt)=>state.mastery[entityKey(prompt.primaryTarget,prompt.skill)]).filter((value)=>value!==undefined);}
 function scoreFor(prompts:StudyPrompt[],state:LearnerState):number{if(!prompts.length)return 0;return prompts.reduce((sum,prompt)=>sum+(state.mastery[entityKey(prompt.primaryTarget,prompt.skill)]?.estimate??0),0)/prompts.length;}
-function gradedEvents(events:Awaited<ReturnType<typeof listStudyEvents>>,kind:"kana"|"lexeme"){return events.filter((event)=>event.primaryTarget?.kind===kind&&["correct","incorrect","partial","revealed"].includes(event.result??""));}
+function gradedEvents(events:Awaited<ReturnType<typeof listStudyEvents>>,kind:"kana"|"lexeme"|"grammar"|"sentence"){return events.filter((event)=>event.primaryTarget?.kind===kind&&["correct","incorrect","partial","revealed"].includes(event.result??""));}
 function accuracyFor(events:ReturnType<typeof gradedEvents>):number{if(!events.length)return 0;return events.filter((event)=>event.result==="correct").length/events.length;}
 function meanConfidence(projections:ReturnType<typeof projectionsFor>,expected:number):number{if(!expected)return 0;return projections.reduce((sum,item)=>sum+item.confidence,0)/expected;}
+function matureCount(projections:ReturnType<typeof projectionsFor>):number{return projections.filter((item)=>item.estimate>=0.72&&item.confidence>=0.35).length;}
 function gradeFor(result:"correct"|"incorrect"):ReviewGrade{return result==="correct"?"good":"again";}
 export function traceIdFor(prompt:StudyPrompt):string{return prompt.primaryTarget.kind+":"+prompt.primaryTarget.id+":"+prompt.skill+":"+prompt.cueFamily;}
 
