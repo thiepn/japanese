@@ -114,14 +114,14 @@ function Today({summary,completedToday,status,onStart}:{summary:StudySummary;com
   </section>;
 }
 
-function Learn({summary,kana,vocab,grammar,sentence,course,status,onStart,onStartUnit}:{summary:StudySummary;kana:KanaMasterySummary;vocab:VocabularyMasterySummary;grammar:GrammarMasterySummary;sentence:SentenceMasterySummary;course:CourseUnitProgress[];status:string;onStart:()=>void;onStartUnit:(id:string)=>void}){
+function Learn({summary,kana,vocab,conjugation,grammar,sentence,course,milestone,status,onStart,onStartUnit,onStartAssessment,onStartMilestone}:{summary:StudySummary;kana:KanaMasterySummary;vocab:VocabularyMasterySummary;conjugation:ConjugationMasterySummary;grammar:GrammarMasterySummary;sentence:SentenceMasterySummary;course:CourseUnitProgress[];milestone:A1MilestoneProgress;status:string;onStart:()=>void;onStartUnit:(id:string)=>void;onStartAssessment:(id:string)=>void;onStartMilestone:()=>void}){
   const kanaCoverage=summary.totalKana?Math.round(summary.learnedKana/summary.totalKana*100):0;
   const vocabCoverage=summary.totalVocabulary?Math.round(summary.learnedVocabulary/summary.totalVocabulary*100):0;
   return <section className="dashboard learn-page"><p className="eyebrow">LEARN</p><h1>Foundation → A1</h1>
-    <p className="lead">The course is capability-centered. Each unit teaches reusable grammar concepts, applies them in canonical sentences, and writes every answer into the same learner model used by reviews and future immersion.</p>
+    <p className="lead">The A1 path now combines broader everyday vocabulary, reusable grammar, generated conjugation practice, sentence transfer and delayed Can-do checks. All evidence stays in the same learner model.</p>
     <div className="course-stack foundation-stack">
       <article className="course-card"><div><span className="course-kicker">SCRIPT FOUNDATION</span><h2>Kana</h2><p>{foundationSections.map((section)=>section.label).join(" · ")}</p></div><div className="course-progress"><strong>{kanaCoverage}%</strong><span>{summary.learnedKana} / {summary.totalKana} introduced</span></div></article>
-      <article className="course-card"><div><span className="course-kicker">STARTER LEXICON</span><h2>Useful words + kanji in context</h2><p>Meaning · reading · listening · active recall</p></div><div className="course-progress"><strong>{vocabCoverage}%</strong><span>{summary.learnedVocabulary} / {summary.totalVocabulary} words introduced</span></div></article>
+      <article className="course-card"><div><span className="course-kicker">A1 LEXICON</span><h2>Useful words + kanji in context</h2><p>Meaning · reading · listening · active recall</p></div><div className="course-progress"><strong>{vocabCoverage}%</strong><span>{summary.learnedVocabulary} / {summary.totalVocabulary} words introduced</span></div></article>
     </div>
 
     <section className="course-section">
@@ -129,16 +129,38 @@ function Learn({summary,kana,vocab,grammar,sentence,course,status,onStart,onStar
       <div className="unit-list">
         {course.map((unit)=><article className={"unit-card "+unit.status} key={unit.id}>
           <div className="unit-index">{String(unit.order).padStart(2,"0")}</div>
-          <div className="unit-copy"><div className="unit-title-row"><h3>{unit.title}</h3><span className={"status-pill "+unit.status}>{statusLabel(unit.status)}</span></div><p>{unit.canDo}</p><div className="unit-meter"><span style={{width:Math.round(unit.mastery*100)+"%"}}/></div><small>{Math.round(unit.mastery*100)}% durable mastery · {unit.evidenceCount} evidence</small></div>
-          <button className="unit-action" disabled={status==="loading"} type="button" onClick={()=>onStartUnit(unit.id)}>{unit.status==="challenging"?"Study anyway":unit.status==="mastered"?"Review unit":unit.status==="learning"?"Continue unit":"Start unit"}</button>
+          <div className="unit-copy">
+            <div className="unit-title-row"><h3>{unit.title}</h3><span className={"status-pill "+unit.status}>{statusLabel(unit.status)}</span></div>
+            <p>{unit.canDo}</p>
+            <div className="unit-meter"><span style={{width:Math.round(unit.mastery*100)+"%"}}/></div>
+            <small>{Math.round(unit.mastery*100)}% durable mastery · {unit.evidenceCount} evidence · {assessmentLabel(unit)}</small>
+          </div>
+          <div className="unit-actions">
+            <button className="unit-action" disabled={status==="loading"} type="button" onClick={()=>onStartUnit(unit.id)}>{unit.status==="challenging"?"Study anyway":unit.status==="mastered"?"Review unit":unit.status==="learning"?"Continue unit":"Start unit"}</button>
+            <button className="quiet-button assessment-action" disabled={status==="loading"||!assessmentCanStart(unit)} type="button" onClick={()=>onStartAssessment(unit.id)}>{assessmentActionLabel(unit)}</button>
+          </div>
         </article>)}
       </div>
-      <p className="course-note">“Challenging” is advisory, not a hard lock. Prerequisites guide sequencing while free study remains available.</p>
+      <p className="course-note">Unit checks unlock 20 hours after the unit’s essential first-pass evidence is complete. “Challenging” remains advisory rather than a hard lock.</p>
+    </section>
+
+    <section className="mastery-section milestone-card">
+      <div className="section-heading"><div><span className="course-kicker">A1 MILESTONE</span><h2>Five activity areas</h2></div><strong>{milestone.answered} / {milestone.total}</strong></div>
+      <p>Reading, listening, spoken interaction, spoken production and writing are reported separately. The two spoken sections currently use say-then-type tasks and do not score pronunciation.</p>
+      <div className="mastery-grid">
+        <MasteryBar label="Reading" value={milestone.scores.reading.score}/>
+        <MasteryBar label="Listening" value={milestone.scores.listening.score}/>
+        <MasteryBar label="Spoken interaction" value={milestone.scores.spoken_interaction.score}/>
+        <MasteryBar label="Spoken production" value={milestone.scores.spoken_production.score}/>
+        <MasteryBar label="Writing" value={milestone.scores.writing.score}/>
+      </div>
+      <button className="primary" disabled={status==="loading"} onClick={onStartMilestone} type="button">{milestone.complete?"Retake A1 milestone":"Start A1 milestone"}</button>
     </section>
 
     <div className="mastery-grid four-skill">
       <MasteryBar label="Kana durable mastery" value={kana.overall}/>
       <MasteryBar label="Vocabulary durable mastery" value={vocab.overall}/>
+      <MasteryBar label="Conjugation pattern mastery" value={conjugation.overall}/>
       <MasteryBar label="Grammar durable mastery" value={grammar.overall}/>
       <MasteryBar label="Sentence durable mastery" value={sentence.overall}/>
     </div>
@@ -146,14 +168,16 @@ function Learn({summary,kana,vocab,grammar,sentence,course,status,onStart,onStar
   </section>;
 }
 
-function Progress({kana,vocab,grammar,sentence,summary,course,completedToday}:{kana:KanaMasterySummary;vocab:VocabularyMasterySummary;grammar:GrammarMasterySummary;sentence:SentenceMasterySummary;summary:StudySummary;course:CourseUnitProgress[];completedToday:number}){
+function Progress({kana,vocab,conjugation,grammar,sentence,milestone,summary,course,completedToday}:{kana:KanaMasterySummary;vocab:VocabularyMasterySummary;conjugation:ConjugationMasterySummary;grammar:GrammarMasterySummary;sentence:SentenceMasterySummary;milestone:A1MilestoneProgress;summary:StudySummary;course:CourseUnitProgress[];completedToday:number}){
   return <section className="dashboard"><p className="eyebrow">PROGRESS</p><h1>Real mastery</h1>
-    <p className="lead">Course position is derived from evidence. Completing a lesson never marks its grammar or sentences as mastered; delayed retrieval and later use continue to change the same projections.</p>
+    <p className="lead">Course position is derived from evidence. Lesson exposure, delayed assessment and later retrieval remain distinct so recent familiarity does not automatically count as mastery.</p>
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">KANA + SOUND</span><h2>Script and perception</h2></div><strong>{percent(kana.overall)}</strong></div><div className="mastery-grid"><MasteryBar label="Hiragana" value={kana.hiragana}/><MasteryBar label="Katakana" value={kana.katakana}/><MasteryBar label="Recognition" value={kana.recognition}/><MasteryBar label="Typed reading" value={kana.readingRecall}/><MasteryBar label="Mora listening" value={kana.listening}/><MasteryBar label="Model confidence" value={kana.confidence}/></div></section>
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">VOCABULARY</span><h2>Word mastery</h2></div><strong>{percent(vocab.overall)}</strong></div><div className="mastery-grid"><MasteryBar label="Meaning recognition" value={vocab.meaning}/><MasteryBar label="Reading recall" value={vocab.reading}/><MasteryBar label="Listening recognition" value={vocab.listening}/><MasteryBar label="Active use" value={vocab.activeUse}/><MasteryBar label="Model confidence" value={vocab.confidence}/></div></section>
+    <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">CONJUGATION</span><h2>Generated forms</h2></div><strong>{percent(conjugation.overall)}</strong></div><div className="mastery-grid"><MasteryBar label="Polite negative" value={conjugation.politeNegative}/><MasteryBar label="Polite past" value={conjugation.politePast}/><MasteryBar label="Polite past negative" value={conjugation.politePastNegative}/><MasteryBar label="て-form" value={conjugation.teForm}/><MasteryBar label="Model confidence" value={conjugation.confidence}/></div></section>
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">GRAMMAR</span><h2>Concept + contextual form</h2></div><strong>{percent(grammar.overall)}</strong></div><div className="mastery-grid"><MasteryBar label="Function comprehension" value={grammar.comprehension}/><MasteryBar label="Contextual form selection" value={grammar.formSelection}/><MasteryBar label="Model confidence" value={grammar.confidence}/></div></section>
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">SENTENCES</span><h2>Connected knowledge</h2></div><strong>{percent(sentence.overall)}</strong></div><div className="mastery-grid"><MasteryBar label="Sentence comprehension" value={sentence.comprehension}/><MasteryBar label="Sentence production" value={sentence.production}/><MasteryBar label="Model confidence" value={sentence.confidence}/></div></section>
-    <div className="stat-row four"><Stat value={kana.evidenceCount+vocab.evidenceCount+grammar.evidenceCount+sentence.evidenceCount} label="Graded answers"/><Stat value={course.filter((unit)=>unit.status==="mastered").length} label="A1 units mastered"/><Stat value={summary.due} label="Due now"/><Stat value={summary.memoryTraces} label="Memory traces"/></div>
+    <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">A1 ASSESSMENT</span><h2>Language activities</h2></div><strong>{milestone.answered} / {milestone.total}</strong></div><div className="mastery-grid"><MasteryBar label="Reading" value={milestone.scores.reading.score}/><MasteryBar label="Listening" value={milestone.scores.listening.score}/><MasteryBar label="Spoken interaction*" value={milestone.scores.spoken_interaction.score}/><MasteryBar label="Spoken production*" value={milestone.scores.spoken_production.score}/><MasteryBar label="Writing" value={milestone.scores.writing.score}/></div><p className="course-note">*Text-backed say-then-type proxy; pronunciation is not scored in P2.5.</p></section>
+    <div className="stat-row four"><Stat value={kana.evidenceCount+vocab.evidenceCount+conjugation.evidenceCount+grammar.evidenceCount+sentence.evidenceCount} label="Graded answers"/><Stat value={course.filter((unit)=>unit.assessment.status==="passed").length} label="Unit checks passed"/><Stat value={summary.due} label="Due now"/><Stat value={summary.memoryTraces} label="Memory traces"/></div>
     <p className="session-note">{completedToday} answers recorded in this open session.</p>
   </section>;
 }
