@@ -13,10 +13,11 @@ P0 is not complete merely because the shell renders. The following gates define 
 - [x] local StudyEvent + sync-outbox write is atomic
 - [x] learner reducer has deterministic regression coverage
 - [x] production FSRS library is isolated behind a scheduler adapter
-- [ ] persistent SQLite/WASM content package loads locally through the compatibility provider
+- [ ] persistent SQLite/WASM content database verified in a real browser
+- [x] SQLite/WASM IndexedDB-VFS implementation is wired behind `@thiepn/content-db`
 - [x] SQLite persistence strategy no longer requires OPFS/cross-origin isolation
 - [x] Japanese search normalization has regression coverage
-- [ ] global search reads from the persistent content package
+- [x] Library search is wired to the persistent content database
 - [x] source registry baseline exists
 - [x] licensing validator is wired into CI
 - [x] public seed package declares an exportable source rather than bypassing provenance

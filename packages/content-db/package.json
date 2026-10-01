@@ -1,0 +1,13 @@
+{
+  "name": "@thiepn/content-db",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": {
+    "@journeyapps/wa-sqlite": "2.0.6",
+    "@thiepn/domain": "workspace:*",
+    "@thiepn/search": "workspace:*"
+  },
+  "scripts": { "build": "tsc --noEmit", "typecheck": "tsc --noEmit" }
+}
