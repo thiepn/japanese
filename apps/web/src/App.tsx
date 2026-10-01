@@ -6,15 +6,23 @@ import { searchLocalJapanese } from "./content";
 import { foundationSections } from "./study/foundationPrompts";
 import { StudyPlayer,type StudyAnswer } from "./study/StudyPlayer";
 import {
-  buildCourseUnitSession,buildTodayQueue,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getSentenceMasterySummary,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,
-  type CourseUnitProgress,type GrammarMasterySummary,type KanaMasterySummary,type SentenceMasterySummary,type StudySummary,type VocabularyMasterySummary
+  buildA1MilestoneSession,buildCourseUnitSession,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getSentenceMasterySummary,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,
+  type A1MilestoneProgress,type ConjugationMasterySummary,type CourseUnitProgress,type GrammarMasterySummary,type KanaMasterySummary,type SentenceMasterySummary,type StudySummary,type VocabularyMasterySummary
 } from "./study/runtime";
 
 type Surface="Today"|"Learn"|"Immerse"|"Library"|"Progress";
-const EMPTY_SUMMARY:StudySummary={due:0,newKana:5,newVocabulary:2,listening:0,application:0,course:0,learnedKana:0,totalKana:217,learnedVocabulary:0,totalVocabulary:36,memoryTraces:0};
+const EMPTY_SUMMARY:StudySummary={due:0,newKana:5,newVocabulary:2,listening:0,application:0,course:0,learnedKana:0,totalKana:217,learnedVocabulary:0,totalVocabulary:145,memoryTraces:0};
 const EMPTY_KANA:KanaMasterySummary={overall:0,hiragana:0,katakana:0,recognition:0,readingRecall:0,formSelection:0,listening:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
 const EMPTY_VOCAB:VocabularyMasterySummary={overall:0,meaning:0,reading:0,listening:0,activeUse:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
+const EMPTY_CONJUGATION:ConjugationMasterySummary={overall:0,politeNegative:0,politePast:0,politePastNegative:0,teForm:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
 const EMPTY_GRAMMAR:GrammarMasterySummary={overall:0,comprehension:0,formSelection:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
+const EMPTY_MILESTONE:A1MilestoneProgress={complete:false,answered:0,total:15,scores:{
+  reading:{activity:"reading",correct:0,answered:0,total:3,score:0},
+  listening:{activity:"listening",correct:0,answered:0,total:3,score:0},
+  spoken_interaction:{activity:"spoken_interaction",correct:0,answered:0,total:3,score:0},
+  spoken_production:{activity:"spoken_production",correct:0,answered:0,total:3,score:0},
+  writing:{activity:"writing",correct:0,answered:0,total:3,score:0}
+}};
 const EMPTY_SENTENCE:SentenceMasterySummary={overall:0,comprehension:0,production:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
 
 export function App(){
@@ -27,9 +35,11 @@ export function App(){
   const [summary,setSummary]=useState<StudySummary>(EMPTY_SUMMARY);
   const [kanaMastery,setKanaMastery]=useState<KanaMasterySummary>(EMPTY_KANA);
   const [vocabMastery,setVocabMastery]=useState<VocabularyMasterySummary>(EMPTY_VOCAB);
+  const [conjugationMastery,setConjugationMastery]=useState<ConjugationMasterySummary>(EMPTY_CONJUGATION);
   const [grammarMastery,setGrammarMastery]=useState<GrammarMasterySummary>(EMPTY_GRAMMAR);
   const [sentenceMastery,setSentenceMastery]=useState<SentenceMasterySummary>(EMPTY_SENTENCE);
   const [courseProgress,setCourseProgress]=useState<CourseUnitProgress[]>([]);
+  const [milestone,setMilestone]=useState<A1MilestoneProgress>(EMPTY_MILESTONE);
   const [completedToday,setCompletedToday]=useState(0);
 
   useEffect(()=>{void refreshDashboard();},[]);
@@ -42,10 +52,10 @@ export function App(){
 
   async function refreshDashboard(){
     try{
-      const [nextSummary,nextKana,nextVocab,nextGrammar,nextSentence,nextCourse]=await Promise.all([
-        getStudySummary(),getKanaMasterySummary(),getVocabularyMasterySummary(),getGrammarMasterySummary(),getSentenceMasterySummary(),getCourseProgress()
+      const [nextSummary,nextKana,nextVocab,nextConjugation,nextGrammar,nextSentence,nextCourse,nextMilestone]=await Promise.all([
+        getStudySummary(),getKanaMasterySummary(),getVocabularyMasterySummary(),getConjugationMasterySummary(),getGrammarMasterySummary(),getSentenceMasterySummary(),getCourseProgress(),getA1MilestoneAssessmentProgress()
       ]);
-      setSummary(nextSummary);setKanaMastery(nextKana);setVocabMastery(nextVocab);setGrammarMastery(nextGrammar);setSentenceMastery(nextSentence);setCourseProgress(nextCourse);
+      setSummary(nextSummary);setKanaMastery(nextKana);setVocabMastery(nextVocab);setConjugationMastery(nextConjugation);setGrammarMastery(nextGrammar);setSentenceMastery(nextSentence);setCourseProgress(nextCourse);setMilestone(nextMilestone);
     }catch{/* local storage can be unavailable in hardened browsers */}
   }
 
@@ -63,6 +73,14 @@ export function App(){
     setSessionStatus("loading");
     try{openSession(await buildCourseUnitSession(unitId));setSessionStatus("idle");}catch{setSessionStatus("error");}
   }
+  async function startUnitAssessment(unitId:string){
+    setSessionStatus("loading");
+    try{openSession(await buildUnitAssessmentSession(unitId));setSessionStatus("idle");}catch{setSessionStatus("error");}
+  }
+  async function startMilestoneAssessment(){
+    setSessionStatus("loading");
+    try{openSession(await buildA1MilestoneSession());setSessionStatus("idle");}catch{setSessionStatus("error");}
+  }
 
   async function handleAnswer(answer:StudyAnswer){
     await recordStudyAnswer({prompt:answer.prompt,response:answer.response,result:answer.grade.result,responseTimeMs:answer.responseTimeMs});
@@ -73,12 +91,12 @@ export function App(){
   if(session)return <div className="study-shell"><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></div>;
 
   return <div className="app-shell">
-    <header className="topbar"><div><strong>Japanese</strong><span className="phase">P2 grammar + sentences</span></div><button className="quiet-button account-button" type="button">Account</button></header>
+    <header className="topbar"><div><strong>Japanese</strong><span className="phase">P2.5 A1 breadth + conjugation + assessment</span></div><button className="quiet-button account-button" type="button">Account</button></header>
     <main className="content">
       {surface==="Today"&&<Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
-      {surface==="Learn"&&<Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} grammar={grammarMastery} sentence={sentenceMastery} course={courseProgress} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)}/>}
+      {surface==="Learn"&&<Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} course={courseProgress} milestone={milestone} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()}/>} 
       {surface==="Immerse"&&<Placeholder title="Immerse" body="Sentence knowledge is now canonical and linked to vocabulary and grammar. P3 can build reading and connected listening on those same sentence/entity relationships instead of creating another progress system."/>}
-      {surface==="Progress"&&<Progress kana={kanaMastery} vocab={vocabMastery} grammar={grammarMastery} sentence={sentenceMastery} summary={summary} course={courseProgress} completedToday={completedToday}/>}
+      {surface==="Progress"&&<Progress kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} milestone={milestone} summary={summary} course={courseProgress} completedToday={completedToday}/>} 
       {surface==="Library"&&<Library query={query} setQuery={setQuery} results={results} status={libraryStatus}/>}
     </main>
     <nav className="nav" aria-label="Primary">{(["Today","Learn","Immerse","Library","Progress"] as Surface[]).map((item)=><button key={item} className={surface===item?"active":""} onClick={()=>setSurface(item)} type="button">{item}</button>)}</nav>
