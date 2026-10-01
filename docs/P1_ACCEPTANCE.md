@@ -10,25 +10,34 @@ Status: in progress
 - [x] answers emit immutable StudyEvents
 - [x] StudyEvents and memory scheduling share primary target / skill dimension / cue family
 - [x] FSRS traces persist locally per AccountId
-- [x] Today creates one bounded queue from due + unseen + application items
-- [x] Learn launches the same Study Player instead of a separate course engine
-- [x] all 46 basic hiragana are represented
-- [x] hiragana dakuten / handakuten / yōon / small-っ are represented
-- [x] all 46 basic katakana are represented
-- [x] katakana dakuten / handakuten / yōon / small-ッ / long-vowel mark are represented
-- [x] common Hepburn/Kunrei typed-answer equivalents are normalized
+- [x] full hiragana and katakana foundation including marks/combinations is represented
 - [x] recognition, typed reading recall and form selection use independent evidence/memory traces
-- [x] early kana-only vocabulary bridges prevent a long symbol-only onboarding sequence
 - [x] learner mastery is replayed from immutable StudyEvents rather than inferred from activity counts
-- [x] Progress exposes overall/script/skill mastery, confidence, accuracy and mature-skill counts
-- [x] Study Player flow is covered by browser E2E tests
+
+## P1.4 — Production Vocabulary & Kanji Integration
+
+- [x] bridge-only words are replaced by one canonical starter lexicon
+- [x] starter content has canonical lexeme, sense and kanji entities
+- [x] every public starter entity carries source provenance
+- [x] public content validation checks per-entity provenance against the export manifest
+- [x] canonical lexemes, senses, kanji and word↔kanji relations persist in the local SQLite content database
+- [x] Library search is generated from canonical content rather than a hard-coded search seed
+- [x] 34 starter words are ordered for early Foundation/A1 use
+- [x] kanji is introduced inside vocabulary lessons rather than as isolated reading lists
+- [x] whole-word readings such as 今日 / きょう are not falsely segmented into character readings
+- [x] vocabulary meaning recognition, reading recall and active use are separate learner dimensions
+- [x] reading recall unlocks after meaning evidence; active use unlocks after meaning + reading evidence
+- [x] StudyEvents retain content source and content-version provenance
+- [x] Today protects due reviews and interleaves bounded kana, vocabulary and application work
+- [x] Progress reports kana and vocabulary mastery separately
+- [x] first-exposure vocabulary lessons show reading, meaning, word class and kanji-in-word relationships
 
 ## Remaining P1 gates
 
-- [ ] first production vocabulary entity set with source provenance
-- [ ] kanji-in-vocabulary teaching surface
-- [ ] listening/audio evidence enters the same foundation learner state
+- [ ] listening/audio evidence enters the same learner state
+- [ ] pronunciation/perception tasks for mora length, っ / ッ and ん are wired to audio
 - [ ] P1 real-device mobile UX pass
+- [ ] P1 release-candidate burn-in after audio/mobile integration
 
 ## P1 milestone
 
