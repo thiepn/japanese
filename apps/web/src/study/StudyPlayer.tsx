@@ -24,6 +24,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   },[index]);
 
   if(!step)return null;
+  const activeStep=step;
 
   function advance(){
     audioProvider.current.stop();
@@ -32,32 +33,32 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   }
 
   async function playAudio(mode:"normal"|"slow"|"shadow"){
-    if(isStudyLesson(step)||!step.audio||audioState==="playing")return;
+    if(isStudyLesson(activeStep)||!activeStep.audio||audioState==="playing")return;
     setAudioState("playing");
     try{
-      if(mode==="slow")await audioProvider.current.play(step.audio,{rate:.82});
-      else if(mode==="shadow")await audioProvider.current.play(step.audio,{rate:.92,repeats:2,gapMs:1200});
-      else await audioProvider.current.play(step.audio);
+      if(mode==="slow")await audioProvider.current.play(activeStep.audio,{rate:.82});
+      else if(mode==="shadow")await audioProvider.current.play(activeStep.audio,{rate:.92,repeats:2,gapMs:1200});
+      else await audioProvider.current.play(activeStep.audio);
       setAudioPlayed(true);setAudioState("idle");
     }catch{setAudioState("error");}
   }
 
-  if(isStudyLesson(step)){
+  if(isStudyLesson(activeStep)){
     return <section className="study-player" aria-live="polite">
       <StudyHeader index={index} total={steps.length} completed={false} onExit={onExit}/>
       <div className="study-card study-lesson">
         <p className="eyebrow">LEARN</p>
-        <h1>{step.title}</h1>
-        <p className="lesson-body">{step.body}</p>
-        {step.facts?.length?<div className="lesson-facts">{step.facts.map((fact)=><div key={fact.label}><span>{fact.label}</span><strong lang={fact.language}>{fact.value}</strong></div>)}</div>:null}
-        {step.examples?.length?<div className="lesson-examples">{step.examples.map((example)=><div key={`${example.expression}:${example.note}`}><strong lang="ja">{example.expression}</strong><span>{example.note}</span></div>)}</div>:null}
-        {step.sourceLabel?<p className="source-note">Source: {step.sourceLabel}</p>:null}
+        <h1>{activeStep.title}</h1>
+        <p className="lesson-body">{activeStep.body}</p>
+        {activeStep.facts?.length?<div className="lesson-facts">{activeStep.facts.map((fact)=><div key={fact.label}><span>{fact.label}</span><strong lang={fact.language}>{fact.value}</strong></div>)}</div>:null}
+        {activeStep.examples?.length?<div className="lesson-examples">{activeStep.examples.map((example)=><div key={`${example.expression}:${example.note}`}><strong lang="ja">{example.expression}</strong><span>{example.note}</span></div>)}</div>:null}
+        {activeStep.sourceLabel?<p className="source-note">Source: {activeStep.sourceLabel}</p>:null}
         <button className="primary study-next" type="button" onClick={advance}>Continue</button>
       </div>
     </section>;
   }
 
-  const currentPrompt=step;
+  const currentPrompt=activeStep;
   const answerLocked=Boolean(currentPrompt.audio)&&!audioPlayed;
   async function submit(value=response){
     if(!value.trim()||feedback||saving||answerLocked)return;
