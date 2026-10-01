@@ -21,6 +21,26 @@ export interface ChoiceStudyPrompt extends StudyPromptBase { promptType: "choice
 export interface TypedStudyPrompt extends StudyPromptBase { promptType: "typed"; placeholder?: string; }
 export type StudyPrompt = ChoiceStudyPrompt | TypedStudyPrompt;
 
+export interface StudyLessonExample {
+  expression: string;
+  note: string;
+}
+
+export interface StudyLesson {
+  kind: "lesson";
+  id: string;
+  title: string;
+  body: string;
+  contextId: string;
+  examples?: StudyLessonExample[];
+}
+
+export type StudyStep = StudyPrompt | StudyLesson;
+
+export function isStudyLesson(step: StudyStep): step is StudyLesson {
+  return "kind" in step && step.kind === "lesson";
+}
+
 export interface GradeResult {
   result: Extract<StudyResult, "correct" | "incorrect">;
   normalizedResponse: string;
