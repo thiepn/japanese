@@ -73,3 +73,6 @@ button{touch-action:manipulation}
 @media(max-width:359px){.study-choices{grid-template-columns:1fr}.audio-tools{flex-direction:column}.audio-tools button{width:100%}}
 @media(max-height:700px) and (max-width:700px){.study-prompt{min-height:64px;margin:4px 0 12px}.audio-question{min-height:126px}.audio-play{width:78px;height:78px}.study-progress{margin-bottom:8px}}
 @media(prefers-reduced-motion:reduce){.study-progress span{transition:none}}
+
+.audio-error p{margin:0}
+.audio-skip{min-height:44px;margin-top:4px;padding:0 12px;text-decoration:underline;text-underline-offset:3px}
