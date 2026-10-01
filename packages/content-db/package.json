@@ -6,6 +6,7 @@
   "exports": { ".": "./src/index.ts" },
   "dependencies": {
     "@journeyapps/wa-sqlite": "2.0.6",
+    "@thiepn/content-schema": "workspace:*",
     "@thiepn/domain": "workspace:*",
     "@thiepn/search": "workspace:*"
   },
