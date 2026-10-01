@@ -208,12 +208,12 @@ function makeKanaFormSelectionPrompt(seed:KanaSeed,index:number,all:readonly Kan
   };
 }
 
-function seedFromTuple(item: readonly [string,string,string,readonly string[]?],script:KanaScript,category:KanaCategory):KanaSeed {
+function seedFromTuple(item: readonly [string,string,string] | readonly [string,string,string,readonly string[]],script:KanaScript,category:KanaCategory):KanaSeed {
   const [kana,reading,group,aliases]=item;
   return aliases ? {kana,reading,group,aliases:[...aliases],script,category} : {kana,reading,group,script,category};
 }
 
-function seedFromYoonTuple(item: readonly [string,string,readonly string[]?],script:KanaScript):KanaSeed {
+function seedFromYoonTuple(item: readonly [string,string] | readonly [string,string,readonly string[]],script:KanaScript):KanaSeed {
   const [kana,reading,aliases]=item;
   return aliases ? {kana,reading,group:"yoon",aliases:[...aliases],script,category:"yoon"} : {kana,reading,group:"yoon",script,category:"yoon"};
 }
