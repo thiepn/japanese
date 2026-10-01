@@ -1,6 +1,17 @@
 {
-  "name": "@thiepn/japanese-api", "private": true, "version": "0.0.0", "type": "module",
-  "exports": { ".": "./src/index.ts" },
-  "dependencies": { "@thiepn/sync-protocol": "workspace:*" },
-  "scripts": { "build": "tsc --noEmit", "typecheck": "tsc --noEmit" }
+  "name": "@thiepn/japanese-api",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@thiepn/sync-protocol": "workspace:*",
+    "@thiepn/domain": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  }
 }
