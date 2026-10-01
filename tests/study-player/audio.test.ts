@@ -4,13 +4,16 @@ import { pronunciationPerceptionPrompts } from "../../apps/web/src/study/audioPr
 import { vocabularyListeningPrompts } from "../../apps/web/src/study/vocabulary";
 
 describe("P1.5 production audio",()=>{
-  it("maps every starter lexeme to one pinned native recording",()=>{
-    expect(vocabularyListeningPrompts).toHaveLength(starterLexemes.length);
+  it("maps every audio-backed core lexeme to one pinned native recording without fabricating audio for new breadth items",()=>{
+    const audioLexemes=starterLexemes.filter((lexeme)=>lexeme.audioIds.length>0);
+    expect(audioLexemes).toHaveLength(36);
+    expect(vocabularyListeningPrompts).toHaveLength(audioLexemes.length);
     const ids=new Set(coreContent.audioAssets.map((asset)=>asset.id));
-    for(const lexeme of starterLexemes){
+    for(const lexeme of audioLexemes){
       expect(lexeme.audioIds).toHaveLength(1);
       expect(ids.has(lexeme.audioIds[0]!)).toBe(true);
     }
+    expect(starterLexemes.some((lexeme)=>lexeme.audioIds.length===0)).toBe(true);
   });
   it("pins recordings to the verified Tofugu/WaniKani source commit",()=>{
     for(const asset of coreContent.audioAssets){

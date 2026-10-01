@@ -1,0 +1,57 @@
+import { describe,expect,it } from "vitest";
+import type { StudyEvent } from "../../packages/domain/src/index";
+import {
+  a1MilestoneAssessmentPrompts,buildUnitAssessment,getA1MilestoneProgress,getUnitAssessmentProgress,
+  UNIT_ASSESSMENT_DELAY_MS,unitAssessmentPrompts,unitLearningPrerequisites
+} from "../../apps/web/src/study/assessment";
+
+function event(promptId:string,occurredAt:string,input:Partial<StudyEvent>={}):StudyEvent{
+  return {
+    id:"event-"+promptId+"-"+occurredAt,
+    userId:"u",deviceId:"d",occurredAt,activity:"review",result:"correct",
+    metadata:{promptId},...input
+  };
+}
+
+describe("P2.5 assessment model",()=>{
+  it("keeps unit checks locked until essential first-pass evidence is complete and delayed",()=>{
+    const unitId="a1-unit-09";
+    const prerequisites=unitLearningPrerequisites(unitId);
+    const completedAt="2026-10-01T10:00:00.000Z";
+    const events=prerequisites.map((prompt)=>event(prompt.id,completedAt));
+    const early=getUnitAssessmentProgress(unitId,events,new Date(new Date(completedAt).getTime()+UNIT_ASSESSMENT_DELAY_MS-1));
+    expect(early.status).toBe("waiting");
+    const ready=getUnitAssessmentProgress(unitId,events,new Date(new Date(completedAt).getTime()+UNIT_ASSESSMENT_DELAY_MS+1));
+    expect(ready.status).toBe("ready");
+  });
+
+  it("records a finite delayed Can-do check with assessment metadata",()=>{
+    const unitId="a1-unit-16";
+    const steps=buildUnitAssessment(unitId);
+    const prompts=unitAssessmentPrompts(unitId);
+    expect(steps[0]).toMatchObject({kind:"lesson"});
+    expect(prompts.length).toBeGreaterThanOrEqual(5);
+    expect(prompts.every((prompt)=>prompt.activity==="assessment"&&prompt.eventMetadata?.assessmentScope==="unit")).toBe(true);
+  });
+
+  it("builds a 15-item milestone with three tasks in each A1 activity area",()=>{
+    const prompts=a1MilestoneAssessmentPrompts();
+    expect(prompts).toHaveLength(15);
+    for(const activity of ["reading","listening","spoken_interaction","spoken_production","writing"] as const){
+      expect(prompts.filter((prompt)=>prompt.languageActivity===activity)).toHaveLength(3);
+    }
+  });
+
+  it("reports milestone activity scores independently",()=>{
+    const prompts=a1MilestoneAssessmentPrompts();
+    const events=prompts.slice(0,4).map((prompt,index)=>event(prompt.id,"2026-10-02T10:0"+index+":00.000Z",{
+      activity:"assessment",contextId:"assessment-a1-milestone",result:index===1?"incorrect":"correct"
+    }));
+    const progress=getA1MilestoneProgress(events);
+    expect(progress.answered).toBe(4);
+    expect(progress.complete).toBe(false);
+    expect(progress.scores.reading.answered).toBe(3);
+    expect(progress.scores.reading.correct).toBe(2);
+    expect(progress.scores.listening.answered).toBe(1);
+  });
+});

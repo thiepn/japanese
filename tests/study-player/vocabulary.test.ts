@@ -2,10 +2,10 @@ import { describe,expect,it } from "vitest";
 import { coreContent,starterLexemes } from "../../apps/web/src/coreContent";
 import { starterVocabulary,vocabularyApplicationPrompts,vocabularyMeaningPrompts,vocabularyLessons } from "../../apps/web/src/study/vocabulary";
 
-describe("production starter vocabulary",()=>{
+describe("production A1 vocabulary",()=>{
   it("ships a source-provenanced starter lexicon",()=>{
-    expect(starterLexemes).toHaveLength(36);
-    expect(coreContent.version).toBe("0.3.0");
+    expect(starterLexemes).toHaveLength(145);
+    expect(coreContent.version).toBe("0.4.0");
     expect(starterLexemes.every((lexeme)=>lexeme.sourceIds.includes("thiepn-original"))).toBe(true);
     expect(coreContent.senses.every((sense)=>sense.sourceIds.includes("thiepn-original"))).toBe(true);
     expect(coreContent.kanji.every((kanji)=>kanji.sourceIds.includes("thiepn-original"))).toBe(true);
@@ -20,10 +20,14 @@ describe("production starter vocabulary",()=>{
     expect(lesson?.examples?.some((example)=>example.expression.startsWith("食"))).toBe(true);
     expect(lesson?.audio?.id).toBe("audio-lex-taberu");
   });
-  it("creates meaning, reading, listening and active-use evidence as independent dimensions",()=>{
+  it("creates meaning, reading and active-use evidence for every word and listening evidence only when audio exists",()=>{
     for(const item of starterVocabulary){
       const prompts=[...vocabularyMeaningPrompts,...vocabularyApplicationPrompts].filter((prompt)=>prompt.primaryTarget.id===item.lexeme.id);
-      expect(new Set(prompts.map((prompt)=>prompt.skill))).toEqual(new Set(["meaning_recognition","reading","audio_recognition","active_use"]));
+      const skills=new Set(prompts.map((prompt)=>prompt.skill));
+      expect(skills).toContain("meaning_recognition");
+      expect(skills).toContain("reading");
+      expect(skills).toContain("active_use");
+      expect(skills.has("audio_recognition")).toBe(item.lexeme.audioIds.length>0);
     }
   });
   it("does not invent per-character readings for whole-word readings such as 今日",()=>{
@@ -35,6 +39,6 @@ describe("production starter vocabulary",()=>{
   it("carries source and content version onto study prompts",()=>{
     const prompt=vocabularyMeaningPrompts.find((item)=>item.primaryTarget.id==="lex-taberu");
     expect(prompt?.sourceId).toBe("thiepn-original");
-    expect(prompt?.contentVersion).toBe("0.3.0");
+    expect(prompt?.contentVersion).toBe("0.4.0");
   });
 });

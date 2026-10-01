@@ -32,27 +32,27 @@ P2 establishes the reusable architecture required for structured language learni
 
 Initial P2 content package: 36 starter lexemes, 15 grammar concepts, 22 linked sentences, 8 Can-do descriptors and 8 capability-centered A1 units.
 
-### Next: P2.5 — A1 Breadth, Conjugation & Assessment Completion
+## P2.5 — A1 Breadth, Conjugation & Assessment Completion
 
-Expand the existing course graph to broader functional A1 coverage without changing the architecture:
+**Implementation complete.**
 
-- demonstratives and location expressions;
-- verb/adjective conjugation model rather than storing each surface form as an unrelated fact;
-- time, numbers and counters;
+P2.5 expands the existing architecture into practical structured beginner breadth without creating parallel learning systems:
+
+- 145 canonical beginner lexemes, 37 grammar concepts, 89 linked A1 sentences and 20 capability-centered course units;
+- demonstratives, locations, question words, time, numbers, counters and core noun-linking patterns;
 - family, food, shopping, transport, routines and immediate-needs vocabulary;
 - sentence-final ね / よ and basic pragmatic choice;
-- more question-word patterns;
-- negative/past adjective and noun predicates;
-- high-frequency polite requests and classroom/clarification language;
-- larger sentence bank with controlled lexical coverage;
-- unit-level delayed assessment and Can-do evidence;
-- A1 milestone assessment that reports reading, listening, interaction, production and writing separately.
+- negative/past adjective and noun predicates plus common polite requests;
+- first-class inflection metadata and rule-generated core verb/adjective paradigms;
+- bounded conjugation practice recorded in the same learner evidence model;
+- delayed unit-level Can-do checks after first-pass learning;
+- a five-area A1 milestone reporting reading, listening, spoken interaction, spoken production and writing separately.
 
-P2.5 should finish the practical beginner breadth before deeper immersion work.
+The two spoken milestone areas are controlled say-then-type proxies in P2.5; pronunciation and open-ended speech evaluation remain later work. See `docs/P2_5_ACCEPTANCE.md`.
 
 ## P3 — Reader, Connected Listening & A1→A2 Immersion Bridge
 
-After A1 breadth is stable, P3 should use the same sentence/grammar/lexeme graph for graded reading, morphology-aware text support, connected listening and the first real immersion transition. It must not create separate known-word or reader-progress truth.
+**Next.** After A1 breadth is stable, P3 should use the same sentence/grammar/lexeme graph for graded reading, morphology-aware text support, connected listening and the first real immersion transition. It must not create separate known-word or reader-progress truth.
 
 ## Later
 

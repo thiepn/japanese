@@ -106,6 +106,11 @@ button{touch-action:manipulation}
 .unit-action{min-height:44px;padding:0 14px;border:1px solid #d5cfc4;border-radius:12px;background:#faf9f6;color:#2c3138;font-weight:750;cursor:pointer;white-space:nowrap}
 .unit-action:hover:not(:disabled){background:#f0ede7}
 .unit-action:disabled{opacity:.45}
+.unit-actions{display:flex;flex-direction:column;align-items:stretch;gap:7px}
+.assessment-action{min-height:36px;padding:0 10px;border:1px solid #e2ddd3;border-radius:10px;background:white;color:#655f56;font-size:11px;font-weight:750;white-space:nowrap}
+.assessment-action:disabled{opacity:.42;cursor:default}
+.milestone-card{border:1px solid #ddd8ce;border-radius:18px;background:#f3f1eb;padding:20px}
+.milestone-card>p{color:#655f56;font-size:13px}
 .course-note{margin:12px 0 0;color:#817a70;font-size:12px}
 .mastery-grid.four-skill{margin-top:28px}
 .result-card>div{display:flex;flex-direction:column;gap:2px}
@@ -114,7 +119,8 @@ button{touch-action:manipulation}
 .stat-row.six{grid-template-columns:repeat(6,minmax(0,1fr))}
 @media(max-width:760px){
   .unit-card{grid-template-columns:40px 1fr}
-  .unit-action{grid-column:2;width:max-content}
+  .unit-actions{grid-column:2;align-items:flex-start}
+  .unit-action{width:max-content}
   .stat-row.six{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media(max-width:560px){
@@ -125,7 +131,8 @@ button{touch-action:manipulation}
   .unit-title-row{gap:6px}
   .unit-title-row h3{font-size:16px}
   .unit-copy p{font-size:12px}
-  .unit-action{grid-column:1 / -1;width:100%}
+  .unit-actions{grid-column:1 / -1;width:100%;align-items:stretch}
+  .unit-action,.assessment-action{width:100%}
   .stat-row.six{grid-template-columns:repeat(2,minmax(0,1fr))}
   .stat-row.six .stat:first-child{grid-column:span 2}
   .result-card{align-items:flex-start;flex-direction:column;gap:4px}

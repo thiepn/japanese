@@ -2,13 +2,14 @@ import { describe,expect,it } from "vitest";
 import { a1Course, allGrammarCoursePrompts, courseUnitPrompts, courseUnitSession, grammarApplicationPrompts, grammarMeaningPrompts, isGrammarCoursePromptReady, sentenceComprehensionPrompts, sentenceProductionPrompts, traceIdFor } from "../../apps/web/src/study/grammarCourse";
 import { coreContent } from "../../apps/web/src/coreContent";
 
-describe("P2 grammar, sentences and A1 course",()=>{
+describe("P2.5 grammar, sentences and A1 course",()=>{
   it("ships canonical grammar, sentence and course entities",()=>{
-    expect(coreContent.grammar).toHaveLength(15);
-    expect(coreContent.sentences).toHaveLength(22);
-    expect(coreContent.canDos).toHaveLength(8);
-    expect(coreContent.courseUnits).toHaveLength(8);
-    expect(a1Course.map((item)=>item.unit.order)).toEqual([1,2,3,4,5,6,7,8]);
+    expect(coreContent.lexemes).toHaveLength(145);
+    expect(coreContent.grammar).toHaveLength(37);
+    expect(coreContent.sentences).toHaveLength(89);
+    expect(coreContent.canDos).toHaveLength(20);
+    expect(coreContent.courseUnits).toHaveLength(20);
+    expect(a1Course.map((item)=>item.unit.order)).toEqual(Array.from({length:20},(_,index)=>index+1));
   });
   it("keeps sentence knowledge linked to canonical grammar and lexemes",()=>{
     const grammarIds=new Set(coreContent.grammar.map((item)=>item.id));
@@ -36,6 +37,11 @@ describe("P2 grammar, sentences and A1 course",()=>{
     const production=sentenceProductionPrompts.find((p)=>p.primaryTarget.id==="sentence-a1-001")!;
     expect(isGrammarCoursePromptReady(production,new Set())).toBe(false);
     expect(isGrammarCoursePromptReady(production,new Set(["sentence:sentence-a1-001:comprehension:sentence-ja-to-meaning"]))).toBe(true);
+  });
+  it("keeps bounded conjugation work inside the capability sequence",()=>{
+    const prompts=courseUnitPrompts("a1-unit-14");
+    expect(prompts.filter((prompt)=>prompt.primaryTarget.kind==="lexeme"&&prompt.skill==="form_selection").length).toBeLessThanOrEqual(4);
+    expect(prompts.some((prompt)=>prompt.primaryTarget.kind==="lexeme"&&prompt.skill==="meaning_recognition")).toBe(true);
   });
   it("builds capability units from reusable lessons and prompts",()=>{
     const steps=courseUnitSession("a1-unit-03");

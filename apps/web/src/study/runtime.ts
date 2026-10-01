@@ -6,6 +6,11 @@ import { createStudyEvent, type StudyPrompt, type StudyStep } from "@thiepn/stud
 import { pronunciationLessons, pronunciationPerceptionPrompts } from "./audioPrompts";
 import { FOUNDATION_TOTAL_ITEMS, foundationApplicationPrompts, foundationLessons, foundationPrompts } from "./foundationPrompts";
 import { a1Course, allGrammarCoursePrompts, courseUnitPrompts, courseUnitSession, grammarCourseLessons, isGrammarCoursePromptReady, selectNewCoursePrompts } from "./grammarCourse";
+import { conjugationLessons, conjugationPrompts } from "./conjugation";
+import {
+  buildA1MilestoneAssessment,buildUnitAssessment,getA1MilestoneProgress,getUnitAssessmentProgress,
+  type MilestoneAssessmentProgress,type UnitAssessmentProgress
+} from "./assessment";
 import { VOCABULARY_TOTAL, vocabularyApplicationPrompts, vocabularyLessons, vocabularyMeaningPrompts } from "./vocabulary";
 
 export const DEVELOPMENT_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
@@ -32,6 +37,10 @@ export interface VocabularyMasterySummary {
   overall:number; meaning:number; reading:number; listening:number; activeUse:number; confidence:number; accuracy:number;
   matureSkills:number; expectedSkills:number; evidenceCount:number;
 }
+export interface ConjugationMasterySummary {
+  overall:number; politeNegative:number; politePast:number; politePastNegative:number; teForm:number; confidence:number; accuracy:number;
+  matureSkills:number; expectedSkills:number; evidenceCount:number;
+}
 export interface GrammarMasterySummary {
   overall:number; comprehension:number; formSelection:number; confidence:number; accuracy:number;
   matureSkills:number; expectedSkills:number; evidenceCount:number;
@@ -43,10 +52,12 @@ export interface SentenceMasterySummary {
 export type CourseUnitStatus="ready"|"challenging"|"learning"|"mastered";
 export interface CourseUnitProgress {
   id:string; order:number; title:string; canDo:string; status:CourseUnitStatus; mastery:number; evidenceCount:number;
+  assessment:UnitAssessmentProgress;
 }
+export type A1MilestoneProgress=MilestoneAssessmentProgress;
 
 function foundationApplicationPool():StudyPrompt[]{
-  return [...pronunciationPerceptionPrompts,...foundationApplicationPrompts,...vocabularyApplicationPrompts];
+  return [...pronunciationPerceptionPrompts,...foundationApplicationPrompts,...vocabularyApplicationPrompts,...conjugationPrompts];
 }
 function allPrompts():StudyPrompt[]{
   return [...foundationPrompts,...vocabularyMeaningPrompts,...foundationApplicationPool(),...allGrammarCoursePrompts];
@@ -77,6 +88,15 @@ export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
 
 export async function buildCourseUnitSession(unitId:string):Promise<StudyStep[]>{
   return courseUnitSession(unitId);
+}
+export async function buildUnitAssessmentSession(unitId:string):Promise<StudyStep[]>{
+  return buildUnitAssessment(unitId);
+}
+export async function buildA1MilestoneSession():Promise<StudyStep[]>{
+  return buildA1MilestoneAssessment();
+}
+export async function getA1MilestoneAssessmentProgress():Promise<MilestoneAssessmentProgress>{
+  return getA1MilestoneProgress(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));
 }
 
 export async function getStudySummary(now=new Date()):Promise<StudySummary>{
@@ -142,6 +162,28 @@ export async function getVocabularyMasterySummary():Promise<VocabularyMasterySum
   };
 }
 
+export async function getConjugationMasterySummary():Promise<ConjugationMasterySummary>{
+  const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
+  const state=replayStudyEvents(events);
+  const expectedByLexeme=uniqueSkillPrompts(conjugationPrompts);
+  const projections=projectionsFor(expectedByLexeme,state);
+  const expectedIds=new Set(conjugationPrompts.map((prompt)=>prompt.primaryTarget.id));
+  const graded=gradedEvents(events,"lexeme").filter((event)=>event.primaryTarget&&expectedIds.has(event.primaryTarget.id)&&String(event.promptFamily??"").startsWith("conjugation-"));
+  const familyAccuracy=(family:string)=>accuracyFor(graded.filter((event)=>event.promptFamily===family));
+  return {
+    overall:scoreFor(expectedByLexeme,state),
+    politeNegative:familyAccuracy("conjugation-polite_negative"),
+    politePast:familyAccuracy("conjugation-polite_past"),
+    politePastNegative:familyAccuracy("conjugation-polite_past_negative"),
+    teForm:familyAccuracy("conjugation-te_form"),
+    confidence:meanConfidence(projections,expectedByLexeme.length),
+    accuracy:accuracyFor(graded),
+    matureSkills:matureCount(projections),
+    expectedSkills:conjugationPrompts.length,
+    evidenceCount:graded.length
+  };
+}
+
 export async function getGrammarMasterySummary():Promise<GrammarMasterySummary>{
   const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
   const state=replayStudyEvents(events);
@@ -190,7 +232,8 @@ export async function getCourseProgress():Promise<CourseUnitProgress[]>{
     });
     const status:CourseUnitStatus=allEstablished?"mastered":hasEvidence?"learning":prereqsReady?"ready":"challenging";
     statuses.set(view.unit.id,status);
-    result.push({id:view.unit.id,order:view.unit.order,title:view.unit.title,canDo:view.canDo,status,mastery,evidenceCount:projections.reduce((sum,item)=>sum+item.evidenceCount,0)});
+    const assessment=getUnitAssessmentProgress(view.unit.id,events);
+    result.push({id:view.unit.id,order:view.unit.order,title:view.unit.title,canDo:view.canDo,status,mastery,evidenceCount:projections.reduce((sum,item)=>sum+item.evidenceCount,0),assessment});
   }
   return result;
 }
@@ -206,7 +249,7 @@ export async function recordStudyAnswer(input:{prompt:StudyPrompt;response:strin
 }
 
 function insertFirstExposureLessons(queue:StudyPrompt[],byId:Map<string,Awaited<ReturnType<typeof listMemoryTraces>>[number]>):StudyStep[]{
-  const lessons={...foundationLessons,...vocabularyLessons,...pronunciationLessons,...grammarCourseLessons};
+  const lessons={...foundationLessons,...vocabularyLessons,...pronunciationLessons,...grammarCourseLessons,...conjugationLessons};
   const promptByTrace=new Map(allPrompts().map((prompt)=>[traceIdFor(prompt),prompt]));
   const seenContexts=new Set<string>();
   for(const trace of byId.values()){const prompt=promptByTrace.get(trace.id);if(prompt?.contextId)seenContexts.add(prompt.contextId);}
@@ -223,7 +266,7 @@ export function isApplicationPromptReady(prompt:StudyPrompt,traceIds:ReadonlySet
   if(prompt.primaryTarget.kind==="grammar"||prompt.primaryTarget.kind==="sentence")return isGrammarCoursePromptReady(prompt,traceIds);
   if(prompt.primaryTarget.kind==="lexeme"){
     const meaning="lexeme:"+prompt.primaryTarget.id+":meaning_recognition:written-to-meaning";
-    if(prompt.skill==="reading"||prompt.skill==="audio_recognition")return traceIds.has(meaning);
+    if(prompt.skill==="reading"||prompt.skill==="audio_recognition"||prompt.skill==="form_selection")return traceIds.has(meaning);
     if(prompt.skill==="active_use"){const reading="lexeme:"+prompt.primaryTarget.id+":reading:word-to-reading";return traceIds.has(meaning)&&traceIds.has(reading);}
     return true;
   }

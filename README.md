@@ -10,25 +10,28 @@ Primary product surfaces: **Today · Learn · Immerse · Library · Progress**.
 
 ## Current phase
 
-**P2 — Grammar, Sentence Knowledge & Structured A1 Course has a production-ready core implementation.**
+**P2.5 — A1 Breadth, Conjugation & Assessment Completion is implemented.**
 
 The app now contains one connected Foundation → A1 learning path:
 
-- reusable Study Player for lessons, reviews, listening, grammar and sentence work;
+- reusable Study Player for lessons, reviews, listening, grammar, conjugation, sentences and assessments;
 - complete hiragana/katakana Foundation with multi-skill evidence;
-- canonical vocabulary, senses, kanji relationships and source-provenanced pronunciation audio;
-- canonical grammar objects with mental models, formation, uses, prerequisites and contrast relationships;
-- first-class sentence objects linked back to lexemes and grammar concepts;
-- independent grammar comprehension/form-selection and sentence comprehension/production mastery;
-- eight capability-centered A1 course units backed by Can-do descriptors rather than a disconnected grammar list;
-- soft prerequisite guidance: units can be recommended, learning, mastered or challenging without hard-locking free study;
-- one Today queue combining due reviews, Foundation practice and the current A1 course;
-- course progress derived from learner evidence rather than lesson-completion flags;
+- a 145-word beginner lexicon with canonical senses and source provenance;
+- 37 canonical grammar concepts with mental models, formations, uses, prerequisites and contrasts;
+- a generated conjugation model for core verb and adjective paradigms rather than disconnected surface-form facts;
+- 89 linked A1 sentences for controlled comprehension and production transfer;
+- 20 capability-centered A1 units backed by Can-do descriptors;
+- soft prerequisite guidance without hard-locking free study;
+- delayed unit checks that unlock after essential first-pass evidence and a 20-hour spacing interval;
+- a 15-task A1 milestone reporting reading, listening, spoken interaction, spoken production and writing separately;
+- one Today queue and one StudyEvent / learner-state model across Foundation, course, review and assessment;
 - local SQLite search across vocabulary, kanji, grammar and sentences;
 - persistent account-scoped learner data, FSRS traces, PWA/offline support and mobile certification.
 
-Current core content package: **v0.3.0** with 36 starter lexemes, 15 grammar concepts, 22 linked A1 sentences, 8 Can-do descriptors and 8 structured A1 units.
+Current core content package: **v0.4.0** with 145 lexemes, 37 grammar concepts, 89 linked A1 sentences, 20 Can-do descriptors and 20 structured A1 units.
 
-The next content-development step is **P2.5 — A1 Breadth, Conjugation & Assessment Completion**. It should expand this architecture into broader A1 communicative coverage rather than creating new parallel systems.
+The milestone's spoken interaction and spoken production tasks are currently controlled **say-then-type proxies**. P2.5 does not claim pronunciation or free-speech scoring.
 
-See `docs/P1_ACCEPTANCE.md`, `docs/P2_ACCEPTANCE.md`, `docs/P1_5_MOBILE_CERTIFICATION.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md` and `docs/THIRD_PARTY_NOTICES.md`.
+The next development phase is **P3 — Reader, Connected Listening & A1→A2 Immersion Bridge**.
+
+See `docs/P1_ACCEPTANCE.md`, `docs/P2_ACCEPTANCE.md`, `docs/P2_5_ACCEPTANCE.md`, `docs/P1_5_MOBILE_CERTIFICATION.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md` and `docs/THIRD_PARTY_NOTICES.md`.
