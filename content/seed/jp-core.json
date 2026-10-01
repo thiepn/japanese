@@ -2847,6 +2847,20 @@
       ],
       "credit": "Tofugu / WaniKani",
       "accent": "recording-specific"
+    },
+    {
+      "id": "audio-perception-katakana-sokuon-strap",
+      "kind": "perception",
+      "text": "携帯ストラップ",
+      "reading": "けいたいすとらっぷ",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%90%BA%E5%B8%AF%E3%82%B9%E3%83%88%E3%83%A9%E3%83%83%E3%83%97%E3%80%90%E3%81%91%E3%81%84%E3%81%9F%E3%81%84%E3%81%99%E3%81%A8%E3%82%89%E3%81%A3%E3%81%B7%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific"
     }
   ]
 }
