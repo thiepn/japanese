@@ -165,24 +165,21 @@ export async function getVocabularyMasterySummary():Promise<VocabularyMasterySum
 export async function getConjugationMasterySummary():Promise<ConjugationMasterySummary>{
   const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
   const state=replayStudyEvents(events);
-  const expected=uniqueSkillPrompts(conjugationPrompts);
-  const politeNegative=expected.filter((prompt)=>prompt.cueFamily==="conjugation-polite_negative");
-  const politePast=expected.filter((prompt)=>prompt.cueFamily==="conjugation-polite_past");
-  const politePastNegative=expected.filter((prompt)=>prompt.cueFamily==="conjugation-polite_past_negative");
-  const teForm=expected.filter((prompt)=>prompt.cueFamily==="conjugation-te_form");
-  const projections=projectionsFor(expected,state);
-  const expectedIds=new Set(expected.map((prompt)=>prompt.primaryTarget.id));
+  const expectedByLexeme=uniqueSkillPrompts(conjugationPrompts);
+  const projections=projectionsFor(expectedByLexeme,state);
+  const expectedIds=new Set(conjugationPrompts.map((prompt)=>prompt.primaryTarget.id));
   const graded=gradedEvents(events,"lexeme").filter((event)=>event.primaryTarget&&expectedIds.has(event.primaryTarget.id)&&String(event.promptFamily??"").startsWith("conjugation-"));
+  const familyAccuracy=(family:string)=>accuracyFor(graded.filter((event)=>event.promptFamily===family));
   return {
-    overall:scoreFor(expected,state),
-    politeNegative:scoreFor(politeNegative,state),
-    politePast:scoreFor(politePast,state),
-    politePastNegative:scoreFor(politePastNegative,state),
-    teForm:scoreFor(teForm,state),
-    confidence:meanConfidence(projections,expected.length),
+    overall:scoreFor(expectedByLexeme,state),
+    politeNegative:familyAccuracy("conjugation-polite_negative"),
+    politePast:familyAccuracy("conjugation-polite_past"),
+    politePastNegative:familyAccuracy("conjugation-polite_past_negative"),
+    teForm:familyAccuracy("conjugation-te_form"),
+    confidence:meanConfidence(projections,expectedByLexeme.length),
     accuracy:accuracyFor(graded),
     matureSkills:matureCount(projections),
-    expectedSkills:expected.length,
+    expectedSkills:conjugationPrompts.length,
     evidenceCount:graded.length
   };
 }
