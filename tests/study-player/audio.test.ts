@@ -19,9 +19,9 @@ describe("P1.5 production audio",()=>{
       expect(asset.url.endsWith(".ogg")).toBe(true);
     }
   });
-  it("ships explicit perception tasks for sokuon, long vowels and moraic n",()=>{
+  it("ships explicit perception tasks for hiragana っ, katakana ッ, long vowels and moraic n",()=>{
     expect(pronunciationPerceptionPrompts.map((prompt)=>prompt.cueFamily)).toEqual([
-      "sokuon-audio-discrimination","long-vowel-audio-discrimination","moraic-n-audio-discrimination"
+      "sokuon-audio-discrimination","katakana-sokuon-audio-discrimination","long-vowel-audio-discrimination","moraic-n-audio-discrimination"
     ]);
     expect(pronunciationPerceptionPrompts.every((prompt)=>Boolean(prompt.audio))).toBe(true);
   });
