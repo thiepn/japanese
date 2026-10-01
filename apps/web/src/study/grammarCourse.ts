@@ -162,18 +162,18 @@ export function courseUnitSession(unitId:string):StudyStep[]{
     sourceLabel:"THIEPN Japanese original A1 course"
   };
   const steps:StudyStep[]=[intro];
-  for(const lexemeId of view.unit.vocabularyIds.slice(0,5)){
-    const lesson=vocabularyLessons["vocab-"+lexemeId];
-    const prompt=vocabularyMeaningPrompts.find((item)=>item.primaryTarget.id===lexemeId);
-    if(lesson)steps.push(lesson);
-    if(prompt)steps.push(prompt);
-  }
   for(const grammar of view.grammar){
     steps.push(grammarLessons[grammarContext(grammar.id)]!);
     const meaning=grammarMeaningPrompts.find((prompt)=>prompt.primaryTarget.id===grammar.id);
     const form=grammarApplicationPrompts.find((prompt)=>prompt.primaryTarget.id===grammar.id);
     if(meaning)steps.push(meaning);
     if(form)steps.push(form);
+  }
+  for(const lexemeId of view.unit.vocabularyIds.slice(0,5)){
+    const lesson=vocabularyLessons["vocab-"+lexemeId];
+    const prompt=vocabularyMeaningPrompts.find((item)=>item.primaryTarget.id===lexemeId);
+    if(lesson)steps.push(lesson);
+    if(prompt)steps.push(prompt);
   }
   for(const lexemeId of (view.unit.conjugationLexemeIds ?? []).slice(0,3)){
     const lesson=conjugationLessons["conjugation-"+lexemeId];
