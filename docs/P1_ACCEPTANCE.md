@@ -9,13 +9,15 @@ Status: in progress
 - [x] answers emit immutable StudyEvents
 - [x] StudyEvents and memory scheduling share the same primary target / skill dimension / cue family
 - [x] FSRS traces persist locally per AccountId
-- [x] Today creates one queue from due + unseen foundation items
-- [x] Learn can launch the same Study Player instead of a separate course engine
-- [x] initial kana and vocabulary prompts run through the shared engine
+- [x] Today creates one bounded queue from due + unseen foundation items
+- [x] Learn launches the same Study Player instead of a separate course engine
+- [x] all 46 basic hiragana exist in the ordered foundation curriculum
+- [x] early kana-only vocabulary bridges prevent a long symbol-only onboarding sequence
+- [x] common alternate romaji answers are represented for し / ち / つ / ふ / を
 - [x] Study Player flow is included in browser E2E coverage
-- [ ] complete hiragana foundation curriculum
+- [ ] hiragana dakuten / handakuten / yōon / small-っ curriculum
 - [ ] complete katakana foundation curriculum
-- [ ] robust Japanese typed-answer equivalence rules
+- [ ] Japanese typed-answer equivalence rules beyond basic romaji aliases
 - [ ] first production vocabulary entity set with source provenance
 - [ ] kanji-in-vocabulary teaching surface
 - [ ] lesson/explanation cards integrated into sessions
