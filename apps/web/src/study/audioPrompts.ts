@@ -21,6 +21,24 @@ export const pronunciationPerceptionPrompts:StudyPrompt[]=[
     audio:audioAsset("audio-perception-sokuon-sakka")
   },
   {
+    id:"audio-perception-katakana-sokuon",
+    primaryTarget:{kind:"kana",id:"katakana-small-tsu"},
+    skill:"listening",
+    cueFamily:"katakana-sokuon-audio-discrimination",
+    promptType:"choice",
+    instruction:"Listen for the small ッ timing.",
+    prompt:"Which spelling matches the audio?",
+    choices:["携帯ストラップ","携帯ストラプ","携帯ストラープ","携帯ストラッップ"],
+    acceptedAnswers:["携帯ストラップ"],
+    displayAnswer:"携帯ストラップ",
+    explanation:"ストラップ contains the consonant closure written with small ッ before プ.",
+    contextId:"audio-katakana-sokuon",
+    answerNormalization:"japanese",
+    sourceId:"thiepn-original",
+    contentVersion:coreContent.version,
+    audio:audioAsset("audio-perception-katakana-sokuon-strap")
+  },
+  {
     id:"audio-perception-long-vowel",
     primaryTarget:{kind:"kana",id:"hiragana-long-vowel"},
     skill:"listening",
@@ -64,6 +82,13 @@ export const pronunciationLessons:Record<string,StudyLesson>={
     body:"Small っ is not an extra vowel. In speech it creates a brief closure before the following consonant. Train the timing by listening before looking at the answer.",
     contextId:"audio-sokuon",
     examples:[{expression:"さか ↔ さっか",note:"The second form contains a closure before か."}],
+    sourceLabel:"THIEPN pedagogy · Tofugu/WaniKani audio (CC BY-SA 4.0)"
+  },
+  "audio-katakana-sokuon":{
+    kind:"lesson",id:"lesson-audio-katakana-sokuon",title:"Hear small ッ in katakana",
+    body:"Katakana small ッ marks the same consonant timing contrast as hiragana small っ. Train the sound as timing, not as a silent written symbol.",
+    contextId:"audio-katakana-sokuon",
+    examples:[{expression:"ストラプ ↔ ストラップ",note:"The second form contains a closure before プ."}],
     sourceLabel:"THIEPN pedagogy · Tofugu/WaniKani audio (CC BY-SA 4.0)"
   },
   "audio-long-vowel":{
