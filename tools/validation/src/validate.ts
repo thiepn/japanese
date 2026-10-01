@@ -4,7 +4,7 @@ interface RegistrySource { id:string; title:string; publicExport:boolean; licens
 interface Registry { sources:RegistrySource[]; }
 interface Manifest { id:string; sources?:string[]; }
 interface Provenanced { id:string; sourceIds?:string[]; }
-interface Seed { sourceIds?:string[]; lexemes?:Provenanced[]; senses?:Provenanced[]; kanji?:Provenanced[]; audioAssets?:Provenanced[]; grammar?:Provenanced[]; sentences?:Provenanced[]; }
+interface Seed { sourceIds?:string[]; lexemes?:Provenanced[]; senses?:Provenanced[]; kanji?:Provenanced[]; audioAssets?:Provenanced[]; grammar?:Provenanced[]; sentences?:Provenanced[]; canDos?:Provenanced[]; courseUnits?:Provenanced[]; }
 
 const registry=JSON.parse(await readFile(new URL("../../../content/sources/registry.json",import.meta.url),"utf8")) as Registry;
 const manifest=JSON.parse(await readFile(new URL("../../../content/manifests/jp-core.json",import.meta.url),"utf8")) as Manifest;
@@ -25,7 +25,7 @@ for(const sourceId of manifest.sources ?? []) validateSource(sourceId,"manifest"
 for(const sourceId of seed.sourceIds ?? []) validateSource(sourceId,"seed package");
 
 for(const [collection,items] of Object.entries({
-  lexemes:seed.lexemes ?? [],senses:seed.senses ?? [],kanji:seed.kanji ?? [],audioAssets:seed.audioAssets ?? [],grammar:seed.grammar ?? [],sentences:seed.sentences ?? []
+  lexemes:seed.lexemes ?? [],senses:seed.senses ?? [],kanji:seed.kanji ?? [],audioAssets:seed.audioAssets ?? [],grammar:seed.grammar ?? [],sentences:seed.sentences ?? [],canDos:seed.canDos ?? [],courseUnits:seed.courseUnits ?? []
 })) {
   for(const item of items) {
     if(!item.sourceIds?.length) violations.push(`Missing provenance: ${collection}/${item.id}`);

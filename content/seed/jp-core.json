@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 3,
-  "version": "0.2.0",
+  "schemaVersion": 4,
+  "version": "0.3.0",
   "sourceIds": [
     "thiepn-original",
     "tofugu-wanikani-audio"
@@ -2319,9 +2319,365 @@
   ],
   "grammar": [
     {
-      "id": "grammar-teiru",
-      "label": "〜ている",
-      "summary": "ongoing action / resulting state",
+      "id": "grammar-desu",
+      "label": "です",
+      "summary": "polite noun/adjective predicate ending",
+      "mentalModel": "です politely presents a noun or adjective as the predicate of the sentence. It does not carry the same meaning as an English word-for-word 'is' in every construction.",
+      "formation": [
+        "Noun + です",
+        "い-adjective + です",
+        "な-adjective stem + です"
+      ],
+      "uses": [
+        "polite identification",
+        "polite description"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [
+        "grammar-masu"
+      ],
+      "level": "A1",
+      "register": "polite",
+      "priority": 1,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-wa-topic",
+      "label": "は (topic)",
+      "summary": "marks what the sentence is about",
+      "mentalModel": "は sets a topic: 'as for X...'. The topic is discourse information, not automatically the grammatical subject.",
+      "formation": [
+        "Topic + は + comment"
+      ],
+      "uses": [
+        "introduce a topic",
+        "contrast topics"
+      ],
+      "prerequisiteIds": [
+        "grammar-desu"
+      ],
+      "contrastIds": [
+        "grammar-ga-subject"
+      ],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 2,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-ka-question",
+      "label": "か (question)",
+      "summary": "marks a polite sentence as a question",
+      "mentalModel": "In polite beginner sentences, final か turns the proposition into a question without requiring English-style word-order inversion.",
+      "formation": [
+        "Polite sentence + か"
+      ],
+      "uses": [
+        "yes/no questions",
+        "content questions with question words"
+      ],
+      "prerequisiteIds": [
+        "grammar-desu"
+      ],
+      "contrastIds": [],
+      "level": "A1",
+      "register": "polite",
+      "priority": 3,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-masu",
+      "label": "〜ます",
+      "summary": "polite nonpast verb predicate",
+      "mentalModel": "〜ます is the polite nonpast verb form. Depending on context it can describe a present habit or a future action.",
+      "formation": [
+        "Verb polite stem + ます"
+      ],
+      "uses": [
+        "polite habitual actions",
+        "polite future actions"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [
+        "grammar-desu",
+        "grammar-masen",
+        "grammar-mashita"
+      ],
+      "level": "A1",
+      "register": "polite",
+      "priority": 4,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-o-object",
+      "label": "を (object)",
+      "summary": "marks the direct object of an action",
+      "mentalModel": "を marks the thing most directly affected by many transitive actions.",
+      "formation": [
+        "Object + を + verb"
+      ],
+      "uses": [
+        "direct objects of transitive verbs"
+      ],
+      "prerequisiteIds": [
+        "grammar-masu"
+      ],
+      "contrastIds": [],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 5,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-de-action-place",
+      "label": "で (action place)",
+      "summary": "marks the place where an action happens",
+      "mentalModel": "で frames a location as the setting of an activity: the action happens there.",
+      "formation": [
+        "Place + で + action"
+      ],
+      "uses": [
+        "location of an action"
+      ],
+      "prerequisiteIds": [
+        "grammar-masu"
+      ],
+      "contrastIds": [
+        "grammar-ni-destination"
+      ],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 6,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-ni-destination",
+      "label": "に (destination/location)",
+      "summary": "marks a destination or existence location",
+      "mentalModel": "に points to a target location. With movement it marks the destination; with ある/いる it marks where something exists.",
+      "formation": [
+        "Destination + に + movement verb",
+        "Place + に + X + が + あります/います"
+      ],
+      "uses": [
+        "movement destination",
+        "location of existence"
+      ],
+      "prerequisiteIds": [
+        "grammar-masu"
+      ],
+      "contrastIds": [
+        "grammar-de-action-place"
+      ],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 7,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-to-with",
+      "label": "と (with)",
+      "summary": "marks a companion in an action",
+      "mentalModel": "と links a participant who does an action together with someone.",
+      "formation": [
+        "Person + と + action"
+      ],
+      "uses": [
+        "doing something with someone"
+      ],
+      "prerequisiteIds": [
+        "grammar-masu"
+      ],
+      "contrastIds": [],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 8,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-mo-also",
+      "label": "も (also)",
+      "summary": "marks an additional parallel topic or participant",
+      "mentalModel": "も adds an item to an already relevant set: 'X too / X also'.",
+      "formation": [
+        "X + も + predicate"
+      ],
+      "uses": [
+        "add another item with the same relation"
+      ],
+      "prerequisiteIds": [
+        "grammar-wa-topic"
+      ],
+      "contrastIds": [
+        "grammar-wa-topic"
+      ],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 9,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-ga-subject",
+      "label": "が (subject/focus)",
+      "summary": "marks a focused or newly presented subject",
+      "mentalModel": "が marks a grammatical subject and often presents or focuses information that is not merely the established topic.",
+      "formation": [
+        "Subject + が + predicate"
+      ],
+      "uses": [
+        "focused subject",
+        "existence constructions",
+        "preference constructions"
+      ],
+      "prerequisiteIds": [
+        "grammar-wa-topic"
+      ],
+      "contrastIds": [
+        "grammar-wa-topic"
+      ],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 10,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-aru-iru",
+      "label": "ある / いる",
+      "summary": "expresses existence: ある for inanimate things, いる for animate beings",
+      "mentalModel": "Japanese commonly describes existence with a location marked by に and the existing entity marked by が. ある is used for inanimate things; いる for people and animals.",
+      "formation": [
+        "Place + に + Thing + が + あります",
+        "Place + に + Person/animal + が + います"
+      ],
+      "uses": [
+        "say that something exists",
+        "say where someone/something is"
+      ],
+      "prerequisiteIds": [
+        "grammar-ni-destination",
+        "grammar-ga-subject"
+      ],
+      "contrastIds": [],
+      "level": "A1",
+      "register": "polite",
+      "priority": 11,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-suki-ga",
+      "label": "〜が好きです",
+      "summary": "expresses liking with the liked thing marked by が",
+      "mentalModel": "With 好き, the thing liked is commonly marked by が. Treat the whole pattern as a Japanese preference construction rather than mapping English 'like' word for word.",
+      "formation": [
+        "Thing + が + 好きです"
+      ],
+      "uses": [
+        "state preferences",
+        "ask preferences with か"
+      ],
+      "prerequisiteIds": [
+        "grammar-ga-subject",
+        "grammar-desu"
+      ],
+      "contrastIds": [],
+      "level": "A1",
+      "register": "polite",
+      "priority": 12,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-i-adj-polite",
+      "label": "い-adjective + です",
+      "summary": "polite descriptive predicate with an い-adjective",
+      "mentalModel": "An い-adjective can itself be the predicate; adding です makes the sentence polite without turning the adjective into a noun.",
+      "formation": [
+        "い-adjective + です"
+      ],
+      "uses": [
+        "polite descriptions"
+      ],
+      "prerequisiteIds": [
+        "grammar-desu"
+      ],
+      "contrastIds": [],
+      "level": "A1",
+      "register": "polite",
+      "priority": 13,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-masen",
+      "label": "〜ません",
+      "summary": "polite nonpast negative verb form",
+      "mentalModel": "〜ません is the polite negative counterpart of 〜ます. It says an action does not happen or will not happen.",
+      "formation": [
+        "Verb polite stem + ません"
+      ],
+      "uses": [
+        "negative habits",
+        "negative future actions"
+      ],
+      "prerequisiteIds": [
+        "grammar-masu"
+      ],
+      "contrastIds": [
+        "grammar-masu",
+        "grammar-mashita"
+      ],
+      "level": "A1",
+      "register": "polite",
+      "priority": 14,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-mashita",
+      "label": "〜ました",
+      "summary": "polite past affirmative verb form",
+      "mentalModel": "〜ました places a polite verb action in the completed past.",
+      "formation": [
+        "Verb polite stem + ました"
+      ],
+      "uses": [
+        "report completed actions"
+      ],
+      "prerequisiteIds": [
+        "grammar-masu"
+      ],
+      "contrastIds": [
+        "grammar-masu",
+        "grammar-masen"
+      ],
+      "level": "A1",
+      "register": "polite",
+      "priority": 15,
       "sourceIds": [
         "thiepn-original"
       ]
@@ -2329,15 +2685,1627 @@
   ],
   "sentences": [
     {
-      "id": "sentence-1",
-      "text": "学校で日本語を勉強しています。",
+      "id": "sentence-a1-001",
+      "text": "学生です。",
+      "normalizedText": "学生です",
+      "reading": "がくせいです。",
+      "translation": "I am a student.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-desu"
+      ],
+      "tokens": [
+        {
+          "surface": "学生",
+          "reading": "がくせい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-gakusei"
+          }
+        },
+        {
+          "surface": "です",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-desu"
+          },
+          "grammarRole": "predicate ending"
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-gakusei"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tags": [
+        "identity"
+      ],
       "sourceIds": [
         "thiepn-original"
       ]
     },
     {
-      "id": "sentence-2",
-      "text": "毎朝パンを食べます。",
+      "id": "sentence-a1-002",
+      "text": "先生です。",
+      "normalizedText": "先生です",
+      "reading": "せんせいです。",
+      "translation": "I am a teacher.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-desu"
+      ],
+      "tokens": [
+        {
+          "surface": "先生",
+          "reading": "せんせい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-sensei"
+          }
+        },
+        {
+          "surface": "です",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-desu"
+          },
+          "grammarRole": "predicate ending"
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-sensei"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tags": [
+        "identity"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-003",
+      "text": "名前は何ですか。",
+      "normalizedText": "名前は何ですか",
+      "reading": "なまえはなんですか。",
+      "translation": "What is your name?",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-desu",
+        "grammar-ka-question"
+      ],
+      "tokens": [
+        {
+          "surface": "名前",
+          "reading": "なまえ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-namae"
+          }
+        },
+        {
+          "surface": "は",
+          "reading": "は",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-wa-topic"
+          },
+          "grammarRole": "topic"
+        },
+        {
+          "surface": "何",
+          "reading": "なん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-nani"
+          }
+        },
+        {
+          "surface": "です",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-desu"
+          }
+        },
+        {
+          "surface": "か",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-ka-question"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-namae"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-nani"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ka-question"
+        }
+      ],
+      "tags": [
+        "identity",
+        "question"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-004",
+      "text": "本を読みます。",
+      "normalizedText": "本を読みます",
+      "reading": "ほんをよみます。",
+      "translation": "I read a book.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-masu",
+        "grammar-o-object"
+      ],
+      "tokens": [
+        {
+          "surface": "本",
+          "reading": "ほん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-hon"
+          }
+        },
+        {
+          "surface": "を",
+          "reading": "を",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-o-object"
+          },
+          "grammarRole": "object"
+        },
+        {
+          "surface": "読みます",
+          "reading": "よみます",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-yomu"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-hon"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-o-object"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-yomu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tags": [
+        "action"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-005",
+      "text": "お茶を飲みます。",
+      "normalizedText": "お茶を飲みます",
+      "reading": "おちゃをのみます。",
+      "translation": "I drink tea.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-masu",
+        "grammar-o-object"
+      ],
+      "tokens": [
+        {
+          "surface": "お茶",
+          "reading": "おちゃ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ocha"
+          }
+        },
+        {
+          "surface": "を",
+          "reading": "を",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-o-object"
+          }
+        },
+        {
+          "surface": "飲みます",
+          "reading": "のみます",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-nomu"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-ocha"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-o-object"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-nomu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tags": [
+        "action",
+        "food"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-006",
+      "text": "ご飯を食べます。",
+      "normalizedText": "ご飯を食べます",
+      "reading": "ごはんをたべます。",
+      "translation": "I eat a meal.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-masu",
+        "grammar-o-object"
+      ],
+      "tokens": [
+        {
+          "surface": "ご飯",
+          "reading": "ごはん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-gohan"
+          }
+        },
+        {
+          "surface": "を",
+          "reading": "を",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-o-object"
+          }
+        },
+        {
+          "surface": "食べます",
+          "reading": "たべます",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-taberu"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-gohan"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-o-object"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-taberu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tags": [
+        "action",
+        "food"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-007",
+      "text": "学校で日本語を話します。",
+      "normalizedText": "学校で日本語を話します",
+      "reading": "がっこうでにほんごをはなします。",
+      "translation": "I speak Japanese at school.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-masu",
+        "grammar-o-object",
+        "grammar-de-action-place"
+      ],
+      "tokens": [
+        {
+          "surface": "学校",
+          "reading": "がっこう",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-gakkou"
+          }
+        },
+        {
+          "surface": "で",
+          "reading": "で",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-de-action-place"
+          }
+        },
+        {
+          "surface": "日本語",
+          "reading": "にほんご",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-nihongo"
+          }
+        },
+        {
+          "surface": "を",
+          "reading": "を",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-o-object"
+          }
+        },
+        {
+          "surface": "話します",
+          "reading": "はなします",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-hanasu"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-gakkou"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-de-action-place"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-nihongo"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-o-object"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-hanasu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tags": [
+        "action",
+        "place"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-008",
+      "text": "駅に行きます。",
+      "normalizedText": "駅に行きます",
+      "reading": "えきにいきます。",
+      "translation": "I go to the station.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-masu",
+        "grammar-ni-destination"
+      ],
+      "tokens": [
+        {
+          "surface": "駅",
+          "reading": "えき",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-eki"
+          }
+        },
+        {
+          "surface": "に",
+          "reading": "に",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-ni-destination"
+          }
+        },
+        {
+          "surface": "行きます",
+          "reading": "いきます",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-iku"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-eki"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ni-destination"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-iku"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tags": [
+        "movement"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-009",
+      "text": "明日、家に帰ります。",
+      "normalizedText": "明日家に帰ります",
+      "reading": "あした、いえにかえります。",
+      "translation": "I will go home tomorrow.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-masu",
+        "grammar-ni-destination"
+      ],
+      "tokens": [
+        {
+          "surface": "明日",
+          "reading": "あした",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ashita"
+          }
+        },
+        {
+          "surface": "家",
+          "reading": "いえ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ie"
+          }
+        },
+        {
+          "surface": "に",
+          "reading": "に",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-ni-destination"
+          }
+        },
+        {
+          "surface": "帰ります",
+          "reading": "かえります",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kaeru"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-ashita"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ie"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ni-destination"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kaeru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tags": [
+        "movement",
+        "time"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-010",
+      "text": "友達と話します。",
+      "normalizedText": "友達と話します",
+      "reading": "ともだちとはなします。",
+      "translation": "I talk with a friend.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-masu",
+        "grammar-to-with"
+      ],
+      "tokens": [
+        {
+          "surface": "友達",
+          "reading": "ともだち",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-tomodachi"
+          }
+        },
+        {
+          "surface": "と",
+          "reading": "と",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-to-with"
+          }
+        },
+        {
+          "surface": "話します",
+          "reading": "はなします",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-hanasu"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-tomodachi"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-to-with"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-hanasu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tags": [
+        "people"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-011",
+      "text": "友達も学生です。",
+      "normalizedText": "友達も学生です",
+      "reading": "ともだちもがくせいです。",
+      "translation": "My friend is also a student.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-mo-also",
+        "grammar-desu"
+      ],
+      "tokens": [
+        {
+          "surface": "友達",
+          "reading": "ともだち",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-tomodachi"
+          }
+        },
+        {
+          "surface": "も",
+          "reading": "も",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-mo-also"
+          }
+        },
+        {
+          "surface": "学生",
+          "reading": "がくせい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-gakusei"
+          }
+        },
+        {
+          "surface": "です",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-desu"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-tomodachi"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-mo-also"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-gakusei"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tags": [
+        "people",
+        "identity"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-012",
+      "text": "学校に先生がいます。",
+      "normalizedText": "学校に先生がいます",
+      "reading": "がっこうにせんせいがいます。",
+      "translation": "There is a teacher at school.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-ni-destination",
+        "grammar-ga-subject",
+        "grammar-aru-iru"
+      ],
+      "tokens": [
+        {
+          "surface": "学校",
+          "reading": "がっこう",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-gakkou"
+          }
+        },
+        {
+          "surface": "に",
+          "reading": "に",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-ni-destination"
+          }
+        },
+        {
+          "surface": "先生",
+          "reading": "せんせい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-sensei"
+          }
+        },
+        {
+          "surface": "が",
+          "reading": "が",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-ga-subject"
+          }
+        },
+        {
+          "surface": "います",
+          "reading": "います",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-iru"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-gakkou"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ni-destination"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-sensei"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ga-subject"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-iru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-aru-iru"
+        }
+      ],
+      "tags": [
+        "existence",
+        "place"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-013",
+      "text": "家に本があります。",
+      "normalizedText": "家に本があります",
+      "reading": "いえにほんがあります。",
+      "translation": "There is a book at home.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-ni-destination",
+        "grammar-ga-subject",
+        "grammar-aru-iru"
+      ],
+      "tokens": [
+        {
+          "surface": "家",
+          "reading": "いえ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ie"
+          }
+        },
+        {
+          "surface": "に",
+          "reading": "に",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-ni-destination"
+          }
+        },
+        {
+          "surface": "本",
+          "reading": "ほん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-hon"
+          }
+        },
+        {
+          "surface": "が",
+          "reading": "が",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-ga-subject"
+          }
+        },
+        {
+          "surface": "あります",
+          "reading": "あります",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-aru"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-ie"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ni-destination"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-hon"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ga-subject"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-aru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-aru-iru"
+        }
+      ],
+      "tags": [
+        "existence",
+        "place"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-014",
+      "text": "本が好きです。",
+      "normalizedText": "本が好きです",
+      "reading": "ほんがすきです。",
+      "translation": "I like books.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-ga-subject",
+        "grammar-suki-ga",
+        "grammar-desu"
+      ],
+      "tokens": [
+        {
+          "surface": "本",
+          "reading": "ほん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-hon"
+          }
+        },
+        {
+          "surface": "が",
+          "reading": "が",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-ga-subject"
+          }
+        },
+        {
+          "surface": "好き",
+          "reading": "すき",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-suki"
+          }
+        },
+        {
+          "surface": "です",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-desu"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-hon"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ga-subject"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-suki"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-suki-ga"
+        }
+      ],
+      "tags": [
+        "preference"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-015",
+      "text": "日本語が好きですか。",
+      "normalizedText": "日本語が好きですか",
+      "reading": "にほんごがすきですか。",
+      "translation": "Do you like Japanese?",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-ga-subject",
+        "grammar-suki-ga",
+        "grammar-desu",
+        "grammar-ka-question"
+      ],
+      "tokens": [
+        {
+          "surface": "日本語",
+          "reading": "にほんご",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-nihongo"
+          }
+        },
+        {
+          "surface": "が",
+          "reading": "が",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-ga-subject"
+          }
+        },
+        {
+          "surface": "好き",
+          "reading": "すき",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-suki"
+          }
+        },
+        {
+          "surface": "です",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-desu"
+          }
+        },
+        {
+          "surface": "か",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-ka-question"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-nihongo"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ga-subject"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-suki"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ka-question"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-suki-ga"
+        }
+      ],
+      "tags": [
+        "preference",
+        "question"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-016",
+      "text": "家は大きいです。",
+      "normalizedText": "家は大きいです",
+      "reading": "いえはおおきいです。",
+      "translation": "The house is big.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-i-adj-polite"
+      ],
+      "tokens": [
+        {
+          "surface": "家",
+          "reading": "いえ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ie"
+          }
+        },
+        {
+          "surface": "は",
+          "reading": "は",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-wa-topic"
+          }
+        },
+        {
+          "surface": "大きい",
+          "reading": "おおきい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ookii"
+          }
+        },
+        {
+          "surface": "です",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-desu"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-ie"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ookii"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-i-adj-polite"
+        }
+      ],
+      "tags": [
+        "description"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-017",
+      "text": "本は小さいです。",
+      "normalizedText": "本は小さいです",
+      "reading": "ほんはちいさいです。",
+      "translation": "The book is small.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-i-adj-polite"
+      ],
+      "tokens": [
+        {
+          "surface": "本",
+          "reading": "ほん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-hon"
+          }
+        },
+        {
+          "surface": "は",
+          "reading": "は",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-wa-topic"
+          }
+        },
+        {
+          "surface": "小さい",
+          "reading": "ちいさい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-chiisai"
+          }
+        },
+        {
+          "surface": "です",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-desu"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-hon"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-chiisai"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-i-adj-polite"
+        }
+      ],
+      "tags": [
+        "description"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-018",
+      "text": "今日は学校に行きます。",
+      "normalizedText": "今日は学校に行きます",
+      "reading": "きょうはがっこうにいきます。",
+      "translation": "I am going to school today.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-masu",
+        "grammar-ni-destination"
+      ],
+      "tokens": [
+        {
+          "surface": "今日",
+          "reading": "きょう",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kyou"
+          }
+        },
+        {
+          "surface": "は",
+          "reading": "は",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-wa-topic"
+          }
+        },
+        {
+          "surface": "学校",
+          "reading": "がっこう",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-gakkou"
+          }
+        },
+        {
+          "surface": "に",
+          "reading": "に",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-ni-destination"
+          }
+        },
+        {
+          "surface": "行きます",
+          "reading": "いきます",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-iku"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-kyou"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-gakkou"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ni-destination"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-iku"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tags": [
+        "time",
+        "movement"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-019",
+      "text": "今日は学校に行きません。",
+      "normalizedText": "今日は学校に行きません",
+      "reading": "きょうはがっこうにいきません。",
+      "translation": "I am not going to school today.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-ni-destination",
+        "grammar-masen"
+      ],
+      "tokens": [
+        {
+          "surface": "今日",
+          "reading": "きょう",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kyou"
+          }
+        },
+        {
+          "surface": "は",
+          "reading": "は",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-wa-topic"
+          }
+        },
+        {
+          "surface": "学校",
+          "reading": "がっこう",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-gakkou"
+          }
+        },
+        {
+          "surface": "に",
+          "reading": "に",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-ni-destination"
+          }
+        },
+        {
+          "surface": "行きません",
+          "reading": "いきません",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-iku"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-kyou"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-gakkou"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ni-destination"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-iku"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masen"
+        }
+      ],
+      "tags": [
+        "negative",
+        "movement"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-020",
+      "text": "お茶を飲みました。",
+      "normalizedText": "お茶を飲みました",
+      "reading": "おちゃをのみました。",
+      "translation": "I drank tea.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-o-object",
+        "grammar-mashita"
+      ],
+      "tokens": [
+        {
+          "surface": "お茶",
+          "reading": "おちゃ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ocha"
+          }
+        },
+        {
+          "surface": "を",
+          "reading": "を",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-o-object"
+          }
+        },
+        {
+          "surface": "飲みました",
+          "reading": "のみました",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-nomu"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-ocha"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-o-object"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-nomu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-mashita"
+        }
+      ],
+      "tags": [
+        "past",
+        "food"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-021",
+      "text": "何を食べますか。",
+      "normalizedText": "何を食べますか",
+      "reading": "なにをたべますか。",
+      "translation": "What will you eat?",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-o-object",
+        "grammar-masu",
+        "grammar-ka-question"
+      ],
+      "tokens": [
+        {
+          "surface": "何",
+          "reading": "なに",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-nani"
+          }
+        },
+        {
+          "surface": "を",
+          "reading": "を",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-o-object"
+          }
+        },
+        {
+          "surface": "食べます",
+          "reading": "たべます",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-taberu"
+          }
+        },
+        {
+          "surface": "か",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-ka-question"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-nani"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-o-object"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-taberu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ka-question"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tags": [
+        "question",
+        "food"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-022",
+      "text": "駅で友達と話します。",
+      "normalizedText": "駅で友達と話します",
+      "reading": "えきでともだちとはなします。",
+      "translation": "I talk with a friend at the station.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-de-action-place",
+        "grammar-to-with",
+        "grammar-masu"
+      ],
+      "tokens": [
+        {
+          "surface": "駅",
+          "reading": "えき",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-eki"
+          }
+        },
+        {
+          "surface": "で",
+          "reading": "で",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-de-action-place"
+          }
+        },
+        {
+          "surface": "友達",
+          "reading": "ともだち",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-tomodachi"
+          }
+        },
+        {
+          "surface": "と",
+          "reading": "と",
+          "entityRef": {
+            "kind": "grammar",
+            "id": "grammar-to-with"
+          }
+        },
+        {
+          "surface": "話します",
+          "reading": "はなします",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-hanasu"
+          }
+        }
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-eki"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-de-action-place"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-tomodachi"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-to-with"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-hanasu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tags": [
+        "place",
+        "people"
+      ],
       "sourceIds": [
         "thiepn-original"
       ]
@@ -2861,6 +4829,409 @@
       ],
       "credit": "Tofugu / WaniKani",
       "accent": "recording-specific"
+    }
+  ],
+  "canDos": [
+    {
+      "id": "can-do-a1-identity",
+      "statement": "Can identify oneself or another person with a simple polite noun predicate.",
+      "level": "A1",
+      "languageActivity": "spoken_production",
+      "grammarIds": [
+        "grammar-desu",
+        "grammar-wa-topic"
+      ],
+      "sentenceIds": [
+        "sentence-a1-001",
+        "sentence-a1-002"
+      ],
+      "prerequisiteIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-a1-question-basic",
+      "statement": "Can ask and answer a simple personal-information question.",
+      "level": "A1",
+      "languageActivity": "spoken_interaction",
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-ka-question"
+      ],
+      "sentenceIds": [
+        "sentence-a1-003"
+      ],
+      "prerequisiteIds": [
+        "can-do-a1-identity"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-a1-actions",
+      "statement": "Can state simple everyday actions and their direct objects.",
+      "level": "A1",
+      "languageActivity": "spoken_production",
+      "grammarIds": [
+        "grammar-masu",
+        "grammar-o-object"
+      ],
+      "sentenceIds": [
+        "sentence-a1-004",
+        "sentence-a1-005",
+        "sentence-a1-006",
+        "sentence-a1-021"
+      ],
+      "prerequisiteIds": [
+        "can-do-a1-identity"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-a1-place-movement",
+      "statement": "Can say where an action happens and where someone is going.",
+      "level": "A1",
+      "languageActivity": "spoken_production",
+      "grammarIds": [
+        "grammar-de-action-place",
+        "grammar-ni-destination"
+      ],
+      "sentenceIds": [
+        "sentence-a1-007",
+        "sentence-a1-008",
+        "sentence-a1-009",
+        "sentence-a1-018"
+      ],
+      "prerequisiteIds": [
+        "can-do-a1-actions"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-a1-company-addition",
+      "statement": "Can say who an action is done with and add a parallel person or item.",
+      "level": "A1",
+      "languageActivity": "spoken_interaction",
+      "grammarIds": [
+        "grammar-to-with",
+        "grammar-mo-also"
+      ],
+      "sentenceIds": [
+        "sentence-a1-010",
+        "sentence-a1-011",
+        "sentence-a1-022"
+      ],
+      "prerequisiteIds": [
+        "can-do-a1-actions"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-a1-existence",
+      "statement": "Can say that a person or thing exists at a location.",
+      "level": "A1",
+      "languageActivity": "spoken_production",
+      "grammarIds": [
+        "grammar-ga-subject",
+        "grammar-aru-iru",
+        "grammar-ni-destination"
+      ],
+      "sentenceIds": [
+        "sentence-a1-012",
+        "sentence-a1-013"
+      ],
+      "prerequisiteIds": [
+        "can-do-a1-place-movement"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-a1-preference-description",
+      "statement": "Can express a simple preference and describe something with a basic adjective.",
+      "level": "A1",
+      "languageActivity": "spoken_interaction",
+      "grammarIds": [
+        "grammar-suki-ga",
+        "grammar-i-adj-polite",
+        "grammar-ka-question"
+      ],
+      "sentenceIds": [
+        "sentence-a1-014",
+        "sentence-a1-015",
+        "sentence-a1-016",
+        "sentence-a1-017"
+      ],
+      "prerequisiteIds": [
+        "can-do-a1-question-basic"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-a1-time-polarity",
+      "statement": "Can contrast affirmative, negative and past polite actions in a simple routine.",
+      "level": "A1",
+      "languageActivity": "spoken_production",
+      "grammarIds": [
+        "grammar-masu",
+        "grammar-masen",
+        "grammar-mashita"
+      ],
+      "sentenceIds": [
+        "sentence-a1-018",
+        "sentence-a1-019",
+        "sentence-a1-020"
+      ],
+      "prerequisiteIds": [
+        "can-do-a1-actions",
+        "can-do-a1-place-movement"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    }
+  ],
+  "courseUnits": [
+    {
+      "id": "a1-unit-01",
+      "title": "Identify people",
+      "order": 1,
+      "level": "A1",
+      "canDoId": "can-do-a1-identity",
+      "prerequisiteUnitIds": [],
+      "grammarIds": [
+        "grammar-desu",
+        "grammar-wa-topic"
+      ],
+      "sentenceIds": [
+        "sentence-a1-001",
+        "sentence-a1-002"
+      ],
+      "vocabularyIds": [
+        "lex-gakusei",
+        "lex-sensei"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "a1-unit-02",
+      "title": "Ask basic questions",
+      "order": 2,
+      "level": "A1",
+      "canDoId": "can-do-a1-question-basic",
+      "prerequisiteUnitIds": [
+        "a1-unit-01"
+      ],
+      "grammarIds": [
+        "grammar-ka-question"
+      ],
+      "sentenceIds": [
+        "sentence-a1-003"
+      ],
+      "vocabularyIds": [
+        "lex-namae",
+        "lex-nani"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "a1-unit-03",
+      "title": "Talk about actions",
+      "order": 3,
+      "level": "A1",
+      "canDoId": "can-do-a1-actions",
+      "prerequisiteUnitIds": [
+        "a1-unit-01"
+      ],
+      "grammarIds": [
+        "grammar-masu",
+        "grammar-o-object"
+      ],
+      "sentenceIds": [
+        "sentence-a1-004",
+        "sentence-a1-005",
+        "sentence-a1-006",
+        "sentence-a1-021"
+      ],
+      "vocabularyIds": [
+        "lex-hon",
+        "lex-yomu",
+        "lex-ocha",
+        "lex-nomu",
+        "lex-gohan",
+        "lex-taberu"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "a1-unit-04",
+      "title": "Places and destinations",
+      "order": 4,
+      "level": "A1",
+      "canDoId": "can-do-a1-place-movement",
+      "prerequisiteUnitIds": [
+        "a1-unit-03"
+      ],
+      "grammarIds": [
+        "grammar-de-action-place",
+        "grammar-ni-destination"
+      ],
+      "sentenceIds": [
+        "sentence-a1-007",
+        "sentence-a1-008",
+        "sentence-a1-009",
+        "sentence-a1-018"
+      ],
+      "vocabularyIds": [
+        "lex-gakkou",
+        "lex-nihongo",
+        "lex-hanasu",
+        "lex-eki",
+        "lex-iku",
+        "lex-ie",
+        "lex-kaeru",
+        "lex-ashita",
+        "lex-kyou"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "a1-unit-05",
+      "title": "People together",
+      "order": 5,
+      "level": "A1",
+      "canDoId": "can-do-a1-company-addition",
+      "prerequisiteUnitIds": [
+        "a1-unit-03"
+      ],
+      "grammarIds": [
+        "grammar-to-with",
+        "grammar-mo-also"
+      ],
+      "sentenceIds": [
+        "sentence-a1-010",
+        "sentence-a1-011",
+        "sentence-a1-022"
+      ],
+      "vocabularyIds": [
+        "lex-tomodachi",
+        "lex-hanasu",
+        "lex-gakusei",
+        "lex-eki"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "a1-unit-06",
+      "title": "Where things and people are",
+      "order": 6,
+      "level": "A1",
+      "canDoId": "can-do-a1-existence",
+      "prerequisiteUnitIds": [
+        "a1-unit-04"
+      ],
+      "grammarIds": [
+        "grammar-ga-subject",
+        "grammar-aru-iru"
+      ],
+      "sentenceIds": [
+        "sentence-a1-012",
+        "sentence-a1-013"
+      ],
+      "vocabularyIds": [
+        "lex-gakkou",
+        "lex-sensei",
+        "lex-ie",
+        "lex-hon",
+        "lex-aru",
+        "lex-iru"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "a1-unit-07",
+      "title": "Preferences and descriptions",
+      "order": 7,
+      "level": "A1",
+      "canDoId": "can-do-a1-preference-description",
+      "prerequisiteUnitIds": [
+        "a1-unit-02",
+        "a1-unit-06"
+      ],
+      "grammarIds": [
+        "grammar-suki-ga",
+        "grammar-i-adj-polite"
+      ],
+      "sentenceIds": [
+        "sentence-a1-014",
+        "sentence-a1-015",
+        "sentence-a1-016",
+        "sentence-a1-017"
+      ],
+      "vocabularyIds": [
+        "lex-hon",
+        "lex-suki",
+        "lex-nihongo",
+        "lex-ie",
+        "lex-ookii",
+        "lex-chiisai"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "a1-unit-08",
+      "title": "Now, not, and before",
+      "order": 8,
+      "level": "A1",
+      "canDoId": "can-do-a1-time-polarity",
+      "prerequisiteUnitIds": [
+        "a1-unit-03",
+        "a1-unit-04"
+      ],
+      "grammarIds": [
+        "grammar-masen",
+        "grammar-mashita"
+      ],
+      "sentenceIds": [
+        "sentence-a1-018",
+        "sentence-a1-019",
+        "sentence-a1-020"
+      ],
+      "vocabularyIds": [
+        "lex-kyou",
+        "lex-gakkou",
+        "lex-iku",
+        "lex-ocha",
+        "lex-nomu"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
     }
   ]
 }

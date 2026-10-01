@@ -1,7 +1,7 @@
 import SQLiteESMFactory from "@journeyapps/wa-sqlite/dist/wa-sqlite-async.mjs";
 import * as SQLite from "@journeyapps/wa-sqlite";
 import { IDBBatchAtomicVFS } from "@journeyapps/wa-sqlite/src/examples/IDBBatchAtomicVFS.js";
-import type { AudioAssetRecord, ContentSeedPackage, Kanji, Lexeme, Sense } from "@thiepn/content-schema";
+import type { AudioAssetRecord, CanDoDescriptor, ContentSeedPackage, CourseUnit, GrammarConcept, Kanji, Lexeme, Sense, Sentence } from "@thiepn/content-schema";
 import type { EntityKind, EntityRef } from "@thiepn/domain";
 import { normalizeJapaneseSearch, type SearchDocument, type SearchResult } from "@thiepn/search";
 
@@ -9,11 +9,10 @@ type SqliteApi = ReturnType<typeof SQLite.Factory>;
 type SqlBinding = string | number | bigint | Uint8Array | null;
 
 export interface LexemeDetail {
-  lexeme: Lexeme;
-  senses: Sense[];
-  kanji: Kanji[];
-  audioAssets: AudioAssetRecord[];
+  lexeme:Lexeme; senses:Sense[]; kanji:Kanji[]; audioAssets:AudioAssetRecord[];
 }
+export interface GrammarDetail { grammar:GrammarConcept; sentences:Sentence[]; }
+export interface CourseUnitDetail { unit:CourseUnit; canDo:CanDoDescriptor|null; grammar:GrammarConcept[]; sentences:Sentence[]; }
 
 export class ContentDatabase {
   private constructor(
@@ -70,6 +69,38 @@ export class ContentDatabase {
           [audio.id,audio.kind,audio.text,audio.reading ?? null,audio.language,audio.format,audio.url,audio.credit,audio.accent ?? null,audio.speaker ?? null,JSON.stringify(audio.sourceIds)]
         );
       }
+      for (const grammar of content.grammar) {
+        await this.run(
+          `INSERT INTO grammar(id,label,summary,mental_model,formation_json,uses_json,prerequisite_ids_json,contrast_ids_json,level,register_name,priority,tags_json,source_ids_json)
+           VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)
+           ON CONFLICT(id) DO UPDATE SET label=excluded.label,summary=excluded.summary,mental_model=excluded.mental_model,formation_json=excluded.formation_json,uses_json=excluded.uses_json,prerequisite_ids_json=excluded.prerequisite_ids_json,contrast_ids_json=excluded.contrast_ids_json,level=excluded.level,register_name=excluded.register_name,priority=excluded.priority,tags_json=excluded.tags_json,source_ids_json=excluded.source_ids_json`,
+          [grammar.id,grammar.label,grammar.summary,grammar.mentalModel,JSON.stringify(grammar.formation),JSON.stringify(grammar.uses),JSON.stringify(grammar.prerequisiteIds),JSON.stringify(grammar.contrastIds),grammar.level,grammar.register,grammar.priority ?? null,JSON.stringify(grammar.tags ?? []),JSON.stringify(grammar.sourceIds)]
+        );
+      }
+      for (const sentence of content.sentences) {
+        await this.run(
+          `INSERT INTO sentences(id,text,normalized_text,reading,translation,level,register_name,grammar_ids_json,entity_refs_json,tokens_json,tags_json,source_ids_json)
+           VALUES(?,?,?,?,?,?,?,?,?,?,?,?)
+           ON CONFLICT(id) DO UPDATE SET text=excluded.text,normalized_text=excluded.normalized_text,reading=excluded.reading,translation=excluded.translation,level=excluded.level,register_name=excluded.register_name,grammar_ids_json=excluded.grammar_ids_json,entity_refs_json=excluded.entity_refs_json,tokens_json=excluded.tokens_json,tags_json=excluded.tags_json,source_ids_json=excluded.source_ids_json`,
+          [sentence.id,sentence.text,sentence.normalizedText,sentence.reading ?? null,sentence.translation,sentence.level,sentence.register,JSON.stringify(sentence.grammarIds),JSON.stringify(sentence.entityRefs),JSON.stringify(sentence.tokens),JSON.stringify(sentence.tags ?? []),JSON.stringify(sentence.sourceIds)]
+        );
+      }
+      for (const canDo of content.canDos) {
+        await this.run(
+          `INSERT INTO can_dos(id,statement,level,language_activity,grammar_ids_json,sentence_ids_json,prerequisite_ids_json,source_ids_json)
+           VALUES(?,?,?,?,?,?,?,?)
+           ON CONFLICT(id) DO UPDATE SET statement=excluded.statement,level=excluded.level,language_activity=excluded.language_activity,grammar_ids_json=excluded.grammar_ids_json,sentence_ids_json=excluded.sentence_ids_json,prerequisite_ids_json=excluded.prerequisite_ids_json,source_ids_json=excluded.source_ids_json`,
+          [canDo.id,canDo.statement,canDo.level,canDo.languageActivity,JSON.stringify(canDo.grammarIds),JSON.stringify(canDo.sentenceIds),JSON.stringify(canDo.prerequisiteIds),JSON.stringify(canDo.sourceIds)]
+        );
+      }
+      for (const unit of content.courseUnits) {
+        await this.run(
+          `INSERT INTO course_units(id,title,order_index,level,can_do_id,prerequisite_unit_ids_json,grammar_ids_json,sentence_ids_json,vocabulary_ids_json,source_ids_json)
+           VALUES(?,?,?,?,?,?,?,?,?,?)
+           ON CONFLICT(id) DO UPDATE SET title=excluded.title,order_index=excluded.order_index,level=excluded.level,can_do_id=excluded.can_do_id,prerequisite_unit_ids_json=excluded.prerequisite_unit_ids_json,grammar_ids_json=excluded.grammar_ids_json,sentence_ids_json=excluded.sentence_ids_json,vocabulary_ids_json=excluded.vocabulary_ids_json,source_ids_json=excluded.source_ids_json`,
+          [unit.id,unit.title,unit.order,unit.level,unit.canDoId,JSON.stringify(unit.prerequisiteUnitIds),JSON.stringify(unit.grammarIds),JSON.stringify(unit.sentenceIds),JSON.stringify(unit.vocabularyIds),JSON.stringify(unit.sourceIds)]
+        );
+      }
       for (const sense of content.senses) {
         await this.run(
           `INSERT INTO senses(id,lexeme_id,glosses_json,pos_json,source_ids_json)
@@ -97,9 +128,13 @@ export class ContentDatabase {
         };
       }),
       ...content.kanji.map((item):SearchDocument=>({
-        entity:{kind:"kanji",id:item.id},
-        title:item.literal,
-        glosses:item.meanings
+        entity:{kind:"kanji",id:item.id}, title:item.literal, glosses:item.meanings
+      })),
+      ...content.grammar.map((item):SearchDocument=>({
+        entity:{kind:"grammar",id:item.id}, title:item.label, glosses:[item.summary,...item.uses], aliases:item.formation
+      })),
+      ...content.sentences.map((item):SearchDocument=>({
+        entity:{kind:"sentence",id:item.id}, title:item.text, reading:item.reading, glosses:[item.translation], aliases:[item.normalizedText]
       }))
     ]);
   }
@@ -158,6 +193,33 @@ export class ContentDatabase {
       });
     }
     return {lexeme,senses,kanji:kanjiItems,audioAssets};
+  }
+
+  async getGrammar(id:string):Promise<GrammarDetail|null>{
+    const row=await this.firstRow("SELECT label,summary,mental_model,formation_json,uses_json,prerequisite_ids_json,contrast_ids_json,level,register_name,priority,tags_json,source_ids_json FROM grammar WHERE id=?",[id]);
+    if(!row)return null;
+    const grammar:GrammarConcept={id,label:String(row[0]),summary:String(row[1]),mentalModel:String(row[2]),formation:JSON.parse(String(row[3])) as string[],uses:JSON.parse(String(row[4])) as string[],prerequisiteIds:JSON.parse(String(row[5])) as string[],contrastIds:JSON.parse(String(row[6])) as string[],level:String(row[7]),register:String(row[8]),...(row[9]===null?{}:{priority:Number(row[9])}),tags:JSON.parse(String(row[10])) as string[],sourceIds:JSON.parse(String(row[11])) as string[]};
+    const rows=await this.allRows("SELECT id,text,normalized_text,reading,translation,level,register_name,grammar_ids_json,entity_refs_json,tokens_json,tags_json,source_ids_json FROM sentences WHERE grammar_ids_json LIKE ?",[`%"${id}"%`]);
+    return {grammar,sentences:rows.map(sentenceFromRow)};
+  }
+
+  async getSentence(id:string):Promise<Sentence|null>{
+    const row=await this.firstRow("SELECT id,text,normalized_text,reading,translation,level,register_name,grammar_ids_json,entity_refs_json,tokens_json,tags_json,source_ids_json FROM sentences WHERE id=?",[id]);
+    return row?sentenceFromRow(row):null;
+  }
+
+  async listCourseUnits():Promise<CourseUnitDetail[]>{
+    const rows=await this.allRows("SELECT id,title,order_index,level,can_do_id,prerequisite_unit_ids_json,grammar_ids_json,sentence_ids_json,vocabulary_ids_json,source_ids_json FROM course_units ORDER BY order_index ASC");
+    const result:CourseUnitDetail[]=[];
+    for(const row of rows){
+      const unit:CourseUnit={id:String(row[0]),title:String(row[1]),order:Number(row[2]),level:String(row[3]),canDoId:String(row[4]),prerequisiteUnitIds:JSON.parse(String(row[5])) as string[],grammarIds:JSON.parse(String(row[6])) as string[],sentenceIds:JSON.parse(String(row[7])) as string[],vocabularyIds:JSON.parse(String(row[8])) as string[],sourceIds:JSON.parse(String(row[9])) as string[]};
+      const canDoRow=await this.firstRow("SELECT statement,level,language_activity,grammar_ids_json,sentence_ids_json,prerequisite_ids_json,source_ids_json FROM can_dos WHERE id=?",[unit.canDoId]);
+      const canDo:CanDoDescriptor|null=canDoRow?{id:unit.canDoId,statement:String(canDoRow[0]),level:String(canDoRow[1]),languageActivity:String(canDoRow[2]) as CanDoDescriptor["languageActivity"],grammarIds:JSON.parse(String(canDoRow[3])) as string[],sentenceIds:JSON.parse(String(canDoRow[4])) as string[],prerequisiteIds:JSON.parse(String(canDoRow[5])) as string[],sourceIds:JSON.parse(String(canDoRow[6])) as string[]}:null;
+      const grammar:GrammarConcept[]=[];for(const grammarId of unit.grammarIds){const detail=await this.getGrammar(grammarId);if(detail)grammar.push(detail.grammar);}
+      const sentences:Sentence[]=[];for(const sentenceId of unit.sentenceIds){const sentence=await this.getSentence(sentenceId);if(sentence)sentences.push(sentence);}
+      result.push({unit,canDo,grammar,sentences});
+    }
+    return result;
   }
 
   async upsertSearchDocuments(documents: readonly SearchDocument[]): Promise<void> {
@@ -260,6 +322,21 @@ export class ContentDatabase {
         speaker TEXT,
         source_ids_json TEXT NOT NULL
       );
+      CREATE TABLE IF NOT EXISTS grammar(
+        id TEXT PRIMARY KEY,label TEXT NOT NULL,summary TEXT NOT NULL,mental_model TEXT NOT NULL,formation_json TEXT NOT NULL,uses_json TEXT NOT NULL,
+        prerequisite_ids_json TEXT NOT NULL,contrast_ids_json TEXT NOT NULL,level TEXT NOT NULL,register_name TEXT NOT NULL,priority INTEGER,tags_json TEXT NOT NULL,source_ids_json TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS sentences(
+        id TEXT PRIMARY KEY,text TEXT NOT NULL,normalized_text TEXT NOT NULL,reading TEXT,translation TEXT NOT NULL,level TEXT NOT NULL,register_name TEXT NOT NULL,
+        grammar_ids_json TEXT NOT NULL,entity_refs_json TEXT NOT NULL,tokens_json TEXT NOT NULL,tags_json TEXT NOT NULL,source_ids_json TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS can_dos(
+        id TEXT PRIMARY KEY,statement TEXT NOT NULL,level TEXT NOT NULL,language_activity TEXT NOT NULL,grammar_ids_json TEXT NOT NULL,sentence_ids_json TEXT NOT NULL,prerequisite_ids_json TEXT NOT NULL,source_ids_json TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS course_units(
+        id TEXT PRIMARY KEY,title TEXT NOT NULL,order_index INTEGER NOT NULL,level TEXT NOT NULL,can_do_id TEXT NOT NULL,prerequisite_unit_ids_json TEXT NOT NULL,
+        grammar_ids_json TEXT NOT NULL,sentence_ids_json TEXT NOT NULL,vocabulary_ids_json TEXT NOT NULL,source_ids_json TEXT NOT NULL
+      );
       CREATE TABLE IF NOT EXISTS senses(
         id TEXT PRIMARY KEY,
         lexeme_id TEXT NOT NULL,
@@ -323,4 +400,13 @@ function asEntityKind(value: string): EntityKind {
   const allowed: readonly EntityKind[] = ["lexeme", "sense", "kanji", "grammar", "sentence", "kana", "can_do"];
   if (!allowed.includes(value as EntityKind)) throw new Error(`UNKNOWN_ENTITY_KIND:${value}`);
   return value as EntityKind;
+}
+
+function sentenceFromRow(row:unknown[]):Sentence{
+  return {
+    id:String(row[0]),text:String(row[1]),normalizedText:String(row[2]),
+    ...(row[3]===null?{}:{reading:String(row[3])}),translation:String(row[4]),level:String(row[5]),register:String(row[6]),
+    grammarIds:JSON.parse(String(row[7])) as string[],entityRefs:JSON.parse(String(row[8])) as Sentence["entityRefs"],
+    tokens:JSON.parse(String(row[9])) as Sentence["tokens"],tags:JSON.parse(String(row[10])) as string[],sourceIds:JSON.parse(String(row[11])) as string[]
+  };
 }

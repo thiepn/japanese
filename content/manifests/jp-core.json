@@ -1,10 +1,10 @@
 {
   "id": "jp-core",
-  "version": "0.2.0",
-  "schemaVersion": 3,
+  "version": "0.3.0",
+  "schemaVersion": 4,
   "minimumAppVersion": "0.0.1",
   "sizeBytes": 0,
-  "sha256": "P1.5-GENERATED-AT-BUILD",
+  "sha256": "P2-GENERATED-AT-BUILD",
   "dependencies": [],
   "sources": [
     "thiepn-original",
