@@ -197,11 +197,21 @@ export function courseUnitPrompts(unitId:string):StudyPrompt[]{
   const sentenceIds=new Set(view.unit.sentenceIds);
   const vocabularyIds=new Set(view.unit.vocabularyIds);
   const conjugationIds=new Set(view.unit.conjugationLexemeIds ?? []);
-  return [...allGrammarCoursePrompts,...vocabularyMeaningPrompts,...conjugationPrompts].filter((prompt)=>
+  const desiredConjugationFamilies=view.unit.grammarIds.includes("grammar-te-form")
+    ?new Set(["conjugation-te_form"])
+    :view.unit.grammarIds.includes("grammar-masen-deshita")
+      ?new Set(["conjugation-polite_past_negative"])
+      :view.unit.grammarIds.some((id)=>id==="grammar-i-adj-negative"||id==="grammar-i-adj-past"||id==="grammar-na-noun-negative"||id==="grammar-na-noun-past")
+        ?new Set(["conjugation-polite_negative","conjugation-polite_past","conjugation-polite_past_negative"])
+        :new Set(["conjugation-polite_negative","conjugation-polite_past"]);
+  const unitConjugation=conjugationPrompts
+    .filter((prompt)=>conjugationIds.has(prompt.primaryTarget.id)&&desiredConjugationFamilies.has(prompt.cueFamily))
+    .slice(0,4);
+  return [...allGrammarCoursePrompts,...vocabularyMeaningPrompts,...unitConjugation].filter((prompt)=>
     (prompt.primaryTarget.kind==="grammar"&&grammarIds.has(prompt.primaryTarget.id))||
     (prompt.primaryTarget.kind==="sentence"&&sentenceIds.has(prompt.primaryTarget.id))||
     (prompt.primaryTarget.kind==="lexeme"&&prompt.skill==="meaning_recognition"&&vocabularyIds.has(prompt.primaryTarget.id))||
-    (prompt.primaryTarget.kind==="lexeme"&&prompt.skill==="form_selection"&&conjugationIds.has(prompt.primaryTarget.id))
+    unitConjugation.includes(prompt)
   );
 }
 
