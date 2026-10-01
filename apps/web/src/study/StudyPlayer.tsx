@@ -18,7 +18,18 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   }
 
   if(isStudyLesson(step)){
-    return <section className="study-player" aria-live="polite"><StudyHeader index={index} total={steps.length} completed={false} onExit={onExit}/><div className="study-card study-lesson"><p className="eyebrow">LEARN</p><h1>{step.title}</h1><p className="lesson-body">{step.body}</p>{step.examples?.length?<div className="lesson-examples">{step.examples.map((example)=><div key={`${example.expression}:${example.note}`}><strong lang="ja">{example.expression}</strong><span>{example.note}</span></div>)}</div>:null}<button className="primary" type="button" onClick={advance}>Continue</button></div></section>;
+    return <section className="study-player" aria-live="polite">
+      <StudyHeader index={index} total={steps.length} completed={false} onExit={onExit}/>
+      <div className="study-card study-lesson">
+        <p className="eyebrow">LEARN</p>
+        <h1>{step.title}</h1>
+        <p className="lesson-body">{step.body}</p>
+        {step.facts?.length?<div className="lesson-facts">{step.facts.map((fact)=><div key={fact.label}><span>{fact.label}</span><strong lang={fact.language}>{fact.value}</strong></div>)}</div>:null}
+        {step.examples?.length?<div className="lesson-examples">{step.examples.map((example)=><div key={`${example.expression}:${example.note}`}><strong lang="ja">{example.expression}</strong><span>{example.note}</span></div>)}</div>:null}
+        {step.sourceLabel?<p className="source-note">Source: {step.sourceLabel}</p>:null}
+        <button className="primary" type="button" onClick={advance}>Continue</button>
+      </div>
+    </section>;
   }
 
   const currentPrompt=step;

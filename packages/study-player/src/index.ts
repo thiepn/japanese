@@ -17,6 +17,8 @@ interface StudyPromptBase {
   explanation?: string;
   contextId?: string;
   answerNormalization?: AnswerNormalization;
+  sourceId?: string;
+  contentVersion?: string;
 }
 
 export interface ChoiceStudyPrompt extends StudyPromptBase { promptType: "choice"; choices: string[]; }
@@ -24,13 +26,16 @@ export interface TypedStudyPrompt extends StudyPromptBase { promptType: "typed";
 export type StudyPrompt = ChoiceStudyPrompt | TypedStudyPrompt;
 
 export interface StudyLessonExample { expression: string; note: string; }
+export interface StudyLessonFact { label: string; value: string; language?: "ja" | "en"; }
 export interface StudyLesson {
   kind: "lesson";
   id: string;
   title: string;
   body: string;
   contextId: string;
+  facts?: StudyLessonFact[];
   examples?: StudyLessonExample[];
+  sourceLabel?: string;
 }
 export type StudyStep = StudyPrompt | StudyLesson;
 export function isStudyLesson(step: StudyStep): step is StudyLesson { return "kind" in step && step.kind === "lesson"; }
@@ -69,6 +74,8 @@ export function createStudyEvent(input: StudyEventInput): StudyEvent {
     responseTimeMs: input.responseTimeMs, attempts: 1,
     ...(input.hintsUsed === undefined ? {} : { hintsUsed: input.hintsUsed }),
     ...(input.prompt.contextId === undefined ? {} : { contextId: input.prompt.contextId }),
+    ...(input.prompt.sourceId === undefined ? {} : { sourceId: input.prompt.sourceId }),
+    ...(input.prompt.contentVersion === undefined ? {} : { contentVersion: input.prompt.contentVersion }),
     ...(input.baseRevision === undefined ? {} : { baseRevision: input.baseRevision }),
     metadata: { promptId: input.prompt.id }
   };
