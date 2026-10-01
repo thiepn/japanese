@@ -43,7 +43,9 @@ describe("P2 grammar, sentences and A1 course",()=>{
     expect(courseUnitPrompts("a1-unit-03").length).toBeGreaterThan(6);
     expect(steps.some((step)=>!("kind" in step)&&step.primaryTarget.kind==="grammar")).toBe(true);
     expect(steps.some((step)=>!("kind" in step)&&step.primaryTarget.kind==="sentence")).toBe(true);
+    expect(steps.some((step)=>!("kind" in step)&&step.primaryTarget.kind==="sentence"&&step.skill==="production")).toBe(true);
   });
+  it("does not leak the correct choice through a fixed first position",()=>{const positions=grammarMeaningPrompts.map((prompt)=>prompt.promptType==="choice"?prompt.choices.indexOf(prompt.acceptedAnswers[0]!):-1);expect(new Set(positions).size).toBeGreaterThan(1);});
   it("uses stable trace identities shared with the scheduler",()=>{
     expect(traceIdFor(grammarMeaningPrompts[0]!)).toMatch(/^grammar:/);
   });

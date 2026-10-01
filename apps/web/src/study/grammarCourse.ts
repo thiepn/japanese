@@ -35,7 +35,7 @@ export const grammarMeaningPrompts:StudyPrompt[]=coreContent.grammar.map((gramma
   instruction:"Choose the core function.",
   prompt:grammar.label,
   promptLanguage:"ja",
-  choices:uniqueChoices(grammar.summary,[3,7,11].map((offset)=>all[(index+offset)%all.length]?.summary)),
+  choices:rotateChoices(uniqueChoices(grammar.summary,[3,7,11].map((offset)=>all[(index+offset)%all.length]?.summary)),index),
   acceptedAnswers:[grammar.summary],
   displayAnswer:grammar.summary,
   explanation:grammar.mentalModel,
@@ -62,7 +62,7 @@ const CLOZE:Readonly<Record<string,{prompt:string;answer:string;choices:string[]
   "grammar-mashita":{prompt:"お茶を飲み ___。",answer:"ました",choices:["ました","ます","ません","です"],explanation:"飲みました reports a completed past action politely."}
 };
 
-export const grammarApplicationPrompts:StudyPrompt[]=coreContent.grammar.map((grammar)=>{
+export const grammarApplicationPrompts:StudyPrompt[]=coreContent.grammar.map((grammar,index)=>{
   const cloze=CLOZE[grammar.id];
   if(!cloze)throw new Error("MISSING_GRAMMAR_CLOZE:"+grammar.id);
   return {
@@ -74,7 +74,7 @@ export const grammarApplicationPrompts:StudyPrompt[]=coreContent.grammar.map((gr
     instruction:"Complete the sentence.",
     prompt:cloze.prompt,
     promptLanguage:"ja",
-    choices:cloze.choices,
+    choices:rotateChoices(cloze.choices,index),
     acceptedAnswers:[cloze.answer],
     displayAnswer:cloze.answer,
     explanation:cloze.explanation,
@@ -94,7 +94,7 @@ export const sentenceComprehensionPrompts:StudyPrompt[]=coreContent.sentences.ma
   instruction:"Choose the meaning.",
   prompt:sentence.text,
   promptLanguage:"ja",
-  choices:uniqueChoices(sentence.translation,[4,9,15].map((offset)=>all[(index+offset)%all.length]?.translation)),
+  choices:rotateChoices(uniqueChoices(sentence.translation,[4,9,15].map((offset)=>all[(index+offset)%all.length]?.translation)),index),
   acceptedAnswers:[sentence.translation],
   displayAnswer:sentence.translation,
   explanation:(sentence.reading ?? sentence.text)+" — "+sentence.translation,
@@ -150,6 +150,8 @@ export function courseUnitSession(unitId:string):StudyStep[]{
     const comprehension=sentenceComprehensionPrompts.find((prompt)=>prompt.primaryTarget.id===sentence.id);
     if(comprehension)steps.push(comprehension);
   }
+  const firstSentence=view.sentences[0];
+  if(firstSentence){const production=sentenceProductionPrompts.find((prompt)=>prompt.primaryTarget.id===firstSentence.id);if(production)steps.push(production);}
   return steps;
 }
 
@@ -188,10 +190,16 @@ export function nextCourseUnitId(traceIds:ReadonlySet<string>):string{
 export function selectNewCoursePrompts(traceIds:ReadonlySet<string>,limit=2):StudyPrompt[]{
   const introducedVocabulary=[...traceIds].filter((id)=>id.startsWith("lexeme:")&&id.includes(":meaning_recognition:")).length;
   if(introducedVocabulary<2)return [];
+  const selected:StudyPrompt[]=[];
+  const pendingProduction=sentenceProductionPrompts.find((prompt)=>!traceIds.has(traceIdFor(prompt))&&isGrammarCoursePromptReady(prompt,traceIds));
+  if(pendingProduction)selected.push(pendingProduction);
+  if(selected.length>=limit)return selected;
   const unitId=nextCourseUnitId(traceIds);
-  const candidates=courseUnitPrompts(unitId).filter((prompt)=>!traceIds.has(traceIdFor(prompt))&&isGrammarCoursePromptReady(prompt,traceIds));
-  const order=["comprehension","form_selection","production"];
-  return candidates.sort((a,b)=>order.indexOf(a.skill)-order.indexOf(b.skill)).slice(0,limit);
+  const candidates=courseUnitPrompts(unitId)
+    .filter((prompt)=>prompt.skill!=="production"&&!traceIds.has(traceIdFor(prompt))&&isGrammarCoursePromptReady(prompt,traceIds))
+    .sort((a,b)=>courseSkillOrder(a.skill)-courseSkillOrder(b.skill));
+  for(const prompt of candidates){if(selected.length>=limit)break;selected.push(prompt);}
+  return selected;
 }
 
 export function grammarContext(id:string):string{return "grammar-context-"+id;}
@@ -206,6 +214,15 @@ function hasAnyGrammarEvidence(grammarId:string,traceIds:ReadonlySet<string>):bo
 }
 function uniqueChoices(answer:string,values:(string|undefined)[]):string[]{
   return [...new Set([answer,...values.filter((value):value is string=>Boolean(value)&&value!==answer)])].slice(0,4);
+}
+function rotateChoices<T>(values:readonly T[],seed:number):T[]{
+  if(values.length<2)return [...values];
+  const offset=seed%values.length;
+  return [...values.slice(offset),...values.slice(0,offset)];
+}
+function courseSkillOrder(skill:string):number{
+  const order=["comprehension","form_selection","production"];
+  const index=order.indexOf(skill);return index<0?order.length:index;
 }
 function makeGrammarLesson(grammar:GrammarConcept):StudyLesson{
   const examples=coreContent.sentences.filter((sentence)=>sentence.grammarIds.includes(grammar.id)).slice(0,3).map((sentence)=>({expression:sentence.text,note:sentence.translation}));
