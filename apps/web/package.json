@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": { "dev": "vite", "build": "tsc -b && vite build", "typecheck": "tsc --noEmit" },
+  "scripts": { "dev": "vite", "build": "tsc --noEmit && vite build", "typecheck": "tsc --noEmit" },
   "dependencies": {
     "@thiepn/domain": "workspace:*",
     "@thiepn/local-db": "workspace:*",

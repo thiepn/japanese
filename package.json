@@ -9,5 +9,9 @@
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run"
   },
-  "devDependencies": { "typescript": "^5.7.0", "vitest": "^3.0.0" }
+  "devDependencies": {
+    "fake-indexeddb": "^6.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
 }
