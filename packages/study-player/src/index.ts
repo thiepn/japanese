@@ -38,6 +38,7 @@ export interface StudyLesson {
   facts?: StudyLessonFact[];
   examples?: StudyLessonExample[];
   sourceLabel?: string;
+  audio?: AudioAssetRecord;
 }
 export type StudyStep = StudyPrompt | StudyLesson;
 export function isStudyLesson(step: StudyStep): step is StudyLesson { return "kind" in step && step.kind === "lesson"; }

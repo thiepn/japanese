@@ -18,6 +18,7 @@ describe("production starter vocabulary",()=>{
     expect([...vocabularyMeaningPrompts,...vocabularyApplicationPrompts].every((prompt)=>prompt.primaryTarget.kind==="lexeme")).toBe(true);
     const lesson=vocabularyLessons["vocab-lex-taberu"];
     expect(lesson?.examples?.some((example)=>example.expression.startsWith("食"))).toBe(true);
+    expect(lesson?.audio?.id).toBe("audio-lex-taberu");
   });
   it("creates meaning, reading, listening and active-use evidence as independent dimensions",()=>{
     for(const item of starterVocabulary){

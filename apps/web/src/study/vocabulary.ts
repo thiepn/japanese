@@ -117,6 +117,7 @@ function makeVocabularyLesson(lexeme:Lexeme):StudyLesson {
   const sense=senseForLexeme(lexeme);
   const reading=lexeme.readings[0]?.text ?? lexeme.canonicalForm;
   const linkedKanji=kanjiForLexeme(lexeme);
+  const audio=audioForLexeme(lexeme)[0];
   const examples=lexeme.kanjiLinks.map((link)=>{
     const character=linkedKanji.find((item)=>item.id===link.kanjiId);
     const readingPart=link.readingInWord?` → ${link.readingInWord}`:"";
@@ -138,6 +139,7 @@ function makeVocabularyLesson(lexeme:Lexeme):StudyLesson {
       {label:"Type",value:(sense.partOfSpeech??[]).join(", ")||"word",language:"en"}
     ],
     ...(examples.length?{examples}:{}),
+    ...(audio?{audio}:{}),
     sourceLabel:sourceTitle(lexeme.sourceIds[0] ?? "unknown")
   };
 }

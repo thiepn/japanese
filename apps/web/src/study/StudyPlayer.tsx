@@ -33,7 +33,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   }
 
   async function playAudio(mode:"normal"|"slow"|"shadow"){
-    if(isStudyLesson(activeStep)||!activeStep.audio||audioState==="playing")return;
+    if(!activeStep.audio||audioState==="playing")return;
     setAudioState("playing");
     try{
       if(mode==="slow")await audioProvider.current.play(activeStep.audio,{rate:.82});
@@ -50,6 +50,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
         <p className="eyebrow">LEARN</p>
         <h1>{activeStep.title}</h1>
         <p className="lesson-body">{activeStep.body}</p>
+        {activeStep.audio?<div className="lesson-audio"><button className="audio-inline" type="button" disabled={audioState==="playing"} onClick={()=>void playAudio("normal")}>{audioState==="playing"?"Playing…":audioPlayed?"Replay pronunciation":"Hear pronunciation"}</button><button className="quiet-button audio-inline-slow" type="button" disabled={audioState==="playing"} onClick={()=>void playAudio("slow")}>Slower</button></div>:null}
         {activeStep.facts?.length?<div className="lesson-facts">{activeStep.facts.map((fact)=><div key={fact.label}><span>{fact.label}</span><strong lang={fact.language}>{fact.value}</strong></div>)}</div>:null}
         {activeStep.examples?.length?<div className="lesson-examples">{activeStep.examples.map((example)=><div key={`${example.expression}:${example.note}`}><strong lang="ja">{example.expression}</strong><span>{example.note}</span></div>)}</div>:null}
         {activeStep.sourceLabel?<p className="source-note">Source: {activeStep.sourceLabel}</p>:null}
