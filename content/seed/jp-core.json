@@ -9953,6 +9953,4346 @@
       "sourceIds": [
         "thiepn-original"
       ]
+    },
+    {
+      "id": "sentence-a1-023",
+      "text": "これは本です。",
+      "normalizedText": "これは本です",
+      "reading": "これはほんです。",
+      "translation": "This is a book.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-demonstrative-pronouns",
+        "grammar-wa-topic",
+        "grammar-desu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-kore"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-hon"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-demonstrative-pronouns"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "これ",
+          "reading": "これ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kore"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "本",
+          "reading": "ほん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-hon"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "demonstratives"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-024",
+      "text": "それは水です。",
+      "normalizedText": "それは水です",
+      "reading": "それはみずです。",
+      "translation": "That is water.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-demonstrative-pronouns",
+        "grammar-wa-topic",
+        "grammar-desu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-sore"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-mizu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-demonstrative-pronouns"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "それ",
+          "reading": "それ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-sore"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "水",
+          "reading": "みず",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-mizu"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "demonstratives"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-025",
+      "text": "あれは学校です。",
+      "normalizedText": "あれは学校です",
+      "reading": "あれはがっこうです。",
+      "translation": "That over there is a school.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-demonstrative-pronouns",
+        "grammar-wa-topic",
+        "grammar-desu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-are"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-gakkou"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-demonstrative-pronouns"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "あれ",
+          "reading": "あれ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-are"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "学校",
+          "reading": "がっこう",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-gakkou"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "demonstratives"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-026",
+      "text": "この本は日本語です。",
+      "normalizedText": "この本は日本語です",
+      "reading": "このほんはにほんごです。",
+      "translation": "This book is in Japanese.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-demonstrative-determiners",
+        "grammar-wa-topic",
+        "grammar-desu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-kono"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-hon"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-nihongo"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-demonstrative-determiners"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "この",
+          "reading": "この",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kono"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "本",
+          "reading": "ほん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-hon"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "日本語",
+          "reading": "にほんご",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-nihongo"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "demonstratives"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-027",
+      "text": "その人は先生です。",
+      "normalizedText": "その人は先生です",
+      "reading": "そのひとはせんせいです。",
+      "translation": "That person is a teacher.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-demonstrative-determiners",
+        "grammar-wa-topic",
+        "grammar-desu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-sono"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-hito"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-sensei"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-demonstrative-determiners"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "その",
+          "reading": "その",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-sono"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "人",
+          "reading": "ひと",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-hito"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "先生",
+          "reading": "せんせい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-sensei"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "demonstratives"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-028",
+      "text": "学校はどこですか。",
+      "normalizedText": "学校はどこですか",
+      "reading": "がっこうはどこですか。",
+      "translation": "Where is the school?",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-location-words",
+        "grammar-wa-topic",
+        "grammar-desu",
+        "grammar-ka-question"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-gakkou"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-doko"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-location-words"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ka-question"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "学校",
+          "reading": "がっこう",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-gakkou"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "どこ",
+          "reading": "どこ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-doko"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "location",
+        "question"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-029",
+      "text": "トイレはあそこです。",
+      "normalizedText": "トイレはあそこです",
+      "reading": "トイレはあそこです。",
+      "translation": "The restroom is over there.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-location-words",
+        "grammar-wa-topic",
+        "grammar-desu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-toire"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-asoko"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-location-words"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "トイレ",
+          "reading": "トイレ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-toire"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "あそこ",
+          "reading": "あそこ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-asoko"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "location"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-030",
+      "text": "これは何ですか。",
+      "normalizedText": "これは何ですか",
+      "reading": "これはなんですか。",
+      "translation": "What is this?",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-demonstrative-pronouns",
+        "grammar-question-words",
+        "grammar-wa-topic",
+        "grammar-desu",
+        "grammar-ka-question"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-kore"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-nani"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-demonstrative-pronouns"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-question-words"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ka-question"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "これ",
+          "reading": "これ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kore"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "何",
+          "reading": "なに",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-nani"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "question"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-031",
+      "text": "どの本ですか。",
+      "normalizedText": "どの本ですか",
+      "reading": "どのほんですか。",
+      "translation": "Which book is it?",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-demonstrative-determiners",
+        "grammar-question-words",
+        "grammar-desu",
+        "grammar-ka-question"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-dono"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-hon"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-demonstrative-determiners"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-question-words"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ka-question"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "どの",
+          "reading": "どの",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-dono"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "本",
+          "reading": "ほん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-hon"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "question"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-032",
+      "text": "あの人はだれですか。",
+      "normalizedText": "あの人はだれですか",
+      "reading": "あのひとはだれですか。",
+      "translation": "Who is that person over there?",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-demonstrative-determiners",
+        "grammar-question-words",
+        "grammar-wa-topic",
+        "grammar-desu",
+        "grammar-ka-question"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-ano"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-hito"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-dare"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-demonstrative-determiners"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-question-words"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ka-question"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "あの",
+          "reading": "あの",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ano"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "人",
+          "reading": "ひと",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-hito"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "だれ",
+          "reading": "だれ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-dare"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "question"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-033",
+      "text": "これは私の本です。",
+      "normalizedText": "これは私の本です",
+      "reading": "これはわたしのほんです。",
+      "translation": "This is my book.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-demonstrative-pronouns",
+        "grammar-no-attribute",
+        "grammar-wa-topic",
+        "grammar-desu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-kore"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-watashi"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-hon"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-demonstrative-pronouns"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-no-attribute"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "これ",
+          "reading": "これ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kore"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "私",
+          "reading": "わたし",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-watashi"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "本",
+          "reading": "ほん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-hon"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "possession"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-034",
+      "text": "先生の名前は何ですか。",
+      "normalizedText": "先生の名前は何ですか",
+      "reading": "せんせいのなまえはなんですか。",
+      "translation": "What is the teacher's name?",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-no-attribute",
+        "grammar-question-words",
+        "grammar-wa-topic",
+        "grammar-desu",
+        "grammar-ka-question"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-sensei"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-namae"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-nani"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-no-attribute"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-question-words"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ka-question"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "先生",
+          "reading": "せんせい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-sensei"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "名前",
+          "reading": "なまえ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-namae"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "何",
+          "reading": "なに",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-nani"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "possession",
+        "question"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-035",
+      "text": "パンと水を買います。",
+      "normalizedText": "パンと水を買います",
+      "reading": "パンとみずをかいます。",
+      "translation": "I buy bread and water.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-to-list",
+        "grammar-o-object",
+        "grammar-masu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-pan"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-mizu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kau"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-to-list"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-o-object"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "パン",
+          "reading": "パン",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-pan"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "水",
+          "reading": "みず",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-mizu"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "listing"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-036",
+      "text": "家族の写真です。",
+      "normalizedText": "家族の写真です",
+      "reading": "かぞくのしゃしんです。",
+      "translation": "It is a family photo.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-no-attribute",
+        "grammar-desu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-kazoku"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-shashin"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-no-attribute"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "家族",
+          "reading": "かぞく",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kazoku"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "写真",
+          "reading": "しゃしん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-shashin"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "possession"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-037",
+      "text": "友達の車です。",
+      "normalizedText": "友達の車です",
+      "reading": "ともだちのくるまです。",
+      "translation": "It is my friend's car.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-no-attribute",
+        "grammar-desu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-tomodachi"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kuruma"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-no-attribute"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "友達",
+          "reading": "ともだち",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-tomodachi"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "車",
+          "reading": "くるま",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kuruma"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "possession"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-038",
+      "text": "今は七時です。",
+      "normalizedText": "今は七時です",
+      "reading": "いまはしちじです。",
+      "translation": "It is seven o'clock now.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-time-counters",
+        "grammar-desu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-ima"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-nana"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ji"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-time-counters"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "今",
+          "reading": "いま",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ima"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "七",
+          "reading": "なな",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-nana"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "時",
+          "reading": "じ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ji"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "time"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-039",
+      "text": "七時半です。",
+      "normalizedText": "七時半です",
+      "reading": "しちじはんです。",
+      "translation": "It is half past seven.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-time-counters",
+        "grammar-desu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-nana"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ji"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-han"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-time-counters"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "七",
+          "reading": "なな",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-nana"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "時",
+          "reading": "じ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ji"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "半",
+          "reading": "はん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-han"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "time"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-040",
+      "text": "八時に学校に行きます。",
+      "normalizedText": "八時に学校に行きます",
+      "reading": "はちじにがっこうにいきます。",
+      "translation": "I go to school at eight.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-time-counters",
+        "grammar-time-ni",
+        "grammar-ni-destination",
+        "grammar-masu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-hachi"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ji"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-gakkou"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-iku"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-time-counters"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-time-ni"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ni-destination"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "八",
+          "reading": "はち",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-hachi"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "時",
+          "reading": "じ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ji"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "学校",
+          "reading": "がっこう",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-gakkou"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "time",
+        "routine"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-041",
+      "text": "九時から五時まで働きます。",
+      "normalizedText": "九時から五時まで働きます",
+      "reading": "くじからごじまではたらきます。",
+      "translation": "I work from nine to five.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-time-counters",
+        "grammar-kara-made",
+        "grammar-masu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-kyuu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-go"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ji"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-hataraku"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-time-counters"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kara-made"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "九",
+          "reading": "きゅう",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kyuu"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "五",
+          "reading": "ご",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-go"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "時",
+          "reading": "じ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ji"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "time",
+        "routine"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-042",
+      "text": "明日は十時に来ます。",
+      "normalizedText": "明日は十時に来ます",
+      "reading": "あしたはじゅうじにきます。",
+      "translation": "I will come at ten tomorrow.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-time-counters",
+        "grammar-time-ni",
+        "grammar-masu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-ashita"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-juu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ji"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kuru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-time-counters"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-time-ni"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "明日",
+          "reading": "あした",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ashita"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "十",
+          "reading": "じゅう",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-juu"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "時",
+          "reading": "じ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ji"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "time"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-043",
+      "text": "毎日七時に起きます。",
+      "normalizedText": "毎日七時に起きます",
+      "reading": "まいにちしちじにおきます。",
+      "translation": "I get up at seven every day.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-time-counters",
+        "grammar-time-ni",
+        "grammar-masu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-mainichi"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-nana"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ji"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-okiru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-time-counters"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-time-ni"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "毎日",
+          "reading": "まいにち",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-mainichi"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "七",
+          "reading": "なな",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-nana"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "時",
+          "reading": "じ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ji"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "routine"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-044",
+      "text": "朝ご飯を食べます。",
+      "normalizedText": "朝ご飯を食べます",
+      "reading": "あさごはんをたべます。",
+      "translation": "I eat breakfast.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-o-object",
+        "grammar-masu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-asagohan"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-taberu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-o-object"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "朝ご飯",
+          "reading": "あさごはん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-asagohan"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "routine"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-045",
+      "text": "学校で日本語を勉強します。",
+      "normalizedText": "学校で日本語を勉強します",
+      "reading": "がっこうでにほんごをべんきょうします。",
+      "translation": "I study Japanese at school.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-de-action-place",
+        "grammar-o-object",
+        "grammar-masu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-gakkou"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-nihongo"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-benkyou-suru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-de-action-place"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-o-object"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "学校",
+          "reading": "がっこう",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-gakkou"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "日本語",
+          "reading": "にほんご",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-nihongo"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "routine"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-046",
+      "text": "夜十時に寝ます。",
+      "normalizedText": "夜十時に寝ます",
+      "reading": "よるじゅうじにねます。",
+      "translation": "I go to bed at ten at night.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-time-counters",
+        "grammar-time-ni",
+        "grammar-masu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-yoru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-juu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ji"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-neru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-time-counters"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-time-ni"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "夜",
+          "reading": "よる",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-yoru"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "十",
+          "reading": "じゅう",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-juu"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "時",
+          "reading": "じ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ji"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "routine"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-047",
+      "text": "昨日は勉強しませんでした。",
+      "normalizedText": "昨日は勉強しませんでした",
+      "reading": "きのうはべんきょうしませんでした。",
+      "translation": "I did not study yesterday.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-masen-deshita"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-kinou"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-benkyou-suru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masen-deshita"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "昨日",
+          "reading": "きのう",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kinou"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "routine",
+        "past-negative"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-048",
+      "text": "この店は高いです。",
+      "normalizedText": "この店は高いです",
+      "reading": "このみせはたかいです。",
+      "translation": "This shop is expensive.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-demonstrative-determiners",
+        "grammar-wa-topic",
+        "grammar-i-adj-polite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-kono"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-mise"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-takai"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-demonstrative-determiners"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-i-adj-polite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "この",
+          "reading": "この",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kono"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "店",
+          "reading": "みせ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-mise"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "高い",
+          "reading": "たかい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-takai"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "description"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-049",
+      "text": "その店は安いです。",
+      "normalizedText": "その店は安いです",
+      "reading": "そのみせはやすいです。",
+      "translation": "That shop is cheap.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-demonstrative-determiners",
+        "grammar-wa-topic",
+        "grammar-i-adj-polite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-sono"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-mise"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-yasui"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-demonstrative-determiners"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-i-adj-polite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "その",
+          "reading": "その",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-sono"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "店",
+          "reading": "みせ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-mise"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "安い",
+          "reading": "やすい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-yasui"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "description"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-050",
+      "text": "昨日は暑かったです。",
+      "normalizedText": "昨日は暑かったです",
+      "reading": "きのうはあつかったです。",
+      "translation": "It was hot yesterday.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-i-adj-past"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-kinou"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-atsui"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-i-adj-past"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "昨日",
+          "reading": "きのう",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kinou"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "description",
+        "past"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-051",
+      "text": "今日は寒くないです。",
+      "normalizedText": "今日は寒くないです",
+      "reading": "きょうはさむくないです。",
+      "translation": "It is not cold today.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-i-adj-negative"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-kyou"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-samui"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-i-adj-negative"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "今日",
+          "reading": "きょう",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kyou"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "description",
+        "negative"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-052",
+      "text": "ここは静かです。",
+      "normalizedText": "ここは静かです",
+      "reading": "ここはしずかです。",
+      "translation": "It is quiet here.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-location-words",
+        "grammar-wa-topic",
+        "grammar-desu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-koko"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-shizuka"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-location-words"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "ここ",
+          "reading": "ここ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-koko"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "静か",
+          "reading": "しずか",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-shizuka"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "description"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-053",
+      "text": "昨日は静かじゃなかったです。",
+      "normalizedText": "昨日は静かじゃなかったです",
+      "reading": "きのうはしずかじゃなかったです。",
+      "translation": "It was not quiet yesterday.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-na-noun-negative",
+        "grammar-na-noun-past"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-kinou"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-shizuka"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-na-noun-negative"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-na-noun-past"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "昨日",
+          "reading": "きのう",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kinou"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "静か",
+          "reading": "しずか",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-shizuka"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "description",
+        "past-negative"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-054",
+      "text": "私の家族は四人です。",
+      "normalizedText": "私の家族は四人です",
+      "reading": "わたしのかぞくはよにんです。",
+      "translation": "There are four people in my family.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-no-attribute",
+        "grammar-wa-topic",
+        "grammar-counter-nin",
+        "grammar-desu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-watashi"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kazoku"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-yon"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-no-attribute"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-counter-nin"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "私",
+          "reading": "わたし",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-watashi"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "家族",
+          "reading": "かぞく",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kazoku"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "四",
+          "reading": "よん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-yon"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "family",
+        "counter"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-055",
+      "text": "父は先生です。",
+      "normalizedText": "父は先生です",
+      "reading": "ちちはせんせいです。",
+      "translation": "My father is a teacher.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-desu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-chichi"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-sensei"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "父",
+          "reading": "ちち",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-chichi"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "先生",
+          "reading": "せんせい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-sensei"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "family"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-056",
+      "text": "母は会社員です。",
+      "normalizedText": "母は会社員です",
+      "reading": "はははかいしゃいんです。",
+      "translation": "My mother is a company employee.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-desu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-haha"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kaishain"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "母",
+          "reading": "はは",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-haha"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "会社員",
+          "reading": "かいしゃいん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kaishain"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "family"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-057",
+      "text": "兄は学生です。",
+      "normalizedText": "兄は学生です",
+      "reading": "あにはがくせいです。",
+      "translation": "My older brother is a student.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-desu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-ani"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-gakusei"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "兄",
+          "reading": "あに",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ani"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "学生",
+          "reading": "がくせい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-gakusei"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "family"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-058",
+      "text": "妹は家にいます。",
+      "normalizedText": "妹は家にいます",
+      "reading": "いもうとはいえにいます。",
+      "translation": "My younger sister is at home.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-ni-destination",
+        "grammar-aru-iru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-imouto"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ie"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-iru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ni-destination"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-aru-iru"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "妹",
+          "reading": "いもうと",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-imouto"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "家",
+          "reading": "いえ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ie"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "family",
+        "existence"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-059",
+      "text": "両親は日本にいます。",
+      "normalizedText": "両親は日本にいます",
+      "reading": "りょうしんはにほんにいます。",
+      "translation": "My parents are in Japan.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-ni-destination",
+        "grammar-aru-iru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-ryoushin"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-nihon"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-iru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ni-destination"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-aru-iru"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "両親",
+          "reading": "りょうしん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ryoushin"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "日本",
+          "reading": "にほん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-nihon"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "family",
+        "existence"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-060",
+      "text": "パンを二つください。",
+      "normalizedText": "パンを二つください",
+      "reading": "パンをふたつください。",
+      "translation": "Two pieces of bread, please.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-o-kudasai",
+        "grammar-counter-tsu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-pan"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ni"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-o-kudasai"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-counter-tsu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "パン",
+          "reading": "パン",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-pan"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "二",
+          "reading": "に",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ni"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "food",
+        "request"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-061",
+      "text": "水を一つください。",
+      "normalizedText": "水を一つください",
+      "reading": "みずをひとつください。",
+      "translation": "One water, please.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-o-kudasai",
+        "grammar-counter-tsu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-mizu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ichi"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-o-kudasai"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-counter-tsu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "水",
+          "reading": "みず",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-mizu"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "一",
+          "reading": "いち",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ichi"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "food",
+        "request"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-062",
+      "text": "コーヒーをください。",
+      "normalizedText": "コーヒーをください",
+      "reading": "コーヒーをください。",
+      "translation": "Coffee, please.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-o-kudasai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-koohii"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-o-kudasai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "コーヒー",
+          "reading": "コーヒー",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-koohii"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "food",
+        "request"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-063",
+      "text": "この魚はおいしいです。",
+      "normalizedText": "この魚はおいしいです",
+      "reading": "このさかなはおいしいです。",
+      "translation": "This fish is delicious.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-demonstrative-determiners",
+        "grammar-wa-topic",
+        "grammar-i-adj-polite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-kono"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-sakana"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-oishii"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-demonstrative-determiners"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-i-adj-polite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "この",
+          "reading": "この",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kono"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "魚",
+          "reading": "さかな",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-sakana"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "おいしい",
+          "reading": "おいしい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-oishii"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "food"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-064",
+      "text": "野菜を食べます。",
+      "normalizedText": "野菜を食べます",
+      "reading": "やさいをたべます。",
+      "translation": "I eat vegetables.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-o-object",
+        "grammar-masu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-yasai"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-taberu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-o-object"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "野菜",
+          "reading": "やさい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-yasai"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "food"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-065",
+      "text": "もう一度お願いします。",
+      "normalizedText": "もう一度お願いします",
+      "reading": "もういちどおねがいします。",
+      "translation": "One more time, please.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-masu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-mouichido"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-onegaishimasu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "もう一度",
+          "reading": "もういちど",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-mouichido"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "お願いします",
+          "reading": "おねがいします",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-onegaishimasu"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "clarification",
+        "request"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-066",
+      "text": "これはいくらですか。",
+      "normalizedText": "これはいくらですか",
+      "reading": "これはいくらですか。",
+      "translation": "How much is this?",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-demonstrative-pronouns",
+        "grammar-question-words",
+        "grammar-wa-topic",
+        "grammar-desu",
+        "grammar-ka-question"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-kore"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ikura"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-demonstrative-pronouns"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-question-words"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ka-question"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "これ",
+          "reading": "これ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kore"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "いくら",
+          "reading": "いくら",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ikura"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "shopping"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-067",
+      "text": "三百円です。",
+      "normalizedText": "三百円です",
+      "reading": "さんびゃくえんです。",
+      "translation": "It is 300 yen.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-desu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-san"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-hyaku"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-en"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "三",
+          "reading": "さん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-san"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "百",
+          "reading": "ひゃく",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-hyaku"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "円",
+          "reading": "えん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-en"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "shopping",
+        "number"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-068",
+      "text": "その本は高いです。",
+      "normalizedText": "その本は高いです",
+      "reading": "そのほんはたかいです。",
+      "translation": "That book is expensive.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-demonstrative-determiners",
+        "grammar-wa-topic",
+        "grammar-i-adj-polite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-sono"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-hon"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-takai"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-demonstrative-determiners"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-i-adj-polite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "その",
+          "reading": "その",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-sono"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "本",
+          "reading": "ほん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-hon"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "高い",
+          "reading": "たかい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-takai"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "shopping"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-069",
+      "text": "このパンは安いです。",
+      "normalizedText": "このパンは安いです",
+      "reading": "このパンはやすいです。",
+      "translation": "This bread is cheap.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-demonstrative-determiners",
+        "grammar-wa-topic",
+        "grammar-i-adj-polite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-kono"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-pan"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-yasui"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-demonstrative-determiners"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-i-adj-polite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "この",
+          "reading": "この",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kono"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "パン",
+          "reading": "パン",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-pan"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "安い",
+          "reading": "やすい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-yasui"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "shopping"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-070",
+      "text": "りんごを三つください。",
+      "normalizedText": "りんごを三つください",
+      "reading": "りんごをみっつください。",
+      "translation": "Three apples, please.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-o-kudasai",
+        "grammar-counter-tsu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-ringo"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-san"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-o-kudasai"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-counter-tsu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "りんご",
+          "reading": "りんご",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ringo"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "三",
+          "reading": "さん",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-san"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "shopping",
+        "counter"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-071",
+      "text": "どれを買いますか。",
+      "normalizedText": "どれを買いますか",
+      "reading": "どれをかいますか。",
+      "translation": "Which one will you buy?",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-question-words",
+        "grammar-o-object",
+        "grammar-masu",
+        "grammar-ka-question"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-dore"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kau"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-question-words"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-o-object"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ka-question"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "どれ",
+          "reading": "どれ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-dore"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "shopping",
+        "question"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-072",
+      "text": "電車で学校に行きます。",
+      "normalizedText": "電車で学校に行きます",
+      "reading": "でんしゃでがっこうにいきます。",
+      "translation": "I go to school by train.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-de-means",
+        "grammar-ni-destination",
+        "grammar-masu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-densha"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-gakkou"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-iku"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-de-means"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ni-destination"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "電車",
+          "reading": "でんしゃ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-densha"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "学校",
+          "reading": "がっこう",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-gakkou"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "transport"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-073",
+      "text": "バスで駅に行きます。",
+      "normalizedText": "バスで駅に行きます",
+      "reading": "バスでえきにいきます。",
+      "translation": "I go to the station by bus.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-de-means",
+        "grammar-ni-destination",
+        "grammar-masu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-basu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-eki"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-iku"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-de-means"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ni-destination"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "バス",
+          "reading": "バス",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-basu"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "駅",
+          "reading": "えき",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-eki"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "transport"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-074",
+      "text": "自転車で家に帰ります。",
+      "normalizedText": "自転車で家に帰ります",
+      "reading": "じてんしゃでいえにかえります。",
+      "translation": "I go home by bicycle.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-de-means",
+        "grammar-ni-destination",
+        "grammar-masu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-jitensha"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ie"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kaeru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-de-means"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ni-destination"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "自転車",
+          "reading": "じてんしゃ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-jitensha"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "家",
+          "reading": "いえ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ie"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "transport"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-075",
+      "text": "駅はどこですか。",
+      "normalizedText": "駅はどこですか",
+      "reading": "えきはどこですか。",
+      "translation": "Where is the station?",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-location-words",
+        "grammar-wa-topic",
+        "grammar-desu",
+        "grammar-ka-question"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-eki"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-doko"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-location-words"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ka-question"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "駅",
+          "reading": "えき",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-eki"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "どこ",
+          "reading": "どこ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-doko"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "transport",
+        "question"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-076",
+      "text": "右に行きます。",
+      "normalizedText": "右に行きます",
+      "reading": "みぎにいきます。",
+      "translation": "Go to the right.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-ni-destination",
+        "grammar-masu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-migi"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-iku"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ni-destination"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "右",
+          "reading": "みぎ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-migi"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "direction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-077",
+      "text": "左に行きます。",
+      "normalizedText": "左に行きます",
+      "reading": "ひだりにいきます。",
+      "translation": "Go to the left.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-ni-destination",
+        "grammar-masu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-hidari"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-iku"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ni-destination"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "左",
+          "reading": "ひだり",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-hidari"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "direction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-078",
+      "text": "ここに書いてください。",
+      "normalizedText": "ここに書いてください",
+      "reading": "ここにかいてください。",
+      "translation": "Please write here.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-location-words",
+        "grammar-te-form",
+        "grammar-te-kudasai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-koko"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kaku"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-location-words"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-form"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-kudasai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "ここ",
+          "reading": "ここ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-koko"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "request",
+        "clarification"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-079",
+      "text": "もう一度言ってください。",
+      "normalizedText": "もう一度言ってください",
+      "reading": "もういちどいってください。",
+      "translation": "Please say it one more time.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-te-form",
+        "grammar-te-kudasai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-mouichido"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-iu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-form"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-kudasai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "もう一度",
+          "reading": "もういちど",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-mouichido"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "request",
+        "clarification"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-080",
+      "text": "ゆっくり話してください。",
+      "normalizedText": "ゆっくり話してください",
+      "reading": "ゆっくりはなしてください。",
+      "translation": "Please speak slowly.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-te-form",
+        "grammar-te-kudasai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-yukkuri"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-hanasu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-form"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-kudasai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "ゆっくり",
+          "reading": "ゆっくり",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-yukkuri"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "request",
+        "clarification"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-081",
+      "text": "すみません、トイレはどこですか。",
+      "normalizedText": "すみませんトイレはどこですか",
+      "reading": "すみません、トイレはどこですか。",
+      "translation": "Excuse me, where is the restroom?",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-location-words",
+        "grammar-wa-topic",
+        "grammar-desu",
+        "grammar-ka-question"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-sumimasen"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-toire"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-doko"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-location-words"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ka-question"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "すみません",
+          "reading": "すみません",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-sumimasen"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "トイレ",
+          "reading": "トイレ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-toire"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "どこ",
+          "reading": "どこ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-doko"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "immediate-needs"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-082",
+      "text": "分かりません。",
+      "normalizedText": "分かりません",
+      "reading": "わかりません。",
+      "translation": "I do not understand.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-masen"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-wakaru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masen"
+        }
+      ],
+      "tokens": [],
+      "tags": [
+        "a1-breadth",
+        "clarification"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-083",
+      "text": "ありがとうございます。",
+      "normalizedText": "ありがとうございます",
+      "reading": "ありがとうございます。",
+      "translation": "Thank you.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-arigatou"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "ありがとうございます",
+          "reading": "ありがとうございます",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-arigatou"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "conversation"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-084",
+      "text": "今日は寒いですね。",
+      "normalizedText": "今日は寒いですね",
+      "reading": "きょうはさむいですね。",
+      "translation": "It is cold today, isn't it?",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-i-adj-polite",
+        "grammar-ne"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-kyou"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-samui"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-i-adj-polite"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ne"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "今日",
+          "reading": "きょう",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kyou"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "寒い",
+          "reading": "さむい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-samui"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "pragmatics"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-085",
+      "text": "この店はいいですね。",
+      "normalizedText": "この店はいいですね",
+      "reading": "このみせはいいですね。",
+      "translation": "This shop is good, isn't it?",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-demonstrative-determiners",
+        "grammar-wa-topic",
+        "grammar-i-adj-polite",
+        "grammar-ne"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-kono"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-mise"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ii"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-demonstrative-determiners"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-i-adj-polite"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ne"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "この",
+          "reading": "この",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-kono"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "店",
+          "reading": "みせ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-mise"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "いい",
+          "reading": "いい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-ii"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "pragmatics"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-086",
+      "text": "駅はあそこですよ。",
+      "normalizedText": "駅はあそこですよ",
+      "reading": "えきはあそこですよ。",
+      "translation": "The station is over there, you know.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-location-words",
+        "grammar-wa-topic",
+        "grammar-desu",
+        "grammar-yo"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-eki"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-asoko"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-location-words"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-desu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-yo"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "駅",
+          "reading": "えき",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-eki"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "あそこ",
+          "reading": "あそこ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-asoko"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "pragmatics"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-087",
+      "text": "日本語は難しいですか。",
+      "normalizedText": "日本語は難しいですか",
+      "reading": "にほんごはむずかしいですか。",
+      "translation": "Is Japanese difficult?",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-i-adj-polite",
+        "grammar-ka-question"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-nihongo"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-muzukashii"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-wa-topic"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-i-adj-polite"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ka-question"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "日本語",
+          "reading": "にほんご",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-nihongo"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "難しい",
+          "reading": "むずかしい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-muzukashii"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "conversation"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-088",
+      "text": "はい、少し分かります。",
+      "normalizedText": "はい少し分かります",
+      "reading": "はい、すこしわかります。",
+      "translation": "Yes, I understand a little.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-masu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-hai"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-sukoshi"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-wakaru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "はい",
+          "reading": "はい",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-hai"
+          },
+          "grammarRole": "linked word"
+        },
+        {
+          "surface": "少し",
+          "reading": "すこし",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-sukoshi"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "conversation"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-a1-089",
+      "text": "いいえ、分かりません。",
+      "normalizedText": "いいえ分かりません",
+      "reading": "いいえ、わかりません。",
+      "translation": "No, I do not understand.",
+      "level": "A1",
+      "register": "polite",
+      "grammarIds": [
+        "grammar-masen"
+      ],
+      "entityRefs": [
+        {
+          "kind": "lexeme",
+          "id": "lex-iie"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-wakaru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masen"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "いいえ",
+          "reading": "いいえ",
+          "entityRef": {
+            "kind": "lexeme",
+            "id": "lex-iie"
+          },
+          "grammarRole": "linked word"
+        }
+      ],
+      "tags": [
+        "a1-breadth",
+        "conversation"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
     }
   ],
   "audioAssets": [
@@ -10672,6 +15012,303 @@
       "sourceIds": [
         "thiepn-original"
       ]
+    },
+    {
+      "id": "can-do-a1-demonstratives",
+      "statement": "Can point out and identify nearby or visible things with basic demonstratives.",
+      "level": "A1",
+      "languageActivity": "spoken_interaction",
+      "grammarIds": [
+        "grammar-demonstrative-pronouns",
+        "grammar-demonstrative-determiners",
+        "grammar-wa-topic",
+        "grammar-desu"
+      ],
+      "sentenceIds": [
+        "sentence-a1-023",
+        "sentence-a1-024",
+        "sentence-a1-025",
+        "sentence-a1-026",
+        "sentence-a1-027"
+      ],
+      "prerequisiteIds": [
+        "can-do-a1-time-polarity"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-a1-locations",
+      "statement": "Can ask and answer where something is and identify a person or item with basic question words.",
+      "level": "A1",
+      "languageActivity": "spoken_interaction",
+      "grammarIds": [
+        "grammar-location-words",
+        "grammar-question-words",
+        "grammar-ka-question"
+      ],
+      "sentenceIds": [
+        "sentence-a1-028",
+        "sentence-a1-029",
+        "sentence-a1-030",
+        "sentence-a1-031",
+        "sentence-a1-032"
+      ],
+      "prerequisiteIds": [
+        "can-do-a1-demonstratives"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-a1-noun-links",
+      "statement": "Can express simple possession or noun relationships and list two items.",
+      "level": "A1",
+      "languageActivity": "writing",
+      "grammarIds": [
+        "grammar-no-attribute",
+        "grammar-to-list"
+      ],
+      "sentenceIds": [
+        "sentence-a1-033",
+        "sentence-a1-034",
+        "sentence-a1-035",
+        "sentence-a1-036",
+        "sentence-a1-037"
+      ],
+      "prerequisiteIds": [
+        "can-do-a1-locations"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-a1-time",
+      "statement": "Can tell a basic clock time and state when an activity starts, happens, or ends.",
+      "level": "A1",
+      "languageActivity": "spoken_production",
+      "grammarIds": [
+        "grammar-time-counters",
+        "grammar-time-ni",
+        "grammar-kara-made"
+      ],
+      "sentenceIds": [
+        "sentence-a1-038",
+        "sentence-a1-039",
+        "sentence-a1-040",
+        "sentence-a1-041",
+        "sentence-a1-042"
+      ],
+      "prerequisiteIds": [
+        "can-do-a1-noun-links"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-a1-routines",
+      "statement": "Can describe a simple daily routine and say that a past action did not happen.",
+      "level": "A1",
+      "languageActivity": "spoken_production",
+      "grammarIds": [
+        "grammar-masen-deshita",
+        "grammar-time-ni",
+        "grammar-masu"
+      ],
+      "sentenceIds": [
+        "sentence-a1-043",
+        "sentence-a1-044",
+        "sentence-a1-045",
+        "sentence-a1-046",
+        "sentence-a1-047"
+      ],
+      "prerequisiteIds": [
+        "can-do-a1-time"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-a1-adjective-time",
+      "statement": "Can describe people, places, weather and things in affirmative, negative and past forms.",
+      "level": "A1",
+      "languageActivity": "writing",
+      "grammarIds": [
+        "grammar-i-adj-negative",
+        "grammar-i-adj-past",
+        "grammar-na-noun-negative",
+        "grammar-na-noun-past"
+      ],
+      "sentenceIds": [
+        "sentence-a1-048",
+        "sentence-a1-049",
+        "sentence-a1-050",
+        "sentence-a1-051",
+        "sentence-a1-052",
+        "sentence-a1-053"
+      ],
+      "prerequisiteIds": [
+        "can-do-a1-routines"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-a1-family",
+      "statement": "Can identify close family members and state a simple family size or location.",
+      "level": "A1",
+      "languageActivity": "spoken_production",
+      "grammarIds": [
+        "grammar-no-attribute",
+        "grammar-counter-nin",
+        "grammar-aru-iru"
+      ],
+      "sentenceIds": [
+        "sentence-a1-054",
+        "sentence-a1-055",
+        "sentence-a1-056",
+        "sentence-a1-057",
+        "sentence-a1-058",
+        "sentence-a1-059"
+      ],
+      "prerequisiteIds": [
+        "can-do-a1-adjective-time"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-a1-food-request",
+      "statement": "Can order a simple food or drink item and request a small quantity politely.",
+      "level": "A1",
+      "languageActivity": "spoken_interaction",
+      "grammarIds": [
+        "grammar-o-kudasai",
+        "grammar-counter-tsu"
+      ],
+      "sentenceIds": [
+        "sentence-a1-060",
+        "sentence-a1-061",
+        "sentence-a1-062",
+        "sentence-a1-063",
+        "sentence-a1-064",
+        "sentence-a1-065"
+      ],
+      "prerequisiteIds": [
+        "can-do-a1-family"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-a1-shopping",
+      "statement": "Can ask a price, understand a simple yen amount, and request a basic quantity while shopping.",
+      "level": "A1",
+      "languageActivity": "spoken_interaction",
+      "grammarIds": [
+        "grammar-question-words",
+        "grammar-counter-tsu",
+        "grammar-o-kudasai",
+        "grammar-i-adj-polite"
+      ],
+      "sentenceIds": [
+        "sentence-a1-066",
+        "sentence-a1-067",
+        "sentence-a1-068",
+        "sentence-a1-069",
+        "sentence-a1-070",
+        "sentence-a1-071"
+      ],
+      "prerequisiteIds": [
+        "can-do-a1-food-request"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-a1-transport",
+      "statement": "Can say how to travel to a place and understand basic left/right location language.",
+      "level": "A1",
+      "languageActivity": "spoken_interaction",
+      "grammarIds": [
+        "grammar-de-means",
+        "grammar-ni-destination",
+        "grammar-location-words"
+      ],
+      "sentenceIds": [
+        "sentence-a1-072",
+        "sentence-a1-073",
+        "sentence-a1-074",
+        "sentence-a1-075",
+        "sentence-a1-076",
+        "sentence-a1-077"
+      ],
+      "prerequisiteIds": [
+        "can-do-a1-shopping"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-a1-clarification",
+      "statement": "Can request repetition or slower speech and signal that something was not understood.",
+      "level": "A1",
+      "languageActivity": "spoken_interaction",
+      "grammarIds": [
+        "grammar-te-form",
+        "grammar-te-kudasai",
+        "grammar-masen"
+      ],
+      "sentenceIds": [
+        "sentence-a1-078",
+        "sentence-a1-079",
+        "sentence-a1-080",
+        "sentence-a1-081",
+        "sentence-a1-082",
+        "sentence-a1-083"
+      ],
+      "prerequisiteIds": [
+        "can-do-a1-transport"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-a1-pragmatics",
+      "statement": "Can sustain a short polite exchange using confirmation, new-information marking, yes/no responses and a few question words.",
+      "level": "A1",
+      "languageActivity": "spoken_interaction",
+      "grammarIds": [
+        "grammar-ne",
+        "grammar-yo",
+        "grammar-question-words",
+        "grammar-ka-question"
+      ],
+      "sentenceIds": [
+        "sentence-a1-084",
+        "sentence-a1-085",
+        "sentence-a1-086",
+        "sentence-a1-087",
+        "sentence-a1-088",
+        "sentence-a1-089"
+      ],
+      "prerequisiteIds": [
+        "can-do-a1-clarification"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
     }
   ],
   "courseUnits": [
@@ -10696,7 +15333,8 @@
       ],
       "sourceIds": [
         "thiepn-original"
-      ]
+      ],
+      "conjugationLexemeIds": []
     },
     {
       "id": "a1-unit-02",
@@ -10719,7 +15357,8 @@
       ],
       "sourceIds": [
         "thiepn-original"
-      ]
+      ],
+      "conjugationLexemeIds": []
     },
     {
       "id": "a1-unit-03",
@@ -10750,6 +15389,11 @@
       ],
       "sourceIds": [
         "thiepn-original"
+      ],
+      "conjugationLexemeIds": [
+        "lex-yomu",
+        "lex-nomu",
+        "lex-taberu"
       ]
     },
     {
@@ -10784,6 +15428,11 @@
       ],
       "sourceIds": [
         "thiepn-original"
+      ],
+      "conjugationLexemeIds": [
+        "lex-hanasu",
+        "lex-iku",
+        "lex-kaeru"
       ]
     },
     {
@@ -10812,6 +15461,9 @@
       ],
       "sourceIds": [
         "thiepn-original"
+      ],
+      "conjugationLexemeIds": [
+        "lex-hanasu"
       ]
     },
     {
@@ -10841,6 +15493,10 @@
       ],
       "sourceIds": [
         "thiepn-original"
+      ],
+      "conjugationLexemeIds": [
+        "lex-aru",
+        "lex-iru"
       ]
     },
     {
@@ -10873,6 +15529,11 @@
       ],
       "sourceIds": [
         "thiepn-original"
+      ],
+      "conjugationLexemeIds": [
+        "lex-suki",
+        "lex-ookii",
+        "lex-chiisai"
       ]
     },
     {
@@ -10900,6 +15561,520 @@
         "lex-iku",
         "lex-ocha",
         "lex-nomu"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "conjugationLexemeIds": [
+        "lex-iku",
+        "lex-nomu"
+      ]
+    },
+    {
+      "id": "a1-unit-09",
+      "title": "Point to things",
+      "order": 9,
+      "level": "A1",
+      "canDoId": "can-do-a1-demonstratives",
+      "prerequisiteUnitIds": [
+        "a1-unit-08"
+      ],
+      "grammarIds": [
+        "grammar-demonstrative-pronouns",
+        "grammar-demonstrative-determiners",
+        "grammar-wa-topic",
+        "grammar-desu"
+      ],
+      "sentenceIds": [
+        "sentence-a1-023",
+        "sentence-a1-024",
+        "sentence-a1-025",
+        "sentence-a1-026",
+        "sentence-a1-027"
+      ],
+      "vocabularyIds": [
+        "lex-kore",
+        "lex-sore",
+        "lex-are",
+        "lex-kono",
+        "lex-sono",
+        "lex-ano",
+        "lex-hon",
+        "lex-hito"
+      ],
+      "conjugationLexemeIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "a1-unit-10",
+      "title": "Ask where and which",
+      "order": 10,
+      "level": "A1",
+      "canDoId": "can-do-a1-locations",
+      "prerequisiteUnitIds": [
+        "a1-unit-09"
+      ],
+      "grammarIds": [
+        "grammar-location-words",
+        "grammar-question-words",
+        "grammar-ka-question"
+      ],
+      "sentenceIds": [
+        "sentence-a1-028",
+        "sentence-a1-029",
+        "sentence-a1-030",
+        "sentence-a1-031",
+        "sentence-a1-032"
+      ],
+      "vocabularyIds": [
+        "lex-koko",
+        "lex-soko",
+        "lex-asoko",
+        "lex-doko",
+        "lex-dono",
+        "lex-dore",
+        "lex-dare",
+        "lex-toire"
+      ],
+      "conjugationLexemeIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "a1-unit-11",
+      "title": "Whose and which things",
+      "order": 11,
+      "level": "A1",
+      "canDoId": "can-do-a1-noun-links",
+      "prerequisiteUnitIds": [
+        "a1-unit-10"
+      ],
+      "grammarIds": [
+        "grammar-no-attribute",
+        "grammar-to-list"
+      ],
+      "sentenceIds": [
+        "sentence-a1-033",
+        "sentence-a1-034",
+        "sentence-a1-035",
+        "sentence-a1-036",
+        "sentence-a1-037"
+      ],
+      "vocabularyIds": [
+        "lex-watashi",
+        "lex-shashin",
+        "lex-kazoku",
+        "lex-kuruma",
+        "lex-pan"
+      ],
+      "conjugationLexemeIds": [
+        "lex-kau"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "a1-unit-12",
+      "title": "Tell time and schedules",
+      "order": 12,
+      "level": "A1",
+      "canDoId": "can-do-a1-time",
+      "prerequisiteUnitIds": [
+        "a1-unit-11"
+      ],
+      "grammarIds": [
+        "grammar-time-counters",
+        "grammar-time-ni",
+        "grammar-kara-made"
+      ],
+      "sentenceIds": [
+        "sentence-a1-038",
+        "sentence-a1-039",
+        "sentence-a1-040",
+        "sentence-a1-041",
+        "sentence-a1-042"
+      ],
+      "vocabularyIds": [
+        "lex-ichi",
+        "lex-ni",
+        "lex-san",
+        "lex-yon",
+        "lex-go",
+        "lex-roku",
+        "lex-nana",
+        "lex-hachi",
+        "lex-kyuu",
+        "lex-juu",
+        "lex-hyaku",
+        "lex-sen",
+        "lex-en",
+        "lex-ji",
+        "lex-fun",
+        "lex-han"
+      ],
+      "conjugationLexemeIds": [
+        "lex-iku",
+        "lex-kuru",
+        "lex-hataraku"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "a1-unit-13",
+      "title": "Daily routines across time",
+      "order": 13,
+      "level": "A1",
+      "canDoId": "can-do-a1-routines",
+      "prerequisiteUnitIds": [
+        "a1-unit-12"
+      ],
+      "grammarIds": [
+        "grammar-masen-deshita",
+        "grammar-time-ni",
+        "grammar-masu"
+      ],
+      "sentenceIds": [
+        "sentence-a1-043",
+        "sentence-a1-044",
+        "sentence-a1-045",
+        "sentence-a1-046",
+        "sentence-a1-047"
+      ],
+      "vocabularyIds": [
+        "lex-mainichi",
+        "lex-asa",
+        "lex-yoru",
+        "lex-kinou",
+        "lex-okiru",
+        "lex-neru",
+        "lex-benkyou-suru",
+        "lex-hataraku",
+        "lex-yasumu",
+        "lex-asagohan",
+        "lex-hirugohan",
+        "lex-bangohan"
+      ],
+      "conjugationLexemeIds": [
+        "lex-okiru",
+        "lex-neru",
+        "lex-benkyou-suru",
+        "lex-hataraku",
+        "lex-yasumu"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "a1-unit-14",
+      "title": "Describe now and before",
+      "order": 14,
+      "level": "A1",
+      "canDoId": "can-do-a1-adjective-time",
+      "prerequisiteUnitIds": [
+        "a1-unit-13"
+      ],
+      "grammarIds": [
+        "grammar-i-adj-negative",
+        "grammar-i-adj-past",
+        "grammar-na-noun-negative",
+        "grammar-na-noun-past"
+      ],
+      "sentenceIds": [
+        "sentence-a1-048",
+        "sentence-a1-049",
+        "sentence-a1-050",
+        "sentence-a1-051",
+        "sentence-a1-052",
+        "sentence-a1-053"
+      ],
+      "vocabularyIds": [
+        "lex-mise",
+        "lex-takai",
+        "lex-yasui",
+        "lex-atarashii",
+        "lex-furui",
+        "lex-atsui",
+        "lex-samui",
+        "lex-ii",
+        "lex-genki",
+        "lex-shizuka"
+      ],
+      "conjugationLexemeIds": [
+        "lex-takai",
+        "lex-yasui",
+        "lex-atarashii",
+        "lex-furui",
+        "lex-atsui",
+        "lex-samui",
+        "lex-ii",
+        "lex-genki",
+        "lex-shizuka"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "a1-unit-15",
+      "title": "Talk about family",
+      "order": 15,
+      "level": "A1",
+      "canDoId": "can-do-a1-family",
+      "prerequisiteUnitIds": [
+        "a1-unit-14"
+      ],
+      "grammarIds": [
+        "grammar-no-attribute",
+        "grammar-counter-nin",
+        "grammar-aru-iru"
+      ],
+      "sentenceIds": [
+        "sentence-a1-054",
+        "sentence-a1-055",
+        "sentence-a1-056",
+        "sentence-a1-057",
+        "sentence-a1-058",
+        "sentence-a1-059"
+      ],
+      "vocabularyIds": [
+        "lex-kazoku",
+        "lex-chichi",
+        "lex-haha",
+        "lex-ani",
+        "lex-ane",
+        "lex-otouto",
+        "lex-imouto",
+        "lex-ryoushin",
+        "lex-kaishain",
+        "lex-yon"
+      ],
+      "conjugationLexemeIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "a1-unit-16",
+      "title": "Order food and request items",
+      "order": 16,
+      "level": "A1",
+      "canDoId": "can-do-a1-food-request",
+      "prerequisiteUnitIds": [
+        "a1-unit-15"
+      ],
+      "grammarIds": [
+        "grammar-o-kudasai",
+        "grammar-counter-tsu"
+      ],
+      "sentenceIds": [
+        "sentence-a1-060",
+        "sentence-a1-061",
+        "sentence-a1-062",
+        "sentence-a1-063",
+        "sentence-a1-064",
+        "sentence-a1-065"
+      ],
+      "vocabularyIds": [
+        "lex-pan",
+        "lex-niku",
+        "lex-sakana",
+        "lex-yasai",
+        "lex-kudamono",
+        "lex-koohii",
+        "lex-juusu",
+        "lex-ringo",
+        "lex-resutoran",
+        "lex-oishii",
+        "lex-mouichido",
+        "lex-onegaishimasu"
+      ],
+      "conjugationLexemeIds": [
+        "lex-oishii"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "a1-unit-17",
+      "title": "Shop for basic things",
+      "order": 17,
+      "level": "A1",
+      "canDoId": "can-do-a1-shopping",
+      "prerequisiteUnitIds": [
+        "a1-unit-16"
+      ],
+      "grammarIds": [
+        "grammar-question-words",
+        "grammar-counter-tsu",
+        "grammar-o-kudasai",
+        "grammar-i-adj-polite"
+      ],
+      "sentenceIds": [
+        "sentence-a1-066",
+        "sentence-a1-067",
+        "sentence-a1-068",
+        "sentence-a1-069",
+        "sentence-a1-070",
+        "sentence-a1-071"
+      ],
+      "vocabularyIds": [
+        "lex-ikura",
+        "lex-ikutsu",
+        "lex-en",
+        "lex-hyaku",
+        "lex-sen",
+        "lex-mise",
+        "lex-nedan",
+        "lex-takai",
+        "lex-yasui",
+        "lex-dore",
+        "lex-ringo"
+      ],
+      "conjugationLexemeIds": [
+        "lex-takai",
+        "lex-yasui"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "a1-unit-18",
+      "title": "Use transport and directions",
+      "order": 18,
+      "level": "A1",
+      "canDoId": "can-do-a1-transport",
+      "prerequisiteUnitIds": [
+        "a1-unit-17"
+      ],
+      "grammarIds": [
+        "grammar-de-means",
+        "grammar-ni-destination",
+        "grammar-location-words"
+      ],
+      "sentenceIds": [
+        "sentence-a1-072",
+        "sentence-a1-073",
+        "sentence-a1-074",
+        "sentence-a1-075",
+        "sentence-a1-076",
+        "sentence-a1-077"
+      ],
+      "vocabularyIds": [
+        "lex-densha",
+        "lex-basu",
+        "lex-jitensha",
+        "lex-kuruma",
+        "lex-hikouki",
+        "lex-chikatetsu",
+        "lex-noru",
+        "lex-oriru",
+        "lex-aruku",
+        "lex-migi",
+        "lex-hidari",
+        "lex-mae",
+        "lex-ushiro",
+        "lex-chikai",
+        "lex-tooi"
+      ],
+      "conjugationLexemeIds": [
+        "lex-noru",
+        "lex-oriru",
+        "lex-aruku",
+        "lex-iku",
+        "lex-kaeru"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "a1-unit-19",
+      "title": "Ask for repetition and help",
+      "order": 19,
+      "level": "A1",
+      "canDoId": "can-do-a1-clarification",
+      "prerequisiteUnitIds": [
+        "a1-unit-18"
+      ],
+      "grammarIds": [
+        "grammar-te-form",
+        "grammar-te-kudasai",
+        "grammar-masen"
+      ],
+      "sentenceIds": [
+        "sentence-a1-078",
+        "sentence-a1-079",
+        "sentence-a1-080",
+        "sentence-a1-081",
+        "sentence-a1-082",
+        "sentence-a1-083"
+      ],
+      "vocabularyIds": [
+        "lex-mouichido",
+        "lex-yukkuri",
+        "lex-onegaishimasu",
+        "lex-sumimasen",
+        "lex-wakaru",
+        "lex-iu",
+        "lex-toire",
+        "lex-arigatou"
+      ],
+      "conjugationLexemeIds": [
+        "lex-kaku",
+        "lex-hanasu",
+        "lex-iu",
+        "lex-wakaru"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "a1-unit-20",
+      "title": "Keep a simple exchange natural",
+      "order": 20,
+      "level": "A1",
+      "canDoId": "can-do-a1-pragmatics",
+      "prerequisiteUnitIds": [
+        "a1-unit-19"
+      ],
+      "grammarIds": [
+        "grammar-ne",
+        "grammar-yo",
+        "grammar-question-words",
+        "grammar-ka-question"
+      ],
+      "sentenceIds": [
+        "sentence-a1-084",
+        "sentence-a1-085",
+        "sentence-a1-086",
+        "sentence-a1-087",
+        "sentence-a1-088",
+        "sentence-a1-089"
+      ],
+      "vocabularyIds": [
+        "lex-hai",
+        "lex-iie",
+        "lex-sukoshi",
+        "lex-dou",
+        "lex-dochira",
+        "lex-itsu",
+        "lex-ii",
+        "lex-muzukashii"
+      ],
+      "conjugationLexemeIds": [
+        "lex-ii",
+        "lex-muzukashii",
+        "lex-wakaru"
       ],
       "sourceIds": [
         "thiepn-original"
