@@ -2,9 +2,13 @@ import type { EntityRef } from "@thiepn/domain";
 
 export interface ProvenancedContent { sourceIds:string[]; }
 
+export type InflectionClass =
+  | "ichidan" | "godan" | "irregular-suru" | "irregular-kuru" | "irregular-aru"
+  | "i-adjective" | "i-adjective-ii" | "na-adjective";
+
 export interface Lexeme extends ProvenancedContent {
   id:string; canonicalForm:string; forms:OrthographicForm[]; readings:Reading[]; senseIds:string[];
-  kanjiLinks:KanjiLexemeLink[]; audioIds:string[]; tags?:string[]; priority?:number;
+  kanjiLinks:KanjiLexemeLink[]; audioIds:string[]; tags?:string[]; priority?:number; inflectionClass?:InflectionClass;
 }
 export interface OrthographicForm { text:string; script?:"hiragana"|"katakana"|"kanji"|"mixed"|"latin"|string; status?:string; }
 export interface Reading { text:string; restrictedToForms?:string[]; }
@@ -37,7 +41,7 @@ export interface CanDoDescriptor extends ProvenancedContent {
 }
 export interface CourseUnit extends ProvenancedContent {
   id:string; title:string; order:number; level:string; canDoId:string; prerequisiteUnitIds:string[];
-  grammarIds:string[]; sentenceIds:string[]; vocabularyIds:string[];
+  grammarIds:string[]; sentenceIds:string[]; vocabularyIds:string[]; conjugationLexemeIds?:string[];
 }
 
 export interface ContentSeedPackage {
