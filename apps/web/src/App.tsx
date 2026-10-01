@@ -44,7 +44,7 @@ export function App(){
     try{
       const queue=await buildTodayQueue();
       const audio=queue.filter((step)=>!isStudyLesson(step)&&Boolean(step.audio)).flatMap((step)=>isStudyLesson(step)||!step.audio?[]:[step.audio]);
-      if(audio.length)await getDefaultAudioProvider().prefetch(audio);
+      if(audio.length)void getDefaultAudioProvider().prefetch(audio);
       setSession(queue.length?queue:null);setSessionStatus("idle");
     }catch{setSessionStatus("error");}
   }
