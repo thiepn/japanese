@@ -1,16 +1,18 @@
 {
   "id": "jp-core",
-  "version": "0.1.0",
-  "schemaVersion": 2,
+  "version": "0.2.0",
+  "schemaVersion": 3,
   "minimumAppVersion": "0.0.1",
   "sizeBytes": 0,
-  "sha256": "P1.4-GENERATED-AT-BUILD",
+  "sha256": "P1.5-GENERATED-AT-BUILD",
   "dependencies": [],
   "sources": [
-    "thiepn-original"
+    "thiepn-original",
+    "tofugu-wanikani-audio"
   ],
   "licenses": [
-    "THIEPN-owned original content"
+    "THIEPN-owned original content",
+    "CC BY-SA 4.0"
   ],
   "createdAt": "2026-10-01T00:00:00Z"
 }

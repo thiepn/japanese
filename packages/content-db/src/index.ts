@@ -1,7 +1,7 @@
 import SQLiteESMFactory from "@journeyapps/wa-sqlite/dist/wa-sqlite-async.mjs";
 import * as SQLite from "@journeyapps/wa-sqlite";
 import { IDBBatchAtomicVFS } from "@journeyapps/wa-sqlite/src/examples/IDBBatchAtomicVFS.js";
-import type { ContentSeedPackage, Kanji, Lexeme, Sense } from "@thiepn/content-schema";
+import type { AudioAssetRecord, ContentSeedPackage, Kanji, Lexeme, Sense } from "@thiepn/content-schema";
 import type { EntityKind, EntityRef } from "@thiepn/domain";
 import { normalizeJapaneseSearch, type SearchDocument, type SearchResult } from "@thiepn/search";
 
@@ -12,6 +12,7 @@ export interface LexemeDetail {
   lexeme: Lexeme;
   senses: Sense[];
   kanji: Kanji[];
+  audioAssets: AudioAssetRecord[];
 }
 
 export class ContentDatabase {
@@ -47,11 +48,11 @@ export class ContentDatabase {
       }
       for (const lexeme of content.lexemes) {
         await this.run(
-          `INSERT INTO lexemes(id,canonical_form,forms_json,readings_json,sense_ids_json,tags_json,priority,source_ids_json)
-           VALUES(?,?,?,?,?,?,?,?)
+          `INSERT INTO lexemes(id,canonical_form,forms_json,readings_json,sense_ids_json,audio_ids_json,tags_json,priority,source_ids_json)
+           VALUES(?,?,?,?,?,?,?,?,?)
            ON CONFLICT(id) DO UPDATE SET canonical_form=excluded.canonical_form,forms_json=excluded.forms_json,readings_json=excluded.readings_json,
-             sense_ids_json=excluded.sense_ids_json,tags_json=excluded.tags_json,priority=excluded.priority,source_ids_json=excluded.source_ids_json`,
-          [lexeme.id,lexeme.canonicalForm,JSON.stringify(lexeme.forms),JSON.stringify(lexeme.readings),JSON.stringify(lexeme.senseIds),JSON.stringify(lexeme.tags ?? []),lexeme.priority ?? null,JSON.stringify(lexeme.sourceIds)]
+             sense_ids_json=excluded.sense_ids_json,audio_ids_json=excluded.audio_ids_json,tags_json=excluded.tags_json,priority=excluded.priority,source_ids_json=excluded.source_ids_json`,
+          [lexeme.id,lexeme.canonicalForm,JSON.stringify(lexeme.forms),JSON.stringify(lexeme.readings),JSON.stringify(lexeme.senseIds),JSON.stringify(lexeme.audioIds),JSON.stringify(lexeme.tags ?? []),lexeme.priority ?? null,JSON.stringify(lexeme.sourceIds)]
         );
         await this.run("DELETE FROM lexeme_kanji WHERE lexeme_id=?", [lexeme.id]);
         for (const link of lexeme.kanjiLinks) {
@@ -60,6 +61,14 @@ export class ContentDatabase {
             [lexeme.id,link.kanjiId,link.position,link.readingInWord ?? null,link.readingNote ?? null]
           );
         }
+      }
+      for (const audio of content.audioAssets) {
+        await this.run(
+          `INSERT INTO audio_assets(id,kind,text,reading,language,format,url,credit,accent,speaker,source_ids_json)
+           VALUES(?,?,?,?,?,?,?,?,?,?,?)
+           ON CONFLICT(id) DO UPDATE SET kind=excluded.kind,text=excluded.text,reading=excluded.reading,language=excluded.language,format=excluded.format,url=excluded.url,credit=excluded.credit,accent=excluded.accent,speaker=excluded.speaker,source_ids_json=excluded.source_ids_json`,
+          [audio.id,audio.kind,audio.text,audio.reading ?? null,audio.language,audio.format,audio.url,audio.credit,audio.accent ?? null,audio.speaker ?? null,JSON.stringify(audio.sourceIds)]
+        );
       }
       for (const sense of content.senses) {
         await this.run(
@@ -97,7 +106,7 @@ export class ContentDatabase {
 
   async getLexeme(id:string):Promise<LexemeDetail|null>{
     const lexemeRow=await this.firstRow(
-      "SELECT canonical_form,forms_json,readings_json,sense_ids_json,tags_json,priority,source_ids_json FROM lexemes WHERE id=?",
+      "SELECT canonical_form,forms_json,readings_json,sense_ids_json,audio_ids_json,tags_json,priority,source_ids_json FROM lexemes WHERE id=?",
       [id]
     );
     if(!lexemeRow)return null;
@@ -109,15 +118,16 @@ export class ContentDatabase {
       forms:JSON.parse(String(lexemeRow[1])) as Lexeme["forms"],
       readings:JSON.parse(String(lexemeRow[2])) as Lexeme["readings"],
       senseIds:JSON.parse(String(lexemeRow[3])) as string[],
+      audioIds:JSON.parse(String(lexemeRow[4])) as string[],
       kanjiLinks:links.map((row)=>({
         kanjiId:String(row[0]),
         position:Number(row[1]),
         ...(row[2]===null?{}:{readingInWord:String(row[2])}),
         ...(row[3]===null?{}:{readingNote:String(row[3])})
       })),
-      tags:JSON.parse(String(lexemeRow[4])) as string[],
-      ...(lexemeRow[5]===null?{}:{priority:Number(lexemeRow[5])}),
-      sourceIds:JSON.parse(String(lexemeRow[6])) as string[]
+      tags:JSON.parse(String(lexemeRow[5])) as string[],
+      ...(lexemeRow[6]===null?{}:{priority:Number(lexemeRow[6])}),
+      sourceIds:JSON.parse(String(lexemeRow[7])) as string[]
     };
     const senses:Sense[]=senseRows.map((row)=>({
       id:String(row[0]),lexemeId:id,
@@ -130,7 +140,24 @@ export class ContentDatabase {
       const row=await this.firstRow("SELECT literal,meanings_json,source_ids_json FROM kanji WHERE id=?",[String(link[0])]);
       if(row)kanjiItems.push({id:String(link[0]),literal:String(row[0]),meanings:JSON.parse(String(row[1])) as string[],sourceIds:JSON.parse(String(row[2])) as string[]});
     }
-    return {lexeme,senses,kanji:kanjiItems};
+    const audioAssets:AudioAssetRecord[]=[];
+    for(const audioId of lexeme.audioIds){
+      const row=await this.firstRow("SELECT kind,text,reading,language,format,url,credit,accent,speaker,source_ids_json FROM audio_assets WHERE id=?",[audioId]);
+      if(row)audioAssets.push({
+        id:audioId,
+        kind:String(row[0]) as AudioAssetRecord["kind"],
+        text:String(row[1]),
+        ...(row[2]===null?{}:{reading:String(row[2])}),
+        language:String(row[3]),
+        format:String(row[4]) as AudioAssetRecord["format"],
+        url:String(row[5]),
+        credit:String(row[6]),
+        ...(row[7]===null?{}:{accent:String(row[7])}),
+        ...(row[8]===null?{}:{speaker:String(row[8])}),
+        sourceIds:JSON.parse(String(row[9])) as string[]
+      });
+    }
+    return {lexeme,senses,kanji:kanjiItems,audioAssets};
   }
 
   async upsertSearchDocuments(documents: readonly SearchDocument[]): Promise<void> {
@@ -215,8 +242,22 @@ export class ContentDatabase {
         forms_json TEXT NOT NULL,
         readings_json TEXT NOT NULL,
         sense_ids_json TEXT NOT NULL,
+        audio_ids_json TEXT NOT NULL DEFAULT '[]',
         tags_json TEXT NOT NULL,
         priority INTEGER,
+        source_ids_json TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS audio_assets(
+        id TEXT PRIMARY KEY,
+        kind TEXT NOT NULL,
+        text TEXT NOT NULL,
+        reading TEXT,
+        language TEXT NOT NULL,
+        format TEXT NOT NULL,
+        url TEXT NOT NULL,
+        credit TEXT NOT NULL,
+        accent TEXT,
+        speaker TEXT,
         source_ids_json TEXT NOT NULL
       );
       CREATE TABLE IF NOT EXISTS senses(
@@ -242,6 +283,13 @@ export class ContentDatabase {
         PRIMARY KEY(lexeme_id,kanji_id,position)
       );
     `);
+    await this.ensureColumn("lexemes","audio_ids_json","TEXT NOT NULL DEFAULT \'[]\'");
+  }
+
+  private async ensureColumn(table:string,column:string,declaration:string):Promise<void>{
+    const rows=await this.allRows(`PRAGMA table_info(${table})`);
+    if(rows.some((row)=>String(row[1])===column))return;
+    await this.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${declaration}`);
   }
 
   private async run(sql:string,bindings:readonly SqlBinding[]=[]):Promise<void>{

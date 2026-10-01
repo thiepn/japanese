@@ -1,8 +1,9 @@
 {
-  "schemaVersion": 2,
-  "version": "0.1.0",
+  "schemaVersion": 3,
+  "version": "0.2.0",
   "sourceIds": [
-    "thiepn-original"
+    "thiepn-original",
+    "tofugu-wanikani-audio"
   ],
   "lexemes": [
     {
@@ -41,6 +42,9 @@
       "priority": 1,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-ie"
       ]
     },
     {
@@ -79,6 +83,9 @@
       "priority": 2,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-ue"
       ]
     },
     {
@@ -117,6 +124,9 @@
       "priority": 3,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-hito"
       ]
     },
     {
@@ -160,6 +170,9 @@
       "priority": 4,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-nihon"
       ]
     },
     {
@@ -208,6 +221,9 @@
       "priority": 5,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-nihongo"
       ]
     },
     {
@@ -251,6 +267,9 @@
       "priority": 6,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-gakkou"
       ]
     },
     {
@@ -295,6 +314,9 @@
       "priority": 7,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-gakusei"
       ]
     },
     {
@@ -339,6 +361,9 @@
       "priority": 8,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-sensei"
       ]
     },
     {
@@ -382,6 +407,9 @@
       "priority": 9,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-tomodachi"
       ]
     },
     {
@@ -420,6 +448,9 @@
       "priority": 10,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-mizu"
       ]
     },
     {
@@ -458,6 +489,9 @@
       "priority": 11,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-ocha"
       ]
     },
     {
@@ -496,6 +530,9 @@
       "priority": 12,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-gohan"
       ]
     },
     {
@@ -535,6 +572,9 @@
       "priority": 13,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-taberu"
       ]
     },
     {
@@ -574,6 +614,9 @@
       "priority": 14,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-nomu"
       ]
     },
     {
@@ -612,6 +655,9 @@
       "priority": 15,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-miru"
       ]
     },
     {
@@ -650,6 +696,9 @@
       "priority": 16,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-kiku"
       ]
     },
     {
@@ -688,6 +737,9 @@
       "priority": 17,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-yomu"
       ]
     },
     {
@@ -726,6 +778,9 @@
       "priority": 18,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-kaku"
       ]
     },
     {
@@ -765,6 +820,9 @@
       "priority": 19,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-iku"
       ]
     },
     {
@@ -804,6 +862,9 @@
       "priority": 20,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-kuru"
       ]
     },
     {
@@ -843,6 +904,9 @@
       "priority": 21,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-kaeru"
       ]
     },
     {
@@ -882,6 +946,9 @@
       "priority": 22,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-hanasu"
       ]
     },
     {
@@ -921,6 +988,9 @@
       "priority": 23,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-kau"
       ]
     },
     {
@@ -959,6 +1029,9 @@
       "priority": 24,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-ookii"
       ]
     },
     {
@@ -997,6 +1070,9 @@
       "priority": 25,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-chiisai"
       ]
     },
     {
@@ -1035,6 +1111,9 @@
       "priority": 26,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-ima"
       ]
     },
     {
@@ -1078,6 +1157,9 @@
       "priority": 27,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-kyou"
       ]
     },
     {
@@ -1121,6 +1203,9 @@
       "priority": 28,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-ashita"
       ]
     },
     {
@@ -1164,6 +1249,9 @@
       "priority": 29,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-densha"
       ]
     },
     {
@@ -1202,6 +1290,9 @@
       "priority": 30,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-eki"
       ]
     },
     {
@@ -1240,6 +1331,9 @@
       "priority": 31,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-suki"
       ]
     },
     {
@@ -1278,6 +1372,9 @@
       "priority": 32,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-hon"
       ]
     },
     {
@@ -1321,6 +1418,9 @@
       "priority": 33,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-namae"
       ]
     },
     {
@@ -1359,6 +1459,9 @@
       "priority": 34,
       "sourceIds": [
         "thiepn-original"
+      ],
+      "audioIds": [
+        "audio-lex-nani"
       ]
     }
   ],
@@ -2238,6 +2341,512 @@
       "sourceIds": [
         "thiepn-original"
       ]
+    }
+  ],
+  "audioAssets": [
+    {
+      "id": "audio-lex-ie",
+      "kind": "word",
+      "text": "家",
+      "reading": "いえ",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%AE%B6%E3%80%90%E3%81%84%E3%81%88%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-ue",
+      "kind": "word",
+      "text": "上",
+      "reading": "うえ",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E4%B8%8A%E3%80%90%E3%81%86%E3%81%88%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-hito",
+      "kind": "word",
+      "text": "人",
+      "reading": "ひと",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E4%BA%BA%E3%80%90%E3%81%B2%E3%81%A8%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-nihon",
+      "kind": "word",
+      "text": "日本",
+      "reading": "にほん",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%97%A5%E6%9C%AC%E3%80%90%E3%81%AB%E3%81%BB%E3%82%93%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-nihongo",
+      "kind": "word",
+      "text": "日本語",
+      "reading": "にほんご",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%80%90%E3%81%AB%E3%81%BB%E3%82%93%E3%81%94%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-gakkou",
+      "kind": "word",
+      "text": "学校",
+      "reading": "がっこう",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%AD%A6%E6%A0%A1%E3%80%90%E3%81%8C%E3%81%A3%E3%81%93%E3%81%86%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-gakusei",
+      "kind": "word",
+      "text": "学生",
+      "reading": "がくせい",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%AD%A6%E7%94%9F%E3%80%90%E3%81%8C%E3%81%8F%E3%81%9B%E3%81%84%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-sensei",
+      "kind": "word",
+      "text": "先生",
+      "reading": "せんせい",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%85%88%E7%94%9F%E3%80%90%E3%81%9B%E3%82%93%E3%81%9B%E3%81%84%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-tomodachi",
+      "kind": "word",
+      "text": "友達",
+      "reading": "ともだち",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%8F%8B%E9%81%94%E3%80%90%E3%81%A8%E3%82%82%E3%81%A0%E3%81%A1%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-mizu",
+      "kind": "word",
+      "text": "水",
+      "reading": "みず",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%B0%B4%E3%80%90%E3%81%BF%E3%81%9A%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-ocha",
+      "kind": "word",
+      "text": "お茶",
+      "reading": "おちゃ",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E3%81%8A%E8%8C%B6%E3%80%90%E3%81%8A%E3%81%A1%E3%82%83%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-gohan",
+      "kind": "word",
+      "text": "ご飯",
+      "reading": "ごはん",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E3%81%94%E9%A3%AF%E3%80%90%E3%81%94%E3%81%AF%E3%82%93%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-taberu",
+      "kind": "word",
+      "text": "食べる",
+      "reading": "たべる",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E9%A3%9F%E3%81%B9%E3%82%8B%E3%80%90%E3%81%9F%E3%81%B9%E3%82%8B%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-nomu",
+      "kind": "word",
+      "text": "飲む",
+      "reading": "のむ",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E9%A3%B2%E3%82%80%E3%80%90%E3%81%AE%E3%82%80%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-miru",
+      "kind": "word",
+      "text": "見る",
+      "reading": "みる",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E8%A6%8B%E3%82%8B%E3%80%90%E3%81%BF%E3%82%8B%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-kiku",
+      "kind": "word",
+      "text": "聞く",
+      "reading": "きく",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E8%81%9E%E3%81%8F%E3%80%90%E3%81%8D%E3%81%8F%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-yomu",
+      "kind": "word",
+      "text": "読む",
+      "reading": "よむ",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E8%AA%AD%E3%82%80%E3%80%90%E3%82%88%E3%82%80%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-kaku",
+      "kind": "word",
+      "text": "書く",
+      "reading": "かく",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%9B%B8%E3%81%8F%E3%80%90%E3%81%8B%E3%81%8F%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-iku",
+      "kind": "word",
+      "text": "行く",
+      "reading": "いく",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E8%A1%8C%E3%81%8F%E3%80%90%E3%81%84%E3%81%8F%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-kuru",
+      "kind": "word",
+      "text": "来る",
+      "reading": "くる",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%9D%A5%E3%82%8B%E3%80%90%E3%81%8F%E3%82%8B%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-kaeru",
+      "kind": "word",
+      "text": "帰る",
+      "reading": "かえる",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%B8%B0%E3%82%8B%E3%80%90%E3%81%8B%E3%81%88%E3%82%8B%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-hanasu",
+      "kind": "word",
+      "text": "話す",
+      "reading": "はなす",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E8%A9%B1%E3%81%99%E3%80%90%E3%81%AF%E3%81%AA%E3%81%99%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-kau",
+      "kind": "word",
+      "text": "買う",
+      "reading": "かう",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E8%B2%B7%E3%81%86%E3%80%90%E3%81%8B%E3%81%86%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-ookii",
+      "kind": "word",
+      "text": "大きい",
+      "reading": "おおきい",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%A4%A7%E3%81%8D%E3%81%84%E3%80%90%E3%81%8A%E3%81%8A%E3%81%8D%E3%81%84%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-chiisai",
+      "kind": "word",
+      "text": "小さい",
+      "reading": "ちいさい",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%B0%8F%E3%81%95%E3%81%84%E3%80%90%E3%81%A1%E3%81%84%E3%81%95%E3%81%84%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-ima",
+      "kind": "word",
+      "text": "今",
+      "reading": "いま",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E4%BB%8A%E3%80%90%E3%81%84%E3%81%BE%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-kyou",
+      "kind": "word",
+      "text": "今日",
+      "reading": "きょう",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E4%BB%8A%E6%97%A5%E3%80%90%E3%81%8D%E3%82%87%E3%81%86%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-ashita",
+      "kind": "word",
+      "text": "明日",
+      "reading": "あした",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%98%8E%E6%97%A5%E3%80%90%E3%81%82%E3%81%97%E3%81%9F%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-densha",
+      "kind": "word",
+      "text": "電車",
+      "reading": "でんしゃ",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E9%9B%BB%E8%BB%8A%E3%80%90%E3%81%A7%E3%82%93%E3%81%97%E3%82%83%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-eki",
+      "kind": "word",
+      "text": "駅",
+      "reading": "えき",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E9%A7%85%E3%80%90%E3%81%88%E3%81%8D%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-suki",
+      "kind": "word",
+      "text": "好き",
+      "reading": "すき",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%A5%BD%E3%81%8D%E3%80%90%E3%81%99%E3%81%8D%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-hon",
+      "kind": "word",
+      "text": "本",
+      "reading": "ほん",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%9C%AC%E3%80%90%E3%81%BB%E3%82%93%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-namae",
+      "kind": "word",
+      "text": "名前",
+      "reading": "なまえ",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%90%8D%E5%89%8D%E3%80%90%E3%81%AA%E3%81%BE%E3%81%88%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-lex-nani",
+      "kind": "word",
+      "text": "何",
+      "reading": "なに",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E4%BD%95%E3%80%90%E3%81%AA%E3%81%AB%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+    },
+    {
+      "id": "audio-perception-sokuon-sakka",
+      "kind": "perception",
+      "text": "作家",
+      "reading": "さっか",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E4%BD%9C%E5%AE%B6%E3%80%90%E3%81%95%E3%81%A3%E3%81%8B%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific"
+    },
+    {
+      "id": "audio-perception-long-vowel-obaasan",
+      "kind": "perception",
+      "text": "お婆さん",
+      "reading": "おばあさん",
+      "language": "ja-JP",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E3%81%8A%E5%A9%86%E3%81%95%E3%82%93%E3%80%90%E3%81%8A%E3%81%B0%E3%81%82%E3%81%95%E3%82%93%E3%80%91.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ],
+      "credit": "Tofugu / WaniKani",
+      "accent": "recording-specific"
     }
   ]
 }

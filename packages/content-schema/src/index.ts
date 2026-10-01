@@ -11,6 +11,7 @@ export interface Lexeme extends ProvenancedContent {
   readings: Reading[];
   senseIds: string[];
   kanjiLinks: KanjiLexemeLink[];
+  audioIds: string[];
   tags?: string[];
   priority?: number;
 }
@@ -46,6 +47,19 @@ export interface Kanji extends ProvenancedContent {
   meanings: string[];
 }
 
+export interface AudioAssetRecord extends ProvenancedContent {
+  id: string;
+  kind: "word" | "perception" | "sentence";
+  text: string;
+  reading?: string;
+  language: string;
+  format: "ogg" | "mp3" | "wav";
+  url: string;
+  credit: string;
+  accent?: string;
+  speaker?: string;
+}
+
 export interface GrammarConcept extends ProvenancedContent {
   id: string;
   label: string;
@@ -78,6 +92,7 @@ export interface ContentSeedPackage {
   lexemes: Lexeme[];
   senses: Sense[];
   kanji: Kanji[];
+  audioAssets: AudioAssetRecord[];
   grammar: SeedGrammarRecord[];
   sentences: SeedSentenceRecord[];
 }

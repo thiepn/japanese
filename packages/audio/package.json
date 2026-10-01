@@ -1,0 +1,9 @@
+{
+  "name": "@thiepn/audio",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": { "@thiepn/content-schema": "workspace:*" },
+  "scripts": { "build": "tsc --noEmit", "typecheck": "tsc --noEmit" }
+}

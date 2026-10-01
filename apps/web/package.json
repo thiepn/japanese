@@ -3,7 +3,12 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": { "dev": "vite", "build": "tsc --noEmit && vite build", "preview": "vite preview", "typecheck": "tsc --noEmit" },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
     "@thiepn/auth": "workspace:*",
     "@thiepn/content-db": "workspace:*",
@@ -15,7 +20,8 @@
     "@thiepn/search": "workspace:*",
     "@thiepn/study-player": "workspace:*",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "@thiepn/audio": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "19.3.0",
