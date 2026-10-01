@@ -134,7 +134,7 @@ export class ContentDatabase {
         entity:{kind:"grammar",id:item.id}, title:item.label, glosses:[item.summary,...item.uses], aliases:item.formation
       })),
       ...content.sentences.map((item):SearchDocument=>({
-        entity:{kind:"sentence",id:item.id}, title:item.text, reading:item.reading, glosses:[item.translation], aliases:[item.normalizedText]
+        entity:{kind:"sentence",id:item.id}, title:item.text, ...(item.reading?{reading:item.reading}:{}), glosses:[item.translation], aliases:[item.normalizedText]
       }))
     ]);
   }
