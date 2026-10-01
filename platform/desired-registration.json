@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "app": {
+    "slug": "japanese",
+    "name": "Japanese",
+    "description": "Unified local-first Japanese learning system.",
+    "coreAppId": "japanese",
+    "namespace": "japanese",
+    "owner": "private-core",
+    "enabled": true
+  },
+  "permissionIntents": [
+    "study.read",
+    "study.write",
+    "notes.write",
+    "sources.read",
+    "sources.write",
+    "ai.use",
+    "export"
+  ],
+  "notes": [
+    "This is the desired Japanese-side registration contract, not the authoritative THIEPN Core/Account registry.",
+    "Platform registry mutation belongs to the shared THIEPN platform deployment workflow.",
+    "Backend level is intentionally not duplicated here; Core remains authoritative for platform classification."
+  ]
+}

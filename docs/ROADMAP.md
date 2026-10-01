@@ -2,11 +2,15 @@
 
 ## P0 — Production Foundation, Contracts & Architecture Freeze
 
-Repository structure, shared contracts, StudyEvent model, learner reducer, local persistence, sync protocol, PWA shell, source/licensing registry and one vertical architecture proof.
+**Complete.** Repository structure, shared contracts, StudyEvent model, learner reducer, FSRS adapter, account-scoped persistence, Core Sync v1 mapping, persistent browser content DB, PWA/offline verification, source/licensing registry and the 食べる vertical architecture proof are established.
+
+Shared THIEPN Account session handoff and production Core transport remain platform-owned integration dependencies; Japanese must not reimplement them.
 
 ## P1 — Foundation Learning Engine & Study Player
 
-Kana foundation, vocabulary entities, word-integrated kanji, production FSRS adapter, reusable Study Player, first Foundation/A1 units and Today v1.
+Build the first genuinely usable learning loop: kana foundation, vocabulary entities, word-integrated kanji, reusable Study Player, real review scheduling, first Foundation/A1 units and Today v1.
+
+P1 milestone: a complete beginner can install the app, learn first Japanese through one Study Player, leave, return later, and receive correctly scheduled continuation from the same learner model.
 
 ## Later
 

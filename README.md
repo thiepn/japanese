@@ -10,8 +10,8 @@ Primary product surfaces: **Today · Learn · Immerse · Library · Progress**.
 
 ## Current phase
 
-**P0 — Production Foundation, Contracts & Architecture Freeze.**
+**P0 is complete. Next: P1 — Foundation Learning Engine & Study Player.**
 
-P0 establishes the monorepo, domain contracts, immutable StudyEvent model, learner reducer, local-first persistence boundary, sync protocol, content/source contracts, PWA shell and architecture documentation before full learning features are implemented.
+The P0 foundation now includes the monorepo contracts, immutable StudyEvent architecture, learner reducer, FSRS adapter, account-scoped IndexedDB state, Core Sync v1/Event Sync mapping, persistent browser SQLite content/search, source/licensing validation, PWA/offline verification and architecture documentation.
 
-See `docs/ROADMAP.md` and `docs/ARCHITECTURE.md`.
+See `docs/P0_ACCEPTANCE.md`, `docs/ROADMAP.md` and `docs/ARCHITECTURE.md`.
