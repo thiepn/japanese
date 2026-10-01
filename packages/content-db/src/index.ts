@@ -47,11 +47,11 @@ export class ContentDatabase {
       }
       for (const lexeme of content.lexemes) {
         await this.run(
-          `INSERT INTO lexemes(id,canonical_form,forms_json,readings_json,sense_ids_json,audio_ids_json,tags_json,priority,source_ids_json)
-           VALUES(?,?,?,?,?,?,?,?,?)
+          `INSERT INTO lexemes(id,canonical_form,forms_json,readings_json,sense_ids_json,audio_ids_json,tags_json,priority,inflection_class,source_ids_json)
+           VALUES(?,?,?,?,?,?,?,?,?,?)
            ON CONFLICT(id) DO UPDATE SET canonical_form=excluded.canonical_form,forms_json=excluded.forms_json,readings_json=excluded.readings_json,
-             sense_ids_json=excluded.sense_ids_json,audio_ids_json=excluded.audio_ids_json,tags_json=excluded.tags_json,priority=excluded.priority,source_ids_json=excluded.source_ids_json`,
-          [lexeme.id,lexeme.canonicalForm,JSON.stringify(lexeme.forms),JSON.stringify(lexeme.readings),JSON.stringify(lexeme.senseIds),JSON.stringify(lexeme.audioIds),JSON.stringify(lexeme.tags ?? []),lexeme.priority ?? null,JSON.stringify(lexeme.sourceIds)]
+             sense_ids_json=excluded.sense_ids_json,audio_ids_json=excluded.audio_ids_json,tags_json=excluded.tags_json,priority=excluded.priority,inflection_class=excluded.inflection_class,source_ids_json=excluded.source_ids_json`,
+          [lexeme.id,lexeme.canonicalForm,JSON.stringify(lexeme.forms),JSON.stringify(lexeme.readings),JSON.stringify(lexeme.senseIds),JSON.stringify(lexeme.audioIds),JSON.stringify(lexeme.tags ?? []),lexeme.priority ?? null,lexeme.inflectionClass ?? null,JSON.stringify(lexeme.sourceIds)]
         );
         await this.run("DELETE FROM lexeme_kanji WHERE lexeme_id=?", [lexeme.id]);
         for (const link of lexeme.kanjiLinks) {
@@ -95,10 +95,10 @@ export class ContentDatabase {
       }
       for (const unit of content.courseUnits) {
         await this.run(
-          `INSERT INTO course_units(id,title,order_index,level,can_do_id,prerequisite_unit_ids_json,grammar_ids_json,sentence_ids_json,vocabulary_ids_json,source_ids_json)
-           VALUES(?,?,?,?,?,?,?,?,?,?)
-           ON CONFLICT(id) DO UPDATE SET title=excluded.title,order_index=excluded.order_index,level=excluded.level,can_do_id=excluded.can_do_id,prerequisite_unit_ids_json=excluded.prerequisite_unit_ids_json,grammar_ids_json=excluded.grammar_ids_json,sentence_ids_json=excluded.sentence_ids_json,vocabulary_ids_json=excluded.vocabulary_ids_json,source_ids_json=excluded.source_ids_json`,
-          [unit.id,unit.title,unit.order,unit.level,unit.canDoId,JSON.stringify(unit.prerequisiteUnitIds),JSON.stringify(unit.grammarIds),JSON.stringify(unit.sentenceIds),JSON.stringify(unit.vocabularyIds),JSON.stringify(unit.sourceIds)]
+          `INSERT INTO course_units(id,title,order_index,level,can_do_id,prerequisite_unit_ids_json,grammar_ids_json,sentence_ids_json,vocabulary_ids_json,conjugation_lexeme_ids_json,source_ids_json)
+           VALUES(?,?,?,?,?,?,?,?,?,?,?)
+           ON CONFLICT(id) DO UPDATE SET title=excluded.title,order_index=excluded.order_index,level=excluded.level,can_do_id=excluded.can_do_id,prerequisite_unit_ids_json=excluded.prerequisite_unit_ids_json,grammar_ids_json=excluded.grammar_ids_json,sentence_ids_json=excluded.sentence_ids_json,vocabulary_ids_json=excluded.vocabulary_ids_json,conjugation_lexeme_ids_json=excluded.conjugation_lexeme_ids_json,source_ids_json=excluded.source_ids_json`,
+          [unit.id,unit.title,unit.order,unit.level,unit.canDoId,JSON.stringify(unit.prerequisiteUnitIds),JSON.stringify(unit.grammarIds),JSON.stringify(unit.sentenceIds),JSON.stringify(unit.vocabularyIds),JSON.stringify(unit.conjugationLexemeIds ?? []),JSON.stringify(unit.sourceIds)]
         );
       }
       for (const sense of content.senses) {
@@ -141,7 +141,7 @@ export class ContentDatabase {
 
   async getLexeme(id:string):Promise<LexemeDetail|null>{
     const lexemeRow=await this.firstRow(
-      "SELECT canonical_form,forms_json,readings_json,sense_ids_json,audio_ids_json,tags_json,priority,source_ids_json FROM lexemes WHERE id=?",
+      "SELECT canonical_form,forms_json,readings_json,sense_ids_json,audio_ids_json,tags_json,priority,inflection_class,source_ids_json FROM lexemes WHERE id=?",
       [id]
     );
     if(!lexemeRow)return null;
@@ -162,7 +162,8 @@ export class ContentDatabase {
       })),
       tags:JSON.parse(String(lexemeRow[5])) as string[],
       ...(lexemeRow[6]===null?{}:{priority:Number(lexemeRow[6])}),
-      sourceIds:JSON.parse(String(lexemeRow[7])) as string[]
+      ...(lexemeRow[7]===null?{}:{inflectionClass:String(lexemeRow[7]) as Lexeme["inflectionClass"]}),
+      sourceIds:JSON.parse(String(lexemeRow[8])) as string[]
     };
     const senses:Sense[]=senseRows.map((row)=>({
       id:String(row[0]),lexemeId:id,
@@ -307,6 +308,7 @@ export class ContentDatabase {
         audio_ids_json TEXT NOT NULL DEFAULT '[]',
         tags_json TEXT NOT NULL,
         priority INTEGER,
+        inflection_class TEXT,
         source_ids_json TEXT NOT NULL
       );
       CREATE TABLE IF NOT EXISTS audio_assets(
@@ -335,7 +337,7 @@ export class ContentDatabase {
       );
       CREATE TABLE IF NOT EXISTS course_units(
         id TEXT PRIMARY KEY,title TEXT NOT NULL,order_index INTEGER NOT NULL,level TEXT NOT NULL,can_do_id TEXT NOT NULL,prerequisite_unit_ids_json TEXT NOT NULL,
-        grammar_ids_json TEXT NOT NULL,sentence_ids_json TEXT NOT NULL,vocabulary_ids_json TEXT NOT NULL,source_ids_json TEXT NOT NULL
+        grammar_ids_json TEXT NOT NULL,sentence_ids_json TEXT NOT NULL,vocabulary_ids_json TEXT NOT NULL,conjugation_lexeme_ids_json TEXT NOT NULL DEFAULT '[]',source_ids_json TEXT NOT NULL
       );
       CREATE TABLE IF NOT EXISTS senses(
         id TEXT PRIMARY KEY,
@@ -361,6 +363,8 @@ export class ContentDatabase {
       );
     `);
     await this.ensureColumn("lexemes","audio_ids_json","TEXT NOT NULL DEFAULT \'[]\'");
+    await this.ensureColumn("lexemes","inflection_class","TEXT");
+    await this.ensureColumn("course_units","conjugation_lexeme_ids_json","TEXT NOT NULL DEFAULT \'[]\'");
   }
 
   private async ensureColumn(table:string,column:string,declaration:string):Promise<void>{
