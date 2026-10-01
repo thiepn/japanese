@@ -1,0 +1,4 @@
+{
+  "name": "@thiepn/content-validation", "private": true, "version": "0.0.0", "type": "module",
+  "scripts": { "build": "tsc --noEmit", "typecheck": "tsc --noEmit", "validate": "node --experimental-strip-types src/validate.ts" }
+}

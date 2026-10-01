@@ -2,16 +2,18 @@
   "name": "@thiepn/japanese",
   "private": true,
   "version": "0.0.0",
-  "packageManager": "pnpm@10.15.0",
+  "packageManager": "pnpm@11.19.0",
+  "engines": { "node": ">=24.15.0 <25" },
   "scripts": {
     "dev": "pnpm --filter @thiepn/japanese-web dev",
     "build": "pnpm -r build",
     "typecheck": "pnpm -r typecheck",
-    "test": "vitest run"
+    "test": "vitest run",
+    "validate:content": "pnpm --filter @thiepn/content-validation validate"
   },
   "devDependencies": {
     "fake-indexeddb": "^6.0.0",
-    "typescript": "^5.7.0",
-    "vitest": "^3.0.0"
+    "typescript": "7.0.2",
+    "vitest": "5.0.2"
   }
 }

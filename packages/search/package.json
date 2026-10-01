@@ -1,0 +1,6 @@
+{
+  "name": "@thiepn/search", "private": true, "version": "0.0.0", "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": { "@thiepn/domain": "workspace:*" },
+  "scripts": { "build": "tsc --noEmit", "typecheck": "tsc --noEmit" }
+}
