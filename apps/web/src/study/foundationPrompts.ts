@@ -66,21 +66,6 @@ export const foundationApplicationPrompts: StudyPrompt[] = allKanaSeeds.flatMap(
   makeKanaFormSelectionPrompt(seed,index,all)
 ]);
 
-const bridgeVocabulary: StudyPrompt[] = [
-  {
-    id:"foundation-word-ie",primaryTarget:{kind:"lexeme",id:"lex-ie"},skill:"meaning_recognition",cueFamily:"written-to-meaning",
-    promptType:"choice",instruction:"Choose the meaning.",prompt:"いえ",promptLanguage:"ja",
-    choices:["house","blue","above","dog"],acceptedAnswers:["house","a house"],displayAnswer:"house",
-    explanation:"いえ means “house / home.” It only uses kana from the first vowel set.",contextId:"foundation-bridge"
-  },
-  {
-    id:"foundation-word-ue",primaryTarget:{kind:"lexeme",id:"lex-ue"},skill:"meaning_recognition",cueFamily:"written-to-meaning",
-    promptType:"choice",instruction:"Choose the meaning.",prompt:"うえ",promptLanguage:"ja",
-    choices:["above / on top","house","sea","station"],acceptedAnswers:["above / on top","above","on top"],displayAnswer:"above / on top",
-    explanation:"うえ means “above / on top.”",contextId:"foundation-bridge"
-  }
-];
-
 const hiraganaSokuon: StudyPrompt = {
   id:"foundation-hiragana-small-tsu",primaryTarget:{kind:"kana",id:"hiragana-small-tsu"},skill:"reading",cueFamily:"sokuon-reading",
   promptType:"choice",instruction:"Choose the reading.",prompt:"きって",promptLanguage:"ja",
@@ -126,7 +111,7 @@ const voicedKataPrompts = kanaRecognitionPrompts.filter((prompt) => voicedKataka
 const yoonKataPrompts = kanaRecognitionPrompts.filter((prompt) => yoonKatakana.some((seed) => prompt.primaryTarget.id === entityId(seed)));
 
 export const foundationPrompts: StudyPrompt[] = [
-  ...basicHiraPrompts.slice(0,5),...bridgeVocabulary,...basicHiraPrompts.slice(5),
+  ...basicHiraPrompts,
   ...voicedHiraPrompts,...yoonHiraPrompts,hiraganaSokuon,
   ...basicKataPrompts,...voicedKataPrompts,...yoonKataPrompts,katakanaSokuon,katakanaLongVowel
 ];
@@ -146,7 +131,6 @@ export const foundationSections = [
 
 export const foundationLessons: Record<string,StudyLesson> = {
   "hiragana-vowels":{kind:"lesson",id:"lesson-hiragana-vowels",title:"Five vowel sounds",body:"Japanese kana represent sound units. Start with the five vowels; their sound values stay much more stable than English vowel spelling.",contextId:"hiragana-vowels",examples:[{expression:"あ · い · う · え · お",note:"a · i · u · e · o"}]},
-  "foundation-bridge":{kind:"lesson",id:"lesson-first-words",title:"Read something real",body:"You can already combine the first vowels into useful Japanese words. Reading words early keeps kana tied to language rather than treating them as isolated symbols.",contextId:"foundation-bridge",examples:[{expression:"いえ",note:"house / home"},{expression:"うえ",note:"above / on top"}]},
   "hiragana-k":rowLesson("hiragana-k","The K row","Add k before each vowel: ka, ki, ku, ke, ko."),
   "hiragana-s":rowLesson("hiragana-s","The S row","Most of this row follows s + vowel. し is conventionally written shi in common romanization.",[{expression:"し",note:"shi; si is also accepted"}]),
   "hiragana-t":rowLesson("hiragana-t","The T row","This row contains two forms worth noticing early: ち is chi and つ is tsu.",[{expression:"ち",note:"chi"},{expression:"つ",note:"tsu"}]),
