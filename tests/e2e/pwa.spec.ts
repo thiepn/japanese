@@ -29,7 +29,7 @@ test("PWA shell, integrated Study Player and canonical content survive offline r
   await search.fill("eat");
   await expect(page.getByText("食べる")).toBeVisible({timeout:15_000});
   await search.fill("person");
-  await expect(page.getByText("人",{exact:true})).toBeVisible({timeout:15_000});
+  await expect(page.getByRole("article").filter({hasText:"ひと"}).getByText("人",{exact:true})).toBeVisible({timeout:15_000});
   await search.fill("food");
   await expect(page.getByText("食",{exact:true})).toBeVisible({timeout:15_000});
 
