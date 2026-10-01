@@ -76,3 +76,8 @@ button{touch-action:manipulation}
 
 .audio-error p{margin:0}
 .audio-skip{min-height:44px;margin-top:4px;padding:0 12px;text-decoration:underline;text-underline-offset:3px}
+
+.lesson-audio{display:flex;align-items:center;gap:8px;margin:18px 0 4px}
+.audio-inline{min-height:46px;padding:0 16px;border:0;border-radius:999px;background:#1f2937;color:#fff;font-weight:750;cursor:pointer}
+.audio-inline-slow{min-height:44px;padding:0 12px;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:420px){.lesson-audio{align-items:stretch;flex-direction:column}.audio-inline,.audio-inline-slow{width:100%}}
