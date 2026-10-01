@@ -1,5 +1,5 @@
-import type { AudioAssetRecord } from "@thiepn/content-schema";
-import type { EntityRef, SkillDimension, StudyEvent, StudyResult } from "@thiepn/domain";
+import type { AudioAssetRecord, LanguageActivity } from "@thiepn/content-schema";
+import type { ActivityType, EntityRef, SkillDimension, StudyEvent, StudyResult } from "@thiepn/domain";
 
 export type StudyPromptType = "choice" | "typed";
 export type AnswerNormalization = "default" | "romaji" | "japanese";
@@ -21,6 +21,9 @@ interface StudyPromptBase {
   sourceId?: string;
   contentVersion?: string;
   audio?: AudioAssetRecord;
+  activity?: ActivityType;
+  languageActivity?: LanguageActivity;
+  eventMetadata?: Record<string,unknown>;
 }
 
 export interface ChoiceStudyPrompt extends StudyPromptBase { promptType: "choice"; choices: string[]; }
@@ -70,7 +73,8 @@ export function gradeStudyPrompt(prompt: StudyPrompt, response: string): GradeRe
 
 export function createStudyEvent(input: StudyEventInput): StudyEvent {
   const grade = gradeStudyPrompt(input.prompt, input.response);
-  const metadata:Record<string,unknown>={promptId:input.prompt.id};
+  const metadata:Record<string,unknown>={promptId:input.prompt.id,...(input.prompt.eventMetadata ?? {})};
+  if(input.prompt.languageActivity)metadata.languageActivity=input.prompt.languageActivity;
   if(input.prompt.audio){
     metadata.audioAssetId=input.prompt.audio.id;
     metadata.audioSourceIds=input.prompt.audio.sourceIds;
@@ -78,7 +82,7 @@ export function createStudyEvent(input: StudyEventInput): StudyEvent {
   }
   return {
     id: input.id, userId: input.userId, deviceId: input.deviceId, occurredAt: input.occurredAt,
-    activity: input.prompt.audio ? "listening" : "review",
+    activity: input.prompt.activity ?? (input.prompt.audio ? "listening" : "review"),
     primaryTarget: input.prompt.primaryTarget, skillDimension: input.prompt.skill,
     promptFamily: input.prompt.cueFamily, responseMode: input.prompt.promptType, result: grade.result,
     responseTimeMs: input.responseTimeMs, attempts: 1,
