@@ -7689,6 +7689,642 @@
       "sourceIds": [
         "thiepn-original"
       ]
+    },
+    {
+      "id": "grammar-no-attribute",
+      "label": "の (linking nouns)",
+      "summary": "links one noun to another for possession, category or relationship",
+      "mentalModel": "Think of の as attaching one noun as a label or relationship to the noun that follows. English may use 'of', possessive 's', or an attributive noun.",
+      "formation": [
+        "Noun A + の + Noun B"
+      ],
+      "uses": [
+        "possession",
+        "category or affiliation",
+        "noun-to-noun description"
+      ],
+      "prerequisiteIds": [
+        "grammar-desu"
+      ],
+      "contrastIds": [],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 16,
+      "tags": [
+        "a1-breadth",
+        "noun-link"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-demonstrative-pronouns",
+      "label": "これ / それ / あれ",
+      "summary": "points to a thing as this, that near the listener, or that over there",
+      "mentalModel": "Japanese demonstratives encode distance from the speaker and listener. これ, それ and あれ stand on their own as pronouns.",
+      "formation": [
+        "これ / それ / あれ + は ..."
+      ],
+      "uses": [
+        "pointing to objects",
+        "identifying visible things"
+      ],
+      "prerequisiteIds": [
+        "grammar-wa-topic"
+      ],
+      "contrastIds": [
+        "grammar-demonstrative-determiners"
+      ],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 17,
+      "tags": [
+        "a1-breadth",
+        "demonstratives"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-demonstrative-determiners",
+      "label": "この / その / あの + noun",
+      "summary": "points to a specific noun as this, that, or that over there",
+      "mentalModel": "この, その and あの cannot stand alone; they directly modify a following noun.",
+      "formation": [
+        "この / その / あの + Noun"
+      ],
+      "uses": [
+        "identifying a specific object or person"
+      ],
+      "prerequisiteIds": [
+        "grammar-demonstrative-pronouns"
+      ],
+      "contrastIds": [
+        "grammar-demonstrative-pronouns"
+      ],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 18,
+      "tags": [
+        "a1-breadth",
+        "demonstratives"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-location-words",
+      "label": "ここ / そこ / あそこ / どこ",
+      "summary": "expresses here, there, over there, and where",
+      "mentalModel": "Location demonstratives use the same distance system as これ / それ / あれ. どこ asks which location.",
+      "formation": [
+        "ここ / そこ / あそこ + です",
+        "どこ + ですか"
+      ],
+      "uses": [
+        "giving a location",
+        "asking where something is"
+      ],
+      "prerequisiteIds": [
+        "grammar-ka-question"
+      ],
+      "contrastIds": [],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 19,
+      "tags": [
+        "a1-breadth",
+        "location",
+        "questions"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-question-words",
+      "label": "basic question words",
+      "summary": "places an interrogative word in the information slot being asked about",
+      "mentalModel": "Japanese usually keeps the normal sentence structure and replaces the unknown information with a question word such as だれ, どこ, いつ, どう, どれ or いくら.",
+      "formation": [
+        "Question word + normal particle/predicate"
+      ],
+      "uses": [
+        "asking who, where, when, how, which, or how much"
+      ],
+      "prerequisiteIds": [
+        "grammar-ka-question"
+      ],
+      "contrastIds": [],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 20,
+      "tags": [
+        "a1-breadth",
+        "questions"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-time-ni",
+      "label": "time + に",
+      "summary": "marks a specific time when an event happens",
+      "mentalModel": "Use に with clock times and other specific points in time. Relative time words such as 今日, 明日 and 昨日 commonly appear without に.",
+      "formation": [
+        "specific time + に + Verb"
+      ],
+      "uses": [
+        "saying when an action happens"
+      ],
+      "prerequisiteIds": [
+        "grammar-ni-destination",
+        "grammar-masu"
+      ],
+      "contrastIds": [],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 21,
+      "tags": [
+        "a1-breadth",
+        "time"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-kara-made",
+      "label": "〜から / 〜まで",
+      "summary": "marks a starting point and an ending point",
+      "mentalModel": "から sets a start and まで sets an end. They can describe time spans or physical ranges.",
+      "formation": [
+        "Start + から + End + まで"
+      ],
+      "uses": [
+        "from ... to ...",
+        "work or travel ranges"
+      ],
+      "prerequisiteIds": [
+        "grammar-time-ni"
+      ],
+      "contrastIds": [],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 22,
+      "tags": [
+        "a1-breadth",
+        "time",
+        "range"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-de-means",
+      "label": "で (means / transport)",
+      "summary": "marks the means, tool or transport used for an action",
+      "mentalModel": "The particle で can mark what is used to carry an action out, such as 電車で 'by train'. This is distinct from its action-location use.",
+      "formation": [
+        "Means + で + Verb"
+      ],
+      "uses": [
+        "transport",
+        "tools and methods"
+      ],
+      "prerequisiteIds": [
+        "grammar-de-action-place"
+      ],
+      "contrastIds": [
+        "grammar-de-action-place"
+      ],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 23,
+      "tags": [
+        "a1-breadth",
+        "transport"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-to-list",
+      "label": "と (complete noun list)",
+      "summary": "connects nouns in a complete list",
+      "mentalModel": "Between nouns, と works like a complete 'and' list. This differs from と marking a companion with an action.",
+      "formation": [
+        "Noun + と + Noun"
+      ],
+      "uses": [
+        "listing two or more nouns"
+      ],
+      "prerequisiteIds": [
+        "grammar-to-with"
+      ],
+      "contrastIds": [
+        "grammar-to-with"
+      ],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 24,
+      "tags": [
+        "a1-breadth",
+        "particles"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-counter-tsu",
+      "label": "〜つ (general counter)",
+      "summary": "counts many ordinary objects with the native Japanese counter series",
+      "mentalModel": "Japanese uses counters rather than a single universal counting form. 〜つ is a broad beginner counter for many ordinary objects.",
+      "formation": [
+        "一つ / 二つ / 三つ ..."
+      ],
+      "uses": [
+        "counting ordinary objects"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [
+        "grammar-counter-nin"
+      ],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 25,
+      "tags": [
+        "a1-breadth",
+        "numbers",
+        "counters"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-counter-nin",
+      "label": "〜人 (people counter)",
+      "summary": "counts people with the 人 counter",
+      "mentalModel": "The people counter has special beginner readings for one and two people: ひとり and ふたり. Higher numbers usually use 〜にん.",
+      "formation": [
+        "一人 / 二人 / 三人 ..."
+      ],
+      "uses": [
+        "counting people"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [
+        "grammar-counter-tsu"
+      ],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 26,
+      "tags": [
+        "a1-breadth",
+        "numbers",
+        "counters"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-time-counters",
+      "label": "〜時 / 〜分 / 半",
+      "summary": "builds basic clock-time expressions",
+      "mentalModel": "Hours use 時, minutes use 分 with sound changes after some numbers, and 半 adds 'half past'. Treat the clock expression as a compositional counter pattern.",
+      "formation": [
+        "Number + 時",
+        "Number + 時 + Number + 分",
+        "Number + 時 + 半"
+      ],
+      "uses": [
+        "telling clock time"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 27,
+      "tags": [
+        "a1-breadth",
+        "time",
+        "counters"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-masen-deshita",
+      "label": "〜ませんでした",
+      "summary": "polite past negative verb form",
+      "mentalModel": "Attach ませんでした to the polite verb stem to say that an action did not happen.",
+      "formation": [
+        "Verb stem + ませんでした"
+      ],
+      "uses": [
+        "reporting a past non-event",
+        "negative routine history"
+      ],
+      "prerequisiteIds": [
+        "grammar-masen",
+        "grammar-mashita"
+      ],
+      "contrastIds": [
+        "grammar-mashita"
+      ],
+      "level": "A1",
+      "register": "polite",
+      "priority": 28,
+      "tags": [
+        "a1-breadth",
+        "conjugation"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-i-adj-negative",
+      "label": "い-adjective negative",
+      "summary": "makes an い-adjective negative with 〜くない",
+      "mentalModel": "Remove the final い and add くない. Add です for ordinary polite speech. The common adjective いい uses the よい stem in its conjugated forms.",
+      "formation": [
+        "高い → 高くない(です)",
+        "いい → よくない(です)"
+      ],
+      "uses": [
+        "saying something is not expensive, big, cold, etc."
+      ],
+      "prerequisiteIds": [
+        "grammar-i-adj-polite"
+      ],
+      "contrastIds": [
+        "grammar-i-adj-past"
+      ],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 29,
+      "tags": [
+        "a1-breadth",
+        "conjugation",
+        "adjectives"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-i-adj-past",
+      "label": "い-adjective past",
+      "summary": "makes an い-adjective past with 〜かった",
+      "mentalModel": "Remove the final い and add かった. Add です for polite speech. いい follows the よい stem: よかった.",
+      "formation": [
+        "高い → 高かった(です)",
+        "いい → よかった(です)"
+      ],
+      "uses": [
+        "describing how something was"
+      ],
+      "prerequisiteIds": [
+        "grammar-i-adj-polite"
+      ],
+      "contrastIds": [
+        "grammar-i-adj-negative"
+      ],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 30,
+      "tags": [
+        "a1-breadth",
+        "conjugation",
+        "adjectives"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-na-noun-negative",
+      "label": "noun / な-adjective negative predicate",
+      "summary": "uses じゃない(です) for a negative noun or な-adjective predicate",
+      "mentalModel": "Nouns and な-adjectives share this predicate pattern: replace the affirmative copular ending with じゃない; です may be added in ordinary polite speech.",
+      "formation": [
+        "学生じゃない(です)",
+        "静かじゃない(です)"
+      ],
+      "uses": [
+        "saying what something is not",
+        "negative な-adjective description"
+      ],
+      "prerequisiteIds": [
+        "grammar-desu"
+      ],
+      "contrastIds": [
+        "grammar-na-noun-past"
+      ],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 31,
+      "tags": [
+        "a1-breadth",
+        "conjugation",
+        "predicates"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-na-noun-past",
+      "label": "noun / な-adjective past predicate",
+      "summary": "uses だった or でした for past noun and な-adjective predicates",
+      "mentalModel": "For a polite past predicate use でした. The corresponding plain past form is だった.",
+      "formation": [
+        "学生でした / 学生だった",
+        "静かでした / 静かだった"
+      ],
+      "uses": [
+        "saying what something was",
+        "past な-adjective description"
+      ],
+      "prerequisiteIds": [
+        "grammar-desu"
+      ],
+      "contrastIds": [
+        "grammar-na-noun-negative"
+      ],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 32,
+      "tags": [
+        "a1-breadth",
+        "conjugation",
+        "predicates"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-te-form",
+      "label": "verb て-form",
+      "summary": "connects a verb to following grammar and serves as the base for many linked forms",
+      "mentalModel": "The て-form is generated from the verb class. It is not a tense by itself; it links the verb to what follows and is reused by many later patterns.",
+      "formation": [
+        "食べる → 食べて",
+        "読む → 読んで",
+        "書く → 書いて",
+        "する → して",
+        "来る → 来て"
+      ],
+      "uses": [
+        "linking verbs",
+        "building requests"
+      ],
+      "prerequisiteIds": [
+        "grammar-masu"
+      ],
+      "contrastIds": [
+        "grammar-te-kudasai"
+      ],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 33,
+      "tags": [
+        "a1-breadth",
+        "conjugation",
+        "verbs"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-te-kudasai",
+      "label": "〜てください",
+      "summary": "makes a polite request for someone to do an action",
+      "mentalModel": "Attach ください to the て-form. The request is direct but standard and useful in classrooms, shops and everyday service situations.",
+      "formation": [
+        "Verb て-form + ください"
+      ],
+      "uses": [
+        "polite action requests",
+        "asking for repetition or assistance"
+      ],
+      "prerequisiteIds": [
+        "grammar-te-form"
+      ],
+      "contrastIds": [
+        "grammar-o-kudasai"
+      ],
+      "level": "A1",
+      "register": "polite",
+      "priority": 34,
+      "tags": [
+        "a1-breadth",
+        "requests"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-o-kudasai",
+      "label": "Noun + をください",
+      "summary": "politely asks for an item",
+      "mentalModel": "With a noun, をください requests that item. This differs from verb て-form + ください, which requests an action.",
+      "formation": [
+        "Noun + を + ください"
+      ],
+      "uses": [
+        "ordering food",
+        "requesting an item"
+      ],
+      "prerequisiteIds": [
+        "grammar-o-object"
+      ],
+      "contrastIds": [
+        "grammar-te-kudasai"
+      ],
+      "level": "A1",
+      "register": "polite",
+      "priority": 35,
+      "tags": [
+        "a1-breadth",
+        "requests",
+        "shopping"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-ne",
+      "label": "ね (shared confirmation)",
+      "summary": "invites agreement or checks shared understanding",
+      "mentalModel": "Sentence-final ね frames a statement as something the speaker expects the listener can share, recognize or confirm.",
+      "formation": [
+        "Sentence + ね"
+      ],
+      "uses": [
+        "seeking agreement",
+        "soft shared observation"
+      ],
+      "prerequisiteIds": [
+        "grammar-desu"
+      ],
+      "contrastIds": [
+        "grammar-yo"
+      ],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 36,
+      "tags": [
+        "a1-breadth",
+        "pragmatics"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-yo",
+      "label": "よ (informing)",
+      "summary": "marks information the speaker actively presents to the listener",
+      "mentalModel": "Sentence-final よ highlights information the speaker is giving, pointing out or gently correcting for the listener.",
+      "formation": [
+        "Sentence + よ"
+      ],
+      "uses": [
+        "giving useful information",
+        "gentle correction"
+      ],
+      "prerequisiteIds": [
+        "grammar-desu"
+      ],
+      "contrastIds": [
+        "grammar-ne"
+      ],
+      "level": "A1",
+      "register": "neutral",
+      "priority": 37,
+      "tags": [
+        "a1-breadth",
+        "pragmatics"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
     }
   ],
   "sentences": [
