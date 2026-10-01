@@ -10,8 +10,18 @@ Primary product surfaces: **Today · Learn · Immerse · Library · Progress**.
 
 ## Current phase
 
-**P0 is complete. Next: P1 — Foundation Learning Engine & Study Player.**
+**P1.4 — Production Vocabulary & Kanji Integration is implemented. Next: P1.5 — Foundation Audio, Listening & Mobile Certification.**
 
-The P0 foundation now includes the monorepo contracts, immutable StudyEvent architecture, learner reducer, FSRS adapter, account-scoped IndexedDB state, Core Sync v1/Event Sync mapping, persistent browser SQLite content/search, source/licensing validation, PWA/offline verification and architecture documentation.
+The current learning foundation includes:
 
-See `docs/P0_ACCEPTANCE.md`, `docs/ROADMAP.md` and `docs/ARCHITECTURE.md`.
+- one reusable Study Player for lessons and reviews;
+- complete hiragana/katakana coverage with FSRS-backed multi-skill evidence;
+- event-derived mastery rather than independent feature progress;
+- a canonical source-provenanced starter lexicon with senses and kanji relations;
+- kanji taught through vocabulary instead of isolated reading lists;
+- staged vocabulary mastery: meaning → reading → active use;
+- a bounded Today queue that pauses new material under significant review debt;
+- persistent local SQLite content/search and account-scoped learner data;
+- offline/PWA browser verification and source/licensing validation.
+
+See `docs/P1_ACCEPTANCE.md`, `docs/ROADMAP.md` and `docs/ARCHITECTURE.md`.
