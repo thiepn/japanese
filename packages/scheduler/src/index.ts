@@ -1,4 +1,4 @@
-import { createEmptyCard, fsrs, Rating, type CardInput } from "ts-fsrs";
+import { createEmptyCard, fsrs, Rating, type CardInput, type Grade } from "ts-fsrs";
 import type { EntityRef, SkillDimension } from "@thiepn/domain";
 
 export interface FsrsCardSnapshot {
@@ -62,8 +62,8 @@ export function createFsrsScheduler(requestRetention = 0.9): MemoryScheduler {
   };
 }
 
-function toRating(grade: ReviewGrade): Rating {
-  switch (grade) { case "again": return Rating.Again; case "hard": return Rating.Hard; case "good": return Rating.Good; case "easy": return Rating.Easy; }
+function toRating(grade: ReviewGrade): Grade {
+  switch (grade) { case "again": return Rating.Again as Grade; case "hard": return Rating.Hard as Grade; case "good": return Rating.Good as Grade; case "easy": return Rating.Easy as Grade; }
 }
 
 function toCardInput(card: FsrsCardSnapshot): CardInput {
