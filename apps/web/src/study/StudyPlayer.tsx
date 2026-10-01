@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useEffect,useRef,useState } from "react";
+import { getDefaultAudioProvider } from "@thiepn/audio";
 import { gradeStudyPrompt, isStudyLesson, type GradeResult, type StudyPrompt, type StudyStep } from "@thiepn/study-player";
 
 export interface StudyAnswer{prompt:StudyPrompt;response:string;grade:GradeResult;responseTimeMs:number;}
@@ -8,13 +9,37 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   const [response,setResponse]=useState("");
   const [feedback,setFeedback]=useState<GradeResult|null>(null);
   const [saving,setSaving]=useState(false);
+  const [audioState,setAudioState]=useState<"idle"|"playing"|"error">("idle");
+  const [audioPlayed,setAudioPlayed]=useState(false);
   const startedAt=useRef(performance.now());
+  const audioProvider=useRef(getDefaultAudioProvider());
   const step=steps[index];
+
+  useEffect(()=>{
+    const provider=audioProvider.current;
+    provider.stop();
+    setAudioState("idle");
+    setAudioPlayed(false);
+    return()=>provider.stop();
+  },[index]);
+
   if(!step)return null;
 
   function advance(){
+    audioProvider.current.stop();
     if(index+1>=steps.length){onComplete();return;}
     setIndex((value)=>value+1);setResponse("");setFeedback(null);startedAt.current=performance.now();
+  }
+
+  async function playAudio(mode:"normal"|"slow"|"shadow"){
+    if(isStudyLesson(step)||!step.audio||audioState==="playing")return;
+    setAudioState("playing");
+    try{
+      if(mode==="slow")await audioProvider.current.play(step.audio,{rate:.82});
+      else if(mode==="shadow")await audioProvider.current.play(step.audio,{rate:.92,repeats:2,gapMs:1200});
+      else await audioProvider.current.play(step.audio);
+      setAudioPlayed(true);setAudioState("idle");
+    }catch{setAudioState("error");}
   }
 
   if(isStudyLesson(step)){
@@ -27,19 +52,46 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
         {step.facts?.length?<div className="lesson-facts">{step.facts.map((fact)=><div key={fact.label}><span>{fact.label}</span><strong lang={fact.language}>{fact.value}</strong></div>)}</div>:null}
         {step.examples?.length?<div className="lesson-examples">{step.examples.map((example)=><div key={`${example.expression}:${example.note}`}><strong lang="ja">{example.expression}</strong><span>{example.note}</span></div>)}</div>:null}
         {step.sourceLabel?<p className="source-note">Source: {step.sourceLabel}</p>:null}
-        <button className="primary" type="button" onClick={advance}>Continue</button>
+        <button className="primary study-next" type="button" onClick={advance}>Continue</button>
       </div>
     </section>;
   }
 
   const currentPrompt=step;
+  const answerLocked=Boolean(currentPrompt.audio)&&!audioPlayed;
   async function submit(value=response){
-    if(!value.trim()||feedback||saving)return;
+    if(!value.trim()||feedback||saving||answerLocked)return;
     const grade=gradeStudyPrompt(currentPrompt,value);setSaving(true);
     try{await onAnswer({prompt:currentPrompt,response:value,grade,responseTimeMs:Math.max(0,Math.round(performance.now()-startedAt.current))});setResponse(value);setFeedback(grade);}finally{setSaving(false);}
   }
 
-  return <section className="study-player" aria-live="polite"><StudyHeader index={index} total={steps.length} completed={Boolean(feedback)} onExit={onExit}/><div className="study-card"><p className="eyebrow">{currentPrompt.instruction.toUpperCase()}</p><div className="study-prompt" lang={currentPrompt.promptLanguage}>{currentPrompt.prompt}</div>{currentPrompt.promptType==="choice"?<div className="study-choices">{currentPrompt.choices.map((choice)=><button disabled={Boolean(feedback)||saving} type="button" key={choice} onClick={()=>void submit(choice)}>{choice}</button>)}</div>:<form onSubmit={(event)=>{event.preventDefault();void submit();}}><input autoFocus disabled={Boolean(feedback)||saving} value={response} onChange={(event)=>setResponse(event.target.value)} placeholder={currentPrompt.placeholder}/><button className="primary" disabled={!response.trim()||Boolean(feedback)||saving} type="submit">Check</button></form>}{feedback&&<div className={`study-feedback ${feedback.result}`}><strong>{feedback.result==="correct"?"Correct":`Answer: ${feedback.expectedAnswer}`}</strong>{currentPrompt.explanation&&<p>{currentPrompt.explanation}</p>}<button className="primary" type="button" onClick={advance}>{index+1>=steps.length?"Finish":"Continue"}</button></div>}</div></section>;
+  return <section className="study-player" aria-live="polite">
+    <StudyHeader index={index} total={steps.length} completed={Boolean(feedback)} onExit={onExit}/>
+    <div className="study-card">
+      <p className="eyebrow">{currentPrompt.instruction.toUpperCase()}</p>
+      {currentPrompt.audio?
+        <div className="audio-question">
+          <p className="audio-question-label">{currentPrompt.prompt}</p>
+          <button className="audio-play" type="button" aria-label={audioPlayed?"Replay Japanese audio":"Play Japanese audio"} disabled={audioState==="playing"} onClick={()=>void playAudio("normal")}>{audioState==="playing"?"Playing…":audioPlayed?"Replay":"Play audio"}</button>
+          <div className="audio-tools" aria-label="Audio playback controls">
+            <button type="button" disabled={audioState==="playing"} onClick={()=>void playAudio("slow")}>Slower</button>
+            <button type="button" disabled={audioState==="playing"} onClick={()=>void playAudio("shadow")}>Shadow ×2</button>
+          </div>
+          {audioState==="error"?<p className="audio-error" role="status">Audio is not available yet. Reconnect once to cache this recording, then retry.</p>:null}
+        </div>
+        :<div className="study-prompt" lang={currentPrompt.promptLanguage}>{currentPrompt.prompt}</div>}
+      {currentPrompt.promptType==="choice"?
+        <div className="study-choices">{currentPrompt.choices.map((choice)=><button disabled={Boolean(feedback)||saving||answerLocked} type="button" key={choice} onClick={()=>void submit(choice)}>{choice}</button>)}</div>
+        :<form onSubmit={(event)=>{event.preventDefault();void submit();}}><input autoFocus disabled={Boolean(feedback)||saving||answerLocked} value={response} onChange={(event)=>setResponse(event.target.value)} placeholder={currentPrompt.placeholder}/><button className="primary" disabled={!response.trim()||Boolean(feedback)||saving||answerLocked} type="submit">Check</button></form>}
+      {currentPrompt.audio&&!audioPlayed&&audioState!=="error"?<p className="audio-gate">Play the recording before answering.</p>:null}
+      {feedback&&<div className={`study-feedback ${feedback.result}`}>
+        <strong>{feedback.result==="correct"?"Correct":`Answer: ${feedback.expectedAnswer}`}</strong>
+        {currentPrompt.audio?<div className="audio-reveal"><span lang="ja">{currentPrompt.audio.text}</span>{currentPrompt.audio.reading&&<small lang="ja">{currentPrompt.audio.reading}</small>}</div>:null}
+        {currentPrompt.explanation&&<p>{currentPrompt.explanation}</p>}
+        <button className="primary study-next" type="button" onClick={advance}>{index+1>=steps.length?"Finish":"Continue"}</button>
+      </div>}
+    </div>
+  </section>;
 }
 
 function StudyHeader({index,total,completed,onExit}:{index:number;total:number;completed:boolean;onExit:()=>void}){

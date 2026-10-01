@@ -1,3 +1,4 @@
+import type { AudioAssetRecord } from "@thiepn/content-schema";
 import type { EntityRef, SkillDimension, StudyEvent, StudyResult } from "@thiepn/domain";
 
 export type StudyPromptType = "choice" | "typed";
@@ -19,6 +20,7 @@ interface StudyPromptBase {
   answerNormalization?: AnswerNormalization;
   sourceId?: string;
   contentVersion?: string;
+  audio?: AudioAssetRecord;
 }
 
 export interface ChoiceStudyPrompt extends StudyPromptBase { promptType: "choice"; choices: string[]; }
@@ -67,9 +69,16 @@ export function gradeStudyPrompt(prompt: StudyPrompt, response: string): GradeRe
 
 export function createStudyEvent(input: StudyEventInput): StudyEvent {
   const grade = gradeStudyPrompt(input.prompt, input.response);
+  const metadata:Record<string,unknown>={promptId:input.prompt.id};
+  if(input.prompt.audio){
+    metadata.audioAssetId=input.prompt.audio.id;
+    metadata.audioSourceIds=input.prompt.audio.sourceIds;
+    metadata.audioLanguage=input.prompt.audio.language;
+  }
   return {
     id: input.id, userId: input.userId, deviceId: input.deviceId, occurredAt: input.occurredAt,
-    activity: "review", primaryTarget: input.prompt.primaryTarget, skillDimension: input.prompt.skill,
+    activity: input.prompt.audio ? "listening" : "review",
+    primaryTarget: input.prompt.primaryTarget, skillDimension: input.prompt.skill,
     promptFamily: input.prompt.cueFamily, responseMode: input.prompt.promptType, result: grade.result,
     responseTimeMs: input.responseTimeMs, attempts: 1,
     ...(input.hintsUsed === undefined ? {} : { hintsUsed: input.hintsUsed }),
@@ -77,7 +86,7 @@ export function createStudyEvent(input: StudyEventInput): StudyEvent {
     ...(input.prompt.sourceId === undefined ? {} : { sourceId: input.prompt.sourceId }),
     ...(input.prompt.contentVersion === undefined ? {} : { contentVersion: input.prompt.contentVersion }),
     ...(input.baseRevision === undefined ? {} : { baseRevision: input.baseRevision }),
-    metadata: { promptId: input.prompt.id }
+    metadata
   };
 }
 

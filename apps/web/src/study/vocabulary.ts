@@ -1,6 +1,6 @@
 import type { Lexeme } from "@thiepn/content-schema";
 import type { StudyLesson, StudyPrompt } from "@thiepn/study-player";
-import { coreContent, kanjiForLexeme, senseForLexeme, sourceTitle, starterLexemes } from "../coreContent";
+import { audioForLexeme, coreContent, kanjiForLexeme, senseForLexeme, sourceTitle, starterLexemes } from "../coreContent";
 
 export interface VocabularyStudyItem {
   lexeme: Lexeme;
@@ -15,7 +15,9 @@ export const starterVocabulary: VocabularyStudyItem[] = starterLexemes.map((lexe
 }));
 
 export const vocabularyMeaningPrompts: StudyPrompt[] = starterVocabulary.map((item,index,all)=>makeMeaningPrompt(item,index,all));
-export const vocabularyApplicationPrompts: StudyPrompt[] = starterVocabulary.flatMap((item)=>[
+export const vocabularyListeningPrompts: StudyPrompt[] = starterVocabulary.flatMap((item,index,all)=>{const audio=audioForLexeme(item.lexeme)[0];return audio?[makeListeningPrompt(item,index,all,audio)]:[];});
+export const vocabularyApplicationPrompts: StudyPrompt[] = starterVocabulary.flatMap((item,index)=>[
+  ...(vocabularyListeningPrompts.filter((prompt)=>prompt.primaryTarget.id===item.lexeme.id)),
   makeReadingPrompt(item),
   makeActiveUsePrompt(item)
 ]);
@@ -44,6 +46,27 @@ function makeMeaningPrompt(item:VocabularyStudyItem,index:number,all:readonly Vo
     contextId:contextId(item.lexeme),
     sourceId:sourceIdFor(item.lexeme),
     contentVersion:coreContent.version
+  };
+}
+
+function makeListeningPrompt(item:VocabularyStudyItem,index:number,all:readonly VocabularyStudyItem[],audio:ReturnType<typeof audioForLexeme>[number]):StudyPrompt {
+  const distractors=[5,11,17].map((offset)=>all[(index+offset)%all.length]?.meaning).filter((value):value is string=>Boolean(value)&&value!==item.meaning);
+  return {
+    id:`vocab-listening-${item.lexeme.id}`,
+    primaryTarget:{kind:"lexeme",id:item.lexeme.id},
+    skill:"audio_recognition",
+    cueFamily:"audio-to-meaning",
+    promptType:"choice",
+    instruction:"Listen, then choose the meaning.",
+    prompt:"Listen first",
+    choices:[...new Set([item.meaning,...distractors])].slice(0,4),
+    acceptedAnswers:[item.meaning],
+    displayAnswer:`${item.lexeme.canonicalForm}（${item.reading}） · ${item.meaning}`,
+    explanation:`You heard ${item.lexeme.canonicalForm}（${item.reading}）: ${item.meaning}.`,
+    contextId:contextId(item.lexeme),
+    sourceId:sourceIdFor(item.lexeme),
+    contentVersion:coreContent.version,
+    audio
   };
 }
 
