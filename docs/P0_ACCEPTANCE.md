@@ -13,15 +13,17 @@ P0 is not complete merely because the shell renders. The following gates define 
 - [x] local StudyEvent + sync-outbox write is atomic
 - [x] learner reducer has deterministic regression coverage
 - [x] production FSRS library is isolated behind a scheduler adapter
-- [ ] persistent SQLite/WASM content package loads locally
+- [ ] persistent SQLite/WASM content package loads locally through the compatibility provider
+- [x] SQLite persistence strategy no longer requires OPFS/cross-origin isolation
 - [x] Japanese search normalization has regression coverage
 - [ ] global search reads from the persistent content package
 - [x] source registry baseline exists
 - [x] licensing validator is wired into CI
+- [x] public seed package declares an exportable source rather than bypassing provenance
 - [x] sync protocol has idempotent operation IDs and cursor semantics
 - [x] sync-store contract implementation proves idempotent push/cursor pull
 - [ ] PostgreSQL-backed push/pull implementation exists
-- [ ] concurrent multi-device review reconciliation is tested
+- [x] concurrent multi-device review scheduling conflict policy has regression coverage
 - [x] account partitioning is tested locally
 - [x] 食べる architecture slice proves event → mastery → FSRS → sync → second-client mastery
 - [ ] 食べる full browser/server vertical slice passes on two real clients

@@ -1,6 +1,7 @@
 {
   "schemaVersion": 1,
   "sources": [
+    { "id": "thiepn-original", "title": "THIEPN Japanese Original Content", "role": ["pedagogy", "seed_content"], "publicExport": true, "license": "THIEPN-owned original content" },
     { "id": "jmdict", "title": "JMdict", "role": ["lexicographic"], "publicExport": true, "license": "CC BY-SA 4.0" },
     { "id": "kanjidic2", "title": "KANJIDIC2", "role": ["character_reference"], "publicExport": true, "license": "CC BY-SA 4.0" },
     { "id": "jmnedict", "title": "JMnedict", "role": ["names"], "publicExport": true, "license": "CC BY-SA 4.0" },
