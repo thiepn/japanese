@@ -30,7 +30,10 @@ export function searchDocuments(query: string, documents: SearchDocument[]): Sea
       const score=normalized===q?100:normalized.startsWith(q)?80:normalized.includes(q)?60:0;
       if (score && (!best || score>best.score)) best={matchedBy:kind,score};
     }
-    if (best) results.push({entity:document.entity,title:document.title,subtitle:document.reading ?? document.glosses?.[0],...best});
+    if (best) {
+      const subtitle=document.reading ?? document.glosses?.[0];
+      results.push(subtitle ? {entity:document.entity,title:document.title,subtitle,...best} : {entity:document.entity,title:document.title,...best});
+    }
   }
   return results.sort((a,b)=>b.score-a.score || a.title.localeCompare(b.title,"ja"));
 }
