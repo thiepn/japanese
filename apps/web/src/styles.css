@@ -1,0 +1,23 @@
+:root { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #1f2937; background: #f7f5f0; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; min-height: 100vh; }
+button,input { font: inherit; }
+.app-shell { min-height: 100vh; display: grid; grid-template-rows: auto 1fr auto; }
+.topbar { display:flex; justify-content:space-between; align-items:center; padding:18px 22px; border-bottom:1px solid #ddd8ce; background:rgba(247,245,240,.94); }
+.topbar>div { display:flex; gap:12px; align-items:baseline; }
+.phase,.eyebrow { color:#777166; font-size:12px; }
+.eyebrow { font-weight:750; letter-spacing:.14em; }
+.quiet-button,.nav button { border:0; background:transparent; color:inherit; cursor:pointer; }
+.content { width:min(920px,calc(100% - 32px)); margin:0 auto; padding:48px 0 96px; }
+.hero,.library { max-width:680px; }
+h1 { font-size:clamp(36px,7vw,64px); margin:8px 0 14px; letter-spacing:-.04em; }
+p { line-height:1.65; }
+.primary { margin-top:20px; border:0; border-radius:14px; padding:14px 20px; background:#1f2937; color:white; font-weight:700; }
+.primary:disabled { opacity:.42; }
+.library input { width:100%; padding:15px 16px; border:1px solid #cfc9bd; border-radius:14px; background:white; }
+.results { display:grid; gap:10px; margin-top:18px; }
+.result-card { display:flex; justify-content:space-between; gap:18px; align-items:baseline; background:white; border:1px solid #e4dfd5; border-radius:14px; padding:16px; }
+.result-card strong { font-size:22px; } .result-card span { color:#6c665d; text-align:right; }
+.nav { position:sticky; bottom:0; display:grid; grid-template-columns:repeat(5,1fr); border-top:1px solid #ddd8ce; background:rgba(247,245,240,.97); backdrop-filter:blur(16px); }
+.nav button { min-height:58px; color:#756f65; } .nav button.active { color:#111827; font-weight:750; }
+@media (min-width:800px) { .nav { position:fixed; left:24px; top:88px; bottom:auto; width:150px; display:flex; flex-direction:column; border:0; background:transparent; } .nav button { min-height:44px; text-align:left; padding:0 12px; border-radius:10px; } .nav button.active { background:#ebe7df; } .content { padding-left:150px; } }

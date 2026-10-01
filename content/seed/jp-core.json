@@ -1,0 +1,13 @@
+{
+  "version": "0.0.1",
+  "lexemes": [
+    { "id": "lex-taberu", "canonicalForm": "食べる", "reading": "たべる", "gloss": "to eat" },
+    { "id": "lex-gakkou", "canonicalForm": "学校", "reading": "がっこう", "gloss": "school" },
+    { "id": "lex-benkyou", "canonicalForm": "勉強する", "reading": "べんきょうする", "gloss": "to study" }
+  ],
+  "grammar": [{ "id": "grammar-teiru", "label": "〜ている", "summary": "ongoing action / resulting state" }],
+  "sentences": [
+    { "id": "sentence-1", "text": "学校で日本語を勉強しています。" },
+    { "id": "sentence-2", "text": "毎朝パンを食べます。" }
+  ]
+}

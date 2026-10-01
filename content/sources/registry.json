@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    { "id": "jmdict", "title": "JMdict", "role": ["lexicographic"], "publicExport": true, "license": "CC BY-SA 4.0" },
+    { "id": "kanjidic2", "title": "KANJIDIC2", "role": ["character_reference"], "publicExport": true, "license": "CC BY-SA 4.0" },
+    { "id": "jmnedict", "title": "JMnedict", "role": ["names"], "publicExport": true, "license": "CC BY-SA 4.0" },
+    { "id": "sudachi", "title": "Sudachi", "role": ["morphological_analysis"], "publicExport": true, "license": "Apache-2.0" },
+    { "id": "tatoeba", "title": "Tatoeba", "role": ["sentence_corpus"], "publicExport": true, "license": "source-specific attribution required" },
+    { "id": "tae-kim", "title": "Tae Kim Japanese Grammar Guide", "role": ["pedagogical_reference"], "publicExport": false, "license": "CC BY-NC-SA" },
+    { "id": "imabi", "title": "IMABI", "role": ["grammar_reference"], "publicExport": false, "license": "reference only until verified" },
+    { "id": "tofugu-grammar", "title": "Tofugu Japanese Grammar", "role": ["pedagogical_reference"], "publicExport": false, "license": "reference only" },
+    { "id": "nrgrammar", "title": "nrGrammar", "role": ["grammar_reference"], "publicExport": false, "license": "all rights reserved" },
+    { "id": "first-103-kanji", "title": "The First 103 Kanji", "role": ["kanji_reference"], "publicExport": false, "license": "upstream status requires verification" },
+    { "id": "ala-lc-romanization", "title": "Japanese Romanization Table", "role": ["technical_reference"], "publicExport": false, "license": "reference use pending verification" }
+  ]
+}

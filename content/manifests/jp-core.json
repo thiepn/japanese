@@ -1,0 +1,11 @@
+{
+  "id": "jp-core",
+  "version": "0.0.1",
+  "schemaVersion": 1,
+  "minimumAppVersion": "0.0.1",
+  "sizeBytes": 0,
+  "sha256": "P0-PLACEHOLDER",
+  "dependencies": [],
+  "licenses": [],
+  "createdAt": "2026-10-01T00:00:00Z"
+}
