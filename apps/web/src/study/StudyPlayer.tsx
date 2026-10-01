@@ -78,7 +78,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
             <button type="button" disabled={audioState==="playing"} onClick={()=>void playAudio("slow")}>Slower</button>
             <button type="button" disabled={audioState==="playing"} onClick={()=>void playAudio("shadow")}>Shadow ×2</button>
           </div>
-          {audioState==="error"?<p className="audio-error" role="status">Audio is not available yet. Reconnect once to cache this recording, then retry.</p>:null}
+          {audioState==="error"?<div className="audio-error" role="status"><p>Audio is not available yet. Retry when connected, or skip this listening item without creating mastery evidence.</p><button className="quiet-button audio-skip" type="button" onClick={advance}>Skip for now</button></div>:null}
         </div>
         :<div className="study-prompt" lang={currentPrompt.promptLanguage}>{currentPrompt.prompt}</div>}
       {currentPrompt.promptType==="choice"?
