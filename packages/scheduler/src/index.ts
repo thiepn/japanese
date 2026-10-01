@@ -44,7 +44,7 @@ export interface MemoryScheduler {
   review(previous: MemoryTrace, evidence: ReviewEvidence): MemoryTrace;
 }
 
-export const FSRS_ADAPTER_VERSION = "ts-fsrs-v6";
+export const FSRS_ADAPTER_VERSION = "ts-fsrs-5.4.2";
 
 export function createFsrsScheduler(requestRetention = 0.9): MemoryScheduler {
   const scheduler = fsrs({ request_retention: requestRetention });
@@ -63,12 +63,7 @@ export function createFsrsScheduler(requestRetention = 0.9): MemoryScheduler {
 }
 
 function toRating(grade: ReviewGrade): Rating {
-  switch (grade) {
-    case "again": return Rating.Again;
-    case "hard": return Rating.Hard;
-    case "good": return Rating.Good;
-    case "easy": return Rating.Easy;
-  }
+  switch (grade) { case "again": return Rating.Again; case "hard": return Rating.Hard; case "good": return Rating.Good; case "easy": return Rating.Easy; }
 }
 
 function toCardInput(card: FsrsCardSnapshot): CardInput {
@@ -87,16 +82,6 @@ function toCardInput(card: FsrsCardSnapshot): CardInput {
 }
 
 function snapshot(card: { due: Date; stability: number; difficulty: number; elapsed_days: number; scheduled_days: number; learning_steps: number; reps: number; lapses: number; state: number; last_review?: Date }): FsrsCardSnapshot {
-  const base = {
-    due: card.due.toISOString(),
-    stability: card.stability,
-    difficulty: card.difficulty,
-    elapsedDays: card.elapsed_days,
-    scheduledDays: card.scheduled_days,
-    learningSteps: card.learning_steps,
-    reps: card.reps,
-    lapses: card.lapses,
-    state: Number(card.state)
-  };
+  const base = { due: card.due.toISOString(), stability: card.stability, difficulty: card.difficulty, elapsedDays: card.elapsed_days, scheduledDays: card.scheduled_days, learningSteps: card.learning_steps, reps: card.reps, lapses: card.lapses, state: Number(card.state) };
   return card.last_review ? { ...base, lastReviewAt: card.last_review.toISOString() } : base;
 }

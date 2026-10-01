@@ -6,7 +6,7 @@
   "exports": { ".": "./src/index.ts" },
   "dependencies": {
     "@thiepn/domain": "workspace:*",
-    "ts-fsrs": "^6.0.0"
+    "ts-fsrs": "5.4.2"
   },
   "scripts": { "build": "tsc --noEmit", "typecheck": "tsc --noEmit" }
 }
