@@ -6,6 +6,7 @@ import type { EntityKind, EntityRef } from "@thiepn/domain";
 import { normalizeJapaneseSearch, type SearchDocument, type SearchResult } from "@thiepn/search";
 
 type SqliteApi = ReturnType<typeof SQLite.Factory>;
+type SqlBinding = string | number | bigint | Uint8Array | null;
 
 export interface LexemeDetail {
   lexeme: Lexeme;
@@ -77,10 +78,11 @@ export class ContentDatabase {
     await this.upsertSearchDocuments([
       ...content.lexemes.map((lexeme):SearchDocument=>{
         const sense=content.senses.find((item)=>item.lexemeId===lexeme.id);
+        const reading=lexeme.readings[0]?.text;
         return {
           entity:{kind:"lexeme",id:lexeme.id},
           title:lexeme.canonicalForm,
-          reading:lexeme.readings[0]?.text,
+          ...(reading?{reading}:{}),
           glosses:sense?.glosses ?? [],
           aliases:lexeme.forms.map((form)=>form.text)
         };
@@ -242,7 +244,7 @@ export class ContentDatabase {
     `);
   }
 
-  private async run(sql:string,bindings:readonly unknown[]=[]):Promise<void>{
+  private async run(sql:string,bindings:readonly SqlBinding[]=[]):Promise<void>{
     for await(const stmt of this.sqlite3.statements(this.db,sql)){
       this.sqlite3.bind_collection(stmt,[...bindings]);
       await this.sqlite3.step(stmt);
@@ -251,7 +253,7 @@ export class ContentDatabase {
 
   private async exec(sql:string):Promise<void>{ await this.sqlite3.exec(this.db,sql); }
 
-  private async firstRow(sql:string,bindings:readonly unknown[]=[]):Promise<unknown[]|null>{
+  private async firstRow(sql:string,bindings:readonly SqlBinding[]=[]):Promise<unknown[]|null>{
     for await(const stmt of this.sqlite3.statements(this.db,sql)){
       this.sqlite3.bind_collection(stmt,[...bindings]);
       if((await this.sqlite3.step(stmt))===SQLite.SQLITE_ROW)return this.sqlite3.row(stmt);
@@ -259,7 +261,7 @@ export class ContentDatabase {
     return null;
   }
 
-  private async allRows(sql:string,bindings:readonly unknown[]=[]):Promise<unknown[][]>{
+  private async allRows(sql:string,bindings:readonly SqlBinding[]=[]):Promise<unknown[][]>{
     const rows:unknown[][]=[];
     for await(const stmt of this.sqlite3.statements(this.db,sql)){
       this.sqlite3.bind_collection(stmt,[...bindings]);
