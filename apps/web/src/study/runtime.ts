@@ -4,60 +4,70 @@ import { getMemoryTrace, listMemoryTraces, listStudyEvents, saveMemoryTrace, sav
 import { createFsrsScheduler, type ReviewGrade } from "@thiepn/scheduler";
 import { createStudyEvent, type StudyPrompt, type StudyStep } from "@thiepn/study-player";
 import { FOUNDATION_TOTAL_ITEMS, foundationApplicationPrompts, foundationLessons, foundationPrompts } from "./foundationPrompts";
+import { VOCABULARY_TOTAL, vocabularyApplicationPrompts, vocabularyLessons, vocabularyMeaningPrompts } from "./vocabulary";
 
 export const DEVELOPMENT_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
 export const DEVELOPMENT_DEVICE_ID="p1-local-browser";
+
 const scheduler=createFsrsScheduler();
-const NEW_ITEMS_PER_SESSION=5;
+const NEW_KANA_PER_SESSION=5;
+const NEW_VOCAB_PER_SESSION=2;
 const APPLICATION_ITEMS_PER_SESSION=3;
-const MAX_QUEUE_SIZE=12;
+const MAX_QUEUE_SIZE=14;
+const MAX_DUE_PER_SESSION=10;
 
-export interface FoundationStudySummary {
-  due:number; newItems:number; application:number; learned:number; total:number; memoryTraces:number;
+export interface StudySummary {
+  due:number; newKana:number; newVocabulary:number; application:number;
+  learnedKana:number; totalKana:number; learnedVocabulary:number; totalVocabulary:number; memoryTraces:number;
 }
 
-export interface FoundationMasterySummary {
-  overall:number;
-  hiragana:number;
-  katakana:number;
-  recognition:number;
-  readingRecall:number;
-  formSelection:number;
-  confidence:number;
-  accuracy:number;
-  matureSkills:number;
-  expectedSkills:number;
-  evidenceCount:number;
+export interface KanaMasterySummary {
+  overall:number; hiragana:number; katakana:number; recognition:number; readingRecall:number; formSelection:number;
+  confidence:number; accuracy:number; matureSkills:number; expectedSkills:number; evidenceCount:number;
 }
 
-export async function buildFoundationQueue(now=new Date()):Promise<StudyStep[]>{
+export interface VocabularyMasterySummary {
+  overall:number; meaning:number; reading:number; activeUse:number; confidence:number; accuracy:number;
+  matureSkills:number; expectedSkills:number; evidenceCount:number;
+}
+
+export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
   const traces=await listMemoryTraces(DEVELOPMENT_ACCOUNT_ID);
   const byId=new Map(traces.map((trace)=>[trace.id,trace]));
-  const allPrompts=[...foundationPrompts,...foundationApplicationPrompts];
-  const due=allPrompts.filter((prompt)=>{const trace=byId.get(traceIdFor(prompt));return Boolean(trace)&&new Date(trace!.card.due).getTime()<=now.getTime();});
-  const unseen=foundationPrompts.filter((prompt)=>!byId.has(traceIdFor(prompt)));
-  const application=foundationApplicationPrompts.filter((prompt)=>!byId.has(traceIdFor(prompt))&&hasPrerequisiteEvidence(prompt,byId));
-
+  const primary=[...foundationPrompts,...vocabularyMeaningPrompts];
+  const application=[...foundationApplicationPrompts,...vocabularyApplicationPrompts];
+  const all=[...primary,...application];
+  const due=all.filter((prompt)=>isDue(prompt,byId,now)).sort((a,b)=>dueAt(a,byId)-dueAt(b,byId));
+  const unseenKana=foundationPrompts.filter((prompt)=>!byId.has(traceIdFor(prompt)));
+  const unseenVocabulary=vocabularyMeaningPrompts.filter((prompt)=>!byId.has(traceIdFor(prompt)));
+  const readyApplication=application.filter((prompt)=>!byId.has(traceIdFor(prompt))&&hasPrerequisiteEvidence(prompt,byId));
   const queue:StudyPrompt[]=[];
-  queue.push(...due.slice(0,MAX_QUEUE_SIZE));
-  const applicationSlots=Math.min(APPLICATION_ITEMS_PER_SESSION,Math.max(0,MAX_QUEUE_SIZE-queue.length));
-  queue.push(...selectDiverseTargets(application.filter((prompt)=>!queue.some((item)=>item.id===prompt.id)),applicationSlots));
-  const newSlots=Math.min(NEW_ITEMS_PER_SESSION,Math.max(0,MAX_QUEUE_SIZE-queue.length));
-  queue.push(...unseen.filter((prompt)=>!queue.some((item)=>item.id===prompt.id)).slice(0,newSlots));
+  queue.push(...due.slice(0,Math.min(MAX_DUE_PER_SESSION,MAX_QUEUE_SIZE)));
+  addUnique(queue,selectDiverseTargets(readyApplication,Math.min(APPLICATION_ITEMS_PER_SESSION,slots(queue))));
+  addUnique(queue,unseenKana.slice(0,Math.min(NEW_KANA_PER_SESSION,slots(queue))));
+  addUnique(queue,unseenVocabulary.slice(0,Math.min(NEW_VOCAB_PER_SESSION,slots(queue))));
+  if(queue.length<MAX_QUEUE_SIZE)addUnique(queue,due.slice(0,MAX_QUEUE_SIZE));
   return insertFirstExposureLessons(queue,byId);
 }
 
-export async function getFoundationStudySummary(now=new Date()):Promise<FoundationStudySummary>{
+export async function getStudySummary(now=new Date()):Promise<StudySummary>{
   const traces=await listMemoryTraces(DEVELOPMENT_ACCOUNT_ID);
   const byId=new Map(traces.map((trace)=>[trace.id,trace]));
-  const allPrompts=[...foundationPrompts,...foundationApplicationPrompts];
-  const due=allPrompts.filter((prompt)=>{const trace=byId.get(traceIdFor(prompt));return Boolean(trace)&&new Date(trace!.card.due).getTime()<=now.getTime();}).length;
-  const learned=foundationPrompts.filter((prompt)=>byId.has(traceIdFor(prompt))).length;
-  const application=foundationApplicationPrompts.filter((prompt)=>!byId.has(traceIdFor(prompt))&&hasPrerequisiteEvidence(prompt,byId)).length;
-  return {due,newItems:Math.min(NEW_ITEMS_PER_SESSION,Math.max(0,FOUNDATION_TOTAL_ITEMS-learned)),application:Math.min(APPLICATION_ITEMS_PER_SESSION,application),learned,total:FOUNDATION_TOTAL_ITEMS,memoryTraces:traces.length};
+  const all=[...foundationPrompts,...foundationApplicationPrompts,...vocabularyMeaningPrompts,...vocabularyApplicationPrompts];
+  const due=all.filter((prompt)=>isDue(prompt,byId,now)).length;
+  const learnedKana=foundationPrompts.filter((prompt)=>byId.has(traceIdFor(prompt))).length;
+  const learnedVocabulary=vocabularyMeaningPrompts.filter((prompt)=>byId.has(traceIdFor(prompt))).length;
+  const application=[...foundationApplicationPrompts,...vocabularyApplicationPrompts].filter((prompt)=>!byId.has(traceIdFor(prompt))&&hasPrerequisiteEvidence(prompt,byId)).length;
+  return {
+    due,
+    newKana:Math.min(NEW_KANA_PER_SESSION,Math.max(0,FOUNDATION_TOTAL_ITEMS-learnedKana)),
+    newVocabulary:Math.min(NEW_VOCAB_PER_SESSION,Math.max(0,VOCABULARY_TOTAL-learnedVocabulary)),
+    application:Math.min(APPLICATION_ITEMS_PER_SESSION,application),
+    learnedKana,totalKana:FOUNDATION_TOTAL_ITEMS,learnedVocabulary,totalVocabulary:VOCABULARY_TOTAL,memoryTraces:traces.length
+  };
 }
 
-export async function getFoundationMasterySummary():Promise<FoundationMasterySummary>{
+export async function getKanaMasterySummary():Promise<KanaMasterySummary>{
   const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
   const state=replayStudyEvents(events);
   const expected=uniqueSkillPrompts([...foundationPrompts,...foundationApplicationPrompts].filter((prompt)=>prompt.primaryTarget.kind==="kana"));
@@ -66,21 +76,30 @@ export async function getFoundationMasterySummary():Promise<FoundationMasterySum
   const recognition=expected.filter((prompt)=>prompt.skill==="recognition");
   const readingRecall=expected.filter((prompt)=>prompt.skill==="reading");
   const formSelection=expected.filter((prompt)=>prompt.skill==="form_selection");
-  const projections=expected.map((prompt)=>state.mastery[entityKey(prompt.primaryTarget,prompt.skill)]).filter((value)=>value!==undefined);
-  const graded=events.filter((event)=>event.primaryTarget?.kind==="kana"&&["correct","incorrect","partial","revealed"].includes(event.result??""));
-  const correct=graded.filter((event)=>event.result==="correct").length;
+  const projections=projectionsFor(expected,state);
+  const graded=gradedEvents(events,"kana");
   return {
-    overall:scoreFor(expected,state),
-    hiragana:scoreFor(hiragana,state),
-    katakana:scoreFor(katakana,state),
-    recognition:scoreFor(recognition,state),
-    readingRecall:scoreFor(readingRecall,state),
-    formSelection:scoreFor(formSelection,state),
-    confidence:expected.length?projections.reduce((sum,item)=>sum+(item?.confidence??0),0)/expected.length:0,
-    accuracy:graded.length?correct/graded.length:0,
-    matureSkills:projections.filter((item)=>item&&item.estimate>=0.72&&item.confidence>=0.35).length,
-    expectedSkills:expected.length,
-    evidenceCount:graded.length
+    overall:scoreFor(expected,state),hiragana:scoreFor(hiragana,state),katakana:scoreFor(katakana,state),
+    recognition:scoreFor(recognition,state),readingRecall:scoreFor(readingRecall,state),formSelection:scoreFor(formSelection,state),
+    confidence:meanConfidence(projections,expected.length),accuracy:accuracyFor(graded),
+    matureSkills:projections.filter((item)=>item.estimate>=0.72&&item.confidence>=0.35).length,expectedSkills:expected.length,evidenceCount:graded.length
+  };
+}
+
+export async function getVocabularyMasterySummary():Promise<VocabularyMasterySummary>{
+  const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
+  const state=replayStudyEvents(events);
+  const expected=uniqueSkillPrompts([...vocabularyMeaningPrompts,...vocabularyApplicationPrompts]);
+  const meaning=expected.filter((prompt)=>prompt.skill==="meaning_recognition");
+  const reading=expected.filter((prompt)=>prompt.skill==="reading");
+  const active=expected.filter((prompt)=>prompt.skill==="active_use");
+  const projections=projectionsFor(expected,state);
+  const expectedIds=new Set(expected.map((prompt)=>prompt.primaryTarget.id));
+  const graded=gradedEvents(events,"lexeme").filter((event)=>event.primaryTarget&&expectedIds.has(event.primaryTarget.id));
+  return {
+    overall:scoreFor(expected,state),meaning:scoreFor(meaning,state),reading:scoreFor(reading,state),activeUse:scoreFor(active,state),
+    confidence:meanConfidence(projections,expected.length),accuracy:accuracyFor(graded),
+    matureSkills:projections.filter((item)=>item.estimate>=0.72&&item.confidence>=0.35).length,expectedSkills:expected.length,evidenceCount:graded.length
   };
 }
 
@@ -95,43 +114,57 @@ export async function recordStudyAnswer(input:{prompt:StudyPrompt;response:strin
 }
 
 function insertFirstExposureLessons(queue:StudyPrompt[],byId:Map<string,Awaited<ReturnType<typeof listMemoryTraces>>[number]>):StudyStep[]{
-  const steps:StudyStep[]=[];const inserted=new Set<string>();
-  const promptByTrace=new Map(foundationPrompts.map((prompt)=>[traceIdFor(prompt),prompt]));
+  const lessons={...foundationLessons,...vocabularyLessons};
+  const primary=[...foundationPrompts,...vocabularyMeaningPrompts];
+  const promptByTrace=new Map(primary.map((prompt)=>[traceIdFor(prompt),prompt]));
   const seenContexts=new Set<string>();
   for(const trace of byId.values()){const prompt=promptByTrace.get(trace.id);if(prompt?.contextId)seenContexts.add(prompt.contextId);}
+  const steps:StudyStep[]=[];const inserted=new Set<string>();
   for(const prompt of queue){
     const isNew=!byId.has(traceIdFor(prompt));const contextId=prompt.contextId;
-    if(isNew&&contextId&&!seenContexts.has(contextId)&&!inserted.has(contextId)){const lesson=foundationLessons[contextId];if(lesson){steps.push(lesson);inserted.add(contextId);}}
+    if(isNew&&contextId&&!seenContexts.has(contextId)&&!inserted.has(contextId)){const lesson=lessons[contextId];if(lesson){steps.push(lesson);inserted.add(contextId);}}
     steps.push(prompt);
   }
   return steps;
 }
 
 function hasPrerequisiteEvidence(prompt:StudyPrompt,byId:Map<string,unknown>):boolean{
+  if(prompt.primaryTarget.kind==="lexeme"){
+    const meaning="lexeme:"+prompt.primaryTarget.id+":meaning_recognition:written-to-meaning";
+    if(prompt.skill==="reading")return byId.has(meaning);
+    if(prompt.skill==="active_use"){const reading="lexeme:"+prompt.primaryTarget.id+":reading:word-to-reading";return byId.has(meaning)&&byId.has(reading);}
+    return true;
+  }
   const target=prompt.primaryTarget.id;
   if(target==="hiragana-small-tsu")return byId.has("kana:hiragana-small-tsu:reading:sokuon-reading");
   if(target==="katakana-small-tsu")return byId.has("kana:katakana-small-tsu:reading:sokuon-reading");
   if(target==="katakana-long-vowel-mark")return byId.has("kana:katakana-long-vowel-mark:reading:long-vowel-reading");
-  return byId.has(`${prompt.primaryTarget.kind}:${target}:recognition:kana-to-sound`);
+  return byId.has(prompt.primaryTarget.kind+":"+target+":recognition:kana-to-sound");
 }
 
+function isDue(prompt:StudyPrompt,byId:Map<string,Awaited<ReturnType<typeof listMemoryTraces>>[number]>,now:Date):boolean{
+  const trace=byId.get(traceIdFor(prompt));return Boolean(trace)&&new Date(trace!.card.due).getTime()<=now.getTime();
+}
+function dueAt(prompt:StudyPrompt,byId:Map<string,Awaited<ReturnType<typeof listMemoryTraces>>[number]>):number{return new Date(byId.get(traceIdFor(prompt))?.card.due??"9999-12-31T00:00:00Z").getTime();}
+function slots(queue:StudyPrompt[]):number{return Math.max(0,MAX_QUEUE_SIZE-queue.length);}
+function addUnique(queue:StudyPrompt[],items:readonly StudyPrompt[]):void{for(const item of items){if(queue.length>=MAX_QUEUE_SIZE)break;if(!queue.some((existing)=>existing.id===item.id))queue.push(item);}}
 function selectDiverseTargets(prompts:StudyPrompt[],limit:number):StudyPrompt[]{
   const selected:StudyPrompt[]=[];const targets=new Set<string>();
-  for(const prompt of prompts){const key=`${prompt.primaryTarget.kind}:${prompt.primaryTarget.id}`;if(targets.has(key))continue;selected.push(prompt);targets.add(key);if(selected.length>=limit)break;}
+  for(const prompt of prompts){const key=prompt.primaryTarget.kind+":"+prompt.primaryTarget.id;if(targets.has(key))continue;selected.push(prompt);targets.add(key);if(selected.length>=limit)break;}
   if(selected.length<limit){for(const prompt of prompts){if(selected.includes(prompt))continue;selected.push(prompt);if(selected.length>=limit)break;}}
   return selected;
 }
-
-function uniqueSkillPrompts(prompts:StudyPrompt[]):StudyPrompt[]{
-  const seen=new Set<string>();
-  return prompts.filter((prompt)=>{const key=entityKey(prompt.primaryTarget,prompt.skill);if(seen.has(key))return false;seen.add(key);return true;});
-}
-
-function scoreFor(prompts:StudyPrompt[],state:LearnerState):number{
-  if(!prompts.length)return 0;
-  const total=prompts.reduce((sum,prompt)=>sum+(state.mastery[entityKey(prompt.primaryTarget,prompt.skill)]?.estimate??0),0);
-  return total/prompts.length;
-}
-
+function uniqueSkillPrompts(prompts:StudyPrompt[]):StudyPrompt[]{const seen=new Set<string>();return prompts.filter((prompt)=>{const key=entityKey(prompt.primaryTarget,prompt.skill);if(seen.has(key))return false;seen.add(key);return true;});}
+function projectionsFor(prompts:StudyPrompt[],state:LearnerState){return prompts.map((prompt)=>state.mastery[entityKey(prompt.primaryTarget,prompt.skill)]).filter((value)=>value!==undefined);}
+function scoreFor(prompts:StudyPrompt[],state:LearnerState):number{if(!prompts.length)return 0;return prompts.reduce((sum,prompt)=>sum+(state.mastery[entityKey(prompt.primaryTarget,prompt.skill)]?.estimate??0),0)/prompts.length;}
+function gradedEvents(events:Awaited<ReturnType<typeof listStudyEvents>>,kind:"kana"|"lexeme"){return events.filter((event)=>event.primaryTarget?.kind===kind&&["correct","incorrect","partial","revealed"].includes(event.result??""));}
+function accuracyFor(events:ReturnType<typeof gradedEvents>):number{if(!events.length)return 0;return events.filter((event)=>event.result==="correct").length/events.length;}
+function meanConfidence(projections:ReturnType<typeof projectionsFor>,expected:number):number{if(!expected)return 0;return projections.reduce((sum,item)=>sum+item.confidence,0)/expected;}
 function gradeFor(result:"correct"|"incorrect"):ReviewGrade{return result==="correct"?"good":"again";}
-export function traceIdFor(prompt:StudyPrompt):string{return `${prompt.primaryTarget.kind}:${prompt.primaryTarget.id}:${prompt.skill}:${prompt.cueFamily}`;}
+export function traceIdFor(prompt:StudyPrompt):string{return prompt.primaryTarget.kind+":"+prompt.primaryTarget.id+":"+prompt.skill+":"+prompt.cueFamily;}
+
+export const buildFoundationQueue=buildTodayQueue;
+export const getFoundationStudySummary=getStudySummary;
+export const getFoundationMasterySummary=getKanaMasterySummary;
+export type FoundationStudySummary=StudySummary;
+export type FoundationMasterySummary=KanaMasterySummary;
