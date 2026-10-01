@@ -7,6 +7,10 @@ import { pronunciationLessons, pronunciationPerceptionPrompts } from "./audioPro
 import { FOUNDATION_TOTAL_ITEMS, foundationApplicationPrompts, foundationLessons, foundationPrompts } from "./foundationPrompts";
 import { a1Course, allGrammarCoursePrompts, courseUnitPrompts, courseUnitSession, grammarCourseLessons, isGrammarCoursePromptReady, selectNewCoursePrompts } from "./grammarCourse";
 import { conjugationLessons, conjugationPrompts } from "./conjugation";
+import {
+  buildA1MilestoneAssessment,buildUnitAssessment,getA1MilestoneProgress,getUnitAssessmentProgress,
+  type MilestoneAssessmentProgress,type UnitAssessmentProgress
+} from "./assessment";
 import { VOCABULARY_TOTAL, vocabularyApplicationPrompts, vocabularyLessons, vocabularyMeaningPrompts } from "./vocabulary";
 
 export const DEVELOPMENT_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
@@ -48,7 +52,9 @@ export interface SentenceMasterySummary {
 export type CourseUnitStatus="ready"|"challenging"|"learning"|"mastered";
 export interface CourseUnitProgress {
   id:string; order:number; title:string; canDo:string; status:CourseUnitStatus; mastery:number; evidenceCount:number;
+  assessment:UnitAssessmentProgress;
 }
+export type A1MilestoneProgress=MilestoneAssessmentProgress;
 
 function foundationApplicationPool():StudyPrompt[]{
   return [...pronunciationPerceptionPrompts,...foundationApplicationPrompts,...vocabularyApplicationPrompts,...conjugationPrompts];
@@ -82,6 +88,15 @@ export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
 
 export async function buildCourseUnitSession(unitId:string):Promise<StudyStep[]>{
   return courseUnitSession(unitId);
+}
+export async function buildUnitAssessmentSession(unitId:string):Promise<StudyStep[]>{
+  return buildUnitAssessment(unitId);
+}
+export async function buildA1MilestoneSession():Promise<StudyStep[]>{
+  return buildA1MilestoneAssessment();
+}
+export async function getA1MilestoneAssessmentProgress():Promise<MilestoneAssessmentProgress>{
+  return getA1MilestoneProgress(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));
 }
 
 export async function getStudySummary(now=new Date()):Promise<StudySummary>{
@@ -220,7 +235,8 @@ export async function getCourseProgress():Promise<CourseUnitProgress[]>{
     });
     const status:CourseUnitStatus=allEstablished?"mastered":hasEvidence?"learning":prereqsReady?"ready":"challenging";
     statuses.set(view.unit.id,status);
-    result.push({id:view.unit.id,order:view.unit.order,title:view.unit.title,canDo:view.canDo,status,mastery,evidenceCount:projections.reduce((sum,item)=>sum+item.evidenceCount,0)});
+    const assessment=getUnitAssessmentProgress(view.unit.id,events);
+    result.push({id:view.unit.id,order:view.unit.order,title:view.unit.title,canDo:view.canDo,status,mastery,evidenceCount:projections.reduce((sum,item)=>sum+item.evidenceCount,0),assessment});
   }
   return result;
 }
