@@ -1,6 +1,8 @@
 import type { CourseUnit, GrammarConcept, Sentence } from "@thiepn/content-schema";
 import type { StudyLesson, StudyPrompt, StudyStep } from "@thiepn/study-player";
 import { a1CourseUnits, canDoDescriptor, coreContent, grammarConcept, sentenceRecord } from "../coreContent";
+import { conjugationLessons, conjugationPrompts } from "./conjugation";
+import { vocabularyLessons, vocabularyMeaningPrompts } from "./vocabulary";
 
 const SOURCE_ID="thiepn-original";
 
@@ -59,7 +61,29 @@ const CLOZE:Readonly<Record<string,{prompt:string;answer:string;choices:string[]
   "grammar-suki-ga":{prompt:"本 ___ 好きです。",answer:"が",choices:["が","を","で","と"],explanation:"The liked thing is commonly marked by が with 好き."},
   "grammar-i-adj-polite":{prompt:"家は大きい ___。",answer:"です",choices:["です","ます","を","が"],explanation:"An い-adjective can be a predicate; です adds politeness."},
   "grammar-masen":{prompt:"今日は学校に行き ___。",answer:"ません",choices:["ません","ます","ました","です"],explanation:"行きません is the polite nonpast negative form."},
-  "grammar-mashita":{prompt:"お茶を飲み ___。",answer:"ました",choices:["ました","ます","ません","です"],explanation:"飲みました reports a completed past action politely."}
+  "grammar-mashita":{prompt:"お茶を飲み ___。",answer:"ました",choices:["ました","ます","ません","です"],explanation:"飲みました reports a completed past action politely."},
+  "grammar-no-attribute":{prompt:"これは私 ___ 本です。",answer:"の",choices:["の","を","に","で"],explanation:"の links 私 to 本: my book."},
+  "grammar-demonstrative-pronouns":{prompt:"___ は本です。",answer:"これ",choices:["これ","この","ここ","どこ"],explanation:"これ stands alone as 'this'."},
+  "grammar-demonstrative-determiners":{prompt:"___ 本は日本語です。",answer:"この",choices:["この","これ","ここ","どれ"],explanation:"この directly modifies the following noun."},
+  "grammar-location-words":{prompt:"学校は ___ ですか。",answer:"どこ",choices:["どこ","どれ","だれ","いつ"],explanation:"どこ asks for a location."},
+  "grammar-question-words":{prompt:"___ と行きますか。",answer:"だれ",choices:["だれ","どこ","いつ","いくら"],explanation:"だれ asks who the companion is."},
+  "grammar-time-ni":{prompt:"八時 ___ 学校に行きます。",answer:"に",choices:["に","で","を","と"],explanation:"A specific clock time is marked by に."},
+  "grammar-kara-made":{prompt:"九時 ___ 五時まで働きます。",answer:"から",choices:["から","まで","に","で"],explanation:"から marks the starting point of the range."},
+  "grammar-de-means":{prompt:"電車 ___ 学校に行きます。",answer:"で",choices:["で","に","を","が"],explanation:"で marks the means of transport."},
+  "grammar-to-list":{prompt:"パン ___ 水を買います。",answer:"と",choices:["と","で","に","も"],explanation:"と joins nouns in a complete list."},
+  "grammar-counter-tsu":{prompt:"りんごを三 ___ ください。",answer:"つ",choices:["つ","人","時","円"],explanation:"〜つ is a general counter for many ordinary objects."},
+  "grammar-counter-nin":{prompt:"学生が三 ___ います。",answer:"人",choices:["人","つ","時","分"],explanation:"人 is the counter for people."},
+  "grammar-time-counters":{prompt:"七 ___ 半です。",answer:"時",choices:["時","分","人","円"],explanation:"時 marks the hour; 半 means half past."},
+  "grammar-masen-deshita":{prompt:"昨日は学校に行き ___。",answer:"ませんでした",choices:["ませんでした","ました","ません","ます"],explanation:"ませんでした is the polite past negative."},
+  "grammar-i-adj-negative":{prompt:"今日は寒く ___。",answer:"ないです",choices:["ないです","かったです","です","でした"],explanation:"い-adjective negative uses 〜くない; です adds politeness."},
+  "grammar-i-adj-past":{prompt:"昨日は ___。",answer:"暑かったです",choices:["暑かったです","暑くないです","暑いです","暑いでした"],explanation:"い-adjective past uses 〜かったです."},
+  "grammar-na-noun-negative":{prompt:"ここは静か ___。",answer:"じゃないです",choices:["じゃないです","くないです","ません","でした"],explanation:"Nouns and な-adjectives use じゃない for the negative predicate."},
+  "grammar-na-noun-past":{prompt:"昨日は休み ___。",answer:"でした",choices:["でした","かったです","ませんでした","です"],explanation:"Noun and な-adjective polite past predicates use でした."},
+  "grammar-te-form":{prompt:"読む → ___",answer:"読んで",choices:["読んで","読みて","読いて","読って"],explanation:"む-ending godan verbs form the て-form with んで."},
+  "grammar-te-kudasai":{prompt:"もう一度言っ ___。",answer:"てください",choices:["てください","ます","でした","をください"],explanation:"Verb て-form + ください makes a polite action request."},
+  "grammar-o-kudasai":{prompt:"水 ___ ください。",answer:"を",choices:["を","に","で","が"],explanation:"Noun + をください requests an item."},
+  "grammar-ne":{prompt:"今日は寒いです ___。",answer:"ね",choices:["ね","よ","か","を"],explanation:"ね invites shared agreement or confirmation."},
+  "grammar-yo":{prompt:"駅はあそこです ___。",answer:"よ",choices:["よ","ね","か","を"],explanation:"よ presents information to the listener."}
 };
 
 export const grammarApplicationPrompts:StudyPrompt[]=coreContent.grammar.map((grammar,index)=>{
@@ -134,16 +158,27 @@ export function courseUnitSession(unitId:string):StudyStep[]{
   const intro:StudyLesson={
     kind:"lesson",id:"lesson-"+unitId+"-intro",title:view.unit.title,
     body:view.canDo,contextId:unitId+"-intro",
-    facts:[{label:"Level",value:view.unit.level},{label:"Grammar",value:String(view.grammar.length)},{label:"Sentences",value:String(view.sentences.length)}],
+    facts:[{label:"Level",value:view.unit.level},{label:"Vocabulary",value:String(view.unit.vocabularyIds.length)},{label:"Grammar",value:String(view.grammar.length)},{label:"Sentences",value:String(view.sentences.length)}],
     sourceLabel:"THIEPN Japanese original A1 course"
   };
   const steps:StudyStep[]=[intro];
+  for(const lexemeId of view.unit.vocabularyIds.slice(0,5)){
+    const lesson=vocabularyLessons["vocab-"+lexemeId];
+    const prompt=vocabularyMeaningPrompts.find((item)=>item.primaryTarget.id===lexemeId);
+    if(lesson)steps.push(lesson);
+    if(prompt)steps.push(prompt);
+  }
   for(const grammar of view.grammar){
     steps.push(grammarLessons[grammarContext(grammar.id)]!);
     const meaning=grammarMeaningPrompts.find((prompt)=>prompt.primaryTarget.id===grammar.id);
     const form=grammarApplicationPrompts.find((prompt)=>prompt.primaryTarget.id===grammar.id);
     if(meaning)steps.push(meaning);
     if(form)steps.push(form);
+  }
+  for(const lexemeId of (view.unit.conjugationLexemeIds ?? []).slice(0,3)){
+    const lesson=conjugationLessons["conjugation-"+lexemeId];
+    if(lesson)steps.push(lesson);
+    for(const prompt of conjugationPrompts.filter((item)=>item.primaryTarget.id===lexemeId).slice(0,2))steps.push(prompt);
   }
   for(const sentence of view.sentences){
     steps.push(sentenceLessons[sentenceContext(sentence.id)]!);
@@ -160,9 +195,13 @@ export function courseUnitPrompts(unitId:string):StudyPrompt[]{
   if(!view)return [];
   const grammarIds=new Set(view.unit.grammarIds);
   const sentenceIds=new Set(view.unit.sentenceIds);
-  return allGrammarCoursePrompts.filter((prompt)=>
+  const vocabularyIds=new Set(view.unit.vocabularyIds);
+  const conjugationIds=new Set(view.unit.conjugationLexemeIds ?? []);
+  return [...allGrammarCoursePrompts,...vocabularyMeaningPrompts,...conjugationPrompts].filter((prompt)=>
     (prompt.primaryTarget.kind==="grammar"&&grammarIds.has(prompt.primaryTarget.id))||
-    (prompt.primaryTarget.kind==="sentence"&&sentenceIds.has(prompt.primaryTarget.id))
+    (prompt.primaryTarget.kind==="sentence"&&sentenceIds.has(prompt.primaryTarget.id))||
+    (prompt.primaryTarget.kind==="lexeme"&&prompt.skill==="meaning_recognition"&&vocabularyIds.has(prompt.primaryTarget.id))||
+    (prompt.primaryTarget.kind==="lexeme"&&prompt.skill==="form_selection"&&conjugationIds.has(prompt.primaryTarget.id))
   );
 }
 
@@ -174,7 +213,14 @@ export function isGrammarCoursePromptReady(prompt:StudyPrompt,traceIds:ReadonlyS
   if(prompt.primaryTarget.kind==="sentence"){
     if(prompt.skill==="production")return traceIds.has("sentence:"+prompt.primaryTarget.id+":comprehension:sentence-ja-to-meaning");
     const sentence=sentenceRecord(prompt.primaryTarget.id);
-    return sentence.grammarIds.every((id)=>hasAnyGrammarEvidence(id,traceIds));
+    const grammarReady=sentence.grammarIds.every((id)=>hasAnyGrammarEvidence(id,traceIds));
+    const vocabularyReady=sentence.entityRefs
+      .filter((ref)=>ref.kind==="lexeme")
+      .every((ref)=>traceIds.has("lexeme:"+ref.id+":meaning_recognition:written-to-meaning"));
+    return grammarReady&&vocabularyReady;
+  }
+  if(prompt.primaryTarget.kind==="lexeme"&&prompt.skill==="form_selection"){
+    return traceIds.has("lexeme:"+prompt.primaryTarget.id+":meaning_recognition:written-to-meaning");
   }
   return true;
 }
@@ -221,7 +267,7 @@ function rotateChoices<T>(values:readonly T[],seed:number):T[]{
   return [...values.slice(offset),...values.slice(0,offset)];
 }
 function courseSkillOrder(skill:string):number{
-  const order=["comprehension","form_selection","production"];
+  const order=["meaning_recognition","comprehension","form_selection","production"];
   const index=order.indexOf(skill);return index<0?order.length:index;
 }
 function makeGrammarLesson(grammar:GrammarConcept):StudyLesson{
