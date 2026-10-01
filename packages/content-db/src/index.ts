@@ -162,7 +162,7 @@ export class ContentDatabase {
       })),
       tags:JSON.parse(String(lexemeRow[5])) as string[],
       ...(lexemeRow[6]===null?{}:{priority:Number(lexemeRow[6])}),
-      ...(lexemeRow[7]===null?{}:{inflectionClass:String(lexemeRow[7]) as Lexeme["inflectionClass"]}),
+      ...(lexemeRow[7]===null?{}:{inflectionClass:String(lexemeRow[7]) as NonNullable<Lexeme["inflectionClass"]>}),
       sourceIds:JSON.parse(String(lexemeRow[8])) as string[]
     };
     const senses:Sense[]=senseRows.map((row)=>({
