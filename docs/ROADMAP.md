@@ -8,7 +8,11 @@ Shared THIEPN Account session handoff and production Core transport remain platf
 
 ## P1 — Foundation Learning Engine & Study Player
 
-Build the first genuinely usable learning loop: kana foundation, vocabulary entities, word-integrated kanji, reusable Study Player, real review scheduling, first Foundation/A1 units and Today v1.
+P1.3 now provides the complete kana foundation: basic hiragana/katakana, voiced and semi-voiced forms, yōon, small っ / ッ, katakana long vowels, multi-skill review, FSRS traces and event-derived mastery projections.
+
+### Next: P1.4 — Production Vocabulary & Kanji Integration
+
+Replace bridge-only vocabulary with a source-provenanced beginner lexicon, connect kanji to vocabulary rather than isolated reading lists, add vocabulary explanation/reading/meaning skill dimensions, and make Today interleave kana with useful words without exploding review load.
 
 P1 milestone: a complete beginner can install the app, learn first Japanese through one Study Player, leave, return later, and receive correctly scheduled continuation from the same learner model.
 
