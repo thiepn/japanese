@@ -7,6 +7,7 @@
   "dependencies": {
     "@thiepn/auth": "workspace:*",
     "@thiepn/content-db": "workspace:*",
+    "@thiepn/content-schema": "workspace:*",
     "@thiepn/domain": "workspace:*",
     "@thiepn/learner-engine": "workspace:*",
     "@thiepn/local-db": "workspace:*",

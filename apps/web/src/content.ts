@@ -1,17 +1,12 @@
 import { ContentDatabase } from "@thiepn/content-db";
-import type { SearchDocument, SearchResult } from "@thiepn/search";
-
-const seed: SearchDocument[] = [
-  { entity: { kind: "lexeme", id: "lex-taberu" }, title: "食べる", reading: "たべる", glosses: ["to eat"], aliases: ["taberu"] },
-  { entity: { kind: "lexeme", id: "lex-gakkou" }, title: "学校", reading: "がっこう", glosses: ["school"], aliases: ["gakkou"] },
-  { entity: { kind: "grammar", id: "grammar-teiru" }, title: "〜ている", reading: "ている", glosses: ["ongoing action", "resulting state"], aliases: ["te iru"] }
-];
+import type { SearchResult } from "@thiepn/search";
+import { coreContent, senseForLexeme, starterLexemes } from "./coreContent";
 
 let dbPromise: Promise<ContentDatabase> | null = null;
 
 async function getDatabase(): Promise<ContentDatabase> {
   dbPromise ??= ContentDatabase.open().then(async (db) => {
-    await db.upsertSearchDocuments(seed);
+    await db.upsertCoreContent(coreContent);
     return db;
   });
   return dbPromise;
@@ -19,5 +14,21 @@ async function getDatabase(): Promise<ContentDatabase> {
 
 export async function searchLocalJapanese(query: string): Promise<SearchResult[]> {
   const db = await getDatabase();
-  return query.trim() ? db.search(query) : db.search("食");
+  if(query.trim())return db.search(query);
+  return starterLexemes.slice(0,24).map((lexeme)=>{
+    const sense=senseForLexeme(lexeme);
+    const reading=lexeme.readings[0]?.text;
+    return {
+      entity:{kind:"lexeme" as const,id:lexeme.id},
+      title:lexeme.canonicalForm,
+      ...(reading?{subtitle:`${reading} · ${sense.glosses.join(" / ")}`}:{subtitle:sense.glosses.join(" / ")}),
+      matchedBy:"starter-content",
+      score:100-(lexeme.priority??99)
+    };
+  });
+}
+
+export async function getLocalLexeme(id:string){
+  const db=await getDatabase();
+  return db.getLexeme(id);
 }
