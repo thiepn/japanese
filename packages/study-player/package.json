@@ -1,13 +1,9 @@
 {
-  "name": "@thiepn/local-db",
+  "name": "@thiepn/study-player",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "exports": { ".": "./src/index.ts" },
-  "dependencies": {
-    "@thiepn/domain": "workspace:*",
-    "@thiepn/scheduler": "workspace:*",
-    "@thiepn/sync-protocol": "workspace:*"
-  },
+  "dependencies": { "@thiepn/domain": "workspace:*" },
   "scripts": { "build": "tsc --noEmit", "typecheck": "tsc --noEmit" }
 }

@@ -1,8 +1,10 @@
 import type { StudyEvent } from "@thiepn/domain";
+import type { MemoryTrace } from "@thiepn/scheduler";
 import { studyEventToMutation, type CoreSyncMutation, type StudyEventEnvelope } from "@thiepn/sync-protocol";
 
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 const STUDY_EVENTS = "study_events";
+const MEMORY_TRACES = "memory_traces";
 const OUTBOX = "sync_outbox";
 const SYNC_META = "sync_meta";
 
@@ -23,6 +25,7 @@ export async function openLocalDb(accountId: string): Promise<IDBDatabase> {
       if (oldVersion < 2 && db.objectStoreNames.contains(OUTBOX)) db.deleteObjectStore(OUTBOX);
       if (!db.objectStoreNames.contains(OUTBOX)) db.createObjectStore(OUTBOX, { keyPath: "mutation_id" });
       if (!db.objectStoreNames.contains(SYNC_META)) db.createObjectStore(SYNC_META, { keyPath: "key" });
+      if (!db.objectStoreNames.contains(MEMORY_TRACES)) db.createObjectStore(MEMORY_TRACES, { keyPath: "id" });
     };
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
@@ -44,6 +47,23 @@ export async function saveStudyEvent(event: StudyEvent): Promise<CoreSyncMutatio
   return mutation;
 }
 
+export async function saveMemoryTrace(accountId: string, trace: MemoryTrace): Promise<void> {
+  if (trace.userId !== accountId) throw new Error("MEMORY_TRACE_ACCOUNT_MISMATCH");
+  const db = await openLocalDb(accountId);
+  await putOne(db, MEMORY_TRACES, trace);
+  db.close();
+}
+
+export async function getMemoryTrace(accountId: string, traceId: string): Promise<MemoryTrace | null> {
+  const db = await openLocalDb(accountId);
+  return new Promise((resolve, reject) => {
+    const request = db.transaction(MEMORY_TRACES, "readonly").objectStore(MEMORY_TRACES).get(traceId);
+    request.onsuccess = () => { db.close(); resolve((request.result as MemoryTrace | undefined) ?? null); };
+    request.onerror = () => { db.close(); reject(request.error); };
+  });
+}
+
+export async function listMemoryTraces(accountId: string): Promise<MemoryTrace[]> { return getAllFromStore<MemoryTrace>(accountId, MEMORY_TRACES); }
 export async function listStudyEvents(accountId: string): Promise<StudyEvent[]> { return getAllFromStore<StudyEvent>(accountId, STUDY_EVENTS); }
 export async function listOutbox(accountId: string): Promise<CoreSyncMutation[]> { return getAllFromStore<CoreSyncMutation>(accountId, OUTBOX); }
 
@@ -72,14 +92,18 @@ export async function getSyncCursor(accountId: string): Promise<string | null> {
 
 export async function setSyncCursor(accountId: string, cursor: string): Promise<void> {
   const db = await openLocalDb(accountId);
-  await new Promise<void>((resolve, reject) => {
-    const transaction = db.transaction(SYNC_META, "readwrite");
-    transaction.objectStore(SYNC_META).put({ key: "cursor", value: cursor } satisfies SyncMetaRecord);
+  await putOne(db, SYNC_META, { key: "cursor", value: cursor } satisfies SyncMetaRecord);
+  db.close();
+}
+
+async function putOne(db: IDBDatabase, storeName: string, value: unknown): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(storeName, "readwrite");
+    transaction.objectStore(storeName).put(value);
     transaction.oncomplete = () => resolve();
     transaction.onerror = () => reject(transaction.error);
     transaction.onabort = () => reject(transaction.error);
   });
-  db.close();
 }
 
 async function getAllFromStore<T>(accountId: string, storeName: string): Promise<T[]> {

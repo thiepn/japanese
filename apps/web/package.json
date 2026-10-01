@@ -9,7 +9,9 @@
     "@thiepn/content-db": "workspace:*",
     "@thiepn/domain": "workspace:*",
     "@thiepn/local-db": "workspace:*",
+    "@thiepn/scheduler": "workspace:*",
     "@thiepn/search": "workspace:*",
+    "@thiepn/study-player": "workspace:*",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
