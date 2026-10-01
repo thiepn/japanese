@@ -115,7 +115,7 @@ export const sentenceProductionPrompts:StudyPrompt[]=coreContent.sentences.map((
   placeholder:"日本語…",
   acceptedAnswers:[sentence.text,sentence.normalizedText],
   displayAnswer:sentence.text,
-  explanation:sentence.reading?"Reading: "+sentence.reading:undefined,
+  ...(sentence.reading?{explanation:"Reading: "+sentence.reading}:{}),
   contextId:sentenceContext(sentence.id),
   answerNormalization:"japanese",
   sourceId:SOURCE_ID,
