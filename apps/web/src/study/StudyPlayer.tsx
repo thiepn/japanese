@@ -61,8 +61,9 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
 
   const currentPrompt=activeStep;
   const answerLocked=Boolean(currentPrompt.audio)&&!audioPlayed;
+  const interactionLocked=answerLocked||audioState==="playing";
   async function submit(value=response){
-    if(!value.trim()||feedback||saving||answerLocked)return;
+    if(!value.trim()||feedback||saving||interactionLocked)return;
     const grade=gradeStudyPrompt(currentPrompt,value);setSaving(true);
     try{await onAnswer({prompt:currentPrompt,response:value,grade,responseTimeMs:Math.max(0,Math.round(performance.now()-startedAt.current))});setResponse(value);setFeedback(grade);}finally{setSaving(false);}
   }
@@ -83,8 +84,8 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
         </div>
         :<div className="study-prompt" lang={currentPrompt.promptLanguage}>{currentPrompt.prompt}</div>}
       {currentPrompt.promptType==="choice"?
-        <div className="study-choices">{currentPrompt.choices.map((choice)=><button disabled={Boolean(feedback)||saving||answerLocked} type="button" key={choice} onClick={()=>void submit(choice)}>{choice}</button>)}</div>
-        :<form onSubmit={(event)=>{event.preventDefault();void submit();}}><input autoFocus disabled={Boolean(feedback)||saving||answerLocked} value={response} onChange={(event)=>setResponse(event.target.value)} placeholder={currentPrompt.placeholder}/><button className="primary" disabled={!response.trim()||Boolean(feedback)||saving||answerLocked} type="submit">Check</button></form>}
+        <div className="study-choices">{currentPrompt.choices.map((choice)=><button disabled={Boolean(feedback)||saving||interactionLocked} type="button" key={choice} onClick={()=>void submit(choice)}>{choice}</button>)}</div>
+        :<form onSubmit={(event)=>{event.preventDefault();void submit();}}><input autoFocus disabled={Boolean(feedback)||saving||interactionLocked} value={response} onChange={(event)=>setResponse(event.target.value)} placeholder={currentPrompt.placeholder}/><button className="primary" disabled={!response.trim()||Boolean(feedback)||saving||interactionLocked} type="submit">Check</button></form>}
       {currentPrompt.audio&&!audioPlayed&&audioState!=="error"?<p className="audio-gate">Play the recording before answering.</p>:null}
       {feedback&&<div className={`study-feedback ${feedback.result}`}>
         <strong>{feedback.result==="correct"?"Correct":`Answer: ${feedback.expectedAnswer}`}</strong>
