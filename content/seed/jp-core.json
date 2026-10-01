@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 4,
-  "version": "0.3.0",
+  "schemaVersion": 5,
+  "version": "0.4.0",
   "sourceIds": [
     "thiepn-original",
     "tofugu-wanikani-audio"
@@ -575,7 +575,8 @@
       ],
       "audioIds": [
         "audio-lex-taberu"
-      ]
+      ],
+      "inflectionClass": "ichidan"
     },
     {
       "id": "lex-nomu",
@@ -617,7 +618,8 @@
       ],
       "audioIds": [
         "audio-lex-nomu"
-      ]
+      ],
+      "inflectionClass": "godan"
     },
     {
       "id": "lex-miru",
@@ -658,7 +660,8 @@
       ],
       "audioIds": [
         "audio-lex-miru"
-      ]
+      ],
+      "inflectionClass": "ichidan"
     },
     {
       "id": "lex-kiku",
@@ -699,7 +702,8 @@
       ],
       "audioIds": [
         "audio-lex-kiku"
-      ]
+      ],
+      "inflectionClass": "godan"
     },
     {
       "id": "lex-yomu",
@@ -740,7 +744,8 @@
       ],
       "audioIds": [
         "audio-lex-yomu"
-      ]
+      ],
+      "inflectionClass": "godan"
     },
     {
       "id": "lex-kaku",
@@ -781,7 +786,8 @@
       ],
       "audioIds": [
         "audio-lex-kaku"
-      ]
+      ],
+      "inflectionClass": "godan"
     },
     {
       "id": "lex-iku",
@@ -823,7 +829,8 @@
       ],
       "audioIds": [
         "audio-lex-iku"
-      ]
+      ],
+      "inflectionClass": "godan"
     },
     {
       "id": "lex-kuru",
@@ -865,7 +872,8 @@
       ],
       "audioIds": [
         "audio-lex-kuru"
-      ]
+      ],
+      "inflectionClass": "irregular-kuru"
     },
     {
       "id": "lex-kaeru",
@@ -907,7 +915,8 @@
       ],
       "audioIds": [
         "audio-lex-kaeru"
-      ]
+      ],
+      "inflectionClass": "godan"
     },
     {
       "id": "lex-hanasu",
@@ -949,7 +958,8 @@
       ],
       "audioIds": [
         "audio-lex-hanasu"
-      ]
+      ],
+      "inflectionClass": "godan"
     },
     {
       "id": "lex-kau",
@@ -991,7 +1001,8 @@
       ],
       "audioIds": [
         "audio-lex-kau"
-      ]
+      ],
+      "inflectionClass": "godan"
     },
     {
       "id": "lex-ookii",
@@ -1032,7 +1043,8 @@
       ],
       "audioIds": [
         "audio-lex-ookii"
-      ]
+      ],
+      "inflectionClass": "i-adjective"
     },
     {
       "id": "lex-chiisai",
@@ -1073,7 +1085,8 @@
       ],
       "audioIds": [
         "audio-lex-chiisai"
-      ]
+      ],
+      "inflectionClass": "i-adjective"
     },
     {
       "id": "lex-ima",
@@ -1334,7 +1347,8 @@
       ],
       "audioIds": [
         "audio-lex-suki"
-      ]
+      ],
+      "inflectionClass": "na-adjective"
     },
     {
       "id": "lex-hon",
@@ -1492,7 +1506,8 @@
       "priority": 35,
       "sourceIds": [
         "thiepn-original"
-      ]
+      ],
+      "inflectionClass": "irregular-aru"
     },
     {
       "id": "lex-iru",
@@ -1520,6 +1535,3479 @@
         "existence"
       ],
       "priority": 36,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "ichidan"
+    },
+    {
+      "id": "lex-kore",
+      "canonicalForm": "これ",
+      "forms": [
+        {
+          "text": "これ",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "これ"
+        }
+      ],
+      "senseIds": [
+        "sense-kore-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "demonstrative"
+      ],
+      "priority": 37,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-sore",
+      "canonicalForm": "それ",
+      "forms": [
+        {
+          "text": "それ",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "それ"
+        }
+      ],
+      "senseIds": [
+        "sense-sore-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "demonstrative"
+      ],
+      "priority": 38,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-are",
+      "canonicalForm": "あれ",
+      "forms": [
+        {
+          "text": "あれ",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "あれ"
+        }
+      ],
+      "senseIds": [
+        "sense-are-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "demonstrative"
+      ],
+      "priority": 39,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kono",
+      "canonicalForm": "この",
+      "forms": [
+        {
+          "text": "この",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "この"
+        }
+      ],
+      "senseIds": [
+        "sense-kono-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "demonstrative"
+      ],
+      "priority": 40,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-sono",
+      "canonicalForm": "その",
+      "forms": [
+        {
+          "text": "その",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "その"
+        }
+      ],
+      "senseIds": [
+        "sense-sono-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "demonstrative"
+      ],
+      "priority": 41,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-ano",
+      "canonicalForm": "あの",
+      "forms": [
+        {
+          "text": "あの",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "あの"
+        }
+      ],
+      "senseIds": [
+        "sense-ano-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "demonstrative"
+      ],
+      "priority": 42,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-koko",
+      "canonicalForm": "ここ",
+      "forms": [
+        {
+          "text": "ここ",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ここ"
+        }
+      ],
+      "senseIds": [
+        "sense-koko-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "location"
+      ],
+      "priority": 43,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-soko",
+      "canonicalForm": "そこ",
+      "forms": [
+        {
+          "text": "そこ",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "そこ"
+        }
+      ],
+      "senseIds": [
+        "sense-soko-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "location"
+      ],
+      "priority": 44,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-asoko",
+      "canonicalForm": "あそこ",
+      "forms": [
+        {
+          "text": "あそこ",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "あそこ"
+        }
+      ],
+      "senseIds": [
+        "sense-asoko-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "location"
+      ],
+      "priority": 45,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-doko",
+      "canonicalForm": "どこ",
+      "forms": [
+        {
+          "text": "どこ",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "どこ"
+        }
+      ],
+      "senseIds": [
+        "sense-doko-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "question"
+      ],
+      "priority": 46,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-dono",
+      "canonicalForm": "どの",
+      "forms": [
+        {
+          "text": "どの",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "どの"
+        }
+      ],
+      "senseIds": [
+        "sense-dono-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "question"
+      ],
+      "priority": 47,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-dore",
+      "canonicalForm": "どれ",
+      "forms": [
+        {
+          "text": "どれ",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "どれ"
+        }
+      ],
+      "senseIds": [
+        "sense-dore-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "question"
+      ],
+      "priority": 48,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-dare",
+      "canonicalForm": "だれ",
+      "forms": [
+        {
+          "text": "だれ",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "だれ"
+        }
+      ],
+      "senseIds": [
+        "sense-dare-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "question"
+      ],
+      "priority": 49,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-dochira",
+      "canonicalForm": "どちら",
+      "forms": [
+        {
+          "text": "どちら",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "どちら"
+        }
+      ],
+      "senseIds": [
+        "sense-dochira-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "question"
+      ],
+      "priority": 50,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-dou",
+      "canonicalForm": "どう",
+      "forms": [
+        {
+          "text": "どう",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "どう"
+        }
+      ],
+      "senseIds": [
+        "sense-dou-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "question"
+      ],
+      "priority": 51,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-itsu",
+      "canonicalForm": "いつ",
+      "forms": [
+        {
+          "text": "いつ",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "いつ"
+        }
+      ],
+      "senseIds": [
+        "sense-itsu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "question"
+      ],
+      "priority": 52,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-ikura",
+      "canonicalForm": "いくら",
+      "forms": [
+        {
+          "text": "いくら",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "いくら"
+        }
+      ],
+      "senseIds": [
+        "sense-ikura-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "shopping"
+      ],
+      "priority": 53,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-ikutsu",
+      "canonicalForm": "いくつ",
+      "forms": [
+        {
+          "text": "いくつ",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "いくつ"
+        }
+      ],
+      "senseIds": [
+        "sense-ikutsu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "quantity"
+      ],
+      "priority": 54,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-watashi",
+      "canonicalForm": "私",
+      "forms": [
+        {
+          "text": "私",
+          "script": "mixed"
+        },
+        {
+          "text": "わたし",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "わたし"
+        }
+      ],
+      "senseIds": [
+        "sense-watashi-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "people"
+      ],
+      "priority": 55,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-toire",
+      "canonicalForm": "トイレ",
+      "forms": [
+        {
+          "text": "トイレ",
+          "script": "katakana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "トイレ"
+        }
+      ],
+      "senseIds": [
+        "sense-toire-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "immediate-needs"
+      ],
+      "priority": 56,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-shashin",
+      "canonicalForm": "写真",
+      "forms": [
+        {
+          "text": "写真",
+          "script": "mixed"
+        },
+        {
+          "text": "しゃしん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "しゃしん"
+        }
+      ],
+      "senseIds": [
+        "sense-shashin-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "daily-life"
+      ],
+      "priority": 57,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kazoku",
+      "canonicalForm": "家族",
+      "forms": [
+        {
+          "text": "家族",
+          "script": "mixed"
+        },
+        {
+          "text": "かぞく",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かぞく"
+        }
+      ],
+      "senseIds": [
+        "sense-kazoku-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "family"
+      ],
+      "priority": 58,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kuruma",
+      "canonicalForm": "車",
+      "forms": [
+        {
+          "text": "車",
+          "script": "mixed"
+        },
+        {
+          "text": "くるま",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "くるま"
+        }
+      ],
+      "senseIds": [
+        "sense-kuruma-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "transport"
+      ],
+      "priority": 59,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-ichi",
+      "canonicalForm": "一",
+      "forms": [
+        {
+          "text": "一",
+          "script": "mixed"
+        },
+        {
+          "text": "いち",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "いち"
+        }
+      ],
+      "senseIds": [
+        "sense-ichi-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "number"
+      ],
+      "priority": 60,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-ni",
+      "canonicalForm": "二",
+      "forms": [
+        {
+          "text": "二",
+          "script": "mixed"
+        },
+        {
+          "text": "に",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "に"
+        }
+      ],
+      "senseIds": [
+        "sense-ni-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "number"
+      ],
+      "priority": 61,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-san",
+      "canonicalForm": "三",
+      "forms": [
+        {
+          "text": "三",
+          "script": "mixed"
+        },
+        {
+          "text": "さん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "さん"
+        }
+      ],
+      "senseIds": [
+        "sense-san-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "number"
+      ],
+      "priority": 62,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-yon",
+      "canonicalForm": "四",
+      "forms": [
+        {
+          "text": "四",
+          "script": "mixed"
+        },
+        {
+          "text": "よん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "よん"
+        },
+        {
+          "text": "し"
+        }
+      ],
+      "senseIds": [
+        "sense-yon-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "number"
+      ],
+      "priority": 63,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-go",
+      "canonicalForm": "五",
+      "forms": [
+        {
+          "text": "五",
+          "script": "mixed"
+        },
+        {
+          "text": "ご",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ご"
+        }
+      ],
+      "senseIds": [
+        "sense-go-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "number"
+      ],
+      "priority": 64,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-roku",
+      "canonicalForm": "六",
+      "forms": [
+        {
+          "text": "六",
+          "script": "mixed"
+        },
+        {
+          "text": "ろく",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ろく"
+        }
+      ],
+      "senseIds": [
+        "sense-roku-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "number"
+      ],
+      "priority": 65,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-nana",
+      "canonicalForm": "七",
+      "forms": [
+        {
+          "text": "七",
+          "script": "mixed"
+        },
+        {
+          "text": "なな",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "なな"
+        },
+        {
+          "text": "しち"
+        }
+      ],
+      "senseIds": [
+        "sense-nana-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "number"
+      ],
+      "priority": 66,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-hachi",
+      "canonicalForm": "八",
+      "forms": [
+        {
+          "text": "八",
+          "script": "mixed"
+        },
+        {
+          "text": "はち",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "はち"
+        }
+      ],
+      "senseIds": [
+        "sense-hachi-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "number"
+      ],
+      "priority": 67,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kyuu",
+      "canonicalForm": "九",
+      "forms": [
+        {
+          "text": "九",
+          "script": "mixed"
+        },
+        {
+          "text": "きゅう",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "きゅう"
+        },
+        {
+          "text": "く"
+        }
+      ],
+      "senseIds": [
+        "sense-kyuu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "number"
+      ],
+      "priority": 68,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-juu",
+      "canonicalForm": "十",
+      "forms": [
+        {
+          "text": "十",
+          "script": "mixed"
+        },
+        {
+          "text": "じゅう",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "じゅう"
+        }
+      ],
+      "senseIds": [
+        "sense-juu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "number"
+      ],
+      "priority": 69,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-hyaku",
+      "canonicalForm": "百",
+      "forms": [
+        {
+          "text": "百",
+          "script": "mixed"
+        },
+        {
+          "text": "ひゃく",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ひゃく"
+        }
+      ],
+      "senseIds": [
+        "sense-hyaku-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "number"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-sen",
+      "canonicalForm": "千",
+      "forms": [
+        {
+          "text": "千",
+          "script": "mixed"
+        },
+        {
+          "text": "せん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "せん"
+        }
+      ],
+      "senseIds": [
+        "sense-sen-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "number"
+      ],
+      "priority": 71,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-en",
+      "canonicalForm": "円",
+      "forms": [
+        {
+          "text": "円",
+          "script": "mixed"
+        },
+        {
+          "text": "えん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "えん"
+        }
+      ],
+      "senseIds": [
+        "sense-en-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "money"
+      ],
+      "priority": 72,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-ji",
+      "canonicalForm": "時",
+      "forms": [
+        {
+          "text": "時",
+          "script": "mixed"
+        },
+        {
+          "text": "じ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "じ"
+        }
+      ],
+      "senseIds": [
+        "sense-ji-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "time"
+      ],
+      "priority": 73,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-fun",
+      "canonicalForm": "分",
+      "forms": [
+        {
+          "text": "分",
+          "script": "mixed"
+        },
+        {
+          "text": "ふん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ふん"
+        },
+        {
+          "text": "ぷん"
+        }
+      ],
+      "senseIds": [
+        "sense-fun-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "time"
+      ],
+      "priority": 74,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-han",
+      "canonicalForm": "半",
+      "forms": [
+        {
+          "text": "半",
+          "script": "mixed"
+        },
+        {
+          "text": "はん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "はん"
+        }
+      ],
+      "senseIds": [
+        "sense-han-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "time"
+      ],
+      "priority": 75,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-asa",
+      "canonicalForm": "朝",
+      "forms": [
+        {
+          "text": "朝",
+          "script": "mixed"
+        },
+        {
+          "text": "あさ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "あさ"
+        }
+      ],
+      "senseIds": [
+        "sense-asa-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "time"
+      ],
+      "priority": 76,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-hiru",
+      "canonicalForm": "昼",
+      "forms": [
+        {
+          "text": "昼",
+          "script": "mixed"
+        },
+        {
+          "text": "ひる",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ひる"
+        }
+      ],
+      "senseIds": [
+        "sense-hiru-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "time"
+      ],
+      "priority": 77,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-yoru",
+      "canonicalForm": "夜",
+      "forms": [
+        {
+          "text": "夜",
+          "script": "mixed"
+        },
+        {
+          "text": "よる",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "よる"
+        }
+      ],
+      "senseIds": [
+        "sense-yoru-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "time"
+      ],
+      "priority": 78,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kinou",
+      "canonicalForm": "昨日",
+      "forms": [
+        {
+          "text": "昨日",
+          "script": "mixed"
+        },
+        {
+          "text": "きのう",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "きのう"
+        }
+      ],
+      "senseIds": [
+        "sense-kinou-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "time"
+      ],
+      "priority": 79,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-mainichi",
+      "canonicalForm": "毎日",
+      "forms": [
+        {
+          "text": "毎日",
+          "script": "mixed"
+        },
+        {
+          "text": "まいにち",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "まいにち"
+        }
+      ],
+      "senseIds": [
+        "sense-mainichi-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "routine"
+      ],
+      "priority": 80,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-jikan",
+      "canonicalForm": "時間",
+      "forms": [
+        {
+          "text": "時間",
+          "script": "mixed"
+        },
+        {
+          "text": "じかん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "じかん"
+        }
+      ],
+      "senseIds": [
+        "sense-jikan-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "time"
+      ],
+      "priority": 81,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-okiru",
+      "canonicalForm": "起きる",
+      "forms": [
+        {
+          "text": "起きる",
+          "script": "mixed"
+        },
+        {
+          "text": "おきる",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "おきる"
+        }
+      ],
+      "senseIds": [
+        "sense-okiru-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "routine"
+      ],
+      "priority": 82,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "ichidan"
+    },
+    {
+      "id": "lex-neru",
+      "canonicalForm": "寝る",
+      "forms": [
+        {
+          "text": "寝る",
+          "script": "mixed"
+        },
+        {
+          "text": "ねる",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ねる"
+        }
+      ],
+      "senseIds": [
+        "sense-neru-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "routine"
+      ],
+      "priority": 83,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "ichidan"
+    },
+    {
+      "id": "lex-benkyou-suru",
+      "canonicalForm": "勉強する",
+      "forms": [
+        {
+          "text": "勉強する",
+          "script": "mixed"
+        },
+        {
+          "text": "べんきょうする",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "べんきょうする"
+        }
+      ],
+      "senseIds": [
+        "sense-benkyou-suru-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "routine"
+      ],
+      "priority": 84,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "irregular-suru"
+    },
+    {
+      "id": "lex-hataraku",
+      "canonicalForm": "働く",
+      "forms": [
+        {
+          "text": "働く",
+          "script": "mixed"
+        },
+        {
+          "text": "はたらく",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "はたらく"
+        }
+      ],
+      "senseIds": [
+        "sense-hataraku-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "routine"
+      ],
+      "priority": 85,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "godan"
+    },
+    {
+      "id": "lex-yasumu",
+      "canonicalForm": "休む",
+      "forms": [
+        {
+          "text": "休む",
+          "script": "mixed"
+        },
+        {
+          "text": "やすむ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "やすむ"
+        }
+      ],
+      "senseIds": [
+        "sense-yasumu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "routine"
+      ],
+      "priority": 86,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "godan"
+    },
+    {
+      "id": "lex-au",
+      "canonicalForm": "会う",
+      "forms": [
+        {
+          "text": "会う",
+          "script": "mixed"
+        },
+        {
+          "text": "あう",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "あう"
+        }
+      ],
+      "senseIds": [
+        "sense-au-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "routine"
+      ],
+      "priority": 87,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "godan"
+    },
+    {
+      "id": "lex-matsu",
+      "canonicalForm": "待つ",
+      "forms": [
+        {
+          "text": "待つ",
+          "script": "mixed"
+        },
+        {
+          "text": "まつ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "まつ"
+        }
+      ],
+      "senseIds": [
+        "sense-matsu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "daily-life"
+      ],
+      "priority": 88,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "godan"
+    },
+    {
+      "id": "lex-suru",
+      "canonicalForm": "する",
+      "forms": [
+        {
+          "text": "する",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "する"
+        }
+      ],
+      "senseIds": [
+        "sense-suru-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "core"
+      ],
+      "priority": 89,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "irregular-suru"
+    },
+    {
+      "id": "lex-wakaru",
+      "canonicalForm": "分かる",
+      "forms": [
+        {
+          "text": "分かる",
+          "script": "mixed"
+        },
+        {
+          "text": "わかる",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "わかる"
+        }
+      ],
+      "senseIds": [
+        "sense-wakaru-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "clarification"
+      ],
+      "priority": 90,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "godan"
+    },
+    {
+      "id": "lex-iu",
+      "canonicalForm": "言う",
+      "forms": [
+        {
+          "text": "言う",
+          "script": "mixed"
+        },
+        {
+          "text": "いう",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "いう"
+        }
+      ],
+      "senseIds": [
+        "sense-iu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "clarification"
+      ],
+      "priority": 91,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "godan"
+    },
+    {
+      "id": "lex-pan",
+      "canonicalForm": "パン",
+      "forms": [
+        {
+          "text": "パン",
+          "script": "katakana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "パン"
+        }
+      ],
+      "senseIds": [
+        "sense-pan-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "food"
+      ],
+      "priority": 92,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-niku",
+      "canonicalForm": "肉",
+      "forms": [
+        {
+          "text": "肉",
+          "script": "mixed"
+        },
+        {
+          "text": "にく",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "にく"
+        }
+      ],
+      "senseIds": [
+        "sense-niku-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "food"
+      ],
+      "priority": 93,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-sakana",
+      "canonicalForm": "魚",
+      "forms": [
+        {
+          "text": "魚",
+          "script": "mixed"
+        },
+        {
+          "text": "さかな",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "さかな"
+        }
+      ],
+      "senseIds": [
+        "sense-sakana-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "food"
+      ],
+      "priority": 94,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-yasai",
+      "canonicalForm": "野菜",
+      "forms": [
+        {
+          "text": "野菜",
+          "script": "mixed"
+        },
+        {
+          "text": "やさい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "やさい"
+        }
+      ],
+      "senseIds": [
+        "sense-yasai-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "food"
+      ],
+      "priority": 95,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kudamono",
+      "canonicalForm": "果物",
+      "forms": [
+        {
+          "text": "果物",
+          "script": "mixed"
+        },
+        {
+          "text": "くだもの",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "くだもの"
+        }
+      ],
+      "senseIds": [
+        "sense-kudamono-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "food"
+      ],
+      "priority": 96,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-koohii",
+      "canonicalForm": "コーヒー",
+      "forms": [
+        {
+          "text": "コーヒー",
+          "script": "katakana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "コーヒー"
+        }
+      ],
+      "senseIds": [
+        "sense-koohii-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "food"
+      ],
+      "priority": 97,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-juusu",
+      "canonicalForm": "ジュース",
+      "forms": [
+        {
+          "text": "ジュース",
+          "script": "katakana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ジュース"
+        }
+      ],
+      "senseIds": [
+        "sense-juusu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "food"
+      ],
+      "priority": 98,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-asagohan",
+      "canonicalForm": "朝ご飯",
+      "forms": [
+        {
+          "text": "朝ご飯",
+          "script": "mixed"
+        },
+        {
+          "text": "あさごはん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "あさごはん"
+        }
+      ],
+      "senseIds": [
+        "sense-asagohan-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "food",
+        "routine"
+      ],
+      "priority": 99,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-hirugohan",
+      "canonicalForm": "昼ご飯",
+      "forms": [
+        {
+          "text": "昼ご飯",
+          "script": "mixed"
+        },
+        {
+          "text": "ひるごはん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ひるごはん"
+        }
+      ],
+      "senseIds": [
+        "sense-hirugohan-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "food"
+      ],
+      "priority": 100,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-bangohan",
+      "canonicalForm": "晩ご飯",
+      "forms": [
+        {
+          "text": "晩ご飯",
+          "script": "mixed"
+        },
+        {
+          "text": "ばんごはん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ばんごはん"
+        }
+      ],
+      "senseIds": [
+        "sense-bangohan-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "food"
+      ],
+      "priority": 101,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-resutoran",
+      "canonicalForm": "レストラン",
+      "forms": [
+        {
+          "text": "レストラン",
+          "script": "katakana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "レストラン"
+        }
+      ],
+      "senseIds": [
+        "sense-resutoran-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "food"
+      ],
+      "priority": 102,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-mise",
+      "canonicalForm": "店",
+      "forms": [
+        {
+          "text": "店",
+          "script": "mixed"
+        },
+        {
+          "text": "みせ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "みせ"
+        }
+      ],
+      "senseIds": [
+        "sense-mise-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "shopping"
+      ],
+      "priority": 103,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-nedan",
+      "canonicalForm": "値段",
+      "forms": [
+        {
+          "text": "値段",
+          "script": "mixed"
+        },
+        {
+          "text": "ねだん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ねだん"
+        }
+      ],
+      "senseIds": [
+        "sense-nedan-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "shopping"
+      ],
+      "priority": 104,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-takai",
+      "canonicalForm": "高い",
+      "forms": [
+        {
+          "text": "高い",
+          "script": "mixed"
+        },
+        {
+          "text": "たかい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "たかい"
+        }
+      ],
+      "senseIds": [
+        "sense-takai-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "shopping"
+      ],
+      "priority": 105,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "i-adjective"
+    },
+    {
+      "id": "lex-yasui",
+      "canonicalForm": "安い",
+      "forms": [
+        {
+          "text": "安い",
+          "script": "mixed"
+        },
+        {
+          "text": "やすい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "やすい"
+        }
+      ],
+      "senseIds": [
+        "sense-yasui-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "shopping"
+      ],
+      "priority": 106,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "i-adjective"
+    },
+    {
+      "id": "lex-atarashii",
+      "canonicalForm": "新しい",
+      "forms": [
+        {
+          "text": "新しい",
+          "script": "mixed"
+        },
+        {
+          "text": "あたらしい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "あたらしい"
+        }
+      ],
+      "senseIds": [
+        "sense-atarashii-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "description"
+      ],
+      "priority": 107,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "i-adjective"
+    },
+    {
+      "id": "lex-furui",
+      "canonicalForm": "古い",
+      "forms": [
+        {
+          "text": "古い",
+          "script": "mixed"
+        },
+        {
+          "text": "ふるい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ふるい"
+        }
+      ],
+      "senseIds": [
+        "sense-furui-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "description"
+      ],
+      "priority": 108,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "i-adjective"
+    },
+    {
+      "id": "lex-oishii",
+      "canonicalForm": "おいしい",
+      "forms": [
+        {
+          "text": "おいしい",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "おいしい"
+        }
+      ],
+      "senseIds": [
+        "sense-oishii-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "food"
+      ],
+      "priority": 109,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "i-adjective"
+    },
+    {
+      "id": "lex-atsui",
+      "canonicalForm": "暑い",
+      "forms": [
+        {
+          "text": "暑い",
+          "script": "mixed"
+        },
+        {
+          "text": "あつい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "あつい"
+        }
+      ],
+      "senseIds": [
+        "sense-atsui-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "weather"
+      ],
+      "priority": 110,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "i-adjective"
+    },
+    {
+      "id": "lex-samui",
+      "canonicalForm": "寒い",
+      "forms": [
+        {
+          "text": "寒い",
+          "script": "mixed"
+        },
+        {
+          "text": "さむい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "さむい"
+        }
+      ],
+      "senseIds": [
+        "sense-samui-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "weather"
+      ],
+      "priority": 111,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "i-adjective"
+    },
+    {
+      "id": "lex-ii",
+      "canonicalForm": "いい",
+      "forms": [
+        {
+          "text": "いい",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "いい"
+        }
+      ],
+      "senseIds": [
+        "sense-ii-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "description"
+      ],
+      "priority": 112,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "i-adjective-ii"
+    },
+    {
+      "id": "lex-muzukashii",
+      "canonicalForm": "難しい",
+      "forms": [
+        {
+          "text": "難しい",
+          "script": "mixed"
+        },
+        {
+          "text": "むずかしい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "むずかしい"
+        }
+      ],
+      "senseIds": [
+        "sense-muzukashii-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "description"
+      ],
+      "priority": 113,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "i-adjective"
+    },
+    {
+      "id": "lex-genki",
+      "canonicalForm": "元気",
+      "forms": [
+        {
+          "text": "元気",
+          "script": "mixed"
+        },
+        {
+          "text": "げんき",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "げんき"
+        }
+      ],
+      "senseIds": [
+        "sense-genki-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "description"
+      ],
+      "priority": 114,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "na-adjective"
+    },
+    {
+      "id": "lex-shizuka",
+      "canonicalForm": "静か",
+      "forms": [
+        {
+          "text": "静か",
+          "script": "mixed"
+        },
+        {
+          "text": "しずか",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "しずか"
+        }
+      ],
+      "senseIds": [
+        "sense-shizuka-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "description"
+      ],
+      "priority": 115,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "na-adjective"
+    },
+    {
+      "id": "lex-chichi",
+      "canonicalForm": "父",
+      "forms": [
+        {
+          "text": "父",
+          "script": "mixed"
+        },
+        {
+          "text": "ちち",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ちち"
+        }
+      ],
+      "senseIds": [
+        "sense-chichi-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "family"
+      ],
+      "priority": 116,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-haha",
+      "canonicalForm": "母",
+      "forms": [
+        {
+          "text": "母",
+          "script": "mixed"
+        },
+        {
+          "text": "はは",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "はは"
+        }
+      ],
+      "senseIds": [
+        "sense-haha-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "family"
+      ],
+      "priority": 117,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-ani",
+      "canonicalForm": "兄",
+      "forms": [
+        {
+          "text": "兄",
+          "script": "mixed"
+        },
+        {
+          "text": "あに",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "あに"
+        }
+      ],
+      "senseIds": [
+        "sense-ani-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "family"
+      ],
+      "priority": 118,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-ane",
+      "canonicalForm": "姉",
+      "forms": [
+        {
+          "text": "姉",
+          "script": "mixed"
+        },
+        {
+          "text": "あね",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "あね"
+        }
+      ],
+      "senseIds": [
+        "sense-ane-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "family"
+      ],
+      "priority": 119,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-otouto",
+      "canonicalForm": "弟",
+      "forms": [
+        {
+          "text": "弟",
+          "script": "mixed"
+        },
+        {
+          "text": "おとうと",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "おとうと"
+        }
+      ],
+      "senseIds": [
+        "sense-otouto-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "family"
+      ],
+      "priority": 120,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-imouto",
+      "canonicalForm": "妹",
+      "forms": [
+        {
+          "text": "妹",
+          "script": "mixed"
+        },
+        {
+          "text": "いもうと",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "いもうと"
+        }
+      ],
+      "senseIds": [
+        "sense-imouto-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "family"
+      ],
+      "priority": 121,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-ryoushin",
+      "canonicalForm": "両親",
+      "forms": [
+        {
+          "text": "両親",
+          "script": "mixed"
+        },
+        {
+          "text": "りょうしん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "りょうしん"
+        }
+      ],
+      "senseIds": [
+        "sense-ryoushin-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "family"
+      ],
+      "priority": 122,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kaishain",
+      "canonicalForm": "会社員",
+      "forms": [
+        {
+          "text": "会社員",
+          "script": "mixed"
+        },
+        {
+          "text": "かいしゃいん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かいしゃいん"
+        }
+      ],
+      "senseIds": [
+        "sense-kaishain-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "people"
+      ],
+      "priority": 123,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-ringo",
+      "canonicalForm": "りんご",
+      "forms": [
+        {
+          "text": "りんご",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "りんご"
+        }
+      ],
+      "senseIds": [
+        "sense-ringo-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "food",
+        "shopping"
+      ],
+      "priority": 124,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-basu",
+      "canonicalForm": "バス",
+      "forms": [
+        {
+          "text": "バス",
+          "script": "katakana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "バス"
+        }
+      ],
+      "senseIds": [
+        "sense-basu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "transport"
+      ],
+      "priority": 125,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-jitensha",
+      "canonicalForm": "自転車",
+      "forms": [
+        {
+          "text": "自転車",
+          "script": "mixed"
+        },
+        {
+          "text": "じてんしゃ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "じてんしゃ"
+        }
+      ],
+      "senseIds": [
+        "sense-jitensha-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "transport"
+      ],
+      "priority": 126,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-hikouki",
+      "canonicalForm": "飛行機",
+      "forms": [
+        {
+          "text": "飛行機",
+          "script": "mixed"
+        },
+        {
+          "text": "ひこうき",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ひこうき"
+        }
+      ],
+      "senseIds": [
+        "sense-hikouki-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "transport"
+      ],
+      "priority": 127,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-chikatetsu",
+      "canonicalForm": "地下鉄",
+      "forms": [
+        {
+          "text": "地下鉄",
+          "script": "mixed"
+        },
+        {
+          "text": "ちかてつ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ちかてつ"
+        }
+      ],
+      "senseIds": [
+        "sense-chikatetsu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "transport"
+      ],
+      "priority": 128,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-noru",
+      "canonicalForm": "乗る",
+      "forms": [
+        {
+          "text": "乗る",
+          "script": "mixed"
+        },
+        {
+          "text": "のる",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "のる"
+        }
+      ],
+      "senseIds": [
+        "sense-noru-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "transport"
+      ],
+      "priority": 129,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "godan"
+    },
+    {
+      "id": "lex-oriru",
+      "canonicalForm": "降りる",
+      "forms": [
+        {
+          "text": "降りる",
+          "script": "mixed"
+        },
+        {
+          "text": "おりる",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "おりる"
+        }
+      ],
+      "senseIds": [
+        "sense-oriru-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "transport"
+      ],
+      "priority": 130,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "ichidan"
+    },
+    {
+      "id": "lex-aruku",
+      "canonicalForm": "歩く",
+      "forms": [
+        {
+          "text": "歩く",
+          "script": "mixed"
+        },
+        {
+          "text": "あるく",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "あるく"
+        }
+      ],
+      "senseIds": [
+        "sense-aruku-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "transport"
+      ],
+      "priority": 131,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "godan"
+    },
+    {
+      "id": "lex-migi",
+      "canonicalForm": "右",
+      "forms": [
+        {
+          "text": "右",
+          "script": "mixed"
+        },
+        {
+          "text": "みぎ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "みぎ"
+        }
+      ],
+      "senseIds": [
+        "sense-migi-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "direction"
+      ],
+      "priority": 132,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-hidari",
+      "canonicalForm": "左",
+      "forms": [
+        {
+          "text": "左",
+          "script": "mixed"
+        },
+        {
+          "text": "ひだり",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ひだり"
+        }
+      ],
+      "senseIds": [
+        "sense-hidari-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "direction"
+      ],
+      "priority": 133,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-mae",
+      "canonicalForm": "前",
+      "forms": [
+        {
+          "text": "前",
+          "script": "mixed"
+        },
+        {
+          "text": "まえ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "まえ"
+        }
+      ],
+      "senseIds": [
+        "sense-mae-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "direction"
+      ],
+      "priority": 134,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-ushiro",
+      "canonicalForm": "後ろ",
+      "forms": [
+        {
+          "text": "後ろ",
+          "script": "mixed"
+        },
+        {
+          "text": "うしろ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "うしろ"
+        }
+      ],
+      "senseIds": [
+        "sense-ushiro-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "direction"
+      ],
+      "priority": 135,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-chikai",
+      "canonicalForm": "近い",
+      "forms": [
+        {
+          "text": "近い",
+          "script": "mixed"
+        },
+        {
+          "text": "ちかい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ちかい"
+        }
+      ],
+      "senseIds": [
+        "sense-chikai-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "direction"
+      ],
+      "priority": 136,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "i-adjective"
+    },
+    {
+      "id": "lex-tooi",
+      "canonicalForm": "遠い",
+      "forms": [
+        {
+          "text": "遠い",
+          "script": "mixed"
+        },
+        {
+          "text": "とおい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "とおい"
+        }
+      ],
+      "senseIds": [
+        "sense-tooi-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "direction"
+      ],
+      "priority": 137,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "i-adjective"
+    },
+    {
+      "id": "lex-mouichido",
+      "canonicalForm": "もう一度",
+      "forms": [
+        {
+          "text": "もう一度",
+          "script": "mixed"
+        },
+        {
+          "text": "もういちど",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "もういちど"
+        }
+      ],
+      "senseIds": [
+        "sense-mouichido-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "clarification"
+      ],
+      "priority": 138,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-yukkuri",
+      "canonicalForm": "ゆっくり",
+      "forms": [
+        {
+          "text": "ゆっくり",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ゆっくり"
+        }
+      ],
+      "senseIds": [
+        "sense-yukkuri-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "clarification"
+      ],
+      "priority": 139,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-onegaishimasu",
+      "canonicalForm": "お願いします",
+      "forms": [
+        {
+          "text": "お願いします",
+          "script": "mixed"
+        },
+        {
+          "text": "おねがいします",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "おねがいします"
+        }
+      ],
+      "senseIds": [
+        "sense-onegaishimasu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "clarification"
+      ],
+      "priority": 140,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-sumimasen",
+      "canonicalForm": "すみません",
+      "forms": [
+        {
+          "text": "すみません",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "すみません"
+        }
+      ],
+      "senseIds": [
+        "sense-sumimasen-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "immediate-needs"
+      ],
+      "priority": 141,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-arigatou",
+      "canonicalForm": "ありがとうございます",
+      "forms": [
+        {
+          "text": "ありがとうございます",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ありがとうございます"
+        }
+      ],
+      "senseIds": [
+        "sense-arigatou-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "conversation"
+      ],
+      "priority": 142,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-hai",
+      "canonicalForm": "はい",
+      "forms": [
+        {
+          "text": "はい",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "はい"
+        }
+      ],
+      "senseIds": [
+        "sense-hai-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "conversation"
+      ],
+      "priority": 143,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-iie",
+      "canonicalForm": "いいえ",
+      "forms": [
+        {
+          "text": "いいえ",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "いいえ"
+        }
+      ],
+      "senseIds": [
+        "sense-iie-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "conversation"
+      ],
+      "priority": 144,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-sukoshi",
+      "canonicalForm": "少し",
+      "forms": [
+        {
+          "text": "少し",
+          "script": "mixed"
+        },
+        {
+          "text": "すこし",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "すこし"
+        }
+      ],
+      "senseIds": [
+        "sense-sukoshi-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "a1-breadth",
+        "conversation"
+      ],
+      "priority": 145,
       "sourceIds": [
         "thiepn-original"
       ]
@@ -2006,6 +5494,1438 @@
       ],
       "partOfSpeech": [
         "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kore-1",
+      "lexemeId": "lex-kore",
+      "glosses": [
+        "this"
+      ],
+      "partOfSpeech": [
+        "pronoun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-sore-1",
+      "lexemeId": "lex-sore",
+      "glosses": [
+        "that"
+      ],
+      "partOfSpeech": [
+        "pronoun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-are-1",
+      "lexemeId": "lex-are",
+      "glosses": [
+        "that over there"
+      ],
+      "partOfSpeech": [
+        "pronoun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kono-1",
+      "lexemeId": "lex-kono",
+      "glosses": [
+        "this ..."
+      ],
+      "partOfSpeech": [
+        "determiner"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-sono-1",
+      "lexemeId": "lex-sono",
+      "glosses": [
+        "that ..."
+      ],
+      "partOfSpeech": [
+        "determiner"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-ano-1",
+      "lexemeId": "lex-ano",
+      "glosses": [
+        "that ... over there"
+      ],
+      "partOfSpeech": [
+        "determiner"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-koko-1",
+      "lexemeId": "lex-koko",
+      "glosses": [
+        "here"
+      ],
+      "partOfSpeech": [
+        "pronoun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-soko-1",
+      "lexemeId": "lex-soko",
+      "glosses": [
+        "there"
+      ],
+      "partOfSpeech": [
+        "pronoun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-asoko-1",
+      "lexemeId": "lex-asoko",
+      "glosses": [
+        "over there"
+      ],
+      "partOfSpeech": [
+        "pronoun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-doko-1",
+      "lexemeId": "lex-doko",
+      "glosses": [
+        "where"
+      ],
+      "partOfSpeech": [
+        "interrogative"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-dono-1",
+      "lexemeId": "lex-dono",
+      "glosses": [
+        "which ..."
+      ],
+      "partOfSpeech": [
+        "determiner"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-dore-1",
+      "lexemeId": "lex-dore",
+      "glosses": [
+        "which one"
+      ],
+      "partOfSpeech": [
+        "interrogative"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-dare-1",
+      "lexemeId": "lex-dare",
+      "glosses": [
+        "who"
+      ],
+      "partOfSpeech": [
+        "interrogative"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-dochira-1",
+      "lexemeId": "lex-dochira",
+      "glosses": [
+        "which way",
+        "which one (polite)"
+      ],
+      "partOfSpeech": [
+        "interrogative"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-dou-1",
+      "lexemeId": "lex-dou",
+      "glosses": [
+        "how"
+      ],
+      "partOfSpeech": [
+        "interrogative"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-itsu-1",
+      "lexemeId": "lex-itsu",
+      "glosses": [
+        "when"
+      ],
+      "partOfSpeech": [
+        "interrogative"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-ikura-1",
+      "lexemeId": "lex-ikura",
+      "glosses": [
+        "how much"
+      ],
+      "partOfSpeech": [
+        "interrogative"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-ikutsu-1",
+      "lexemeId": "lex-ikutsu",
+      "glosses": [
+        "how many",
+        "how old"
+      ],
+      "partOfSpeech": [
+        "interrogative"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-watashi-1",
+      "lexemeId": "lex-watashi",
+      "glosses": [
+        "I",
+        "me"
+      ],
+      "partOfSpeech": [
+        "pronoun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-toire-1",
+      "lexemeId": "lex-toire",
+      "glosses": [
+        "toilet",
+        "restroom"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-shashin-1",
+      "lexemeId": "lex-shashin",
+      "glosses": [
+        "photo"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kazoku-1",
+      "lexemeId": "lex-kazoku",
+      "glosses": [
+        "family"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kuruma-1",
+      "lexemeId": "lex-kuruma",
+      "glosses": [
+        "car"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-ichi-1",
+      "lexemeId": "lex-ichi",
+      "glosses": [
+        "one"
+      ],
+      "partOfSpeech": [
+        "number"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-ni-1",
+      "lexemeId": "lex-ni",
+      "glosses": [
+        "two"
+      ],
+      "partOfSpeech": [
+        "number"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-san-1",
+      "lexemeId": "lex-san",
+      "glosses": [
+        "three"
+      ],
+      "partOfSpeech": [
+        "number"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-yon-1",
+      "lexemeId": "lex-yon",
+      "glosses": [
+        "four"
+      ],
+      "partOfSpeech": [
+        "number"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-go-1",
+      "lexemeId": "lex-go",
+      "glosses": [
+        "five"
+      ],
+      "partOfSpeech": [
+        "number"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-roku-1",
+      "lexemeId": "lex-roku",
+      "glosses": [
+        "six"
+      ],
+      "partOfSpeech": [
+        "number"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-nana-1",
+      "lexemeId": "lex-nana",
+      "glosses": [
+        "seven"
+      ],
+      "partOfSpeech": [
+        "number"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-hachi-1",
+      "lexemeId": "lex-hachi",
+      "glosses": [
+        "eight"
+      ],
+      "partOfSpeech": [
+        "number"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kyuu-1",
+      "lexemeId": "lex-kyuu",
+      "glosses": [
+        "nine"
+      ],
+      "partOfSpeech": [
+        "number"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-juu-1",
+      "lexemeId": "lex-juu",
+      "glosses": [
+        "ten"
+      ],
+      "partOfSpeech": [
+        "number"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-hyaku-1",
+      "lexemeId": "lex-hyaku",
+      "glosses": [
+        "hundred"
+      ],
+      "partOfSpeech": [
+        "number"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-sen-1",
+      "lexemeId": "lex-sen",
+      "glosses": [
+        "thousand"
+      ],
+      "partOfSpeech": [
+        "number"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-en-1",
+      "lexemeId": "lex-en",
+      "glosses": [
+        "yen"
+      ],
+      "partOfSpeech": [
+        "counter"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-ji-1",
+      "lexemeId": "lex-ji",
+      "glosses": [
+        "o'clock"
+      ],
+      "partOfSpeech": [
+        "counter"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-fun-1",
+      "lexemeId": "lex-fun",
+      "glosses": [
+        "minute",
+        "minutes"
+      ],
+      "partOfSpeech": [
+        "counter"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-han-1",
+      "lexemeId": "lex-han",
+      "glosses": [
+        "half"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-asa-1",
+      "lexemeId": "lex-asa",
+      "glosses": [
+        "morning"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-hiru-1",
+      "lexemeId": "lex-hiru",
+      "glosses": [
+        "noon",
+        "daytime"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-yoru-1",
+      "lexemeId": "lex-yoru",
+      "glosses": [
+        "night"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kinou-1",
+      "lexemeId": "lex-kinou",
+      "glosses": [
+        "yesterday"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-mainichi-1",
+      "lexemeId": "lex-mainichi",
+      "glosses": [
+        "every day"
+      ],
+      "partOfSpeech": [
+        "adverb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-jikan-1",
+      "lexemeId": "lex-jikan",
+      "glosses": [
+        "time",
+        "hour(s)"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-okiru-1",
+      "lexemeId": "lex-okiru",
+      "glosses": [
+        "to get up"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-neru-1",
+      "lexemeId": "lex-neru",
+      "glosses": [
+        "to sleep",
+        "to go to bed"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-benkyou-suru-1",
+      "lexemeId": "lex-benkyou-suru",
+      "glosses": [
+        "to study"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-hataraku-1",
+      "lexemeId": "lex-hataraku",
+      "glosses": [
+        "to work"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-yasumu-1",
+      "lexemeId": "lex-yasumu",
+      "glosses": [
+        "to rest",
+        "to take a day off"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-au-1",
+      "lexemeId": "lex-au",
+      "glosses": [
+        "to meet"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-matsu-1",
+      "lexemeId": "lex-matsu",
+      "glosses": [
+        "to wait"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-suru-1",
+      "lexemeId": "lex-suru",
+      "glosses": [
+        "to do"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-wakaru-1",
+      "lexemeId": "lex-wakaru",
+      "glosses": [
+        "to understand"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-iu-1",
+      "lexemeId": "lex-iu",
+      "glosses": [
+        "to say"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-pan-1",
+      "lexemeId": "lex-pan",
+      "glosses": [
+        "bread"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-niku-1",
+      "lexemeId": "lex-niku",
+      "glosses": [
+        "meat"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-sakana-1",
+      "lexemeId": "lex-sakana",
+      "glosses": [
+        "fish"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-yasai-1",
+      "lexemeId": "lex-yasai",
+      "glosses": [
+        "vegetables"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kudamono-1",
+      "lexemeId": "lex-kudamono",
+      "glosses": [
+        "fruit"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-koohii-1",
+      "lexemeId": "lex-koohii",
+      "glosses": [
+        "coffee"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-juusu-1",
+      "lexemeId": "lex-juusu",
+      "glosses": [
+        "juice"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-asagohan-1",
+      "lexemeId": "lex-asagohan",
+      "glosses": [
+        "breakfast"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-hirugohan-1",
+      "lexemeId": "lex-hirugohan",
+      "glosses": [
+        "lunch"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-bangohan-1",
+      "lexemeId": "lex-bangohan",
+      "glosses": [
+        "dinner"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-resutoran-1",
+      "lexemeId": "lex-resutoran",
+      "glosses": [
+        "restaurant"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-mise-1",
+      "lexemeId": "lex-mise",
+      "glosses": [
+        "shop",
+        "store"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-nedan-1",
+      "lexemeId": "lex-nedan",
+      "glosses": [
+        "price"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-takai-1",
+      "lexemeId": "lex-takai",
+      "glosses": [
+        "expensive",
+        "high"
+      ],
+      "partOfSpeech": [
+        "adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-yasui-1",
+      "lexemeId": "lex-yasui",
+      "glosses": [
+        "cheap"
+      ],
+      "partOfSpeech": [
+        "adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-atarashii-1",
+      "lexemeId": "lex-atarashii",
+      "glosses": [
+        "new"
+      ],
+      "partOfSpeech": [
+        "adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-furui-1",
+      "lexemeId": "lex-furui",
+      "glosses": [
+        "old (thing)"
+      ],
+      "partOfSpeech": [
+        "adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-oishii-1",
+      "lexemeId": "lex-oishii",
+      "glosses": [
+        "delicious"
+      ],
+      "partOfSpeech": [
+        "adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-atsui-1",
+      "lexemeId": "lex-atsui",
+      "glosses": [
+        "hot (weather)"
+      ],
+      "partOfSpeech": [
+        "adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-samui-1",
+      "lexemeId": "lex-samui",
+      "glosses": [
+        "cold (weather)"
+      ],
+      "partOfSpeech": [
+        "adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-ii-1",
+      "lexemeId": "lex-ii",
+      "glosses": [
+        "good"
+      ],
+      "partOfSpeech": [
+        "adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-muzukashii-1",
+      "lexemeId": "lex-muzukashii",
+      "glosses": [
+        "difficult"
+      ],
+      "partOfSpeech": [
+        "adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-genki-1",
+      "lexemeId": "lex-genki",
+      "glosses": [
+        "well",
+        "energetic"
+      ],
+      "partOfSpeech": [
+        "adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-shizuka-1",
+      "lexemeId": "lex-shizuka",
+      "glosses": [
+        "quiet"
+      ],
+      "partOfSpeech": [
+        "adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-chichi-1",
+      "lexemeId": "lex-chichi",
+      "glosses": [
+        "my father"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-haha-1",
+      "lexemeId": "lex-haha",
+      "glosses": [
+        "my mother"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-ani-1",
+      "lexemeId": "lex-ani",
+      "glosses": [
+        "my older brother"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-ane-1",
+      "lexemeId": "lex-ane",
+      "glosses": [
+        "my older sister"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-otouto-1",
+      "lexemeId": "lex-otouto",
+      "glosses": [
+        "younger brother"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-imouto-1",
+      "lexemeId": "lex-imouto",
+      "glosses": [
+        "younger sister"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-ryoushin-1",
+      "lexemeId": "lex-ryoushin",
+      "glosses": [
+        "parents"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kaishain-1",
+      "lexemeId": "lex-kaishain",
+      "glosses": [
+        "company employee"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-ringo-1",
+      "lexemeId": "lex-ringo",
+      "glosses": [
+        "apple"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-basu-1",
+      "lexemeId": "lex-basu",
+      "glosses": [
+        "bus"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-jitensha-1",
+      "lexemeId": "lex-jitensha",
+      "glosses": [
+        "bicycle"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-hikouki-1",
+      "lexemeId": "lex-hikouki",
+      "glosses": [
+        "airplane"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-chikatetsu-1",
+      "lexemeId": "lex-chikatetsu",
+      "glosses": [
+        "subway"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-noru-1",
+      "lexemeId": "lex-noru",
+      "glosses": [
+        "to ride",
+        "to board"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-oriru-1",
+      "lexemeId": "lex-oriru",
+      "glosses": [
+        "to get off"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-aruku-1",
+      "lexemeId": "lex-aruku",
+      "glosses": [
+        "to walk"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-migi-1",
+      "lexemeId": "lex-migi",
+      "glosses": [
+        "right"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-hidari-1",
+      "lexemeId": "lex-hidari",
+      "glosses": [
+        "left"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-mae-1",
+      "lexemeId": "lex-mae",
+      "glosses": [
+        "front",
+        "before"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-ushiro-1",
+      "lexemeId": "lex-ushiro",
+      "glosses": [
+        "behind"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-chikai-1",
+      "lexemeId": "lex-chikai",
+      "glosses": [
+        "near"
+      ],
+      "partOfSpeech": [
+        "adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-tooi-1",
+      "lexemeId": "lex-tooi",
+      "glosses": [
+        "far"
+      ],
+      "partOfSpeech": [
+        "adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-mouichido-1",
+      "lexemeId": "lex-mouichido",
+      "glosses": [
+        "one more time"
+      ],
+      "partOfSpeech": [
+        "adverb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-yukkuri-1",
+      "lexemeId": "lex-yukkuri",
+      "glosses": [
+        "slowly"
+      ],
+      "partOfSpeech": [
+        "adverb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-onegaishimasu-1",
+      "lexemeId": "lex-onegaishimasu",
+      "glosses": [
+        "please"
+      ],
+      "partOfSpeech": [
+        "expression"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-sumimasen-1",
+      "lexemeId": "lex-sumimasen",
+      "glosses": [
+        "excuse me",
+        "sorry"
+      ],
+      "partOfSpeech": [
+        "expression"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-arigatou-1",
+      "lexemeId": "lex-arigatou",
+      "glosses": [
+        "thank you"
+      ],
+      "partOfSpeech": [
+        "expression"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-hai-1",
+      "lexemeId": "lex-hai",
+      "glosses": [
+        "yes"
+      ],
+      "partOfSpeech": [
+        "expression"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-iie-1",
+      "lexemeId": "lex-iie",
+      "glosses": [
+        "no"
+      ],
+      "partOfSpeech": [
+        "expression"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-sukoshi-1",
+      "lexemeId": "lex-sukoshi",
+      "glosses": [
+        "a little"
+      ],
+      "partOfSpeech": [
+        "adverb"
       ],
       "sourceIds": [
         "thiepn-original"
