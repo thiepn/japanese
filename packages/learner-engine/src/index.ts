@@ -1,7 +1,7 @@
 import { entityKey, type SkillMasteryProjection, type StudyEvent } from "@thiepn/domain";
 
 export interface LearnerState { mastery: Record<string, SkillMasteryProjection>; eventCount: number; }
-export const LEARNER_MODEL_VERSION = "p0.1";
+export const LEARNER_MODEL_VERSION = "p1.3";
 export const initialLearnerState: LearnerState = { mastery: {}, eventCount: 0 };
 
 export function reduceStudyEvent(state: LearnerState, event: StudyEvent): LearnerState {
@@ -10,16 +10,18 @@ export function reduceStudyEvent(state: LearnerState, event: StudyEvent): Learne
   const existing = state.mastery[key];
   const delta = evidenceDelta(event);
   const projection: SkillMasteryProjection = {
-    userId: event.userId,
-    entity: event.primaryTarget,
-    dimension: event.skillDimension,
+    userId: event.userId, entity: event.primaryTarget, dimension: event.skillDimension,
     estimate: clamp((existing?.estimate ?? 0.25) + delta),
     confidence: clamp((existing?.confidence ?? 0.1) + Math.abs(delta) * 0.6 + 0.03),
     evidenceCount: (existing?.evidenceCount ?? 0) + 1,
-    lastEvidenceAt: event.occurredAt,
-    modelVersion: LEARNER_MODEL_VERSION
+    lastEvidenceAt: event.occurredAt, modelVersion: LEARNER_MODEL_VERSION
   };
   return { mastery: { ...state.mastery, [key]: projection }, eventCount: state.eventCount + 1 };
+}
+
+export function replayStudyEvents(events: readonly StudyEvent[]): LearnerState {
+  const ordered = [...events].sort((a,b) => a.occurredAt.localeCompare(b.occurredAt) || a.id.localeCompare(b.id));
+  return ordered.reduce(reduceStudyEvent, initialLearnerState);
 }
 
 function evidenceDelta(event: StudyEvent): number {
