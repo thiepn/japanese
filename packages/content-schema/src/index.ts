@@ -39,6 +39,21 @@ export interface Sentence extends ProvenancedContent {
   level:string; register:string; grammarIds:string[]; entityRefs:EntityRef[]; tokens:SentenceToken[]; tags?:string[];
 }
 
+export interface LexicalChunk extends ProvenancedContent {
+  id:string;
+  expression:string;
+  reading?:string;
+  meaning:string;
+  level:string;
+  register:string;
+  lexemeIds:string[];
+  grammarIds:string[];
+  exampleSentenceIds:string[];
+  variants?:string[];
+  tags?:string[];
+  priority?:number;
+}
+
 export type LanguageActivity="listening"|"reading"|"spoken_interaction"|"spoken_production"|"writing";
 export interface CanDoDescriptor extends ProvenancedContent {
   id:string; statement:string; level:string; languageActivity:LanguageActivity;
@@ -53,23 +68,29 @@ export interface ReadingQuestion {
   id:string; prompt:string; choices:string[]; answer:string; explanation:string;
 }
 export type ReadingAudioMode="speech_synthesis"|"recorded"|"none";
+export interface ReadingListeningSegment {
+  id:string;
+  sentenceId:string;
+  startMs?:number;
+  endMs?:number;
+}
 export interface ReadingText extends ProvenancedContent {
   id:string; title:string; description:string; level:string; kind:"story"|"dialogue"|"functional";
   sentenceIds:string[]; targetLexemeIds:string[]; grammarIds:string[]; tags:string[];
-  estimatedMinutes:number; audioMode:ReadingAudioMode; audioAssetId?:string; comprehensionQuestions:ReadingQuestion[];
+  estimatedMinutes:number; audioMode:ReadingAudioMode; audioAssetId?:string; listeningSegments?:ReadingListeningSegment[]; comprehensionQuestions:ReadingQuestion[];
 }
 
 export type ProductiveTaskMode="writing"|"speaking";
 export interface ProductiveRubricCriterion { id:string; label:string; description:string; weight:number; }
 export interface ProductiveTask extends ProvenancedContent {
   id:string; title:string; level:string; mode:ProductiveTaskMode; prompt:string; situation:string;
-  targetGrammarIds:string[]; targetLexemeIds:string[]; modelResponse:string; requiredTerms:string[];
+  targetGrammarIds:string[]; targetLexemeIds:string[]; targetChunkIds?:string[]; modelResponse:string; requiredTerms:string[];
   minimumCharacters:number; rubric:ProductiveRubricCriterion[]; tags:string[]; milestoneArea?:LanguageActivity;
 }
 
 export interface ContentSeedPackage {
   schemaVersion:number; version:string; sourceIds:string[]; lexemes:Lexeme[]; senses:Sense[]; kanji:Kanji[];
-  audioAssets:AudioAssetRecord[]; grammar:GrammarConcept[]; sentences:Sentence[]; canDos:CanDoDescriptor[]; courseUnits:CourseUnit[];
+  audioAssets:AudioAssetRecord[]; grammar:GrammarConcept[]; sentences:Sentence[]; lexicalChunks:LexicalChunk[]; canDos:CanDoDescriptor[]; courseUnits:CourseUnit[];
   readingTexts:ReadingText[]; productiveTasks:ProductiveTask[];
 }
 
