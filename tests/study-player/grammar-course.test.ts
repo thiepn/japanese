@@ -6,7 +6,7 @@ describe("P6 grammar, sentences and A1→B2 course",()=>{
   it("ships canonical grammar, sentence and course entities through B2",()=>{
     expect(coreContent.lexemes).toHaveLength(416);
     expect(coreContent.grammar).toHaveLength(102);
-    expect(coreContent.sentences).toHaveLength(257);
+    expect(coreContent.sentences).toHaveLength(267);
     expect(coreContent.canDos).toHaveLength(50);
     expect(coreContent.courseUnits).toHaveLength(50);
     expect(a1Course.map((item)=>item.unit.order)).toEqual(Array.from({length:50},(_,index)=>index+1));
