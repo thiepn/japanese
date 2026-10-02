@@ -1,0 +1,38 @@
+import { describe,expect,it } from "vitest";
+import { analyzeAuthenticText,extractSubtitleText,isAllowedReusableAudioLicense,normalizeImportedText } from "../../apps/web/src/immerse/authentic";
+
+describe("P4 authentic-input pipeline",()=>{
+  it("segments arbitrary Japanese and links known canonical or inflected forms",()=>{
+    const analysis=analyzeAuthenticText("来週は東京に行きたいです。知らない単語もあります。");
+    expect(analysis.tokens.some((token)=>token.kind==="known"&&token.lexemeId==="lex-raishuu")).toBe(true);
+    expect(analysis.tokens.some((token)=>token.kind==="known"&&token.lexemeId==="lex-tokyo")).toBe(true);
+    expect(analysis.tokens.some((token)=>token.kind==="known"&&token.lexemeId==="lex-iku")).toBe(true);
+    expect(analysis.unknownTypes.length).toBeGreaterThan(0);
+    expect(analysis.knownRatio).toBeGreaterThan(0);
+    expect(analysis.knownRatio).toBeLessThan(1);
+  });
+
+  it("strips SRT/VTT timing while preserving Japanese dialogue",()=>{
+    const raw=`1
+00:00:01,000 --> 00:00:03,000
+こんにちは。
+
+2
+00:00:04,000 --> 00:00:06,000
+駅はどこですか。`;
+    const cleaned=extractSubtitleText(raw);
+    expect(cleaned).toContain("こんにちは。");
+    expect(cleaned).toContain("駅はどこですか。");
+    expect(cleaned).not.toContain("-->");
+    expect(normalizeImportedText(raw,"subtitle")).not.toContain("00:00");
+  });
+
+  it("admits reusable CC licenses and rejects missing, NC and ND audio",()=>{
+    expect(isAllowedReusableAudioLicense("CC0 1.0")).toBe(true);
+    expect(isAllowedReusableAudioLicense("CC BY 4.0")).toBe(true);
+    expect(isAllowedReusableAudioLicense("CC BY-SA 4.0")).toBe(true);
+    expect(isAllowedReusableAudioLicense("CC BY-NC 4.0")).toBe(false);
+    expect(isAllowedReusableAudioLicense("CC BY-ND 4.0")).toBe(false);
+    expect(isAllowedReusableAudioLicense("")).toBe(false);
+  });
+});

@@ -4,14 +4,16 @@ interface RegistrySource { id:string; title:string; publicExport:boolean; licens
 interface Registry { sources:RegistrySource[]; }
 interface Manifest { id:string; sources?:string[]; }
 interface Provenanced { id:string; sourceIds?:string[]; }
+interface LexemeRecord extends Provenanced { audioIds?:string[]; }
+interface AudioRecord extends Provenanced { kind?:string; credit?:string; licenseName?:string; attributionUrl?:string; nativeSpeaker?:boolean; }
 interface GrammarRecord extends Provenanced { prerequisiteIds?:string[]; contrastIds?:string[]; }
 interface EntityRef { kind:string; id:string; }
 interface SentenceRecord extends Provenanced { grammarIds?:string[]; entityRefs?:EntityRef[]; }
 interface CanDoRecord extends Provenanced { grammarIds?:string[]; sentenceIds?:string[]; prerequisiteIds?:string[]; }
 interface CourseUnitRecord extends Provenanced { canDoId?:string; prerequisiteUnitIds?:string[]; grammarIds?:string[]; sentenceIds?:string[]; vocabularyIds?:string[]; conjugationLexemeIds?:string[]; }
-interface ReadingTextRecord extends Provenanced { sentenceIds?:string[]; targetLexemeIds?:string[]; grammarIds?:string[]; }
+interface ReadingTextRecord extends Provenanced { sentenceIds?:string[]; targetLexemeIds?:string[]; grammarIds?:string[]; audioMode?:string; audioAssetId?:string; }
 interface Seed {
-  sourceIds?:string[]; lexemes?:Provenanced[]; senses?:Provenanced[]; kanji?:Provenanced[]; audioAssets?:Provenanced[];
+  sourceIds?:string[]; lexemes?:LexemeRecord[]; senses?:Provenanced[]; kanji?:Provenanced[]; audioAssets?:AudioRecord[];
   grammar?:GrammarRecord[]; sentences?:SentenceRecord[]; canDos?:CanDoRecord[]; courseUnits?:CourseUnitRecord[]; readingTexts?:ReadingTextRecord[];
 }
 
@@ -52,7 +54,18 @@ const grammarIds=new Set((seed.grammar ?? []).map((item)=>item.id));
 const sentenceIds=new Set((seed.sentences ?? []).map((item)=>item.id));
 const canDoIds=new Set((seed.canDos ?? []).map((item)=>item.id));
 const courseUnitIds=new Set((seed.courseUnits ?? []).map((item)=>item.id));
+const audioIds=new Set((seed.audioAssets ?? []).map((item)=>item.id));
 
+for(const lexeme of seed.lexemes ?? []){
+  for(const id of lexeme.audioIds ?? [])requireRef(audioIds,id,"lexemes/"+lexeme.id+"/audioIds");
+}
+for(const audio of seed.audioAssets ?? []){
+  if(audio.sourceIds?.includes("tofugu-wanikani-audio")){
+    if(audio.licenseName!=="CC BY-SA 4.0")violations.push("Tofugu/WaniKani audio must declare CC BY-SA 4.0: "+audio.id);
+    if(!audio.attributionUrl)violations.push("Native audio missing attribution URL: "+audio.id);
+    if(audio.nativeSpeaker!==true)violations.push("Tofugu/WaniKani source should be marked native-speaker audio: "+audio.id);
+  }
+}
 for(const grammar of seed.grammar ?? []){
   for(const id of grammar.prerequisiteIds ?? [])requireRef(grammarIds,id,"grammar/"+grammar.id+"/prerequisiteIds");
   for(const id of grammar.contrastIds ?? [])requireRef(grammarIds,id,"grammar/"+grammar.id+"/contrastIds");
@@ -74,6 +87,8 @@ for(const text of seed.readingTexts ?? []){
   for(const id of text.sentenceIds ?? [])requireRef(sentenceIds,id,"readingTexts/"+text.id+"/sentenceIds");
   for(const id of text.targetLexemeIds ?? [])requireRef(lexemeIds,id,"readingTexts/"+text.id+"/targetLexemeIds");
   for(const id of text.grammarIds ?? [])requireRef(grammarIds,id,"readingTexts/"+text.id+"/grammarIds");
+  if(text.audioAssetId)requireRef(audioIds,text.audioAssetId,"readingTexts/"+text.id+"/audioAssetId");
+  if(text.audioMode==="recorded"&&!text.audioAssetId)violations.push("Recorded reading text missing audioAssetId: "+text.id);
 }
 for(const unit of seed.courseUnits ?? []){
   requireRef(canDoIds,unit.canDoId,"courseUnits/"+unit.id+"/canDoId");

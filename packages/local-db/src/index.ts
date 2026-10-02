@@ -2,13 +2,28 @@ import type { StudyEvent } from "@thiepn/domain";
 import type { MemoryTrace } from "@thiepn/scheduler";
 import { studyEventToMutation, type CoreSyncMutation, type StudyEventEnvelope } from "@thiepn/sync-protocol";
 
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 const STUDY_EVENTS = "study_events";
 const MEMORY_TRACES = "memory_traces";
 const OUTBOX = "sync_outbox";
 const SYNC_META = "sync_meta";
+const PRIVATE_DOCUMENTS = "private_documents";
+const PRIVATE_VOCABULARY = "private_vocabulary";
 
 export interface SyncMetaRecord { key: string; value: string; }
+
+export type PrivateDocumentSourceKind="paste"|"text_file"|"subtitle"|"tatoeba";
+export interface PrivateNativeAudio {
+  url:string; credit:string; licenseName:string; attributionUrl?:string; externalId?:string;
+}
+export interface PrivateDocumentRecord {
+  id:string; accountId:string; title:string; sourceKind:PrivateDocumentSourceKind; text:string;
+  importedAt:string; updatedAt:string; sourceLabel?:string; sourceUrl?:string; nativeAudio?:PrivateNativeAudio;
+}
+export interface PrivateVocabularyRecord {
+  id:string; accountId:string; canonicalForm:string; reading?:string; meaning:string;
+  sourceDocumentIds:string[]; createdAt:string; updatedAt:string;
+}
 
 export function databaseNameForAccount(accountId: string): string {
   if (!accountId.trim()) throw new Error("ACCOUNT_ID_REQUIRED");
@@ -26,6 +41,8 @@ export async function openLocalDb(accountId: string): Promise<IDBDatabase> {
       if (!db.objectStoreNames.contains(OUTBOX)) db.createObjectStore(OUTBOX, { keyPath: "mutation_id" });
       if (!db.objectStoreNames.contains(SYNC_META)) db.createObjectStore(SYNC_META, { keyPath: "key" });
       if (!db.objectStoreNames.contains(MEMORY_TRACES)) db.createObjectStore(MEMORY_TRACES, { keyPath: "id" });
+      if (!db.objectStoreNames.contains(PRIVATE_DOCUMENTS)) db.createObjectStore(PRIVATE_DOCUMENTS, { keyPath: "id" });
+      if (!db.objectStoreNames.contains(PRIVATE_VOCABULARY)) db.createObjectStore(PRIVATE_VOCABULARY, { keyPath: "id" });
     };
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
@@ -93,6 +110,31 @@ export async function getSyncCursor(accountId: string): Promise<string | null> {
 export async function setSyncCursor(accountId: string, cursor: string): Promise<void> {
   const db = await openLocalDb(accountId);
   await putOne(db, SYNC_META, { key: "cursor", value: cursor } satisfies SyncMetaRecord);
+  db.close();
+}
+
+export async function savePrivateDocument(accountId:string,document:PrivateDocumentRecord):Promise<void>{
+  if(document.accountId!==accountId)throw new Error("PRIVATE_DOCUMENT_ACCOUNT_MISMATCH");
+  const db=await openLocalDb(accountId);await putOne(db,PRIVATE_DOCUMENTS,document);db.close();
+}
+export async function listPrivateDocuments(accountId:string):Promise<PrivateDocumentRecord[]>{
+  return getAllFromStore<PrivateDocumentRecord>(accountId,PRIVATE_DOCUMENTS);
+}
+export async function deletePrivateDocument(accountId:string,id:string):Promise<void>{
+  const db=await openLocalDb(accountId);
+  await new Promise<void>((resolve,reject)=>{const tx=db.transaction(PRIVATE_DOCUMENTS,"readwrite");tx.objectStore(PRIVATE_DOCUMENTS).delete(id);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});
+  db.close();
+}
+export async function savePrivateVocabulary(accountId:string,record:PrivateVocabularyRecord):Promise<void>{
+  if(record.accountId!==accountId)throw new Error("PRIVATE_VOCABULARY_ACCOUNT_MISMATCH");
+  const db=await openLocalDb(accountId);await putOne(db,PRIVATE_VOCABULARY,record);db.close();
+}
+export async function listPrivateVocabulary(accountId:string):Promise<PrivateVocabularyRecord[]>{
+  return getAllFromStore<PrivateVocabularyRecord>(accountId,PRIVATE_VOCABULARY);
+}
+export async function deletePrivateVocabulary(accountId:string,id:string):Promise<void>{
+  const db=await openLocalDb(accountId);
+  await new Promise<void>((resolve,reject)=>{const tx=db.transaction(PRIVATE_VOCABULARY,"readwrite");tx.objectStore(PRIVATE_VOCABULARY).delete(id);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});
   db.close();
 }
 

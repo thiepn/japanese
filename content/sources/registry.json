@@ -51,10 +51,13 @@
       "id": "tatoeba",
       "title": "Tatoeba",
       "role": [
-        "sentence_corpus"
+        "sentence_corpus",
+        "sentence_audio",
+        "authentic_input"
       ],
       "publicExport": true,
-      "license": "source-specific attribution required"
+      "license": "Text CC BY 2.0 FR by default; audio is per-recording and reusable only when that recording declares an allowed license",
+      "canonicalUrl": "https://tatoeba.org/"
     },
     {
       "id": "tae-kim",

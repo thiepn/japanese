@@ -71,17 +71,38 @@ The tokenizer is intentionally bounded to the app's known graph and core inflect
 
 ## P4 — A2 Expansion, Native Audio & Authentic-Input Pipeline
 
-**Next.** Expand the bridge into broader A2 capability and prepare for genuine outside input:
+**Implementation complete.**
 
-- broader A2 grammar, lexicon and connected-text coverage;
-- source-provenanced native sentence/passage audio where licensing permits;
-- robust morphology/tokenization beyond the curated graph;
-- private-source ingestion for learner-owned text and subtitles;
-- unknown-word density and text difficulty estimation for imported material;
-- stable mining/de-duplication from authentic input into the existing learner model;
-- stronger connected-listening and shadowing workflows;
-- transition from curated graded texts toward controlled authentic material.
+P4 extends the same learner graph through practical structured A2 and opens a controlled path to learner-owned Japanese:
+
+- 274 canonical lexemes, 66 grammar concepts, 161 linked sentences, 32 Can-do descriptors and 32 course units;
+- 16 graded texts spanning A1 through A2;
+- canonical grammar-owned A2 contextual practice instead of another hard-coded learning subsystem;
+- 108 additional exact-file-verified native vocabulary recordings from the pinned Tofugu/WaniKani source;
+- explicit native-audio license, attribution, native-speaker and external-identity metadata;
+- recorded connected playback whenever an actual source-provenanced asset is attached, with device speech synthesis retained as an explicit fallback;
+- local paste / TXT / Markdown / SRT / VTT ingestion for learner-owned Japanese;
+- account-scoped private-document and private-vocabulary persistence;
+- hybrid arbitrary-text analysis using canonical forms, shared inflection generation, bounded A2 surface rules and browser Japanese segmentation;
+- known lexical-token coverage, unresolved-form counts and advisory difficulty estimates;
+- de-duplicated contextual mining into the same Today queue, learner projections and FSRS scheduler;
+- a runtime Tatoeba sentence/audio route that keeps text/audio licensing separate and rejects recordings without an admitted reusable license.
+
+P4 does not claim perfect dictionary-grade morphology or native connected recordings for every text. Private unknown forms require a learner-supplied definition before personal review. See `docs/P4_ACCEPTANCE.md`.
+
+## P5 — B1 Expansion, Productive Language & Adaptive Immersion
+
+**Next.** Move from supported A2 comprehension toward independent B1 use:
+
+- broader B1 grammar, lexicon, discourse connectors and multi-paragraph reading/listening;
+- structured writing tasks with reusable correction/evidence contracts;
+- real speaking and pronunciation practice beyond say-then-type proxies;
+- richer shadowing and connected-listening loops with licensed native recordings;
+- adaptive selection of graded vs imported material from learner mastery and unknown density;
+- dictionary-grade morphology/lemmatization for private authentic input without replacing canonical identities;
+- better sentence mining, sense selection and duplicate handling;
+- B1 milestone assessment that reports reading, listening, interaction, production and writing separately.
 
 ## Later
 
-Later phases expand A2→B1 immersion, writing/speaking production, AI conversation, adaptive remediation, advanced assessment and specialized authentic-language workflows.
+Later phases add AI conversation, adaptive remediation, advanced assessment, source-pack workflows and specialized authentic-language study.

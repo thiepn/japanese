@@ -13,7 +13,7 @@ import {
 } from "./study/runtime";
 
 type Surface="Today"|"Learn"|"Immerse"|"Library"|"Progress";
-const EMPTY_SUMMARY:StudySummary={due:0,newKana:5,newVocabulary:2,listening:0,application:0,course:0,learnedKana:0,totalKana:217,learnedVocabulary:0,totalVocabulary:145,memoryTraces:0};
+const EMPTY_SUMMARY:StudySummary={due:0,newKana:5,newVocabulary:2,listening:0,application:0,course:0,learnedKana:0,totalKana:217,learnedVocabulary:0,totalVocabulary:274,memoryTraces:0};
 const EMPTY_KANA:KanaMasterySummary={overall:0,hiragana:0,katakana:0,recognition:0,readingRecall:0,formSelection:0,listening:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
 const EMPTY_VOCAB:VocabularyMasterySummary={overall:0,meaning:0,reading:0,listening:0,activeUse:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
 const EMPTY_CONJUGATION:ConjugationMasterySummary={overall:0,politeNegative:0,politePast:0,politePastNegative:0,teForm:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
@@ -95,7 +95,7 @@ export function App(){
   if(session)return <div className="study-shell"><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></div>;
 
   return <div className="app-shell">
-    <header className="topbar"><div><strong>Japanese</strong><span className="phase">P3 reader + connected listening</span></div><button className="quiet-button account-button" type="button">Account</button></header>
+    <header className="topbar"><div><strong>Japanese</strong><span className="phase">P4 A2 + authentic input</span></div><button className="quiet-button account-button" type="button">Account</button></header>
     <main className="content">
       {surface==="Today"&&<Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
       {surface==="Learn"&&<Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} course={courseProgress} milestone={milestone} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()}/>} 
@@ -110,8 +110,8 @@ export function App(){
 function Today({summary,completedToday,status,onStart}:{summary:StudySummary;completedToday:number;status:string;onStart:()=>void}){
   const remaining=summary.due+summary.newKana+summary.newVocabulary+summary.listening+summary.application+summary.course;
   return <section className="dashboard"><p className="eyebrow">TODAY</p><h1>{remaining?"Continue Japanese":"You’re caught up"}</h1>
-    <p className="lead">One queue now combines memory reviews, Foundation skills and the current A1 capability path. Grammar enters through meaning and sentence context instead of living in a separate grammar app.</p>
-    <div className="stat-row six"><Stat value={summary.due} label="Due"/><Stat value={summary.newKana} label="New kana"/><Stat value={summary.newVocabulary} label="New words"/><Stat value={summary.listening} label="Listening"/><Stat value={summary.course} label="A1 course"/><Stat value={summary.application} label="Practice"/></div>
+    <p className="lead">One queue now combines memory reviews, Foundation skills and the current A1→A2 capability path. Grammar enters through meaning and sentence context instead of living in a separate grammar app.</p>
+    <div className="stat-row six"><Stat value={summary.due} label="Due"/><Stat value={summary.newKana} label="New kana"/><Stat value={summary.newVocabulary} label="New words"/><Stat value={summary.listening} label="Listening"/><Stat value={summary.course} label="Course"/><Stat value={summary.application} label="Practice"/></div>
     <p className="session-note">{completedToday} answers recorded this session.</p>
     <button className="primary" disabled={status==="loading"} onClick={onStart} type="button">{status==="loading"?"Preparing…":remaining?"Continue study":"Review anyway"}</button>
     {status==="error"&&<p className="error-text" role="status">Could not open local study data. Reload and try again.</p>}
@@ -121,15 +121,15 @@ function Today({summary,completedToday,status,onStart}:{summary:StudySummary;com
 function Learn({summary,kana,vocab,conjugation,grammar,sentence,course,milestone,status,onStart,onStartUnit,onStartAssessment,onStartMilestone}:{summary:StudySummary;kana:KanaMasterySummary;vocab:VocabularyMasterySummary;conjugation:ConjugationMasterySummary;grammar:GrammarMasterySummary;sentence:SentenceMasterySummary;course:CourseUnitProgress[];milestone:A1MilestoneProgress;status:string;onStart:()=>void;onStartUnit:(id:string)=>void;onStartAssessment:(id:string)=>void;onStartMilestone:()=>void}){
   const kanaCoverage=summary.totalKana?Math.round(summary.learnedKana/summary.totalKana*100):0;
   const vocabCoverage=summary.totalVocabulary?Math.round(summary.learnedVocabulary/summary.totalVocabulary*100):0;
-  return <section className="dashboard learn-page"><p className="eyebrow">LEARN</p><h1>Foundation → A1</h1>
-    <p className="lead">The A1 path now combines broader everyday vocabulary, reusable grammar, generated conjugation practice, sentence transfer and delayed Can-do checks. All evidence stays in the same learner model.</p>
+  return <section className="dashboard learn-page"><p className="eyebrow">LEARN</p><h1>Foundation → A2</h1>
+    <p className="lead">The structured path now continues through A2 with broader vocabulary, grammar, sentence transfer, connected reading and authentic-input mining. All graded evidence stays in the same learner model.</p>
     <div className="course-stack foundation-stack">
       <article className="course-card"><div><span className="course-kicker">SCRIPT FOUNDATION</span><h2>Kana</h2><p>{foundationSections.map((section)=>section.label).join(" · ")}</p></div><div className="course-progress"><strong>{kanaCoverage}%</strong><span>{summary.learnedKana} / {summary.totalKana} introduced</span></div></article>
-      <article className="course-card"><div><span className="course-kicker">A1 LEXICON</span><h2>Useful words + kanji in context</h2><p>Meaning · reading · listening · active recall</p></div><div className="course-progress"><strong>{vocabCoverage}%</strong><span>{summary.learnedVocabulary} / {summary.totalVocabulary} words introduced</span></div></article>
+      <article className="course-card"><div><span className="course-kicker">A1→A2 LEXICON</span><h2>Useful words + kanji in context</h2><p>Meaning · reading · listening · active recall</p></div><div className="course-progress"><strong>{vocabCoverage}%</strong><span>{summary.learnedVocabulary} / {summary.totalVocabulary} words introduced</span></div></article>
     </div>
 
     <section className="course-section">
-      <div className="section-heading"><div><span className="course-kicker">STRUCTURED A1</span><h2>Capability course</h2></div><span className="course-count">{course.filter((unit)=>unit.status==="mastered").length} / {course.length} mastered</span></div>
+      <div className="section-heading"><div><span className="course-kicker">STRUCTURED A1→A2</span><h2>Capability course</h2></div><span className="course-count">{course.filter((unit)=>unit.status==="mastered").length} / {course.length} mastered</span></div>
       <div className="unit-list">
         {course.map((unit)=><article className={"unit-card "+unit.status} key={unit.id}>
           <div className="unit-index">{String(unit.order).padStart(2,"0")}</div>
@@ -145,7 +145,7 @@ function Learn({summary,kana,vocab,conjugation,grammar,sentence,course,milestone
           </div>
         </article>)}
       </div>
-      <p className="course-note">Unit checks unlock 20 hours after the unit’s essential first-pass evidence is complete. “Challenging” remains advisory rather than a hard lock.</p>
+      <p className="course-note">Unit checks unlock 20 hours after essential first-pass evidence. A2 units continue the same graph and remain advisory rather than hard-locked.</p>
     </section>
 
     <section className="mastery-section milestone-card">
@@ -188,7 +188,7 @@ function Progress({kana,vocab,conjugation,grammar,sentence,milestone,immersion,s
 }
 
 function Library({query,setQuery,results,status}:{query:string;setQuery:(value:string)=>void;results:SearchResult[];status:string}){
-  return <section className="library"><p className="eyebrow">LIBRARY</p><h1>Japanese knowledge</h1><p className="lead">Search canonical words, kanji, grammar and sentences by Japanese form, reading or English meaning/function.</p>
+  return <section className="library"><p className="eyebrow">LIBRARY</p><h1>Japanese knowledge</h1><p className="lead">Search canonical words, kanji, grammar, sentences and graded texts by Japanese form, reading or English meaning/function.</p>
     <input aria-label="Search Japanese" value={query} onChange={(event)=>setQuery(event.target.value)} placeholder="食べる, たべる, eat, topic…"/>
     {status==="loading"&&<p className="muted" role="status">Searching local Japanese content…</p>}{status==="error"&&<p role="status">Local content database is unavailable in this browser.</p>}
     <div className="results">{results.map((item)=><article className={"result-card result-"+item.entity.kind} key={item.entity.kind+":"+item.entity.id}><div><small>{item.entity.kind}</small><strong lang="ja">{item.title}</strong></div><span>{item.subtitle}</span></article>)}</div>

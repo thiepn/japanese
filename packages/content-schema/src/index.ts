@@ -19,11 +19,16 @@ export interface Kanji extends ProvenancedContent { id:string; literal:string; m
 export interface AudioAssetRecord extends ProvenancedContent {
   id:string; kind:"word"|"perception"|"sentence"; text:string; reading?:string; language:string;
   format:"ogg"|"mp3"|"wav"; url:string; credit:string; accent?:string; speaker?:string;
+  licenseName?:string; attributionUrl?:string; nativeSpeaker?:boolean; externalId?:string;
 }
 
+export interface GrammarPractice {
+  prompt:string; answer:string; choices:string[]; explanation:string;
+}
 export interface GrammarConcept extends ProvenancedContent {
   id:string; label:string; summary:string; mentalModel:string; formation:string[]; uses:string[];
   prerequisiteIds:string[]; contrastIds:string[]; level:string; register:string; priority?:number; tags?:string[];
+  practice?:GrammarPractice;
 }
 
 export interface SentenceToken {
@@ -51,7 +56,7 @@ export type ReadingAudioMode="speech_synthesis"|"recorded"|"none";
 export interface ReadingText extends ProvenancedContent {
   id:string; title:string; description:string; level:string; kind:"story"|"dialogue"|"functional";
   sentenceIds:string[]; targetLexemeIds:string[]; grammarIds:string[]; tags:string[];
-  estimatedMinutes:number; audioMode:ReadingAudioMode; comprehensionQuestions:ReadingQuestion[];
+  estimatedMinutes:number; audioMode:ReadingAudioMode; audioAssetId?:string; comprehensionQuestions:ReadingQuestion[];
 }
 
 export interface ContentSeedPackage {

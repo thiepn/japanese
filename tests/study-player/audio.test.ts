@@ -4,14 +4,17 @@ import { pronunciationPerceptionPrompts } from "../../apps/web/src/study/audioPr
 import { vocabularyListeningPrompts } from "../../apps/web/src/study/vocabulary";
 
 describe("P1.5 production audio",()=>{
-  it("maps every audio-backed core lexeme to one pinned native recording without fabricating audio for new breadth items",()=>{
+  it("maps every audio-backed core lexeme to one pinned native recording while preserving gaps",()=>{
     const audioLexemes=starterLexemes.filter((lexeme)=>lexeme.audioIds.length>0);
-    expect(audioLexemes).toHaveLength(36);
+    expect(audioLexemes.length).toBeGreaterThanOrEqual(140);
     expect(vocabularyListeningPrompts).toHaveLength(audioLexemes.length);
     const ids=new Set(coreContent.audioAssets.map((asset)=>asset.id));
     for(const lexeme of audioLexemes){
       expect(lexeme.audioIds).toHaveLength(1);
       expect(ids.has(lexeme.audioIds[0]!)).toBe(true);
+      const asset=coreContent.audioAssets.find((item)=>item.id===lexeme.audioIds[0]!);
+      expect(asset?.nativeSpeaker).toBe(true);
+      expect(asset?.licenseName).toBe("CC BY-SA 4.0");
     }
     expect(starterLexemes.some((lexeme)=>lexeme.audioIds.length===0)).toBe(true);
   });

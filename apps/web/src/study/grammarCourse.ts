@@ -87,7 +87,7 @@ const CLOZE:Readonly<Record<string,{prompt:string;answer:string;choices:string[]
 };
 
 export const grammarApplicationPrompts:StudyPrompt[]=coreContent.grammar.map((grammar,index)=>{
-  const cloze=CLOZE[grammar.id];
+  const cloze=CLOZE[grammar.id] ?? grammar.practice;
   if(!cloze)throw new Error("MISSING_GRAMMAR_CLOZE:"+grammar.id);
   return {
     id:"grammar-form-"+grammar.id,
@@ -159,7 +159,7 @@ export function courseUnitSession(unitId:string):StudyStep[]{
     kind:"lesson",id:"lesson-"+unitId+"-intro",title:view.unit.title,
     body:view.canDo,contextId:unitId+"-intro",
     facts:[{label:"Level",value:view.unit.level},{label:"Vocabulary",value:String(view.unit.vocabularyIds.length)},{label:"Grammar",value:String(view.grammar.length)},{label:"Sentences",value:String(view.sentences.length)}],
-    sourceLabel:"THIEPN Japanese original A1 course"
+    sourceLabel:"THIEPN Japanese structured course"
   };
   const steps:StudyStep[]=[intro];
   for(const grammar of view.grammar){

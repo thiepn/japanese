@@ -12,6 +12,7 @@ import {
   type MilestoneAssessmentProgress,type UnitAssessmentProgress
 } from "./assessment";
 import { VOCABULARY_TOTAL, vocabularyApplicationPrompts, vocabularyLessons, vocabularyMeaningPrompts } from "./vocabulary";
+import { buildPrivateVocabularyPrompts } from "./privateVocabulary";
 
 export const DEVELOPMENT_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
 export const DEVELOPMENT_DEVICE_ID="p2-local-browser";
@@ -64,18 +65,19 @@ function allPrompts():StudyPrompt[]{
 }
 
 export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
-  const [traces,events]=await Promise.all([listMemoryTraces(DEVELOPMENT_ACCOUNT_ID),listStudyEvents(DEVELOPMENT_ACCOUNT_ID)]);
+  const [traces,events,privateSet]=await Promise.all([listMemoryTraces(DEVELOPMENT_ACCOUNT_ID),listStudyEvents(DEVELOPMENT_ACCOUNT_ID),buildPrivateVocabularyPrompts()]);
   const byId=new Map(traces.map((trace)=>[trace.id,trace]));
   const traceIds=new Set(byId.keys());
-  const all=allPrompts();
+  const privatePrompts=[...privateSet.meaning,...privateSet.application];
+  const all=[...allPrompts(),...privatePrompts];
   const due=all.filter((prompt)=>isDue(prompt,byId,now)).sort((a,b)=>dueAt(a,byId)-dueAt(b,byId));
-  if(due.length>=MAX_DUE_PER_SESSION)return insertFirstExposureLessons(due.slice(0,MAX_QUEUE_SIZE),byId);
+  if(due.length>=MAX_DUE_PER_SESSION)return insertFirstExposureLessons(due.slice(0,MAX_QUEUE_SIZE),byId,privatePrompts);
 
   const unseenKana=foundationPrompts.filter((prompt)=>!byId.has(traceIdFor(prompt)));
-  const unseenVocabulary=vocabularyMeaningPrompts.filter((prompt)=>!byId.has(traceIdFor(prompt)));
-  const readyApplication=foundationApplicationPool().filter((prompt)=>!byId.has(traceIdFor(prompt))&&isApplicationPromptReady(prompt,traceIds));
+  const unseenVocabulary=[...vocabularyMeaningPrompts,...privateSet.meaning].filter((prompt)=>!byId.has(traceIdFor(prompt)));
+  const readyApplication=[...foundationApplicationPool(),...privateSet.application].filter((prompt)=>!byId.has(traceIdFor(prompt))&&isApplicationPromptReady(prompt,traceIds));
   const readyCourse=selectNewCoursePrompts(traceIds,COURSE_ITEMS_PER_SESSION);
-  const mined=pendingMinedVocabulary(events).slice(0,2);
+  const mined=pendingMinedVocabulary(events,privateSet.meaning).slice(0,2);
   const queue:StudyPrompt[]=[];
 
   addUnique(queue,due);
@@ -85,7 +87,7 @@ export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
   addUnique(queue,unseenKana.slice(0,Math.min(NEW_KANA_PER_SESSION,slots(queue))));
   addUnique(queue,unseenVocabulary.slice(0,Math.min(NEW_VOCAB_PER_SESSION,slots(queue))));
   if(queue.length<MAX_QUEUE_SIZE)addUnique(queue,due.slice(0,MAX_QUEUE_SIZE));
-  return insertFirstExposureLessons(queue,byId);
+  return insertFirstExposureLessons(queue,byId,privatePrompts);
 }
 
 export async function buildCourseUnitSession(unitId:string):Promise<StudyStep[]>{
@@ -102,14 +104,16 @@ export async function getA1MilestoneAssessmentProgress():Promise<MilestoneAssess
 }
 
 export async function getStudySummary(now=new Date()):Promise<StudySummary>{
-  const traces=await listMemoryTraces(DEVELOPMENT_ACCOUNT_ID);
+  const [traces,privateSet]=await Promise.all([listMemoryTraces(DEVELOPMENT_ACCOUNT_ID),buildPrivateVocabularyPrompts()]);
   const byId=new Map(traces.map((trace)=>[trace.id,trace]));
   const traceIds=new Set(byId.keys());
-  const all=allPrompts();
+  const privatePrompts=[...privateSet.meaning,...privateSet.application];
+  const all=[...allPrompts(),...privatePrompts];
   const due=all.filter((prompt)=>isDue(prompt,byId,now)).length;
   const learnedKana=foundationPrompts.filter((prompt)=>byId.has(traceIdFor(prompt))).length;
-  const learnedVocabulary=vocabularyMeaningPrompts.filter((prompt)=>byId.has(traceIdFor(prompt))).length;
-  const ready=foundationApplicationPool().filter((prompt)=>!byId.has(traceIdFor(prompt))&&isApplicationPromptReady(prompt,traceIds));
+  const allMeaning=[...vocabularyMeaningPrompts,...privateSet.meaning];
+  const learnedVocabulary=allMeaning.filter((prompt)=>byId.has(traceIdFor(prompt))).length;
+  const ready=[...foundationApplicationPool(),...privateSet.application].filter((prompt)=>!byId.has(traceIdFor(prompt))&&isApplicationPromptReady(prompt,traceIds));
   const listeningReady=ready.filter(isListeningPrompt).length;
   const nonListeningReady=ready.length-listeningReady;
   const course=selectNewCoursePrompts(traceIds,COURSE_ITEMS_PER_SESSION).length;
@@ -117,11 +121,11 @@ export async function getStudySummary(now=new Date()):Promise<StudySummary>{
   return {
     due,
     newKana:pauseNew?0:Math.min(NEW_KANA_PER_SESSION,Math.max(0,FOUNDATION_TOTAL_ITEMS-learnedKana)),
-    newVocabulary:pauseNew?0:Math.min(NEW_VOCAB_PER_SESSION,Math.max(0,VOCABULARY_TOTAL-learnedVocabulary)),
+    newVocabulary:pauseNew?0:Math.min(NEW_VOCAB_PER_SESSION,Math.max(0,VOCABULARY_TOTAL+privateSet.meaning.length-learnedVocabulary)),
     listening:Math.min(2,listeningReady),
     application:Math.min(2,nonListeningReady),
     course:pauseNew?0:course,
-    learnedKana,totalKana:FOUNDATION_TOTAL_ITEMS,learnedVocabulary,totalVocabulary:VOCABULARY_TOTAL,memoryTraces:traces.length
+    learnedKana,totalKana:FOUNDATION_TOTAL_ITEMS,learnedVocabulary,totalVocabulary:VOCABULARY_TOTAL+privateSet.meaning.length,memoryTraces:traces.length
   };
 }
 
@@ -147,9 +151,9 @@ export async function getKanaMasterySummary():Promise<KanaMasterySummary>{
 }
 
 export async function getVocabularyMasterySummary():Promise<VocabularyMasterySummary>{
-  const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
+  const [events,privateSet]=await Promise.all([listStudyEvents(DEVELOPMENT_ACCOUNT_ID),buildPrivateVocabularyPrompts()]);
   const state=replayStudyEvents(events);
-  const expected=uniqueSkillPrompts([...vocabularyMeaningPrompts,...vocabularyApplicationPrompts]);
+  const expected=uniqueSkillPrompts([...vocabularyMeaningPrompts,...vocabularyApplicationPrompts,...privateSet.meaning,...privateSet.application]);
   const meaning=expected.filter((prompt)=>prompt.skill==="meaning_recognition");
   const reading=expected.filter((prompt)=>prompt.skill==="reading");
   const listening=expected.filter((prompt)=>prompt.skill==="audio_recognition");
@@ -250,9 +254,9 @@ export async function recordStudyAnswer(input:{prompt:StudyPrompt;response:strin
   await saveMemoryTrace(DEVELOPMENT_ACCOUNT_ID,scheduler.review(base,{grade:gradeFor(input.result),reviewedAt:now}));
 }
 
-function insertFirstExposureLessons(queue:StudyPrompt[],byId:Map<string,Awaited<ReturnType<typeof listMemoryTraces>>[number]>):StudyStep[]{
+function insertFirstExposureLessons(queue:StudyPrompt[],byId:Map<string,Awaited<ReturnType<typeof listMemoryTraces>>[number]>,extraPrompts:StudyPrompt[]=[]):StudyStep[]{
   const lessons={...foundationLessons,...vocabularyLessons,...pronunciationLessons,...grammarCourseLessons,...conjugationLessons};
-  const promptByTrace=new Map(allPrompts().map((prompt)=>[traceIdFor(prompt),prompt]));
+  const promptByTrace=new Map([...allPrompts(),...extraPrompts].map((prompt)=>[traceIdFor(prompt),prompt]));
   const seenContexts=new Set<string>();
   for(const trace of byId.values()){const prompt=promptByTrace.get(trace.id);if(prompt?.contextId)seenContexts.add(prompt.contextId);}
   const steps:StudyStep[]=[];const inserted=new Set<string>();
@@ -267,9 +271,18 @@ function insertFirstExposureLessons(queue:StudyPrompt[],byId:Map<string,Awaited<
 export function isApplicationPromptReady(prompt:StudyPrompt,traceIds:ReadonlySet<string>):boolean{
   if(prompt.primaryTarget.kind==="grammar"||prompt.primaryTarget.kind==="sentence")return isGrammarCoursePromptReady(prompt,traceIds);
   if(prompt.primaryTarget.kind==="lexeme"){
-    const meaning="lexeme:"+prompt.primaryTarget.id+":meaning_recognition:written-to-meaning";
+    const isPrivate=prompt.cueFamily.startsWith("private-");
+    const meaning=isPrivate
+      ?"lexeme:"+prompt.primaryTarget.id+":meaning_recognition:private-written-to-meaning"
+      :"lexeme:"+prompt.primaryTarget.id+":meaning_recognition:written-to-meaning";
     if(prompt.skill==="reading"||prompt.skill==="audio_recognition"||prompt.skill==="form_selection")return traceIds.has(meaning);
-    if(prompt.skill==="active_use"){const reading="lexeme:"+prompt.primaryTarget.id+":reading:word-to-reading";return traceIds.has(meaning)&&traceIds.has(reading);}
+    if(prompt.skill==="active_use"){
+      if(isPrivate){
+        const privateReading="lexeme:"+prompt.primaryTarget.id+":reading:private-word-to-reading";
+        return traceIds.has(meaning)&&(traceIds.has(privateReading)||!prompt.cueFamily.includes("reading"));
+      }
+      const reading="lexeme:"+prompt.primaryTarget.id+":reading:word-to-reading";return traceIds.has(meaning)&&traceIds.has(reading);
+    }
     return true;
   }
   if(prompt.cueFamily==="sokuon-audio-discrimination")return traceIds.has("kana:hiragana-small-tsu:reading:sokuon-reading");
@@ -290,7 +303,7 @@ function isDue(prompt:StudyPrompt,byId:Map<string,Awaited<ReturnType<typeof list
 function dueAt(prompt:StudyPrompt,byId:Map<string,Awaited<ReturnType<typeof listMemoryTraces>>[number]>):number{return new Date(byId.get(traceIdFor(prompt))?.card.due??"9999-12-31T00:00:00Z").getTime();}
 function slots(queue:StudyPrompt[]):number{return Math.max(0,MAX_QUEUE_SIZE-queue.length);}
 function addUnique(queue:StudyPrompt[],items:readonly StudyPrompt[]):void{for(const item of items){if(queue.length>=MAX_QUEUE_SIZE)break;if(!queue.some((existing)=>existing.id===item.id))queue.push(item);}}
-function pendingMinedVocabulary(events:Awaited<ReturnType<typeof listStudyEvents>>):StudyPrompt[]{
+function pendingMinedVocabulary(events:Awaited<ReturnType<typeof listStudyEvents>>,extraMeaningPrompts:StudyPrompt[]=[]):StudyPrompt[]{
   const latestMine=new Map<string,string>();
   const latestGraded=new Map<string,string>();
   for(const event of events){
@@ -307,7 +320,7 @@ function pendingMinedVocabulary(events:Awaited<ReturnType<typeof listStudyEvents
   return [...latestMine.entries()]
     .filter(([id,at])=>!latestGraded.get(id)||latestGraded.get(id)!<at)
     .sort((a,b)=>b[1].localeCompare(a[1]))
-    .map(([id])=>vocabularyMeaningPrompts.find((prompt)=>prompt.primaryTarget.id===id))
+    .map(([id])=>[...vocabularyMeaningPrompts,...extraMeaningPrompts].find((prompt)=>prompt.primaryTarget.id===id))
     .filter((prompt):prompt is StudyPrompt=>Boolean(prompt));
 }
 
