@@ -1,6 +1,7 @@
 import { useEffect,useMemo,useRef,useState } from "react";
 import { getDefaultAudioProvider } from "@thiepn/audio";
 import { AuthenticLibrary } from "./AuthenticLibrary";
+import { buildExtensiveTracks } from "./extensive";
 import { ShadowingLab } from "./ShadowingLab";
 import { getAdaptiveImmersionRecommendation,type AdaptiveImmersionRecommendation } from "./adaptive";
 import type { ReadingQuestion } from "@thiepn/content-schema";
@@ -28,6 +29,7 @@ export function Immersion(){
   const [feedback,setFeedback]=useState<{correct:boolean;answer:string;explanation:string}|null>(null);
   const [checkStartedAt,setCheckStartedAt]=useState(0);
   const view=useMemo(()=>activeId?buildReaderText(activeId):null,[activeId]);
+  const extensiveTracks=useMemo(()=>progress?buildExtensiveTracks(progress):[],[progress]);
   const audioProvider=useRef(getDefaultAudioProvider());
 
   async function refresh(){
@@ -130,6 +132,15 @@ export function Immersion(){
         {recommendation.canonical?<article><span>Graded · {recommendation.canonical.level}</span><h3>{recommendation.canonical.title}</h3><p>{recommendation.canonical.reason}</p><small>{Math.round(recommendation.canonical.readiness*100)}% lexical readiness · {Math.round(recommendation.canonical.mastery*100)}% {recommendation.focus} mastery</small><button className="unit-action" type="button" onClick={()=>void openText(recommendation.canonical!.id)}>Open recommended text</button></article>:null}
         {recommendation.privateDocument?<article><span>Private authentic input</span><h3>{recommendation.privateDocument.title}</h3><p>{recommendation.privateDocument.reason}</p><small>{Math.round(recommendation.privateDocument.knownRatio*100)}% known lexical tokens · {recommendation.privateDocument.difficulty}</small><span className="adaptive-hint">Find it in Your Japanese below.</span></article>:null}
       </div>
+    </section>:null}
+    {extensiveTracks.length?<section className="extensive-tracks">
+      <div className="section-heading"><div><span className="course-kicker">EXTENSIVE B2</span><h2>Read + listen across a topic track</h2></div><span className="course-count">readiness-guided · no locks</span></div>
+      <p className="course-note">Tracks combine several connected B2 texts so endurance grows beyond one passage. The next item is ranked from your lexical readiness and prior reading/listening evidence; every text remains open.</p>
+      <div className="extensive-grid">{extensiveTracks.map((track)=><article className="extensive-card" key={track.id}>
+        <span>{track.total} texts · ~{track.minutes} min</span><h3>{track.title}</h3><p>{track.description}</p>
+        <div className="readiness"><div><span>Average readiness</span><strong>{Math.round(track.readiness*100)}%</strong></div><div className="meter"><span style={{width:Math.round(track.readiness*100)+"%"}}/></div><small>{track.completed} / {track.total} with both reading + listening evidence</small></div>
+        {track.nextText?<button className="unit-action" type="button" onClick={()=>void openText(track.nextText!.id)}>Next: {track.nextText.title}</button>:null}
+      </article>)}</div>
     </section>:null}
     <div className="immersion-list">
       {(progress?.texts??[]).map((text)=><article className="immersion-card" key={text.id}>
