@@ -1,8 +1,8 @@
-import type { GrammarConcept, Lexeme, ReadingQuestion, ReadingText, Sentence } from "@thiepn/content-schema";
+import type { AudioAssetRecord, GrammarConcept, Lexeme, ReadingQuestion, ReadingText, Sentence } from "@thiepn/content-schema";
 import { entityKey, type StudyEvent, type StudyResult } from "@thiepn/domain";
 import { replayStudyEvents } from "@thiepn/learner-engine";
 import { listStudyEvents, saveStudyEvent } from "@thiepn/local-db";
-import { coreContent, grammarConcept, readingText, senseForLexeme, sentenceRecord } from "../coreContent";
+import { audioAsset, coreContent, grammarConcept, readingText, senseForLexeme, sentenceRecord } from "../coreContent";
 import { conjugateLexeme, type ConjugationForm } from "../study/conjugation";
 
 const ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
@@ -24,6 +24,7 @@ export interface ReaderTextView {
   text:ReadingText;
   sentences:ReaderSentence[];
   joinedJapanese:string;
+  audio?:AudioAssetRecord;
 }
 export interface ImmersionTextProgress {
   id:string;
@@ -62,7 +63,7 @@ export function buildReaderText(textId:string):ReaderTextView{
       grammar:sentence.grammarIds.map(grammarConcept)
     };
   });
-  return {text,sentences,joinedJapanese:sentences.map((item)=>item.sentence.text).join(" ")};
+  return {text,sentences,joinedJapanese:sentences.map((item)=>item.sentence.text).join(" "),...(text.audioAssetId?{audio:audioAsset(text.audioAssetId)}:{})};
 }
 
 export async function getImmersionProgress():Promise<ImmersionProgress>{
@@ -110,10 +111,10 @@ export async function recordReadingExposure(textId:string):Promise<void>{
   }));
 }
 
-export async function recordListeningExposure(textId:string,rate:number):Promise<void>{
+export async function recordListeningExposure(textId:string,rate:number,mode:"recorded"|"speech_synthesis"="speech_synthesis"):Promise<void>{
   await saveStudyEvent(eventBase({
     activity:"listening",primaryTarget:{kind:"text",id:textId},contextId:textId,
-    metadata:{surface:"connected-listening",textId,exposure:true,voice:"device-speech-synthesis",rate}
+    metadata:{surface:"connected-listening",textId,exposure:true,mode,rate}
   }));
 }
 
