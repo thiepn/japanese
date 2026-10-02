@@ -1,4 +1,4 @@
-export type EntityKind = "lexeme" | "sense" | "kanji" | "grammar" | "sentence" | "text" | "document" | "production_task" | "kana" | "can_do";
+export type EntityKind = "lexeme" | "sense" | "kanji" | "grammar" | "sentence" | "text" | "document" | "production_task" | "lexical_chunk" | "kana" | "can_do";
 export interface EntityRef { kind: EntityKind; id: string; }
 
 export type SkillDimension =
