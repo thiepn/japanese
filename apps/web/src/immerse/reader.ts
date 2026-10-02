@@ -151,7 +151,8 @@ export function segmentSentence(sentence:Sentence):ReaderToken[]{
     const match=candidates.find((candidate)=>sentence.text.startsWith(candidate.surface,index));
     if(match){
       const sense=senseForLexeme(match.lexeme);
-      result.push({surface:match.surface,lexemeId:match.lexeme.id,reading:match.lexeme.readings[0]?.text,meaning:sense.glosses.join(" / ")});
+      const reading=match.lexeme.readings[0]?.text;
+      result.push({surface:match.surface,lexemeId:match.lexeme.id,...(reading?{reading}:{}),meaning:sense.glosses.join(" / ")});
       index+=match.surface.length;
       continue;
     }
