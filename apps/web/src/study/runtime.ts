@@ -77,7 +77,7 @@ export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
   const unseenVocabulary=[...vocabularyMeaningPrompts,...privateSet.meaning].filter((prompt)=>!byId.has(traceIdFor(prompt)));
   const readyApplication=[...foundationApplicationPool(),...privateSet.application].filter((prompt)=>!byId.has(traceIdFor(prompt))&&isApplicationPromptReady(prompt,traceIds));
   const readyCourse=selectNewCoursePrompts(traceIds,COURSE_ITEMS_PER_SESSION);
-  const mined=pendingMinedVocabulary(events).slice(0,2);
+  const mined=pendingMinedVocabulary(events,privateSet.meaning).slice(0,2);
   const queue:StudyPrompt[]=[];
 
   addUnique(queue,due);
@@ -303,7 +303,7 @@ function isDue(prompt:StudyPrompt,byId:Map<string,Awaited<ReturnType<typeof list
 function dueAt(prompt:StudyPrompt,byId:Map<string,Awaited<ReturnType<typeof listMemoryTraces>>[number]>):number{return new Date(byId.get(traceIdFor(prompt))?.card.due??"9999-12-31T00:00:00Z").getTime();}
 function slots(queue:StudyPrompt[]):number{return Math.max(0,MAX_QUEUE_SIZE-queue.length);}
 function addUnique(queue:StudyPrompt[],items:readonly StudyPrompt[]):void{for(const item of items){if(queue.length>=MAX_QUEUE_SIZE)break;if(!queue.some((existing)=>existing.id===item.id))queue.push(item);}}
-function pendingMinedVocabulary(events:Awaited<ReturnType<typeof listStudyEvents>>):StudyPrompt[]{
+function pendingMinedVocabulary(events:Awaited<ReturnType<typeof listStudyEvents>>,extraMeaningPrompts:StudyPrompt[]=[]):StudyPrompt[]{
   const latestMine=new Map<string,string>();
   const latestGraded=new Map<string,string>();
   for(const event of events){
@@ -320,7 +320,7 @@ function pendingMinedVocabulary(events:Awaited<ReturnType<typeof listStudyEvents
   return [...latestMine.entries()]
     .filter(([id,at])=>!latestGraded.get(id)||latestGraded.get(id)!<at)
     .sort((a,b)=>b[1].localeCompare(a[1]))
-    .map(([id])=>vocabularyMeaningPrompts.find((prompt)=>prompt.primaryTarget.id===id))
+    .map(([id])=>[...vocabularyMeaningPrompts,...extraMeaningPrompts].find((prompt)=>prompt.primaryTarget.id===id))
     .filter((prompt):prompt is StudyPrompt=>Boolean(prompt));
 }
 
