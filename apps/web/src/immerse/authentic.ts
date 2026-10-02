@@ -270,14 +270,16 @@ function addB2SurfaceForms(lexeme:Lexeme,map:Map<string,{reading?:string;resolut
   const add=(surface:string,confidence=.74)=>map.set(surface,{...(reading?{reading}:{}),resolution:"deinflected",confidence});
   if(lexeme.inflectionClass==="ichidan"&&base.endsWith("る")){
     const stem=base.slice(0,-1);
-    for(const ending of ["させられる","られれば","られたら","ないで","ずに","ことになる","ことにする","ようになる","ようにする"])add(stem+ending);
+    for(const ending of ["させられる","られれば","られたら","ないで","ずに"])add(stem+ending);
+    for(const ending of ["ことになる","ことにする","ようになる","ようにする"])add(base+ending);
   }else if(lexeme.inflectionClass==="godan"){
     const last=base.slice(-1),stem=base.slice(0,-1);
     const a:Record<string,string>={"う":"わ","く":"か","ぐ":"が","す":"さ","つ":"た","ぬ":"な","ぶ":"ば","む":"ま","る":"ら"};
     const i:Record<string,string>={"う":"い","く":"き","ぐ":"ぎ","す":"し","つ":"ち","ぬ":"に","ぶ":"び","む":"み","る":"り"};
     const e:Record<string,string>={"う":"え","く":"け","ぐ":"げ","す":"せ","つ":"て","ぬ":"ね","ぶ":"べ","む":"め","る":"れ"};
     if(a[last]){add(stem+a[last]+"せられる");add(stem+a[last]+"れれば");add(stem+a[last]+"ないで");add(stem+a[last]+"ずに");}
-    if(e[last]){add(stem+e[last]+"れば");add(stem+e[last]+"ることになる");}
+    if(e[last])add(stem+e[last]+"れば");
+    add(base+"ことになる");add(base+"ことにする");add(base+"ようになる");add(base+"ようにする");
     if(i[last]){add(stem+i[last]+"つつ");add(stem+i[last]+"がち");}
   }else if(lexeme.inflectionClass==="irregular-suru"&&base.endsWith("する")){
     const stem=base.slice(0,-2);
