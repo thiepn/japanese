@@ -1,5 +1,5 @@
 import { describe,expect,it } from "vitest";
-import { analyzeAuthenticText,extractSubtitleText,isAllowedReusableAudioLicense,normalizeImportedText } from "../../apps/web/src/immerse/authentic";
+import { analyzeAuthenticText,extractSubtitleText,isAllowedReusableAudioLicense,lemmatizeJapaneseSurface,normalizeImportedText,splitJapaneseSentences } from "../../apps/web/src/immerse/authentic";
 
 describe("P4 authentic-input pipeline",()=>{
   it("segments arbitrary Japanese and links known canonical or inflected forms",()=>{
@@ -10,6 +10,12 @@ describe("P4 authentic-input pipeline",()=>{
     expect(analysis.unknownTypes.length).toBeGreaterThan(0);
     expect(analysis.knownRatio).toBeGreaterThan(0);
     expect(analysis.knownRatio).toBeLessThan(1);
+  });
+
+  it("lemmatizes common B1 derived forms back to canonical dictionary identities",()=>{
+    expect(lemmatizeJapaneseSurface("続けられる")).toMatchObject({lexemeId:"lex-tsuzukeru",baseForm:"続ける",resolution:"deinflected"});
+    expect(lemmatizeJapaneseSurface("考えれば")).toMatchObject({lexemeId:"lex-kangaeru",baseForm:"考える"});
+    expect(splitJapaneseSentences("今日は忙しいです。でも、行きます！")).toEqual(["今日は忙しいです。","でも、行きます！"]);
   });
 
   it("strips SRT/VTT timing while preserving Japanese dialogue",()=>{
