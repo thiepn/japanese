@@ -10,7 +10,7 @@ export function productivePracticeSession(mode:"writing"|"speaking"):StudyStep[]
   const tasks=productiveTasks.filter((task)=>task.mode===mode);
   const intro:StudyLesson={
     kind:"lesson",id:"productive-"+mode+"-intro",
-    title:mode==="writing"?"B1→B2 writing practice":"B1→B2 speaking practice",
+    title:mode==="writing"?"B1→B2 writing + collocation practice":"B1→B2 speaking + collocation practice",
     body:mode==="writing"
       ?"Write connected Japanese, then receive a structural target check. The check verifies task length and requested language features; it does not pretend to be a full semantic correction."
       :"Speak Japanese into the browser microphone. Speech recognition supplies a transcript for a structural target check. Recognition success is evidence of intelligibility, not a phonetic pronunciation score.",
@@ -57,6 +57,7 @@ function makePrompt(task:ProductiveTask):StudyPrompt{
       productiveTaskId:task.id,
       targetGrammarIds:task.targetGrammarIds,
       targetLexemeIds:task.targetLexemeIds,
+      targetChunkIds:task.targetChunkIds??[],
       evaluation:"structural-target-coverage",
       ...(task.milestoneArea?{milestoneArea:task.milestoneArea}:{})
     }

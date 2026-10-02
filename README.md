@@ -42,6 +42,14 @@ P6 deliberately keeps several evidence boundaries strict. AI feedback is advisor
 
 Live AI coaching requires a server-side provider behind `VITE_JAPANESE_COACH_ENDPOINT` (default `/api/japanese/coach`). No API secret is placed in the browser.
 
-The next development phase is **P7 — B2 Breadth, Native Media & Advanced Lexical/Collocational Fluency**.
+## P7 — B2 Breadth, Native Media & Advanced Lexical/Collocational Fluency
 
-See `docs/P1_ACCEPTANCE.md`, `docs/P2_ACCEPTANCE.md`, `docs/P2_5_ACCEPTANCE.md`, `docs/P3_ACCEPTANCE.md`, `docs/P4_ACCEPTANCE.md`, `docs/P5_ACCEPTANCE.md`, `docs/P6_ACCEPTANCE.md`, `docs/SOURCE_PACK_FORMAT.md`, `docs/P1_5_MOBILE_CERTIFICATION.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md` and `docs/THIRD_PARTY_NOTICES.md`.
+P7 is implemented. The unified app now contains 626 canonical lexemes, 120 first-class B2 collocations, 327 linked sentences, 58 structured units, 42 graded texts and 32 productive tasks. B2 input spans workplace, media, research, public/community, environment, technology, negotiation and everyday decision domains.
+
+Lexical chunks have their own recognition/active-use StudyEvents and FSRS traces. Connected listening supports sentence replay and source-timed native-audio segments when licensed media provides timing. Authentic input can use a configured dictionary-grade morphology endpoint while retaining visible confidence, ambiguity and deterministic fallback. AI revision history reconstructs recurring advisory correction patterns without changing learner mastery.
+
+Native recordings are still admitted only with explicit source/license/native-speaker metadata; original THIEPN passages with no licensed recording continue to use visibly labeled synthesis rather than fake native audio. See `docs/P7_ACCEPTANCE.md`.
+
+The next development phase is **P8 — B2 Consolidation, Long-Form Autonomy & Production Reliability**.
+
+See `docs/P1_ACCEPTANCE.md`, `docs/P2_ACCEPTANCE.md`, `docs/P2_5_ACCEPTANCE.md`, `docs/P3_ACCEPTANCE.md`, `docs/P4_ACCEPTANCE.md`, `docs/P5_ACCEPTANCE.md`, `docs/P6_ACCEPTANCE.md`, `docs/P7_ACCEPTANCE.md`, `docs/SOURCE_PACK_FORMAT.md`, `docs/P1_5_MOBILE_CERTIFICATION.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md` and `docs/THIRD_PARTY_NOTICES.md`.

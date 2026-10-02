@@ -1,8 +1,9 @@
 import { useEffect,useMemo,useRef,useState } from "react";
 import { getDefaultAudioProvider } from "@thiepn/audio";
+import { createHttpJapaneseMorphologyProvider,type JapaneseMorphologyProvider } from "@thiepn/japanese-nlp";
 import type { AudioAssetRecord } from "@thiepn/content-schema";
 import {
-  analyzeAuthenticText,createPrivateDocument,importTatoebaSentence,listPrivateDocumentViews,mineKnownLexeme,minePrivateSentence,
+  analyzeAuthenticText,analyzeAuthenticTextWithProvider,createPrivateDocument,findLexicalChunksInText,importTatoebaSentence,listPrivateDocumentViews,mineKnownLexeme,minePrivateSentence,
   recordPrivateComprehension,recordPrivateListening,recordPrivateReading,saveUnknownAsPrivateVocabulary,splitJapaneseSentences,
   type AuthenticToken,type PrivateDocumentView
 } from "./authentic";
@@ -11,6 +12,9 @@ import { AUTHENTIC_ACCOUNT_ID } from "./authentic";
 import { importJapaneseSourcePack,parseJapaneseSourcePack,validateJapaneseSourcePack } from "./sourcePacks";
 
 interface SelectedToken { token:AuthenticToken; }
+
+const MORPHOLOGY_ENDPOINT=String(import.meta.env.VITE_JAPANESE_MORPHOLOGY_ENDPOINT??"").trim();
+const morphologyProvider:JapaneseMorphologyProvider|null=MORPHOLOGY_ENDPOINT?createHttpJapaneseMorphologyProvider(MORPHOLOGY_ENDPOINT):null;
 
 export function AuthenticLibrary(){
   const [documents,setDocuments]=useState<PrivateDocumentView[]>([]);
@@ -103,17 +107,41 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
   const [sentenceCandidate,setSentenceCandidate]=useState<string|null>(null);
   const [sentenceTranslation,setSentenceTranslation]=useState("");
   const [mineMessage,setMineMessage]=useState("");
-  const analysis=useMemo(()=>analyzeAuthenticText(view.document.text),[view.document.text]);
+  const localAnalysis=useMemo(()=>analyzeAuthenticText(view.document.text),[view.document.text]);
+  const [analysis,setAnalysis]=useState(localAnalysis);
+  const [analysisStatus,setAnalysisStatus]=useState<"local"|"loading"|"provider"|"fallback">(morphologyProvider?"loading":"local");
   const sourceSentences=useMemo(()=>splitJapaneseSentences(view.document.text),[view.document.text]);
+  const detectedChunks=useMemo(()=>findLexicalChunksInText(view.document.text),[view.document.text]);
   const audioProvider=useRef(getDefaultAudioProvider());
 
-  useEffect(()=>()=>{audioProvider.current.stop();if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();},[]);
+  useEffect(()=>{
+    let cancelled=false;
+    setAnalysis(localAnalysis);
+    if(morphologyProvider){
+      setAnalysisStatus("loading");
+      analyzeAuthenticTextWithProvider(view.document.text,morphologyProvider).then((next)=>{
+        if(!cancelled){setAnalysis(next);setAnalysisStatus("provider");}
+      }).catch(()=>{if(!cancelled){setAnalysis(localAnalysis);setAnalysisStatus("fallback");}});
+    }else setAnalysisStatus("local");
+    return()=>{cancelled=true;audioProvider.current.stop();if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();};
+  },[localAnalysis,view.document.text]);
 
+  function nativeAsset():AudioAssetRecord|null{
+    const native=view.document.nativeAudio;if(!native)return null;
+    return {id:"private-"+view.document.id,kind:"sentence",text:view.document.text,language:"ja",format:native.url.toLowerCase().includes(".ogg")?"ogg":"mp3",url:native.url,credit:native.credit,licenseName:native.licenseName,...(native.attributionUrl?{attributionUrl:native.attributionUrl}:{}),...(native.externalId?{externalId:native.externalId}:{}),nativeSpeaker:true,sourceIds:["private-native-media"]};
+  }
   async function playNative(rate=1){
-    const native=view.document.nativeAudio;if(!native)return;
+    const asset=nativeAsset();if(!asset)return;
     setAudioState("playing");
-    const asset:AudioAssetRecord={id:"private-"+view.document.id,kind:"sentence",text:view.document.text,language:"ja",format:native.url.toLowerCase().includes(".ogg")?"ogg":"mp3",url:native.url,credit:native.credit,licenseName:native.licenseName,...(native.attributionUrl?{attributionUrl:native.attributionUrl}:{}),...(native.externalId?{externalId:native.externalId}:{}),nativeSpeaker:true,sourceIds:["tatoeba"]};
     try{await audioProvider.current.play(asset,{rate,repeats:1});setAudioState("idle");await recordPrivateListening(view.document.id,"recorded");}catch{setAudioState("error");}
+  }
+  async function playNativeSegment(segment:{id:string;text:string;startMs:number;endMs:number},rate=.92,repeats=1){
+    const asset=nativeAsset();if(!asset)return;
+    setAudioState("playing");
+    try{
+      await audioProvider.current.play(asset,{rate,repeats,startMs:segment.startMs,endMs:segment.endMs});
+      setAudioState("idle");await recordPrivateListening(view.document.id,"recorded");
+    }catch{setAudioState("error");}
   }
   async function speak(rate=.92){
     if(typeof speechSynthesis==="undefined")return;
@@ -140,12 +168,21 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
   return <section className="reader-page authentic-reader">
     <header className="reader-head"><button className="quiet-button reader-back" type="button" onClick={onBack}>← Your Japanese</button><div><span>{view.document.sourceKind.replace("_"," ")}</span><h1>{view.document.title}</h1></div></header>
     <div className="authentic-summary"><div><strong>{Math.round(analysis.knownRatio*100)}%</strong><span>known lexical tokens</span></div><div><strong>{analysis.unknownTypes.length}</strong><span>unique unresolved forms</span></div><div><strong>{analysis.difficulty}</strong><span>estimated stretch</span></div></div>
+    <p className="morphology-status">{analysisStatus==="provider"?`Dictionary-grade analysis · ${analysis.analysisProvider??"provider"}`:analysisStatus==="loading"?"Checking dictionary-grade morphology…":analysisStatus==="fallback"?"Dictionary provider unavailable · bounded local analysis in use":"Bounded local analysis · configure VITE_JAPANESE_MORPHOLOGY_ENDPOINT for dictionary-grade parsing"}</p>
     <div className="authentic-audio">
       {view.document.nativeAudio?<><button className="primary" disabled={audioState==="playing"} type="button" onClick={()=>void playNative(1)}>{audioState==="playing"?"Playing…":"Play native recording"}</button><button className="unit-action" disabled={audioState==="playing"} type="button" onClick={()=>void playNative(.82)}>Native slower</button></>:null}
       <button className="unit-action" disabled={speaking||typeof speechSynthesis==="undefined"} type="button" onClick={()=>void speak(.92)}>{speaking?"Playing…":"Device voice fallback"}</button>
       {view.document.nativeAudio?<small>{view.document.nativeAudio.credit} · {view.document.nativeAudio.licenseName}</small>:<small>No reusable native recording is attached. Device speech synthesis is labeled as fallback, not native audio.</small>}
       {audioState==="error"?<span className="error-text">Native recording could not be played from its source.</span>:null}
+      {view.document.nativeAudio?.segments?.length?<div className="native-segment-list">
+        <strong>Native replay segments</strong>
+        {view.document.nativeAudio.segments.map((segment)=><div className="native-segment" key={segment.id}><span lang="ja">{segment.text}</span><div><button className="quiet-button" disabled={audioState==="playing"} type="button" onClick={()=>void playNativeSegment(segment,.95,1)}>Replay</button><button className="quiet-button" disabled={audioState==="playing"} type="button" onClick={()=>void playNativeSegment(segment,.82,2)}>Slow ×2</button></div></div>)}
+      </div>:null}
     </div>
+    {detectedChunks.length?<section className="authentic-collocations">
+      <div className="section-heading"><div><span className="course-kicker">COLLOCATIONS IN CONTEXT</span><h2>Reusable phrases found here</h2></div><span>{detectedChunks.length}</span></div>
+      <div className="chunk-chip-list">{detectedChunks.slice(0,16).map((chunk)=><span className="chunk-chip" key={chunk.id}><strong lang="ja">{chunk.expression}</strong><small>{chunk.meaning} · {chunk.register}</small></span>)}</div>
+    </section>:null}
     <article className="authentic-text" lang="ja">{analysis.tokens.map((token,index)=>{
       if(token.kind==="known"||token.kind==="unknown")return <button className={"auth-token "+token.kind} type="button" key={index} onClick={()=>{setSelected({token});setMeaning("");setReading("");}}>{token.surface}</button>;
       return <span className={"auth-token "+token.kind} key={index}>{token.surface}</span>;
@@ -159,12 +196,14 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
     </section>:null}
     {selected?<aside className="reader-lookup authentic-lookup"><button className="reader-lookup-close" type="button" aria-label="Close word lookup" onClick={()=>setSelected(null)}>×</button>
       <span lang="ja">{selected.token.surface}</span>
-      {selected.token.kind==="known"?<><small lang="ja">{selected.token.reading}</small><strong>{selected.token.meaning}</strong><button className="unit-action" type="button" onClick={()=>void mine()}>Mine for review</button></>
+      {selected.token.kind==="known"?<><small lang="ja">{selected.token.reading}</small><strong>{selected.token.meaning}</strong>
+        {selected.token.resolution?<small>{selected.token.resolution==="provider"?"Dictionary provider":"Local resolver"} · {Math.round((selected.token.resolutionConfidence??0)*100)}% resolution confidence{selected.token.senseResolution==="ambiguous"?" · sense remains ambiguous":""}</small>:null}
+        <button className="unit-action" type="button" onClick={()=>void mine()}>Mine for review</button></>
       :<><small>Unknown to the current canonical lexicon. Add a private definition to review it without changing public Japanese content.</small><input value={reading} onChange={(event)=>setReading(event.target.value)} placeholder="Reading (optional)"/><input value={meaning} onChange={(event)=>setMeaning(event.target.value)} placeholder="Meaning"/><button className="unit-action" disabled={!meaning.trim()} type="button" onClick={()=>void mine()}>Save + mine</button></>}
     </aside>:null}
     <div className="reader-finish"><button className="primary" type="button" onClick={()=>void recordPrivateComprehension(view.document.id,"correct")}>Understood without major help</button><button className="unit-action" type="button" onClick={()=>void recordPrivateComprehension(view.document.id,"incorrect")}>Needed substantial support</button></div>
     <div className="authentic-danger"><button className="quiet-button" type="button" onClick={()=>void remove()}>Delete private document</button></div>
-    <p className="course-note">Analysis resolves canonical forms, generated inflections and additional B1/B2 deinflection patterns before using the browser Japanese word segmenter. Canonical sense identities and ambiguity are exposed explicitly. A dictionary-grade morphology provider can replace the bounded local resolver later; the current browser path does not claim dictionary-grade parsing.</p>
+    <p className="course-note">Analysis preserves canonical sense identities and ambiguity. When a configured server-side dictionary provider is available, its segmentation and lemmas outrank bounded browser guesses; failures fall back visibly instead of silently pretending provider-grade analysis.</p>
   </section>;
 }
 

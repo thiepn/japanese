@@ -1,4 +1,4 @@
-import type { Lexeme } from "@thiepn/content-schema";
+import type { Lexeme,LexicalChunk } from "@thiepn/content-schema";
 import { entityKey, type StudyEvent } from "@thiepn/domain";
 import { replayStudyEvents } from "@thiepn/learner-engine";
 import {
@@ -6,8 +6,8 @@ import {
   type PrivateDocumentRecord,type PrivateDocumentSourceKind,type PrivateNativeAudio,type PrivateSentenceRecord,type PrivateVocabularyRecord
 } from "@thiepn/local-db";
 import { normalizeJapaneseSearch } from "@thiepn/search";
-import { senseResolutionForIds,type MorphologyCandidate,type MorphologyResolution,type SenseResolution } from "@thiepn/japanese-nlp";
-import { coreContent,senseForLexeme } from "../coreContent";
+import { selectProviderCandidate,senseResolutionForIds,type JapaneseMorphologyProvider,type MorphologyCandidate,type MorphologyResolution,type SenseResolution } from "@thiepn/japanese-nlp";
+import { coreContent,lexicalChunks,senseForLexeme } from "../coreContent";
 import { conjugateLexeme,type ConjugationForm } from "../study/conjugation";
 
 export const AUTHENTIC_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
@@ -24,6 +24,7 @@ export interface AuthenticToken {
 export interface AuthenticAnalysis {
   tokens:AuthenticToken[]; knownTokens:number; lexicalTokens:number; knownRatio:number; unknownDensity:number;
   unknownTypes:string[]; difficulty:"comfortable"|"stretch"|"hard";
+  analysisProvider?:string; dictionaryGrade?:boolean;
 }
 export interface PrivateDocumentView {
   document:PrivateDocumentRecord; analysis:AuthenticAnalysis; readingMastery:number; listeningMastery:number;
@@ -79,6 +80,97 @@ export function analyzeAuthenticText(text:string):AuthenticAnalysis{
   return {
     tokens,knownTokens:known,lexicalTokens:lexical.length,knownRatio:ratio,unknownDensity:1-ratio,unknownTypes,
     difficulty:ratio>=0.9?"comfortable":ratio>=0.75?"stretch":"hard"
+  };
+}
+
+
+export function findLexicalChunksInText(text:string):LexicalChunk[]{
+  const normalized=text.normalize("NFKC");
+  const lexemeById=new Map(coreContent.lexemes.map((lexeme)=>[lexeme.id,lexeme] as const));
+  return lexicalChunks.filter((chunk)=>{
+    const forms=new Set<string>([chunk.expression,...(chunk.variants??[]),...boundedChunkInflections(chunk.expression)]);
+    for(const lexemeId of chunk.lexemeIds){
+      const lexeme=lexemeById.get(lexemeId);if(!lexeme||!chunk.expression.endsWith(lexeme.canonicalForm))continue;
+      const prefix=chunk.expression.slice(0,-lexeme.canonicalForm.length);
+      for(const form of FORMS){
+        const generated=conjugateLexeme(lexeme,form);
+        if(generated)forms.add(prefix+generated);
+      }
+    }
+    return [...forms].some((form)=>form&&normalized.includes(form.normalize("NFKC")));
+  });
+}
+
+function boundedChunkInflections(expression:string):string[]{
+  if(expression.endsWith("する")){
+    const stem=expression.slice(0,-2);
+    return ["する","し","して","した","します","しました","すれば","しない"].map((ending)=>stem+ending);
+  }
+  const ending=expression.at(-1);
+  if(!ending)return [];
+  const stem=expression.slice(0,-1);
+  const endings:Record<string,string[]>={
+    "る":["る","","て","た","ます","ました","れば","ない","り","った","ります","りました","らない"],
+    "す":["す","し","して","した","します","しました","せば","さない"],
+    "む":["む","み","んで","んだ","みます","みました","めば","まない"],
+    "う":["う","い","って","った","います","いました","えば","わない"],
+    "く":["く","き","いて","いた","きます","きました","けば","かない"],
+    "ぐ":["ぐ","ぎ","いで","いだ","ぎます","ぎました","げば","がない"],
+    "つ":["つ","ち","って","った","ちます","ちました","てば","たない"],
+    "ぶ":["ぶ","び","んで","んだ","びます","びました","べば","ばない"],
+    "ぬ":["ぬ","に","んで","んだ","にます","にました","ねば","なない"]
+  };
+  return (endings[ending]??[]).map((value)=>stem+value);
+}
+
+export async function analyzeAuthenticTextWithProvider(text:string,provider:JapaneseMorphologyProvider):Promise<AuthenticAnalysis>{
+  if(!provider.dictionaryGrade)throw new Error("MORPHOLOGY_PROVIDER_NOT_DICTIONARY_GRADE");
+  const result=await provider.analyze(text);
+  if(!result.dictionaryGrade)throw new Error("MORPHOLOGY_PROVIDER_NOT_DICTIONARY_GRADE");
+  const byId=new Map(coreContent.lexemes.map((lexeme)=>[lexeme.id,lexeme] as const));
+  const byForm=new Map<string,Lexeme>();
+  for(const lexeme of coreContent.lexemes){
+    byForm.set(normalizeJapaneseSearch(lexeme.canonicalForm),lexeme);
+    for(const form of lexeme.forms)byForm.set(normalizeJapaneseSearch(form.text),lexeme);
+  }
+  const tokens:AuthenticToken[]=[];
+  let cursor=0;
+  for(const providerToken of result.tokens){
+    if(providerToken.start>cursor)tokens.push(...segmentUnknownChunk(text.slice(cursor,providerToken.start)));
+    const candidate=selectProviderCandidate(providerToken.candidates);
+    const surface=providerToken.surface||text.slice(providerToken.start,providerToken.end);
+    if(PUNCT.test(surface))tokens.push({surface,kind:"punctuation"});
+    else if(FUNCTION_WORDS.has(surface))tokens.push({surface,kind:"function"});
+    else{
+      const lexeme=(candidate?.lexemeId?byId.get(candidate.lexemeId):undefined)
+        ??(candidate?byForm.get(normalizeJapaneseSearch(candidate.lemma)):undefined)
+        ??byForm.get(normalizeJapaneseSearch(surface));
+      if(lexeme){
+        const sense=senseForLexeme(lexeme);
+        const senseIds=candidate?.senseIds.length?candidate.senseIds:lexeme.senseIds;
+        const reading=candidate?.reading??lexeme.readings[0]?.text;
+        tokens.push({
+          surface,kind:"known",lexemeId:lexeme.id,baseForm:lexeme.canonicalForm,...(reading?{reading}:{}),
+          meaning:sense.glosses.join(" / "),resolution:"provider",senseIds,
+          senseResolution:candidate?.senseIds.length?candidate.senseResolution:senseResolutionForIds(senseIds),resolutionConfidence:candidate?.confidence??.95
+        });
+      }else{
+        tokens.push({
+          surface,kind:"unknown",...(candidate?.lemma?{baseForm:candidate.lemma}:{}),...(candidate?.reading?{reading:candidate.reading}:{}),
+          ...(candidate?{resolution:"provider" as const,senseIds:candidate.senseIds,senseResolution:candidate.senseResolution,resolutionConfidence:candidate.confidence}:{})
+        });
+      }
+    }
+    cursor=Math.max(cursor,providerToken.end);
+  }
+  if(cursor<text.length)tokens.push(...segmentUnknownChunk(text.slice(cursor)));
+  const lexical=tokens.filter((token)=>token.kind==="known"||token.kind==="unknown");
+  const known=lexical.filter((token)=>token.kind==="known").length;
+  const ratio=lexical.length?known/lexical.length:1;
+  const unknownTypes=[...new Set(lexical.filter((token)=>token.kind==="unknown").map((token)=>normalizeJapaneseSearch(token.baseForm??token.surface)).filter(Boolean))];
+  return {
+    tokens,knownTokens:known,lexicalTokens:lexical.length,knownRatio:ratio,unknownDensity:1-ratio,unknownTypes,
+    difficulty:ratio>=0.9?"comfortable":ratio>=0.75?"stretch":"hard",analysisProvider:result.provider,dictionaryGrade:true
   };
 }
 

@@ -2,15 +2,15 @@ import { describe,expect,it } from "vitest";
 import { a1Course, allGrammarCoursePrompts, courseUnitPrompts, courseUnitSession, grammarApplicationPrompts, grammarMeaningPrompts, isGrammarCoursePromptReady, sentenceComprehensionPrompts, sentenceProductionPrompts, traceIdFor } from "../../apps/web/src/study/grammarCourse";
 import { coreContent } from "../../apps/web/src/coreContent";
 
-describe("P6 grammar, sentences and A1→B2 course",()=>{
+describe("P7 grammar, sentences and A1→B2 course",()=>{
   it("ships canonical grammar, sentence and course entities through B2",()=>{
-    expect(coreContent.lexemes).toHaveLength(416);
+    expect(coreContent.lexemes).toHaveLength(626);
     expect(coreContent.grammar).toHaveLength(102);
-    expect(coreContent.sentences).toHaveLength(267);
-    expect(coreContent.canDos).toHaveLength(50);
-    expect(coreContent.courseUnits).toHaveLength(50);
-    expect(a1Course.map((item)=>item.unit.order)).toEqual(Array.from({length:50},(_,index)=>index+1));
-    expect(coreContent.courseUnits.filter((unit)=>unit.level==="B2")).toHaveLength(10);
+    expect(coreContent.sentences).toHaveLength(327);
+    expect(coreContent.canDos).toHaveLength(58);
+    expect(coreContent.courseUnits).toHaveLength(58);
+    expect(a1Course.map((item)=>item.unit.order)).toEqual(Array.from({length:58},(_,index)=>index+1));
+    expect(coreContent.courseUnits.filter((unit)=>unit.level==="B2")).toHaveLength(18);
     expect(coreContent.grammar.filter((grammar)=>grammar.level==="B2")).toHaveLength(16);
   });
   it("keeps sentence knowledge linked to canonical grammar and lexemes",()=>{

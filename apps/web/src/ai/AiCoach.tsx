@@ -1,10 +1,17 @@
-import { useMemo,useRef,useState } from "react";
+import { useEffect,useMemo,useRef,useState } from "react";
 import { createHttpCoachTransport,type CoachFeedback,type CoachHistoryTurn,type CoachMode,type CoachResponse } from "@thiepn/coach";
-import { saveStudyEvent } from "@thiepn/local-db";
+import { listStudyEvents,saveStudyEvent } from "@thiepn/local-db";
 import { productiveTasks } from "../coreContent";
 import { DEVELOPMENT_ACCOUNT_ID,DEVELOPMENT_DEVICE_ID } from "../study/runtime";
 
 type InputMode="text"|"speech";
+interface CoachHistorySummary {
+  turns:number;
+  areaCounts:Record<"grammar"|"vocabulary"|"coherence"|"taskAchievement",number>;
+  patterns:Array<{message:string;count:number}>;
+  recent:Array<{mode:string;learnerText:string;at:string}>;
+}
+const EMPTY_HISTORY:CoachHistorySummary={turns:0,areaCounts:{grammar:0,vocabulary:0,coherence:0,taskAchievement:0},patterns:[],recent:[]};
 const endpoint=import.meta.env.VITE_JAPANESE_COACH_ENDPOINT??"/api/japanese/coach";
 
 export function AiCoach(){
@@ -16,12 +23,42 @@ export function AiCoach(){
   const [status,setStatus]=useState<"idle"|"sending"|"error">("idle");
   const [speechState,setSpeechState]=useState<"idle"|"listening"|"unsupported"|"error">("idle");
   const [inputMode,setInputMode]=useState<InputMode>("text");
+  const [revisionHistory,setRevisionHistory]=useState<CoachHistorySummary>(EMPTY_HISTORY);
   const sessionId=useRef(crypto.randomUUID());
   const conversationTask=productiveTasks.find((task)=>task.level==="B2"&&task.tags.includes("ai-conversation"));
   const writingTask=productiveTasks.find((task)=>task.level==="B2"&&task.tags.includes("writing-revision"));
   const activeTask=mode==="conversation"?conversationTask:writingTask;
   const scenario=activeTask?.situation??(mode==="conversation"?"Discuss a current everyday issue and support your view with reasons and examples.":"Write and revise a connected B2-level response.");
   const goals=activeTask?.requiredTerms?.length?activeTask.requiredTerms:["clear stance","supporting reason","appropriate register"];
+
+  async function refreshRevisionHistory(){
+    const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
+    const coachEvents=events.filter((event)=>String(event.promptFamily??"").startsWith("ai-coach-")).sort((a,b)=>b.occurredAt.localeCompare(a.occurredAt));
+    const areaCounts:CoachHistorySummary["areaCounts"]={grammar:0,vocabulary:0,coherence:0,taskAchievement:0};
+    const patternCounts=new Map<string,number>();
+    const recent:CoachHistorySummary["recent"]=[];
+    for(const event of coachEvents){
+      const metadata=event.metadata??{};
+      const feedback=metadata.feedback;
+      if(feedback&&typeof feedback==="object"){
+        for(const area of Object.keys(areaCounts) as Array<keyof typeof areaCounts>){
+          const value=(feedback as Record<string,unknown>)[area];
+          const items=value&&typeof value==="object"&&Array.isArray((value as Record<string,unknown>).items)?(value as Record<string,unknown>).items as unknown[]:[];
+          areaCounts[area]+=items.length;
+          for(const raw of items){
+            if(!raw||typeof raw!=="object")continue;
+            const message=String((raw as Record<string,unknown>).message??"").trim();
+            if(message)patternCounts.set(message,(patternCounts.get(message)??0)+1);
+          }
+        }
+      }
+      const learnerText=typeof metadata.learnerText==="string"?metadata.learnerText.trim():"";
+      if(learnerText&&recent.length<5)recent.push({mode:String(metadata.mode??""),learnerText,at:event.occurredAt});
+    }
+    const patterns=[...patternCounts.entries()].map(([message,count])=>({message,count})).sort((a,b)=>b.count-a.count||a.message.localeCompare(b.message)).slice(0,5);
+    setRevisionHistory({turns:coachEvents.length,areaCounts,patterns,recent});
+  }
+  useEffect(()=>{void refreshRevisionHistory().catch(()=>setRevisionHistory(EMPTY_HISTORY));},[]);
 
   async function submit(){
     const learnerText=text.trim();if(!learnerText||status==="sending")return;
@@ -48,6 +85,7 @@ export function AiCoach(){
           modelFeedbackAppliedToMastery:false
         }
       });
+      void refreshRevisionHistory();
     }catch{setStatus("error");}
   }
 
@@ -87,6 +125,15 @@ export function AiCoach(){
     {speechState==="error"?<p className="coach-warning">Speech recognition failed. Retry or use text input.</p>:null}
     {status==="error"?<p className="coach-warning">The AI coach endpoint is unavailable. No learner evidence was changed. Configure <code>VITE_JAPANESE_COACH_ENDPOINT</code> to a server-side coach route and try again.</p>:null}
     {last?<FeedbackPanel response={last}/>:null}
+    {revisionHistory.turns?<section className="coach-history">
+      <div className="section-heading"><div><span className="course-kicker">REVISION HISTORY</span><h3>Reusable feedback patterns</h3></div><span>{revisionHistory.turns} advisory turns</span></div>
+      <div className="coach-history-areas">
+        <span>Grammar {revisionHistory.areaCounts.grammar}</span><span>Vocabulary {revisionHistory.areaCounts.vocabulary}</span><span>Coherence {revisionHistory.areaCounts.coherence}</span><span>Task {revisionHistory.areaCounts.taskAchievement}</span>
+      </div>
+      {revisionHistory.patterns.length?<div className="coach-patterns"><strong>Repeated correction themes</strong><ul>{revisionHistory.patterns.map((pattern)=><li key={pattern.message}>{pattern.message}{pattern.count>1?<small> ×{pattern.count}</small>:null}</li>)}</ul></div>:null}
+      {revisionHistory.recent.length?<details><summary>Recent learner revisions</summary>{revisionHistory.recent.map((item,index)=><div className="coach-history-turn" key={item.at+index}><small>{item.mode} · {new Date(item.at).toLocaleDateString()}</small><p lang="ja">{item.learnerText}</p></div>)}</details>:null}
+      <p className="course-note">History is derived from stored advisory coach events. It can guide what to revise next but does not alter mastery or FSRS scheduling.</p>
+    </section>:null}
   </section>;
 }
 

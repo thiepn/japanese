@@ -11,15 +11,28 @@ function pack(){
       id:"line-1",title:"A reusable dialogue",text:"制度の変更に伴って、説明も変わりました。",
       audio:{
         url:"https://example.test/audio.mp3",credit:"Fixture Speaker",licenseName:"CC BY 4.0",
-        attributionUrl:"https://example.test/audio",nativeSpeaker:true
+        attributionUrl:"https://example.test/audio",nativeSpeaker:true,
+        segments:[
+          {id:"seg-1",text:"制度の変更に伴って、",startMs:0,endMs:1800},
+          {id:"seg-2",text:"説明も変わりました。",startMs:1800,endMs:3900}
+        ]
       }
     }]
   });
 }
 
-describe("P6 Japanese source-pack policy",()=>{
+describe("P7 Japanese source-pack policy",()=>{
   it("admits an explicitly redistributable attributed pack and native recording",()=>{
     expect(validateJapaneseSourcePack(pack())).toEqual({valid:true,errors:[],warnings:[]});
+  });
+
+  it("accepts ordered native replay segments and rejects invalid timing",()=>{
+    const valid=pack();
+    expect(validateJapaneseSourcePack(valid).valid).toBe(true);
+    const invalid=pack();invalid.items[0]!.audio!.segments![1]!.startMs=1200;
+    const result=validateJapaneseSourcePack(invalid);
+    expect(result.valid).toBe(false);
+    expect(result.errors.join(" ")).toMatch(/overlaps|out of order/i);
   });
 
   it("rejects non-commercial or non-derivative source-pack licenses",()=>{

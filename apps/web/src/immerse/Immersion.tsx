@@ -1,11 +1,12 @@
 import { useEffect,useMemo,useRef,useState } from "react";
 import { getDefaultAudioProvider } from "@thiepn/audio";
 import { AuthenticLibrary } from "./AuthenticLibrary";
+import { buildExtensiveTracks } from "./extensive";
 import { ShadowingLab } from "./ShadowingLab";
 import { getAdaptiveImmersionRecommendation,type AdaptiveImmersionRecommendation } from "./adaptive";
 import type { ReadingQuestion } from "@thiepn/content-schema";
 import {
-  buildReaderText,getImmersionProgress,gradeReadingQuestion,recordListeningExposure,recordMinedWord,
+  buildReaderText,getImmersionProgress,gradeReadingQuestion,recordListeningExposure,recordListeningSegmentReplay,recordMinedWord,
   recordReaderLookup,recordReadingExposure,recordTextCheck,
   type ImmersionProgress,type ReaderTextView,type ReaderToken
 } from "./reader";
@@ -22,11 +23,13 @@ export function Immersion(){
   const [selected,setSelected]=useState<SelectedToken|null>(null);
   const [listeningPlayed,setListeningPlayed]=useState(false);
   const [speaking,setSpeaking]=useState(false);
+  const [speakingSegment,setSpeakingSegment]=useState<string|null>(null);
   const [checkMode,setCheckMode]=useState<CheckMode|null>(null);
   const [questionIndex,setQuestionIndex]=useState(0);
   const [feedback,setFeedback]=useState<{correct:boolean;answer:string;explanation:string}|null>(null);
   const [checkStartedAt,setCheckStartedAt]=useState(0);
   const view=useMemo(()=>activeId?buildReaderText(activeId):null,[activeId]);
+  const extensiveTracks=useMemo(()=>progress?buildExtensiveTracks(progress):[],[progress]);
   const audioProvider=useRef(getDefaultAudioProvider());
 
   async function refresh(){
@@ -75,6 +78,29 @@ export function Immersion(){
     speechSynthesis.speak(utterance);
   }
 
+  async function speakSegment(sentenceId:string,rate=.92,repeats=1){
+    if(!view)return;
+    const item=view.sentences.find((entry)=>entry.sentence.id===sentenceId);if(!item)return;
+    const segment=view.text.listeningSegments?.find((entry)=>entry.sentenceId===sentenceId);
+    setSpeakingSegment(sentenceId);
+    try{
+      if(view.audio&&segment?.startMs!==undefined&&segment.endMs!==undefined){
+        await audioProvider.current.play(view.audio,{rate,repeats,startMs:segment.startMs,endMs:segment.endMs});
+        await recordListeningSegmentReplay(view.text.id,sentenceId,rate,repeats,"recorded");
+        return;
+      }
+      if(typeof speechSynthesis==="undefined")return;
+      for(let index=0;index<Math.max(1,Math.min(3,repeats));index++){
+        await new Promise<void>((resolve)=>{
+          const utterance=new SpeechSynthesisUtterance(item.sentence.text);utterance.lang="ja-JP";utterance.rate=rate;
+          const japanese=speechSynthesis.getVoices().find((voice)=>voice.lang.toLowerCase().startsWith("ja"));if(japanese)utterance.voice=japanese;
+          utterance.onend=()=>resolve();utterance.onerror=()=>resolve();speechSynthesis.speak(utterance);
+        });
+      }
+      await recordListeningSegmentReplay(view.text.id,sentenceId,rate,repeats,"speech_synthesis");
+    }finally{setSpeakingSegment(null);void refresh();}
+  }
+
   function startCheck(mode:CheckMode){
     setCheckMode(mode);setQuestionIndex(0);setFeedback(null);setCheckStartedAt(performance.now());
   }
@@ -94,7 +120,7 @@ export function Immersion(){
   if(view)return <ReaderView view={view} furigana={furigana} setFurigana={setFurigana} translations={translations} toggleTranslation={toggleTranslation}
     selected={selected} chooseToken={chooseToken} mineSelected={mineSelected} closeLookup={()=>setSelected(null)} closeText={closeText}
     listeningPlayed={listeningPlayed} speaking={speaking} speak={speak} checkMode={checkMode} startCheck={startCheck}
-    questionIndex={questionIndex} feedback={feedback} answerQuestion={answerQuestion} nextQuestion={nextQuestion}/>;
+    questionIndex={questionIndex} feedback={feedback} answerQuestion={answerQuestion} nextQuestion={nextQuestion} speakingSegment={speakingSegment} speakSegment={speakSegment}/>;
 
   return <section className="dashboard immerse-page">
     <p className="eyebrow">IMMERSE</p><h1>A1 → B2 immersion</h1>
@@ -106,6 +132,15 @@ export function Immersion(){
         {recommendation.canonical?<article><span>Graded · {recommendation.canonical.level}</span><h3>{recommendation.canonical.title}</h3><p>{recommendation.canonical.reason}</p><small>{Math.round(recommendation.canonical.readiness*100)}% lexical readiness · {Math.round(recommendation.canonical.mastery*100)}% {recommendation.focus} mastery</small><button className="unit-action" type="button" onClick={()=>void openText(recommendation.canonical!.id)}>Open recommended text</button></article>:null}
         {recommendation.privateDocument?<article><span>Private authentic input</span><h3>{recommendation.privateDocument.title}</h3><p>{recommendation.privateDocument.reason}</p><small>{Math.round(recommendation.privateDocument.knownRatio*100)}% known lexical tokens · {recommendation.privateDocument.difficulty}</small><span className="adaptive-hint">Find it in Your Japanese below.</span></article>:null}
       </div>
+    </section>:null}
+    {extensiveTracks.length?<section className="extensive-tracks">
+      <div className="section-heading"><div><span className="course-kicker">EXTENSIVE B2</span><h2>Read + listen across a topic track</h2></div><span className="course-count">readiness-guided · no locks</span></div>
+      <p className="course-note">Tracks combine several connected B2 texts so endurance grows beyond one passage. The next item is ranked from your lexical readiness and prior reading/listening evidence; every text remains open.</p>
+      <div className="extensive-grid">{extensiveTracks.map((track)=><article className="extensive-card" key={track.id}>
+        <span>{track.total} texts · ~{track.minutes} min</span><h3>{track.title}</h3><p>{track.description}</p>
+        <div className="readiness"><div><span>Average readiness</span><strong>{Math.round(track.readiness*100)}%</strong></div><div className="meter"><span style={{width:Math.round(track.readiness*100)+"%"}}/></div><small>{track.completed} / {track.total} with both reading + listening evidence</small></div>
+        {track.nextText?<button className="unit-action" type="button" onClick={()=>void openText(track.nextText!.id)}>Next: {track.nextText.title}</button>:null}
+      </article>)}</div>
     </section>:null}
     <div className="immersion-list">
       {(progress?.texts??[]).map((text)=><article className="immersion-card" key={text.id}>
@@ -124,11 +159,12 @@ export function Immersion(){
   </section>;
 }
 
-function ReaderView({view,furigana,setFurigana,translations,toggleTranslation,selected,chooseToken,mineSelected,closeLookup,closeText,listeningPlayed,speaking,speak,checkMode,startCheck,questionIndex,feedback,answerQuestion,nextQuestion}:{
+function ReaderView({view,furigana,setFurigana,translations,toggleTranslation,selected,chooseToken,mineSelected,closeLookup,closeText,listeningPlayed,speaking,speak,checkMode,startCheck,questionIndex,feedback,answerQuestion,nextQuestion,speakingSegment,speakSegment}:{
   view:ReaderTextView;furigana:boolean;setFurigana:(value:boolean)=>void;translations:Set<string>;toggleTranslation:(id:string)=>void;
   selected:SelectedToken|null;chooseToken:(token:ReaderToken,sentenceId:string)=>Promise<void>;mineSelected:()=>Promise<void>;closeLookup:()=>void;closeText:()=>void;
   listeningPlayed:boolean;speaking:boolean;speak:(rate:number)=>Promise<void>;checkMode:CheckMode|null;startCheck:(mode:CheckMode)=>void;
   questionIndex:number;feedback:{correct:boolean;answer:string;explanation:string}|null;answerQuestion:(question:ReadingQuestion,response:string)=>Promise<void>;nextQuestion:()=>void;
+  speakingSegment:string|null;speakSegment:(sentenceId:string,rate?:number,repeats?:number)=>Promise<void>;
 }){
   const [listeningFirst,setListeningFirst]=useState(false);
   const question=checkMode?view.text.comprehensionQuestions[questionIndex]:null;
@@ -151,13 +187,15 @@ function ReaderView({view,furigana,setFurigana,translations,toggleTranslation,se
             {furigana&&token.reading&&token.reading!==token.surface?<ruby>{token.surface}<rt>{token.reading}</rt></ruby>:token.surface}
           </button>:<span key={sentence.id+":"+index}>{token.surface}</span>)}</div>
           <div className="reader-support"><button className="quiet-button" type="button" onClick={()=>toggleTranslation(sentence.id)}>{translations.has(sentence.id)?"Hide translation":"Show translation"}</button>
+            <button className="quiet-button" type="button" disabled={speakingSegment===sentence.id} onClick={()=>void speakSegment(sentence.id,.92,1)}>{speakingSegment===sentence.id?"Playing…":"Replay sentence"}</button>
+            <button className="quiet-button" type="button" disabled={speakingSegment===sentence.id} onClick={()=>void speakSegment(sentence.id,.82,2)}>Slow ×2</button>
             {grammar.length?<details><summary>{grammar.length} grammar links</summary>{grammar.map((item)=><div className="reader-grammar" key={item.id}><strong>{item.label}</strong><span>{item.summary}</span></div>)}</details>:null}</div>
           {translations.has(sentence.id)?<p className="reader-translation">{sentence.translation}</p>:null}
         </article>)}
       </div>
       {selected?<aside className="reader-lookup"><button className="reader-lookup-close" type="button" aria-label="Close word lookup" onClick={closeLookup}>×</button><span lang="ja">{selected.token.surface}</span>{selected.token.reading?<small lang="ja">{selected.token.reading}</small>:null}<strong>{selected.token.meaning}</strong><button className="unit-action" type="button" onClick={()=>void mineSelected()}>Mine for review</button></aside>:null}
       <div className="reader-finish"><button className="primary" type="button" onClick={()=>startCheck("reading")}>Reading check</button><button className="unit-action" disabled={!listeningPlayed} type="button" onClick={()=>startCheck("listening")}>{listeningPlayed?"Listening check":"Listen first"}</button></div>
-      <p className="course-note">Tap a linked word for a reading and meaning. Listening-first can hide the transcript until a complete playback. Grammar support stays attached to the canonical sentence. Imported-text analysis adds bounded B1/B2 deinflection and explicit sense ambiguity; a dictionary-grade provider remains an integration boundary.</p>
+      <p className="course-note">Tap a linked word for reading and meaning. Listening-first hides the transcript until one full playback. Sentence replay loops use source-timed native segments when available and otherwise stay explicitly labeled device synthesis.</p>
     </>}
   </section>;
 }

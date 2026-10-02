@@ -66,6 +66,17 @@ export function validateJapaneseSourcePack(pack:JapaneseSourcePack):SourcePackVa
       if(!item.audio.credit?.trim())errors.push(where+" audio credit is required.");
       if(!item.audio.licenseName?.trim()||!isAllowedReusableAudioLicense(item.audio.licenseName))errors.push(where+" audio license is missing or not admitted.");
       if(requiresAttribution(item.audio.licenseName)&&!item.audio.attributionUrl?.trim())errors.push(where+" audio attribution URL is required for this license.");
+      if(item.audio.segments){
+        let previousEnd=-1;
+        for(const [segmentIndex,segment] of item.audio.segments.entries()){
+          const segmentWhere=where+" audio segment "+(segmentIndex+1);
+          if(!segment.id?.trim())errors.push(segmentWhere+" id is required.");
+          if(!segment.text?.trim())errors.push(segmentWhere+" text is required.");
+          if(!Number.isFinite(segment.startMs)||!Number.isFinite(segment.endMs)||segment.startMs<0||segment.endMs<=segment.startMs)errors.push(segmentWhere+" has invalid timing.");
+          if(segment.startMs<previousEnd)errors.push(segmentWhere+" overlaps or is out of order.");
+          previousEnd=segment.endMs;
+        }
+      }
     }else warnings.push(where+" has no reusable native recording; device voice may be used only as a labeled fallback.");
   }
   return {valid:errors.length===0,errors,warnings};
@@ -79,7 +90,8 @@ export async function importJapaneseSourcePack(pack:JapaneseSourcePack):Promise<
     const nativeAudio=item.audio?{
       url:item.audio.url,credit:item.audio.credit,licenseName:item.audio.licenseName,
       ...(item.audio.attributionUrl?{attributionUrl:item.audio.attributionUrl}:{}),
-      ...(item.audio.externalId?{externalId:item.audio.externalId}:{})
+      ...(item.audio.externalId?{externalId:item.audio.externalId}:{}),
+      ...(item.audio.segments?.length?{segments:item.audio.segments.map((segment)=>({...segment}))}:{})
     }:undefined;
     documents.push(await createPrivateDocument({
       title:item.title,text:item.text,sourceKind:"source_pack",

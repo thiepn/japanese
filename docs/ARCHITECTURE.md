@@ -134,3 +134,36 @@ Listening-first mode may hide a transcript until one full playback is completed.
 
 Where no source-provenanced recording exists, device Japanese speech synthesis must remain visibly synthetic. It may support practice and milestone listening but cannot be counted as native-speaker source coverage.
 
+
+
+## P7 lexical-chunk evidence rule
+
+B2 lexical fluency is not projected from single-word mastery alone. Reusable collocations and phrase families have stable `lexical_chunk` identities, their own recognition/active-use StudyPrompts and their own learner projections/FSRS traces.
+
+Chunk entities may reference canonical lexemes, grammar concepts and example sentences, but mastering those linked entities does not automatically mark the chunk mastered. Productive tasks may target chunk identities directly while structural term checks remain transparent and bounded.
+
+## P7 segmented-listening rule
+
+Audio playback may be bounded by `startMs` / `endMs` metadata for replay. Segment timing never creates a new audio asset and never changes source rights. A segment replay emits listening evidence against the text with the canonical sentence as a secondary target.
+
+For learner-imported source packs, timing metadata is admitted only alongside already-admissible native audio. Ordered, non-overlapping segment validation happens before import. If no native recording exists, sentence replay may use explicitly labeled device synthesis.
+
+## P7 dictionary-provider activation rule
+
+`VITE_JAPANESE_MORPHOLOGY_ENDPOINT` may activate a dictionary-grade provider for learner-owned authentic input. The client accepts a provider result only when the response explicitly declares dictionary-grade analysis and passes token-range/candidate validation.
+
+Provider lemmas and candidates are mapped back to canonical lexeme/sense identities when possible. Provider confidence and unresolved ambiguity remain visible. Network/provider failure falls back to the bounded local resolver and is surfaced as a fallback state; provider unavailability must never be silently reinterpreted as dictionary-grade success.
+
+The server exposes a provider-neutral Fetch handler plus a Sudachi-compatible tokenizer adapter. Deployment is responsible for connecting an actual tokenizer runtime.
+
+## P7 extensive-input rule
+
+Extensive tracks are projections over existing canonical reading texts, not a second content hierarchy. Tracks group B2 texts by domain and rank a next item using lexical readiness plus existing reading/listening evidence.
+
+The recommendation is advisory. Every text remains directly accessible; a track cannot hard-gate immersion content or manufacture mastery from completion.
+
+## P7 revision-history rule
+
+AI revision history is reconstructed from immutable advisory coach StudyEvents. Feedback-area counts, repeated messages and recent drafts can be shown to the learner as correction patterns.
+
+These summaries are remediation hints only. They do not create graded events, alter FSRS scheduling, change CEFR milestone scores, or become authoritative claims about the learner.

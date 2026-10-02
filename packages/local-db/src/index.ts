@@ -2,7 +2,7 @@ import type { StudyEvent } from "@thiepn/domain";
 import type { MemoryTrace } from "@thiepn/scheduler";
 import { studyEventToMutation, type CoreSyncMutation, type StudyEventEnvelope } from "@thiepn/sync-protocol";
 
-const DB_VERSION = 5;
+const DB_VERSION = 6;
 const STUDY_EVENTS = "study_events";
 const MEMORY_TRACES = "memory_traces";
 const OUTBOX = "sync_outbox";
@@ -14,8 +14,15 @@ const PRIVATE_SENTENCES = "private_sentences";
 export interface SyncMetaRecord { key: string; value: string; }
 
 export type PrivateDocumentSourceKind="paste"|"text_file"|"subtitle"|"tatoeba"|"source_pack";
+export interface PrivateAudioSegment {
+  id:string;
+  text:string;
+  startMs:number;
+  endMs:number;
+}
 export interface PrivateNativeAudio {
   url:string; credit:string; licenseName:string; attributionUrl?:string; externalId?:string;
+  segments?:PrivateAudioSegment[];
 }
 export interface PrivateDocumentRecord {
   id:string; accountId:string; title:string; sourceKind:PrivateDocumentSourceKind; text:string;

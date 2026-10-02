@@ -1,7 +1,7 @@
 import SQLiteESMFactory from "@journeyapps/wa-sqlite/dist/wa-sqlite-async.mjs";
 import * as SQLite from "@journeyapps/wa-sqlite";
 import { IDBBatchAtomicVFS } from "@journeyapps/wa-sqlite/src/examples/IDBBatchAtomicVFS.js";
-import type { AudioAssetRecord, CanDoDescriptor, ContentSeedPackage, CourseUnit, GrammarConcept, Kanji, Lexeme, ProductiveTask, ReadingText, Sense, Sentence } from "@thiepn/content-schema";
+import type { AudioAssetRecord, CanDoDescriptor, ContentSeedPackage, CourseUnit, GrammarConcept, Kanji, Lexeme, LexicalChunk, ProductiveTask, ReadingText, Sense, Sentence } from "@thiepn/content-schema";
 import type { EntityKind, EntityRef } from "@thiepn/domain";
 import { normalizeJapaneseSearch, type SearchDocument, type SearchResult } from "@thiepn/search";
 
@@ -15,6 +15,7 @@ export interface GrammarDetail { grammar:GrammarConcept; sentences:Sentence[]; }
 export interface CourseUnitDetail { unit:CourseUnit; canDo:CanDoDescriptor|null; grammar:GrammarConcept[]; sentences:Sentence[]; }
 export interface ReadingTextDetail { text:ReadingText; sentences:Sentence[]; }
 export interface ProductiveTaskDetail { task:ProductiveTask; }
+export interface LexicalChunkDetail { chunk:LexicalChunk; sentences:Sentence[]; }
 
 export class ContentDatabase {
   private constructor(
@@ -87,6 +88,17 @@ export class ContentDatabase {
           [sentence.id,sentence.text,sentence.normalizedText,sentence.reading ?? null,sentence.translation,sentence.level,sentence.register,JSON.stringify(sentence.grammarIds),JSON.stringify(sentence.entityRefs),JSON.stringify(sentence.tokens),JSON.stringify(sentence.tags ?? []),JSON.stringify(sentence.sourceIds)]
         );
       }
+      for (const chunk of content.lexicalChunks) {
+        await this.run(
+          `INSERT INTO lexical_chunks(id,expression,reading,meaning,level,register_name,lexeme_ids_json,grammar_ids_json,example_sentence_ids_json,variants_json,tags_json,priority,source_ids_json)
+           VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)
+           ON CONFLICT(id) DO UPDATE SET expression=excluded.expression,reading=excluded.reading,meaning=excluded.meaning,level=excluded.level,register_name=excluded.register_name,
+             lexeme_ids_json=excluded.lexeme_ids_json,grammar_ids_json=excluded.grammar_ids_json,example_sentence_ids_json=excluded.example_sentence_ids_json,
+             variants_json=excluded.variants_json,tags_json=excluded.tags_json,priority=excluded.priority,source_ids_json=excluded.source_ids_json`,
+          [chunk.id,chunk.expression,chunk.reading ?? null,chunk.meaning,chunk.level,chunk.register,JSON.stringify(chunk.lexemeIds),JSON.stringify(chunk.grammarIds),
+           JSON.stringify(chunk.exampleSentenceIds),JSON.stringify(chunk.variants ?? []),JSON.stringify(chunk.tags ?? []),chunk.priority ?? null,JSON.stringify(chunk.sourceIds)]
+        );
+      }
       for (const canDo of content.canDos) {
         await this.run(
           `INSERT INTO can_dos(id,statement,level,language_activity,grammar_ids_json,sentence_ids_json,prerequisite_ids_json,source_ids_json)
@@ -105,18 +117,18 @@ export class ContentDatabase {
       }
       for (const text of content.readingTexts) {
         await this.run(
-          `INSERT INTO reading_texts(id,title,description,level,kind,sentence_ids_json,target_lexeme_ids_json,grammar_ids_json,tags_json,estimated_minutes,audio_mode,audio_asset_id,questions_json,source_ids_json)
-           VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-           ON CONFLICT(id) DO UPDATE SET title=excluded.title,description=excluded.description,level=excluded.level,kind=excluded.kind,sentence_ids_json=excluded.sentence_ids_json,target_lexeme_ids_json=excluded.target_lexeme_ids_json,grammar_ids_json=excluded.grammar_ids_json,tags_json=excluded.tags_json,estimated_minutes=excluded.estimated_minutes,audio_mode=excluded.audio_mode,audio_asset_id=excluded.audio_asset_id,questions_json=excluded.questions_json,source_ids_json=excluded.source_ids_json`,
-          [text.id,text.title,text.description,text.level,text.kind,JSON.stringify(text.sentenceIds),JSON.stringify(text.targetLexemeIds),JSON.stringify(text.grammarIds),JSON.stringify(text.tags),text.estimatedMinutes,text.audioMode,text.audioAssetId ?? null,JSON.stringify(text.comprehensionQuestions),JSON.stringify(text.sourceIds)]
+          `INSERT INTO reading_texts(id,title,description,level,kind,sentence_ids_json,target_lexeme_ids_json,grammar_ids_json,tags_json,estimated_minutes,audio_mode,audio_asset_id,listening_segments_json,questions_json,source_ids_json)
+           VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+           ON CONFLICT(id) DO UPDATE SET title=excluded.title,description=excluded.description,level=excluded.level,kind=excluded.kind,sentence_ids_json=excluded.sentence_ids_json,target_lexeme_ids_json=excluded.target_lexeme_ids_json,grammar_ids_json=excluded.grammar_ids_json,tags_json=excluded.tags_json,estimated_minutes=excluded.estimated_minutes,audio_mode=excluded.audio_mode,audio_asset_id=excluded.audio_asset_id,listening_segments_json=excluded.listening_segments_json,questions_json=excluded.questions_json,source_ids_json=excluded.source_ids_json`,
+          [text.id,text.title,text.description,text.level,text.kind,JSON.stringify(text.sentenceIds),JSON.stringify(text.targetLexemeIds),JSON.stringify(text.grammarIds),JSON.stringify(text.tags),text.estimatedMinutes,text.audioMode,text.audioAssetId ?? null,JSON.stringify(text.listeningSegments ?? []),JSON.stringify(text.comprehensionQuestions),JSON.stringify(text.sourceIds)]
         );
       }
       for (const task of content.productiveTasks) {
         await this.run(
-          `INSERT INTO production_tasks(id,title,level,mode,prompt,situation,target_grammar_ids_json,target_lexeme_ids_json,model_response,required_terms_json,minimum_characters,rubric_json,tags_json,milestone_area,source_ids_json)
-           VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-           ON CONFLICT(id) DO UPDATE SET title=excluded.title,level=excluded.level,mode=excluded.mode,prompt=excluded.prompt,situation=excluded.situation,target_grammar_ids_json=excluded.target_grammar_ids_json,target_lexeme_ids_json=excluded.target_lexeme_ids_json,model_response=excluded.model_response,required_terms_json=excluded.required_terms_json,minimum_characters=excluded.minimum_characters,rubric_json=excluded.rubric_json,tags_json=excluded.tags_json,milestone_area=excluded.milestone_area,source_ids_json=excluded.source_ids_json`,
-          [task.id,task.title,task.level,task.mode,task.prompt,task.situation,JSON.stringify(task.targetGrammarIds),JSON.stringify(task.targetLexemeIds),task.modelResponse,JSON.stringify(task.requiredTerms),task.minimumCharacters,JSON.stringify(task.rubric),JSON.stringify(task.tags),task.milestoneArea ?? null,JSON.stringify(task.sourceIds)]
+          `INSERT INTO production_tasks(id,title,level,mode,prompt,situation,target_grammar_ids_json,target_lexeme_ids_json,target_chunk_ids_json,model_response,required_terms_json,minimum_characters,rubric_json,tags_json,milestone_area,source_ids_json)
+           VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+           ON CONFLICT(id) DO UPDATE SET title=excluded.title,level=excluded.level,mode=excluded.mode,prompt=excluded.prompt,situation=excluded.situation,target_grammar_ids_json=excluded.target_grammar_ids_json,target_lexeme_ids_json=excluded.target_lexeme_ids_json,target_chunk_ids_json=excluded.target_chunk_ids_json,model_response=excluded.model_response,required_terms_json=excluded.required_terms_json,minimum_characters=excluded.minimum_characters,rubric_json=excluded.rubric_json,tags_json=excluded.tags_json,milestone_area=excluded.milestone_area,source_ids_json=excluded.source_ids_json`,
+          [task.id,task.title,task.level,task.mode,task.prompt,task.situation,JSON.stringify(task.targetGrammarIds),JSON.stringify(task.targetLexemeIds),JSON.stringify(task.targetChunkIds ?? []),task.modelResponse,JSON.stringify(task.requiredTerms),task.minimumCharacters,JSON.stringify(task.rubric),JSON.stringify(task.tags),task.milestoneArea ?? null,JSON.stringify(task.sourceIds)]
         );
       }
       for (const sense of content.senses) {
@@ -145,6 +157,10 @@ export class ContentDatabase {
           aliases:lexeme.forms.map((form)=>form.text)
         };
       }),
+      ...content.lexicalChunks.map((item):SearchDocument=>({
+        entity:{kind:"lexical_chunk",id:item.id}, title:item.expression, ...(item.reading?{reading:item.reading}:{}),
+        glosses:[item.meaning,item.level,item.register], aliases:[...(item.variants ?? []),...(item.tags ?? [])]
+      })),
       ...content.kanji.map((item):SearchDocument=>({
         entity:{kind:"kanji",id:item.id}, title:item.literal, glosses:item.meanings
       })),
@@ -252,7 +268,7 @@ export class ContentDatabase {
   }
 
   async getReadingText(id:string):Promise<ReadingTextDetail|null>{
-    const row=await this.firstRow("SELECT id,title,description,level,kind,sentence_ids_json,target_lexeme_ids_json,grammar_ids_json,tags_json,estimated_minutes,audio_mode,audio_asset_id,questions_json,source_ids_json FROM reading_texts WHERE id=?",[id]);
+    const row=await this.firstRow("SELECT id,title,description,level,kind,sentence_ids_json,target_lexeme_ids_json,grammar_ids_json,tags_json,estimated_minutes,audio_mode,audio_asset_id,listening_segments_json,questions_json,source_ids_json FROM reading_texts WHERE id=?",[id]);
     if(!row)return null;
     const text=readingTextFromRow(row);
     const sentences:Sentence[]=[];
@@ -261,20 +277,42 @@ export class ContentDatabase {
   }
 
   async listReadingTexts():Promise<ReadingTextDetail[]>{
-    const rows=await this.allRows("SELECT id,title,description,level,kind,sentence_ids_json,target_lexeme_ids_json,grammar_ids_json,tags_json,estimated_minutes,audio_mode,audio_asset_id,questions_json,source_ids_json FROM reading_texts ORDER BY estimated_minutes ASC,title ASC");
+    const rows=await this.allRows("SELECT id,title,description,level,kind,sentence_ids_json,target_lexeme_ids_json,grammar_ids_json,tags_json,estimated_minutes,audio_mode,audio_asset_id,listening_segments_json,questions_json,source_ids_json FROM reading_texts ORDER BY estimated_minutes ASC,title ASC");
     const result:ReadingTextDetail[]=[];
     for(const row of rows){const text=readingTextFromRow(row);const sentences:Sentence[]=[];for(const sentenceId of text.sentenceIds){const sentence=await this.getSentence(sentenceId);if(sentence)sentences.push(sentence);}result.push({text,sentences});}
     return result;
   }
 
   async getProductiveTask(id:string):Promise<ProductiveTask|null>{
-    const row=await this.firstRow("SELECT id,title,level,mode,prompt,situation,target_grammar_ids_json,target_lexeme_ids_json,model_response,required_terms_json,minimum_characters,rubric_json,tags_json,milestone_area,source_ids_json FROM production_tasks WHERE id=?",[id]);
+    const row=await this.firstRow("SELECT id,title,level,mode,prompt,situation,target_grammar_ids_json,target_lexeme_ids_json,target_chunk_ids_json,model_response,required_terms_json,minimum_characters,rubric_json,tags_json,milestone_area,source_ids_json FROM production_tasks WHERE id=?",[id]);
     return row?productiveTaskFromRow(row):null;
   }
 
   async listProductiveTasks():Promise<ProductiveTask[]>{
-    const rows=await this.allRows("SELECT id,title,level,mode,prompt,situation,target_grammar_ids_json,target_lexeme_ids_json,model_response,required_terms_json,minimum_characters,rubric_json,tags_json,milestone_area,source_ids_json FROM production_tasks ORDER BY level ASC,title ASC");
+    const rows=await this.allRows("SELECT id,title,level,mode,prompt,situation,target_grammar_ids_json,target_lexeme_ids_json,target_chunk_ids_json,model_response,required_terms_json,minimum_characters,rubric_json,tags_json,milestone_area,source_ids_json FROM production_tasks ORDER BY level ASC,title ASC");
     return rows.map(productiveTaskFromRow);
+  }
+
+  async getLexicalChunk(id:string):Promise<LexicalChunkDetail|null>{
+    const row=await this.firstRow("SELECT expression,reading,meaning,level,register_name,lexeme_ids_json,grammar_ids_json,example_sentence_ids_json,variants_json,tags_json,priority,source_ids_json FROM lexical_chunks WHERE id=?",[id]);
+    if(!row)return null;
+    const chunk:LexicalChunk={
+      id,expression:String(row[0]),...(row[1]===null?{}:{reading:String(row[1])}),meaning:String(row[2]),level:String(row[3]),register:String(row[4]),
+      lexemeIds:JSON.parse(String(row[5])) as string[],grammarIds:JSON.parse(String(row[6])) as string[],exampleSentenceIds:JSON.parse(String(row[7])) as string[],
+      variants:JSON.parse(String(row[8])) as string[],tags:JSON.parse(String(row[9])) as string[],...(row[10]===null?{}:{priority:Number(row[10])}),sourceIds:JSON.parse(String(row[11])) as string[]
+    };
+    const sentences:Sentence[]=[];
+    for(const sentenceId of chunk.exampleSentenceIds){const item=await this.getSentence(sentenceId);if(item)sentences.push(item);}
+    return {chunk,sentences};
+  }
+
+  async listLexicalChunks():Promise<LexicalChunk[]>{
+    const rows=await this.allRows("SELECT id,expression,reading,meaning,level,register_name,lexeme_ids_json,grammar_ids_json,example_sentence_ids_json,variants_json,tags_json,priority,source_ids_json FROM lexical_chunks ORDER BY priority ASC,expression ASC");
+    return rows.map((row)=>({
+      id:String(row[0]),expression:String(row[1]),...(row[2]===null?{}:{reading:String(row[2])}),meaning:String(row[3]),level:String(row[4]),register:String(row[5]),
+      lexemeIds:JSON.parse(String(row[6])) as string[],grammarIds:JSON.parse(String(row[7])) as string[],exampleSentenceIds:JSON.parse(String(row[8])) as string[],
+      variants:JSON.parse(String(row[9])) as string[],tags:JSON.parse(String(row[10])) as string[],...(row[11]===null?{}:{priority:Number(row[11])}),sourceIds:JSON.parse(String(row[12])) as string[]
+    }));
   }
 
   async upsertSearchDocuments(documents: readonly SearchDocument[]): Promise<void> {
@@ -390,6 +428,11 @@ export class ContentDatabase {
         id TEXT PRIMARY KEY,text TEXT NOT NULL,normalized_text TEXT NOT NULL,reading TEXT,translation TEXT NOT NULL,level TEXT NOT NULL,register_name TEXT NOT NULL,
         grammar_ids_json TEXT NOT NULL,entity_refs_json TEXT NOT NULL,tokens_json TEXT NOT NULL,tags_json TEXT NOT NULL,source_ids_json TEXT NOT NULL
       );
+      CREATE TABLE IF NOT EXISTS lexical_chunks(
+        id TEXT PRIMARY KEY,expression TEXT NOT NULL,reading TEXT,meaning TEXT NOT NULL,level TEXT NOT NULL,register_name TEXT NOT NULL,
+        lexeme_ids_json TEXT NOT NULL,grammar_ids_json TEXT NOT NULL,example_sentence_ids_json TEXT NOT NULL,variants_json TEXT NOT NULL,
+        tags_json TEXT NOT NULL,priority INTEGER,source_ids_json TEXT NOT NULL
+      );
       CREATE TABLE IF NOT EXISTS can_dos(
         id TEXT PRIMARY KEY,statement TEXT NOT NULL,level TEXT NOT NULL,language_activity TEXT NOT NULL,grammar_ids_json TEXT NOT NULL,sentence_ids_json TEXT NOT NULL,prerequisite_ids_json TEXT NOT NULL,source_ids_json TEXT NOT NULL
       );
@@ -400,11 +443,11 @@ export class ContentDatabase {
       CREATE TABLE IF NOT EXISTS reading_texts(
         id TEXT PRIMARY KEY,title TEXT NOT NULL,description TEXT NOT NULL,level TEXT NOT NULL,kind TEXT NOT NULL,
         sentence_ids_json TEXT NOT NULL,target_lexeme_ids_json TEXT NOT NULL,grammar_ids_json TEXT NOT NULL,tags_json TEXT NOT NULL,
-        estimated_minutes INTEGER NOT NULL,audio_mode TEXT NOT NULL,audio_asset_id TEXT,questions_json TEXT NOT NULL,source_ids_json TEXT NOT NULL
+        estimated_minutes INTEGER NOT NULL,audio_mode TEXT NOT NULL,audio_asset_id TEXT,listening_segments_json TEXT NOT NULL DEFAULT '[]',questions_json TEXT NOT NULL,source_ids_json TEXT NOT NULL
       );
       CREATE TABLE IF NOT EXISTS production_tasks(
         id TEXT PRIMARY KEY,title TEXT NOT NULL,level TEXT NOT NULL,mode TEXT NOT NULL,prompt TEXT NOT NULL,situation TEXT NOT NULL,
-        target_grammar_ids_json TEXT NOT NULL,target_lexeme_ids_json TEXT NOT NULL,model_response TEXT NOT NULL,required_terms_json TEXT NOT NULL,
+        target_grammar_ids_json TEXT NOT NULL,target_lexeme_ids_json TEXT NOT NULL,target_chunk_ids_json TEXT NOT NULL DEFAULT '[]',model_response TEXT NOT NULL,required_terms_json TEXT NOT NULL,
         minimum_characters INTEGER NOT NULL,rubric_json TEXT NOT NULL,tags_json TEXT NOT NULL,milestone_area TEXT,source_ids_json TEXT NOT NULL
       );
       CREATE TABLE IF NOT EXISTS senses(
@@ -437,6 +480,8 @@ export class ContentDatabase {
     await this.ensureColumn("audio_assets","external_id","TEXT");
     await this.ensureColumn("grammar","practice_json","TEXT");
     await this.ensureColumn("reading_texts","audio_asset_id","TEXT");
+    await this.ensureColumn("reading_texts","listening_segments_json","TEXT NOT NULL DEFAULT '[]'");
+    await this.ensureColumn("production_tasks","target_chunk_ids_json","TEXT NOT NULL DEFAULT '[]'");
     await this.ensureColumn("lexemes","inflection_class","TEXT");
     await this.ensureColumn("course_units","conjugation_lexeme_ids_json","TEXT NOT NULL DEFAULT \'[]\'");
   }
@@ -475,7 +520,7 @@ export class ContentDatabase {
 }
 
 function asEntityKind(value: string): EntityKind {
-  const allowed: readonly EntityKind[] = ["lexeme", "sense", "kanji", "grammar", "sentence", "text", "document", "production_task", "kana", "can_do"];
+  const allowed: readonly EntityKind[] = ["lexeme", "sense", "kanji", "grammar", "sentence", "text", "document", "production_task", "lexical_chunk", "kana", "can_do"];
   if (!allowed.includes(value as EntityKind)) throw new Error(`UNKNOWN_ENTITY_KIND:${value}`);
   return value as EntityKind;
 }
@@ -495,8 +540,8 @@ function readingTextFromRow(row:unknown[]):ReadingText{
     id:String(row[0]),title:String(row[1]),description:String(row[2]),level:String(row[3]),kind:String(row[4]) as ReadingText["kind"],
     sentenceIds:JSON.parse(String(row[5])) as string[],targetLexemeIds:JSON.parse(String(row[6])) as string[],grammarIds:JSON.parse(String(row[7])) as string[],
     tags:JSON.parse(String(row[8])) as string[],estimatedMinutes:Number(row[9]),audioMode:String(row[10]) as ReadingText["audioMode"],
-    ...(row[11]===null?{}:{audioAssetId:String(row[11])}),
-    comprehensionQuestions:JSON.parse(String(row[12])) as ReadingText["comprehensionQuestions"],sourceIds:JSON.parse(String(row[13])) as string[]
+    ...(row[11]===null?{}:{audioAssetId:String(row[11])}),listeningSegments:JSON.parse(String(row[12])) as NonNullable<ReadingText["listeningSegments"]>,
+    comprehensionQuestions:JSON.parse(String(row[13])) as ReadingText["comprehensionQuestions"],sourceIds:JSON.parse(String(row[14])) as string[]
   };
 }
 
@@ -504,10 +549,10 @@ function productiveTaskFromRow(row:unknown[]):ProductiveTask{
   return {
     id:String(row[0]),title:String(row[1]),level:String(row[2]),mode:String(row[3]) as ProductiveTask["mode"],
     prompt:String(row[4]),situation:String(row[5]),targetGrammarIds:JSON.parse(String(row[6])) as string[],
-    targetLexemeIds:JSON.parse(String(row[7])) as string[],modelResponse:String(row[8]),
-    requiredTerms:JSON.parse(String(row[9])) as string[],minimumCharacters:Number(row[10]),
-    rubric:JSON.parse(String(row[11])) as ProductiveTask["rubric"],tags:JSON.parse(String(row[12])) as string[],
-    ...(row[13]===null?{}:{milestoneArea:String(row[13]) as NonNullable<ProductiveTask["milestoneArea"]>}),
-    sourceIds:JSON.parse(String(row[14])) as string[]
+    targetLexemeIds:JSON.parse(String(row[7])) as string[],targetChunkIds:JSON.parse(String(row[8])) as string[],modelResponse:String(row[9]),
+    requiredTerms:JSON.parse(String(row[10])) as string[],minimumCharacters:Number(row[11]),
+    rubric:JSON.parse(String(row[12])) as ProductiveTask["rubric"],tags:JSON.parse(String(row[13])) as string[],
+    ...(row[14]===null?{}:{milestoneArea:String(row[14]) as NonNullable<ProductiveTask["milestoneArea"]>}),
+    sourceIds:JSON.parse(String(row[15])) as string[]
   };
 }
