@@ -8,7 +8,7 @@ import { FOUNDATION_TOTAL_ITEMS, foundationApplicationPrompts, foundationLessons
 import { a1Course, allGrammarCoursePrompts, courseUnitPrompts, courseUnitSession, grammarCourseLessons, isGrammarCoursePromptReady, selectNewCoursePrompts } from "./grammarCourse";
 import { conjugationLessons, conjugationPrompts } from "./conjugation";
 import {
-  buildA1MilestoneAssessment,buildB1MilestoneAssessment,buildUnitAssessment,getA1MilestoneProgress,getB1MilestoneProgress,getUnitAssessmentProgress,
+  buildA1MilestoneAssessment,buildB1MilestoneAssessment,buildB2MilestoneAssessment,buildUnitAssessment,getA1MilestoneProgress,getB1MilestoneProgress,getB2MilestoneProgress,getUnitAssessmentProgress,
   type MilestoneAssessmentProgress,type UnitAssessmentProgress
 } from "./assessment";
 import { VOCABULARY_TOTAL, vocabularyApplicationPrompts, vocabularyLessons, vocabularyMeaningPrompts } from "./vocabulary";
@@ -59,6 +59,7 @@ export interface CourseUnitProgress {
 }
 export type A1MilestoneProgress=MilestoneAssessmentProgress;
 export type B1MilestoneProgress=MilestoneAssessmentProgress;
+export type B2MilestoneProgress=MilestoneAssessmentProgress;
 
 function foundationApplicationPool():StudyPrompt[]{
   return [...pronunciationPerceptionPrompts,...foundationApplicationPrompts,...vocabularyApplicationPrompts,...conjugationPrompts,...productivePrompts];
@@ -105,6 +106,9 @@ export async function buildA1MilestoneSession():Promise<StudyStep[]>{
 export async function buildB1MilestoneSession():Promise<StudyStep[]>{
   return buildB1MilestoneAssessment();
 }
+export async function buildB2MilestoneSession():Promise<StudyStep[]>{
+  return buildB2MilestoneAssessment();
+}
 export async function buildProductivePractice(mode:"writing"|"speaking"):Promise<StudyStep[]>{
   return productivePracticeSession(mode);
 }
@@ -113,6 +117,9 @@ export async function getA1MilestoneAssessmentProgress():Promise<MilestoneAssess
 }
 export async function getB1MilestoneAssessmentProgress():Promise<MilestoneAssessmentProgress>{
   return getB1MilestoneProgress(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));
+}
+export async function getB2MilestoneAssessmentProgress():Promise<MilestoneAssessmentProgress>{
+  return getB2MilestoneProgress(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));
 }
 
 export async function getStudySummary(now=new Date()):Promise<StudySummary>{
