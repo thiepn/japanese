@@ -10,6 +10,11 @@ describe("P7 production A1→B2 vocabulary",()=>{
     expect(coreContent.senses.every((sense)=>sense.sourceIds.includes("thiepn-original"))).toBe(true);
     expect(coreContent.kanji.every((kanji)=>kanji.sourceIds.includes("thiepn-original"))).toBe(true);
   });
+  it("keeps one canonical lexeme identity per written headword",()=>{
+    const forms=starterLexemes.map((lexeme)=>lexeme.canonicalForm);
+    expect(new Set(forms).size).toBe(forms.length);
+  });
+
   it("keeps every kanji link resolvable to a canonical kanji entity",()=>{
     const ids=new Set(coreContent.kanji.map((kanji)=>kanji.id));
     for(const lexeme of starterLexemes)for(const link of lexeme.kanjiLinks)expect(ids.has(link.kanjiId)).toBe(true);
