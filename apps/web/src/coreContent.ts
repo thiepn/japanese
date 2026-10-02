@@ -1,4 +1,4 @@
-import type { AudioAssetRecord, CanDoDescriptor, ContentSeedPackage, CourseUnit, GrammarConcept, Kanji, Lexeme, ProductiveTask, ReadingText, Sense, Sentence } from "@thiepn/content-schema";
+import type { AudioAssetRecord, CanDoDescriptor, ContentSeedPackage, CourseUnit, GrammarConcept, Kanji, Lexeme, LexicalChunk, ProductiveTask, ReadingText, Sense, Sentence } from "@thiepn/content-schema";
 import rawContent from "../../../content/seed/jp-core.json";
 import rawRegistry from "../../../content/sources/registry.json";
 
@@ -16,6 +16,7 @@ const canDoById = new Map(coreContent.canDos.map((item)=>[item.id,item] as const
 const courseUnitById = new Map(coreContent.courseUnits.map((item)=>[item.id,item] as const));
 const readingTextById = new Map(coreContent.readingTexts.map((item)=>[item.id,item] as const));
 const productiveTaskById = new Map(coreContent.productiveTasks.map((item)=>[item.id,item] as const));
+const lexicalChunkById = new Map(coreContent.lexicalChunks.map((item)=>[item.id,item] as const));
 const sourceTitles = new Map((rawRegistry.sources as Array<{id:string;title:string}>).map((source)=>[source.id,source.title] as const));
 
 export function senseForLexeme(lexeme:Lexeme):Sense {
@@ -38,8 +39,10 @@ export function canDoDescriptor(id:string):CanDoDescriptor { const item=canDoByI
 export function courseUnit(id:string):CourseUnit { const item=courseUnitById.get(id); if(!item)throw new Error(`MISSING_COURSE_UNIT:${id}`); return item; }
 export function readingText(id:string):ReadingText { const item=readingTextById.get(id); if(!item)throw new Error(`MISSING_READING_TEXT:${id}`); return item; }
 export function productiveTask(id:string):ProductiveTask { const item=productiveTaskById.get(id); if(!item)throw new Error(`MISSING_PRODUCTIVE_TASK:${id}`); return item; }
+export function lexicalChunk(id:string):LexicalChunk { const item=lexicalChunkById.get(id); if(!item)throw new Error(`MISSING_LEXICAL_CHUNK:${id}`); return item; }
 export const gradedReadingTexts=[...coreContent.readingTexts];
 export const productiveTasks=[...coreContent.productiveTasks];
+export const lexicalChunks=[...coreContent.lexicalChunks].sort((a,b)=>(a.priority??999)-(b.priority??999));
 export const a1CourseUnits=[...coreContent.courseUnits].sort((a,b)=>a.order-b.order);
 export const a1Grammar=[...coreContent.grammar].sort((a,b)=>(a.priority??999)-(b.priority??999));
 
