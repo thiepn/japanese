@@ -8,7 +8,7 @@ describe("P4 grammar, sentences and A1→A2 course",()=>{
     expect(coreContent.grammar).toHaveLength(66);
     expect(coreContent.sentences).toHaveLength(161);
     expect(coreContent.canDos).toHaveLength(32);
-    expect(coreContent.courseUnits).toHaveLength(20);
+    expect(coreContent.courseUnits).toHaveLength(32);
     expect(a1Course.map((item)=>item.unit.order)).toEqual(Array.from({length:32},(_,index)=>index+1));
   });
   it("keeps sentence knowledge linked to canonical grammar and lexemes",()=>{
