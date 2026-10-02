@@ -7369,7 +7369,9 @@
       "tags": [
         "a2",
         "noun",
-        "communication"
+        "communication",
+        "b2",
+        "p6"
       ],
       "priority": 213,
       "sourceIds": [
@@ -9635,7 +9637,9 @@
       ],
       "tags": [
         "b1",
-        "noun"
+        "noun",
+        "b2",
+        "p6"
       ],
       "priority": 276,
       "sourceIds": [
@@ -9978,7 +9982,9 @@
       ],
       "tags": [
         "b1",
-        "noun"
+        "noun",
+        "b2",
+        "p6"
       ],
       "priority": 286,
       "sourceIds": [
@@ -10013,7 +10019,9 @@
       ],
       "tags": [
         "b1",
-        "noun"
+        "noun",
+        "b2",
+        "p6"
       ],
       "priority": 287,
       "sourceIds": [
@@ -10882,7 +10890,9 @@
       ],
       "tags": [
         "b1",
-        "noun"
+        "noun",
+        "b2",
+        "p6"
       ],
       "priority": 312,
       "sourceIds": [
@@ -11025,7 +11035,9 @@
       ],
       "tags": [
         "b1",
-        "na-adjective"
+        "na-adjective",
+        "b2",
+        "p6"
       ],
       "priority": 316,
       "sourceIds": [
@@ -11097,7 +11109,9 @@
       ],
       "tags": [
         "b1",
-        "noun"
+        "noun",
+        "b2",
+        "p6"
       ],
       "priority": 318,
       "sourceIds": [
@@ -11272,7 +11286,9 @@
       ],
       "tags": [
         "b1",
-        "adverb"
+        "adverb",
+        "b2",
+        "p6"
       ],
       "priority": 323,
       "sourceIds": [
@@ -11875,35 +11891,6 @@
       ]
     },
     {
-      "id": "b2-influence",
-      "canonicalForm": "影響",
-      "forms": [
-        {
-          "text": "影響",
-          "script": "kanji",
-          "status": "standard"
-        }
-      ],
-      "readings": [
-        {
-          "text": "えいきょう"
-        }
-      ],
-      "senseIds": [
-        "sense-b2-influence"
-      ],
-      "kanjiLinks": [],
-      "audioIds": [],
-      "tags": [
-        "b2",
-        "p6"
-      ],
-      "priority": 70,
-      "sourceIds": [
-        "thiepn-original"
-      ]
-    },
-    {
       "id": "b2-challenge",
       "canonicalForm": "課題",
       "forms": [
@@ -12036,64 +12023,6 @@
       ],
       "senseIds": [
         "sense-b2-system"
-      ],
-      "kanjiLinks": [],
-      "audioIds": [],
-      "tags": [
-        "b2",
-        "p6"
-      ],
-      "priority": 70,
-      "sourceIds": [
-        "thiepn-original"
-      ]
-    },
-    {
-      "id": "b2-environment",
-      "canonicalForm": "環境",
-      "forms": [
-        {
-          "text": "環境",
-          "script": "kanji",
-          "status": "standard"
-        }
-      ],
-      "readings": [
-        {
-          "text": "かんきょう"
-        }
-      ],
-      "senseIds": [
-        "sense-b2-environment"
-      ],
-      "kanjiLinks": [],
-      "audioIds": [],
-      "tags": [
-        "b2",
-        "p6"
-      ],
-      "priority": 70,
-      "sourceIds": [
-        "thiepn-original"
-      ]
-    },
-    {
-      "id": "b2-community",
-      "canonicalForm": "地域",
-      "forms": [
-        {
-          "text": "地域",
-          "script": "kanji",
-          "status": "standard"
-        }
-      ],
-      "readings": [
-        {
-          "text": "ちいき"
-        }
-      ],
-      "senseIds": [
-        "sense-b2-community"
       ],
       "kanjiLinks": [],
       "audioIds": [],
@@ -12745,35 +12674,6 @@
       ]
     },
     {
-      "id": "b2-explanation",
-      "canonicalForm": "説明",
-      "forms": [
-        {
-          "text": "説明",
-          "script": "kanji",
-          "status": "standard"
-        }
-      ],
-      "readings": [
-        {
-          "text": "せつめい"
-        }
-      ],
-      "senseIds": [
-        "sense-b2-explanation"
-      ],
-      "kanjiLinks": [],
-      "audioIds": [],
-      "tags": [
-        "b2",
-        "p6"
-      ],
-      "priority": 70,
-      "sourceIds": [
-        "thiepn-original"
-      ]
-    },
-    {
       "id": "b2-example",
       "canonicalForm": "具体例",
       "forms": [
@@ -12877,35 +12777,6 @@
       ],
       "senseIds": [
         "sense-b2-context"
-      ],
-      "kanjiLinks": [],
-      "audioIds": [],
-      "tags": [
-        "b2",
-        "p6"
-      ],
-      "priority": 70,
-      "sourceIds": [
-        "thiepn-original"
-      ]
-    },
-    {
-      "id": "b2-technology",
-      "canonicalForm": "技術",
-      "forms": [
-        {
-          "text": "技術",
-          "script": "kanji",
-          "status": "standard"
-        }
-      ],
-      "readings": [
-        {
-          "text": "ぎじゅつ"
-        }
-      ],
-      "senseIds": [
-        "sense-b2-technology"
       ],
       "kanjiLinks": [],
       "audioIds": [],
@@ -13225,35 +13096,6 @@
       ],
       "senseIds": [
         "sense-b2-material"
-      ],
-      "kanjiLinks": [],
-      "audioIds": [],
-      "tags": [
-        "b2",
-        "p6"
-      ],
-      "priority": 70,
-      "sourceIds": [
-        "thiepn-original"
-      ]
-    },
-    {
-      "id": "b2-result",
-      "canonicalForm": "結果",
-      "forms": [
-        {
-          "text": "結果",
-          "script": "kanji",
-          "status": "standard"
-        }
-      ],
-      "readings": [
-        {
-          "text": "けっか"
-        }
-      ],
-      "senseIds": [
-        "sense-b2-result"
       ],
       "kanjiLinks": [],
       "audioIds": [],
@@ -13860,36 +13702,6 @@
       ]
     },
     {
-      "id": "b2-complex",
-      "canonicalForm": "複雑",
-      "forms": [
-        {
-          "text": "複雑",
-          "script": "kanji",
-          "status": "standard"
-        }
-      ],
-      "readings": [
-        {
-          "text": "ふくざつ"
-        }
-      ],
-      "senseIds": [
-        "sense-b2-complex"
-      ],
-      "kanjiLinks": [],
-      "audioIds": [],
-      "tags": [
-        "b2",
-        "p6"
-      ],
-      "priority": 70,
-      "inflectionClass": "na-adjective",
-      "sourceIds": [
-        "thiepn-original"
-      ]
-    },
-    {
       "id": "b2-flexible",
       "canonicalForm": "柔軟",
       "forms": [
@@ -13915,35 +13727,6 @@
       ],
       "priority": 70,
       "inflectionClass": "na-adjective",
-      "sourceIds": [
-        "thiepn-original"
-      ]
-    },
-    {
-      "id": "b2-particularly",
-      "canonicalForm": "特に",
-      "forms": [
-        {
-          "text": "特に",
-          "script": "kanji",
-          "status": "standard"
-        }
-      ],
-      "readings": [
-        {
-          "text": "とくに"
-        }
-      ],
-      "senseIds": [
-        "sense-b2-particularly"
-      ],
-      "kanjiLinks": [],
-      "audioIds": [],
-      "tags": [
-        "b2",
-        "p6"
-      ],
-      "priority": 70,
       "sourceIds": [
         "thiepn-original"
       ]
@@ -26106,19 +25889,6 @@
       ]
     },
     {
-      "id": "sense-b2-influence",
-      "lexemeId": "b2-influence",
-      "glosses": [
-        "influence; effect"
-      ],
-      "partOfSpeech": [
-        "noun"
-      ],
-      "sourceIds": [
-        "thiepn-original"
-      ]
-    },
-    {
       "id": "sense-b2-challenge",
       "lexemeId": "b2-challenge",
       "glosses": [
@@ -26175,32 +25945,6 @@
       "lexemeId": "b2-system",
       "glosses": [
         "system; institution"
-      ],
-      "partOfSpeech": [
-        "noun"
-      ],
-      "sourceIds": [
-        "thiepn-original"
-      ]
-    },
-    {
-      "id": "sense-b2-environment",
-      "lexemeId": "b2-environment",
-      "glosses": [
-        "environment; circumstances"
-      ],
-      "partOfSpeech": [
-        "noun"
-      ],
-      "sourceIds": [
-        "thiepn-original"
-      ]
-    },
-    {
-      "id": "sense-b2-community",
-      "lexemeId": "b2-community",
-      "glosses": [
-        "region; local community"
       ],
       "partOfSpeech": [
         "noun"
@@ -26496,19 +26240,6 @@
       ]
     },
     {
-      "id": "sense-b2-explanation",
-      "lexemeId": "b2-explanation",
-      "glosses": [
-        "explanation"
-      ],
-      "partOfSpeech": [
-        "noun"
-      ],
-      "sourceIds": [
-        "thiepn-original"
-      ]
-    },
-    {
       "id": "sense-b2-example",
       "lexemeId": "b2-example",
       "glosses": [
@@ -26552,19 +26283,6 @@
       "lexemeId": "b2-context",
       "glosses": [
         "context"
-      ],
-      "partOfSpeech": [
-        "noun"
-      ],
-      "sourceIds": [
-        "thiepn-original"
-      ]
-    },
-    {
-      "id": "sense-b2-technology",
-      "lexemeId": "b2-technology",
-      "glosses": [
-        "technology; technique"
       ],
       "partOfSpeech": [
         "noun"
@@ -26708,19 +26426,6 @@
       "lexemeId": "b2-material",
       "glosses": [
         "material; data"
-      ],
-      "partOfSpeech": [
-        "noun"
-      ],
-      "sourceIds": [
-        "thiepn-original"
-      ]
-    },
-    {
-      "id": "sense-b2-result",
-      "lexemeId": "b2-result",
-      "glosses": [
-        "result"
       ],
       "partOfSpeech": [
         "noun"
@@ -26990,19 +26695,6 @@
       ]
     },
     {
-      "id": "sense-b2-complex",
-      "lexemeId": "b2-complex",
-      "glosses": [
-        "complex"
-      ],
-      "partOfSpeech": [
-        "adjective"
-      ],
-      "sourceIds": [
-        "thiepn-original"
-      ]
-    },
-    {
       "id": "sense-b2-flexible",
       "lexemeId": "b2-flexible",
       "glosses": [
@@ -27010,19 +26702,6 @@
       ],
       "partOfSpeech": [
         "adjective"
-      ],
-      "sourceIds": [
-        "thiepn-original"
-      ]
-    },
-    {
-      "id": "sense-b2-particularly",
-      "lexemeId": "b2-particularly",
-      "glosses": [
-        "particularly; especially"
-      ],
-      "partOfSpeech": [
-        "adverb"
       ],
       "sourceIds": [
         "thiepn-original"
@@ -47483,10 +47162,6 @@
         },
         {
           "kind": "lexeme",
-          "id": "b2-community"
-        },
-        {
-          "kind": "lexeme",
           "id": "p7-disaster"
         },
         {
@@ -47534,10 +47209,6 @@
         {
           "kind": "lexeme",
           "id": "lex-hitsuyou"
-        },
-        {
-          "kind": "lexeme",
-          "id": "b2-explanation"
         },
         {
           "kind": "lexeme",
@@ -47842,10 +47513,6 @@
         },
         {
           "kind": "lexeme",
-          "id": "b2-community"
-        },
-        {
-          "kind": "lexeme",
           "id": "p7-condition"
         },
         {
@@ -48038,10 +47705,6 @@
         },
         {
           "kind": "lexeme",
-          "id": "b2-complex"
-        },
-        {
-          "kind": "lexeme",
           "id": "p7-training"
         },
         {
@@ -48197,10 +47860,6 @@
         {
           "kind": "lexeme",
           "id": "b2-support"
-        },
-        {
-          "kind": "lexeme",
-          "id": "b2-technology"
         },
         {
           "kind": "lexeme",
@@ -48504,10 +48163,6 @@
         },
         {
           "kind": "lexeme",
-          "id": "b2-community"
-        },
-        {
-          "kind": "lexeme",
           "id": "b2-survey"
         },
         {
@@ -48571,10 +48226,6 @@
         {
           "kind": "lexeme",
           "id": "b2-trend"
-        },
-        {
-          "kind": "lexeme",
-          "id": "b2-result"
         },
         {
           "kind": "lexeme",
@@ -48940,10 +48591,6 @@
         },
         {
           "kind": "lexeme",
-          "id": "b2-explanation"
-        },
-        {
-          "kind": "lexeme",
           "id": "b2-user"
         },
         {
@@ -49203,10 +48850,6 @@
         {
           "kind": "lexeme",
           "id": "lex-eikyou"
-        },
-        {
-          "kind": "lexeme",
-          "id": "b2-influence"
         },
         {
           "kind": "lexeme",
@@ -49615,10 +49258,6 @@
         {
           "kind": "lexeme",
           "id": "lex-baai"
-        },
-        {
-          "kind": "lexeme",
-          "id": "b2-community"
         },
         {
           "kind": "lexeme",
@@ -56833,7 +56472,7 @@
         "b2-evidence",
         "b2-factor",
         "b2-survey",
-        "b2-result",
+        "lex-kekka",
         "b2-analysis",
         "b2-hypothesis",
         "b2-material",
@@ -56902,11 +56541,11 @@
       "vocabularyIds": [
         "b2-effect",
         "b2-challenge",
-        "b2-influence",
+        "lex-eikyou",
         "b2-burden",
         "b2-support",
         "b2-cooperation",
-        "b2-complex",
+        "lex-fukuzatsu",
         "b2-flexible"
       ],
       "sourceIds": [
@@ -56942,7 +56581,7 @@
         "b2-responsibility",
         "b2-role",
         "b2-context",
-        "b2-explanation"
+        "lex-setsumei"
       ],
       "sourceIds": [
         "thiepn-original"
@@ -56972,7 +56611,7 @@
       "vocabularyIds": [
         "b2-comparison",
         "b2-generation",
-        "b2-community",
+        "lex-chiiki",
         "b2-gap",
         "b2-judgment",
         "b2-evaluation",
@@ -57008,7 +56647,7 @@
         "b2-adoption",
         "b2-introduction",
         "b2-update",
-        "b2-technology",
+        "lex-gijutsu",
         "b2-employment",
         "b2-coordination",
         "b2-accompany",
@@ -57154,7 +56793,7 @@
         "b2-consideration",
         "b2-therefore",
         "b2-furthermore",
-        "b2-particularly"
+        "lex-tokuni"
       ],
       "sourceIds": [
         "thiepn-original"
@@ -57289,13 +56928,11 @@
       "vocabularyIds": [
         "lex-kaigi",
         "lex-chiiki",
-        "b2-community",
         "p7-disaster",
         "lex-suru",
         "lex-houhou",
         "lex-setsumei",
         "lex-hitsuyou",
-        "b2-explanation",
         "p7-older-people",
         "p7-concrete-adj",
         "lex-henka",
@@ -57340,7 +56977,6 @@
       "vocabularyIds": [
         "lex-kono",
         "lex-chiiki",
-        "b2-community",
         "b2-survey",
         "p7-subject",
         "p7-data",
@@ -57350,7 +56986,6 @@
         "lex-atarashii",
         "lex-kekka",
         "b2-trend",
-        "b2-result",
         "p7-young-people",
         "p7-percentage",
         "p7-use",
@@ -57450,7 +57085,6 @@
         "b2-meanwhile",
         "p7-cost",
         "lex-chiiki",
-        "b2-community",
         "p7-condition",
         "p7-supply",
         "p7-energy",
@@ -57498,7 +57132,6 @@
         "p7-be-involved",
         "lex-chiiki",
         "lex-baai",
-        "b2-community",
         "b2-differ",
         "p7-condition",
         "p7-training",
@@ -57558,7 +57191,6 @@
         "p7-important",
         "lex-takai",
         "lex-eikyou",
-        "b2-influence",
         "b2-personal-data",
         "b2-convenience",
         "b2-meanwhile"
@@ -59364,7 +58996,7 @@
         "b2-evidence",
         "b2-factor",
         "b2-survey",
-        "b2-result",
+        "lex-kekka",
         "b2-analysis",
         "b2-hypothesis",
         "b2-material",
@@ -59442,7 +59074,7 @@
         "b2-evidence",
         "b2-factor",
         "b2-survey",
-        "b2-result",
+        "lex-kekka",
         "b2-analysis",
         "b2-hypothesis",
         "b2-material",
@@ -59521,7 +59153,7 @@
         "b2-evidence",
         "b2-factor",
         "b2-survey",
-        "b2-result",
+        "lex-kekka",
         "b2-analysis",
         "b2-hypothesis",
         "b2-material",
@@ -59598,7 +59230,7 @@
         "b2-evidence",
         "b2-factor",
         "b2-survey",
-        "b2-result",
+        "lex-kekka",
         "b2-analysis",
         "b2-hypothesis",
         "b2-material",
@@ -59677,7 +59309,7 @@
         "b2-evidence",
         "b2-factor",
         "b2-survey",
-        "b2-result",
+        "lex-kekka",
         "b2-analysis",
         "b2-hypothesis",
         "b2-material",
@@ -59756,7 +59388,7 @@
         "b2-evidence",
         "b2-factor",
         "b2-survey",
-        "b2-result",
+        "lex-kekka",
         "b2-analysis",
         "b2-hypothesis",
         "b2-material",
@@ -59835,7 +59467,7 @@
         "b2-evidence",
         "b2-factor",
         "b2-survey",
-        "b2-result",
+        "lex-kekka",
         "b2-analysis",
         "b2-hypothesis",
         "b2-material",
@@ -59913,7 +59545,7 @@
         "b2-evidence",
         "b2-factor",
         "b2-survey",
-        "b2-result",
+        "lex-kekka",
         "b2-analysis",
         "b2-hypothesis",
         "b2-material",
@@ -60221,13 +59853,11 @@
       "targetLexemeIds": [
         "lex-kaigi",
         "lex-chiiki",
-        "b2-community",
         "p7-disaster",
         "lex-suru",
         "lex-houhou",
         "lex-setsumei",
         "lex-hitsuyou",
-        "b2-explanation",
         "p7-older-people",
         "p7-concrete-adj",
         "lex-henka",
@@ -60346,7 +59976,6 @@
         "b2-meanwhile",
         "p7-cost",
         "lex-chiiki",
-        "b2-community",
         "p7-condition",
         "p7-supply",
         "p7-energy",
@@ -60456,7 +60085,6 @@
         "p7-automation",
         "lex-houhou",
         "lex-fukuzatsu",
-        "b2-complex",
         "p7-training",
         "p7-operation-control",
         "p7-basic-adj",
@@ -60472,8 +60100,7 @@
         "lex-suru",
         "lex-gijutsu",
         "b2-outcome",
-        "b2-support",
-        "b2-technology"
+        "b2-support"
       ],
       "grammarIds": [
         "b2-ni-tomonatte",
@@ -60684,7 +60311,6 @@
       "targetLexemeIds": [
         "lex-kono",
         "lex-chiiki",
-        "b2-community",
         "b2-survey",
         "p7-subject",
         "p7-data",
@@ -60694,7 +60320,6 @@
         "lex-atarashii",
         "lex-kekka",
         "b2-trend",
-        "b2-result",
         "p7-young-people",
         "p7-percentage",
         "p7-use",
@@ -60820,7 +60445,6 @@
         "lex-setsumei",
         "lex-baai",
         "b2-system",
-        "b2-explanation",
         "b2-clear",
         "p7-procedure",
         "p7-change",
@@ -60935,7 +60559,6 @@
         "p7-important",
         "lex-takai",
         "lex-eikyou",
-        "b2-influence",
         "b2-personal-data",
         "b2-convenience",
         "b2-meanwhile",
@@ -61155,7 +60778,6 @@
         "p7-be-involved",
         "lex-chiiki",
         "lex-baai",
-        "b2-community",
         "b2-differ",
         "p7-condition",
         "p7-training",
@@ -61979,7 +61601,7 @@
         "b2-osore-ga-aru"
       ],
       "targetLexemeIds": [
-        "b2-technology",
+        "lex-gijutsu",
         "b2-convenience",
         "b2-safety"
       ],
@@ -62099,7 +61721,7 @@
       "targetLexemeIds": [
         "b2-survey",
         "b2-evidence",
-        "b2-result"
+        "lex-kekka"
       ],
       "modelResponse": "私は導入に賛成ですが、便利になるだけで十分なわけではないと思います。一方で、安全性が下がるおそれもあるので、まず小さな範囲で試して結果を確認するのがいいと思います。あなたはどの点を一番重視しますか。",
       "requiredTerms": [
@@ -62393,7 +62015,7 @@
       ],
       "targetLexemeIds": [
         "b2-analysis",
-        "b2-result",
+        "lex-kekka",
         "b2-hypothesis"
       ],
       "modelResponse": "この課題については、利便性を高められる一方で、負担が増えるおそれがある。一定の効果は認められるものの、今回の結果は一つの資料にすぎない。したがって、導入前に追加の確認を行い、その結果に基づいて判断するべきだと考える。",
@@ -62830,7 +62452,7 @@
       ],
       "targetLexemeIds": [
         "b2-trend",
-        "b2-result",
+        "lex-kekka",
         "b2-indicate",
         "b2-conclusion"
       ],
@@ -63351,7 +62973,7 @@
       "level": "B2",
       "register": "neutral",
       "lexemeIds": [
-        "b2-influence"
+        "lex-eikyou"
       ],
       "grammarIds": [],
       "exampleSentenceIds": [
@@ -63375,7 +62997,7 @@
       "level": "B2",
       "register": "neutral",
       "lexemeIds": [
-        "b2-influence"
+        "lex-eikyou"
       ],
       "grammarIds": [],
       "exampleSentenceIds": [
@@ -64115,7 +63737,7 @@
       "level": "B2",
       "register": "formal",
       "lexemeIds": [
-        "b2-result",
+        "lex-kekka",
         "b2-indicate"
       ],
       "grammarIds": [],
@@ -64275,7 +63897,7 @@
       "level": "B2",
       "register": "formal",
       "lexemeIds": [
-        "b2-influence"
+        "lex-eikyou"
       ],
       "grammarIds": [],
       "exampleSentenceIds": [
@@ -64953,7 +64575,7 @@
       "register": "neutral",
       "lexemeIds": [
         "lex-suru",
-        "b2-explanation",
+        "lex-setsumei",
         "p7-background"
       ],
       "grammarIds": [],
