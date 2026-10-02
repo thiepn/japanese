@@ -1,7 +1,7 @@
 import { describe,expect,it } from "vitest";
 import type { StudyEvent } from "../../packages/domain/src/index";
 import {
-  a1MilestoneAssessmentPrompts,buildUnitAssessment,getA1MilestoneProgress,getUnitAssessmentProgress,
+  a1MilestoneAssessmentPrompts,b1MilestoneAssessmentPrompts,buildUnitAssessment,getA1MilestoneProgress,getB1MilestoneProgress,getUnitAssessmentProgress,
   UNIT_ASSESSMENT_DELAY_MS,unitAssessmentPrompts,unitLearningPrerequisites
 } from "../../apps/web/src/study/assessment";
 
@@ -40,6 +40,23 @@ describe("P2.5 assessment model",()=>{
     for(const activity of ["reading","listening","spoken_interaction","spoken_production","writing"] as const){
       expect(prompts.filter((prompt)=>prompt.languageActivity===activity)).toHaveLength(3);
     }
+  });
+
+  it("builds a 15-item B1 milestone with real speech and connected-writing modes",()=>{
+    const prompts=b1MilestoneAssessmentPrompts();
+    expect(prompts).toHaveLength(15);
+    for(const activity of ["reading","listening","spoken_interaction","spoken_production","writing"] as const)expect(prompts.filter((prompt)=>prompt.languageActivity===activity)).toHaveLength(3);
+    expect(prompts.filter((prompt)=>prompt.languageActivity==="spoken_interaction"||prompt.languageActivity==="spoken_production").every((prompt)=>prompt.promptType==="speech")).toBe(true);
+    expect(prompts.filter((prompt)=>prompt.languageActivity==="writing").every((prompt)=>prompt.promptType==="textarea")).toBe(true);
+  });
+
+  it("reports B1 milestone scores independently",()=>{
+    const prompts=b1MilestoneAssessmentPrompts();
+    const events=prompts.slice(0,5).map((prompt,index)=>event(prompt.id,"2026-10-02T11:0"+index+":00.000Z",{activity:"assessment",contextId:"assessment-b1-milestone",result:index===2?"incorrect":"correct"}));
+    const progress=getB1MilestoneProgress(events);
+    expect(progress.answered).toBe(5);
+    expect(progress.scores.reading.answered).toBe(3);
+    expect(progress.scores.listening.answered).toBe(2);
   });
 
   it("reports milestone activity scores independently",()=>{
