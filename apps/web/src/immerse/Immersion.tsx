@@ -1,4 +1,5 @@
 import { useEffect,useMemo,useRef,useState } from "react";
+import { AuthenticLibrary } from "./AuthenticLibrary";
 import type { ReadingQuestion } from "@thiepn/content-schema";
 import {
   buildReaderText,getImmersionProgress,gradeReadingQuestion,recordListeningExposure,recordMinedWord,
@@ -94,7 +95,8 @@ export function Immersion(){
           <button className="unit-action" type="button" onClick={()=>void openText(text.id)}>Open text</button></div>
       </article>)}
     </div>
-    <p className="course-note">Readiness is derived from lexeme meaning evidence. It is guidance, not a content lock. Connected audio uses the device’s Japanese speech-synthesis voice when available.</p>
+    <p className="course-note">Readiness is derived from lexeme meaning evidence. It is guidance, not a content lock. Curated connected audio uses the device’s Japanese speech-synthesis voice unless a source-provenanced recording is attached.</p>
+    <AuthenticLibrary/>
   </section>;
 }
 
