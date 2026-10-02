@@ -5,7 +5,7 @@ test("structured A1→B2 course and canonical grammar/sentence search work on ev
   await page.getByRole("button",{name:"Learn"}).click();
 
   await expect(page.getByRole("heading",{name:"Foundation → B2"})).toBeVisible();
-  await expect(page.locator(".unit-card")).toHaveCount(50);
+  await expect(page.locator(".unit-card")).toHaveCount(58);
   const firstUnit=page.locator(".unit-card").first();
   await expect(firstUnit.getByRole("heading",{name:"Identify people"})).toBeVisible();
   await expect(firstUnit.getByText(/Can identify oneself/)).toBeVisible();
