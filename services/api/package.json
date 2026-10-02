@@ -9,7 +9,8 @@
   "dependencies": {
     "@thiepn/sync-protocol": "workspace:*",
     "@thiepn/domain": "workspace:*",
-    "@thiepn/coach": "workspace:*"
+    "@thiepn/coach": "workspace:*",
+    "@thiepn/japanese-nlp": "workspace:*"
   },
   "scripts": {
     "build": "tsc --noEmit",
