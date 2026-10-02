@@ -1,8 +1,9 @@
 import { useEffect,useMemo,useRef,useState } from "react";
 import { getDefaultAudioProvider } from "@thiepn/audio";
+import { createHttpJapaneseMorphologyProvider,type JapaneseMorphologyProvider } from "@thiepn/japanese-nlp";
 import type { AudioAssetRecord } from "@thiepn/content-schema";
 import {
-  analyzeAuthenticText,createPrivateDocument,importTatoebaSentence,listPrivateDocumentViews,mineKnownLexeme,minePrivateSentence,
+  analyzeAuthenticText,analyzeAuthenticTextWithProvider,createPrivateDocument,importTatoebaSentence,listPrivateDocumentViews,mineKnownLexeme,minePrivateSentence,
   recordPrivateComprehension,recordPrivateListening,recordPrivateReading,saveUnknownAsPrivateVocabulary,splitJapaneseSentences,
   type AuthenticToken,type PrivateDocumentView
 } from "./authentic";
@@ -11,6 +12,9 @@ import { AUTHENTIC_ACCOUNT_ID } from "./authentic";
 import { importJapaneseSourcePack,parseJapaneseSourcePack,validateJapaneseSourcePack } from "./sourcePacks";
 
 interface SelectedToken { token:AuthenticToken; }
+
+const MORPHOLOGY_ENDPOINT=String(import.meta.env.VITE_JAPANESE_MORPHOLOGY_ENDPOINT??"").trim();
+const morphologyProvider:JapaneseMorphologyProvider|null=MORPHOLOGY_ENDPOINT?createHttpJapaneseMorphologyProvider(MORPHOLOGY_ENDPOINT):null;
 
 export function AuthenticLibrary(){
   const [documents,setDocuments]=useState<PrivateDocumentView[]>([]);
@@ -103,11 +107,23 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
   const [sentenceCandidate,setSentenceCandidate]=useState<string|null>(null);
   const [sentenceTranslation,setSentenceTranslation]=useState("");
   const [mineMessage,setMineMessage]=useState("");
-  const analysis=useMemo(()=>analyzeAuthenticText(view.document.text),[view.document.text]);
+  const localAnalysis=useMemo(()=>analyzeAuthenticText(view.document.text),[view.document.text]);
+  const [analysis,setAnalysis]=useState(localAnalysis);
+  const [analysisStatus,setAnalysisStatus]=useState<"local"|"loading"|"provider"|"fallback">(morphologyProvider?"loading":"local");
   const sourceSentences=useMemo(()=>splitJapaneseSentences(view.document.text),[view.document.text]);
   const audioProvider=useRef(getDefaultAudioProvider());
 
-  useEffect(()=>()=>{audioProvider.current.stop();if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();},[]);
+  useEffect(()=>{
+    let cancelled=false;
+    setAnalysis(localAnalysis);
+    if(morphologyProvider){
+      setAnalysisStatus("loading");
+      analyzeAuthenticTextWithProvider(view.document.text,morphologyProvider).then((next)=>{
+        if(!cancelled){setAnalysis(next);setAnalysisStatus("provider");}
+      }).catch(()=>{if(!cancelled){setAnalysis(localAnalysis);setAnalysisStatus("fallback");}});
+    }else setAnalysisStatus("local");
+    return()=>{cancelled=true;audioProvider.current.stop();if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();};
+  },[localAnalysis,view.document.text]);
 
   async function playNative(rate=1){
     const native=view.document.nativeAudio;if(!native)return;
@@ -140,6 +156,7 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
   return <section className="reader-page authentic-reader">
     <header className="reader-head"><button className="quiet-button reader-back" type="button" onClick={onBack}>← Your Japanese</button><div><span>{view.document.sourceKind.replace("_"," ")}</span><h1>{view.document.title}</h1></div></header>
     <div className="authentic-summary"><div><strong>{Math.round(analysis.knownRatio*100)}%</strong><span>known lexical tokens</span></div><div><strong>{analysis.unknownTypes.length}</strong><span>unique unresolved forms</span></div><div><strong>{analysis.difficulty}</strong><span>estimated stretch</span></div></div>
+    <p className="morphology-status">{analysisStatus==="provider"?`Dictionary-grade analysis · ${analysis.analysisProvider??"provider"}`:analysisStatus==="loading"?"Checking dictionary-grade morphology…":analysisStatus==="fallback"?"Dictionary provider unavailable · bounded local analysis in use":"Bounded local analysis · configure VITE_JAPANESE_MORPHOLOGY_ENDPOINT for dictionary-grade parsing"}</p>
     <div className="authentic-audio">
       {view.document.nativeAudio?<><button className="primary" disabled={audioState==="playing"} type="button" onClick={()=>void playNative(1)}>{audioState==="playing"?"Playing…":"Play native recording"}</button><button className="unit-action" disabled={audioState==="playing"} type="button" onClick={()=>void playNative(.82)}>Native slower</button></>:null}
       <button className="unit-action" disabled={speaking||typeof speechSynthesis==="undefined"} type="button" onClick={()=>void speak(.92)}>{speaking?"Playing…":"Device voice fallback"}</button>
@@ -164,7 +181,7 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
     </aside>:null}
     <div className="reader-finish"><button className="primary" type="button" onClick={()=>void recordPrivateComprehension(view.document.id,"correct")}>Understood without major help</button><button className="unit-action" type="button" onClick={()=>void recordPrivateComprehension(view.document.id,"incorrect")}>Needed substantial support</button></div>
     <div className="authentic-danger"><button className="quiet-button" type="button" onClick={()=>void remove()}>Delete private document</button></div>
-    <p className="course-note">Analysis resolves canonical forms, generated inflections and additional B1/B2 deinflection patterns before using the browser Japanese word segmenter. Canonical sense identities and ambiguity are exposed explicitly. A dictionary-grade morphology provider can replace the bounded local resolver later; the current browser path does not claim dictionary-grade parsing.</p>
+    <p className="course-note">Analysis preserves canonical sense identities and ambiguity. When a configured server-side dictionary provider is available, its segmentation and lemmas outrank bounded browser guesses; failures fall back visibly instead of silently pretending provider-grade analysis.</p>
   </section>;
 }
 
