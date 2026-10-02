@@ -28903,18 +28903,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-you-ni-naru",
-        "grammar-you-ni-suru"
+        "grammar-you-ni-naru"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-you-ni-naru"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-you-ni-suru"
-        },
         {
           "kind": "lexeme",
           "id": "lex-nyuusu"
@@ -28934,6 +28925,10 @@
         {
           "kind": "lexeme",
           "id": "lex-mainichi"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-naru"
         }
       ],
       "tokens": [
@@ -28957,18 +28952,10 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-you-ni-naru",
+        "grammar-tame-ni-purpose",
         "grammar-you-ni-suru"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-you-ni-naru"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-you-ni-suru"
-        },
         {
           "kind": "lexeme",
           "id": "lex-ima"
@@ -28988,6 +28975,14 @@
         {
           "kind": "lexeme",
           "id": "lex-undou"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-tame-ni-purpose"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-suru"
         }
       ],
       "tokens": [
@@ -29011,18 +29006,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-you-ni-naru",
-        "grammar-you-ni-suru"
+        "grammar-you-ni-naru"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-you-ni-naru"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-you-ni-suru"
-        },
         {
           "kind": "lexeme",
           "id": "lex-kawaru"
@@ -29038,6 +29024,10 @@
         {
           "kind": "lexeme",
           "id": "lex-seikatsu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-naru"
         }
       ],
       "tokens": [
@@ -29061,18 +29051,10 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-you-ni-naru",
+        "grammar-you-ni-purpose",
         "grammar-you-ni-suru"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-you-ni-naru"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-you-ni-suru"
-        },
         {
           "kind": "lexeme",
           "id": "lex-ima"
@@ -29084,6 +29066,14 @@
         {
           "kind": "lexeme",
           "id": "lex-yotei"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-purpose"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-suru"
         }
       ],
       "tokens": [
@@ -29107,21 +29097,16 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-you-ni-naru",
-        "grammar-you-ni-suru"
+        "grammar-you-ni-naru"
       ],
       "entityRefs": [
         {
-          "kind": "grammar",
-          "id": "grammar-you-ni-naru"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-you-ni-suru"
-        },
-        {
           "kind": "lexeme",
           "id": "lex-iken"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-naru"
         }
       ],
       "tokens": [
@@ -29145,18 +29130,10 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-you-ni-naru",
-        "grammar-you-ni-suru"
+        "grammar-you-ni-suru",
+        "grammar-tara"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-you-ni-naru"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-you-ni-suru"
-        },
         {
           "kind": "lexeme",
           "id": "lex-tsuzukeru"
@@ -29164,6 +29141,14 @@
         {
           "kind": "lexeme",
           "id": "lex-kekka"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-suru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-tara"
         }
       ],
       "tokens": [
@@ -29187,18 +29172,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-koto-ni-suru",
-        "grammar-koto-ni-naru"
+        "grammar-koto-ni-suru"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-koto-ni-suru"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-koto-ni-naru"
-        },
         {
           "kind": "lexeme",
           "id": "lex-benkyou-suru"
@@ -29214,6 +29190,10 @@
         {
           "kind": "lexeme",
           "id": "lex-rainen"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-koto-ni-suru"
         }
       ],
       "tokens": [
@@ -29237,18 +29217,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-koto-ni-suru",
         "grammar-koto-ni-naru"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-koto-ni-suru"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-koto-ni-naru"
-        },
         {
           "kind": "lexeme",
           "id": "lex-atarashii"
@@ -29264,6 +29235,10 @@
         {
           "kind": "lexeme",
           "id": "lex-shigoto"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-koto-ni-naru"
         }
       ],
       "tokens": [
@@ -29287,18 +29262,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-koto-ni-suru",
-        "grammar-koto-ni-naru"
+        "grammar-koto-ni-suru"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-koto-ni-suru"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-koto-ni-naru"
-        },
         {
           "kind": "lexeme",
           "id": "lex-yasumu"
@@ -29306,6 +29272,10 @@
         {
           "kind": "lexeme",
           "id": "lex-shuumatsu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-koto-ni-suru"
         }
       ],
       "tokens": [
@@ -29329,21 +29299,16 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-koto-ni-suru",
         "grammar-koto-ni-naru"
       ],
       "entityRefs": [
         {
-          "kind": "grammar",
-          "id": "grammar-koto-ni-suru"
+          "kind": "lexeme",
+          "id": "lex-kaigi"
         },
         {
           "kind": "grammar",
           "id": "grammar-koto-ni-naru"
-        },
-        {
-          "kind": "lexeme",
-          "id": "lex-kaigi"
         }
       ],
       "tokens": [
@@ -29367,18 +29332,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-koto-ni-suru",
-        "grammar-koto-ni-naru"
+        "grammar-koto-ni-suru"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-koto-ni-suru"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-koto-ni-naru"
-        },
         {
           "kind": "lexeme",
           "id": "lex-nyuusu"
@@ -29390,6 +29346,10 @@
         {
           "kind": "lexeme",
           "id": "lex-ima"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-koto-ni-suru"
         }
       ],
       "tokens": [
@@ -29413,18 +29373,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-koto-ni-suru",
         "grammar-koto-ni-naru"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-koto-ni-suru"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-koto-ni-naru"
-        },
         {
           "kind": "lexeme",
           "id": "lex-iku"
@@ -29436,6 +29387,10 @@
         {
           "kind": "lexeme",
           "id": "lex-keikaku"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-koto-ni-naru"
         }
       ],
       "tokens": [
@@ -29459,37 +29414,17 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-sou-appearance",
-        "grammar-sou-hearsay",
-        "grammar-rashii",
-        "grammar-mitai",
-        "grammar-kamoshirenai",
-        "grammar-hazu"
+        "grammar-node-reason",
+        "grammar-sou-appearance"
       ],
       "entityRefs": [
         {
           "kind": "grammar",
+          "id": "grammar-node-reason"
+        },
+        {
+          "kind": "grammar",
           "id": "grammar-sou-appearance"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-sou-hearsay"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-rashii"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-mitai"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-kamoshirenai"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-hazu"
         }
       ],
       "tokens": [
@@ -29513,38 +29448,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-sou-appearance",
-        "grammar-sou-hearsay",
-        "grammar-rashii",
-        "grammar-mitai",
-        "grammar-kamoshirenai",
-        "grammar-hazu"
+        "grammar-sou-hearsay"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-sou-appearance"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-sou-hearsay"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-rashii"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-mitai"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-kamoshirenai"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-hazu"
-        },
         {
           "kind": "lexeme",
           "id": "lex-ashita"
@@ -29556,6 +29462,10 @@
         {
           "kind": "lexeme",
           "id": "lex-tenki"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-sou-hearsay"
         }
       ],
       "tokens": [
@@ -29579,38 +29489,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-sou-appearance",
-        "grammar-sou-hearsay",
-        "grammar-rashii",
-        "grammar-mitai",
-        "grammar-kamoshirenai",
-        "grammar-hazu"
+        "grammar-rashii"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-sou-appearance"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-sou-hearsay"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-rashii"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-mitai"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-kamoshirenai"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-hazu"
-        },
         {
           "kind": "lexeme",
           "id": "lex-kono"
@@ -29618,6 +29499,10 @@
         {
           "kind": "lexeme",
           "id": "lex-yuumei"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-rashii"
         }
       ],
       "tokens": [
@@ -29641,38 +29526,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-sou-appearance",
-        "grammar-sou-hearsay",
-        "grammar-rashii",
-        "grammar-mitai",
-        "grammar-kamoshirenai",
-        "grammar-hazu"
+        "grammar-mitai"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-sou-appearance"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-sou-hearsay"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-rashii"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-mitai"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-kamoshirenai"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-hazu"
-        },
         {
           "kind": "lexeme",
           "id": "lex-kono"
@@ -29680,6 +29536,10 @@
         {
           "kind": "lexeme",
           "id": "lex-eiga"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-mitai"
         }
       ],
       "tokens": [
@@ -29703,38 +29563,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-sou-appearance",
-        "grammar-sou-hearsay",
-        "grammar-rashii",
-        "grammar-mitai",
-        "grammar-kamoshirenai",
-        "grammar-hazu"
+        "grammar-kamoshirenai"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-sou-appearance"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-sou-hearsay"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-rashii"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-mitai"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-kamoshirenai"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-hazu"
-        },
         {
           "kind": "lexeme",
           "id": "lex-sen"
@@ -29746,6 +29577,10 @@
         {
           "kind": "lexeme",
           "id": "lex-kaigi"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kamoshirenai"
         }
       ],
       "tokens": [
@@ -29769,38 +29604,10 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-sou-appearance",
-        "grammar-sou-hearsay",
-        "grammar-rashii",
-        "grammar-mitai",
-        "grammar-kamoshirenai",
+        "grammar-te-iru",
         "grammar-hazu"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-sou-appearance"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-sou-hearsay"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-rashii"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-mitai"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-kamoshirenai"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-hazu"
-        },
         {
           "kind": "lexeme",
           "id": "lex-densha"
@@ -29812,6 +29619,14 @@
         {
           "kind": "lexeme",
           "id": "lex-mou"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-iru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-hazu"
         }
       ],
       "tokens": [
@@ -29836,17 +29651,9 @@
       "register": "neutral-polite",
       "grammarIds": [
         "grammar-tame-ni-purpose",
-        "grammar-you-ni-purpose"
+        "grammar-te-iru"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-tame-ni-purpose"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-you-ni-purpose"
-        },
         {
           "kind": "lexeme",
           "id": "lex-ima"
@@ -29866,6 +29673,14 @@
         {
           "kind": "lexeme",
           "id": "lex-shiken"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-tame-ni-purpose"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-iru"
         }
       ],
       "tokens": [
@@ -29889,21 +29704,16 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-tame-ni-purpose",
         "grammar-you-ni-purpose"
       ],
       "entityRefs": [
         {
-          "kind": "grammar",
-          "id": "grammar-tame-ni-purpose"
+          "kind": "lexeme",
+          "id": "lex-yotei"
         },
         {
           "kind": "grammar",
           "id": "grammar-you-ni-purpose"
-        },
-        {
-          "kind": "lexeme",
-          "id": "lex-yotei"
         }
       ],
       "tokens": [
@@ -29927,18 +29737,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-tame-ni-purpose",
-        "grammar-you-ni-purpose"
+        "grammar-tame-ni-purpose"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-tame-ni-purpose"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-you-ni-purpose"
-        },
         {
           "kind": "lexeme",
           "id": "lex-seikatsu"
@@ -29946,6 +29747,10 @@
         {
           "kind": "lexeme",
           "id": "lex-kenkou"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-tame-ni-purpose"
         }
       ],
       "tokens": [
@@ -29969,18 +29774,10 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-tame-ni-purpose",
-        "grammar-you-ni-purpose"
+        "grammar-you-ni-purpose",
+        "grammar-te-iru"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-tame-ni-purpose"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-you-ni-purpose"
-        },
         {
           "kind": "lexeme",
           "id": "lex-nihongo"
@@ -30004,6 +29801,14 @@
         {
           "kind": "lexeme",
           "id": "lex-renshuu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-purpose"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-iru"
         }
       ],
       "tokens": [
@@ -30027,18 +29832,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-tame-ni-purpose",
-        "grammar-you-ni-purpose"
+        "grammar-tame-ni-purpose"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-tame-ni-purpose"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-you-ni-purpose"
-        },
         {
           "kind": "lexeme",
           "id": "lex-takusan"
@@ -30054,6 +29850,10 @@
         {
           "kind": "lexeme",
           "id": "lex-kenkyuu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-tame-ni-purpose"
         }
       ],
       "tokens": [
@@ -30077,21 +29877,21 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-tame-ni-purpose",
-        "grammar-you-ni-purpose"
+        "grammar-you-ni-purpose",
+        "grammar-te-kudasai"
       ],
       "entityRefs": [
         {
-          "kind": "grammar",
-          "id": "grammar-tame-ni-purpose"
+          "kind": "lexeme",
+          "id": "lex-anzen"
         },
         {
           "kind": "grammar",
           "id": "grammar-you-ni-purpose"
         },
         {
-          "kind": "lexeme",
-          "id": "lex-anzen"
+          "kind": "grammar",
+          "id": "grammar-te-kudasai"
         }
       ],
       "tokens": [
@@ -30115,18 +29915,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-noni",
-        "grammar-temo-concession"
+        "grammar-noni"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-noni"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-temo-concession"
-        },
         {
           "kind": "lexeme",
           "id": "lex-takusan"
@@ -30138,6 +29929,10 @@
         {
           "kind": "lexeme",
           "id": "lex-shiken"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-noni"
         }
       ],
       "tokens": [
@@ -30161,14 +29956,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-noni",
         "grammar-temo-concession"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-noni"
-        },
         {
           "kind": "grammar",
           "id": "grammar-temo-concession"
@@ -30195,18 +29985,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-noni",
-        "grammar-temo-concession"
+        "grammar-noni"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-noni"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-temo-concession"
-        },
         {
           "kind": "lexeme",
           "id": "lex-kono"
@@ -30218,6 +29999,10 @@
         {
           "kind": "lexeme",
           "id": "lex-benri"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-noni"
         }
       ],
       "tokens": [
@@ -30241,18 +30026,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-noni",
         "grammar-temo-concession"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-noni"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-temo-concession"
-        },
         {
           "kind": "lexeme",
           "id": "lex-kazoku"
@@ -30264,6 +30040,10 @@
         {
           "kind": "lexeme",
           "id": "lex-renraku"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-temo-concession"
         }
       ],
       "tokens": [
@@ -30288,17 +30068,9 @@
       "register": "neutral-polite",
       "grammarIds": [
         "grammar-noni",
-        "grammar-temo-concession"
+        "grammar-masen-deshita"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-noni"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-temo-concession"
-        },
         {
           "kind": "lexeme",
           "id": "lex-sen"
@@ -30306,6 +30078,14 @@
         {
           "kind": "lexeme",
           "id": "lex-setsumei"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-noni"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-masen-deshita"
         }
       ],
       "tokens": [
@@ -30329,18 +30109,10 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-noni",
-        "grammar-temo-concession"
+        "grammar-temo-concession",
+        "grammar-tai"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-noni"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-temo-concession"
-        },
         {
           "kind": "lexeme",
           "id": "lex-mouichido"
@@ -30356,6 +30128,14 @@
         {
           "kind": "lexeme",
           "id": "lex-chousen"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-temo-concession"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-tai"
         }
       ],
       "tokens": [
@@ -30379,23 +30159,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-nara",
-        "grammar-ba",
-        "grammar-to-condition"
+        "grammar-nara"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-nara"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-ba"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-to-condition"
-        },
         {
           "kind": "lexeme",
           "id": "lex-iku"
@@ -30403,6 +30169,10 @@
         {
           "kind": "lexeme",
           "id": "lex-kyoto"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-nara"
         }
       ],
       "tokens": [
@@ -30426,23 +30196,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-nara",
-        "grammar-ba",
-        "grammar-to-condition"
+        "grammar-ba"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-nara"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-ba"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-to-condition"
-        },
         {
           "kind": "lexeme",
           "id": "lex-are"
@@ -30454,6 +30210,10 @@
         {
           "kind": "lexeme",
           "id": "lex-issho"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ba"
         }
       ],
       "tokens": [
@@ -30477,26 +30237,16 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-nara",
-        "grammar-ba",
         "grammar-to-condition"
       ],
       "entityRefs": [
         {
-          "kind": "grammar",
-          "id": "grammar-nara"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-ba"
+          "kind": "lexeme",
+          "id": "lex-kono"
         },
         {
           "kind": "grammar",
           "id": "grammar-to-condition"
-        },
-        {
-          "kind": "lexeme",
-          "id": "lex-kono"
         }
       ],
       "tokens": [
@@ -30520,23 +30270,10 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-nara",
         "grammar-ba",
-        "grammar-to-condition"
+        "grammar-te-kudasai"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-nara"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-ba"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-to-condition"
-        },
         {
           "kind": "lexeme",
           "id": "lex-sensei"
@@ -30552,6 +30289,14 @@
         {
           "kind": "lexeme",
           "id": "lex-soudan"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ba"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-kudasai"
         }
       ],
       "tokens": [
@@ -30576,22 +30321,9 @@
       "register": "neutral-polite",
       "grammarIds": [
         "grammar-nara",
-        "grammar-ba",
-        "grammar-to-condition"
+        "grammar-temo-ii"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-nara"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-ba"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-to-condition"
-        },
         {
           "kind": "lexeme",
           "id": "lex-kono"
@@ -30607,6 +30339,14 @@
         {
           "kind": "lexeme",
           "id": "lex-anzen"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-nara"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-temo-ii"
         }
       ],
       "tokens": [
@@ -30630,22 +30370,17 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-nara",
-        "grammar-ba",
-        "grammar-to-condition"
+        "grammar-to-condition",
+        "grammar-aru-iru"
       ],
       "entityRefs": [
         {
           "kind": "grammar",
-          "id": "grammar-nara"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-ba"
-        },
-        {
-          "kind": "grammar",
           "id": "grammar-to-condition"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-aru-iru"
         }
       ],
       "tokens": [
@@ -30669,23 +30404,10 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-te-shimau",
-        "grammar-te-oku",
-        "grammar-te-miru"
+        "grammar-mae-ni-ato-de",
+        "grammar-te-oku"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-te-shimau"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-te-oku"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-te-miru"
-        },
         {
           "kind": "lexeme",
           "id": "lex-hotel"
@@ -30697,6 +30419,14 @@
         {
           "kind": "lexeme",
           "id": "lex-yoyaku"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-mae-ni-ato-de"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-oku"
         }
       ],
       "tokens": [
@@ -30720,23 +30450,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-te-shimau",
-        "grammar-te-oku",
-        "grammar-te-miru"
+        "grammar-te-shimau"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-te-shimau"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-te-oku"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-te-miru"
-        },
         {
           "kind": "lexeme",
           "id": "lex-ima"
@@ -30744,6 +30460,10 @@
         {
           "kind": "lexeme",
           "id": "lex-saifu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-shimau"
         }
       ],
       "tokens": [
@@ -30767,23 +30487,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-te-shimau",
-        "grammar-te-oku",
         "grammar-te-miru"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-te-shimau"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-te-oku"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-te-miru"
-        },
         {
           "kind": "lexeme",
           "id": "lex-atarashii"
@@ -30795,6 +30501,10 @@
         {
           "kind": "lexeme",
           "id": "lex-kono"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-miru"
         }
       ],
       "tokens": [
@@ -30818,26 +30528,21 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-te-shimau",
-        "grammar-te-oku",
-        "grammar-te-miru"
+        "grammar-mae-ni-ato-de",
+        "grammar-te-oku"
       ],
       "entityRefs": [
         {
+          "kind": "lexeme",
+          "id": "lex-kaigi"
+        },
+        {
           "kind": "grammar",
-          "id": "grammar-te-shimau"
+          "id": "grammar-mae-ni-ato-de"
         },
         {
           "kind": "grammar",
           "id": "grammar-te-oku"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-te-miru"
-        },
-        {
-          "kind": "lexeme",
-          "id": "lex-kaigi"
         }
       ],
       "tokens": [
@@ -30861,23 +30566,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-te-shimau",
-        "grammar-te-oku",
-        "grammar-te-miru"
+        "grammar-te-shimau"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-te-shimau"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-te-oku"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-te-miru"
-        },
         {
           "kind": "lexeme",
           "id": "lex-meeru"
@@ -30889,6 +30580,10 @@
         {
           "kind": "lexeme",
           "id": "lex-taisetsu"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-shimau"
         }
       ],
       "tokens": [
@@ -30912,22 +30607,17 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-te-shimau",
-        "grammar-te-oku",
-        "grammar-te-miru"
+        "grammar-te-miru",
+        "grammar-te-kudasai"
       ],
       "entityRefs": [
         {
           "kind": "grammar",
-          "id": "grammar-te-shimau"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-te-oku"
-        },
-        {
-          "kind": "grammar",
           "id": "grammar-te-miru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-kudasai"
         }
       ],
       "tokens": [
@@ -30951,23 +30641,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-to-omou",
-        "grammar-kara-reason",
-        "grammar-kedo-contrast"
+        "grammar-to-omou"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-to-omou"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-kara-reason"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-kedo-contrast"
-        },
         {
           "kind": "lexeme",
           "id": "lex-ima"
@@ -30991,6 +30667,10 @@
         {
           "kind": "lexeme",
           "id": "lex-chiiki"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-to-omou"
         }
       ],
       "tokens": [
@@ -31014,23 +30694,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-to-omou",
-        "grammar-kara-reason",
-        "grammar-kedo-contrast"
+        "grammar-aru-iru"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-to-omou"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-kara-reason"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-kedo-contrast"
-        },
         {
           "kind": "lexeme",
           "id": "lex-tatoeba"
@@ -31042,6 +30708,10 @@
         {
           "kind": "lexeme",
           "id": "lex-houhou"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-aru-iru"
         }
       ],
       "tokens": [
@@ -31065,23 +30735,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-to-omou",
-        "grammar-kara-reason",
         "grammar-kedo-contrast"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-to-omou"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-kara-reason"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-kedo-contrast"
-        },
         {
           "kind": "lexeme",
           "id": "lex-kono"
@@ -31089,6 +30745,10 @@
         {
           "kind": "lexeme",
           "id": "lex-houhou"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kedo-contrast"
         }
       ],
       "tokens": [
@@ -31111,24 +30771,8 @@
       "translation": "Therefore, it is important to first hear the opinions of users.",
       "level": "B1",
       "register": "neutral-polite",
-      "grammarIds": [
-        "grammar-to-omou",
-        "grammar-kara-reason",
-        "grammar-kedo-contrast"
-      ],
+      "grammarIds": [],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-to-omou"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-kara-reason"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-kedo-contrast"
-        },
         {
           "kind": "lexeme",
           "id": "lex-kiku"
@@ -31171,23 +30815,9 @@
       "level": "B1",
       "register": "neutral-polite",
       "grammarIds": [
-        "grammar-to-omou",
-        "grammar-kara-reason",
-        "grammar-kedo-contrast"
+        "grammar-nakereba-naranai"
       ],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-to-omou"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-kara-reason"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-kedo-contrast"
-        },
         {
           "kind": "lexeme",
           "id": "lex-sen"
@@ -31195,6 +30825,10 @@
         {
           "kind": "lexeme",
           "id": "lex-anzen"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-nakereba-naranai"
         }
       ],
       "tokens": [
@@ -31217,24 +30851,8 @@
       "translation": "For the reasons above, I support this plan.",
       "level": "B1",
       "register": "neutral-polite",
-      "grammarIds": [
-        "grammar-to-omou",
-        "grammar-kara-reason",
-        "grammar-kedo-contrast"
-      ],
+      "grammarIds": [],
       "entityRefs": [
-        {
-          "kind": "grammar",
-          "id": "grammar-to-omou"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-kara-reason"
-        },
-        {
-          "kind": "grammar",
-          "id": "grammar-kedo-contrast"
-        },
         {
           "kind": "lexeme",
           "id": "lex-kono"
@@ -38826,7 +38444,10 @@
       ],
       "grammarIds": [
         "grammar-you-ni-naru",
-        "grammar-you-ni-suru"
+        "grammar-tame-ni-purpose",
+        "grammar-you-ni-suru",
+        "grammar-you-ni-purpose",
+        "grammar-tara"
       ],
       "tags": [
         "b1",
@@ -38968,11 +38589,13 @@
         "lex-mou"
       ],
       "grammarIds": [
+        "grammar-node-reason",
         "grammar-sou-appearance",
         "grammar-sou-hearsay",
         "grammar-rashii",
         "grammar-mitai",
         "grammar-kamoshirenai",
+        "grammar-te-iru",
         "grammar-hazu"
       ],
       "tags": [
@@ -39064,9 +38687,13 @@
       ],
       "grammarIds": [
         "grammar-tame-ni-purpose",
+        "grammar-te-iru",
         "grammar-you-ni-purpose",
+        "grammar-te-kudasai",
         "grammar-noni",
-        "grammar-temo-concession"
+        "grammar-temo-concession",
+        "grammar-masen-deshita",
+        "grammar-tai"
       ],
       "tags": [
         "b1",
@@ -39153,8 +38780,12 @@
         "grammar-nara",
         "grammar-ba",
         "grammar-to-condition",
-        "grammar-te-shimau",
+        "grammar-te-kudasai",
+        "grammar-temo-ii",
+        "grammar-aru-iru",
+        "grammar-mae-ni-ato-de",
         "grammar-te-oku",
+        "grammar-te-shimau",
         "grammar-te-miru"
       ],
       "tags": [
@@ -39230,8 +38861,9 @@
       ],
       "grammarIds": [
         "grammar-to-omou",
-        "grammar-kara-reason",
-        "grammar-kedo-contrast"
+        "grammar-aru-iru",
+        "grammar-kedo-contrast",
+        "grammar-nakereba-naranai"
       ],
       "tags": [
         "b1",
