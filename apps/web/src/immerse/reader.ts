@@ -118,6 +118,13 @@ export async function recordListeningExposure(textId:string,rate:number,mode:"re
   }));
 }
 
+export async function recordListeningSegmentReplay(textId:string,sentenceId:string,rate:number,repeats:number,mode:"recorded"|"speech_synthesis"):Promise<void>{
+  await saveStudyEvent(eventBase({
+    activity:"listening",primaryTarget:{kind:"text",id:textId},secondaryTargets:[{kind:"sentence",id:sentenceId}],contextId:textId,
+    metadata:{surface:"connected-listening-segment",textId,sentenceId,replay:true,mode,rate,repeats}
+  }));
+}
+
 export async function recordTextCheck(textId:string,mode:"reading"|"listening",questionId:string,result:StudyResult,response:string,responseTimeMs:number):Promise<void>{
   await saveStudyEvent(eventBase({
     activity:mode,primaryTarget:{kind:"text",id:textId},skillDimension:mode==="reading"?"comprehension":"listening",
