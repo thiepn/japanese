@@ -22,6 +22,14 @@ describe("P4 grammar, sentences and A1→B1 course",()=>{
       }
     }
   });
+  it("links B1 sentences only to grammar actually used in that sentence",()=>{
+    const appearance=coreContent.sentences.find((item)=>item.id==="sentence-b1-174");
+    const hearsay=coreContent.sentences.find((item)=>item.id==="sentence-b1-175");
+    expect(appearance?.grammarIds).toEqual(["grammar-node-reason","grammar-sou-appearance"]);
+    expect(appearance?.grammarIds).not.toContain("grammar-sou-hearsay");
+    expect(hearsay?.grammarIds).toEqual(["grammar-sou-hearsay"]);
+  });
+
   it("creates independent grammar comprehension/form and sentence comprehension/production evidence",()=>{
     expect(grammarMeaningPrompts).toHaveLength(coreContent.grammar.length);
     expect(grammarApplicationPrompts).toHaveLength(coreContent.grammar.length);
