@@ -6,7 +6,7 @@ import {
   type PrivateDocumentRecord,type PrivateDocumentSourceKind,type PrivateNativeAudio,type PrivateSentenceRecord,type PrivateVocabularyRecord
 } from "@thiepn/local-db";
 import { normalizeJapaneseSearch } from "@thiepn/search";
-import { senseResolutionForIds,type MorphologyCandidate,type MorphologyResolution,type SenseResolution } from "@thiepn/japanese-nlp";
+import { selectProviderCandidate,senseResolutionForIds,type JapaneseMorphologyProvider,type MorphologyCandidate,type MorphologyResolution,type SenseResolution } from "@thiepn/japanese-nlp";
 import { coreContent,senseForLexeme } from "../coreContent";
 import { conjugateLexeme,type ConjugationForm } from "../study/conjugation";
 
@@ -24,6 +24,7 @@ export interface AuthenticToken {
 export interface AuthenticAnalysis {
   tokens:AuthenticToken[]; knownTokens:number; lexicalTokens:number; knownRatio:number; unknownDensity:number;
   unknownTypes:string[]; difficulty:"comfortable"|"stretch"|"hard";
+  analysisProvider?:string; dictionaryGrade?:boolean;
 }
 export interface PrivateDocumentView {
   document:PrivateDocumentRecord; analysis:AuthenticAnalysis; readingMastery:number; listeningMastery:number;
@@ -79,6 +80,57 @@ export function analyzeAuthenticText(text:string):AuthenticAnalysis{
   return {
     tokens,knownTokens:known,lexicalTokens:lexical.length,knownRatio:ratio,unknownDensity:1-ratio,unknownTypes,
     difficulty:ratio>=0.9?"comfortable":ratio>=0.75?"stretch":"hard"
+  };
+}
+
+
+export async function analyzeAuthenticTextWithProvider(text:string,provider:JapaneseMorphologyProvider):Promise<AuthenticAnalysis>{
+  if(!provider.dictionaryGrade)throw new Error("MORPHOLOGY_PROVIDER_NOT_DICTIONARY_GRADE");
+  const result=await provider.analyze(text);
+  if(!result.dictionaryGrade)throw new Error("MORPHOLOGY_PROVIDER_NOT_DICTIONARY_GRADE");
+  const byId=new Map(coreContent.lexemes.map((lexeme)=>[lexeme.id,lexeme] as const));
+  const byForm=new Map<string,Lexeme>();
+  for(const lexeme of coreContent.lexemes){
+    byForm.set(normalizeJapaneseSearch(lexeme.canonicalForm),lexeme);
+    for(const form of lexeme.forms)byForm.set(normalizeJapaneseSearch(form.text),lexeme);
+  }
+  const tokens:AuthenticToken[]=[];
+  let cursor=0;
+  for(const providerToken of result.tokens){
+    if(providerToken.start>cursor)tokens.push(...segmentUnknownChunk(text.slice(cursor,providerToken.start)));
+    const candidate=selectProviderCandidate(providerToken.candidates);
+    const surface=providerToken.surface||text.slice(providerToken.start,providerToken.end);
+    if(PUNCT.test(surface))tokens.push({surface,kind:"punctuation"});
+    else if(FUNCTION_WORDS.has(surface))tokens.push({surface,kind:"function"});
+    else{
+      const lexeme=(candidate?.lexemeId?byId.get(candidate.lexemeId):undefined)
+        ??(candidate?byForm.get(normalizeJapaneseSearch(candidate.lemma)):undefined)
+        ??byForm.get(normalizeJapaneseSearch(surface));
+      if(lexeme){
+        const sense=senseForLexeme(lexeme);
+        const senseIds=candidate?.senseIds.length?candidate.senseIds:lexeme.senseIds;
+        tokens.push({
+          surface,kind:"known",lexemeId:lexeme.id,baseForm:lexeme.canonicalForm,reading:candidate?.reading??lexeme.readings[0]?.text,
+          meaning:sense.glosses.join(" / "),resolution:"provider",senseIds,
+          senseResolution:candidate?.senseResolution??senseResolutionForIds(senseIds),resolutionConfidence:candidate?.confidence??.95
+        });
+      }else{
+        tokens.push({
+          surface,kind:"unknown",...(candidate?.lemma?{baseForm:candidate.lemma}:{}),...(candidate?.reading?{reading:candidate.reading}:{}),
+          ...(candidate?{resolution:"provider" as const,senseIds:candidate.senseIds,senseResolution:candidate.senseResolution,resolutionConfidence:candidate.confidence}:{})
+        });
+      }
+    }
+    cursor=Math.max(cursor,providerToken.end);
+  }
+  if(cursor<text.length)tokens.push(...segmentUnknownChunk(text.slice(cursor)));
+  const lexical=tokens.filter((token)=>token.kind==="known"||token.kind==="unknown");
+  const known=lexical.filter((token)=>token.kind==="known").length;
+  const ratio=lexical.length?known/lexical.length:1;
+  const unknownTypes=[...new Set(lexical.filter((token)=>token.kind==="unknown").map((token)=>normalizeJapaneseSearch(token.baseForm??token.surface)).filter(Boolean))];
+  return {
+    tokens,knownTokens:known,lexicalTokens:lexical.length,knownRatio:ratio,unknownDensity:1-ratio,unknownTypes,
+    difficulty:ratio>=0.9?"comfortable":ratio>=0.75?"stretch":"hard",analysisProvider:result.provider,dictionaryGrade:true
   };
 }
 
