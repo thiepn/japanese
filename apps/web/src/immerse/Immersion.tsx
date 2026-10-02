@@ -1,4 +1,5 @@
 import { useEffect,useMemo,useRef,useState } from "react";
+import { getDefaultAudioProvider } from "@thiepn/audio";
 import { AuthenticLibrary } from "./AuthenticLibrary";
 import type { ReadingQuestion } from "@thiepn/content-schema";
 import {
@@ -23,9 +24,10 @@ export function Immersion(){
   const [feedback,setFeedback]=useState<{correct:boolean;answer:string;explanation:string}|null>(null);
   const [checkStartedAt,setCheckStartedAt]=useState(0);
   const view=useMemo(()=>activeId?buildReaderText(activeId):null,[activeId]);
+  const audioProvider=useRef(getDefaultAudioProvider());
 
   async function refresh(){try{setProgress(await getImmersionProgress());}catch{setProgress(null);}}
-  useEffect(()=>{void refresh();return()=>{if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();};},[]);
+  useEffect(()=>{void refresh();return()=>{audioProvider.current.stop();if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();};},[]);
 
   async function openText(id:string){
     setActiveId(id);setTranslations(new Set());setSelected(null);setListeningPlayed(false);setCheckMode(null);setQuestionIndex(0);setFeedback(null);
@@ -47,14 +49,20 @@ export function Immersion(){
   }
 
   async function speak(rate:number){
-    if(!view||typeof speechSynthesis==="undefined")return;
+    if(!view)return;
+    if(view.audio){
+      setSpeaking(true);
+      try{await audioProvider.current.play(view.audio,{rate});setListeningPlayed(true);await recordListeningExposure(view.text.id,rate,"recorded");void refresh();}finally{setSpeaking(false);}
+      return;
+    }
+    if(typeof speechSynthesis==="undefined")return;
     speechSynthesis.cancel();
     const utterance=new SpeechSynthesisUtterance(view.joinedJapanese);
     utterance.lang="ja-JP";utterance.rate=rate;
     const japanese=speechSynthesis.getVoices().find((voice)=>voice.lang.toLowerCase().startsWith("ja"));
     if(japanese)utterance.voice=japanese;
     setSpeaking(true);
-    utterance.onend=()=>{setSpeaking(false);setListeningPlayed(true);void recordListeningExposure(view.text.id,rate).then(refresh);};
+    utterance.onend=()=>{setSpeaking(false);setListeningPlayed(true);void recordListeningExposure(view.text.id,rate,"speech_synthesis").then(refresh);};
     utterance.onerror=()=>setSpeaking(false);
     speechSynthesis.speak(utterance);
   }
@@ -115,9 +123,10 @@ function ReaderView({view,furigana,setFurigana,translations,toggleTranslation,se
     </section>:<>
       <div className="reader-toolbar">
         <label><input type="checkbox" checked={furigana} onChange={(event)=>setFurigana(event.target.checked)}/> Reading hints</label>
-        <div className="reader-audio"><button type="button" disabled={speaking||typeof speechSynthesis==="undefined"} onClick={()=>void speak(.95)}>{speaking?"Playing…":"Listen to full text"}</button><button type="button" disabled={speaking||typeof speechSynthesis==="undefined"} onClick={()=>void speak(.78)}>Slower</button></div>
+        <div className="reader-audio"><button type="button" disabled={speaking||(!view.audio&&typeof speechSynthesis==="undefined")} onClick={()=>void speak(.95)}>{speaking?"Playing…":view.audio?"Play native recording":"Listen to full text"}</button><button type="button" disabled={speaking||(!view.audio&&typeof speechSynthesis==="undefined")} onClick={()=>void speak(.78)}>Slower</button></div>
       </div>
       <p className="reader-intro">{view.text.description}</p>
+      {view.audio?<p className="source-note">Recording: {view.audio.credit}{view.audio.licenseName?" · "+view.audio.licenseName:""}</p>:null}
       <div className="reader-sentences">
         {view.sentences.map(({sentence,tokens,grammar})=><article className="reader-sentence" key={sentence.id}>
           <div className="reader-japanese" lang="ja">{tokens.map((token,index)=>token.lexemeId?<button className="reader-token" type="button" key={sentence.id+":"+index} onClick={()=>void chooseToken(token,sentence.id)}>
