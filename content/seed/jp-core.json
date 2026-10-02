@@ -19053,7 +19053,7 @@
         "soft predictions"
       ],
       "prerequisiteIds": [
-        "grammar-tabun"
+        "grammar-to-omou"
       ],
       "contrastIds": [
         "grammar-hazu"
