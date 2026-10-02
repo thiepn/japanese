@@ -39742,6 +39742,124 @@
       "sourceIds": [
         "thiepn-original"
       ]
+    },
+    {
+      "id": "prod-b1-speak-problem",
+      "title": "Handle a problem aloud",
+      "level": "B1",
+      "mode": "speaking",
+      "prompt": "Respond for 30–45 seconds to a friend who made a mistake. Explain what they can try next and give conditional advice.",
+      "situation": "A friend asks what to do after an everyday mistake.",
+      "targetGrammarIds": [
+        "grammar-te-shimau",
+        "grammar-te-miru",
+        "grammar-nara"
+      ],
+      "targetLexemeIds": [
+        "lex-shippai",
+        "lex-soudan"
+      ],
+      "modelResponse": "失敗してしまっても、大丈夫です。まだ時間があるなら、別の方法を試してみるといいです。分からなければ、先生や友達に相談してください。",
+      "requiredTerms": [
+        "てしま",
+        "なら",
+        "てみ"
+      ],
+      "minimumCharacters": 50,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task completion",
+          "description": "Addresses the requested situation and purpose.",
+          "weight": 0.35
+        },
+        {
+          "id": "structure",
+          "label": "Structure",
+          "description": "Uses the requested B1 connectors or grammar targets.",
+          "weight": 0.3
+        },
+        {
+          "id": "range",
+          "label": "Range",
+          "description": "Uses relevant vocabulary to make the response specific.",
+          "weight": 0.2
+        },
+        {
+          "id": "clarity",
+          "label": "Clarity",
+          "description": "Produces a connected response that can be followed.",
+          "weight": 0.15
+        }
+      ],
+      "tags": [
+        "b1",
+        "productive",
+        "problem-solving"
+      ],
+      "milestoneArea": "spoken_interaction",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "prod-b1-speak-change",
+      "title": "Describe a change aloud",
+      "level": "B1",
+      "mode": "speaking",
+      "prompt": "Speak for 30–45 seconds about a habit or ability that changed and explain what helped.",
+      "situation": "You are reflecting on progress over several months.",
+      "targetGrammarIds": [
+        "grammar-you-ni-naru",
+        "grammar-you-ni-suru",
+        "grammar-noni"
+      ],
+      "targetLexemeIds": [
+        "lex-henka",
+        "lex-seichou"
+      ],
+      "modelResponse": "前は日本語の記事を読むのが難しかったのに、最近は毎日読むようになりました。分からない言葉を調べるようにしたので、少しずつ速く読めるようになりました。",
+      "requiredTerms": [
+        "ようにな",
+        "ようにし",
+        "のに"
+      ],
+      "minimumCharacters": 55,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task completion",
+          "description": "Addresses the requested situation and purpose.",
+          "weight": 0.35
+        },
+        {
+          "id": "structure",
+          "label": "Structure",
+          "description": "Uses the requested B1 connectors or grammar targets.",
+          "weight": 0.3
+        },
+        {
+          "id": "range",
+          "label": "Range",
+          "description": "Uses relevant vocabulary to make the response specific.",
+          "weight": 0.2
+        },
+        {
+          "id": "clarity",
+          "label": "Clarity",
+          "description": "Produces a connected response that can be followed.",
+          "weight": 0.15
+        }
+      ],
+      "tags": [
+        "b1",
+        "productive",
+        "change"
+      ],
+      "milestoneArea": "spoken_production",
+      "sourceIds": [
+        "thiepn-original"
+      ]
     }
   ]
 }
