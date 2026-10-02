@@ -97,8 +97,8 @@ export function Immersion(){
     questionIndex={questionIndex} feedback={feedback} answerQuestion={answerQuestion} nextQuestion={nextQuestion}/>;
 
   return <section className="dashboard immerse-page">
-    <p className="eyebrow">IMMERSE</p><h1>A1 → B1 immersion</h1>
-    <p className="lead">Move from graded A1/A2 support into B1 connected Japanese and learner-owned material. Recommendations use current lexical readiness and reading/listening evidence; they guide rather than lock content.</p>
+    <p className="eyebrow">IMMERSE</p><h1>A1 → B2 immersion</h1>
+    <p className="lead">Move from graded A1/A2 support into B1/B2 connected Japanese and learner-owned material. Recommendations use current lexical readiness and reading/listening evidence; they guide rather than lock content.</p>
     {progress?<div className="stat-row four"><MiniStat value={progress.texts.length} label="Graded texts"/><MiniStat value={progress.minedWords} label="Mined words"/><MiniStat value={progress.readingChecks} label="Reading checks"/><MiniStat value={progress.listeningChecks} label="Listening checks"/></div>:null}
     {recommendation?<section className="adaptive-immersion">
       <div className="section-heading"><div><span className="course-kicker">ADAPTIVE NEXT STEP</span><h2>Focus on {recommendation.focus}</h2></div></div>
@@ -130,6 +130,7 @@ function ReaderView({view,furigana,setFurigana,translations,toggleTranslation,se
   listeningPlayed:boolean;speaking:boolean;speak:(rate:number)=>Promise<void>;checkMode:CheckMode|null;startCheck:(mode:CheckMode)=>void;
   questionIndex:number;feedback:{correct:boolean;answer:string;explanation:string}|null;answerQuestion:(question:ReadingQuestion,response:string)=>Promise<void>;nextQuestion:()=>void;
 }){
+  const [listeningFirst,setListeningFirst]=useState(false);
   const question=checkMode?view.text.comprehensionQuestions[questionIndex]:null;
   return <section className="reader-page">
     <header className="reader-head"><button className="quiet-button reader-back" type="button" onClick={closeText}>← Immerse</button><div><span>{view.text.level}</span><h1>{view.text.title}</h1></div></header>
@@ -139,11 +140,12 @@ function ReaderView({view,furigana,setFurigana,translations,toggleTranslation,se
     </section>:<>
       <div className="reader-toolbar">
         <label><input type="checkbox" checked={furigana} onChange={(event)=>setFurigana(event.target.checked)}/> Reading hints</label>
-        <div className="reader-audio"><button type="button" disabled={speaking||(!view.audio&&typeof speechSynthesis==="undefined")} onClick={()=>void speak(.95)}>{speaking?"Playing…":view.audio?"Play native recording":"Listen to full text"}</button><button type="button" disabled={speaking||(!view.audio&&typeof speechSynthesis==="undefined")} onClick={()=>void speak(.78)}>Slower</button></div>
+        <div className="reader-audio"><button className={listeningFirst?"active":""} type="button" onClick={()=>setListeningFirst((value)=>!value)}>{listeningFirst?"Listening-first on":"Listening-first"}</button><button type="button" disabled={speaking||(!view.audio&&typeof speechSynthesis==="undefined")} onClick={()=>void speak(.95)}>{speaking?"Playing…":view.audio?"Play native recording":"Listen to full text"}</button><button type="button" disabled={speaking||(!view.audio&&typeof speechSynthesis==="undefined")} onClick={()=>void speak(.78)}>Slower</button></div>
       </div>
       <p className="reader-intro">{view.text.description}</p>
+      {listeningFirst&&!listeningPlayed?<div className="listening-first-gate"><span>LISTENING FIRST</span><h2>Understand the passage before reading it</h2><p>Play the full passage at normal or slower speed. The text stays hidden until one complete playback finishes, so listening creates its own retrieval pressure.</p></div>:null}
       {view.audio?<p className="source-note">Recording: {view.audio.credit}{view.audio.licenseName?" · "+view.audio.licenseName:""}</p>:null}
-      <div className="reader-sentences">
+      <div className={"reader-sentences "+(listeningFirst&&!listeningPlayed?"listening-first-hidden":"")}>
         {view.sentences.map(({sentence,tokens,grammar})=><article className="reader-sentence" key={sentence.id}>
           <div className="reader-japanese" lang="ja">{tokens.map((token,index)=>token.lexemeId?<button className="reader-token" type="button" key={sentence.id+":"+index} onClick={()=>void chooseToken(token,sentence.id)}>
             {furigana&&token.reading&&token.reading!==token.surface?<ruby>{token.surface}<rt>{token.reading}</rt></ruby>:token.surface}
@@ -155,7 +157,7 @@ function ReaderView({view,furigana,setFurigana,translations,toggleTranslation,se
       </div>
       {selected?<aside className="reader-lookup"><button className="reader-lookup-close" type="button" aria-label="Close word lookup" onClick={closeLookup}>×</button><span lang="ja">{selected.token.surface}</span>{selected.token.reading?<small lang="ja">{selected.token.reading}</small>:null}<strong>{selected.token.meaning}</strong><button className="unit-action" type="button" onClick={()=>void mineSelected()}>Mine for review</button></aside>:null}
       <div className="reader-finish"><button className="primary" type="button" onClick={()=>startCheck("reading")}>Reading check</button><button className="unit-action" disabled={!listeningPlayed} type="button" onClick={()=>startCheck("listening")}>{listeningPlayed?"Listening check":"Listen first"}</button></div>
-      <p className="course-note">Tap a linked word for a reading and meaning. Grammar support stays attached to the canonical sentence. The reader resolves canonical and generated forms. Imported-text analysis adds B1 deinflection and browser segmentation, but still does not claim perfect Japanese NLP.</p>
+      <p className="course-note">Tap a linked word for a reading and meaning. Listening-first can hide the transcript until a complete playback. Grammar support stays attached to the canonical sentence. Imported-text analysis adds bounded B1/B2 deinflection and explicit sense ambiguity; a dictionary-grade provider remains an integration boundary.</p>
     </>}
   </section>;
 }

@@ -103,3 +103,34 @@ Private sentence prompts reuse the normal comprehension/production StudyPrompt, 
 P5 extends authentic-input resolution with common B1 potential/passive, causative, volitional and conditional surfaces plus selected compound patterns such as 〜てしまう, 〜ておく and 〜てみる.
 
 Resolution metadata distinguishes canonical, generated and deinflected matches. This improves canonical identity recovery for authentic input, but remains a bounded compatibility layer rather than a claim of complete morphology, dictionary-grade lemmatization, compound segmentation or sense disambiguation.
+
+## P6 AI-coach evidence rule
+
+AI conversation and writing revision are advisory services layered on top of the learner model, not new sources of authoritative learner truth.
+
+The coach client sends scenario, target level, goals, recent dialogue history and the learner's response to a server-side provider. The response must contain separate grammar, vocabulary, coherence and task-achievement feedback plus an evidence contract. Runtime parsing rejects contracts that claim model authority over mastery or acoustic scoring.
+
+AI-coach StudyEvents are persisted with `result: skipped` and `modelFeedbackAppliedToMastery:false`. This preserves the history needed for future learner-facing review without allowing opaque model judgments to change FSRS scheduling, milestone scores or durable mastery.
+
+Provider secrets remain server-side. The browser uses `VITE_JAPANESE_COACH_ENDPOINT`; a missing provider causes a visible unavailable state rather than a fabricated response.
+
+## P6 morphology-provider rule
+
+The local authentic-input resolver remains deterministic and bounded. P6 expands B1/B2 deinflection and adds confidence plus canonical sense identities, but ambiguous senses remain explicitly ambiguous.
+
+`JapaneseMorphologyProvider` is the replacement boundary for a real dictionary-grade analyzer. Provider-backed candidates may outrank local deinflection guesses only when an actual provider returns them. Regardless of provider, outputs must map back to canonical or private lexeme/sense identities; morphology never becomes a parallel mastery database.
+
+## P6 source-pack admission rule
+
+Redistributable source packs are imported only after manifest-level provenance and license validation. Pack text and recording rights are independent.
+
+A recording can be labeled native only when the item explicitly declares native-speaker status and supplies an admitted reusable audio license plus required credit/attribution. Missing recordings are acceptable; device speech synthesis can be offered only as a labeled fallback.
+
+Imported source-pack items remain account-scoped private documents. Redistributability is permission to import/reuse, not automatic promotion into the canonical seed. Canonical publication remains a separate editorial and validation action.
+
+## P6 connected-listening rule
+
+Listening-first mode may hide a transcript until one full playback is completed. This creates listening retrieval pressure without turning exposure into a mastery claim. Reading and listening checks continue to emit separate evidence.
+
+Where no source-provenanced recording exists, device Japanese speech synthesis must remain visibly synthetic. It may support practice and milestone listening but cannot be counted as native-speaker source coverage.
+

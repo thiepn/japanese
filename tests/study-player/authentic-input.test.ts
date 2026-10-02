@@ -1,5 +1,5 @@
 import { describe,expect,it } from "vitest";
-import { analyzeAuthenticText,extractSubtitleText,isAllowedReusableAudioLicense,lemmatizeJapaneseSurface,normalizeImportedText,splitJapaneseSentences } from "../../apps/web/src/immerse/authentic";
+import { analyzeAuthenticText,extractSubtitleText,isAllowedReusableAudioLicense,lemmatizeJapaneseSurface,normalizeImportedText,resolveJapaneseSurface,splitJapaneseSentences } from "../../apps/web/src/immerse/authentic";
 
 describe("P4 authentic-input pipeline",()=>{
   it("segments arbitrary Japanese and links known canonical or inflected forms",()=>{
@@ -16,6 +16,15 @@ describe("P4 authentic-input pipeline",()=>{
     expect(lemmatizeJapaneseSurface("続けられる")).toMatchObject({lexemeId:"lex-tsuzukeru",baseForm:"続ける",resolution:"deinflected"});
     expect(lemmatizeJapaneseSurface("考えれば")).toMatchObject({lexemeId:"lex-kangaeru",baseForm:"考える"});
     expect(splitJapaneseSentences("今日は忙しいです。でも、行きます！")).toEqual(["今日は忙しいです。","でも、行きます！"]);
+  });
+
+  it("resolves additional B2 forms with explicit confidence and sense identity",()=>{
+    expect(lemmatizeJapaneseSurface("認めさせられる")).toMatchObject({lexemeId:"b2-acknowledge",baseForm:"認める",resolution:"deinflected"});
+    expect(lemmatizeJapaneseSurface("取り組むことになる")).toMatchObject({lexemeId:"b2-address",baseForm:"取り組む"});
+    const resolution=resolveJapaneseSurface("示す");
+    expect(resolution).toMatchObject({lexemeId:"b2-indicate",senseResolution:"single"});
+    expect(resolution?.senseIds.length).toBeGreaterThan(0);
+    expect(resolution?.confidence).toBeGreaterThan(.9);
   });
 
   it("strips SRT/VTT timing while preserving Japanese dialogue",()=>{

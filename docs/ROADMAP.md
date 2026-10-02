@@ -114,18 +114,40 @@ P5 does not claim phonetic/acoustic pronunciation scoring, unrestricted semantic
 
 ## P6 — B1→B2 Independent Communication, AI Conversation & Advanced Feedback
 
-**Next.** Expand from controlled B1 production into more independent communication:
+**Implementation complete.**
 
-- broader B2 lexicon, grammar, discourse organization, register and multi-paragraph/multi-speaker material;
-- AI conversation sessions with explicit evidence contracts rather than opaque replacement of learner truth;
-- richer open-ended writing revision with separated grammar, vocabulary, coherence and task-achievement feedback;
-- pronunciation/acoustic analysis only if a real audio-analysis model or provider is integrated and its limits are explicit;
-- source-provenanced native sentence/passage packs and stronger connected-listening workflows;
-- source-pack and authentic-corpus workflows for learner-owned and redistributable material;
-- stronger dictionary-grade morphology, lemmatization and sense disambiguation mapped back to canonical/private identities;
-- adaptive remediation across course, production and immersion evidence;
-- a B2 milestone reporting receptive and productive activity areas separately.
+P6 moves the unified system from controlled B1 production toward more independent B2-targeted communication:
+
+- 416 canonical lexemes, 102 grammar concepts, 267 linked sentences, 50 Can-do descriptors and 50 course units;
+- 30 graded texts spanning A1 through B2, including coherent multi-speaker dialogue;
+- 20 productive tasks, with 10 B2 scenarios for conversation and connected writing;
+- a separate 15-item B2 milestone reporting reading, listening, spoken interaction, spoken production and writing independently;
+- multi-turn AI conversation and writing revision through a provider-agnostic server contract;
+- explicit AI evidence contracts that prevent model judgments from silently becoming durable learner mastery;
+- advanced feedback separated into grammar, vocabulary, coherence and task achievement;
+- transcript-gated listening-first connected playback;
+- cross-surface adaptive remediation across course, production and immersion evidence;
+- B2 deinflection, resolution confidence and explicit canonical sense ambiguity;
+- a dictionary-grade morphology provider contract that can replace bounded local guesses while preserving canonical/private identity;
+- redistributable JSON source-pack import with independent text/audio license checks and explicit native-speaker admission;
+- continued refusal to relabel device TTS, speech-recognition transcripts or learner self-ratings as native/acoustic evidence.
+
+P6 deliberately does **not** claim that the current 416-word core is comprehensive CEFR B2 preparation. Live AI coaching requires a configured server-side model provider, dictionary-grade morphology becomes active only when a real provider is connected, and acoustic pronunciation scoring remains absent until a documented acoustic model exists. See `docs/P6_ACCEPTANCE.md`.
+
+## P7 — B2 Breadth, Native Media & Advanced Lexical/Collocational Fluency
+
+**Next.** Turn the B2 bridge into materially broader B2 language coverage without introducing premature C1 labels:
+
+- substantially expand high-frequency B2 vocabulary, collocations, lexical chunks and register-aware phrase families;
+- widen genre coverage across narrative, explanatory, argumentative, workplace, academic-lite and everyday social communication;
+- build source-provenanced native sentence/dialogue/passage packs with reliable attribution and replay controls;
+- improve connected listening with segmentation, replay loops, transcript reveal timing and comprehension-first workflows;
+- connect a real dictionary-grade Japanese morphology/lemmatization provider and preserve ambiguity rather than guessing;
+- improve lexical sense selection and collocation feedback using context while keeping model/provider confidence visible;
+- broaden B2 speaking and writing scenarios with revision histories, reusable error patterns and targeted remediation;
+- add longer extensive-reading/listening tracks driven by readiness rather than hard gates;
+- continue expanding the B2 milestone only as content breadth becomes representative enough to support it.
 
 ## Later
 
-Later phases add advanced domain-specific Japanese, extensive-reading/listening programs, specialized source packs, higher-level writing/speaking assessment and long-term adaptive curricula.
+Later phases add advanced domain-specific Japanese, C1-oriented comprehension and production only after B2 breadth is credible, specialized source packs, higher-level writing/speaking assessment and long-term adaptive curricula.

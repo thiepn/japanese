@@ -19,10 +19,11 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   useEffect(()=>{
     const provider=audioProvider.current;
     provider.stop();
+    if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();
     setAudioState("idle");
     setAudioPlayed(false);
     setSpeechState("idle");
-    return()=>provider.stop();
+    return()=>{provider.stop();if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();};
   },[index]);
 
   if(!step)return null;
@@ -35,12 +36,17 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   }
 
   async function playAudio(mode:"normal"|"slow"|"shadow"){
-    if(!activeStep.audio||audioState==="playing")return;
+    const ttsText=!isStudyLesson(activeStep)?activeStep.speechSynthesisText:undefined;
+    if((!activeStep.audio&&!ttsText)||audioState==="playing")return;
     setAudioState("playing");
     try{
-      if(mode==="slow")await audioProvider.current.play(activeStep.audio,{rate:.82});
-      else if(mode==="shadow")await audioProvider.current.play(activeStep.audio,{rate:.92,repeats:2,gapMs:1200});
-      else await audioProvider.current.play(activeStep.audio);
+      if(activeStep.audio){
+        if(mode==="slow")await audioProvider.current.play(activeStep.audio,{rate:.82});
+        else if(mode==="shadow")await audioProvider.current.play(activeStep.audio,{rate:.92,repeats:2,gapMs:1200});
+        else await audioProvider.current.play(activeStep.audio);
+      }else if(ttsText){
+        await speakWithDevice(ttsText,mode==="slow"?.78:.94,mode==="shadow"?2:1,(!isStudyLesson(activeStep)?activeStep.speechSynthesisLanguage:undefined)??"ja-JP");
+      }
       setAudioPlayed(true);setAudioState("idle");
     }catch{setAudioState("error");}
   }
@@ -77,7 +83,8 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   }
 
   const currentPrompt=activeStep;
-  const answerLocked=Boolean(currentPrompt.audio)&&!audioPlayed;
+  const hasListeningCue=Boolean(currentPrompt.audio||currentPrompt.speechSynthesisText);
+  const answerLocked=hasListeningCue&&!audioPlayed;
   const interactionLocked=answerLocked||audioState==="playing";
   async function submit(value=response){
     if(!value.trim()||feedback||saving||interactionLocked)return;
@@ -89,9 +96,10 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
     <StudyHeader index={index} total={steps.length} completed={Boolean(feedback)} onExit={onExit}/>
     <div className="study-card">
       <p className="eyebrow">{currentPrompt.instruction.toUpperCase()}</p>
-      {currentPrompt.audio?
+      {hasListeningCue?
         <div className="audio-question">
           <p className="audio-question-label">{currentPrompt.prompt}</p>
+          {currentPrompt.speechSynthesisText&&!currentPrompt.audio?<p className="audio-source-label">Device Japanese voice · synthesized listening cue</p>:null}
           <button className="audio-play" type="button" aria-label={audioPlayed?"Replay Japanese audio":"Play Japanese audio"} disabled={audioState==="playing"} onClick={()=>void playAudio("normal")}>{audioState==="playing"?"Playing…":audioPlayed?"Replay":"Play audio"}</button>
           <div className="audio-tools" aria-label="Audio playback controls">
             <button type="button" disabled={audioState==="playing"} onClick={()=>void playAudio("slow")}>Slower</button>
@@ -107,7 +115,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
         :currentPrompt.promptType==="speech"?
           <div className="speech-response"><button className="primary" disabled={Boolean(feedback)||saving||interactionLocked||speechState==="listening"} type="button" onClick={startSpeechRecognition}>{speechState==="listening"?"Listening…":response?"Speak again":"Start speaking"}</button>{response?<div className="speech-transcript"><span>Recognized transcript</span><strong lang="ja">{response}</strong></div>:null}{speechState==="unsupported"?<p className="audio-error">Japanese speech recognition is not available in this browser. Skip this item; no speaking mastery will be recorded.</p>:null}{speechState==="error"?<p className="audio-error">Speech recognition failed. Try again or skip without recording speaking mastery.</p>:null}<div className="speech-actions">{response?<button className="unit-action" disabled={Boolean(feedback)||saving||interactionLocked} type="button" onClick={()=>void submit(response)}>Check transcript</button>:null}<button className="quiet-button" type="button" onClick={advance}>Skip for now</button></div></div>
         :<form onSubmit={(event)=>{event.preventDefault();void submit();}}><input autoFocus disabled={Boolean(feedback)||saving||interactionLocked} value={response} onChange={(event)=>setResponse(event.target.value)} placeholder={currentPrompt.placeholder}/><button className="primary" disabled={!response.trim()||Boolean(feedback)||saving||interactionLocked} type="submit">Check</button></form>}
-      {currentPrompt.audio&&!audioPlayed&&audioState!=="error"?<p className="audio-gate">Play the recording before answering.</p>:null}
+      {hasListeningCue&&!audioPlayed&&audioState!=="error"?<p className="audio-gate">Play the listening cue before answering.</p>:null}
       {feedback&&<div className={`study-feedback ${feedback.result}`}>
         <strong>{feedback.result==="correct"?"Correct":`Answer: ${feedback.expectedAnswer}`}</strong>
         {currentPrompt.audio?<div className="audio-reveal"><span lang="ja">{currentPrompt.audio.text}</span>{currentPrompt.audio.reading&&<small lang="ja">{currentPrompt.audio.reading}</small>}</div>:null}
@@ -121,4 +129,21 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
 
 function StudyHeader({index,total,completed,onExit}:{index:number;total:number;completed:boolean;onExit:()=>void}){
   return <><header className="study-head"><button className="quiet-button" type="button" onClick={onExit}>Exit</button><span>{index+1} / {total}</span></header><div className="study-progress"><span style={{width:`${((index+(completed?1:0))/total)*100}%`}}/></div></>;
+}
+
+
+function speakWithDevice(text:string,rate:number,repeats:number,lang:string):Promise<void>{
+  return new Promise((resolve,reject)=>{
+    if(typeof speechSynthesis==="undefined"){reject(new Error("SPEECH_SYNTHESIS_UNAVAILABLE"));return;}
+    let remaining=Math.max(1,repeats);
+    const play=()=>{
+      const utterance=new SpeechSynthesisUtterance(text);utterance.lang=lang;utterance.rate=rate;
+      const voice=speechSynthesis.getVoices().find((item)=>item.lang.toLowerCase().startsWith("ja"));
+      if(voice)utterance.voice=voice;
+      utterance.onerror=()=>reject(new Error("SPEECH_SYNTHESIS_FAILED"));
+      utterance.onend=()=>{remaining-=1;if(remaining>0)setTimeout(play,450);else resolve();};
+      speechSynthesis.speak(utterance);
+    };
+    speechSynthesis.cancel();play();
+  });
 }

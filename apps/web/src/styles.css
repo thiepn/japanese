@@ -201,3 +201,44 @@ button{touch-action:manipulation}
 @media(max-width:700px){
   .adaptive-grid{grid-template-columns:1fr}.productive-response-meta{align-items:stretch;flex-direction:column}.productive-response-meta .primary{width:100%;margin-top:0}.speech-actions>*{flex:1}.sentence-mine-list article{grid-template-columns:1fr}.sentence-mine-list button{width:100%}.shadow-actions>*{flex:1}
 }
+
+
+/* P6 B1→B2 independent communication, AI coaching and remediation */
+.audio-source-label{margin:0 0 10px;color:#817a70;font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+.ai-coach-card,.remediation-card{margin-top:32px;padding:22px;border:1px solid #d8d2c7;border-radius:20px;background:#fff}
+.ai-coach-card .section-heading,.remediation-card .section-heading{margin-bottom:8px}
+.coach-explainer,.remediation-card>p{margin:0 0 18px;color:#655f56;font-size:13px;line-height:1.6}
+.coach-mode{display:inline-flex;gap:4px;padding:4px;border-radius:12px;background:#f0ede7}
+.coach-mode button{min-height:38px;padding:0 13px;border:0;border-radius:9px;background:transparent;color:#655f56;font-weight:750;cursor:pointer}
+.coach-mode button.active{background:#fff;color:#1f2937;box-shadow:0 1px 4px rgba(31,41,55,.08)}
+.coach-scenario{margin:16px 0;padding:14px 16px;border:1px solid #e5e0d7;border-radius:14px;background:#faf9f6}
+.coach-scenario small{display:block;margin-bottom:5px;color:#817a70;font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+.coach-scenario p{margin:0;color:#4e4941;font-size:13px;line-height:1.55}
+.coach-thread{display:grid;gap:9px;max-height:420px;overflow:auto;margin:16px 0;padding:4px}
+.coach-turn{max-width:86%;padding:11px 13px;border-radius:14px;background:#f3f0e9}
+.coach-turn.learner{justify-self:end;background:#1f2937;color:#fff}
+.coach-turn span{font-size:9px;text-transform:uppercase;letter-spacing:.08em;opacity:.65}
+.coach-turn p{margin:4px 0 0;line-height:1.65}
+.coach-input{display:grid;gap:7px;margin-top:16px;color:#655f56;font-size:12px;font-weight:700}
+.coach-input textarea{width:100%;padding:14px;border:1px solid #d5cfc4;border-radius:14px;background:#faf9f6;color:#252a32;font:inherit;line-height:1.65;resize:vertical}
+.coach-input textarea:focus{outline:none;border-color:#7c7569;box-shadow:0 0 0 3px rgba(124,117,105,.12)}
+.coach-actions{display:flex;gap:10px;align-items:center;margin-top:12px}.coach-actions .primary{margin-top:0}
+.coach-warning{margin:12px 0 0;padding:10px 12px;border-radius:12px;background:#f7ece8;color:#7c4938;font-size:12px;line-height:1.5}
+.coach-feedback{display:grid;gap:14px;margin-top:20px;padding-top:20px;border-top:1px solid #e8e3da}
+.coach-reply{padding:16px;border-radius:15px;background:#f3f1eb}.coach-reply>span{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#817a70}.coach-reply>p{margin:7px 0 0;font-size:18px;line-height:1.75}.coach-reply details{margin-top:8px;color:#655f56;font-size:12px}
+.coach-feedback-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.coach-feedback-grid article{padding:14px;border:1px solid #e2ddd3;border-radius:14px;background:#faf9f6}
+.coach-feedback-grid article>div{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.coach-feedback-grid article>div span{color:#817a70;font-size:9px}
+.coach-feedback-grid article>p{margin:8px 0;color:#5f594f;font-size:12px;line-height:1.5}
+.coach-feedback-grid ul{margin:8px 0 0;padding-left:18px;color:#5f594f;font-size:11px;line-height:1.55}.coach-feedback-grid code{font-family:inherit;font-weight:700}
+.coach-revision{padding:14px 16px;border-left:3px solid #b8b0a2;background:#faf9f6}.coach-revision p{margin:6px 0 0;color:#5f594f;font-size:12px;line-height:1.55}
+.remediation-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.remediation-grid article{display:flex;flex-direction:column;gap:7px;padding:16px;border:1px solid #e2ddd3;border-radius:15px;background:#faf9f6}
+.remediation-grid article>span{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#817a70}.remediation-grid h3{margin:0;font-size:17px}.remediation-grid p{margin:0;color:#655f56;font-size:11px;line-height:1.5}.remediation-grid small{color:#817a70;font-size:10px}.remediation-grid .unit-action{margin-top:auto;width:max-content}
+@media(max-width:760px){.coach-feedback-grid,.remediation-grid{grid-template-columns:1fr}.ai-coach-card,.remediation-card{padding:16px}.coach-actions{align-items:stretch;flex-direction:column}.coach-actions>*{width:100%}.coach-turn{max-width:94%}.remediation-grid .unit-action{width:100%}}
+
+.source-pack-note{margin:0;padding:10px 12px;border-radius:12px;background:#f0ede7;color:#655f56;font-size:11px;line-height:1.5}
+.reader-audio button.active{border-color:#8f877a;background:#ece8df}
+.listening-first-gate{margin:18px 0;padding:22px;border:1px solid #d8d2c7;border-radius:18px;background:#fff;text-align:center}
+.listening-first-gate>span{font-size:10px;font-weight:800;letter-spacing:.1em;color:#817a70}.listening-first-gate h2{margin:7px 0;font-size:22px}.listening-first-gate p{max-width:580px;margin:0 auto;color:#655f56;font-size:12px;line-height:1.6}
+.reader-sentences.listening-first-hidden{display:none}

@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "@thiepn/sync-protocol": "workspace:*",
-    "@thiepn/domain": "workspace:*"
+    "@thiepn/domain": "workspace:*",
+    "@thiepn/coach": "workspace:*"
   },
   "scripts": {
     "build": "tsc --noEmit",

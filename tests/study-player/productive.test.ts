@@ -3,15 +3,19 @@ import { coreContent } from "../../apps/web/src/coreContent";
 import { productivePracticeSession,productiveSpeakingPrompts,productiveWritingPrompts } from "../../apps/web/src/study/productivePractice";
 import { gradeStudyPrompt } from "../../packages/study-player/src/index";
 
-describe("P5 productive language",()=>{
-  it("ships canonical B1 productive tasks with reusable rubrics",()=>{
-    expect(coreContent.productiveTasks).toHaveLength(10);
-    expect(coreContent.productiveTasks.every((task)=>task.level==="B1"&&task.rubric.length===4&&task.requiredTerms.length>=3)).toBe(true);
+describe("P6 productive language",()=>{
+  it("ships canonical B1 and B2 productive tasks with reusable rubrics",()=>{
+    expect(coreContent.productiveTasks).toHaveLength(20);
+    expect(coreContent.productiveTasks.filter((task)=>task.level==="B1")).toHaveLength(10);
+    expect(coreContent.productiveTasks.filter((task)=>task.level==="B2")).toHaveLength(10);
+    expect(coreContent.productiveTasks.every((task)=>task.rubric.length===4&&task.requiredTerms.length>=3)).toBe(true);
+    expect(coreContent.productiveTasks.filter((task)=>task.level==="B2"&&task.tags.includes("ai-conversation"))).toHaveLength(6);
+    expect(coreContent.productiveTasks.filter((task)=>task.level==="B2"&&task.tags.includes("writing-revision"))).toHaveLength(4);
   });
   it("uses connected writing and real speech prompt modes",()=>{
     expect(productiveWritingPrompts.every((prompt)=>prompt.promptType==="textarea"&&prompt.skill==="writing_quality")).toBe(true);
     expect(productiveSpeakingPrompts.every((prompt)=>prompt.promptType==="speech"&&prompt.skill==="production")).toBe(true);
-    expect(productiveSpeakingPrompts.length).toBeGreaterThanOrEqual(6);
+    expect(productiveSpeakingPrompts.length).toBeGreaterThanOrEqual(12);
   });
   it("grades structural target coverage without claiming semantic or acoustic scoring",()=>{
     const prompt=productiveWritingPrompts[0]!;

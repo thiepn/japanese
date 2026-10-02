@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 8,
-  "version": "0.7.0",
+  "schemaVersion": 9,
+  "version": "0.8.0",
   "sourceIds": [
     "thiepn-original",
     "tofugu-wanikani-audio"
@@ -11728,6 +11728,2341 @@
         "thiepn-original"
       ],
       "inflectionClass": "ichidan"
+    },
+    {
+      "id": "b2-evidence",
+      "canonicalForm": "根拠",
+      "forms": [
+        {
+          "text": "根拠",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "こんきょ"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-evidence"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-trend",
+      "canonicalForm": "傾向",
+      "forms": [
+        {
+          "text": "傾向",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "けいこう"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-trend"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-viewpoint",
+      "canonicalForm": "観点",
+      "forms": [
+        {
+          "text": "観点",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かんてん"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-viewpoint"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-premise",
+      "canonicalForm": "前提",
+      "forms": [
+        {
+          "text": "前提",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ぜんてい"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-premise"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-factor",
+      "canonicalForm": "要因",
+      "forms": [
+        {
+          "text": "要因",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "よういん"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-factor"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-influence",
+      "canonicalForm": "影響",
+      "forms": [
+        {
+          "text": "影響",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "えいきょう"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-influence"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-challenge",
+      "canonicalForm": "課題",
+      "forms": [
+        {
+          "text": "課題",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かだい"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-challenge"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-measure",
+      "canonicalForm": "対策",
+      "forms": [
+        {
+          "text": "対策",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "たいさく"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-measure"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-outcome",
+      "canonicalForm": "成果",
+      "forms": [
+        {
+          "text": "成果",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "せいか"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-outcome"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-effect",
+      "canonicalForm": "効果",
+      "forms": [
+        {
+          "text": "効果",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "こうか"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-effect"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-system",
+      "canonicalForm": "制度",
+      "forms": [
+        {
+          "text": "制度",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "せいど"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-system"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-environment",
+      "canonicalForm": "環境",
+      "forms": [
+        {
+          "text": "環境",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かんきょう"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-environment"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-community",
+      "canonicalForm": "地域",
+      "forms": [
+        {
+          "text": "地域",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ちいき"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-community"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-generation",
+      "canonicalForm": "世代",
+      "forms": [
+        {
+          "text": "世代",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "せだい"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-generation"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-gap",
+      "canonicalForm": "格差",
+      "forms": [
+        {
+          "text": "格差",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かくさ"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-gap"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-burden",
+      "canonicalForm": "負担",
+      "forms": [
+        {
+          "text": "負担",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ふたん"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-burden"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-support",
+      "canonicalForm": "支援",
+      "forms": [
+        {
+          "text": "支援",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "しえん"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-support"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-role",
+      "canonicalForm": "役割",
+      "forms": [
+        {
+          "text": "役割",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "やくわり"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-role"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-responsibility",
+      "canonicalForm": "責任",
+      "forms": [
+        {
+          "text": "責任",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "せきにん"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-responsibility"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-right",
+      "canonicalForm": "権利",
+      "forms": [
+        {
+          "text": "権利",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "けんり"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-right"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-employment",
+      "canonicalForm": "雇用",
+      "forms": [
+        {
+          "text": "雇用",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "こよう"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-employment"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-workplace",
+      "canonicalForm": "職場",
+      "forms": [
+        {
+          "text": "職場",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "しょくば"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-workplace"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-duties",
+      "canonicalForm": "業務",
+      "forms": [
+        {
+          "text": "業務",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ぎょうむ"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-duties"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-guideline",
+      "canonicalForm": "方針",
+      "forms": [
+        {
+          "text": "方針",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ほうしん"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-guideline"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-improvement",
+      "canonicalForm": "改善",
+      "forms": [
+        {
+          "text": "改善",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かいぜん"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-improvement"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-efficiency",
+      "canonicalForm": "効率",
+      "forms": [
+        {
+          "text": "効率",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "こうりつ"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-efficiency"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-cooperation",
+      "canonicalForm": "協力",
+      "forms": [
+        {
+          "text": "協力",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "きょうりょく"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-cooperation"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-coordination",
+      "canonicalForm": "調整",
+      "forms": [
+        {
+          "text": "調整",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ちょうせい"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-coordination"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-proposal",
+      "canonicalForm": "提案",
+      "forms": [
+        {
+          "text": "提案",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ていあん"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-proposal"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-judgment",
+      "canonicalForm": "判断",
+      "forms": [
+        {
+          "text": "判断",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "はんだん"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-judgment"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-intention",
+      "canonicalForm": "意図",
+      "forms": [
+        {
+          "text": "意図",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "いと"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-intention"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-misunderstanding",
+      "canonicalForm": "誤解",
+      "forms": [
+        {
+          "text": "誤解",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ごかい"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-misunderstanding"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-interpretation",
+      "canonicalForm": "解釈",
+      "forms": [
+        {
+          "text": "解釈",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かいしゃく"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-interpretation"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-claim",
+      "canonicalForm": "主張",
+      "forms": [
+        {
+          "text": "主張",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "しゅちょう"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-claim"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-counterargument",
+      "canonicalForm": "反論",
+      "forms": [
+        {
+          "text": "反論",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "はんろん"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-counterargument"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-explanation",
+      "canonicalForm": "説明",
+      "forms": [
+        {
+          "text": "説明",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "せつめい"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-explanation"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-example",
+      "canonicalForm": "具体例",
+      "forms": [
+        {
+          "text": "具体例",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ぐたいれい"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-example"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-conclusion",
+      "canonicalForm": "結論",
+      "forms": [
+        {
+          "text": "結論",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "けつろん"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-conclusion"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-main-point",
+      "canonicalForm": "要点",
+      "forms": [
+        {
+          "text": "要点",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ようてん"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-main-point"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-context",
+      "canonicalForm": "文脈",
+      "forms": [
+        {
+          "text": "文脈",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ぶんみゃく"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-context"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-technology",
+      "canonicalForm": "技術",
+      "forms": [
+        {
+          "text": "技術",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ぎじゅつ"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-technology"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-adoption",
+      "canonicalForm": "普及",
+      "forms": [
+        {
+          "text": "普及",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ふきゅう"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-adoption"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-introduction",
+      "canonicalForm": "導入",
+      "forms": [
+        {
+          "text": "導入",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "どうにゅう"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-introduction"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-update",
+      "canonicalForm": "更新",
+      "forms": [
+        {
+          "text": "更新",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "こうしん"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-update"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-function",
+      "canonicalForm": "機能",
+      "forms": [
+        {
+          "text": "機能",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "きのう"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-function"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-user",
+      "canonicalForm": "利用者",
+      "forms": [
+        {
+          "text": "利用者",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "りようしゃ"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-user"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-personal-data",
+      "canonicalForm": "個人情報",
+      "forms": [
+        {
+          "text": "個人情報",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "こじんじょうほう"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-personal-data"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-safety",
+      "canonicalForm": "安全性",
+      "forms": [
+        {
+          "text": "安全性",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "あんぜんせい"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-safety"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-convenience",
+      "canonicalForm": "利便性",
+      "forms": [
+        {
+          "text": "利便性",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "りべんせい"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-convenience"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dependence",
+      "canonicalForm": "依存",
+      "forms": [
+        {
+          "text": "依存",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "いぞん"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-dependence"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-survey",
+      "canonicalForm": "調査",
+      "forms": [
+        {
+          "text": "調査",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ちょうさ"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-survey"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-material",
+      "canonicalForm": "資料",
+      "forms": [
+        {
+          "text": "資料",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "しりょう"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-material"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-result",
+      "canonicalForm": "結果",
+      "forms": [
+        {
+          "text": "結果",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "けっか"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-result"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-analysis",
+      "canonicalForm": "分析",
+      "forms": [
+        {
+          "text": "分析",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ぶんせき"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-analysis"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-comparison",
+      "canonicalForm": "比較",
+      "forms": [
+        {
+          "text": "比較",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ひかく"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-comparison"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-criterion",
+      "canonicalForm": "基準",
+      "forms": [
+        {
+          "text": "基準",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "きじゅん"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-criterion"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-evaluation",
+      "canonicalForm": "評価",
+      "forms": [
+        {
+          "text": "評価",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ひょうか"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-evaluation"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-hypothesis",
+      "canonicalForm": "仮説",
+      "forms": [
+        {
+          "text": "仮説",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かせつ"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-hypothesis"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-consideration",
+      "canonicalForm": "検討",
+      "forms": [
+        {
+          "text": "検討",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "けんとう"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-consideration"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-confirmation",
+      "canonicalForm": "確認",
+      "forms": [
+        {
+          "text": "確認",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かくにん"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-confirmation"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-state",
+      "canonicalForm": "述べる",
+      "forms": [
+        {
+          "text": "述べる",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "のべる"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-state"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "inflectionClass": "ichidan",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-acknowledge",
+      "canonicalForm": "認める",
+      "forms": [
+        {
+          "text": "認める",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "みとめる"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-acknowledge"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "inflectionClass": "ichidan",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-indicate",
+      "canonicalForm": "示す",
+      "forms": [
+        {
+          "text": "示す",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "しめす"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-indicate"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "inflectionClass": "godan",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-include",
+      "canonicalForm": "含む",
+      "forms": [
+        {
+          "text": "含む",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ふくむ"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-include"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "inflectionClass": "godan",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-based-on",
+      "canonicalForm": "基づく",
+      "forms": [
+        {
+          "text": "基づく",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "もとづく"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-based-on"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "inflectionClass": "godan",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-differ",
+      "canonicalForm": "異なる",
+      "forms": [
+        {
+          "text": "異なる",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ことなる"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-differ"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "inflectionClass": "godan",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-accompany",
+      "canonicalForm": "伴う",
+      "forms": [
+        {
+          "text": "伴う",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ともなう"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-accompany"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "inflectionClass": "godan",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-raise",
+      "canonicalForm": "高める",
+      "forms": [
+        {
+          "text": "高める",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "たかめる"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-raise"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "inflectionClass": "ichidan",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-control",
+      "canonicalForm": "抑える",
+      "forms": [
+        {
+          "text": "抑える",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "おさえる"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-control"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "inflectionClass": "ichidan",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-address",
+      "canonicalForm": "取り組む",
+      "forms": [
+        {
+          "text": "取り組む",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "とりくむ"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-address"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "inflectionClass": "godan",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-clear",
+      "canonicalForm": "明確",
+      "forms": [
+        {
+          "text": "明確",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "めいかく"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-clear"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "inflectionClass": "na-adjective",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-appropriate",
+      "canonicalForm": "適切",
+      "forms": [
+        {
+          "text": "適切",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "てきせつ"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-appropriate"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "inflectionClass": "na-adjective",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-serious",
+      "canonicalForm": "重大",
+      "forms": [
+        {
+          "text": "重大",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "じゅうだい"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-serious"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "inflectionClass": "na-adjective",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-complex",
+      "canonicalForm": "複雑",
+      "forms": [
+        {
+          "text": "複雑",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ふくざつ"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-complex"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "inflectionClass": "na-adjective",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-flexible",
+      "canonicalForm": "柔軟",
+      "forms": [
+        {
+          "text": "柔軟",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "じゅうなん"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-flexible"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "inflectionClass": "na-adjective",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-particularly",
+      "canonicalForm": "特に",
+      "forms": [
+        {
+          "text": "特に",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "とくに"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-particularly"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-furthermore",
+      "canonicalForm": "さらに",
+      "forms": [
+        {
+          "text": "さらに",
+          "script": "hiragana",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "さらに"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-furthermore"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-therefore",
+      "canonicalForm": "したがって",
+      "forms": [
+        {
+          "text": "したがって",
+          "script": "hiragana",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "したがって"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-therefore"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-meanwhile",
+      "canonicalForm": "一方",
+      "forms": [
+        {
+          "text": "一方",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "いっぽう"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-meanwhile"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-overall",
+      "canonicalForm": "全体",
+      "forms": [
+        {
+          "text": "全体",
+          "script": "kanji",
+          "status": "standard"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ぜんたい"
+        }
+      ],
+      "senseIds": [
+        "sense-b2-overall"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b2",
+        "p6"
+      ],
+      "priority": 70,
+      "sourceIds": [
+        "thiepn-original"
+      ]
     }
   ],
   "senses": [
@@ -16228,6 +18563,1046 @@
       "sourceIds": [
         "thiepn-original"
       ]
+    },
+    {
+      "id": "sense-b2-evidence",
+      "lexemeId": "b2-evidence",
+      "glosses": [
+        "basis; evidence"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-trend",
+      "lexemeId": "b2-trend",
+      "glosses": [
+        "tendency; trend"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-viewpoint",
+      "lexemeId": "b2-viewpoint",
+      "glosses": [
+        "viewpoint; perspective"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-premise",
+      "lexemeId": "b2-premise",
+      "glosses": [
+        "premise; assumption"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-factor",
+      "lexemeId": "b2-factor",
+      "glosses": [
+        "factor; cause"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-influence",
+      "lexemeId": "b2-influence",
+      "glosses": [
+        "influence; effect"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-challenge",
+      "lexemeId": "b2-challenge",
+      "glosses": [
+        "issue; challenge"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-measure",
+      "lexemeId": "b2-measure",
+      "glosses": [
+        "measure; countermeasure"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-outcome",
+      "lexemeId": "b2-outcome",
+      "glosses": [
+        "outcome; achievement"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-effect",
+      "lexemeId": "b2-effect",
+      "glosses": [
+        "effect; effectiveness"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-system",
+      "lexemeId": "b2-system",
+      "glosses": [
+        "system; institution"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-environment",
+      "lexemeId": "b2-environment",
+      "glosses": [
+        "environment; circumstances"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-community",
+      "lexemeId": "b2-community",
+      "glosses": [
+        "region; local community"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-generation",
+      "lexemeId": "b2-generation",
+      "glosses": [
+        "generation"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-gap",
+      "lexemeId": "b2-gap",
+      "glosses": [
+        "gap; disparity"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-burden",
+      "lexemeId": "b2-burden",
+      "glosses": [
+        "burden"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-support",
+      "lexemeId": "b2-support",
+      "glosses": [
+        "support; assistance"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-role",
+      "lexemeId": "b2-role",
+      "glosses": [
+        "role"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-responsibility",
+      "lexemeId": "b2-responsibility",
+      "glosses": [
+        "responsibility"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-right",
+      "lexemeId": "b2-right",
+      "glosses": [
+        "right; entitlement"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-employment",
+      "lexemeId": "b2-employment",
+      "glosses": [
+        "employment"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-workplace",
+      "lexemeId": "b2-workplace",
+      "glosses": [
+        "workplace"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-duties",
+      "lexemeId": "b2-duties",
+      "glosses": [
+        "work duties; operations"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-guideline",
+      "lexemeId": "b2-guideline",
+      "glosses": [
+        "policy; guiding principle"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-improvement",
+      "lexemeId": "b2-improvement",
+      "glosses": [
+        "improvement"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-efficiency",
+      "lexemeId": "b2-efficiency",
+      "glosses": [
+        "efficiency"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-cooperation",
+      "lexemeId": "b2-cooperation",
+      "glosses": [
+        "cooperation"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-coordination",
+      "lexemeId": "b2-coordination",
+      "glosses": [
+        "coordination; adjustment"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-proposal",
+      "lexemeId": "b2-proposal",
+      "glosses": [
+        "proposal; suggestion"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-judgment",
+      "lexemeId": "b2-judgment",
+      "glosses": [
+        "judgment; decision"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-intention",
+      "lexemeId": "b2-intention",
+      "glosses": [
+        "intention"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-misunderstanding",
+      "lexemeId": "b2-misunderstanding",
+      "glosses": [
+        "misunderstanding"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-interpretation",
+      "lexemeId": "b2-interpretation",
+      "glosses": [
+        "interpretation"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-claim",
+      "lexemeId": "b2-claim",
+      "glosses": [
+        "claim; assertion"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-counterargument",
+      "lexemeId": "b2-counterargument",
+      "glosses": [
+        "counterargument; objection"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-explanation",
+      "lexemeId": "b2-explanation",
+      "glosses": [
+        "explanation"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-example",
+      "lexemeId": "b2-example",
+      "glosses": [
+        "concrete example"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-conclusion",
+      "lexemeId": "b2-conclusion",
+      "glosses": [
+        "conclusion"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-main-point",
+      "lexemeId": "b2-main-point",
+      "glosses": [
+        "main point"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-context",
+      "lexemeId": "b2-context",
+      "glosses": [
+        "context"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-technology",
+      "lexemeId": "b2-technology",
+      "glosses": [
+        "technology; technique"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-adoption",
+      "lexemeId": "b2-adoption",
+      "glosses": [
+        "spread; adoption"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-introduction",
+      "lexemeId": "b2-introduction",
+      "glosses": [
+        "introduction; implementation"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-update",
+      "lexemeId": "b2-update",
+      "glosses": [
+        "update; renewal"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-function",
+      "lexemeId": "b2-function",
+      "glosses": [
+        "function; feature"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-user",
+      "lexemeId": "b2-user",
+      "glosses": [
+        "user"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-personal-data",
+      "lexemeId": "b2-personal-data",
+      "glosses": [
+        "personal information"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-safety",
+      "lexemeId": "b2-safety",
+      "glosses": [
+        "safety"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-convenience",
+      "lexemeId": "b2-convenience",
+      "glosses": [
+        "convenience"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-dependence",
+      "lexemeId": "b2-dependence",
+      "glosses": [
+        "dependence"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-survey",
+      "lexemeId": "b2-survey",
+      "glosses": [
+        "survey; investigation"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-material",
+      "lexemeId": "b2-material",
+      "glosses": [
+        "material; data"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-result",
+      "lexemeId": "b2-result",
+      "glosses": [
+        "result"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-analysis",
+      "lexemeId": "b2-analysis",
+      "glosses": [
+        "analysis"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-comparison",
+      "lexemeId": "b2-comparison",
+      "glosses": [
+        "comparison"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-criterion",
+      "lexemeId": "b2-criterion",
+      "glosses": [
+        "criterion; standard"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-evaluation",
+      "lexemeId": "b2-evaluation",
+      "glosses": [
+        "evaluation"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-hypothesis",
+      "lexemeId": "b2-hypothesis",
+      "glosses": [
+        "hypothesis"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-consideration",
+      "lexemeId": "b2-consideration",
+      "glosses": [
+        "consideration; examination"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-confirmation",
+      "lexemeId": "b2-confirmation",
+      "glosses": [
+        "confirmation; checking"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-state",
+      "lexemeId": "b2-state",
+      "glosses": [
+        "to state; express"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-acknowledge",
+      "lexemeId": "b2-acknowledge",
+      "glosses": [
+        "to acknowledge; recognize"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-indicate",
+      "lexemeId": "b2-indicate",
+      "glosses": [
+        "to indicate; show"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-include",
+      "lexemeId": "b2-include",
+      "glosses": [
+        "to include; contain"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-based-on",
+      "lexemeId": "b2-based-on",
+      "glosses": [
+        "to be based on"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-differ",
+      "lexemeId": "b2-differ",
+      "glosses": [
+        "to differ"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-accompany",
+      "lexemeId": "b2-accompany",
+      "glosses": [
+        "to accompany; entail"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-raise",
+      "lexemeId": "b2-raise",
+      "glosses": [
+        "to raise; enhance"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-control",
+      "lexemeId": "b2-control",
+      "glosses": [
+        "to control; restrain"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-address",
+      "lexemeId": "b2-address",
+      "glosses": [
+        "to tackle; work on"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-clear",
+      "lexemeId": "b2-clear",
+      "glosses": [
+        "clear; explicit"
+      ],
+      "partOfSpeech": [
+        "adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-appropriate",
+      "lexemeId": "b2-appropriate",
+      "glosses": [
+        "appropriate"
+      ],
+      "partOfSpeech": [
+        "adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-serious",
+      "lexemeId": "b2-serious",
+      "glosses": [
+        "serious; significant"
+      ],
+      "partOfSpeech": [
+        "adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-complex",
+      "lexemeId": "b2-complex",
+      "glosses": [
+        "complex"
+      ],
+      "partOfSpeech": [
+        "adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-flexible",
+      "lexemeId": "b2-flexible",
+      "glosses": [
+        "flexible"
+      ],
+      "partOfSpeech": [
+        "adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-particularly",
+      "lexemeId": "b2-particularly",
+      "glosses": [
+        "particularly; especially"
+      ],
+      "partOfSpeech": [
+        "adverb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-furthermore",
+      "lexemeId": "b2-furthermore",
+      "glosses": [
+        "furthermore; additionally"
+      ],
+      "partOfSpeech": [
+        "adverb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-therefore",
+      "lexemeId": "b2-therefore",
+      "glosses": [
+        "therefore; consequently"
+      ],
+      "partOfSpeech": [
+        "conjunction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-meanwhile",
+      "lexemeId": "b2-meanwhile",
+      "glosses": [
+        "on the other hand; meanwhile"
+      ],
+      "partOfSpeech": [
+        "noun-adverb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-b2-overall",
+      "lexemeId": "b2-overall",
+      "glosses": [
+        "whole; overall"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
     }
   ],
   "kanji": [
@@ -19498,6 +22873,591 @@
           "ています"
         ],
         "explanation": "〜てみます means try doing."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-wake-dewa-nai",
+      "label": "〜わけではない",
+      "summary": "not necessarily; it does not mean that",
+      "mentalModel": "Rejects an overgeneralized conclusion while leaving a narrower statement possible.",
+      "formation": [
+        "plain form + わけではない"
+      ],
+      "uses": [
+        "partial negation",
+        "qualification"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [],
+      "level": "B2",
+      "register": "neutral",
+      "priority": 72,
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "practice": {
+        "prompt": "誰でも同じ方法が合うわけではない。",
+        "answer": "誰でも同じ方法が合うわけではない。",
+        "choices": [
+          "誰でも同じ方法が合うわけではない。",
+          "意味は同じだが、使い方は全く変わらない。",
+          "この形は名詞だけに使う。",
+          "文脈に関係なく必ず使える。"
+        ],
+        "explanation": "Everyone does not necessarily suit the same method."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-wake-da",
+      "label": "〜わけだ",
+      "summary": "it follows that; no wonder",
+      "mentalModel": "Marks a conclusion that naturally follows from known information.",
+      "formation": [
+        "plain form + わけだ"
+      ],
+      "uses": [
+        "logical conclusion",
+        "explanation"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [],
+      "level": "B2",
+      "register": "neutral",
+      "priority": 72,
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "practice": {
+        "prompt": "毎日練習したのだから、上達したわけだ。",
+        "answer": "毎日練習したのだから、上達したわけだ。",
+        "choices": [
+          "毎日練習したのだから、上達したわけだ。",
+          "意味は同じだが、使い方は全く変わらない。",
+          "この形は名詞だけに使う。",
+          "文脈に関係なく必ず使える。"
+        ],
+        "explanation": "So that explains why you improved."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-ni-chigainai",
+      "label": "〜に違いない",
+      "summary": "must surely be",
+      "mentalModel": "Expresses a strong inference based on available evidence.",
+      "formation": [
+        "plain form + に違いない"
+      ],
+      "uses": [
+        "strong inference"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [],
+      "level": "B2",
+      "register": "neutral",
+      "priority": 72,
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "practice": {
+        "prompt": "この結果には別の要因もあるに違いない。",
+        "answer": "この結果には別の要因もあるに違いない。",
+        "choices": [
+          "この結果には別の要因もあるに違いない。",
+          "意味は同じだが、使い方は全く変わらない。",
+          "この形は名詞だけに使う。",
+          "文脈に関係なく必ず使える。"
+        ],
+        "explanation": "There must be another factor behind this result."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-koto-kara",
+      "label": "〜ことから",
+      "summary": "from the fact that; because",
+      "mentalModel": "Builds an explanation or inference from an observed fact.",
+      "formation": [
+        "plain form + ことから"
+      ],
+      "uses": [
+        "evidence-based reason"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [],
+      "level": "B2",
+      "register": "formal",
+      "priority": 72,
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "practice": {
+        "prompt": "利用者が増えたことから、利便性が評価されたと考えられる。",
+        "answer": "利用者が増えたことから、利便性が評価されたと考えられる。",
+        "choices": [
+          "利用者が増えたことから、利便性が評価されたと考えられる。",
+          "意味は同じだが、使い方は全く変わらない。",
+          "この形は名詞だけに使う。",
+          "文脈に関係なく必ず使える。"
+        ],
+        "explanation": "From the increase in users, we can infer that convenience was valued."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-ippou-de",
+      "label": "〜一方で",
+      "summary": "while; on the other hand",
+      "mentalModel": "Places two simultaneous or contrasting facts side by side.",
+      "formation": [
+        "plain form + 一方で"
+      ],
+      "uses": [
+        "contrast",
+        "parallel development"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [],
+      "level": "B2",
+      "register": "neutral",
+      "priority": 72,
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "practice": {
+        "prompt": "技術は便利になる一方で、新しい課題も生まれる。",
+        "answer": "技術は便利になる一方で、新しい課題も生まれる。",
+        "choices": [
+          "技術は便利になる一方で、新しい課題も生まれる。",
+          "意味は同じだが、使い方は全く変わらない。",
+          "この形は名詞だけに使う。",
+          "文脈に関係なく必ず使える。"
+        ],
+        "explanation": "Technology becomes more convenient, while new challenges also arise."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-ni-taishite",
+      "label": "〜に対して",
+      "summary": "toward; in contrast to",
+      "mentalModel": "Marks the target of an attitude/action or creates a structured contrast.",
+      "formation": [
+        "noun + に対して"
+      ],
+      "uses": [
+        "target",
+        "contrast"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [],
+      "level": "B2",
+      "register": "neutral",
+      "priority": 72,
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "practice": {
+        "prompt": "若い世代に対して、別の支援が必要だ。",
+        "answer": "若い世代に対して、別の支援が必要だ。",
+        "choices": [
+          "若い世代に対して、別の支援が必要だ。",
+          "意味は同じだが、使い方は全く変わらない。",
+          "この形は名詞だけに使う。",
+          "文脈に関係なく必ず使える。"
+        ],
+        "explanation": "Different support is needed for younger generations."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-ni-oite",
+      "label": "〜において",
+      "summary": "in; at; regarding a field",
+      "mentalModel": "Formal marker for the setting, field, or context in which something holds.",
+      "formation": [
+        "noun + において"
+      ],
+      "uses": [
+        "formal setting",
+        "domain"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [],
+      "level": "B2",
+      "register": "formal",
+      "priority": 72,
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "practice": {
+        "prompt": "教育において、継続的な評価は重要だ。",
+        "answer": "教育において、継続的な評価は重要だ。",
+        "choices": [
+          "教育において、継続的な評価は重要だ。",
+          "意味は同じだが、使い方は全く変わらない。",
+          "この形は名詞だけに使う。",
+          "文脈に関係なく必ず使える。"
+        ],
+        "explanation": "Continuous evaluation is important in education."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-ni-kanshite",
+      "label": "〜に関して",
+      "summary": "regarding; concerning",
+      "mentalModel": "Introduces a topic in a neutral-to-formal way.",
+      "formation": [
+        "noun + に関して"
+      ],
+      "uses": [
+        "topic framing"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [],
+      "level": "B2",
+      "register": "formal",
+      "priority": 72,
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "practice": {
+        "prompt": "個人情報に関して、明確な方針を示すべきだ。",
+        "answer": "個人情報に関して、明確な方針を示すべきだ。",
+        "choices": [
+          "個人情報に関して、明確な方針を示すべきだ。",
+          "意味は同じだが、使い方は全く変わらない。",
+          "この形は名詞だけに使う。",
+          "文脈に関係なく必ず使える。"
+        ],
+        "explanation": "A clear policy should be stated regarding personal information."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-ni-yotte",
+      "label": "〜によって",
+      "summary": "by; depending on; due to",
+      "mentalModel": "Links an outcome to an agent, cause, method, or condition.",
+      "formation": [
+        "noun + によって"
+      ],
+      "uses": [
+        "cause",
+        "means",
+        "variation"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [],
+      "level": "B2",
+      "register": "formal",
+      "priority": 72,
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "practice": {
+        "prompt": "地域によって、必要な対策は異なる。",
+        "answer": "地域によって、必要な対策は異なる。",
+        "choices": [
+          "地域によって、必要な対策は異なる。",
+          "意味は同じだが、使い方は全く変わらない。",
+          "この形は名詞だけに使う。",
+          "文脈に関係なく必ず使える。"
+        ],
+        "explanation": "Necessary measures differ by region."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-ni-tsurete",
+      "label": "〜につれて",
+      "summary": "as; in proportion as",
+      "mentalModel": "Describes a gradual change that accompanies another gradual change.",
+      "formation": [
+        "dictionary form / noun + につれて"
+      ],
+      "uses": [
+        "co-varying change"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [],
+      "level": "B2",
+      "register": "neutral",
+      "priority": 72,
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "practice": {
+        "prompt": "利用者が増えるにつれて、支援の負担も大きくなる。",
+        "answer": "利用者が増えるにつれて、支援の負担も大きくなる。",
+        "choices": [
+          "利用者が増えるにつれて、支援の負担も大きくなる。",
+          "意味は同じだが、使い方は全く変わらない。",
+          "この形は名詞だけに使う。",
+          "文脈に関係なく必ず使える。"
+        ],
+        "explanation": "As users increase, the support burden also grows."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-ni-tomonatte",
+      "label": "〜に伴って",
+      "summary": "along with; accompanying",
+      "mentalModel": "Formal expression for a change that brings another change with it.",
+      "formation": [
+        "noun / dictionary form + に伴って"
+      ],
+      "uses": [
+        "accompanying change"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [],
+      "level": "B2",
+      "register": "formal",
+      "priority": 72,
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "practice": {
+        "prompt": "制度の変更に伴って、業務の調整が必要になった。",
+        "answer": "制度の変更に伴って、業務の調整が必要になった。",
+        "choices": [
+          "制度の変更に伴って、業務の調整が必要になった。",
+          "意味は同じだが、使い方は全く変わらない。",
+          "この形は名詞だけに使う。",
+          "文脈に関係なく必ず使える。"
+        ],
+        "explanation": "The system change made operational adjustments necessary."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-ba-hodo",
+      "label": "〜ば〜ほど",
+      "summary": "the more..., the more...",
+      "mentalModel": "Shows a proportional relationship between degree or repeated conditions.",
+      "formation": [
+        "conditional ば + same predicate + ほど"
+      ],
+      "uses": [
+        "proportional relation"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [],
+      "level": "B2",
+      "register": "neutral",
+      "priority": 72,
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "practice": {
+        "prompt": "比較すればするほど、違いが明確になる。",
+        "answer": "比較すればするほど、違いが明確になる。",
+        "choices": [
+          "比較すればするほど、違いが明確になる。",
+          "意味は同じだが、使い方は全く変わらない。",
+          "この形は名詞だけに使う。",
+          "文脈に関係なく必ず使える。"
+        ],
+        "explanation": "The more you compare them, the clearer the differences become."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-mono-no",
+      "label": "〜ものの",
+      "summary": "although; even though",
+      "mentalModel": "Formal written concession that sets up an unexpected contrast.",
+      "formation": [
+        "plain form + ものの"
+      ],
+      "uses": [
+        "concession"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [],
+      "level": "B2",
+      "register": "formal",
+      "priority": 72,
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "practice": {
+        "prompt": "効果は認められるものの、課題も残っている。",
+        "answer": "効果は認められるものの、課題も残っている。",
+        "choices": [
+          "効果は認められるものの、課題も残っている。",
+          "意味は同じだが、使い方は全く変わらない。",
+          "この形は名詞だけに使う。",
+          "文脈に関係なく必ず使える。"
+        ],
+        "explanation": "Although the effect is recognized, challenges remain."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-ni-mo-kakawarazu",
+      "label": "〜にもかかわらず",
+      "summary": "despite; notwithstanding",
+      "mentalModel": "Strong formal concession between a condition and an unexpected result.",
+      "formation": [
+        "noun / plain form + にもかかわらず"
+      ],
+      "uses": [
+        "strong concession"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [],
+      "level": "B2",
+      "register": "formal",
+      "priority": 72,
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "practice": {
+        "prompt": "十分な資料がないにもかかわらず、結論を急いでいる。",
+        "answer": "十分な資料がないにもかかわらず、結論を急いでいる。",
+        "choices": [
+          "十分な資料がないにもかかわらず、結論を急いでいる。",
+          "意味は同じだが、使い方は全く変わらない。",
+          "この形は名詞だけに使う。",
+          "文脈に関係なく必ず使える。"
+        ],
+        "explanation": "Despite insufficient data, they are rushing to a conclusion."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-ni-suginai",
+      "label": "〜にすぎない",
+      "summary": "nothing more than; merely",
+      "mentalModel": "Restricts the scope or importance of a claim.",
+      "formation": [
+        "noun / plain form + にすぎない"
+      ],
+      "uses": [
+        "limitation",
+        "downscaling a claim"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [],
+      "level": "B2",
+      "register": "formal",
+      "priority": 72,
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "practice": {
+        "prompt": "これは一つの仮説にすぎない。",
+        "answer": "これは一つの仮説にすぎない。",
+        "choices": [
+          "これは一つの仮説にすぎない。",
+          "意味は同じだが、使い方は全く変わらない。",
+          "この形は名詞だけに使う。",
+          "文脈に関係なく必ず使える。"
+        ],
+        "explanation": "This is nothing more than one hypothesis."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-osore-ga-aru",
+      "label": "〜おそれがある",
+      "summary": "there is a risk that",
+      "mentalModel": "Formal expression for a plausible undesirable possibility.",
+      "formation": [
+        "plain form + おそれがある"
+      ],
+      "uses": [
+        "risk",
+        "formal caution"
+      ],
+      "prerequisiteIds": [],
+      "contrastIds": [],
+      "level": "B2",
+      "register": "formal",
+      "priority": 72,
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "practice": {
+        "prompt": "情報が誤って解釈されるおそれがある。",
+        "answer": "情報が誤って解釈されるおそれがある。",
+        "choices": [
+          "情報が誤って解釈されるおそれがある。",
+          "意味は同じだが、使い方は全く変わらない。",
+          "この形は名詞だけに使う。",
+          "文脈に関係なく必ず使える。"
+        ],
+        "explanation": "There is a risk that the information will be misinterpreted."
       },
       "sourceIds": [
         "thiepn-original"
@@ -30878,6 +34838,1814 @@
       "sourceIds": [
         "thiepn-original"
       ]
+    },
+    {
+      "id": "b2-sentence-wake-dewa-nai-1",
+      "text": "効率だけを高めれば問題が解決するわけではない。",
+      "normalizedText": "効率だけを高めれば問題が解決するわけではない。",
+      "translation": "Improving efficiency alone does not necessarily solve the problem.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-wake-dewa-nai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-wake-dewa-nai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "効率だけを高めれば問題が解決するわけではない。",
+          "grammarRole": "b2-wake-dewa-nai"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-wake-dewa-nai-2",
+      "text": "利用者が多いからといって、全員が満足しているわけではない。",
+      "normalizedText": "利用者が多いからといって、全員が満足しているわけではない。",
+      "translation": "Many users does not mean everyone is satisfied.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-wake-dewa-nai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-wake-dewa-nai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "利用者が多いからといって、全員が満足しているわけではない。",
+          "grammarRole": "b2-wake-dewa-nai"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-wake-dewa-nai-3",
+      "text": "反対意見を認めることは、自分の主張を捨てるわけではない。",
+      "normalizedText": "反対意見を認めることは、自分の主張を捨てるわけではない。",
+      "translation": "Acknowledging an opposing view does not mean abandoning your own claim.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-wake-dewa-nai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-wake-dewa-nai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "反対意見を認めることは、自分の主張を捨てるわけではない。",
+          "grammarRole": "b2-wake-dewa-nai"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-wake-da-1",
+      "text": "資料を三回確認したのだから、誤解が少ないわけだ。",
+      "normalizedText": "資料を三回確認したのだから、誤解が少ないわけだ。",
+      "translation": "So it follows that there are fewer misunderstandings after checking the material three times.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-wake-da"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-wake-da"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "資料を三回確認したのだから、誤解が少ないわけだ。",
+          "grammarRole": "b2-wake-da"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-wake-da-2",
+      "text": "利用者の負担が減った。制度の改善に効果があったわけだ。",
+      "normalizedText": "利用者の負担が減った。制度の改善に効果があったわけだ。",
+      "translation": "The burden on users fell, so the improvement clearly had an effect.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-wake-da"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-wake-da"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "利用者の負担が減った。制度の改善に効果があったわけだ。",
+          "grammarRole": "b2-wake-da"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-wake-da-3",
+      "text": "毎週具体例を使って説明しているから、要点が伝わるわけだ。",
+      "normalizedText": "毎週具体例を使って説明しているから、要点が伝わるわけだ。",
+      "translation": "Using concrete examples every week explains why the main point gets across.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-wake-da"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-wake-da"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "毎週具体例を使って説明しているから、要点が伝わるわけだ。",
+          "grammarRole": "b2-wake-da"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-chigainai-1",
+      "text": "この急な変化には、まだ確認していない要因があるに違いない。",
+      "normalizedText": "この急な変化には、まだ確認していない要因があるに違いない。",
+      "translation": "There must be a factor behind this sudden change that we have not checked yet.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-chigainai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-chigainai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "この急な変化には、まだ確認していない要因があるに違いない。",
+          "grammarRole": "b2-ni-chigainai"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-chigainai-2",
+      "text": "彼の説明は具体的なので、十分に調査したに違いない。",
+      "normalizedText": "彼の説明は具体的なので、十分に調査したに違いない。",
+      "translation": "His explanation is concrete, so he must have researched it thoroughly.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-chigainai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-chigainai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "彼の説明は具体的なので、十分に調査したに違いない。",
+          "grammarRole": "b2-ni-chigainai"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-chigainai-3",
+      "text": "同じ誤解が何度も起きるなら、説明の仕方に問題があるに違いない。",
+      "normalizedText": "同じ誤解が何度も起きるなら、説明の仕方に問題があるに違いない。",
+      "translation": "If the same misunderstanding keeps occurring, there must be a problem with the explanation.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-chigainai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-chigainai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "同じ誤解が何度も起きるなら、説明の仕方に問題があるに違いない。",
+          "grammarRole": "b2-ni-chigainai"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-koto-kara-1",
+      "text": "回答の傾向が世代によって異なることから、別の対策が必要だと考えられる。",
+      "normalizedText": "回答の傾向が世代によって異なることから、別の対策が必要だと考えられる。",
+      "translation": "Because response trends differ by generation, different measures seem necessary.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-koto-kara"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-koto-kara"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "回答の傾向が世代によって異なることから、別の対策が必要だと考えられる。",
+          "grammarRole": "b2-koto-kara"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-koto-kara-2",
+      "text": "利用時間が短くなったことから、機能の改善が役立ったと判断した。",
+      "normalizedText": "利用時間が短くなったことから、機能の改善が役立ったと判断した。",
+      "translation": "From the shorter usage time, we judged that the feature improvement helped.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-koto-kara"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-koto-kara"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "利用時間が短くなったことから、機能の改善が役立ったと判断した。",
+          "grammarRole": "b2-koto-kara"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-koto-kara-3",
+      "text": "複数の資料が同じ結果を示すことから、この仮説には一定の根拠がある。",
+      "normalizedText": "複数の資料が同じ結果を示すことから、この仮説には一定の根拠がある。",
+      "translation": "Because several sources show the same result, this hypothesis has some basis.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-koto-kara"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-koto-kara"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "複数の資料が同じ結果を示すことから、この仮説には一定の根拠がある。",
+          "grammarRole": "b2-koto-kara"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ippou-de-1",
+      "text": "オンラインサービスは利便性を高める一方で、個人情報の管理を複雑にする。",
+      "normalizedText": "オンラインサービスは利便性を高める一方で、個人情報の管理を複雑にする。",
+      "translation": "Online services increase convenience while making personal-data management more complex.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ippou-de"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ippou-de"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "オンラインサービスは利便性を高める一方で、個人情報の管理を複雑にする。",
+          "grammarRole": "b2-ippou-de"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ippou-de-2",
+      "text": "若い世代では利用が増える一方で、高齢者への支援が課題になっている。",
+      "normalizedText": "若い世代では利用が増える一方で、高齢者への支援が課題になっている。",
+      "translation": "Usage is rising among younger generations, while support for older people remains a challenge.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ippou-de"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ippou-de"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "若い世代では利用が増える一方で、高齢者への支援が課題になっている。",
+          "grammarRole": "b2-ippou-de"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ippou-de-3",
+      "text": "効率を重視する一方で、安全性を下げてはいけない。",
+      "normalizedText": "効率を重視する一方で、安全性を下げてはいけない。",
+      "translation": "While emphasizing efficiency, safety must not be reduced.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ippou-de"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ippou-de"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "効率を重視する一方で、安全性を下げてはいけない。",
+          "grammarRole": "b2-ippou-de"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-taishite-1",
+      "text": "利用者の要望に対して、運営側は具体的な説明を示した。",
+      "normalizedText": "利用者の要望に対して、運営側は具体的な説明を示した。",
+      "translation": "The operators gave a concrete explanation in response to users' requests.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-taishite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-taishite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "利用者の要望に対して、運営側は具体的な説明を示した。",
+          "grammarRole": "b2-ni-taishite"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-taishite-2",
+      "text": "短期的な効果に対して、長期的な影響はまだ明確ではない。",
+      "normalizedText": "短期的な効果に対して、長期的な影響はまだ明確ではない。",
+      "translation": "In contrast to the short-term effect, the long-term impact is still unclear.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-taishite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-taishite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "短期的な効果に対して、長期的な影響はまだ明確ではない。",
+          "grammarRole": "b2-ni-taishite"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-taishite-3",
+      "text": "一つの主張に対して、複数の観点から反論を検討した。",
+      "normalizedText": "一つの主張に対して、複数の観点から反論を検討した。",
+      "translation": "We considered counterarguments from multiple viewpoints against one claim.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-taishite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-taishite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "一つの主張に対して、複数の観点から反論を検討した。",
+          "grammarRole": "b2-ni-taishite"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-oite-1",
+      "text": "職場において、情報共有の基準を明確にする必要がある。",
+      "normalizedText": "職場において、情報共有の基準を明確にする必要がある。",
+      "translation": "In the workplace, standards for information sharing need to be made clear.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-ni-oite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-oite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "職場において、情報共有の基準を明確にする必要がある。",
+          "grammarRole": "b2-ni-oite"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-oite-2",
+      "text": "研究において、結果だけでなく調査方法も重要である。",
+      "normalizedText": "研究において、結果だけでなく調査方法も重要である。",
+      "translation": "In research, not only results but also research methods are important.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-ni-oite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-oite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "研究において、結果だけでなく調査方法も重要である。",
+          "grammarRole": "b2-ni-oite"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-oite-3",
+      "text": "地域社会において、世代間の協力が大きな役割を果たす。",
+      "normalizedText": "地域社会において、世代間の協力が大きな役割を果たす。",
+      "translation": "Intergenerational cooperation plays a major role in local communities.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-ni-oite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-oite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "地域社会において、世代間の協力が大きな役割を果たす。",
+          "grammarRole": "b2-ni-oite"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-kanshite-1",
+      "text": "新しい制度に関して、利用者から多くの質問が出た。",
+      "normalizedText": "新しい制度に関して、利用者から多くの質問が出た。",
+      "translation": "Many questions came from users regarding the new system.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-ni-kanshite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-kanshite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "新しい制度に関して、利用者から多くの質問が出た。",
+          "grammarRole": "b2-ni-kanshite"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-kanshite-2",
+      "text": "安全性に関しては、導入前に追加の確認が必要だ。",
+      "normalizedText": "安全性に関しては、導入前に追加の確認が必要だ。",
+      "translation": "Regarding safety, additional checks are needed before implementation.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-ni-kanshite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-kanshite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "安全性に関しては、導入前に追加の確認が必要だ。",
+          "grammarRole": "b2-ni-kanshite"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-kanshite-3",
+      "text": "その調査に関して、資料の選び方に問題があるという指摘もある。",
+      "normalizedText": "その調査に関して、資料の選び方に問題があるという指摘もある。",
+      "translation": "Regarding that survey, there is also criticism of how the materials were selected.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-ni-kanshite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-kanshite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "その調査に関して、資料の選び方に問題があるという指摘もある。",
+          "grammarRole": "b2-ni-kanshite"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-yotte-1",
+      "text": "人によって、同じ説明でも解釈が異なる。",
+      "normalizedText": "人によって、同じ説明でも解釈が異なる。",
+      "translation": "Depending on the person, the same explanation can be interpreted differently.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-ni-yotte"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-yotte"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "人によって、同じ説明でも解釈が異なる。",
+          "grammarRole": "b2-ni-yotte"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-yotte-2",
+      "text": "技術の導入によって、業務の効率が大きく改善した。",
+      "normalizedText": "技術の導入によって、業務の効率が大きく改善した。",
+      "translation": "The introduction of technology greatly improved operational efficiency.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-ni-yotte"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-yotte"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "技術の導入によって、業務の効率が大きく改善した。",
+          "grammarRole": "b2-ni-yotte"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-yotte-3",
+      "text": "調査方法によって、結果の見え方が変わることがある。",
+      "normalizedText": "調査方法によって、結果の見え方が変わることがある。",
+      "translation": "The apparent results can change depending on the research method.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-ni-yotte"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-yotte"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "調査方法によって、結果の見え方が変わることがある。",
+          "grammarRole": "b2-ni-yotte"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-tsurete-1",
+      "text": "経験が増えるにつれて、判断の基準も明確になってきた。",
+      "normalizedText": "経験が増えるにつれて、判断の基準も明確になってきた。",
+      "translation": "As experience increases, the criteria for judgment have become clearer.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-tsurete"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-tsurete"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "経験が増えるにつれて、判断の基準も明確になってきた。",
+          "grammarRole": "b2-ni-tsurete"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-tsurete-2",
+      "text": "利用者が増えるにつれて、問い合わせへの対応が課題になった。",
+      "normalizedText": "利用者が増えるにつれて、問い合わせへの対応が課題になった。",
+      "translation": "As users increased, handling inquiries became a challenge.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-tsurete"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-tsurete"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "利用者が増えるにつれて、問い合わせへの対応が課題になった。",
+          "grammarRole": "b2-ni-tsurete"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-tsurete-3",
+      "text": "技術が普及するにつれて、新しい役割が職場に生まれている。",
+      "normalizedText": "技術が普及するにつれて、新しい役割が職場に生まれている。",
+      "translation": "As technology spreads, new roles are emerging in workplaces.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-tsurete"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-tsurete"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "技術が普及するにつれて、新しい役割が職場に生まれている。",
+          "grammarRole": "b2-ni-tsurete"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-tomonatte-1",
+      "text": "人口構成の変化に伴って、地域の支援制度も見直されている。",
+      "normalizedText": "人口構成の変化に伴って、地域の支援制度も見直されている。",
+      "translation": "Along with demographic changes, local support systems are being reviewed.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-ni-tomonatte"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-tomonatte"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "人口構成の変化に伴って、地域の支援制度も見直されている。",
+          "grammarRole": "b2-ni-tomonatte"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-tomonatte-2",
+      "text": "機能の更新に伴って、利用方法の説明も変更された。",
+      "normalizedText": "機能の更新に伴って、利用方法の説明も変更された。",
+      "translation": "With the feature update, the usage instructions were also changed.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-ni-tomonatte"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-tomonatte"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "機能の更新に伴って、利用方法の説明も変更された。",
+          "grammarRole": "b2-ni-tomonatte"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-tomonatte-3",
+      "text": "業務の拡大に伴って、担当者間の調整がより重要になった。",
+      "normalizedText": "業務の拡大に伴って、担当者間の調整がより重要になった。",
+      "translation": "As operations expanded, coordination among staff became more important.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-ni-tomonatte"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-tomonatte"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "業務の拡大に伴って、担当者間の調整がより重要になった。",
+          "grammarRole": "b2-ni-tomonatte"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ba-hodo-1",
+      "text": "資料を比較すればするほど、共通する傾向が見えてくる。",
+      "normalizedText": "資料を比較すればするほど、共通する傾向が見えてくる。",
+      "translation": "The more you compare the materials, the more common trends become visible.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ba-hodo"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ba-hodo"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "資料を比較すればするほど、共通する傾向が見えてくる。",
+          "grammarRole": "b2-ba-hodo"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ba-hodo-2",
+      "text": "具体的に説明すればするほど、誤解は少なくなる。",
+      "normalizedText": "具体的に説明すればするほど、誤解は少なくなる。",
+      "translation": "The more concretely you explain, the fewer misunderstandings occur.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ba-hodo"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ba-hodo"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "具体的に説明すればするほど、誤解は少なくなる。",
+          "grammarRole": "b2-ba-hodo"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ba-hodo-3",
+      "text": "検討すればするほど、単純な問題ではないことが分かる。",
+      "normalizedText": "検討すればするほど、単純な問題ではないことが分かる。",
+      "translation": "The more we examine it, the more we see that it is not a simple problem.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ba-hodo"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ba-hodo"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "検討すればするほど、単純な問題ではないことが分かる。",
+          "grammarRole": "b2-ba-hodo"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-mono-no-1",
+      "text": "一定の効果は認められるものの、長期的な影響はまだ分からない。",
+      "normalizedText": "一定の効果は認められるものの、長期的な影響はまだ分からない。",
+      "translation": "Although some effect is recognized, the long-term impact is still unknown.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-mono-no"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-mono-no"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "一定の効果は認められるものの、長期的な影響はまだ分からない。",
+          "grammarRole": "b2-mono-no"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-mono-no-2",
+      "text": "制度は改善されたものの、利用者の負担は完全には減っていない。",
+      "normalizedText": "制度は改善されたものの、利用者の負担は完全には減っていない。",
+      "translation": "Although the system improved, users' burden has not been completely reduced.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-mono-no"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-mono-no"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "制度は改善されたものの、利用者の負担は完全には減っていない。",
+          "grammarRole": "b2-mono-no"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-mono-no-3",
+      "text": "提案には賛成できるものの、実施方法には検討の余地がある。",
+      "normalizedText": "提案には賛成できるものの、実施方法には検討の余地がある。",
+      "translation": "Although I can agree with the proposal, the implementation method still needs consideration.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-mono-no"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-mono-no"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "提案には賛成できるものの、実施方法には検討の余地がある。",
+          "grammarRole": "b2-mono-no"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-mo-kakawarazu-1",
+      "text": "十分な説明があったにもかかわらず、同じ誤解が続いた。",
+      "normalizedText": "十分な説明があったにもかかわらず、同じ誤解が続いた。",
+      "translation": "Despite sufficient explanation, the same misunderstanding continued.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-ni-mo-kakawarazu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-mo-kakawarazu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "十分な説明があったにもかかわらず、同じ誤解が続いた。",
+          "grammarRole": "b2-ni-mo-kakawarazu"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-mo-kakawarazu-2",
+      "text": "負担が大きいにもかかわらず、多くの人が協力を続けている。",
+      "normalizedText": "負担が大きいにもかかわらず、多くの人が協力を続けている。",
+      "translation": "Despite the heavy burden, many people continue to cooperate.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-ni-mo-kakawarazu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-mo-kakawarazu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "負担が大きいにもかかわらず、多くの人が協力を続けている。",
+          "grammarRole": "b2-ni-mo-kakawarazu"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-mo-kakawarazu-3",
+      "text": "結果が明確でないにもかかわらず、結論だけが広く共有された。",
+      "normalizedText": "結果が明確でないにもかかわらず、結論だけが広く共有された。",
+      "translation": "Despite unclear results, only the conclusion was widely shared.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-ni-mo-kakawarazu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-mo-kakawarazu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "結果が明確でないにもかかわらず、結論だけが広く共有された。",
+          "grammarRole": "b2-ni-mo-kakawarazu"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-suginai-1",
+      "text": "今回の結果は一つの調査にすぎず、一般化には注意が必要だ。",
+      "normalizedText": "今回の結果は一つの調査にすぎず、一般化には注意が必要だ。",
+      "translation": "This result is only one survey, so generalization requires caution.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-ni-suginai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-suginai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "今回の結果は一つの調査にすぎず、一般化には注意が必要だ。",
+          "grammarRole": "b2-ni-suginai"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-suginai-2",
+      "text": "その数字は全体の一部にすぎない。",
+      "normalizedText": "その数字は全体の一部にすぎない。",
+      "translation": "That figure is only one part of the whole.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-ni-suginai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-suginai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "その数字は全体の一部にすぎない。",
+          "grammarRole": "b2-ni-suginai"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-ni-suginai-3",
+      "text": "この説明は可能な解釈の一つにすぎない。",
+      "normalizedText": "この説明は可能な解釈の一つにすぎない。",
+      "translation": "This explanation is merely one possible interpretation.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-ni-suginai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-suginai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "この説明は可能な解釈の一つにすぎない。",
+          "grammarRole": "b2-ni-suginai"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-osore-ga-aru-1",
+      "text": "確認せずに情報を共有すると、誤解が広がるおそれがある。",
+      "normalizedText": "確認せずに情報を共有すると、誤解が広がるおそれがある。",
+      "translation": "Sharing information without checking it risks spreading misunderstandings.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-osore-ga-aru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-osore-ga-aru"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "確認せずに情報を共有すると、誤解が広がるおそれがある。",
+          "grammarRole": "b2-osore-ga-aru"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-osore-ga-aru-2",
+      "text": "効率だけを優先すると、安全性が下がるおそれがある。",
+      "normalizedText": "効率だけを優先すると、安全性が下がるおそれがある。",
+      "translation": "Prioritizing efficiency alone risks reducing safety.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-osore-ga-aru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-osore-ga-aru"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "効率だけを優先すると、安全性が下がるおそれがある。",
+          "grammarRole": "b2-osore-ga-aru"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-sentence-osore-ga-aru-3",
+      "text": "一つの資料だけに基づくと、判断が偏るおそれがある。",
+      "normalizedText": "一つの資料だけに基づくと、判断が偏るおそれがある。",
+      "translation": "Basing a judgment on only one source risks bias.",
+      "level": "B2",
+      "register": "formal",
+      "grammarIds": [
+        "b2-osore-ga-aru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-osore-ga-aru"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "一つの資料だけに基づくと、判断が偏るおそれがある。",
+          "grammarRole": "b2-osore-ga-aru"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "discourse"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dialogue-tech-1",
+      "text": "A：新しい制度に関して、まず利用者の意見を調査するべきだと思います。",
+      "normalizedText": "A:新しい制度に関して、まず利用者の意見を調査するべきだと思います。",
+      "translation": "A: Regarding the new system, I think we should first survey users' opinions.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-kanshite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-kanshite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "A：新しい制度に関して、まず利用者の意見を調査するべきだと思います。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dialogue-tech-2",
+      "text": "B：利便性は高まる一方で、個人情報の管理が難しくなるおそれがあります。",
+      "normalizedText": "B:利便性は高まる一方で、個人情報の管理が難しくなるおそれがあります。",
+      "translation": "B: Convenience will increase, but there is a risk that managing personal information will become harder.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ippou-de",
+        "b2-osore-ga-aru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ippou-de"
+        },
+        {
+          "kind": "grammar",
+          "id": "b2-osore-ga-aru"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "B：利便性は高まる一方で、個人情報の管理が難しくなるおそれがあります。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dialogue-tech-3",
+      "text": "A：問題があるからといって、導入すべきではないわけではありません。",
+      "normalizedText": "A:問題があるからといって、導入すべきではないわけではありません。",
+      "translation": "A: Even if there are problems, that does not necessarily mean we should not introduce it.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-wake-dewa-nai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-wake-dewa-nai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "A：問題があるからといって、導入すべきではないわけではありません。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dialogue-tech-4",
+      "text": "B：小さい範囲で試した結果から、一定の効果があると考えられます。",
+      "normalizedText": "B:小さい範囲で試した結果から、一定の効果があると考えられます。",
+      "translation": "B: From the results of a small-scale trial, we can infer that there is some effect.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-koto-kara"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-koto-kara"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "B：小さい範囲で試した結果から、一定の効果があると考えられます。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dialogue-tech-5",
+      "text": "A：では、地域によって結果が違うかどうかも確認してから判断しましょう。",
+      "normalizedText": "A:では、地域によって結果が違うかどうかも確認してから判断しましょう。",
+      "translation": "A: Then let's decide after checking whether the results differ by region.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-yotte"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-yotte"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "A：では、地域によって結果が違うかどうかも確認してから判断しましょう。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dialogue-support-1",
+      "text": "A：若い世代に対しては、オンライン支援を増やすべきだと思います。",
+      "normalizedText": "A:若い世代に対しては、オンライン支援を増やすべきだと思います。",
+      "translation": "A: I think we should increase online support for younger generations.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-taishite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-taishite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "A：若い世代に対しては、オンライン支援を増やすべきだと思います。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dialogue-support-2",
+      "text": "B：賛成できるものの、高齢者の負担も考える必要があります。",
+      "normalizedText": "B:賛成できるものの、高齢者の負担も考える必要があります。",
+      "translation": "B: Although I can agree, we also need to consider the burden on older people.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-mono-no"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-mono-no"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "B：賛成できるものの、高齢者の負担も考える必要があります。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dialogue-support-3",
+      "text": "A：地域によって必要な支援が異なるので、一つの方法だけで十分なわけではありません。",
+      "normalizedText": "A:地域によって必要な支援が異なるので、一つの方法だけで十分なわけではありません。",
+      "translation": "A: Since needed support differs by region, one method alone is not necessarily enough.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-yotte",
+        "b2-wake-dewa-nai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-yotte"
+        },
+        {
+          "kind": "grammar",
+          "id": "b2-wake-dewa-nai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "A：地域によって必要な支援が異なるので、一つの方法だけで十分なわけではありません。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dialogue-support-4",
+      "text": "B：利用者が増えるにつれて、対面での支援も調整したほうがいいですね。",
+      "normalizedText": "B:利用者が増えるにつれて、対面での支援も調整したほうがいいですね。",
+      "translation": "B: As the number of users grows, we should adjust in-person support too.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-tsurete"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-tsurete"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "B：利用者が増えるにつれて、対面での支援も調整したほうがいいですね。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dialogue-support-5",
+      "text": "A：その方針に関して、世代ごとの結果を比較してからもう一度検討しましょう。",
+      "normalizedText": "A:その方針に関して、世代ごとの結果を比較してからもう一度検討しましょう。",
+      "translation": "A: Regarding that policy, let's compare results by generation and examine it again.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-kanshite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-kanshite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "A：その方針に関して、世代ごとの結果を比較してからもう一度検討しましょう。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
     }
   ],
   "audioAssets": [
@@ -35291,6 +41059,228 @@
       "sourceIds": [
         "thiepn-original"
       ]
+    },
+    {
+      "id": "can-do-b2-unit-41",
+      "statement": "Build an evidence-based explanation",
+      "level": "B2",
+      "languageActivity": "reading",
+      "grammarIds": [
+        "b2-koto-kara",
+        "b2-ni-chigainai"
+      ],
+      "sentenceIds": [
+        "b2-sentence-koto-kara-1",
+        "b2-sentence-koto-kara-2",
+        "b2-sentence-koto-kara-3",
+        "b2-sentence-ni-chigainai-1",
+        "b2-sentence-ni-chigainai-2",
+        "b2-sentence-ni-chigainai-3"
+      ],
+      "prerequisiteIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-b2-unit-42",
+      "statement": "Qualify a claim without losing your position",
+      "level": "B2",
+      "languageActivity": "writing",
+      "grammarIds": [
+        "b2-wake-dewa-nai",
+        "b2-ni-suginai"
+      ],
+      "sentenceIds": [
+        "b2-sentence-wake-dewa-nai-1",
+        "b2-sentence-wake-dewa-nai-2",
+        "b2-sentence-wake-dewa-nai-3",
+        "b2-sentence-ni-suginai-1",
+        "b2-sentence-ni-suginai-2",
+        "b2-sentence-ni-suginai-3"
+      ],
+      "prerequisiteIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-b2-unit-43",
+      "statement": "Organize balanced contrast and concession",
+      "level": "B2",
+      "languageActivity": "spoken_production",
+      "grammarIds": [
+        "b2-ippou-de",
+        "b2-mono-no"
+      ],
+      "sentenceIds": [
+        "b2-sentence-ippou-de-1",
+        "b2-sentence-ippou-de-2",
+        "b2-sentence-ippou-de-3",
+        "b2-sentence-mono-no-1",
+        "b2-sentence-mono-no-2",
+        "b2-sentence-mono-no-3"
+      ],
+      "prerequisiteIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-b2-unit-44",
+      "statement": "Frame topics and settings formally",
+      "level": "B2",
+      "languageActivity": "reading",
+      "grammarIds": [
+        "b2-ni-oite",
+        "b2-ni-kanshite"
+      ],
+      "sentenceIds": [
+        "b2-sentence-ni-oite-1",
+        "b2-sentence-ni-oite-2",
+        "b2-sentence-ni-oite-3",
+        "b2-sentence-ni-kanshite-1",
+        "b2-sentence-ni-kanshite-2",
+        "b2-sentence-ni-kanshite-3"
+      ],
+      "prerequisiteIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-b2-unit-45",
+      "statement": "Explain differences by condition and perspective",
+      "level": "B2",
+      "languageActivity": "spoken_interaction",
+      "grammarIds": [
+        "b2-ni-taishite",
+        "b2-ni-yotte"
+      ],
+      "sentenceIds": [
+        "b2-sentence-ni-taishite-1",
+        "b2-sentence-ni-taishite-2",
+        "b2-sentence-ni-taishite-3",
+        "b2-sentence-ni-yotte-1",
+        "b2-sentence-ni-yotte-2",
+        "b2-sentence-ni-yotte-3"
+      ],
+      "prerequisiteIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-b2-unit-46",
+      "statement": "Describe linked change over time",
+      "level": "B2",
+      "languageActivity": "writing",
+      "grammarIds": [
+        "b2-ni-tsurete",
+        "b2-ni-tomonatte"
+      ],
+      "sentenceIds": [
+        "b2-sentence-ni-tsurete-1",
+        "b2-sentence-ni-tsurete-2",
+        "b2-sentence-ni-tsurete-3",
+        "b2-sentence-ni-tomonatte-1",
+        "b2-sentence-ni-tomonatte-2",
+        "b2-sentence-ni-tomonatte-3"
+      ],
+      "prerequisiteIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-b2-unit-47",
+      "statement": "Describe proportional relationships precisely",
+      "level": "B2",
+      "languageActivity": "spoken_production",
+      "grammarIds": [
+        "b2-ba-hodo",
+        "b2-wake-da"
+      ],
+      "sentenceIds": [
+        "b2-sentence-ba-hodo-1",
+        "b2-sentence-ba-hodo-2",
+        "b2-sentence-ba-hodo-3",
+        "b2-sentence-wake-da-1",
+        "b2-sentence-wake-da-2",
+        "b2-sentence-wake-da-3"
+      ],
+      "prerequisiteIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-b2-unit-48",
+      "statement": "State risks and strong inferences cautiously",
+      "level": "B2",
+      "languageActivity": "listening",
+      "grammarIds": [
+        "b2-osore-ga-aru",
+        "b2-ni-chigainai"
+      ],
+      "sentenceIds": [
+        "b2-sentence-osore-ga-aru-1",
+        "b2-sentence-osore-ga-aru-2",
+        "b2-sentence-osore-ga-aru-3",
+        "b2-sentence-ni-chigainai-1",
+        "b2-sentence-ni-chigainai-2",
+        "b2-sentence-ni-chigainai-3"
+      ],
+      "prerequisiteIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-b2-unit-49",
+      "statement": "Respond to opposing arguments constructively",
+      "level": "B2",
+      "languageActivity": "spoken_interaction",
+      "grammarIds": [
+        "b2-ni-mo-kakawarazu",
+        "b2-mono-no"
+      ],
+      "sentenceIds": [
+        "b2-sentence-ni-mo-kakawarazu-1",
+        "b2-sentence-ni-mo-kakawarazu-2",
+        "b2-sentence-ni-mo-kakawarazu-3",
+        "b2-sentence-mono-no-1",
+        "b2-sentence-mono-no-2",
+        "b2-sentence-mono-no-3"
+      ],
+      "prerequisiteIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-b2-unit-50",
+      "statement": "Synthesize evidence into a structured B2 response",
+      "level": "B2",
+      "languageActivity": "writing",
+      "grammarIds": [
+        "b2-koto-kara",
+        "b2-ippou-de",
+        "b2-ni-suginai",
+        "b2-osore-ga-aru"
+      ],
+      "sentenceIds": [
+        "b2-sentence-koto-kara-1",
+        "b2-sentence-koto-kara-2",
+        "b2-sentence-koto-kara-3",
+        "b2-sentence-ippou-de-1",
+        "b2-sentence-ippou-de-2",
+        "b2-sentence-ippou-de-3"
+      ],
+      "prerequisiteIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
     }
   ],
   "courseUnits": [
@@ -37123,6 +43113,358 @@
       "sourceIds": [
         "thiepn-original"
       ]
+    },
+    {
+      "id": "b2-unit-41",
+      "title": "Build an evidence-based explanation",
+      "order": 41,
+      "level": "B2",
+      "canDoId": "can-do-b2-unit-41",
+      "prerequisiteUnitIds": [
+        "b1-unit-40"
+      ],
+      "grammarIds": [
+        "b2-koto-kara",
+        "b2-ni-chigainai"
+      ],
+      "sentenceIds": [
+        "b2-sentence-koto-kara-1",
+        "b2-sentence-koto-kara-2",
+        "b2-sentence-koto-kara-3",
+        "b2-sentence-ni-chigainai-1",
+        "b2-sentence-ni-chigainai-2",
+        "b2-sentence-ni-chigainai-3"
+      ],
+      "vocabularyIds": [
+        "b2-evidence",
+        "b2-factor",
+        "b2-survey",
+        "b2-result",
+        "b2-analysis",
+        "b2-hypothesis",
+        "b2-material",
+        "b2-criterion"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-unit-42",
+      "title": "Qualify a claim without losing your position",
+      "order": 42,
+      "level": "B2",
+      "canDoId": "can-do-b2-unit-42",
+      "prerequisiteUnitIds": [
+        "b2-unit-41"
+      ],
+      "grammarIds": [
+        "b2-wake-dewa-nai",
+        "b2-ni-suginai"
+      ],
+      "sentenceIds": [
+        "b2-sentence-wake-dewa-nai-1",
+        "b2-sentence-wake-dewa-nai-2",
+        "b2-sentence-wake-dewa-nai-3",
+        "b2-sentence-ni-suginai-1",
+        "b2-sentence-ni-suginai-2",
+        "b2-sentence-ni-suginai-3"
+      ],
+      "vocabularyIds": [
+        "b2-claim",
+        "b2-viewpoint",
+        "b2-premise",
+        "b2-interpretation",
+        "b2-conclusion",
+        "b2-main-point",
+        "b2-clear",
+        "b2-appropriate"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-unit-43",
+      "title": "Organize balanced contrast and concession",
+      "order": 43,
+      "level": "B2",
+      "canDoId": "can-do-b2-unit-43",
+      "prerequisiteUnitIds": [
+        "b2-unit-42"
+      ],
+      "grammarIds": [
+        "b2-ippou-de",
+        "b2-mono-no"
+      ],
+      "sentenceIds": [
+        "b2-sentence-ippou-de-1",
+        "b2-sentence-ippou-de-2",
+        "b2-sentence-ippou-de-3",
+        "b2-sentence-mono-no-1",
+        "b2-sentence-mono-no-2",
+        "b2-sentence-mono-no-3"
+      ],
+      "vocabularyIds": [
+        "b2-effect",
+        "b2-challenge",
+        "b2-influence",
+        "b2-burden",
+        "b2-support",
+        "b2-cooperation",
+        "b2-complex",
+        "b2-flexible"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-unit-44",
+      "title": "Frame topics and settings formally",
+      "order": 44,
+      "level": "B2",
+      "canDoId": "can-do-b2-unit-44",
+      "prerequisiteUnitIds": [
+        "b2-unit-43"
+      ],
+      "grammarIds": [
+        "b2-ni-oite",
+        "b2-ni-kanshite"
+      ],
+      "sentenceIds": [
+        "b2-sentence-ni-oite-1",
+        "b2-sentence-ni-oite-2",
+        "b2-sentence-ni-oite-3",
+        "b2-sentence-ni-kanshite-1",
+        "b2-sentence-ni-kanshite-2",
+        "b2-sentence-ni-kanshite-3"
+      ],
+      "vocabularyIds": [
+        "b2-system",
+        "b2-workplace",
+        "b2-duties",
+        "b2-guideline",
+        "b2-responsibility",
+        "b2-role",
+        "b2-context",
+        "b2-explanation"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-unit-45",
+      "title": "Explain differences by condition and perspective",
+      "order": 45,
+      "level": "B2",
+      "canDoId": "can-do-b2-unit-45",
+      "prerequisiteUnitIds": [
+        "b2-unit-44"
+      ],
+      "grammarIds": [
+        "b2-ni-taishite",
+        "b2-ni-yotte"
+      ],
+      "sentenceIds": [
+        "b2-sentence-ni-taishite-1",
+        "b2-sentence-ni-taishite-2",
+        "b2-sentence-ni-taishite-3",
+        "b2-sentence-ni-yotte-1",
+        "b2-sentence-ni-yotte-2",
+        "b2-sentence-ni-yotte-3"
+      ],
+      "vocabularyIds": [
+        "b2-comparison",
+        "b2-generation",
+        "b2-community",
+        "b2-gap",
+        "b2-judgment",
+        "b2-evaluation",
+        "b2-differ",
+        "b2-viewpoint"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-unit-46",
+      "title": "Describe linked change over time",
+      "order": 46,
+      "level": "B2",
+      "canDoId": "can-do-b2-unit-46",
+      "prerequisiteUnitIds": [
+        "b2-unit-45"
+      ],
+      "grammarIds": [
+        "b2-ni-tsurete",
+        "b2-ni-tomonatte"
+      ],
+      "sentenceIds": [
+        "b2-sentence-ni-tsurete-1",
+        "b2-sentence-ni-tsurete-2",
+        "b2-sentence-ni-tsurete-3",
+        "b2-sentence-ni-tomonatte-1",
+        "b2-sentence-ni-tomonatte-2",
+        "b2-sentence-ni-tomonatte-3"
+      ],
+      "vocabularyIds": [
+        "b2-adoption",
+        "b2-introduction",
+        "b2-update",
+        "b2-technology",
+        "b2-employment",
+        "b2-coordination",
+        "b2-accompany",
+        "b2-improvement"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-unit-47",
+      "title": "Describe proportional relationships precisely",
+      "order": 47,
+      "level": "B2",
+      "canDoId": "can-do-b2-unit-47",
+      "prerequisiteUnitIds": [
+        "b2-unit-46"
+      ],
+      "grammarIds": [
+        "b2-ba-hodo",
+        "b2-wake-da"
+      ],
+      "sentenceIds": [
+        "b2-sentence-ba-hodo-1",
+        "b2-sentence-ba-hodo-2",
+        "b2-sentence-ba-hodo-3",
+        "b2-sentence-wake-da-1",
+        "b2-sentence-wake-da-2",
+        "b2-sentence-wake-da-3"
+      ],
+      "vocabularyIds": [
+        "b2-efficiency",
+        "b2-safety",
+        "b2-convenience",
+        "b2-function",
+        "b2-user",
+        "b2-raise",
+        "b2-control",
+        "b2-overall"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-unit-48",
+      "title": "State risks and strong inferences cautiously",
+      "order": 48,
+      "level": "B2",
+      "canDoId": "can-do-b2-unit-48",
+      "prerequisiteUnitIds": [
+        "b2-unit-47"
+      ],
+      "grammarIds": [
+        "b2-osore-ga-aru",
+        "b2-ni-chigainai"
+      ],
+      "sentenceIds": [
+        "b2-sentence-osore-ga-aru-1",
+        "b2-sentence-osore-ga-aru-2",
+        "b2-sentence-osore-ga-aru-3",
+        "b2-sentence-ni-chigainai-1",
+        "b2-sentence-ni-chigainai-2",
+        "b2-sentence-ni-chigainai-3"
+      ],
+      "vocabularyIds": [
+        "b2-personal-data",
+        "b2-dependence",
+        "b2-safety",
+        "b2-serious",
+        "b2-confirmation",
+        "b2-measure",
+        "b2-evidence",
+        "b2-judgment"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-unit-49",
+      "title": "Respond to opposing arguments constructively",
+      "order": 49,
+      "level": "B2",
+      "canDoId": "can-do-b2-unit-49",
+      "prerequisiteUnitIds": [
+        "b2-unit-48"
+      ],
+      "grammarIds": [
+        "b2-ni-mo-kakawarazu",
+        "b2-mono-no"
+      ],
+      "sentenceIds": [
+        "b2-sentence-ni-mo-kakawarazu-1",
+        "b2-sentence-ni-mo-kakawarazu-2",
+        "b2-sentence-ni-mo-kakawarazu-3",
+        "b2-sentence-mono-no-1",
+        "b2-sentence-mono-no-2",
+        "b2-sentence-mono-no-3"
+      ],
+      "vocabularyIds": [
+        "b2-counterargument",
+        "b2-proposal",
+        "b2-intention",
+        "b2-misunderstanding",
+        "b2-acknowledge",
+        "b2-state",
+        "b2-indicate",
+        "b2-address"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-unit-50",
+      "title": "Synthesize evidence into a structured B2 response",
+      "order": 50,
+      "level": "B2",
+      "canDoId": "can-do-b2-unit-50",
+      "prerequisiteUnitIds": [
+        "b2-unit-49"
+      ],
+      "grammarIds": [
+        "b2-koto-kara",
+        "b2-ippou-de",
+        "b2-ni-suginai",
+        "b2-osore-ga-aru"
+      ],
+      "sentenceIds": [
+        "b2-sentence-koto-kara-1",
+        "b2-sentence-koto-kara-2",
+        "b2-sentence-koto-kara-3",
+        "b2-sentence-ippou-de-1",
+        "b2-sentence-ippou-de-2",
+        "b2-sentence-ippou-de-3"
+      ],
+      "vocabularyIds": [
+        "b2-analysis",
+        "b2-conclusion",
+        "b2-main-point",
+        "b2-evaluation",
+        "b2-consideration",
+        "b2-therefore",
+        "b2-furthermore",
+        "b2-particularly"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
     }
   ],
   "readingTexts": [
@@ -38901,6 +45243,634 @@
       "sourceIds": [
         "thiepn-original"
       ]
+    },
+    {
+      "id": "b2-text-evidence-report",
+      "title": "Evidence before conclusions",
+      "description": "A short report that separates observations, inference and conclusion.",
+      "level": "B2",
+      "kind": "functional",
+      "sentenceIds": [
+        "b2-sentence-koto-kara-1",
+        "b2-sentence-ni-yotte-1",
+        "b2-sentence-ni-suginai-1",
+        "b2-sentence-mono-no-1",
+        "b2-sentence-osore-ga-aru-3",
+        "b2-sentence-wake-dewa-nai-1"
+      ],
+      "targetLexemeIds": [
+        "b2-evidence",
+        "b2-factor",
+        "b2-survey",
+        "b2-result",
+        "b2-analysis",
+        "b2-hypothesis",
+        "b2-material",
+        "b2-criterion",
+        "b2-claim",
+        "b2-viewpoint",
+        "b2-premise",
+        "b2-interpretation",
+        "b2-conclusion",
+        "b2-main-point",
+        "b2-clear",
+        "b2-appropriate",
+        "b2-effect",
+        "b2-challenge"
+      ],
+      "grammarIds": [
+        "b2-koto-kara",
+        "b2-ni-yotte",
+        "b2-ni-suginai",
+        "b2-mono-no",
+        "b2-osore-ga-aru",
+        "b2-wake-dewa-nai"
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "independent-communication"
+      ],
+      "estimatedMinutes": 6,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "b2-text-evidence-report-q1",
+          "prompt": "Which statement best matches the text's main point?",
+          "choices": [
+            "The issue has only one cause.",
+            "The text balances evidence, limits, or consequences.",
+            "No further evaluation is needed.",
+            "The examples are unrelated."
+          ],
+          "answer": "The text balances evidence, limits, or consequences.",
+          "explanation": "The B2 text is organized around evidence, qualification and connected reasoning."
+        },
+        {
+          "id": "b2-text-evidence-report-q2",
+          "prompt": "What is the safest summary of the writer's stance?",
+          "choices": [
+            "Completely certain",
+            "Qualified and evidence-based",
+            "Unrelated to the evidence",
+            "Purely emotional"
+          ],
+          "answer": "Qualified and evidence-based",
+          "explanation": "The target discourse avoids overclaiming and makes the basis for conclusions explicit."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-text-technology-balance",
+      "title": "Convenience and responsibility",
+      "description": "A discussion balancing convenience, privacy, safety and efficiency.",
+      "level": "B2",
+      "kind": "dialogue",
+      "sentenceIds": [
+        "b2-dialogue-tech-1",
+        "b2-dialogue-tech-2",
+        "b2-dialogue-tech-3",
+        "b2-dialogue-tech-4",
+        "b2-dialogue-tech-5"
+      ],
+      "targetLexemeIds": [
+        "b2-evidence",
+        "b2-factor",
+        "b2-survey",
+        "b2-result",
+        "b2-analysis",
+        "b2-hypothesis",
+        "b2-material",
+        "b2-criterion",
+        "b2-claim",
+        "b2-viewpoint",
+        "b2-premise",
+        "b2-interpretation",
+        "b2-conclusion",
+        "b2-main-point",
+        "b2-clear",
+        "b2-appropriate",
+        "b2-effect",
+        "b2-challenge"
+      ],
+      "grammarIds": [
+        "b2-ni-kanshite",
+        "b2-ippou-de",
+        "b2-osore-ga-aru",
+        "b2-wake-dewa-nai",
+        "b2-koto-kara",
+        "b2-ni-yotte"
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "independent-communication"
+      ],
+      "estimatedMinutes": 6,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "b2-text-technology-balance-q1",
+          "prompt": "Which statement best matches the text's main point?",
+          "choices": [
+            "The issue has only one cause.",
+            "The text balances evidence, limits, or consequences.",
+            "No further evaluation is needed.",
+            "The examples are unrelated."
+          ],
+          "answer": "The text balances evidence, limits, or consequences.",
+          "explanation": "The B2 text is organized around evidence, qualification and connected reasoning."
+        },
+        {
+          "id": "b2-text-technology-balance-q2",
+          "prompt": "What is the safest summary of the writer's stance?",
+          "choices": [
+            "Completely certain",
+            "Qualified and evidence-based",
+            "Unrelated to the evidence",
+            "Purely emotional"
+          ],
+          "answer": "Qualified and evidence-based",
+          "explanation": "The target discourse avoids overclaiming and makes the basis for conclusions explicit."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-text-workplace-change",
+      "title": "Changing work processes",
+      "description": "A workplace update about system change, coordination and responsibilities.",
+      "level": "B2",
+      "kind": "functional",
+      "sentenceIds": [
+        "b2-sentence-ni-tomonatte-2",
+        "b2-sentence-ni-tomonatte-3",
+        "b2-sentence-ni-oite-1",
+        "b2-sentence-ni-yotte-2",
+        "b2-sentence-ni-tsurete-3",
+        "b2-sentence-ba-hodo-2"
+      ],
+      "targetLexemeIds": [
+        "b2-evidence",
+        "b2-factor",
+        "b2-survey",
+        "b2-result",
+        "b2-analysis",
+        "b2-hypothesis",
+        "b2-material",
+        "b2-criterion",
+        "b2-claim",
+        "b2-viewpoint",
+        "b2-premise",
+        "b2-interpretation",
+        "b2-conclusion",
+        "b2-main-point",
+        "b2-clear",
+        "b2-appropriate",
+        "b2-effect",
+        "b2-challenge"
+      ],
+      "grammarIds": [
+        "b2-ni-tomonatte",
+        "b2-ni-oite",
+        "b2-ni-yotte",
+        "b2-ni-tsurete",
+        "b2-ba-hodo"
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "independent-communication"
+      ],
+      "estimatedMinutes": 6,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "b2-text-workplace-change-q1",
+          "prompt": "Which statement best matches the text's main point?",
+          "choices": [
+            "The issue has only one cause.",
+            "The text balances evidence, limits, or consequences.",
+            "No further evaluation is needed.",
+            "The examples are unrelated."
+          ],
+          "answer": "The text balances evidence, limits, or consequences.",
+          "explanation": "The B2 text is organized around evidence, qualification and connected reasoning."
+        },
+        {
+          "id": "b2-text-workplace-change-q2",
+          "prompt": "What is the safest summary of the writer's stance?",
+          "choices": [
+            "Completely certain",
+            "Qualified and evidence-based",
+            "Unrelated to the evidence",
+            "Purely emotional"
+          ],
+          "answer": "Qualified and evidence-based",
+          "explanation": "The target discourse avoids overclaiming and makes the basis for conclusions explicit."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-text-community-support",
+      "title": "Support across generations",
+      "description": "A community case about changing needs and intergenerational support.",
+      "level": "B2",
+      "kind": "dialogue",
+      "sentenceIds": [
+        "b2-dialogue-support-1",
+        "b2-dialogue-support-2",
+        "b2-dialogue-support-3",
+        "b2-dialogue-support-4",
+        "b2-dialogue-support-5"
+      ],
+      "targetLexemeIds": [
+        "b2-evidence",
+        "b2-factor",
+        "b2-survey",
+        "b2-result",
+        "b2-analysis",
+        "b2-hypothesis",
+        "b2-material",
+        "b2-criterion",
+        "b2-claim",
+        "b2-viewpoint",
+        "b2-premise",
+        "b2-interpretation",
+        "b2-conclusion",
+        "b2-main-point",
+        "b2-clear",
+        "b2-appropriate",
+        "b2-effect",
+        "b2-challenge"
+      ],
+      "grammarIds": [
+        "b2-ni-taishite",
+        "b2-mono-no",
+        "b2-ni-yotte",
+        "b2-wake-dewa-nai",
+        "b2-ni-tsurete",
+        "b2-ni-kanshite"
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "independent-communication"
+      ],
+      "estimatedMinutes": 6,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "b2-text-community-support-q1",
+          "prompt": "Which statement best matches the text's main point?",
+          "choices": [
+            "The issue has only one cause.",
+            "The text balances evidence, limits, or consequences.",
+            "No further evaluation is needed.",
+            "The examples are unrelated."
+          ],
+          "answer": "The text balances evidence, limits, or consequences.",
+          "explanation": "The B2 text is organized around evidence, qualification and connected reasoning."
+        },
+        {
+          "id": "b2-text-community-support-q2",
+          "prompt": "What is the safest summary of the writer's stance?",
+          "choices": [
+            "Completely certain",
+            "Qualified and evidence-based",
+            "Unrelated to the evidence",
+            "Purely emotional"
+          ],
+          "answer": "Qualified and evidence-based",
+          "explanation": "The target discourse avoids overclaiming and makes the basis for conclusions explicit."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-text-research-claim",
+      "title": "From data to a cautious claim",
+      "description": "A compact research-style argument with explicit limits.",
+      "level": "B2",
+      "kind": "functional",
+      "sentenceIds": [
+        "b2-sentence-koto-kara-3",
+        "b2-sentence-ni-suginai-1",
+        "b2-sentence-ni-chigainai-1",
+        "b2-sentence-mono-no-1",
+        "b2-sentence-ni-mo-kakawarazu-3",
+        "b2-sentence-osore-ga-aru-3"
+      ],
+      "targetLexemeIds": [
+        "b2-evidence",
+        "b2-factor",
+        "b2-survey",
+        "b2-result",
+        "b2-analysis",
+        "b2-hypothesis",
+        "b2-material",
+        "b2-criterion",
+        "b2-claim",
+        "b2-viewpoint",
+        "b2-premise",
+        "b2-interpretation",
+        "b2-conclusion",
+        "b2-main-point",
+        "b2-clear",
+        "b2-appropriate",
+        "b2-effect",
+        "b2-challenge"
+      ],
+      "grammarIds": [
+        "b2-koto-kara",
+        "b2-ni-suginai",
+        "b2-ni-chigainai",
+        "b2-mono-no",
+        "b2-ni-mo-kakawarazu",
+        "b2-osore-ga-aru"
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "independent-communication"
+      ],
+      "estimatedMinutes": 6,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "b2-text-research-claim-q1",
+          "prompt": "Which statement best matches the text's main point?",
+          "choices": [
+            "The issue has only one cause.",
+            "The text balances evidence, limits, or consequences.",
+            "No further evaluation is needed.",
+            "The examples are unrelated."
+          ],
+          "answer": "The text balances evidence, limits, or consequences.",
+          "explanation": "The B2 text is organized around evidence, qualification and connected reasoning."
+        },
+        {
+          "id": "b2-text-research-claim-q2",
+          "prompt": "What is the safest summary of the writer's stance?",
+          "choices": [
+            "Completely certain",
+            "Qualified and evidence-based",
+            "Unrelated to the evidence",
+            "Purely emotional"
+          ],
+          "answer": "Qualified and evidence-based",
+          "explanation": "The target discourse avoids overclaiming and makes the basis for conclusions explicit."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-text-counterargument",
+      "title": "Responding to disagreement",
+      "description": "A discussion that acknowledges disagreement without collapsing the argument.",
+      "level": "B2",
+      "kind": "dialogue",
+      "sentenceIds": [
+        "b2-sentence-ni-taishite-3",
+        "b2-sentence-mono-no-3",
+        "b2-sentence-wake-dewa-nai-3",
+        "b2-sentence-ni-suginai-3",
+        "b2-sentence-ni-kanshite-3",
+        "b2-sentence-ba-hodo-3"
+      ],
+      "targetLexemeIds": [
+        "b2-evidence",
+        "b2-factor",
+        "b2-survey",
+        "b2-result",
+        "b2-analysis",
+        "b2-hypothesis",
+        "b2-material",
+        "b2-criterion",
+        "b2-claim",
+        "b2-viewpoint",
+        "b2-premise",
+        "b2-interpretation",
+        "b2-conclusion",
+        "b2-main-point",
+        "b2-clear",
+        "b2-appropriate",
+        "b2-effect",
+        "b2-challenge"
+      ],
+      "grammarIds": [
+        "b2-ni-taishite",
+        "b2-mono-no",
+        "b2-wake-dewa-nai",
+        "b2-ni-suginai",
+        "b2-ni-kanshite",
+        "b2-ba-hodo"
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "independent-communication"
+      ],
+      "estimatedMinutes": 6,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "b2-text-counterargument-q1",
+          "prompt": "Which statement best matches the text's main point?",
+          "choices": [
+            "The issue has only one cause.",
+            "The text balances evidence, limits, or consequences.",
+            "No further evaluation is needed.",
+            "The examples are unrelated."
+          ],
+          "answer": "The text balances evidence, limits, or consequences.",
+          "explanation": "The B2 text is organized around evidence, qualification and connected reasoning."
+        },
+        {
+          "id": "b2-text-counterargument-q2",
+          "prompt": "What is the safest summary of the writer's stance?",
+          "choices": [
+            "Completely certain",
+            "Qualified and evidence-based",
+            "Unrelated to the evidence",
+            "Purely emotional"
+          ],
+          "answer": "Qualified and evidence-based",
+          "explanation": "The target discourse avoids overclaiming and makes the basis for conclusions explicit."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-text-risk-assessment",
+      "title": "Risk and uncertainty",
+      "description": "A practical risk note distinguishing strong inference from possible harm.",
+      "level": "B2",
+      "kind": "functional",
+      "sentenceIds": [
+        "b2-sentence-osore-ga-aru-1",
+        "b2-sentence-osore-ga-aru-2",
+        "b2-sentence-ni-chigainai-1",
+        "b2-sentence-ni-kanshite-2",
+        "b2-sentence-ni-mo-kakawarazu-3",
+        "b2-sentence-ni-suginai-1"
+      ],
+      "targetLexemeIds": [
+        "b2-evidence",
+        "b2-factor",
+        "b2-survey",
+        "b2-result",
+        "b2-analysis",
+        "b2-hypothesis",
+        "b2-material",
+        "b2-criterion",
+        "b2-claim",
+        "b2-viewpoint",
+        "b2-premise",
+        "b2-interpretation",
+        "b2-conclusion",
+        "b2-main-point",
+        "b2-clear",
+        "b2-appropriate",
+        "b2-effect",
+        "b2-challenge"
+      ],
+      "grammarIds": [
+        "b2-osore-ga-aru",
+        "b2-ni-chigainai",
+        "b2-ni-kanshite",
+        "b2-ni-mo-kakawarazu",
+        "b2-ni-suginai"
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "independent-communication"
+      ],
+      "estimatedMinutes": 6,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "b2-text-risk-assessment-q1",
+          "prompt": "Which statement best matches the text's main point?",
+          "choices": [
+            "The issue has only one cause.",
+            "The text balances evidence, limits, or consequences.",
+            "No further evaluation is needed.",
+            "The examples are unrelated."
+          ],
+          "answer": "The text balances evidence, limits, or consequences.",
+          "explanation": "The B2 text is organized around evidence, qualification and connected reasoning."
+        },
+        {
+          "id": "b2-text-risk-assessment-q2",
+          "prompt": "What is the safest summary of the writer's stance?",
+          "choices": [
+            "Completely certain",
+            "Qualified and evidence-based",
+            "Unrelated to the evidence",
+            "Purely emotional"
+          ],
+          "answer": "Qualified and evidence-based",
+          "explanation": "The target discourse avoids overclaiming and makes the basis for conclusions explicit."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-text-b2-synthesis",
+      "title": "A balanced recommendation",
+      "description": "A multi-paragraph synthesis using contrast, evidence, limits and recommendation.",
+      "level": "B2",
+      "kind": "functional",
+      "sentenceIds": [
+        "b2-sentence-ippou-de-1",
+        "b2-sentence-koto-kara-2",
+        "b2-sentence-mono-no-1",
+        "b2-sentence-ni-suginai-1",
+        "b2-sentence-osore-ga-aru-2",
+        "b2-sentence-wake-da-2"
+      ],
+      "targetLexemeIds": [
+        "b2-evidence",
+        "b2-factor",
+        "b2-survey",
+        "b2-result",
+        "b2-analysis",
+        "b2-hypothesis",
+        "b2-material",
+        "b2-criterion",
+        "b2-claim",
+        "b2-viewpoint",
+        "b2-premise",
+        "b2-interpretation",
+        "b2-conclusion",
+        "b2-main-point",
+        "b2-clear",
+        "b2-appropriate",
+        "b2-effect",
+        "b2-challenge"
+      ],
+      "grammarIds": [
+        "b2-ippou-de",
+        "b2-koto-kara",
+        "b2-mono-no",
+        "b2-ni-suginai",
+        "b2-osore-ga-aru",
+        "b2-wake-da"
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "independent-communication"
+      ],
+      "estimatedMinutes": 6,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "b2-text-b2-synthesis-q1",
+          "prompt": "Which statement best matches the text's main point?",
+          "choices": [
+            "The issue has only one cause.",
+            "The text balances evidence, limits, or consequences.",
+            "No further evaluation is needed.",
+            "The examples are unrelated."
+          ],
+          "answer": "The text balances evidence, limits, or consequences.",
+          "explanation": "The B2 text is organized around evidence, qualification and connected reasoning."
+        },
+        {
+          "id": "b2-text-b2-synthesis-q2",
+          "prompt": "What is the safest summary of the writer's stance?",
+          "choices": [
+            "Completely certain",
+            "Qualified and evidence-based",
+            "Unrelated to the evidence",
+            "Purely emotional"
+          ],
+          "answer": "Qualified and evidence-based",
+          "explanation": "The target discourse avoids overclaiming and makes the basis for conclusions explicit."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
     }
   ],
   "productiveTasks": [
@@ -39489,6 +46459,595 @@
         "change"
       ],
       "milestoneArea": "spoken_production",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-production-conversation-01",
+      "title": "Discuss a technology change",
+      "level": "B2",
+      "mode": "speaking",
+      "prompt": "A colleague asks whether a new digital tool should be introduced. Give your view, acknowledge one benefit and one risk, then ask a follow-up question.",
+      "situation": "A colleague asks whether a new digital tool should be introduced. Give your view, acknowledge one benefit and one risk, then ask a follow-up question.",
+      "targetGrammarIds": [
+        "b2-ippou-de",
+        "b2-osore-ga-aru"
+      ],
+      "targetLexemeIds": [
+        "b2-technology",
+        "b2-convenience",
+        "b2-safety"
+      ],
+      "modelResponse": "私は導入に賛成ですが、便利になるだけで十分なわけではないと思います。一方で、安全性が下がるおそれもあるので、まず小さな範囲で試して結果を確認するのがいいと思います。あなたはどの点を一番重視しますか。",
+      "requiredTerms": [
+        "一方で",
+        "おそれがある",
+        "技術"
+      ],
+      "minimumCharacters": 55,
+      "rubric": [
+        {
+          "id": "grammar",
+          "label": "Grammar control",
+          "description": "Uses target grammar accurately enough to support the intended meaning.",
+          "weight": 0.25
+        },
+        {
+          "id": "vocabulary",
+          "label": "Vocabulary range",
+          "description": "Uses topic-appropriate vocabulary and avoids unnecessary repetition.",
+          "weight": 0.25
+        },
+        {
+          "id": "coherence",
+          "label": "Coherence",
+          "description": "Connects ideas with an explicit line of reasoning.",
+          "weight": 0.25
+        },
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Addresses the situation with reasons, examples or consequences.",
+          "weight": 0.25
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "ai-conversation"
+      ],
+      "milestoneArea": "spoken_interaction",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-production-conversation-02",
+      "title": "Respond to a disagreement",
+      "level": "B2",
+      "mode": "speaking",
+      "prompt": "Someone disagrees with your proposal. Acknowledge their point, clarify what you are not claiming, and defend your main reason.",
+      "situation": "Someone disagrees with your proposal. Acknowledge their point, clarify what you are not claiming, and defend your main reason.",
+      "targetGrammarIds": [
+        "b2-wake-dewa-nai",
+        "b2-mono-no"
+      ],
+      "targetLexemeIds": [
+        "b2-counterargument",
+        "b2-claim",
+        "b2-proposal"
+      ],
+      "modelResponse": "私は導入に賛成ですが、便利になるだけで十分なわけではないと思います。一方で、安全性が下がるおそれもあるので、まず小さな範囲で試して結果を確認するのがいいと思います。あなたはどの点を一番重視しますか。",
+      "requiredTerms": [
+        "わけではない",
+        "ものの",
+        "主張"
+      ],
+      "minimumCharacters": 55,
+      "rubric": [
+        {
+          "id": "grammar",
+          "label": "Grammar control",
+          "description": "Uses target grammar accurately enough to support the intended meaning.",
+          "weight": 0.25
+        },
+        {
+          "id": "vocabulary",
+          "label": "Vocabulary range",
+          "description": "Uses topic-appropriate vocabulary and avoids unnecessary repetition.",
+          "weight": 0.25
+        },
+        {
+          "id": "coherence",
+          "label": "Coherence",
+          "description": "Connects ideas with an explicit line of reasoning.",
+          "weight": 0.25
+        },
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Addresses the situation with reasons, examples or consequences.",
+          "weight": 0.25
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "ai-conversation"
+      ],
+      "milestoneArea": "spoken_interaction",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-production-conversation-03",
+      "title": "Explain evidence cautiously",
+      "level": "B2",
+      "mode": "speaking",
+      "prompt": "Explain what a survey suggests without treating one result as absolute proof.",
+      "situation": "Explain what a survey suggests without treating one result as absolute proof.",
+      "targetGrammarIds": [
+        "b2-koto-kara",
+        "b2-ni-suginai"
+      ],
+      "targetLexemeIds": [
+        "b2-survey",
+        "b2-evidence",
+        "b2-result"
+      ],
+      "modelResponse": "私は導入に賛成ですが、便利になるだけで十分なわけではないと思います。一方で、安全性が下がるおそれもあるので、まず小さな範囲で試して結果を確認するのがいいと思います。あなたはどの点を一番重視しますか。",
+      "requiredTerms": [
+        "ことから",
+        "にすぎない",
+        "結果"
+      ],
+      "minimumCharacters": 55,
+      "rubric": [
+        {
+          "id": "grammar",
+          "label": "Grammar control",
+          "description": "Uses target grammar accurately enough to support the intended meaning.",
+          "weight": 0.25
+        },
+        {
+          "id": "vocabulary",
+          "label": "Vocabulary range",
+          "description": "Uses topic-appropriate vocabulary and avoids unnecessary repetition.",
+          "weight": 0.25
+        },
+        {
+          "id": "coherence",
+          "label": "Coherence",
+          "description": "Connects ideas with an explicit line of reasoning.",
+          "weight": 0.25
+        },
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Addresses the situation with reasons, examples or consequences.",
+          "weight": 0.25
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "ai-conversation"
+      ],
+      "milestoneArea": "spoken_production",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-production-conversation-04",
+      "title": "Compare two approaches",
+      "level": "B2",
+      "mode": "speaking",
+      "prompt": "Compare two ways of improving a service and explain why the best option may differ by user group.",
+      "situation": "Compare two ways of improving a service and explain why the best option may differ by user group.",
+      "targetGrammarIds": [
+        "b2-ni-taishite",
+        "b2-ni-yotte"
+      ],
+      "targetLexemeIds": [
+        "b2-comparison",
+        "b2-user",
+        "b2-improvement"
+      ],
+      "modelResponse": "私は導入に賛成ですが、便利になるだけで十分なわけではないと思います。一方で、安全性が下がるおそれもあるので、まず小さな範囲で試して結果を確認するのがいいと思います。あなたはどの点を一番重視しますか。",
+      "requiredTerms": [
+        "に対して",
+        "によって",
+        "利用者"
+      ],
+      "minimumCharacters": 55,
+      "rubric": [
+        {
+          "id": "grammar",
+          "label": "Grammar control",
+          "description": "Uses target grammar accurately enough to support the intended meaning.",
+          "weight": 0.25
+        },
+        {
+          "id": "vocabulary",
+          "label": "Vocabulary range",
+          "description": "Uses topic-appropriate vocabulary and avoids unnecessary repetition.",
+          "weight": 0.25
+        },
+        {
+          "id": "coherence",
+          "label": "Coherence",
+          "description": "Connects ideas with an explicit line of reasoning.",
+          "weight": 0.25
+        },
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Addresses the situation with reasons, examples or consequences.",
+          "weight": 0.25
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "ai-conversation"
+      ],
+      "milestoneArea": "spoken_interaction",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-production-conversation-05",
+      "title": "Describe linked change",
+      "level": "B2",
+      "mode": "speaking",
+      "prompt": "Describe how increased adoption changes workload and coordination over time.",
+      "situation": "Describe how increased adoption changes workload and coordination over time.",
+      "targetGrammarIds": [
+        "b2-ni-tsurete",
+        "b2-ni-tomonatte"
+      ],
+      "targetLexemeIds": [
+        "b2-adoption",
+        "b2-burden",
+        "b2-coordination"
+      ],
+      "modelResponse": "私は導入に賛成ですが、便利になるだけで十分なわけではないと思います。一方で、安全性が下がるおそれもあるので、まず小さな範囲で試して結果を確認するのがいいと思います。あなたはどの点を一番重視しますか。",
+      "requiredTerms": [
+        "につれて",
+        "に伴って",
+        "負担"
+      ],
+      "minimumCharacters": 55,
+      "rubric": [
+        {
+          "id": "grammar",
+          "label": "Grammar control",
+          "description": "Uses target grammar accurately enough to support the intended meaning.",
+          "weight": 0.25
+        },
+        {
+          "id": "vocabulary",
+          "label": "Vocabulary range",
+          "description": "Uses topic-appropriate vocabulary and avoids unnecessary repetition.",
+          "weight": 0.25
+        },
+        {
+          "id": "coherence",
+          "label": "Coherence",
+          "description": "Connects ideas with an explicit line of reasoning.",
+          "weight": 0.25
+        },
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Addresses the situation with reasons, examples or consequences.",
+          "weight": 0.25
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "ai-conversation"
+      ],
+      "milestoneArea": "spoken_production",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-production-conversation-06",
+      "title": "Make a careful inference",
+      "level": "B2",
+      "mode": "speaking",
+      "prompt": "You have incomplete evidence. State what you think is likely, what remains uncertain, and what should be checked next.",
+      "situation": "You have incomplete evidence. State what you think is likely, what remains uncertain, and what should be checked next.",
+      "targetGrammarIds": [
+        "b2-ni-chigainai",
+        "b2-osore-ga-aru"
+      ],
+      "targetLexemeIds": [
+        "b2-evidence",
+        "b2-confirmation",
+        "b2-factor"
+      ],
+      "modelResponse": "私は導入に賛成ですが、便利になるだけで十分なわけではないと思います。一方で、安全性が下がるおそれもあるので、まず小さな範囲で試して結果を確認するのがいいと思います。あなたはどの点を一番重視しますか。",
+      "requiredTerms": [
+        "に違いない",
+        "おそれがある",
+        "確認"
+      ],
+      "minimumCharacters": 55,
+      "rubric": [
+        {
+          "id": "grammar",
+          "label": "Grammar control",
+          "description": "Uses target grammar accurately enough to support the intended meaning.",
+          "weight": 0.25
+        },
+        {
+          "id": "vocabulary",
+          "label": "Vocabulary range",
+          "description": "Uses topic-appropriate vocabulary and avoids unnecessary repetition.",
+          "weight": 0.25
+        },
+        {
+          "id": "coherence",
+          "label": "Coherence",
+          "description": "Connects ideas with an explicit line of reasoning.",
+          "weight": 0.25
+        },
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Addresses the situation with reasons, examples or consequences.",
+          "weight": 0.25
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "ai-conversation"
+      ],
+      "milestoneArea": "spoken_production",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-production-writing-01",
+      "title": "Balanced recommendation",
+      "level": "B2",
+      "mode": "writing",
+      "prompt": "Write a short recommendation about introducing a new service. Present one advantage, one limitation, and a final recommendation.",
+      "situation": "Write a short recommendation about introducing a new service. Present one advantage, one limitation, and a final recommendation.",
+      "targetGrammarIds": [
+        "b2-ippou-de",
+        "b2-mono-no"
+      ],
+      "targetLexemeIds": [
+        "b2-convenience",
+        "b2-burden",
+        "b2-conclusion"
+      ],
+      "modelResponse": "この課題については、利便性を高められる一方で、負担が増えるおそれがある。一定の効果は認められるものの、今回の結果は一つの資料にすぎない。したがって、導入前に追加の確認を行い、その結果に基づいて判断するべきだと考える。",
+      "requiredTerms": [
+        "一方で",
+        "ものの",
+        "結論"
+      ],
+      "minimumCharacters": 180,
+      "rubric": [
+        {
+          "id": "grammar",
+          "label": "Grammar control",
+          "description": "Uses target grammar accurately enough to support the intended meaning.",
+          "weight": 0.25
+        },
+        {
+          "id": "vocabulary",
+          "label": "Vocabulary range",
+          "description": "Uses topic-appropriate vocabulary and avoids unnecessary repetition.",
+          "weight": 0.25
+        },
+        {
+          "id": "coherence",
+          "label": "Coherence",
+          "description": "Connects ideas with an explicit line of reasoning.",
+          "weight": 0.25
+        },
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Addresses the situation with reasons, examples or consequences.",
+          "weight": 0.25
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "writing-revision"
+      ],
+      "milestoneArea": "writing",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-production-writing-02",
+      "title": "Evidence-based mini report",
+      "level": "B2",
+      "mode": "writing",
+      "prompt": "Write a mini report that moves from observed results to a cautious interpretation and explicitly limits the claim.",
+      "situation": "Write a mini report that moves from observed results to a cautious interpretation and explicitly limits the claim.",
+      "targetGrammarIds": [
+        "b2-koto-kara",
+        "b2-ni-suginai"
+      ],
+      "targetLexemeIds": [
+        "b2-analysis",
+        "b2-result",
+        "b2-hypothesis"
+      ],
+      "modelResponse": "この課題については、利便性を高められる一方で、負担が増えるおそれがある。一定の効果は認められるものの、今回の結果は一つの資料にすぎない。したがって、導入前に追加の確認を行い、その結果に基づいて判断するべきだと考える。",
+      "requiredTerms": [
+        "ことから",
+        "にすぎない",
+        "結果"
+      ],
+      "minimumCharacters": 180,
+      "rubric": [
+        {
+          "id": "grammar",
+          "label": "Grammar control",
+          "description": "Uses target grammar accurately enough to support the intended meaning.",
+          "weight": 0.25
+        },
+        {
+          "id": "vocabulary",
+          "label": "Vocabulary range",
+          "description": "Uses topic-appropriate vocabulary and avoids unnecessary repetition.",
+          "weight": 0.25
+        },
+        {
+          "id": "coherence",
+          "label": "Coherence",
+          "description": "Connects ideas with an explicit line of reasoning.",
+          "weight": 0.25
+        },
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Addresses the situation with reasons, examples or consequences.",
+          "weight": 0.25
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "writing-revision"
+      ],
+      "milestoneArea": "writing",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-production-writing-03",
+      "title": "Formal risk note",
+      "level": "B2",
+      "mode": "writing",
+      "prompt": "Write a formal note about a plausible operational risk, its cause, and one concrete countermeasure.",
+      "situation": "Write a formal note about a plausible operational risk, its cause, and one concrete countermeasure.",
+      "targetGrammarIds": [
+        "b2-ni-oite",
+        "b2-osore-ga-aru"
+      ],
+      "targetLexemeIds": [
+        "b2-measure",
+        "b2-responsibility"
+      ],
+      "modelResponse": "この課題については、利便性を高められる一方で、負担が増えるおそれがある。一定の効果は認められるものの、今回の結果は一つの資料にすぎない。したがって、導入前に追加の確認を行い、その結果に基づいて判断するべきだと考える。",
+      "requiredTerms": [
+        "において",
+        "おそれがある",
+        "対策"
+      ],
+      "minimumCharacters": 180,
+      "rubric": [
+        {
+          "id": "grammar",
+          "label": "Grammar control",
+          "description": "Uses target grammar accurately enough to support the intended meaning.",
+          "weight": 0.25
+        },
+        {
+          "id": "vocabulary",
+          "label": "Vocabulary range",
+          "description": "Uses topic-appropriate vocabulary and avoids unnecessary repetition.",
+          "weight": 0.25
+        },
+        {
+          "id": "coherence",
+          "label": "Coherence",
+          "description": "Connects ideas with an explicit line of reasoning.",
+          "weight": 0.25
+        },
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Addresses the situation with reasons, examples or consequences.",
+          "weight": 0.25
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "writing-revision"
+      ],
+      "milestoneArea": "writing",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-production-writing-04",
+      "title": "Structured counterargument",
+      "level": "B2",
+      "mode": "writing",
+      "prompt": "Write a response to an opposing view. Recognize one valid point, qualify your own claim, and end with a supported conclusion.",
+      "situation": "Write a response to an opposing view. Recognize one valid point, qualify your own claim, and end with a supported conclusion.",
+      "targetGrammarIds": [
+        "b2-ni-mo-kakawarazu",
+        "b2-wake-dewa-nai"
+      ],
+      "targetLexemeIds": [
+        "b2-counterargument",
+        "b2-claim",
+        "b2-conclusion"
+      ],
+      "modelResponse": "この課題については、利便性を高められる一方で、負担が増えるおそれがある。一定の効果は認められるものの、今回の結果は一つの資料にすぎない。したがって、導入前に追加の確認を行い、その結果に基づいて判断するべきだと考える。",
+      "requiredTerms": [
+        "にもかかわらず",
+        "わけではない",
+        "結論"
+      ],
+      "minimumCharacters": 180,
+      "rubric": [
+        {
+          "id": "grammar",
+          "label": "Grammar control",
+          "description": "Uses target grammar accurately enough to support the intended meaning.",
+          "weight": 0.25
+        },
+        {
+          "id": "vocabulary",
+          "label": "Vocabulary range",
+          "description": "Uses topic-appropriate vocabulary and avoids unnecessary repetition.",
+          "weight": 0.25
+        },
+        {
+          "id": "coherence",
+          "label": "Coherence",
+          "description": "Connects ideas with an explicit line of reasoning.",
+          "weight": 0.25
+        },
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Addresses the situation with reasons, examples or consequences.",
+          "weight": 0.25
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "writing-revision"
+      ],
+      "milestoneArea": "writing",
       "sourceIds": [
         "thiepn-original"
       ]
