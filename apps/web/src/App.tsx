@@ -5,6 +5,7 @@ import { isStudyLesson,type StudyStep } from "@thiepn/study-player";
 import { searchLocalJapanese } from "./content";
 import { foundationSections } from "./study/foundationPrompts";
 import { Immersion } from "./immerse/Immersion";
+import { getImmersionProgress,type ImmersionProgress } from "./immerse/reader";
 import { StudyPlayer,type StudyAnswer } from "./study/StudyPlayer";
 import {
   buildA1MilestoneSession,buildCourseUnitSession,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getSentenceMasterySummary,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,
@@ -25,6 +26,7 @@ const EMPTY_MILESTONE:A1MilestoneProgress={complete:false,answered:0,total:15,sc
   writing:{activity:"writing",correct:0,answered:0,total:3,score:0}
 }};
 const EMPTY_SENTENCE:SentenceMasterySummary={overall:0,comprehension:0,production:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
+const EMPTY_IMMERSION:ImmersionProgress={texts:[],minedWords:0,lookups:0,readingChecks:0,listeningChecks:0};
 
 export function App(){
   const [surface,setSurface]=useState<Surface>("Today");
@@ -41,6 +43,7 @@ export function App(){
   const [sentenceMastery,setSentenceMastery]=useState<SentenceMasterySummary>(EMPTY_SENTENCE);
   const [courseProgress,setCourseProgress]=useState<CourseUnitProgress[]>([]);
   const [milestone,setMilestone]=useState<A1MilestoneProgress>(EMPTY_MILESTONE);
+  const [immersion,setImmersion]=useState<ImmersionProgress>(EMPTY_IMMERSION);
   const [completedToday,setCompletedToday]=useState(0);
 
   useEffect(()=>{void refreshDashboard();},[]);
@@ -53,10 +56,10 @@ export function App(){
 
   async function refreshDashboard(){
     try{
-      const [nextSummary,nextKana,nextVocab,nextConjugation,nextGrammar,nextSentence,nextCourse,nextMilestone]=await Promise.all([
-        getStudySummary(),getKanaMasterySummary(),getVocabularyMasterySummary(),getConjugationMasterySummary(),getGrammarMasterySummary(),getSentenceMasterySummary(),getCourseProgress(),getA1MilestoneAssessmentProgress()
+      const [nextSummary,nextKana,nextVocab,nextConjugation,nextGrammar,nextSentence,nextCourse,nextMilestone,nextImmersion]=await Promise.all([
+        getStudySummary(),getKanaMasterySummary(),getVocabularyMasterySummary(),getConjugationMasterySummary(),getGrammarMasterySummary(),getSentenceMasterySummary(),getCourseProgress(),getA1MilestoneAssessmentProgress(),getImmersionProgress()
       ]);
-      setSummary(nextSummary);setKanaMastery(nextKana);setVocabMastery(nextVocab);setConjugationMastery(nextConjugation);setGrammarMastery(nextGrammar);setSentenceMastery(nextSentence);setCourseProgress(nextCourse);setMilestone(nextMilestone);
+      setSummary(nextSummary);setKanaMastery(nextKana);setVocabMastery(nextVocab);setConjugationMastery(nextConjugation);setGrammarMastery(nextGrammar);setSentenceMastery(nextSentence);setCourseProgress(nextCourse);setMilestone(nextMilestone);setImmersion(nextImmersion);
     }catch{/* local storage can be unavailable in hardened browsers */}
   }
 
@@ -97,7 +100,7 @@ export function App(){
       {surface==="Today"&&<Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
       {surface==="Learn"&&<Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} course={courseProgress} milestone={milestone} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()}/>} 
       {surface==="Immerse"&&<Immersion/>}
-      {surface==="Progress"&&<Progress kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} milestone={milestone} summary={summary} course={courseProgress} completedToday={completedToday}/>} 
+      {surface==="Progress"&&<Progress kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} milestone={milestone} immersion={immersion} summary={summary} course={courseProgress} completedToday={completedToday}/>} 
       {surface==="Library"&&<Library query={query} setQuery={setQuery} results={results} status={libraryStatus}/>}
     </main>
     <nav className="nav" aria-label="Primary">{(["Today","Learn","Immerse","Library","Progress"] as Surface[]).map((item)=><button key={item} className={surface===item?"active":""} onClick={()=>setSurface(item)} type="button">{item}</button>)}</nav>
@@ -169,7 +172,7 @@ function Learn({summary,kana,vocab,conjugation,grammar,sentence,course,milestone
   </section>;
 }
 
-function Progress({kana,vocab,conjugation,grammar,sentence,milestone,summary,course,completedToday}:{kana:KanaMasterySummary;vocab:VocabularyMasterySummary;conjugation:ConjugationMasterySummary;grammar:GrammarMasterySummary;sentence:SentenceMasterySummary;milestone:A1MilestoneProgress;summary:StudySummary;course:CourseUnitProgress[];completedToday:number}){
+function Progress({kana,vocab,conjugation,grammar,sentence,milestone,immersion,summary,course,completedToday}:{kana:KanaMasterySummary;vocab:VocabularyMasterySummary;conjugation:ConjugationMasterySummary;grammar:GrammarMasterySummary;sentence:SentenceMasterySummary;milestone:A1MilestoneProgress;immersion:ImmersionProgress;summary:StudySummary;course:CourseUnitProgress[];completedToday:number}){
   return <section className="dashboard"><p className="eyebrow">PROGRESS</p><h1>Real mastery</h1>
     <p className="lead">Course position is derived from evidence. Lesson exposure, delayed assessment and later retrieval remain distinct so recent familiarity does not automatically count as mastery.</p>
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">KANA + SOUND</span><h2>Script and perception</h2></div><strong>{percent(kana.overall)}</strong></div><div className="mastery-grid"><MasteryBar label="Hiragana" value={kana.hiragana}/><MasteryBar label="Katakana" value={kana.katakana}/><MasteryBar label="Recognition" value={kana.recognition}/><MasteryBar label="Typed reading" value={kana.readingRecall}/><MasteryBar label="Mora listening" value={kana.listening}/><MasteryBar label="Model confidence" value={kana.confidence}/></div></section>
@@ -177,6 +180,7 @@ function Progress({kana,vocab,conjugation,grammar,sentence,milestone,summary,cou
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">CONJUGATION</span><h2>Generated forms</h2></div><strong>{percent(conjugation.overall)}</strong></div><div className="mastery-grid"><MasteryBar label="Polite negative" value={conjugation.politeNegative}/><MasteryBar label="Polite past" value={conjugation.politePast}/><MasteryBar label="Polite past negative" value={conjugation.politePastNegative}/><MasteryBar label="て-form" value={conjugation.teForm}/><MasteryBar label="Model confidence" value={conjugation.confidence}/></div></section>
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">GRAMMAR</span><h2>Concept + contextual form</h2></div><strong>{percent(grammar.overall)}</strong></div><div className="mastery-grid"><MasteryBar label="Function comprehension" value={grammar.comprehension}/><MasteryBar label="Contextual form selection" value={grammar.formSelection}/><MasteryBar label="Model confidence" value={grammar.confidence}/></div></section>
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">SENTENCES</span><h2>Connected knowledge</h2></div><strong>{percent(sentence.overall)}</strong></div><div className="mastery-grid"><MasteryBar label="Sentence comprehension" value={sentence.comprehension}/><MasteryBar label="Sentence production" value={sentence.production}/><MasteryBar label="Model confidence" value={sentence.confidence}/></div></section>
+    <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">IMMERSION</span><h2>Connected text transfer</h2></div><strong>{immersion.texts.length} texts</strong></div><div className="mastery-grid"><MasteryBar label="Reading text mastery" value={mean(immersion.texts.map((item)=>item.readingMastery))}/><MasteryBar label="Connected listening mastery" value={mean(immersion.texts.map((item)=>item.listeningMastery))}/><MasteryBar label="Average lexical readiness" value={mean(immersion.texts.map((item)=>item.readiness))}/></div><p className="course-note">{immersion.minedWords} mined words · {immersion.lookups} reader lookups · {immersion.readingChecks} reading checks · {immersion.listeningChecks} listening checks</p></section>
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">A1 ASSESSMENT</span><h2>Language activities</h2></div><strong>{milestone.answered} / {milestone.total}</strong></div><div className="mastery-grid"><MasteryBar label="Reading" value={milestone.scores.reading.score}/><MasteryBar label="Listening" value={milestone.scores.listening.score}/><MasteryBar label="Spoken interaction*" value={milestone.scores.spoken_interaction.score}/><MasteryBar label="Spoken production*" value={milestone.scores.spoken_production.score}/><MasteryBar label="Writing" value={milestone.scores.writing.score}/></div><p className="course-note">*Text-backed say-then-type proxy; pronunciation is not scored in P2.5.</p></section>
     <div className="stat-row four"><Stat value={kana.evidenceCount+vocab.evidenceCount+conjugation.evidenceCount+grammar.evidenceCount+sentence.evidenceCount} label="Graded answers"/><Stat value={course.filter((unit)=>unit.assessment.status==="passed").length} label="Unit checks passed"/><Stat value={summary.due} label="Due now"/><Stat value={summary.memoryTraces} label="Memory traces"/></div>
     <p className="session-note">{completedToday} answers recorded in this open session.</p>
@@ -195,6 +199,7 @@ function MasteryBar({label,value}:{label:string;value:number}){const pct=Math.ro
 function Stat({value,label}:{value:number|string;label:string}){return <div className="stat"><strong>{value}</strong><span>{label}</span></div>;}
 function Placeholder({title,body}:{title:string;body:string}){return <section className="hero"><p className="eyebrow">{title.toUpperCase()}</p><h1>{title}</h1><p>{body}</p></section>;}
 function percent(value:number):string{return Math.round(value*100)+"%";}
+function mean(values:number[]):number{return values.length?values.reduce((sum,value)=>sum+value,0)/values.length:0;}
 function statusLabel(status:CourseUnitProgress["status"]):string{return status==="mastered"?"Mastered":status==="learning"?"Learning":status==="challenging"?"Challenging":"Ready";}
 function assessmentCanStart(unit:CourseUnitProgress):boolean{return ["ready","in_progress","passed","needs_review"].includes(unit.assessment.status);}
 function assessmentLabel(unit:CourseUnitProgress):string{
