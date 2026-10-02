@@ -97,8 +97,8 @@ export function Immersion(){
     questionIndex={questionIndex} feedback={feedback} answerQuestion={answerQuestion} nextQuestion={nextQuestion}/>;
 
   return <section className="dashboard immerse-page">
-    <p className="eyebrow">IMMERSE</p><h1>A1 → B1 immersion</h1>
-    <p className="lead">Move from graded A1/A2 support into B1 connected Japanese and learner-owned material. Recommendations use current lexical readiness and reading/listening evidence; they guide rather than lock content.</p>
+    <p className="eyebrow">IMMERSE</p><h1>A1 → B2 immersion</h1>
+    <p className="lead">Move from graded A1/A2 support into B1/B2 connected Japanese and learner-owned material. Recommendations use current lexical readiness and reading/listening evidence; they guide rather than lock content.</p>
     {progress?<div className="stat-row four"><MiniStat value={progress.texts.length} label="Graded texts"/><MiniStat value={progress.minedWords} label="Mined words"/><MiniStat value={progress.readingChecks} label="Reading checks"/><MiniStat value={progress.listeningChecks} label="Listening checks"/></div>:null}
     {recommendation?<section className="adaptive-immersion">
       <div className="section-heading"><div><span className="course-kicker">ADAPTIVE NEXT STEP</span><h2>Focus on {recommendation.focus}</h2></div></div>
@@ -155,7 +155,7 @@ function ReaderView({view,furigana,setFurigana,translations,toggleTranslation,se
       </div>
       {selected?<aside className="reader-lookup"><button className="reader-lookup-close" type="button" aria-label="Close word lookup" onClick={closeLookup}>×</button><span lang="ja">{selected.token.surface}</span>{selected.token.reading?<small lang="ja">{selected.token.reading}</small>:null}<strong>{selected.token.meaning}</strong><button className="unit-action" type="button" onClick={()=>void mineSelected()}>Mine for review</button></aside>:null}
       <div className="reader-finish"><button className="primary" type="button" onClick={()=>startCheck("reading")}>Reading check</button><button className="unit-action" disabled={!listeningPlayed} type="button" onClick={()=>startCheck("listening")}>{listeningPlayed?"Listening check":"Listen first"}</button></div>
-      <p className="course-note">Tap a linked word for a reading and meaning. Grammar support stays attached to the canonical sentence. The reader resolves canonical and generated forms. Imported-text analysis adds B1 deinflection and browser segmentation, but still does not claim perfect Japanese NLP.</p>
+      <p className="course-note">Tap a linked word for a reading and meaning. Grammar support stays attached to the canonical sentence. The reader resolves canonical and generated forms. Imported-text analysis adds B1/B2 deinflection and browser segmentation, but still does not claim perfect Japanese NLP.</p>
     </>}
   </section>;
 }
