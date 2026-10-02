@@ -15,7 +15,7 @@ describe("P5 productive language",()=>{
   });
   it("grades structural target coverage without claiming semantic or acoustic scoring",()=>{
     const prompt=productiveWritingPrompts[0]!;
-    const good=prompt.requiredTerms!.join("。")+"。".repeat(130);
+    const good=(prompt.requiredTerms!.join("。")+"。私は地域のサービスについて自分の意見と理由を説明します。利用する人にとって便利になることは大切ですが、安全についても考える必要があります。具体的な例を一つ挙げて、最後に自分の考えをまとめます。").repeat(2);
     expect(gradeStudyPrompt(prompt,good).result).toBe("correct");
     expect(gradeStudyPrompt(prompt,"短いです。").result).toBe("incorrect");
   });
