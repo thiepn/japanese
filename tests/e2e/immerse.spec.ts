@@ -1,12 +1,12 @@
 import { expect,test } from "@playwright/test";
 
-test("Immerse exposes graded reading support without creating a separate learning silo",async({page})=>{
+test("Immerse exposes graded A1→B2 reading support without creating a separate learning silo",async({page})=>{
   await page.goto("/");
   await page.getByRole("button",{name:"Immerse"}).click();
 
-  await expect(page.getByRole("heading",{name:"A1 → B1 immersion"})).toBeVisible();
-  await expect(page.locator(".immersion-card")).toHaveCount(22);
-  await expect(page.getByRole("heading",{name:"Focus on reading"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"A1 → B2 immersion"})).toBeVisible();
+  await expect(page.locator(".immersion-card")).toHaveCount(30);
+  await expect(page.getByRole("heading",{name:/Focus on (reading|listening)/})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Listen → record → compare"})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Your Japanese"})).toBeVisible();
   const morning=page.locator(".immersion-card").filter({hasText:"A school morning"});
