@@ -1,6 +1,6 @@
 # Japanese source-pack format
 
-P6 source packs provide a controlled way to import learner-owned or redistributable Japanese corpora without copying them into the canonical public seed.
+P7 source packs provide a controlled way to import learner-owned or redistributable Japanese corpora without copying them into the canonical public seed.
 
 ## File shape
 
@@ -30,7 +30,21 @@ A source pack is a UTF-8 JSON file:
         "licenseName": "CC BY 4.0",
         "attributionUrl": "https://example.org/audio/dialogue-001",
         "externalId": "dialogue-001-audio",
-        "nativeSpeaker": true
+        "nativeSpeaker": true,
+        "segments": [
+          {
+            "id": "turn-a",
+            "text": "この制度に関して、どう思いますか。",
+            "startMs": 0,
+            "endMs": 3200
+          },
+          {
+            "id": "turn-b",
+            "text": "便利になる一方で、課題もあります。",
+            "startMs": 3200,
+            "endMs": 6900
+          }
+        ]
       }
     }
   ]
@@ -45,6 +59,12 @@ Text and audio are licensed independently. A pack can be valid with no audio. An
 
 The importer never infers native-speaker status from a Japanese language tag, filename, host or URL. Device speech synthesis can be used as a labeled fallback but does not become native audio.
 
+### Timed segments
+
+An admitted native recording may optionally include `segments`. Every segment requires a stable `id`, the Japanese `text` heard in that interval, and millisecond `startMs` / `endMs` bounds. Timings must be positive, ordered and non-overlapping. The reader uses these bounds for sentence/turn replay and slow replay without creating edited audio copies.
+
+Segment timing is navigation metadata. It does not change the license of the recording, prove native-speaker status, or create pronunciation evidence.
+
 ## Learner-data boundary
 
 Imported source-pack items are saved as account-scoped private documents. Importing a redistributable pack does not silently publish it into `content/seed/jp-core.json`, create canonical mastery, or bypass the normal StudyEvent and mining paths.
@@ -55,4 +75,4 @@ Canonical publication is a separate editorial action: content must be reviewed, 
 
 Prefer coherent sentence/dialogue/passage items that can be studied independently. Keep provenance at the pack level and use an item-specific `sourceUrl` when the exact sentence or recording has its own source page.
 
-For connected listening, prefer one recording per coherent item. Do not splice unrelated recordings and then label the result as a native passage recording without source and editing rights.
+For connected listening, prefer one recording per coherent item. Add timed segments when the original recording can be replayed at sentence/turn boundaries. Do not splice unrelated recordings and then label the result as a native passage recording without source and editing rights.
