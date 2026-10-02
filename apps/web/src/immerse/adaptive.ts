@@ -16,7 +16,7 @@ export async function getAdaptiveImmersionRecommendation():Promise<AdaptiveImmer
     .map((item)=>{
       const mastery=focus==="reading"?item.readingMastery:item.listeningMastery;
       const target=.86;
-      const levelBonus=item.level==="B1"?.12:item.level.startsWith("A2")?.06:0;
+      const levelBonus=item.level==="B2"?.16:item.level==="B1"?.12:item.level.startsWith("A2")?.06:0;
       const score=(1-Math.abs(item.readiness-target))*0.55+(1-mastery)*0.35+levelBonus;
       return {item,mastery,score};
     })
