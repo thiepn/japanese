@@ -6,6 +6,7 @@ import {
   type PrivateDocumentRecord,type PrivateDocumentSourceKind,type PrivateNativeAudio,type PrivateSentenceRecord,type PrivateVocabularyRecord
 } from "@thiepn/local-db";
 import { normalizeJapaneseSearch } from "@thiepn/search";
+import { senseResolutionForIds,type MorphologyCandidate,type MorphologyResolution,type SenseResolution } from "@thiepn/japanese-nlp";
 import { coreContent,senseForLexeme } from "../coreContent";
 import { conjugateLexeme,type ConjugationForm } from "../study/conjugation";
 
@@ -18,7 +19,7 @@ const PUNCT=/^[\s。、！？!?「」『』（）()［］\[\]…・,.:;—–-]+
 export type AuthenticTokenKind="known"|"function"|"unknown"|"punctuation";
 export interface AuthenticToken {
   surface:string; kind:AuthenticTokenKind; lexemeId?:string; baseForm?:string; reading?:string; meaning?:string;
-  resolution?: "canonical"|"generated"|"deinflected";
+  resolution?: MorphologyResolution; senseIds?:string[]; senseResolution?:SenseResolution; resolutionConfidence?:number;
 }
 export interface AuthenticAnalysis {
   tokens:AuthenticToken[]; knownTokens:number; lexicalTokens:number; knownRatio:number; unknownDensity:number;
@@ -31,7 +32,7 @@ export interface TatoebaImportResult {
   document:PrivateDocumentRecord; audioAccepted:boolean; audioRejectionReason?:string;
 }
 
-interface SurfaceCandidate { surface:string; lexeme:Lexeme; reading?:string; resolution:"canonical"|"generated"|"deinflected"; }
+interface SurfaceCandidate { surface:string; lexeme:Lexeme; reading?:string; resolution:"canonical"|"generated"|"deinflected"; confidence:number; }
 let surfaceCandidates:SurfaceCandidate[]|null=null;
 
 export function normalizeImportedText(value:string,sourceKind:PrivateDocumentSourceKind):string{
@@ -60,7 +61,8 @@ export function analyzeAuthenticText(text:string):AuthenticAnalysis{
       const sense=senseForLexeme(candidate.lexeme);
       tokens.push({
         surface:candidate.surface,kind:"known",lexemeId:candidate.lexeme.id,baseForm:candidate.lexeme.canonicalForm,
-        ...(candidate.reading?{reading:candidate.reading}:{}),meaning:sense.glosses.join(" / "),resolution:candidate.resolution
+        ...(candidate.reading?{reading:candidate.reading}:{}),meaning:sense.glosses.join(" / "),resolution:candidate.resolution,
+        senseIds:candidate.lexeme.senseIds,senseResolution:senseResolutionForIds(candidate.lexeme.senseIds),resolutionConfidence:candidate.confidence
       });
       offset+=candidate.surface.length;continue;
     }
@@ -203,47 +205,48 @@ function getSurfaceCandidates():SurfaceCandidate[]{
   const result:SurfaceCandidate[]=[];
   for(const lexeme of coreContent.lexemes){
     const baseReading=lexeme.readings[0]?.text;
-    const map=new Map<string,{reading?:string;resolution:"canonical"|"generated"|"deinflected"}>();
-    map.set(lexeme.canonicalForm,{...(baseReading?{reading:baseReading}:{}),resolution:"canonical"});
-    for(const form of lexeme.forms)map.set(form.text,{...(baseReading?{reading:baseReading}:{}),resolution:"canonical"});
+    const map=new Map<string,{reading?:string;resolution:"canonical"|"generated"|"deinflected";confidence:number}>();
+    map.set(lexeme.canonicalForm,{...(baseReading?{reading:baseReading}:{}),resolution:"canonical",confidence:.99});
+    for(const form of lexeme.forms)map.set(form.text,{...(baseReading?{reading:baseReading}:{}),resolution:"canonical",confidence:.98});
     for(const form of FORMS){
       const surface=conjugateLexeme(lexeme,form);if(!surface)continue;
       let reading=baseReading;
       if(baseReading&&lexeme.inflectionClass)reading=conjugateLexeme({...lexeme,canonicalForm:baseReading},form)??baseReading;
-      map.set(surface,{...(reading?{reading}:{}),resolution:"generated"});
+      map.set(surface,{...(reading?{reading}:{}),resolution:"generated",confidence:.91});
     }
     addA2SurfaceForms(lexeme,map,baseReading);
     addB1SurfaceForms(lexeme,map,baseReading);
+    addB2SurfaceForms(lexeme,map,baseReading);
     for(const [surface,info] of map){
       if(surface.length<2&&/^[ぁ-ゖァ-ヶー]$/u.test(surface))continue;
-      result.push({surface,lexeme,...(info.reading?{reading:info.reading}:{}),resolution:info.resolution});
+      result.push({surface,lexeme,...(info.reading?{reading:info.reading}:{}),resolution:info.resolution,confidence:info.confidence});
     }
   }
   result.sort((a,b)=>b.surface.length-a.surface.length||a.surface.localeCompare(b.surface,"ja"));
   surfaceCandidates=result;return result;
 }
 
-function addA2SurfaceForms(lexeme:Lexeme,map:Map<string,{reading?:string;resolution:"canonical"|"generated"|"deinflected"}>,reading?:string):void{
+function addA2SurfaceForms(lexeme:Lexeme,map:Map<string,{reading?:string;resolution:"canonical"|"generated"|"deinflected";confidence:number}>,reading?:string):void{
   const base=lexeme.canonicalForm;
   if(lexeme.inflectionClass==="ichidan"&&base.endsWith("る")){
-    const stem=base.slice(0,-1);for(const ending of ["ています","ている","たい","たくない","やすい","にくい","すぎる","なければ","なくても"])map.set(stem+ending,{...(reading?{reading}:{}),resolution:"generated"});
+    const stem=base.slice(0,-1);for(const ending of ["ています","ている","たい","たくない","やすい","にくい","すぎる","なければ","なくても"])map.set(stem+ending,{...(reading?{reading}:{}),resolution:"generated",confidence:.88});
   }
   if(lexeme.inflectionClass==="godan"){
     const last=base.slice(-1);const stem=base.slice(0,-1);
     const i:Record<string,string>={"う":"い","く":"き","ぐ":"ぎ","す":"し","つ":"ち","ぬ":"に","ぶ":"び","む":"み","る":"り"};
     const a:Record<string,string>={"う":"わ","く":"か","ぐ":"が","す":"さ","つ":"た","ぬ":"な","ぶ":"ば","む":"ま","る":"ら"};
     const im=i[last],am=a[last];
-    if(im)for(const ending of ["たい","ながら","やすい","にくい","すぎる"])map.set(stem+im+ending,{...(reading?{reading}:{}),resolution:"generated"});
-    if(am)for(const ending of ["なければ","なくても"])map.set(stem+am+ending,{...(reading?{reading}:{}),resolution:"generated"});
+    if(im)for(const ending of ["たい","ながら","やすい","にくい","すぎる"])map.set(stem+im+ending,{...(reading?{reading}:{}),resolution:"generated",confidence:.88});
+    if(am)for(const ending of ["なければ","なくても"])map.set(stem+am+ending,{...(reading?{reading}:{}),resolution:"generated",confidence:.88});
   }
   if(lexeme.inflectionClass==="i-adjective"){
-    const stem=base.endsWith("い")?base.slice(0,-1):base;map.set(stem+"すぎる",{...(reading?{reading}:{}),resolution:"generated"});map.set(stem+"くなる",{...(reading?{reading}:{}),resolution:"generated"});
+    const stem=base.endsWith("い")?base.slice(0,-1):base;map.set(stem+"すぎる",{...(reading?{reading}:{}),resolution:"generated",confidence:.88});map.set(stem+"くなる",{...(reading?{reading}:{}),resolution:"generated",confidence:.88});
   }
-  if(lexeme.inflectionClass==="na-adjective")map.set(base+"になる",{...(reading?{reading}:{}),resolution:"generated"});
+  if(lexeme.inflectionClass==="na-adjective")map.set(base+"になる",{...(reading?{reading}:{}),resolution:"generated",confidence:.88});
 }
 
-function addB1SurfaceForms(lexeme:Lexeme,map:Map<string,{reading?:string;resolution:"canonical"|"generated"|"deinflected"}>,reading?:string):void{
-  const base=lexeme.canonicalForm;const add=(surface:string)=>map.set(surface,{...(reading?{reading}:{}),resolution:"deinflected"});
+function addB1SurfaceForms(lexeme:Lexeme,map:Map<string,{reading?:string;resolution:"canonical"|"generated"|"deinflected";confidence:number}>,reading?:string):void{
+  const base=lexeme.canonicalForm;const add=(surface:string)=>map.set(surface,{...(reading?{reading}:{}),resolution:"deinflected",confidence:.78});
   if(lexeme.inflectionClass==="ichidan"&&base.endsWith("る")){
     const stem=base.slice(0,-1);
     for(const ending of ["られる","られます","させる","させます","よう","れば","たら","ても","そう","てしまう","ておく","てみる"])add(stem+ending);
@@ -262,12 +265,53 @@ function addB1SurfaceForms(lexeme:Lexeme,map:Map<string,{reading?:string;resolut
   }
 }
 
-export function lemmatizeJapaneseSurface(surface:string):{lexemeId:string;baseForm:string;resolution:"canonical"|"generated"|"deinflected"}|null{
-  const normalized=normalizeJapaneseSearch(surface);
-  for(const candidate of getSurfaceCandidates()){
-    if(normalizeJapaneseSearch(candidate.surface)===normalized)return {lexemeId:candidate.lexeme.id,baseForm:candidate.lexeme.canonicalForm,resolution:candidate.resolution};
+function addB2SurfaceForms(lexeme:Lexeme,map:Map<string,{reading?:string;resolution:"canonical"|"generated"|"deinflected";confidence:number}>,reading?:string):void{
+  const base=lexeme.canonicalForm;
+  const add=(surface:string,confidence=.74)=>map.set(surface,{...(reading?{reading}:{}),resolution:"deinflected",confidence});
+  if(lexeme.inflectionClass==="ichidan"&&base.endsWith("る")){
+    const stem=base.slice(0,-1);
+    for(const ending of ["させられる","られれば","られたら","ないで","ずに","ことになる","ことにする","ようになる","ようにする"])add(stem+ending);
+  }else if(lexeme.inflectionClass==="godan"){
+    const last=base.slice(-1),stem=base.slice(0,-1);
+    const a:Record<string,string>={"う":"わ","く":"か","ぐ":"が","す":"さ","つ":"た","ぬ":"な","ぶ":"ば","む":"ま","る":"ら"};
+    const i:Record<string,string>={"う":"い","く":"き","ぐ":"ぎ","す":"し","つ":"ち","ぬ":"に","ぶ":"び","む":"み","る":"り"};
+    const e:Record<string,string>={"う":"え","く":"け","ぐ":"げ","す":"せ","つ":"て","ぬ":"ね","ぶ":"べ","む":"め","る":"れ"};
+    if(a[last]){add(stem+a[last]+"せられる");add(stem+a[last]+"れれば");add(stem+a[last]+"ないで");add(stem+a[last]+"ずに");}
+    if(e[last]){add(stem+e[last]+"れば");add(stem+e[last]+"ることになる");}
+    if(i[last]){add(stem+i[last]+"つつ");add(stem+i[last]+"がち");}
+  }else if(lexeme.inflectionClass==="irregular-suru"&&base.endsWith("する")){
+    const stem=base.slice(0,-2);
+    for(const ending of ["させられる","されれば","せずに","することになる","することにする","するようになる","するようにする"])add(stem+ending);
+  }else if(lexeme.inflectionClass==="i-adjective"&&base.endsWith("い")){
+    const stem=base.slice(0,-1);
+    for(const ending of ["ければ","くても","くない","くなかった","さ"])add(stem+ending,.82);
+  }else if(lexeme.inflectionClass==="na-adjective"){
+    for(const ending of ["なら","ではない","だった","であれば","にもかかわらず"])add(base+ending,.8);
   }
-  return null;
+}
+
+export interface LocalSurfaceResolution extends MorphologyCandidate {
+  lexemeId:string;
+  baseForm:string;
+}
+
+export function resolveJapaneseSurface(surface:string):LocalSurfaceResolution|null{
+  const normalized=normalizeJapaneseSearch(surface);
+  const matches=getSurfaceCandidates().filter((candidate)=>normalizeJapaneseSearch(candidate.surface)===normalized);
+  if(!matches.length)return null;
+  matches.sort((a,b)=>b.confidence-a.confidence||a.lexeme.id.localeCompare(b.lexeme.id));
+  const candidate=matches[0]!;
+  return {
+    surface:candidate.surface,lemma:candidate.lexeme.canonicalForm,baseForm:candidate.lexeme.canonicalForm,
+    lexemeId:candidate.lexeme.id,senseIds:candidate.lexeme.senseIds,resolution:candidate.resolution,
+    confidence:candidate.confidence,senseResolution:senseResolutionForIds(candidate.lexeme.senseIds)
+  };
+}
+
+export function lemmatizeJapaneseSurface(surface:string):{lexemeId:string;baseForm:string;resolution:"canonical"|"generated"|"deinflected";senseIds:string[];senseResolution:SenseResolution;confidence:number}|null{
+  const resolved=resolveJapaneseSurface(surface);
+  if(!resolved||resolved.resolution==="provider")return null;
+  return {lexemeId:resolved.lexemeId,baseForm:resolved.baseForm,resolution:resolved.resolution,senseIds:resolved.senseIds,senseResolution:resolved.senseResolution,confidence:resolved.confidence};
 }
 
 function findNextKnownOffset(text:string,start:number,candidates:SurfaceCandidate[]):number{
@@ -288,7 +332,7 @@ function segmentUnknownChunk(chunk:string):AuthenticToken[]{
     const lemma=lemmatizeJapaneseSurface(surface);
     if(lemma){
       const lexeme=coreContent.lexemes.find((entry)=>entry.id===lemma.lexemeId);
-      if(lexeme){const sense=senseForLexeme(lexeme);result.push({surface,kind:"known",lexemeId:lexeme.id,baseForm:lexeme.canonicalForm,...(lexeme.readings[0]?.text?{reading:lexeme.readings[0].text}:{}),meaning:sense.glosses.join(" / "),resolution:lemma.resolution});continue;}
+      if(lexeme){const sense=senseForLexeme(lexeme);result.push({surface,kind:"known",lexemeId:lexeme.id,baseForm:lexeme.canonicalForm,...(lexeme.readings[0]?.text?{reading:lexeme.readings[0].text}:{}),meaning:sense.glosses.join(" / "),resolution:lemma.resolution,senseIds:lemma.senseIds,senseResolution:lemma.senseResolution,resolutionConfidence:lemma.confidence});continue;}
     }
     result.push({surface,kind:"unknown"});
   }
