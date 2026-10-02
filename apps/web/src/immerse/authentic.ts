@@ -1,4 +1,4 @@
-import type { Lexeme } from "@thiepn/content-schema";
+import type { Lexeme,LexicalChunk } from "@thiepn/content-schema";
 import { entityKey, type StudyEvent } from "@thiepn/domain";
 import { replayStudyEvents } from "@thiepn/learner-engine";
 import {
@@ -83,6 +83,11 @@ export function analyzeAuthenticText(text:string):AuthenticAnalysis{
   };
 }
 
+
+export function findLexicalChunksInText(text:string):LexicalChunk[]{
+  const normalized=text.normalize("NFKC");
+  return lexicalChunks.filter((chunk)=>[chunk.expression,...(chunk.variants??[])].some((form)=>form&&normalized.includes(form.normalize("NFKC"))));
+}
 
 export async function analyzeAuthenticTextWithProvider(text:string,provider:JapaneseMorphologyProvider):Promise<AuthenticAnalysis>{
   if(!provider.dictionaryGrade)throw new Error("MORPHOLOGY_PROVIDER_NOT_DICTIONARY_GRADE");
