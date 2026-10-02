@@ -86,7 +86,19 @@ export function analyzeAuthenticText(text:string):AuthenticAnalysis{
 
 export function findLexicalChunksInText(text:string):LexicalChunk[]{
   const normalized=text.normalize("NFKC");
-  return lexicalChunks.filter((chunk)=>[chunk.expression,...(chunk.variants??[])].some((form)=>form&&normalized.includes(form.normalize("NFKC"))));
+  const lexemeById=new Map(coreContent.lexemes.map((lexeme)=>[lexeme.id,lexeme] as const));
+  return lexicalChunks.filter((chunk)=>{
+    const forms=new Set<string>([chunk.expression,...(chunk.variants??[])]);
+    for(const lexemeId of chunk.lexemeIds){
+      const lexeme=lexemeById.get(lexemeId);if(!lexeme||!chunk.expression.endsWith(lexeme.canonicalForm))continue;
+      const prefix=chunk.expression.slice(0,-lexeme.canonicalForm.length);
+      for(const form of FORMS){
+        const generated=conjugateLexeme(lexeme,form);
+        if(generated)forms.add(prefix+generated);
+      }
+    }
+    return [...forms].some((form)=>form&&normalized.includes(form.normalize("NFKC")));
+  });
 }
 
 export async function analyzeAuthenticTextWithProvider(text:string,provider:JapaneseMorphologyProvider):Promise<AuthenticAnalysis>{
