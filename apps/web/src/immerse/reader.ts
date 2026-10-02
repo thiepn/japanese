@@ -131,17 +131,25 @@ export function gradeReadingQuestion(question:ReadingQuestion,response:string):R
 
 export function segmentSentence(sentence:Sentence):ReaderToken[]{
   const lexemeIds=[...new Set(sentence.entityRefs.filter((ref)=>ref.kind==="lexeme").map((ref)=>ref.id))];
-  const candidates:{surface:string;lexeme:Lexeme}[]=[];
+  const candidates:{surface:string;lexeme:Lexeme;reading?:string}[]=[];
   for(const id of lexemeIds){
     const lexeme=coreContent.lexemes.find((item)=>item.id===id);
     if(!lexeme)continue;
-    const surfaces=new Set<string>([lexeme.canonicalForm,...lexeme.forms.map((item)=>item.text)]);
+    const baseReading=lexeme.readings[0]?.text;
+    const surfaces=new Map<string,string|undefined>();
+    surfaces.set(lexeme.canonicalForm,baseReading);
+    for(const item of lexeme.forms)surfaces.set(item.text,baseReading);
     for(const form of FORMS){
       const generated=conjugateLexeme(lexeme,form);
-      if(generated)surfaces.add(generated);
+      if(!generated)continue;
+      let generatedReading=baseReading;
+      if(baseReading&&lexeme.inflectionClass){
+        generatedReading=conjugateLexeme({...lexeme,canonicalForm:baseReading},form)??baseReading;
+      }
+      surfaces.set(generated,generatedReading);
     }
-    for(const surface of surfaces){
-      if(surface&&sentence.text.includes(surface))candidates.push({surface,lexeme});
+    for(const [surface,reading] of surfaces){
+      if(surface&&sentence.text.includes(surface))candidates.push({surface,lexeme,...(reading?{reading}:{})});
     }
   }
   candidates.sort((a,b)=>b.surface.length-a.surface.length||a.surface.localeCompare(b.surface,"ja"));
@@ -151,8 +159,7 @@ export function segmentSentence(sentence:Sentence):ReaderToken[]{
     const match=candidates.find((candidate)=>sentence.text.startsWith(candidate.surface,index));
     if(match){
       const sense=senseForLexeme(match.lexeme);
-      const reading=match.lexeme.readings[0]?.text;
-      result.push({surface:match.surface,lexemeId:match.lexeme.id,...(reading?{reading}:{}),meaning:sense.glosses.join(" / ")});
+      result.push({surface:match.surface,lexemeId:match.lexeme.id,...(match.reading?{reading:match.reading}:{}),meaning:sense.glosses.join(" / ")});
       index+=match.surface.length;
       continue;
     }
