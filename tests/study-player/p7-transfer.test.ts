@@ -8,7 +8,7 @@ describe("P7 B2 transfer breadth",()=>{
   it("detects canonical lexical chunks inside connected authentic text",()=>{
     const chunks=findLexicalChunksInText("情報源を確認し、根拠を示しながら意見を述べることが大切です。");
     const expressions=new Set(chunks.map((chunk)=>chunk.expression));
-    expect(expressions.has("情報源を確認する")).toBe(false);
+    expect(expressions.has("情報源を確認する")).toBe(true);
     expect(expressions.has("根拠を示す")).toBe(true);
     expect(expressions.has("意見を述べる")).toBe(true);
   });
