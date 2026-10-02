@@ -1,4 +1,4 @@
-import type { AudioAssetRecord, CanDoDescriptor, ContentSeedPackage, CourseUnit, GrammarConcept, Kanji, Lexeme, Sense, Sentence } from "@thiepn/content-schema";
+import type { AudioAssetRecord, CanDoDescriptor, ContentSeedPackage, CourseUnit, GrammarConcept, Kanji, Lexeme, ReadingText, Sense, Sentence } from "@thiepn/content-schema";
 import rawContent from "../../../content/seed/jp-core.json";
 import rawRegistry from "../../../content/sources/registry.json";
 
@@ -14,6 +14,7 @@ const grammarById = new Map(coreContent.grammar.map((item)=>[item.id,item] as co
 const sentenceById = new Map(coreContent.sentences.map((item)=>[item.id,item] as const));
 const canDoById = new Map(coreContent.canDos.map((item)=>[item.id,item] as const));
 const courseUnitById = new Map(coreContent.courseUnits.map((item)=>[item.id,item] as const));
+const readingTextById = new Map(coreContent.readingTexts.map((item)=>[item.id,item] as const));
 const sourceTitles = new Map((rawRegistry.sources as Array<{id:string;title:string}>).map((source)=>[source.id,source.title] as const));
 
 export function senseForLexeme(lexeme:Lexeme):Sense {
@@ -34,6 +35,8 @@ export function grammarConcept(id:string):GrammarConcept { const item=grammarByI
 export function sentenceRecord(id:string):Sentence { const item=sentenceById.get(id); if(!item)throw new Error(`MISSING_SENTENCE:${id}`); return item; }
 export function canDoDescriptor(id:string):CanDoDescriptor { const item=canDoById.get(id); if(!item)throw new Error(`MISSING_CAN_DO:${id}`); return item; }
 export function courseUnit(id:string):CourseUnit { const item=courseUnitById.get(id); if(!item)throw new Error(`MISSING_COURSE_UNIT:${id}`); return item; }
+export function readingText(id:string):ReadingText { const item=readingTextById.get(id); if(!item)throw new Error(`MISSING_READING_TEXT:${id}`); return item; }
+export const gradedReadingTexts=[...coreContent.readingTexts];
 export const a1CourseUnits=[...coreContent.courseUnits].sort((a,b)=>a.order-b.order);
 export const a1Grammar=[...coreContent.grammar].sort((a,b)=>(a.priority??999)-(b.priority??999));
 
