@@ -1,7 +1,7 @@
 import SQLiteESMFactory from "@journeyapps/wa-sqlite/dist/wa-sqlite-async.mjs";
 import * as SQLite from "@journeyapps/wa-sqlite";
 import { IDBBatchAtomicVFS } from "@journeyapps/wa-sqlite/src/examples/IDBBatchAtomicVFS.js";
-import type { AudioAssetRecord, CanDoDescriptor, ContentSeedPackage, CourseUnit, GrammarConcept, Kanji, Lexeme, Sense, Sentence } from "@thiepn/content-schema";
+import type { AudioAssetRecord, CanDoDescriptor, ContentSeedPackage, CourseUnit, GrammarConcept, Kanji, Lexeme, ReadingText, Sense, Sentence } from "@thiepn/content-schema";
 import type { EntityKind, EntityRef } from "@thiepn/domain";
 import { normalizeJapaneseSearch, type SearchDocument, type SearchResult } from "@thiepn/search";
 
@@ -13,6 +13,7 @@ export interface LexemeDetail {
 }
 export interface GrammarDetail { grammar:GrammarConcept; sentences:Sentence[]; }
 export interface CourseUnitDetail { unit:CourseUnit; canDo:CanDoDescriptor|null; grammar:GrammarConcept[]; sentences:Sentence[]; }
+export interface ReadingTextDetail { text:ReadingText; sentences:Sentence[]; }
 
 export class ContentDatabase {
   private constructor(
@@ -101,6 +102,14 @@ export class ContentDatabase {
           [unit.id,unit.title,unit.order,unit.level,unit.canDoId,JSON.stringify(unit.prerequisiteUnitIds),JSON.stringify(unit.grammarIds),JSON.stringify(unit.sentenceIds),JSON.stringify(unit.vocabularyIds),JSON.stringify(unit.conjugationLexemeIds ?? []),JSON.stringify(unit.sourceIds)]
         );
       }
+      for (const text of content.readingTexts) {
+        await this.run(
+          `INSERT INTO reading_texts(id,title,description,level,kind,sentence_ids_json,target_lexeme_ids_json,grammar_ids_json,tags_json,estimated_minutes,audio_mode,questions_json,source_ids_json)
+           VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)
+           ON CONFLICT(id) DO UPDATE SET title=excluded.title,description=excluded.description,level=excluded.level,kind=excluded.kind,sentence_ids_json=excluded.sentence_ids_json,target_lexeme_ids_json=excluded.target_lexeme_ids_json,grammar_ids_json=excluded.grammar_ids_json,tags_json=excluded.tags_json,estimated_minutes=excluded.estimated_minutes,audio_mode=excluded.audio_mode,questions_json=excluded.questions_json,source_ids_json=excluded.source_ids_json`,
+          [text.id,text.title,text.description,text.level,text.kind,JSON.stringify(text.sentenceIds),JSON.stringify(text.targetLexemeIds),JSON.stringify(text.grammarIds),JSON.stringify(text.tags),text.estimatedMinutes,text.audioMode,JSON.stringify(text.comprehensionQuestions),JSON.stringify(text.sourceIds)]
+        );
+      }
       for (const sense of content.senses) {
         await this.run(
           `INSERT INTO senses(id,lexeme_id,glosses_json,pos_json,source_ids_json)
@@ -135,6 +144,9 @@ export class ContentDatabase {
       })),
       ...content.sentences.map((item):SearchDocument=>({
         entity:{kind:"sentence",id:item.id}, title:item.text, ...(item.reading?{reading:item.reading}:{}), glosses:[item.translation], aliases:[item.normalizedText]
+      })),
+      ...content.readingTexts.map((item):SearchDocument=>({
+        entity:{kind:"text",id:item.id}, title:item.title, glosses:[item.description,item.level], aliases:item.tags
       }))
     ]);
   }
@@ -220,6 +232,22 @@ export class ContentDatabase {
       const sentences:Sentence[]=[];for(const sentenceId of unit.sentenceIds){const sentence=await this.getSentence(sentenceId);if(sentence)sentences.push(sentence);}
       result.push({unit,canDo,grammar,sentences});
     }
+    return result;
+  }
+
+  async getReadingText(id:string):Promise<ReadingTextDetail|null>{
+    const row=await this.firstRow("SELECT id,title,description,level,kind,sentence_ids_json,target_lexeme_ids_json,grammar_ids_json,tags_json,estimated_minutes,audio_mode,questions_json,source_ids_json FROM reading_texts WHERE id=?",[id]);
+    if(!row)return null;
+    const text=readingTextFromRow(row);
+    const sentences:Sentence[]=[];
+    for(const sentenceId of text.sentenceIds){const sentence=await this.getSentence(sentenceId);if(sentence)sentences.push(sentence);}
+    return {text,sentences};
+  }
+
+  async listReadingTexts():Promise<ReadingTextDetail[]>{
+    const rows=await this.allRows("SELECT id,title,description,level,kind,sentence_ids_json,target_lexeme_ids_json,grammar_ids_json,tags_json,estimated_minutes,audio_mode,questions_json,source_ids_json FROM reading_texts ORDER BY estimated_minutes ASC,title ASC");
+    const result:ReadingTextDetail[]=[];
+    for(const row of rows){const text=readingTextFromRow(row);const sentences:Sentence[]=[];for(const sentenceId of text.sentenceIds){const sentence=await this.getSentence(sentenceId);if(sentence)sentences.push(sentence);}result.push({text,sentences});}
     return result;
   }
 
@@ -339,6 +367,11 @@ export class ContentDatabase {
         id TEXT PRIMARY KEY,title TEXT NOT NULL,order_index INTEGER NOT NULL,level TEXT NOT NULL,can_do_id TEXT NOT NULL,prerequisite_unit_ids_json TEXT NOT NULL,
         grammar_ids_json TEXT NOT NULL,sentence_ids_json TEXT NOT NULL,vocabulary_ids_json TEXT NOT NULL,conjugation_lexeme_ids_json TEXT NOT NULL DEFAULT '[]',source_ids_json TEXT NOT NULL
       );
+      CREATE TABLE IF NOT EXISTS reading_texts(
+        id TEXT PRIMARY KEY,title TEXT NOT NULL,description TEXT NOT NULL,level TEXT NOT NULL,kind TEXT NOT NULL,
+        sentence_ids_json TEXT NOT NULL,target_lexeme_ids_json TEXT NOT NULL,grammar_ids_json TEXT NOT NULL,tags_json TEXT NOT NULL,
+        estimated_minutes INTEGER NOT NULL,audio_mode TEXT NOT NULL,questions_json TEXT NOT NULL,source_ids_json TEXT NOT NULL
+      );
       CREATE TABLE IF NOT EXISTS senses(
         id TEXT PRIMARY KEY,
         lexeme_id TEXT NOT NULL,
@@ -401,7 +434,7 @@ export class ContentDatabase {
 }
 
 function asEntityKind(value: string): EntityKind {
-  const allowed: readonly EntityKind[] = ["lexeme", "sense", "kanji", "grammar", "sentence", "kana", "can_do"];
+  const allowed: readonly EntityKind[] = ["lexeme", "sense", "kanji", "grammar", "sentence", "text", "kana", "can_do"];
   if (!allowed.includes(value as EntityKind)) throw new Error(`UNKNOWN_ENTITY_KIND:${value}`);
   return value as EntityKind;
 }
@@ -412,5 +445,15 @@ function sentenceFromRow(row:unknown[]):Sentence{
     ...(row[3]===null?{}:{reading:String(row[3])}),translation:String(row[4]),level:String(row[5]),register:String(row[6]),
     grammarIds:JSON.parse(String(row[7])) as string[],entityRefs:JSON.parse(String(row[8])) as Sentence["entityRefs"],
     tokens:JSON.parse(String(row[9])) as Sentence["tokens"],tags:JSON.parse(String(row[10])) as string[],sourceIds:JSON.parse(String(row[11])) as string[]
+  };
+}
+
+
+function readingTextFromRow(row:unknown[]):ReadingText{
+  return {
+    id:String(row[0]),title:String(row[1]),description:String(row[2]),level:String(row[3]),kind:String(row[4]) as ReadingText["kind"],
+    sentenceIds:JSON.parse(String(row[5])) as string[],targetLexemeIds:JSON.parse(String(row[6])) as string[],grammarIds:JSON.parse(String(row[7])) as string[],
+    tags:JSON.parse(String(row[8])) as string[],estimatedMinutes:Number(row[9]),audioMode:String(row[10]) as ReadingText["audioMode"],
+    comprehensionQuestions:JSON.parse(String(row[11])) as ReadingText["comprehensionQuestions"],sourceIds:JSON.parse(String(row[12])) as string[]
   };
 }

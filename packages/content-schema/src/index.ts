@@ -44,9 +44,20 @@ export interface CourseUnit extends ProvenancedContent {
   grammarIds:string[]; sentenceIds:string[]; vocabularyIds:string[]; conjugationLexemeIds?:string[];
 }
 
+export interface ReadingQuestion {
+  id:string; prompt:string; choices:string[]; answer:string; explanation:string;
+}
+export type ReadingAudioMode="speech_synthesis"|"recorded"|"none";
+export interface ReadingText extends ProvenancedContent {
+  id:string; title:string; description:string; level:string; kind:"story"|"dialogue"|"functional";
+  sentenceIds:string[]; targetLexemeIds:string[]; grammarIds:string[]; tags:string[];
+  estimatedMinutes:number; audioMode:ReadingAudioMode; comprehensionQuestions:ReadingQuestion[];
+}
+
 export interface ContentSeedPackage {
   schemaVersion:number; version:string; sourceIds:string[]; lexemes:Lexeme[]; senses:Sense[]; kanji:Kanji[];
   audioAssets:AudioAssetRecord[]; grammar:GrammarConcept[]; sentences:Sentence[]; canDos:CanDoDescriptor[]; courseUnits:CourseUnit[];
+  readingTexts:ReadingText[];
 }
 
 export interface LicensePolicy {

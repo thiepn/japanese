@@ -5,7 +5,7 @@ import { starterVocabulary,vocabularyApplicationPrompts,vocabularyMeaningPrompts
 describe("production A1 vocabulary",()=>{
   it("ships a source-provenanced starter lexicon",()=>{
     expect(starterLexemes).toHaveLength(145);
-    expect(coreContent.version).toBe("0.4.0");
+    expect(coreContent.version).toBe("0.5.0");
     expect(starterLexemes.every((lexeme)=>lexeme.sourceIds.includes("thiepn-original"))).toBe(true);
     expect(coreContent.senses.every((sense)=>sense.sourceIds.includes("thiepn-original"))).toBe(true);
     expect(coreContent.kanji.every((kanji)=>kanji.sourceIds.includes("thiepn-original"))).toBe(true);
@@ -39,6 +39,6 @@ describe("production A1 vocabulary",()=>{
   it("carries source and content version onto study prompts",()=>{
     const prompt=vocabularyMeaningPrompts.find((item)=>item.primaryTarget.id==="lex-taberu");
     expect(prompt?.sourceId).toBe("thiepn-original");
-    expect(prompt?.contentVersion).toBe("0.4.0");
+    expect(prompt?.contentVersion).toBe("0.5.0");
   });
 });

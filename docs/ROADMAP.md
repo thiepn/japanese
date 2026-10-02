@@ -52,8 +52,36 @@ The two spoken milestone areas are controlled say-then-type proxies in P2.5; pro
 
 ## P3 — Reader, Connected Listening & A1→A2 Immersion Bridge
 
-**Next.** After A1 breadth is stable, P3 should use the same sentence/grammar/lexeme graph for graded reading, morphology-aware text support, connected listening and the first real immersion transition. It must not create separate known-word or reader-progress truth.
+**Implementation complete.**
+
+P3 turns Immerse into the first real transition from structured course material to connected Japanese:
+
+- 8 canonical graded texts spanning A1, A1+ and A2-entry support;
+- text entities composed from the existing canonical sentence graph;
+- graph-aware word support that recognizes canonical forms and generated core inflections;
+- optional reading hints, per-sentence translation and canonical grammar links;
+- contextual lookup and one-action vocabulary mining;
+- mined vocabulary returning to the same Today queue rather than a reader-specific SRS;
+- lexical readiness derived from existing learner mastery;
+- full-text connected playback through a Japanese device speech-synthesis voice when available;
+- separate text-level reading and connected-listening evidence;
+- local persistence, search, validation, Progress integration and responsive browser certification.
+
+The tokenizer is intentionally bounded to the app's known graph and core inflection model, and device speech synthesis is not presented as sourced native-speaker audio. See `docs/P3_ACCEPTANCE.md`.
+
+## P4 — A2 Expansion, Native Audio & Authentic-Input Pipeline
+
+**Next.** Expand the bridge into broader A2 capability and prepare for genuine outside input:
+
+- broader A2 grammar, lexicon and connected-text coverage;
+- source-provenanced native sentence/passage audio where licensing permits;
+- robust morphology/tokenization beyond the curated graph;
+- private-source ingestion for learner-owned text and subtitles;
+- unknown-word density and text difficulty estimation for imported material;
+- stable mining/de-duplication from authentic input into the existing learner model;
+- stronger connected-listening and shadowing workflows;
+- transition from curated graded texts toward controlled authentic material.
 
 ## Later
 
-Later phases expand A2→B1 immersion, private-source ingestion, writing/speaking production, AI conversation, adaptive remediation, advanced assessment and specialized authentic-language workflows.
+Later phases expand A2→B1 immersion, writing/speaking production, AI conversation, adaptive remediation, advanced assessment and specialized authentic-language workflows.

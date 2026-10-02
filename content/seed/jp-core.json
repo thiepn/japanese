@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 5,
-  "version": "0.4.0",
+  "schemaVersion": 6,
+  "version": "0.5.0",
   "sourceIds": [
     "thiepn-original",
     "tofugu-wanikani-audio"
@@ -16075,6 +16075,601 @@
         "lex-ii",
         "lex-muzukashii",
         "lex-wakaru"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    }
+  ],
+  "readingTexts": [
+    {
+      "id": "text-a1-morning",
+      "title": "A school morning",
+      "description": "Follow a simple morning routine from waking up to bedtime.",
+      "level": "A1",
+      "kind": "story",
+      "sentenceIds": [
+        "sentence-a1-043",
+        "sentence-a1-044",
+        "sentence-a1-040",
+        "sentence-a1-045",
+        "sentence-a1-046"
+      ],
+      "targetLexemeIds": [
+        "lex-mainichi",
+        "lex-nana",
+        "lex-ji",
+        "lex-okiru",
+        "lex-asagohan",
+        "lex-taberu",
+        "lex-hachi",
+        "lex-gakkou",
+        "lex-iku",
+        "lex-nihongo",
+        "lex-benkyou-suru",
+        "lex-yoru",
+        "lex-juu",
+        "lex-neru"
+      ],
+      "grammarIds": [
+        "grammar-time-counters",
+        "grammar-time-ni",
+        "grammar-masu",
+        "grammar-o-object",
+        "grammar-ni-destination",
+        "grammar-de-action-place"
+      ],
+      "tags": [
+        "routine",
+        "time",
+        "school"
+      ],
+      "estimatedMinutes": 3,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "q-morning-1",
+          "prompt": "What time does the person get up?",
+          "choices": [
+            "Seven o'clock",
+            "Eight o'clock",
+            "Ten o'clock",
+            "No time is given"
+          ],
+          "answer": "Seven o'clock",
+          "explanation": "毎日七時に起きます says the person gets up at seven every day."
+        },
+        {
+          "id": "q-morning-2",
+          "prompt": "Where does the person study Japanese?",
+          "choices": [
+            "At school",
+            "At home",
+            "At the station",
+            "At a shop"
+          ],
+          "answer": "At school",
+          "explanation": "学校で日本語を勉強します places the studying at school."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "text-a1-family",
+      "title": "My family",
+      "description": "Read a compact family introduction with roles and locations.",
+      "level": "A1",
+      "kind": "story",
+      "sentenceIds": [
+        "sentence-a1-054",
+        "sentence-a1-055",
+        "sentence-a1-056",
+        "sentence-a1-057",
+        "sentence-a1-058",
+        "sentence-a1-059"
+      ],
+      "targetLexemeIds": [
+        "lex-watashi",
+        "lex-kazoku",
+        "lex-yon",
+        "lex-chichi",
+        "lex-sensei",
+        "lex-haha",
+        "lex-kaishain",
+        "lex-ani",
+        "lex-gakusei",
+        "lex-imouto",
+        "lex-ie",
+        "lex-iru",
+        "lex-ryoushin",
+        "lex-nihon"
+      ],
+      "grammarIds": [
+        "grammar-no-attribute",
+        "grammar-wa-topic",
+        "grammar-counter-nin",
+        "grammar-desu",
+        "grammar-ni-destination",
+        "grammar-aru-iru"
+      ],
+      "tags": [
+        "family",
+        "people",
+        "existence"
+      ],
+      "estimatedMinutes": 3,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "q-family-1",
+          "prompt": "How many people are in the family?",
+          "choices": [
+            "Four",
+            "Three",
+            "Five",
+            "Six"
+          ],
+          "answer": "Four",
+          "explanation": "私の家族は四人です states that the family has four people."
+        },
+        {
+          "id": "q-family-2",
+          "prompt": "Who is a company employee?",
+          "choices": [
+            "The mother",
+            "The father",
+            "The older brother",
+            "The younger sister"
+          ],
+          "answer": "The mother",
+          "explanation": "母は会社員です says the mother is a company employee."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "text-a1-shopping",
+      "title": "At a small shop",
+      "description": "Move through a beginner shopping exchange with prices, quantities and food.",
+      "level": "A1",
+      "kind": "functional",
+      "sentenceIds": [
+        "sentence-a1-066",
+        "sentence-a1-067",
+        "sentence-a1-069",
+        "sentence-a1-070",
+        "sentence-a1-063",
+        "sentence-a1-064"
+      ],
+      "targetLexemeIds": [
+        "lex-kore",
+        "lex-ikura",
+        "lex-san",
+        "lex-hyaku",
+        "lex-en",
+        "lex-kono",
+        "lex-pan",
+        "lex-yasui",
+        "lex-ringo",
+        "lex-sakana",
+        "lex-oishii",
+        "lex-yasai",
+        "lex-taberu"
+      ],
+      "grammarIds": [
+        "grammar-demonstrative-pronouns",
+        "grammar-question-words",
+        "grammar-wa-topic",
+        "grammar-desu",
+        "grammar-ka-question",
+        "grammar-demonstrative-determiners",
+        "grammar-i-adj-polite",
+        "grammar-o-kudasai",
+        "grammar-counter-tsu",
+        "grammar-o-object",
+        "grammar-masu"
+      ],
+      "tags": [
+        "shopping",
+        "food",
+        "numbers",
+        "counter"
+      ],
+      "estimatedMinutes": 4,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "q-shopping-1",
+          "prompt": "What price is stated?",
+          "choices": [
+            "300 yen",
+            "100 yen",
+            "700 yen",
+            "3,000 yen"
+          ],
+          "answer": "300 yen",
+          "explanation": "三百円です means 'It is 300 yen.'"
+        },
+        {
+          "id": "q-shopping-2",
+          "prompt": "How many apples are requested?",
+          "choices": [
+            "Three",
+            "One",
+            "Two",
+            "Four"
+          ],
+          "answer": "Three",
+          "explanation": "りんごを三つください requests three apples."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "text-a1-transport",
+      "title": "Finding the station",
+      "description": "Combine directions and transport language into one short route.",
+      "level": "A1",
+      "kind": "dialogue",
+      "sentenceIds": [
+        "sentence-a1-075",
+        "sentence-a1-086",
+        "sentence-a1-076",
+        "sentence-a1-073",
+        "sentence-a1-072"
+      ],
+      "targetLexemeIds": [
+        "lex-eki",
+        "lex-doko",
+        "lex-asoko",
+        "lex-migi",
+        "lex-iku",
+        "lex-basu",
+        "lex-densha",
+        "lex-gakkou"
+      ],
+      "grammarIds": [
+        "grammar-location-words",
+        "grammar-wa-topic",
+        "grammar-desu",
+        "grammar-ka-question",
+        "grammar-yo",
+        "grammar-ni-destination",
+        "grammar-masu",
+        "grammar-de-means"
+      ],
+      "tags": [
+        "transport",
+        "direction",
+        "location"
+      ],
+      "estimatedMinutes": 4,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "q-transport-1",
+          "prompt": "Where is the station?",
+          "choices": [
+            "Over there",
+            "At home",
+            "At school",
+            "No location is given"
+          ],
+          "answer": "Over there",
+          "explanation": "駅はあそこですよ points out that the station is over there."
+        },
+        {
+          "id": "q-transport-2",
+          "prompt": "Which vehicle is used to go to the station?",
+          "choices": [
+            "Bus",
+            "Bicycle",
+            "Airplane",
+            "Car"
+          ],
+          "answer": "Bus",
+          "explanation": "バスで駅に行きます means 'I go to the station by bus.'"
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "text-a1-clarification",
+      "title": "When Japanese is difficult",
+      "description": "Practice the language used to keep a conversation going when understanding breaks down.",
+      "level": "A1+",
+      "kind": "dialogue",
+      "sentenceIds": [
+        "sentence-a1-087",
+        "sentence-a1-088",
+        "sentence-a1-082",
+        "sentence-a1-079",
+        "sentence-a1-080",
+        "sentence-a1-083"
+      ],
+      "targetLexemeIds": [
+        "lex-nihongo",
+        "lex-muzukashii",
+        "lex-hai",
+        "lex-sukoshi",
+        "lex-wakaru",
+        "lex-mouichido",
+        "lex-iu",
+        "lex-yukkuri",
+        "lex-hanasu",
+        "lex-arigatou"
+      ],
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-i-adj-polite",
+        "grammar-ka-question",
+        "grammar-masu",
+        "grammar-masen",
+        "grammar-te-form",
+        "grammar-te-kudasai"
+      ],
+      "tags": [
+        "clarification",
+        "conversation",
+        "request"
+      ],
+      "estimatedMinutes": 4,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "q-clarification-1",
+          "prompt": "What does the speaker ask the other person to do?",
+          "choices": [
+            "Say it again and speak slowly",
+            "Write a letter",
+            "Buy food",
+            "Go home"
+          ],
+          "answer": "Say it again and speak slowly",
+          "explanation": "もう一度言ってください and ゆっくり話してください request repetition and slower speech."
+        },
+        {
+          "id": "q-clarification-2",
+          "prompt": "How much Japanese does the speaker say they understand?",
+          "choices": [
+            "A little",
+            "Everything",
+            "Nothing at all",
+            "Only written Japanese"
+          ],
+          "answer": "A little",
+          "explanation": "はい、少し分かります means 'Yes, I understand a little.'"
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "text-a1-first-day",
+      "title": "First day at school",
+      "description": "Read a short sequence about identity, names, friends and Japanese study.",
+      "level": "A1+",
+      "kind": "story",
+      "sentenceIds": [
+        "sentence-a1-001",
+        "sentence-a1-003",
+        "sentence-a1-011",
+        "sentence-a1-007",
+        "sentence-a1-015",
+        "sentence-a1-088"
+      ],
+      "targetLexemeIds": [
+        "lex-gakusei",
+        "lex-namae",
+        "lex-nani",
+        "lex-tomodachi",
+        "lex-gakkou",
+        "lex-nihongo",
+        "lex-hanasu",
+        "lex-suki",
+        "lex-hai",
+        "lex-sukoshi",
+        "lex-wakaru"
+      ],
+      "grammarIds": [
+        "grammar-desu",
+        "grammar-wa-topic",
+        "grammar-ka-question",
+        "grammar-mo-also",
+        "grammar-masu",
+        "grammar-o-object",
+        "grammar-de-action-place",
+        "grammar-ga-subject",
+        "grammar-suki-ga"
+      ],
+      "tags": [
+        "school",
+        "identity",
+        "people",
+        "conversation"
+      ],
+      "estimatedMinutes": 5,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "q-first-day-1",
+          "prompt": "What is the speaker?",
+          "choices": [
+            "A student",
+            "A teacher",
+            "A company employee",
+            "A shop worker"
+          ],
+          "answer": "A student",
+          "explanation": "学生です identifies the speaker as a student."
+        },
+        {
+          "id": "q-first-day-2",
+          "prompt": "What language do they speak at school?",
+          "choices": [
+            "Japanese",
+            "English",
+            "Korean",
+            "French"
+          ],
+          "answer": "Japanese",
+          "explanation": "学校で日本語を話します says they speak Japanese at school."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "text-a1-plus-yesterday",
+      "title": "Yesterday and today",
+      "description": "Bridge into longer comparison across past, negative and present descriptions.",
+      "level": "A1+",
+      "kind": "story",
+      "sentenceIds": [
+        "sentence-a1-050",
+        "sentence-a1-053",
+        "sentence-a1-047",
+        "sentence-a1-084",
+        "sentence-a1-051"
+      ],
+      "targetLexemeIds": [
+        "lex-kinou",
+        "lex-atsui",
+        "lex-shizuka",
+        "lex-benkyou-suru",
+        "lex-kyou",
+        "lex-samui"
+      ],
+      "grammarIds": [
+        "grammar-wa-topic",
+        "grammar-i-adj-past",
+        "grammar-na-noun-negative",
+        "grammar-na-noun-past",
+        "grammar-masen-deshita",
+        "grammar-i-adj-polite",
+        "grammar-ne",
+        "grammar-i-adj-negative"
+      ],
+      "tags": [
+        "past",
+        "negative",
+        "weather",
+        "description"
+      ],
+      "estimatedMinutes": 5,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "q-yesterday-1",
+          "prompt": "What was the weather like yesterday?",
+          "choices": [
+            "Hot",
+            "Cold",
+            "Warm and rainy",
+            "No weather is mentioned"
+          ],
+          "answer": "Hot",
+          "explanation": "昨日は暑かったです says it was hot yesterday."
+        },
+        {
+          "id": "q-yesterday-2",
+          "prompt": "Did the speaker study yesterday?",
+          "choices": [
+            "No",
+            "Yes",
+            "Only in the morning",
+            "The text does not say"
+          ],
+          "answer": "No",
+          "explanation": "昨日は勉強しませんでした is the polite past negative: the speaker did not study."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "text-a2-bridge-home",
+      "title": "Things at home",
+      "description": "A longer low-support bridge text using possession, existence, description and preference.",
+      "level": "A2-entry",
+      "kind": "story",
+      "sentenceIds": [
+        "sentence-a1-033",
+        "sentence-a1-036",
+        "sentence-a1-037",
+        "sentence-a1-013",
+        "sentence-a1-016",
+        "sentence-a1-014"
+      ],
+      "targetLexemeIds": [
+        "lex-kore",
+        "lex-watashi",
+        "lex-hon",
+        "lex-kazoku",
+        "lex-shashin",
+        "lex-tomodachi",
+        "lex-kuruma",
+        "lex-ie",
+        "lex-aru",
+        "lex-ookii",
+        "lex-suki"
+      ],
+      "grammarIds": [
+        "grammar-demonstrative-pronouns",
+        "grammar-no-attribute",
+        "grammar-wa-topic",
+        "grammar-desu",
+        "grammar-ni-destination",
+        "grammar-ga-subject",
+        "grammar-aru-iru",
+        "grammar-i-adj-polite",
+        "grammar-suki-ga"
+      ],
+      "tags": [
+        "bridge",
+        "home",
+        "possession",
+        "description",
+        "preference"
+      ],
+      "estimatedMinutes": 6,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "q-home-1",
+          "prompt": "What is in the house?",
+          "choices": [
+            "A book",
+            "A train",
+            "A restaurant",
+            "A bicycle"
+          ],
+          "answer": "A book",
+          "explanation": "家に本があります says there is a book at home."
+        },
+        {
+          "id": "q-home-2",
+          "prompt": "What does the speaker like?",
+          "choices": [
+            "Books",
+            "Cars",
+            "Coffee",
+            "Fish"
+          ],
+          "answer": "Books",
+          "explanation": "本が好きです means 'I like books.'"
+        }
       ],
       "sourceIds": [
         "thiepn-original"

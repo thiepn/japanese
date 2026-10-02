@@ -9,9 +9,10 @@ interface EntityRef { kind:string; id:string; }
 interface SentenceRecord extends Provenanced { grammarIds?:string[]; entityRefs?:EntityRef[]; }
 interface CanDoRecord extends Provenanced { grammarIds?:string[]; sentenceIds?:string[]; prerequisiteIds?:string[]; }
 interface CourseUnitRecord extends Provenanced { canDoId?:string; prerequisiteUnitIds?:string[]; grammarIds?:string[]; sentenceIds?:string[]; vocabularyIds?:string[]; conjugationLexemeIds?:string[]; }
+interface ReadingTextRecord extends Provenanced { sentenceIds?:string[]; targetLexemeIds?:string[]; grammarIds?:string[]; }
 interface Seed {
   sourceIds?:string[]; lexemes?:Provenanced[]; senses?:Provenanced[]; kanji?:Provenanced[]; audioAssets?:Provenanced[];
-  grammar?:GrammarRecord[]; sentences?:SentenceRecord[]; canDos?:CanDoRecord[]; courseUnits?:CourseUnitRecord[];
+  grammar?:GrammarRecord[]; sentences?:SentenceRecord[]; canDos?:CanDoRecord[]; courseUnits?:CourseUnitRecord[]; readingTexts?:ReadingTextRecord[];
 }
 
 const registry=JSON.parse(await readFile(new URL("../../../content/sources/registry.json",import.meta.url),"utf8")) as Registry;
@@ -37,7 +38,7 @@ for(const sourceId of seed.sourceIds ?? []) validateSource(sourceId,"seed packag
 
 for(const [collection,items] of Object.entries({
   lexemes:seed.lexemes ?? [],senses:seed.senses ?? [],kanji:seed.kanji ?? [],audioAssets:seed.audioAssets ?? [],
-  grammar:seed.grammar ?? [],sentences:seed.sentences ?? [],canDos:seed.canDos ?? [],courseUnits:seed.courseUnits ?? []
+  grammar:seed.grammar ?? [],sentences:seed.sentences ?? [],canDos:seed.canDos ?? [],courseUnits:seed.courseUnits ?? [],readingTexts:seed.readingTexts ?? []
 })) {
   for(const item of items) {
     if(!item.sourceIds?.length) violations.push("Missing provenance: "+collection+"/"+item.id);
@@ -68,6 +69,11 @@ for(const canDo of seed.canDos ?? []){
   for(const id of canDo.grammarIds ?? [])requireRef(grammarIds,id,"canDos/"+canDo.id+"/grammarIds");
   for(const id of canDo.sentenceIds ?? [])requireRef(sentenceIds,id,"canDos/"+canDo.id+"/sentenceIds");
   for(const id of canDo.prerequisiteIds ?? [])requireRef(canDoIds,id,"canDos/"+canDo.id+"/prerequisiteIds");
+}
+for(const text of seed.readingTexts ?? []){
+  for(const id of text.sentenceIds ?? [])requireRef(sentenceIds,id,"readingTexts/"+text.id+"/sentenceIds");
+  for(const id of text.targetLexemeIds ?? [])requireRef(lexemeIds,id,"readingTexts/"+text.id+"/targetLexemeIds");
+  for(const id of text.grammarIds ?? [])requireRef(grammarIds,id,"readingTexts/"+text.id+"/grammarIds");
 }
 for(const unit of seed.courseUnits ?? []){
   requireRef(canDoIds,unit.canDoId,"courseUnits/"+unit.id+"/canDoId");
