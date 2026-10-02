@@ -1,11 +1,11 @@
 import { expect,test } from "@playwright/test";
 
-test("structured A1 course and canonical grammar/sentence search work on every certified viewport",async({page})=>{
+test("structured A1→A2 course and canonical grammar/sentence search work on every certified viewport",async({page})=>{
   await page.goto("/");
   await page.getByRole("button",{name:"Learn"}).click();
 
-  await expect(page.getByRole("heading",{name:"Foundation → A1"})).toBeVisible();
-  await expect(page.locator(".unit-card")).toHaveCount(20);
+  await expect(page.getByRole("heading",{name:"Foundation → A2"})).toBeVisible();
+  await expect(page.locator(".unit-card")).toHaveCount(32);
   const firstUnit=page.locator(".unit-card").first();
   await expect(firstUnit.getByRole("heading",{name:"Identify people"})).toBeVisible();
   await expect(firstUnit.getByText(/Can identify oneself/)).toBeVisible();
