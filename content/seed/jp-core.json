@@ -9571,6 +9571,2163 @@
         "thiepn-original"
       ],
       "inflectionClass": "godan"
+    },
+    {
+      "id": "lex-iken",
+      "canonicalForm": "意見",
+      "forms": [
+        {
+          "text": "意見",
+          "script": "mixed"
+        },
+        {
+          "text": "いけん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "いけん"
+        }
+      ],
+      "senseIds": [
+        "sense-iken-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-iken"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 275,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kekka",
+      "canonicalForm": "結果",
+      "forms": [
+        {
+          "text": "結果",
+          "script": "mixed"
+        },
+        {
+          "text": "けっか",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "けっか"
+        }
+      ],
+      "senseIds": [
+        "sense-kekka-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-kekka"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 276,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-genin",
+      "canonicalForm": "原因",
+      "forms": [
+        {
+          "text": "原因",
+          "script": "mixed"
+        },
+        {
+          "text": "げんいん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "げんいん"
+        }
+      ],
+      "senseIds": [
+        "sense-genin-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-genin"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 277,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-mokuteki",
+      "canonicalForm": "目的",
+      "forms": [
+        {
+          "text": "目的",
+          "script": "mixed"
+        },
+        {
+          "text": "もくてき",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "もくてき"
+        }
+      ],
+      "senseIds": [
+        "sense-mokuteki-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-mokuteki"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 278,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-mokuhyou",
+      "canonicalForm": "目標",
+      "forms": [
+        {
+          "text": "目標",
+          "script": "mixed"
+        },
+        {
+          "text": "もくひょう",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "もくひょう"
+        }
+      ],
+      "senseIds": [
+        "sense-mokuhyou-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-mokuhyou"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 279,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-jouhou",
+      "canonicalForm": "情報",
+      "forms": [
+        {
+          "text": "情報",
+          "script": "mixed"
+        },
+        {
+          "text": "じょうほう",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "じょうほう"
+        }
+      ],
+      "senseIds": [
+        "sense-jouhou-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-jouhou"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 280,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-nyuusu",
+      "canonicalForm": "ニュース",
+      "forms": [
+        {
+          "text": "ニュース",
+          "script": "katakana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ニュース"
+        }
+      ],
+      "senseIds": [
+        "sense-nyuusu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 281,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kiji",
+      "canonicalForm": "記事",
+      "forms": [
+        {
+          "text": "記事",
+          "script": "mixed"
+        },
+        {
+          "text": "きじ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "きじ"
+        }
+      ],
+      "senseIds": [
+        "sense-kiji-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-kiji"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 282,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-shakai",
+      "canonicalForm": "社会",
+      "forms": [
+        {
+          "text": "社会",
+          "script": "mixed"
+        },
+        {
+          "text": "しゃかい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "しゃかい"
+        }
+      ],
+      "senseIds": [
+        "sense-shakai-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-shakai"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 283,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-bunka",
+      "canonicalForm": "文化",
+      "forms": [
+        {
+          "text": "文化",
+          "script": "mixed"
+        },
+        {
+          "text": "ぶんか",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ぶんか"
+        }
+      ],
+      "senseIds": [
+        "sense-bunka-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-bunka"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 284,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-seikatsu",
+      "canonicalForm": "生活",
+      "forms": [
+        {
+          "text": "生活",
+          "script": "mixed"
+        },
+        {
+          "text": "せいかつ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "せいかつ"
+        }
+      ],
+      "senseIds": [
+        "sense-seikatsu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-seikatsu"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 285,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kankyou",
+      "canonicalForm": "環境",
+      "forms": [
+        {
+          "text": "環境",
+          "script": "mixed"
+        },
+        {
+          "text": "かんきょう",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かんきょう"
+        }
+      ],
+      "senseIds": [
+        "sense-kankyou-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-kankyou"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 286,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-chiiki",
+      "canonicalForm": "地域",
+      "forms": [
+        {
+          "text": "地域",
+          "script": "mixed"
+        },
+        {
+          "text": "ちいき",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ちいき"
+        }
+      ],
+      "senseIds": [
+        "sense-chiiki-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-chiiki"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 287,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-sekai",
+      "canonicalForm": "世界",
+      "forms": [
+        {
+          "text": "世界",
+          "script": "mixed"
+        },
+        {
+          "text": "せかい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "せかい"
+        }
+      ],
+      "senseIds": [
+        "sense-sekai-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-sekai"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 288,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-mirai",
+      "canonicalForm": "未来",
+      "forms": [
+        {
+          "text": "未来",
+          "script": "mixed"
+        },
+        {
+          "text": "みらい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "みらい"
+        }
+      ],
+      "senseIds": [
+        "sense-mirai-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-mirai"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 289,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kako",
+      "canonicalForm": "過去",
+      "forms": [
+        {
+          "text": "過去",
+          "script": "mixed"
+        },
+        {
+          "text": "かこ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かこ"
+        }
+      ],
+      "senseIds": [
+        "sense-kako-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-kako"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 290,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-henka",
+      "canonicalForm": "変化",
+      "forms": [
+        {
+          "text": "変化",
+          "script": "mixed"
+        },
+        {
+          "text": "へんか",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "へんか"
+        }
+      ],
+      "senseIds": [
+        "sense-henka-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-henka"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 291,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-seichou",
+      "canonicalForm": "成長",
+      "forms": [
+        {
+          "text": "成長",
+          "script": "mixed"
+        },
+        {
+          "text": "せいちょう",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "せいちょう"
+        }
+      ],
+      "senseIds": [
+        "sense-seichou-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 292,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-seikou",
+      "canonicalForm": "成功",
+      "forms": [
+        {
+          "text": "成功",
+          "script": "mixed"
+        },
+        {
+          "text": "せいこう",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "せいこう"
+        }
+      ],
+      "senseIds": [
+        "sense-seikou-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-seikou"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 293,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-shippai",
+      "canonicalForm": "失敗",
+      "forms": [
+        {
+          "text": "失敗",
+          "script": "mixed"
+        },
+        {
+          "text": "しっぱい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "しっぱい"
+        }
+      ],
+      "senseIds": [
+        "sense-shippai-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-shippai"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 294,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kikai",
+      "canonicalForm": "機会",
+      "forms": [
+        {
+          "text": "機会",
+          "script": "mixed"
+        },
+        {
+          "text": "きかい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "きかい"
+        }
+      ],
+      "senseIds": [
+        "sense-kikai-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-kikai"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 295,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-chousen",
+      "canonicalForm": "挑戦",
+      "forms": [
+        {
+          "text": "挑戦",
+          "script": "mixed"
+        },
+        {
+          "text": "ちょうせん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ちょうせん"
+        }
+      ],
+      "senseIds": [
+        "sense-chousen-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-chousen"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 296,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-keikaku",
+      "canonicalForm": "計画",
+      "forms": [
+        {
+          "text": "計画",
+          "script": "mixed"
+        },
+        {
+          "text": "けいかく",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "けいかく"
+        }
+      ],
+      "senseIds": [
+        "sense-keikaku-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-keikaku"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 297,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-junbi",
+      "canonicalForm": "準備",
+      "forms": [
+        {
+          "text": "準備",
+          "script": "mixed"
+        },
+        {
+          "text": "じゅんび",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "じゅんび"
+        }
+      ],
+      "senseIds": [
+        "sense-junbi-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-junbi"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 298,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-renraku",
+      "canonicalForm": "連絡",
+      "forms": [
+        {
+          "text": "連絡",
+          "script": "mixed"
+        },
+        {
+          "text": "れんらく",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "れんらく"
+        }
+      ],
+      "senseIds": [
+        "sense-renraku-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 299,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-soudan",
+      "canonicalForm": "相談",
+      "forms": [
+        {
+          "text": "相談",
+          "script": "mixed"
+        },
+        {
+          "text": "そうだん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "そうだん"
+        }
+      ],
+      "senseIds": [
+        "sense-soudan-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-soudan"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 300,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-shitsumon",
+      "canonicalForm": "質問",
+      "forms": [
+        {
+          "text": "質問",
+          "script": "mixed"
+        },
+        {
+          "text": "しつもん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "しつもん"
+        }
+      ],
+      "senseIds": [
+        "sense-shitsumon-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-shitsumon"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 301,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-rei",
+      "canonicalForm": "例",
+      "forms": [
+        {
+          "text": "例",
+          "script": "mixed"
+        },
+        {
+          "text": "れい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "れい"
+        }
+      ],
+      "senseIds": [
+        "sense-rei-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 302,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kimochi",
+      "canonicalForm": "気持ち",
+      "forms": [
+        {
+          "text": "気持ち",
+          "script": "mixed"
+        },
+        {
+          "text": "きもち",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "きもち"
+        }
+      ],
+      "senseIds": [
+        "sense-kimochi-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-kimochi"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 303,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-shinpai",
+      "canonicalForm": "心配",
+      "forms": [
+        {
+          "text": "心配",
+          "script": "mixed"
+        },
+        {
+          "text": "しんぱい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "しんぱい"
+        }
+      ],
+      "senseIds": [
+        "sense-shinpai-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-shinpai"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 304,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kenkou",
+      "canonicalForm": "健康",
+      "forms": [
+        {
+          "text": "健康",
+          "script": "mixed"
+        },
+        {
+          "text": "けんこう",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "けんこう"
+        }
+      ],
+      "senseIds": [
+        "sense-kenkou-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-kenkou"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 305,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-undou",
+      "canonicalForm": "運動",
+      "forms": [
+        {
+          "text": "運動",
+          "script": "mixed"
+        },
+        {
+          "text": "うんどう",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "うんどう"
+        }
+      ],
+      "senseIds": [
+        "sense-undou-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-undou"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 306,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kyouiku",
+      "canonicalForm": "教育",
+      "forms": [
+        {
+          "text": "教育",
+          "script": "mixed"
+        },
+        {
+          "text": "きょういく",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "きょういく"
+        }
+      ],
+      "senseIds": [
+        "sense-kyouiku-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-kyouiku"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 307,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-jugyou",
+      "canonicalForm": "授業",
+      "forms": [
+        {
+          "text": "授業",
+          "script": "mixed"
+        },
+        {
+          "text": "じゅぎょう",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "じゅぎょう"
+        }
+      ],
+      "senseIds": [
+        "sense-jugyou-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-jugyou"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 308,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-shiken",
+      "canonicalForm": "試験",
+      "forms": [
+        {
+          "text": "試験",
+          "script": "mixed"
+        },
+        {
+          "text": "しけん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "しけん"
+        }
+      ],
+      "senseIds": [
+        "sense-shiken-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-shiken"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 309,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-senmon",
+      "canonicalForm": "専門",
+      "forms": [
+        {
+          "text": "専門",
+          "script": "mixed"
+        },
+        {
+          "text": "せんもん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "せんもん"
+        }
+      ],
+      "senseIds": [
+        "sense-senmon-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-senmon"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 310,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kenkyuu",
+      "canonicalForm": "研究",
+      "forms": [
+        {
+          "text": "研究",
+          "script": "mixed"
+        },
+        {
+          "text": "けんきゅう",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "けんきゅう"
+        }
+      ],
+      "senseIds": [
+        "sense-kenkyuu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-kenkyuu"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 311,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-gijutsu",
+      "canonicalForm": "技術",
+      "forms": [
+        {
+          "text": "技術",
+          "script": "mixed"
+        },
+        {
+          "text": "ぎじゅつ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ぎじゅつ"
+        }
+      ],
+      "senseIds": [
+        "sense-gijutsu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-gijutsu"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 312,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-anzen",
+      "canonicalForm": "安全",
+      "forms": [
+        {
+          "text": "安全",
+          "script": "mixed"
+        },
+        {
+          "text": "あんぜん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "あんぜん"
+        }
+      ],
+      "senseIds": [
+        "sense-anzen-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-anzen"
+      ],
+      "tags": [
+        "b1",
+        "na-adjective"
+      ],
+      "priority": 313,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "na-adjective"
+    },
+    {
+      "id": "lex-kiken",
+      "canonicalForm": "危険",
+      "forms": [
+        {
+          "text": "危険",
+          "script": "mixed"
+        },
+        {
+          "text": "きけん",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "きけん"
+        }
+      ],
+      "senseIds": [
+        "sense-kiken-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-kiken"
+      ],
+      "tags": [
+        "b1",
+        "na-adjective"
+      ],
+      "priority": 314,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "na-adjective"
+    },
+    {
+      "id": "lex-taisetsu",
+      "canonicalForm": "大切",
+      "forms": [
+        {
+          "text": "大切",
+          "script": "mixed"
+        },
+        {
+          "text": "たいせつ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "たいせつ"
+        }
+      ],
+      "senseIds": [
+        "sense-taisetsu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-taisetsu"
+      ],
+      "tags": [
+        "b1",
+        "na-adjective"
+      ],
+      "priority": 315,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "na-adjective"
+    },
+    {
+      "id": "lex-fukuzatsu",
+      "canonicalForm": "複雑",
+      "forms": [
+        {
+          "text": "複雑",
+          "script": "mixed"
+        },
+        {
+          "text": "ふくざつ",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ふくざつ"
+        }
+      ],
+      "senseIds": [
+        "sense-fukuzatsu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-fukuzatsu"
+      ],
+      "tags": [
+        "b1",
+        "na-adjective"
+      ],
+      "priority": 316,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "na-adjective"
+    },
+    {
+      "id": "lex-jiyuu",
+      "canonicalForm": "自由",
+      "forms": [
+        {
+          "text": "自由",
+          "script": "mixed"
+        },
+        {
+          "text": "じゆう",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "じゆう"
+        }
+      ],
+      "senseIds": [
+        "sense-jiyuu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-jiyuu"
+      ],
+      "tags": [
+        "b1",
+        "na-adjective"
+      ],
+      "priority": 317,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "na-adjective"
+    },
+    {
+      "id": "lex-eikyou",
+      "canonicalForm": "影響",
+      "forms": [
+        {
+          "text": "影響",
+          "script": "mixed"
+        },
+        {
+          "text": "えいきょう",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "えいきょう"
+        }
+      ],
+      "senseIds": [
+        "sense-eikyou-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-eikyou"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 318,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kankei",
+      "canonicalForm": "関係",
+      "forms": [
+        {
+          "text": "関係",
+          "script": "mixed"
+        },
+        {
+          "text": "かんけい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かんけい"
+        }
+      ],
+      "senseIds": [
+        "sense-kankei-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-kankei"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 319,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-baai",
+      "canonicalForm": "場合",
+      "forms": [
+        {
+          "text": "場合",
+          "script": "mixed"
+        },
+        {
+          "text": "ばあい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ばあい"
+        }
+      ],
+      "senseIds": [
+        "sense-baai-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-baai"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 320,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kanousei",
+      "canonicalForm": "可能性",
+      "forms": [
+        {
+          "text": "可能性",
+          "script": "mixed"
+        },
+        {
+          "text": "かのうせい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かのうせい"
+        }
+      ],
+      "senseIds": [
+        "sense-kanousei-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-kanousei"
+      ],
+      "tags": [
+        "b1",
+        "noun"
+      ],
+      "priority": 321,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-jissai",
+      "canonicalForm": "実際",
+      "forms": [
+        {
+          "text": "実際",
+          "script": "mixed"
+        },
+        {
+          "text": "じっさい",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "じっさい"
+        }
+      ],
+      "senseIds": [
+        "sense-jissai-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-jissai"
+      ],
+      "tags": [
+        "b1",
+        "adverb"
+      ],
+      "priority": 322,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-tokuni",
+      "canonicalForm": "特に",
+      "forms": [
+        {
+          "text": "特に",
+          "script": "mixed"
+        },
+        {
+          "text": "とくに",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "とくに"
+        }
+      ],
+      "senseIds": [
+        "sense-tokuni-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-tokuni"
+      ],
+      "tags": [
+        "b1",
+        "adverb"
+      ],
+      "priority": 323,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-tatoeba",
+      "canonicalForm": "例えば",
+      "forms": [
+        {
+          "text": "例えば",
+          "script": "mixed"
+        },
+        {
+          "text": "たとえば",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "たとえば"
+        }
+      ],
+      "senseIds": [
+        "sense-tatoeba-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-tatoeba"
+      ],
+      "tags": [
+        "b1",
+        "adverb"
+      ],
+      "priority": 324,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-kanarazu",
+      "canonicalForm": "必ず",
+      "forms": [
+        {
+          "text": "必ず",
+          "script": "mixed"
+        },
+        {
+          "text": "かならず",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かならず"
+        }
+      ],
+      "senseIds": [
+        "sense-kanarazu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-kanarazu"
+      ],
+      "tags": [
+        "b1",
+        "adverb"
+      ],
+      "priority": 325,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-shikashi",
+      "canonicalForm": "しかし",
+      "forms": [
+        {
+          "text": "しかし",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "しかし"
+        }
+      ],
+      "senseIds": [
+        "sense-shikashi-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b1",
+        "adverb"
+      ],
+      "priority": 326,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-soredemo",
+      "canonicalForm": "それでも",
+      "forms": [
+        {
+          "text": "それでも",
+          "script": "hiragana"
+        }
+      ],
+      "readings": [
+        {
+          "text": "それでも"
+        }
+      ],
+      "senseIds": [
+        "sense-soredemo-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "b1",
+        "adverb"
+      ],
+      "priority": 327,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "lex-tsuzuku",
+      "canonicalForm": "続く",
+      "forms": [
+        {
+          "text": "続く",
+          "script": "mixed"
+        },
+        {
+          "text": "つづく",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "つづく"
+        }
+      ],
+      "senseIds": [
+        "sense-tsuzuku-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-tsuzuku"
+      ],
+      "tags": [
+        "b1",
+        "verb"
+      ],
+      "priority": 328,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "godan"
+    },
+    {
+      "id": "lex-tsuzukeru",
+      "canonicalForm": "続ける",
+      "forms": [
+        {
+          "text": "続ける",
+          "script": "mixed"
+        },
+        {
+          "text": "つづける",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "つづける"
+        }
+      ],
+      "senseIds": [
+        "sense-tsuzukeru-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-tsuzukeru"
+      ],
+      "tags": [
+        "b1",
+        "verb"
+      ],
+      "priority": 329,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "ichidan"
+    },
+    {
+      "id": "lex-kaeru-change",
+      "canonicalForm": "変える",
+      "forms": [
+        {
+          "text": "変える",
+          "script": "mixed"
+        },
+        {
+          "text": "かえる",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かえる"
+        }
+      ],
+      "senseIds": [
+        "sense-kaeru-change-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-kaeru-change"
+      ],
+      "tags": [
+        "b1",
+        "verb"
+      ],
+      "priority": 330,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "ichidan"
+    },
+    {
+      "id": "lex-kawaru",
+      "canonicalForm": "変わる",
+      "forms": [
+        {
+          "text": "変わる",
+          "script": "mixed"
+        },
+        {
+          "text": "かわる",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かわる"
+        }
+      ],
+      "senseIds": [
+        "sense-kawaru-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-kawaru"
+      ],
+      "tags": [
+        "b1",
+        "verb"
+      ],
+      "priority": 331,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "godan"
+    },
+    {
+      "id": "lex-fueru",
+      "canonicalForm": "増える",
+      "forms": [
+        {
+          "text": "増える",
+          "script": "mixed"
+        },
+        {
+          "text": "ふえる",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ふえる"
+        }
+      ],
+      "senseIds": [
+        "sense-fueru-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-fueru"
+      ],
+      "tags": [
+        "b1",
+        "verb"
+      ],
+      "priority": 332,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "ichidan"
+    },
+    {
+      "id": "lex-heru",
+      "canonicalForm": "減る",
+      "forms": [
+        {
+          "text": "減る",
+          "script": "mixed"
+        },
+        {
+          "text": "へる",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "へる"
+        }
+      ],
+      "senseIds": [
+        "sense-heru-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-heru"
+      ],
+      "tags": [
+        "b1",
+        "verb"
+      ],
+      "priority": 333,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "godan"
+    },
+    {
+      "id": "lex-kangaeru",
+      "canonicalForm": "考える",
+      "forms": [
+        {
+          "text": "考える",
+          "script": "mixed"
+        },
+        {
+          "text": "かんがえる",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かんがえる"
+        }
+      ],
+      "senseIds": [
+        "sense-kangaeru-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-kangaeru"
+      ],
+      "tags": [
+        "b1",
+        "verb"
+      ],
+      "priority": 334,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "ichidan"
+    },
+    {
+      "id": "lex-shiraberu",
+      "canonicalForm": "調べる",
+      "forms": [
+        {
+          "text": "調べる",
+          "script": "mixed"
+        },
+        {
+          "text": "しらべる",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "しらべる"
+        }
+      ],
+      "senseIds": [
+        "sense-shiraberu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-shiraberu"
+      ],
+      "tags": [
+        "b1",
+        "verb"
+      ],
+      "priority": 335,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "ichidan"
+    },
+    {
+      "id": "lex-kuraberu",
+      "canonicalForm": "比べる",
+      "forms": [
+        {
+          "text": "比べる",
+          "script": "mixed"
+        },
+        {
+          "text": "くらべる",
+          "script": "hiragana",
+          "status": "reading-form"
+        }
+      ],
+      "readings": [
+        {
+          "text": "くらべる"
+        }
+      ],
+      "senseIds": [
+        "sense-kuraberu-1"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [
+        "audio-lex-kuraberu"
+      ],
+      "tags": [
+        "b1",
+        "verb"
+      ],
+      "priority": 336,
+      "sourceIds": [
+        "thiepn-original"
+      ],
+      "inflectionClass": "ichidan"
     }
   ],
   "senses": [
@@ -13233,6 +15390,844 @@
       "sourceIds": [
         "thiepn-original"
       ]
+    },
+    {
+      "id": "sense-iken-1",
+      "lexemeId": "lex-iken",
+      "glosses": [
+        "opinion"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kekka-1",
+      "lexemeId": "lex-kekka",
+      "glosses": [
+        "result",
+        "outcome"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-genin-1",
+      "lexemeId": "lex-genin",
+      "glosses": [
+        "cause"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-mokuteki-1",
+      "lexemeId": "lex-mokuteki",
+      "glosses": [
+        "purpose",
+        "objective"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-mokuhyou-1",
+      "lexemeId": "lex-mokuhyou",
+      "glosses": [
+        "goal",
+        "target"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-jouhou-1",
+      "lexemeId": "lex-jouhou",
+      "glosses": [
+        "information"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-nyuusu-1",
+      "lexemeId": "lex-nyuusu",
+      "glosses": [
+        "news"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kiji-1",
+      "lexemeId": "lex-kiji",
+      "glosses": [
+        "article"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-shakai-1",
+      "lexemeId": "lex-shakai",
+      "glosses": [
+        "society"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-bunka-1",
+      "lexemeId": "lex-bunka",
+      "glosses": [
+        "culture"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-seikatsu-1",
+      "lexemeId": "lex-seikatsu",
+      "glosses": [
+        "daily life",
+        "living"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kankyou-1",
+      "lexemeId": "lex-kankyou",
+      "glosses": [
+        "environment"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-chiiki-1",
+      "lexemeId": "lex-chiiki",
+      "glosses": [
+        "region",
+        "local area"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-sekai-1",
+      "lexemeId": "lex-sekai",
+      "glosses": [
+        "world"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-mirai-1",
+      "lexemeId": "lex-mirai",
+      "glosses": [
+        "future"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kako-1",
+      "lexemeId": "lex-kako",
+      "glosses": [
+        "past"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-henka-1",
+      "lexemeId": "lex-henka",
+      "glosses": [
+        "change"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-seichou-1",
+      "lexemeId": "lex-seichou",
+      "glosses": [
+        "growth",
+        "development"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-seikou-1",
+      "lexemeId": "lex-seikou",
+      "glosses": [
+        "success"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-shippai-1",
+      "lexemeId": "lex-shippai",
+      "glosses": [
+        "failure",
+        "mistake"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kikai-1",
+      "lexemeId": "lex-kikai",
+      "glosses": [
+        "opportunity",
+        "occasion"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-chousen-1",
+      "lexemeId": "lex-chousen",
+      "glosses": [
+        "challenge",
+        "attempt"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-keikaku-1",
+      "lexemeId": "lex-keikaku",
+      "glosses": [
+        "plan",
+        "project"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-junbi-1",
+      "lexemeId": "lex-junbi",
+      "glosses": [
+        "preparation"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-renraku-1",
+      "lexemeId": "lex-renraku",
+      "glosses": [
+        "contact",
+        "communication"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-soudan-1",
+      "lexemeId": "lex-soudan",
+      "glosses": [
+        "consultation",
+        "discussion"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-shitsumon-1",
+      "lexemeId": "lex-shitsumon",
+      "glosses": [
+        "question",
+        "inquiry"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-rei-1",
+      "lexemeId": "lex-rei",
+      "glosses": [
+        "example"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kimochi-1",
+      "lexemeId": "lex-kimochi",
+      "glosses": [
+        "feeling",
+        "emotion"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-shinpai-1",
+      "lexemeId": "lex-shinpai",
+      "glosses": [
+        "worry",
+        "concern"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kenkou-1",
+      "lexemeId": "lex-kenkou",
+      "glosses": [
+        "health"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-undou-1",
+      "lexemeId": "lex-undou",
+      "glosses": [
+        "exercise"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kyouiku-1",
+      "lexemeId": "lex-kyouiku",
+      "glosses": [
+        "education"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-jugyou-1",
+      "lexemeId": "lex-jugyou",
+      "glosses": [
+        "class",
+        "lesson"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-shiken-1",
+      "lexemeId": "lex-shiken",
+      "glosses": [
+        "exam",
+        "test"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-senmon-1",
+      "lexemeId": "lex-senmon",
+      "glosses": [
+        "specialty",
+        "field"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kenkyuu-1",
+      "lexemeId": "lex-kenkyuu",
+      "glosses": [
+        "research"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-gijutsu-1",
+      "lexemeId": "lex-gijutsu",
+      "glosses": [
+        "technology",
+        "skill"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-anzen-1",
+      "lexemeId": "lex-anzen",
+      "glosses": [
+        "safe",
+        "safety"
+      ],
+      "partOfSpeech": [
+        "na-adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kiken-1",
+      "lexemeId": "lex-kiken",
+      "glosses": [
+        "dangerous",
+        "danger"
+      ],
+      "partOfSpeech": [
+        "na-adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-taisetsu-1",
+      "lexemeId": "lex-taisetsu",
+      "glosses": [
+        "important",
+        "valuable"
+      ],
+      "partOfSpeech": [
+        "na-adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-fukuzatsu-1",
+      "lexemeId": "lex-fukuzatsu",
+      "glosses": [
+        "complicated"
+      ],
+      "partOfSpeech": [
+        "na-adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-jiyuu-1",
+      "lexemeId": "lex-jiyuu",
+      "glosses": [
+        "free",
+        "freedom"
+      ],
+      "partOfSpeech": [
+        "na-adjective"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-eikyou-1",
+      "lexemeId": "lex-eikyou",
+      "glosses": [
+        "influence",
+        "effect"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kankei-1",
+      "lexemeId": "lex-kankei",
+      "glosses": [
+        "relationship",
+        "connection"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-baai-1",
+      "lexemeId": "lex-baai",
+      "glosses": [
+        "case",
+        "situation"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kanousei-1",
+      "lexemeId": "lex-kanousei",
+      "glosses": [
+        "possibility"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-jissai-1",
+      "lexemeId": "lex-jissai",
+      "glosses": [
+        "actually",
+        "reality"
+      ],
+      "partOfSpeech": [
+        "adverb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-tokuni-1",
+      "lexemeId": "lex-tokuni",
+      "glosses": [
+        "especially"
+      ],
+      "partOfSpeech": [
+        "adverb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-tatoeba-1",
+      "lexemeId": "lex-tatoeba",
+      "glosses": [
+        "for example"
+      ],
+      "partOfSpeech": [
+        "adverb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kanarazu-1",
+      "lexemeId": "lex-kanarazu",
+      "glosses": [
+        "certainly",
+        "without fail"
+      ],
+      "partOfSpeech": [
+        "adverb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-shikashi-1",
+      "lexemeId": "lex-shikashi",
+      "glosses": [
+        "however"
+      ],
+      "partOfSpeech": [
+        "adverb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-soredemo-1",
+      "lexemeId": "lex-soredemo",
+      "glosses": [
+        "even so",
+        "nevertheless"
+      ],
+      "partOfSpeech": [
+        "adverb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-tsuzuku-1",
+      "lexemeId": "lex-tsuzuku",
+      "glosses": [
+        "to continue"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-tsuzukeru-1",
+      "lexemeId": "lex-tsuzukeru",
+      "glosses": [
+        "to continue something"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kaeru-change-1",
+      "lexemeId": "lex-kaeru-change",
+      "glosses": [
+        "to change something"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kawaru-1",
+      "lexemeId": "lex-kawaru",
+      "glosses": [
+        "to change",
+        "become different"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-fueru-1",
+      "lexemeId": "lex-fueru",
+      "glosses": [
+        "to increase"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-heru-1",
+      "lexemeId": "lex-heru",
+      "glosses": [
+        "to decrease"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kangaeru-1",
+      "lexemeId": "lex-kangaeru",
+      "glosses": [
+        "to think",
+        "consider"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-shiraberu-1",
+      "lexemeId": "lex-shiraberu",
+      "glosses": [
+        "to investigate",
+        "look up"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-kuraberu-1",
+      "lexemeId": "lex-kuraberu",
+      "glosses": [
+        "to compare"
+      ],
+      "partOfSpeech": [
+        "verb"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
     }
   ],
   "kanji": [
@@ -15729,6 +18724,780 @@
           "たぶん"
         ],
         "explanation": "まだ〜ていません means 'not yet'."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-you-ni-naru",
+      "label": "〜ようになる",
+      "summary": "Express that a new ability, habit, or situation has come to be.",
+      "mentalModel": "Focus on a change that developed rather than a single deliberate choice.",
+      "formation": [
+        "Verb dictionary / negative + ようになる"
+      ],
+      "uses": [
+        "new abilities",
+        "habit changes"
+      ],
+      "prerequisiteIds": [
+        "grammar-ku-ni-naru"
+      ],
+      "contrastIds": [
+        "grammar-you-ni-suru"
+      ],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 67,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "毎日、日本語を読む ___ なりました。",
+        "answer": "ように",
+        "choices": [
+          "ように",
+          "ために",
+          "ことに",
+          "そうに"
+        ],
+        "explanation": "〜ようになりました describes a developed change."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-you-ni-suru",
+      "label": "〜ようにする",
+      "summary": "Express a deliberate ongoing effort or habit.",
+      "mentalModel": "Frame an action as a policy you intentionally try to maintain.",
+      "formation": [
+        "Verb dictionary / negative + ようにする"
+      ],
+      "uses": [
+        "deliberate habits",
+        "ongoing efforts"
+      ],
+      "prerequisiteIds": [
+        "grammar-you-ni-naru"
+      ],
+      "contrastIds": [
+        "grammar-you-ni-naru"
+      ],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 68,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "毎日ニュースを読む ___ しています。",
+        "answer": "ように",
+        "choices": [
+          "ように",
+          "そうに",
+          "ことが",
+          "ほど"
+        ],
+        "explanation": "〜ようにしています means making a regular effort."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-koto-ni-suru",
+      "label": "〜ことにする",
+      "summary": "Express a decision you make yourself.",
+      "mentalModel": "Turn an action into a chosen decision.",
+      "formation": [
+        "Verb dictionary / negative + ことにする"
+      ],
+      "uses": [
+        "personal decisions"
+      ],
+      "prerequisiteIds": [
+        "grammar-ni-suru"
+      ],
+      "contrastIds": [
+        "grammar-koto-ni-naru"
+      ],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 69,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "来年、日本へ行く ___ しました。",
+        "answer": "ことに",
+        "choices": [
+          "ことに",
+          "ように",
+          "そうに",
+          "はずに"
+        ],
+        "explanation": "〜ことにしました reports a personal decision."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-koto-ni-naru",
+      "label": "〜ことになる",
+      "summary": "Express an arrangement or decision determined by circumstances.",
+      "mentalModel": "Present a result as decided or arranged rather than solely chosen by you.",
+      "formation": [
+        "Verb dictionary / negative + ことになる"
+      ],
+      "uses": [
+        "arrangements",
+        "external decisions"
+      ],
+      "prerequisiteIds": [
+        "grammar-yotei"
+      ],
+      "contrastIds": [
+        "grammar-koto-ni-suru"
+      ],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 70,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "来月、東京で働く ___ なりました。",
+        "answer": "ことに",
+        "choices": [
+          "ことに",
+          "ために",
+          "ほど",
+          "しか"
+        ],
+        "explanation": "〜ことになりました means it has been decided."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-sou-appearance",
+      "label": "〜そうだ (appearance)",
+      "summary": "Describe how something looks likely from visible evidence.",
+      "mentalModel": "Report an immediate impression based on what you can see.",
+      "formation": [
+        "Verb ます-stem / adjective stem + そうだ"
+      ],
+      "uses": [
+        "visible impressions",
+        "near-future likelihood"
+      ],
+      "prerequisiteIds": [
+        "grammar-to-omou"
+      ],
+      "contrastIds": [
+        "grammar-sou-hearsay"
+      ],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 71,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "雨が降り ___ です。",
+        "answer": "そう",
+        "choices": [
+          "そう",
+          "らしい",
+          "ため",
+          "ほど"
+        ],
+        "explanation": "降りそうです means it looks like it will rain."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-sou-hearsay",
+      "label": "〜そうだ (hearsay)",
+      "summary": "Report information heard from another source.",
+      "mentalModel": "Attach そうだ to a plain clause and keep the source separate from your own certainty.",
+      "formation": [
+        "Plain clause + そうだ"
+      ],
+      "uses": [
+        "reported information",
+        "news"
+      ],
+      "prerequisiteIds": [
+        "grammar-to-omou"
+      ],
+      "contrastIds": [
+        "grammar-sou-appearance"
+      ],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 72,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "天気予報によると、明日は雨だ ___ です。",
+        "answer": "そう",
+        "choices": [
+          "そう",
+          "よう",
+          "ほど",
+          "しか"
+        ],
+        "explanation": "Plain clause + そうです reports what was heard."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-rashii",
+      "label": "〜らしい",
+      "summary": "Express indirect information or an evidence-based impression.",
+      "mentalModel": "Place some distance between you and the claim.",
+      "formation": [
+        "Plain clause / Noun + らしい"
+      ],
+      "uses": [
+        "indirect information",
+        "inference"
+      ],
+      "prerequisiteIds": [
+        "grammar-sou-hearsay"
+      ],
+      "contrastIds": [
+        "grammar-mitai"
+      ],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 73,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "この店は人気がある ___ です。",
+        "answer": "らしい",
+        "choices": [
+          "らしい",
+          "ため",
+          "ほど",
+          "しか"
+        ],
+        "explanation": "〜らしい presents an indirect report or inference."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-mitai",
+      "label": "〜みたい",
+      "summary": "Express an informal resemblance or impression.",
+      "mentalModel": "Treat the preceding item as a basis for comparison or impression.",
+      "formation": [
+        "Plain clause / Noun + みたいだ"
+      ],
+      "uses": [
+        "informal impressions",
+        "resemblance"
+      ],
+      "prerequisiteIds": [
+        "grammar-rashii"
+      ],
+      "contrastIds": [
+        "grammar-rashii"
+      ],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 74,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "この町は映画の中 ___ です。",
+        "answer": "みたい",
+        "choices": [
+          "みたい",
+          "ばかり",
+          "ほど",
+          "しか"
+        ],
+        "explanation": "〜みたいです means it seems/is like..."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-kamoshirenai",
+      "label": "〜かもしれない",
+      "summary": "Express possibility without committing to certainty.",
+      "mentalModel": "Mark a proposition as one possible outcome.",
+      "formation": [
+        "Plain clause + かもしれない"
+      ],
+      "uses": [
+        "uncertain possibilities",
+        "soft predictions"
+      ],
+      "prerequisiteIds": [
+        "grammar-tabun"
+      ],
+      "contrastIds": [
+        "grammar-hazu"
+      ],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 75,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "会議は長くなる ___。",
+        "answer": "かもしれません",
+        "choices": [
+          "かもしれません",
+          "はずです",
+          "ことです",
+          "ためです"
+        ],
+        "explanation": "〜かもしれません means might/may."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-hazu",
+      "label": "〜はず",
+      "summary": "Express an expectation based on evidence, logic, or plan.",
+      "mentalModel": "Given what you know, the result is expected.",
+      "formation": [
+        "Plain clause + はずだ"
+      ],
+      "uses": [
+        "logical expectations",
+        "expected schedules"
+      ],
+      "prerequisiteIds": [
+        "grammar-yotei"
+      ],
+      "contrastIds": [
+        "grammar-kamoshirenai"
+      ],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 76,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "電車はもう駅に着いている ___ です。",
+        "answer": "はず",
+        "choices": [
+          "はず",
+          "しか",
+          "ほど",
+          "そう"
+        ],
+        "explanation": "〜はずです expresses an evidence-based expectation."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-tame-ni-purpose",
+      "label": "〜ために",
+      "summary": "Express a clear purpose behind an intentional action.",
+      "mentalModel": "Link an intentional goal to an action taken to achieve it.",
+      "formation": [
+        "Verb dictionary / Noun + の + ために"
+      ],
+      "uses": [
+        "purpose",
+        "goal-directed action"
+      ],
+      "prerequisiteIds": [
+        "grammar-tsumori"
+      ],
+      "contrastIds": [
+        "grammar-you-ni-purpose"
+      ],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 77,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "試験に合格する ___、毎日勉強します。",
+        "answer": "ために",
+        "choices": [
+          "ために",
+          "ように",
+          "のに",
+          "ほど"
+        ],
+        "explanation": "〜ために gives the purpose of an intentional action."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-you-ni-purpose",
+      "label": "〜ように (purpose)",
+      "summary": "Express a desired result, especially ability or prevention.",
+      "mentalModel": "Focus on making a result possible rather than directly performing a goal action.",
+      "formation": [
+        "Potential/negative/nonvolitional clause + ように"
+      ],
+      "uses": [
+        "ability goals",
+        "prevention"
+      ],
+      "prerequisiteIds": [
+        "grammar-koto-ga-dekiru"
+      ],
+      "contrastIds": [
+        "grammar-tame-ni-purpose"
+      ],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 78,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "忘れない ___、予定を書きます。",
+        "answer": "ように",
+        "choices": [
+          "ように",
+          "ために",
+          "ほど",
+          "しか"
+        ],
+        "explanation": "忘れないように means so that I do not forget."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-noni",
+      "label": "〜のに",
+      "summary": "Express unexpected contrast: although / despite.",
+      "mentalModel": "Set an expectation in the first clause and show reality differs.",
+      "formation": [
+        "Plain clause + のに"
+      ],
+      "uses": [
+        "unexpected contrast",
+        "surprise"
+      ],
+      "prerequisiteIds": [
+        "grammar-kedo-contrast"
+      ],
+      "contrastIds": [
+        "grammar-temo-concession"
+      ],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 79,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "たくさん勉強した ___、試験は難しかったです。",
+        "answer": "のに",
+        "choices": [
+          "のに",
+          "ので",
+          "から",
+          "まで"
+        ],
+        "explanation": "〜のに marks a result contrary to expectation."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-temo-concession",
+      "label": "〜ても",
+      "summary": "Express even if/even though when the second result still holds.",
+      "mentalModel": "Remove the first clause as a blocking condition.",
+      "formation": [
+        "Verb て-form / adjective + ても"
+      ],
+      "uses": [
+        "concession",
+        "persistent result"
+      ],
+      "prerequisiteIds": [
+        "grammar-temo-ii"
+      ],
+      "contrastIds": [
+        "grammar-noni"
+      ],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 80,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "雨が降っ ___、行きます。",
+        "answer": "ても",
+        "choices": [
+          "ても",
+          "ては",
+          "たら",
+          "たり"
+        ],
+        "explanation": "〜ても means even if/even though."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-nara",
+      "label": "〜なら",
+      "summary": "Set a condition based on something already mentioned or assumed.",
+      "mentalModel": "Take a situation as given and respond within that frame.",
+      "formation": [
+        "Noun / plain clause + なら"
+      ],
+      "uses": [
+        "advice",
+        "context-based conditions"
+      ],
+      "prerequisiteIds": [
+        "grammar-tara"
+      ],
+      "contrastIds": [
+        "grammar-ba"
+      ],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 81,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "京都へ行く ___、春がおすすめです。",
+        "answer": "なら",
+        "choices": [
+          "なら",
+          "のに",
+          "ほど",
+          "しか"
+        ],
+        "explanation": "〜なら means if it is the case that..."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-ba",
+      "label": "〜ば",
+      "summary": "Express a general or logical condition.",
+      "mentalModel": "Emphasize the condition-result relationship.",
+      "formation": [
+        "Conditional 〜ば"
+      ],
+      "uses": [
+        "logical conditions",
+        "general advice"
+      ],
+      "prerequisiteIds": [
+        "grammar-tara"
+      ],
+      "contrastIds": [
+        "grammar-nara"
+      ],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 82,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "時間があれ ___、一緒に行きましょう。",
+        "answer": "ば",
+        "choices": [
+          "ば",
+          "たら",
+          "ても",
+          "のに"
+        ],
+        "explanation": "あれば is the 〜ば conditional of ある."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-to-condition",
+      "label": "〜と (condition)",
+      "summary": "Express an automatic or regular result.",
+      "mentalModel": "Natural for rules, directions and predictable consequences.",
+      "formation": [
+        "Plain nonpast + と"
+      ],
+      "uses": [
+        "automatic results",
+        "directions"
+      ],
+      "prerequisiteIds": [
+        "grammar-tara"
+      ],
+      "contrastIds": [
+        "grammar-ba"
+      ],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 83,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "このボタンを押す ___、ドアが開きます。",
+        "answer": "と",
+        "choices": [
+          "と",
+          "なら",
+          "のに",
+          "まで"
+        ],
+        "explanation": "Conditional と describes an automatic result."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-te-shimau",
+      "label": "〜てしまう",
+      "summary": "Express completion, often with regret or unintended result.",
+      "mentalModel": "Emphasize that something was fully done or unfortunately happened.",
+      "formation": [
+        "Verb て-form + しまう"
+      ],
+      "uses": [
+        "regret",
+        "accidental results",
+        "completion"
+      ],
+      "prerequisiteIds": [
+        "grammar-te-form"
+      ],
+      "contrastIds": [],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 84,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "財布を忘れ ___。",
+        "answer": "てしまいました",
+        "choices": [
+          "てしまいました",
+          "ておきました",
+          "てみました",
+          "ています"
+        ],
+        "explanation": "〜てしまいました can show an unfortunate completed action."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-te-oku",
+      "label": "〜ておく",
+      "summary": "Do something in advance or leave a state as preparation.",
+      "mentalModel": "Connect the present action to a future need.",
+      "formation": [
+        "Verb て-form + おく"
+      ],
+      "uses": [
+        "preparation",
+        "leaving something ready"
+      ],
+      "prerequisiteIds": [
+        "grammar-te-form"
+      ],
+      "contrastIds": [],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 85,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "旅行の前にホテルを予約し ___。",
+        "answer": "ておきます",
+        "choices": [
+          "ておきます",
+          "てしまいます",
+          "てみます",
+          "ています"
+        ],
+        "explanation": "〜ておきます means doing it in advance."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "grammar-te-miru",
+      "label": "〜てみる",
+      "summary": "Try doing something to see what happens.",
+      "mentalModel": "Frame the action as an experiment or attempt.",
+      "formation": [
+        "Verb て-form + みる"
+      ],
+      "uses": [
+        "trying actions",
+        "suggestions"
+      ],
+      "prerequisiteIds": [
+        "grammar-te-form"
+      ],
+      "contrastIds": [],
+      "level": "B1",
+      "register": "neutral-polite",
+      "priority": 86,
+      "tags": [
+        "b1"
+      ],
+      "practice": {
+        "prompt": "この方法を使っ ___。",
+        "answer": "てみます",
+        "choices": [
+          "てみます",
+          "ておきます",
+          "てしまいます",
+          "ています"
+        ],
+        "explanation": "〜てみます means try doing."
       },
       "sourceIds": [
         "thiepn-original"
@@ -27626,6 +31395,958 @@
       "sourceIds": [
         "tofugu-wanikani-audio"
       ]
+    },
+    {
+      "id": "audio-lex-iken",
+      "kind": "word",
+      "text": "意見",
+      "reading": "いけん",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%84%8F%E8%A6%8B%E3%80%90%E3%81%84%E3%81%91%E3%82%93%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "意見【いけん】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-kekka",
+      "kind": "word",
+      "text": "結果",
+      "reading": "けっか",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E7%B5%90%E6%9E%9C%E3%80%90%E3%81%91%E3%81%A3%E3%81%8B%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "結果【けっか】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-genin",
+      "kind": "word",
+      "text": "原因",
+      "reading": "げんいん",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%8E%9F%E5%9B%A0%E3%80%90%E3%81%92%E3%82%93%E3%81%84%E3%82%93%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "原因【げんいん】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-mokuteki",
+      "kind": "word",
+      "text": "目的",
+      "reading": "もくてき",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E7%9B%AE%E7%9A%84%E3%80%90%E3%82%82%E3%81%8F%E3%81%A6%E3%81%8D%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "目的【もくてき】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-mokuhyou",
+      "kind": "word",
+      "text": "目標",
+      "reading": "もくひょう",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E7%9B%AE%E6%A8%99%E3%80%90%E3%82%82%E3%81%8F%E3%81%B2%E3%82%87%E3%81%86%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "目標【もくひょう】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-jouhou",
+      "kind": "word",
+      "text": "情報",
+      "reading": "じょうほう",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%83%85%E5%A0%B1%E3%80%90%E3%81%98%E3%82%87%E3%81%86%E3%81%BB%E3%81%86%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "情報【じょうほう】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-kiji",
+      "kind": "word",
+      "text": "記事",
+      "reading": "きじ",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E8%A8%98%E4%BA%8B%E3%80%90%E3%81%8D%E3%81%98%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "記事【きじ】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-shakai",
+      "kind": "word",
+      "text": "社会",
+      "reading": "しゃかい",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E7%A4%BE%E4%BC%9A%E3%80%90%E3%81%97%E3%82%83%E3%81%8B%E3%81%84%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "社会【しゃかい】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-bunka",
+      "kind": "word",
+      "text": "文化",
+      "reading": "ぶんか",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%96%87%E5%8C%96%E3%80%90%E3%81%B6%E3%82%93%E3%81%8B%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "文化【ぶんか】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-seikatsu",
+      "kind": "word",
+      "text": "生活",
+      "reading": "せいかつ",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E7%94%9F%E6%B4%BB%E3%80%90%E3%81%9B%E3%81%84%E3%81%8B%E3%81%A4%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "生活【せいかつ】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-kankyou",
+      "kind": "word",
+      "text": "環境",
+      "reading": "かんきょう",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E7%92%B0%E5%A2%83%E3%80%90%E3%81%8B%E3%82%93%E3%81%8D%E3%82%87%E3%81%86%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "環境【かんきょう】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-chiiki",
+      "kind": "word",
+      "text": "地域",
+      "reading": "ちいき",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%9C%B0%E5%9F%9F%E3%80%90%E3%81%A1%E3%81%84%E3%81%8D%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "地域【ちいき】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-sekai",
+      "kind": "word",
+      "text": "世界",
+      "reading": "せかい",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E4%B8%96%E7%95%8C%E3%80%90%E3%81%9B%E3%81%8B%E3%81%84%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "世界【せかい】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-mirai",
+      "kind": "word",
+      "text": "未来",
+      "reading": "みらい",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%9C%AA%E6%9D%A5%E3%80%90%E3%81%BF%E3%82%89%E3%81%84%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "未来【みらい】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-kako",
+      "kind": "word",
+      "text": "過去",
+      "reading": "かこ",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E9%81%8E%E5%8E%BB%E3%80%90%E3%81%8B%E3%81%93%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "過去【かこ】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-henka",
+      "kind": "word",
+      "text": "変化",
+      "reading": "へんか",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%A4%89%E5%8C%96%E3%80%90%E3%81%B8%E3%82%93%E3%81%8B%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "変化【へんか】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-seikou",
+      "kind": "word",
+      "text": "成功",
+      "reading": "せいこう",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%88%90%E5%8A%9F%E3%80%90%E3%81%9B%E3%81%84%E3%81%93%E3%81%86%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "成功【せいこう】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-shippai",
+      "kind": "word",
+      "text": "失敗",
+      "reading": "しっぱい",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%A4%B1%E6%95%97%E3%80%90%E3%81%97%E3%81%A3%E3%81%B1%E3%81%84%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "失敗【しっぱい】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-kikai",
+      "kind": "word",
+      "text": "機会",
+      "reading": "きかい",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%A9%9F%E4%BC%9A%E3%80%90%E3%81%8D%E3%81%8B%E3%81%84%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "機会【きかい】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-chousen",
+      "kind": "word",
+      "text": "挑戦",
+      "reading": "ちょうせん",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%8C%91%E6%88%A6%E3%80%90%E3%81%A1%E3%82%87%E3%81%86%E3%81%9B%E3%82%93%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "挑戦【ちょうせん】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-keikaku",
+      "kind": "word",
+      "text": "計画",
+      "reading": "けいかく",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E8%A8%88%E7%94%BB%E3%80%90%E3%81%91%E3%81%84%E3%81%8B%E3%81%8F%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "計画【けいかく】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-junbi",
+      "kind": "word",
+      "text": "準備",
+      "reading": "じゅんび",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%BA%96%E5%82%99%E3%80%90%E3%81%98%E3%82%85%E3%82%93%E3%81%B3%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "準備【じゅんび】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-soudan",
+      "kind": "word",
+      "text": "相談",
+      "reading": "そうだん",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E7%9B%B8%E8%AB%87%E3%80%90%E3%81%9D%E3%81%86%E3%81%A0%E3%82%93%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "相談【そうだん】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-shitsumon",
+      "kind": "word",
+      "text": "質問",
+      "reading": "しつもん",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E8%B3%AA%E5%95%8F%E3%80%90%E3%81%97%E3%81%A4%E3%82%82%E3%82%93%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "質問【しつもん】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-kimochi",
+      "kind": "word",
+      "text": "気持ち",
+      "reading": "きもち",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%B0%97%E6%8C%81%E3%81%A1%E3%80%90%E3%81%8D%E3%82%82%E3%81%A1%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "気持ち【きもち】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-shinpai",
+      "kind": "word",
+      "text": "心配",
+      "reading": "しんぱい",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%BF%83%E9%85%8D%E3%80%90%E3%81%97%E3%82%93%E3%81%B1%E3%81%84%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "心配【しんぱい】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-kenkou",
+      "kind": "word",
+      "text": "健康",
+      "reading": "けんこう",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%81%A5%E5%BA%B7%E3%80%90%E3%81%91%E3%82%93%E3%81%93%E3%81%86%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "健康【けんこう】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-undou",
+      "kind": "word",
+      "text": "運動",
+      "reading": "うんどう",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E9%81%8B%E5%8B%95%E3%80%90%E3%81%86%E3%82%93%E3%81%A9%E3%81%86%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "運動【うんどう】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-kyouiku",
+      "kind": "word",
+      "text": "教育",
+      "reading": "きょういく",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%95%99%E8%82%B2%E3%80%90%E3%81%8D%E3%82%87%E3%81%86%E3%81%84%E3%81%8F%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "教育【きょういく】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-jugyou",
+      "kind": "word",
+      "text": "授業",
+      "reading": "じゅぎょう",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%8E%88%E6%A5%AD%E3%80%90%E3%81%98%E3%82%85%E3%81%8E%E3%82%87%E3%81%86%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "授業【じゅぎょう】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-shiken",
+      "kind": "word",
+      "text": "試験",
+      "reading": "しけん",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E8%A9%A6%E9%A8%93%E3%80%90%E3%81%97%E3%81%91%E3%82%93%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "試験【しけん】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-senmon",
+      "kind": "word",
+      "text": "専門",
+      "reading": "せんもん",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%B0%82%E9%96%80%E3%80%90%E3%81%9B%E3%82%93%E3%82%82%E3%82%93%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "専門【せんもん】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-kenkyuu",
+      "kind": "word",
+      "text": "研究",
+      "reading": "けんきゅう",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E7%A0%94%E7%A9%B6%E3%80%90%E3%81%91%E3%82%93%E3%81%8D%E3%82%85%E3%81%86%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "研究【けんきゅう】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-gijutsu",
+      "kind": "word",
+      "text": "技術",
+      "reading": "ぎじゅつ",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%8A%80%E8%A1%93%E3%80%90%E3%81%8E%E3%81%98%E3%82%85%E3%81%A4%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "技術【ぎじゅつ】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-anzen",
+      "kind": "word",
+      "text": "安全",
+      "reading": "あんぜん",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%AE%89%E5%85%A8%E3%80%90%E3%81%82%E3%82%93%E3%81%9C%E3%82%93%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "安全【あんぜん】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-kiken",
+      "kind": "word",
+      "text": "危険",
+      "reading": "きけん",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%8D%B1%E9%99%BA%E3%80%90%E3%81%8D%E3%81%91%E3%82%93%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "危険【きけん】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-taisetsu",
+      "kind": "word",
+      "text": "大切",
+      "reading": "たいせつ",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%A4%A7%E5%88%87%E3%80%90%E3%81%9F%E3%81%84%E3%81%9B%E3%81%A4%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "大切【たいせつ】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-fukuzatsu",
+      "kind": "word",
+      "text": "複雑",
+      "reading": "ふくざつ",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E8%A4%87%E9%9B%91%E3%80%90%E3%81%B5%E3%81%8F%E3%81%96%E3%81%A4%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "複雑【ふくざつ】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-jiyuu",
+      "kind": "word",
+      "text": "自由",
+      "reading": "じゆう",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E8%87%AA%E7%94%B1%E3%80%90%E3%81%98%E3%82%86%E3%81%86%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "自由【じゆう】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-eikyou",
+      "kind": "word",
+      "text": "影響",
+      "reading": "えいきょう",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%BD%B1%E9%9F%BF%E3%80%90%E3%81%88%E3%81%84%E3%81%8D%E3%82%87%E3%81%86%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "影響【えいきょう】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-kankei",
+      "kind": "word",
+      "text": "関係",
+      "reading": "かんけい",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E9%96%A2%E4%BF%82%E3%80%90%E3%81%8B%E3%82%93%E3%81%91%E3%81%84%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "関係【かんけい】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-baai",
+      "kind": "word",
+      "text": "場合",
+      "reading": "ばあい",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%A0%B4%E5%90%88%E3%80%90%E3%81%B0%E3%81%82%E3%81%84%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "場合【ばあい】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-kanousei",
+      "kind": "word",
+      "text": "可能性",
+      "reading": "かのうせい",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%8F%AF%E8%83%BD%E6%80%A7%E3%80%90%E3%81%8B%E3%81%AE%E3%81%86%E3%81%9B%E3%81%84%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "可能性【かのうせい】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-jissai",
+      "kind": "word",
+      "text": "実際",
+      "reading": "じっさい",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%AE%9F%E9%9A%9B%E3%80%90%E3%81%98%E3%81%A3%E3%81%95%E3%81%84%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "実際【じっさい】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-tokuni",
+      "kind": "word",
+      "text": "特に",
+      "reading": "とくに",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E7%89%B9%E3%81%AB%E3%80%90%E3%81%A8%E3%81%8F%E3%81%AB%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "特に【とくに】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-tatoeba",
+      "kind": "word",
+      "text": "例えば",
+      "reading": "たとえば",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E4%BE%8B%E3%81%88%E3%81%B0%E3%80%90%E3%81%9F%E3%81%A8%E3%81%88%E3%81%B0%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "例えば【たとえば】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-kanarazu",
+      "kind": "word",
+      "text": "必ず",
+      "reading": "かならず",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%BF%85%E3%81%9A%E3%80%90%E3%81%8B%E3%81%AA%E3%82%89%E3%81%9A%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "必ず【かならず】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-tsuzuku",
+      "kind": "word",
+      "text": "続く",
+      "reading": "つづく",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E7%B6%9A%E3%81%8F%E3%80%90%E3%81%A4%E3%81%A5%E3%81%8F%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "続く【つづく】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-tsuzukeru",
+      "kind": "word",
+      "text": "続ける",
+      "reading": "つづける",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E7%B6%9A%E3%81%91%E3%82%8B%E3%80%90%E3%81%A4%E3%81%A5%E3%81%91%E3%82%8B%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "続ける【つづける】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-kaeru-change",
+      "kind": "word",
+      "text": "変える",
+      "reading": "かえる",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%A4%89%E3%81%88%E3%82%8B%E3%80%90%E3%81%8B%E3%81%88%E3%82%8B%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "変える【かえる】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-kawaru",
+      "kind": "word",
+      "text": "変わる",
+      "reading": "かわる",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%A4%89%E3%82%8F%E3%82%8B%E3%80%90%E3%81%8B%E3%82%8F%E3%82%8B%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "変わる【かわる】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-fueru",
+      "kind": "word",
+      "text": "増える",
+      "reading": "ふえる",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E5%A2%97%E3%81%88%E3%82%8B%E3%80%90%E3%81%B5%E3%81%88%E3%82%8B%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "増える【ふえる】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-heru",
+      "kind": "word",
+      "text": "減る",
+      "reading": "へる",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%B8%9B%E3%82%8B%E3%80%90%E3%81%B8%E3%82%8B%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "減る【へる】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-kangaeru",
+      "kind": "word",
+      "text": "考える",
+      "reading": "かんがえる",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E8%80%83%E3%81%88%E3%82%8B%E3%80%90%E3%81%8B%E3%82%93%E3%81%8C%E3%81%88%E3%82%8B%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "考える【かんがえる】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-shiraberu",
+      "kind": "word",
+      "text": "調べる",
+      "reading": "しらべる",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E8%AA%BF%E3%81%B9%E3%82%8B%E3%80%90%E3%81%97%E3%82%89%E3%81%B9%E3%82%8B%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "調べる【しらべる】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
+    },
+    {
+      "id": "audio-lex-kuraberu",
+      "kind": "word",
+      "text": "比べる",
+      "reading": "くらべる",
+      "language": "ja",
+      "format": "ogg",
+      "url": "https://raw.githubusercontent.com/tofugu/japanese-vocabulary-pronunciation-audio/9725e0e7d628ab616e8b14e126d3daa33eba8d36/lib/ogg/%E6%AF%94%E3%81%B9%E3%82%8B%E3%80%90%E3%81%8F%E3%82%89%E3%81%B9%E3%82%8B%E3%80%91.ogg",
+      "credit": "Tofugu / WaniKani",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true,
+      "externalId": "比べる【くらべる】.ogg",
+      "sourceIds": [
+        "tofugu-wanikani-audio"
+      ]
     }
   ],
   "canDos": [
@@ -31116,5 +35837,6 @@
         "thiepn-original"
       ]
     }
-  ]
+  ],
+  "productiveTasks": []
 }
