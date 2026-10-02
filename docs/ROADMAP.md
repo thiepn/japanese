@@ -136,17 +136,33 @@ P6 deliberately does **not** claim that the current 416-word core is comprehensi
 
 ## P7 — B2 Breadth, Native Media & Advanced Lexical/Collocational Fluency
 
-**Next.** Turn the B2 bridge into materially broader B2 language coverage without introducing premature C1 labels:
+**Implementation complete.** P7 turns the focused B2 bridge into materially broader B2 practice while keeping the same evidence model:
 
-- substantially expand high-frequency B2 vocabulary, collocations, lexical chunks and register-aware phrase families;
-- widen genre coverage across narrative, explanatory, argumentative, workplace, academic-lite and everyday social communication;
-- build source-provenanced native sentence/dialogue/passage packs with reliable attribution and replay controls;
-- improve connected listening with segmentation, replay loops, transcript reveal timing and comprehension-first workflows;
-- connect a real dictionary-grade Japanese morphology/lemmatization provider and preserve ambiguity rather than guessing;
-- improve lexical sense selection and collocation feedback using context while keeping model/provider confidence visible;
-- broaden B2 speaking and writing scenarios with revision histories, reusable error patterns and targeted remediation;
-- add longer extensive-reading/listening tracks driven by readiness rather than hard gates;
-- continue expanding the B2 milestone only as content breadth becomes representative enough to support it.
+- 634 canonical lexemes, 327 linked sentences, 58 Can-do descriptors and 58 units;
+- 120 first-class B2 lexical chunks/collocations with separate recognition and active-use mastery;
+- 42 graded texts, including 20 B2 texts across workplace, media, research, community, public-service, environment, everyday and synthesis genres;
+- 32 productive tasks, including 12 new P7 collocation-targeted scenarios;
+- readiness-driven extensive B2 tracks with no hard gates;
+- sentence/turn replay loops with optional source-timed native-audio segments;
+- source-pack validation and replay for licensed native recordings without relabeling device TTS;
+- executable dictionary-grade morphology HTTP/provider boundary with a Sudachi-compatible server adapter, visible confidence and explicit fallback;
+- authentic-input collocation detection;
+- advisory AI revision history with repeated correction themes and recent drafts;
+- unchanged learner-truth boundary: provider/model output cannot silently become durable mastery.
+
+The 15-item B2 milestone remains an internal five-activity diagnostic rather than being inflated merely because the corpus is larger. See `docs/P7_ACCEPTANCE.md`.
+
+## P8 — B2 Consolidation, Long-Form Autonomy & Production Reliability
+
+**Next.** Consolidate B2 before introducing C1 labels:
+
+- longer multi-document reading/listening tasks and sustained topic chains;
+- multi-turn real-world scenario chains that require planning, repair, clarification and follow-up;
+- stronger production reliability from delayed revision, recurring-error remediation and cross-session transfer;
+- broader licensed native connected-audio packs and listening under natural speed/register variation;
+- deployed morphology and AI providers with production observability/fallback certification;
+- deeper vocabulary sense/register contrasts and phrase-family transfer;
+- cumulative B2 portfolios and longitudinal evidence without manufacturing an overall CEFR pass/fail score.
 
 ## Later
 
