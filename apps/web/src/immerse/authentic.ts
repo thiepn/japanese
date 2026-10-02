@@ -130,7 +130,7 @@ export async function analyzeAuthenticTextWithProvider(text:string,provider:Japa
         tokens.push({
           surface,kind:"known",lexemeId:lexeme.id,baseForm:lexeme.canonicalForm,...(reading?{reading}:{}),
           meaning:sense.glosses.join(" / "),resolution:"provider",senseIds,
-          senseResolution:candidate?.senseResolution??senseResolutionForIds(senseIds),resolutionConfidence:candidate?.confidence??.95
+          senseResolution:candidate?.senseIds.length?candidate.senseResolution:senseResolutionForIds(senseIds),resolutionConfidence:candidate?.confidence??.95
         });
       }else{
         tokens.push({
