@@ -125,11 +125,22 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
     return()=>{cancelled=true;audioProvider.current.stop();if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();};
   },[localAnalysis,view.document.text]);
 
+  function nativeAsset():AudioAssetRecord|null{
+    const native=view.document.nativeAudio;if(!native)return null;
+    return {id:"private-"+view.document.id,kind:"sentence",text:view.document.text,language:"ja",format:native.url.toLowerCase().includes(".ogg")?"ogg":"mp3",url:native.url,credit:native.credit,licenseName:native.licenseName,...(native.attributionUrl?{attributionUrl:native.attributionUrl}:{}),...(native.externalId?{externalId:native.externalId}:{}),nativeSpeaker:true,sourceIds:["private-native-media"]};
+  }
   async function playNative(rate=1){
-    const native=view.document.nativeAudio;if(!native)return;
+    const asset=nativeAsset();if(!asset)return;
     setAudioState("playing");
-    const asset:AudioAssetRecord={id:"private-"+view.document.id,kind:"sentence",text:view.document.text,language:"ja",format:native.url.toLowerCase().includes(".ogg")?"ogg":"mp3",url:native.url,credit:native.credit,licenseName:native.licenseName,...(native.attributionUrl?{attributionUrl:native.attributionUrl}:{}),...(native.externalId?{externalId:native.externalId}:{}),nativeSpeaker:true,sourceIds:["tatoeba"]};
     try{await audioProvider.current.play(asset,{rate,repeats:1});setAudioState("idle");await recordPrivateListening(view.document.id,"recorded");}catch{setAudioState("error");}
+  }
+  async function playNativeSegment(segment:{id:string;text:string;startMs:number;endMs:number},rate=.92,repeats=1){
+    const asset=nativeAsset();if(!asset)return;
+    setAudioState("playing");
+    try{
+      await audioProvider.current.play(asset,{rate,repeats,startMs:segment.startMs,endMs:segment.endMs});
+      setAudioState("idle");await recordPrivateListening(view.document.id,"recorded");
+    }catch{setAudioState("error");}
   }
   async function speak(rate=.92){
     if(typeof speechSynthesis==="undefined")return;
@@ -162,6 +173,10 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
       <button className="unit-action" disabled={speaking||typeof speechSynthesis==="undefined"} type="button" onClick={()=>void speak(.92)}>{speaking?"Playing…":"Device voice fallback"}</button>
       {view.document.nativeAudio?<small>{view.document.nativeAudio.credit} · {view.document.nativeAudio.licenseName}</small>:<small>No reusable native recording is attached. Device speech synthesis is labeled as fallback, not native audio.</small>}
       {audioState==="error"?<span className="error-text">Native recording could not be played from its source.</span>:null}
+      {view.document.nativeAudio?.segments?.length?<div className="native-segment-list">
+        <strong>Native replay segments</strong>
+        {view.document.nativeAudio.segments.map((segment)=><div className="native-segment" key={segment.id}><span lang="ja">{segment.text}</span><div><button className="quiet-button" disabled={audioState==="playing"} type="button" onClick={()=>void playNativeSegment(segment,.95,1)}>Replay</button><button className="quiet-button" disabled={audioState==="playing"} type="button" onClick={()=>void playNativeSegment(segment,.82,2)}>Slow ×2</button></div></div>)}
+      </div>:null}
     </div>
     <article className="authentic-text" lang="ja">{analysis.tokens.map((token,index)=>{
       if(token.kind==="known"||token.kind==="unknown")return <button className={"auth-token "+token.kind} type="button" key={index} onClick={()=>{setSelected({token});setMeaning("");setReading("");}}>{token.surface}</button>;
