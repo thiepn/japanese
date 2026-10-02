@@ -25082,7 +25082,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-ue",
@@ -25096,7 +25099,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-hito",
@@ -25110,7 +25116,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-nihon",
@@ -25124,7 +25133,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-nihongo",
@@ -25138,7 +25150,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-gakkou",
@@ -25152,7 +25167,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-gakusei",
@@ -25166,7 +25184,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-sensei",
@@ -25180,7 +25201,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-tomodachi",
@@ -25194,7 +25218,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-mizu",
@@ -25208,7 +25235,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-ocha",
@@ -25222,7 +25252,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-gohan",
@@ -25236,7 +25269,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-taberu",
@@ -25250,7 +25286,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-nomu",
@@ -25264,7 +25303,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-miru",
@@ -25278,7 +25320,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-kiku",
@@ -25292,7 +25337,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-yomu",
@@ -25306,7 +25354,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-kaku",
@@ -25320,7 +25371,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-iku",
@@ -25334,7 +25388,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-kuru",
@@ -25348,7 +25405,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-kaeru",
@@ -25362,7 +25422,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-hanasu",
@@ -25376,7 +25439,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-kau",
@@ -25390,7 +25456,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-ookii",
@@ -25404,7 +25473,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-chiisai",
@@ -25418,7 +25490,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-ima",
@@ -25432,7 +25507,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-kyou",
@@ -25446,7 +25524,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-ashita",
@@ -25460,7 +25541,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-densha",
@@ -25474,7 +25558,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-eki",
@@ -25488,7 +25575,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-suki",
@@ -25502,7 +25592,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-hon",
@@ -25516,7 +25609,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-namae",
@@ -25530,7 +25626,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-nani",
@@ -25544,7 +25643,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices"
+      "accent": "recording-specific; source set includes native Japanese Tokyo and Kansai voices",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-perception-sokuon-sakka",
@@ -25558,7 +25660,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific"
+      "accent": "recording-specific",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-perception-long-vowel-obaasan",
@@ -25572,7 +25677,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific"
+      "accent": "recording-specific",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-perception-katakana-sokuon-strap",
@@ -25586,7 +25694,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific"
+      "accent": "recording-specific",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-aru",
@@ -25600,7 +25711,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific"
+      "accent": "recording-specific",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-iru",
@@ -25614,7 +25728,10 @@
         "tofugu-wanikani-audio"
       ],
       "credit": "Tofugu / WaniKani",
-      "accent": "recording-specific"
+      "accent": "recording-specific",
+      "licenseName": "CC BY-SA 4.0",
+      "attributionUrl": "https://github.com/tofugu/japanese-vocabulary-pronunciation-audio",
+      "nativeSpeaker": true
     },
     {
       "id": "audio-lex-ryokou",
