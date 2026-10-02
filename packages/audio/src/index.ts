@@ -6,6 +6,8 @@ export interface AudioPlaybackOptions {
   rate?: number;
   repeats?: number;
   gapMs?: number;
+  startMs?: number;
+  endMs?: number;
 }
 
 export interface AudioCacheSummary {
@@ -33,7 +35,7 @@ export class BrowserAudioProvider implements AudioProvider {
     const gap=Math.max(0,Math.min(2500,options.gapMs??650));
     for(let index=0;index<repeats;index++){
       if(generation!==this.generation)return;
-      await this.playOnce(asset,rate,generation);
+      await this.playOnce(asset,rate,generation,options.startMs,options.endMs);
       if(index+1<repeats&&generation===this.generation)await delay(gap);
     }
   }
@@ -62,7 +64,7 @@ export class BrowserAudioProvider implements AudioProvider {
     if(this.currentObjectUrl){URL.revokeObjectURL(this.currentObjectUrl);this.currentObjectUrl=null;}
   }
 
-  private async playOnce(asset:AudioAssetRecord,rate:number,generation:number):Promise<void>{
+  private async playOnce(asset:AudioAssetRecord,rate:number,generation:number,startMs?:number,endMs?:number):Promise<void>{
     const source=await this.resolveSource(asset);
     if(generation!==this.generation){if(source.objectUrl)URL.revokeObjectURL(source.objectUrl);return;}
     const audio=new Audio(source.url);
@@ -70,12 +72,23 @@ export class BrowserAudioProvider implements AudioProvider {
     this.currentObjectUrl=source.objectUrl??null;
     audio.preload="auto";
     audio.playbackRate=rate;
+    const startSeconds=Math.max(0,startMs??0)/1000;
+    const endSeconds=endMs===undefined?null:Math.max(startMs??0,endMs)/1000;
     await new Promise<void>((resolve,reject)=>{
       this.resolveCurrent=resolve;
-      const cleanup=()=>{audio.onended=null;audio.onerror=null;this.resolveCurrent=null;};
+      let started=false;
+      const cleanup=()=>{audio.onloadedmetadata=null;audio.ontimeupdate=null;audio.onended=null;audio.onerror=null;this.resolveCurrent=null;};
+      const finish=()=>{audio.pause();cleanup();resolve();};
+      const start=()=>{
+        if(started)return;started=true;
+        if(startSeconds>0&&Number.isFinite(audio.duration))audio.currentTime=Math.min(startSeconds,Math.max(0,audio.duration-.01));
+        audio.play().catch((error)=>{cleanup();reject(error);});
+      };
+      audio.onloadedmetadata=start;
+      audio.ontimeupdate=()=>{if(endSeconds!==null&&audio.currentTime>=endSeconds)finish();};
       audio.onended=()=>{cleanup();resolve();};
       audio.onerror=()=>{cleanup();reject(new Error("AUDIO_PLAYBACK_FAILED"));};
-      audio.play().catch((error)=>{cleanup();reject(error);});
+      if(audio.readyState>=1)start();else audio.load();
     }).finally(()=>{
       if(this.current===audio)this.current=null;
       if(source.objectUrl){URL.revokeObjectURL(source.objectUrl);if(this.currentObjectUrl===source.objectUrl)this.currentObjectUrl=null;}
