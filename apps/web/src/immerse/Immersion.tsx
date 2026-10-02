@@ -106,7 +106,7 @@ function ReaderView({view,furigana,setFurigana,translations,toggleTranslation,se
 }){
   const question=checkMode?view.text.comprehensionQuestions[questionIndex]:null;
   return <section className="reader-page">
-    <header className="reader-head"><button className="quiet-button reader-back" type="button" onClick={closeText}>← Immerse</button><div><span>{view.text.level}</span><strong>{view.text.title}</strong></div></header>
+    <header className="reader-head"><button className="quiet-button reader-back" type="button" onClick={closeText}>← Immerse</button><div><span>{view.text.level}</span><h1>{view.text.title}</h1></div></header>
     {checkMode&&question?<section className="reader-check"><p className="eyebrow">{checkMode==="reading"?"READING CHECK":"LISTENING CHECK"} · {questionIndex+1}/{view.text.comprehensionQuestions.length}</p>
       <h2>{question.prompt}</h2><div className="reader-check-choices">{question.choices.map((choice)=><button type="button" disabled={Boolean(feedback)} key={choice} onClick={()=>void answerQuestion(question,choice)}>{choice}</button>)}</div>
       {feedback?<div className={"reader-check-feedback "+(feedback.correct?"correct":"incorrect")}><strong>{feedback.correct?"Correct":"Answer: "+feedback.answer}</strong><p>{feedback.explanation}</p><button className="primary" type="button" onClick={nextQuestion}>{questionIndex+1>=view.text.comprehensionQuestions.length?"Return to text":"Next"}</button></div>:null}
