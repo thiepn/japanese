@@ -138,7 +138,7 @@ P6 deliberately does **not** claim that the current 416-word core is comprehensi
 
 **Implementation complete.** P7 turns the focused B2 bridge into materially broader B2 practice while keeping the same evidence model:
 
-- 634 canonical lexemes, 327 linked sentences, 58 Can-do descriptors and 58 units;
+- 626 canonical lexemes, 327 linked sentences, 58 Can-do descriptors and 58 units;
 - 120 first-class B2 lexical chunks/collocations with separate recognition and active-use mastery;
 - 42 graded texts, including 20 B2 texts across workplace, media, research, community, public-service, environment, everyday and synthesis genres;
 - 32 productive tasks, including 12 new P7 collocation-targeted scenarios;
