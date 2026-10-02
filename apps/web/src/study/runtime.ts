@@ -15,6 +15,7 @@ import { VOCABULARY_TOTAL, vocabularyApplicationPrompts, vocabularyLessons, voca
 import { buildPrivateVocabularyPrompts } from "./privateVocabulary";
 import { buildPrivateSentencePrompts } from "./privateSentences";
 import { productivePracticeSession,productivePrompts } from "./productivePractice";
+import { lexicalChunkLessons,lexicalChunkMeaningPrompts,lexicalChunkActivePrompts,lexicalChunkPrompts,lexicalFluencySession } from "./lexicalFluency";
 
 export const DEVELOPMENT_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
 export const DEVELOPMENT_DEVICE_ID="p2-local-browser";
@@ -52,6 +53,10 @@ export interface SentenceMasterySummary {
   overall:number; comprehension:number; production:number; confidence:number; accuracy:number;
   matureSkills:number; expectedSkills:number; evidenceCount:number;
 }
+export interface LexicalFluencySummary {
+  overall:number; recognition:number; activeUse:number; confidence:number; accuracy:number;
+  matureSkills:number; expectedSkills:number; evidenceCount:number; totalChunks:number;
+}
 export type CourseUnitStatus="ready"|"challenging"|"learning"|"mastered";
 export interface CourseUnitProgress {
   id:string; order:number; title:string; canDo:string; status:CourseUnitStatus; mastery:number; evidenceCount:number;
@@ -62,7 +67,7 @@ export type B1MilestoneProgress=MilestoneAssessmentProgress;
 export type B2MilestoneProgress=MilestoneAssessmentProgress;
 
 function foundationApplicationPool():StudyPrompt[]{
-  return [...pronunciationPerceptionPrompts,...foundationApplicationPrompts,...vocabularyApplicationPrompts,...conjugationPrompts,...productivePrompts];
+  return [...pronunciationPerceptionPrompts,...foundationApplicationPrompts,...vocabularyApplicationPrompts,...conjugationPrompts,...lexicalChunkPrompts,...productivePrompts];
 }
 function allPrompts():StudyPrompt[]{
   return [...foundationPrompts,...vocabularyMeaningPrompts,...foundationApplicationPool(),...allGrammarCoursePrompts];
@@ -111,6 +116,16 @@ export async function buildB2MilestoneSession():Promise<StudyStep[]>{
 }
 export async function buildProductivePractice(mode:"writing"|"speaking"):Promise<StudyStep[]>{
   return productivePracticeSession(mode);
+}
+export async function buildLexicalFluencyPractice(limit=12):Promise<StudyStep[]>{
+  const prompts=lexicalFluencySession(limit);
+  const steps:StudyStep[]=[];const seen=new Set<string>();
+  for(const prompt of prompts){
+    const context=prompt.contextId;
+    if(context&&!seen.has(context)){const lesson=lexicalChunkLessons[context];if(lesson){steps.push(lesson);seen.add(context);}}
+    steps.push(prompt);
+  }
+  return steps;
 }
 export async function getA1MilestoneAssessmentProgress():Promise<MilestoneAssessmentProgress>{
   return getA1MilestoneProgress(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));
@@ -239,6 +254,23 @@ export async function getSentenceMasterySummary():Promise<SentenceMasterySummary
   };
 }
 
+
+export async function getLexicalFluencySummary():Promise<LexicalFluencySummary>{
+  const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
+  const state=replayStudyEvents(events);
+  const expected=uniqueSkillPrompts(lexicalChunkPrompts);
+  const recognition=expected.filter((prompt)=>prompt.skill==="meaning_recognition");
+  const active=expected.filter((prompt)=>prompt.skill==="active_use");
+  const projections=projectionsFor(expected,state);
+  const graded=events.filter((event)=>event.primaryTarget?.kind==="lexical_chunk"&&["correct","incorrect","partial","revealed"].includes(event.result??""));
+  return {
+    overall:scoreFor(expected,state),recognition:scoreFor(recognition,state),activeUse:scoreFor(active,state),
+    confidence:meanConfidence(projections,expected.length),
+    accuracy:graded.length?graded.filter((event)=>event.result==="correct").length/graded.length:0,
+    matureSkills:matureCount(projections),expectedSkills:expected.length,evidenceCount:graded.length,totalChunks:lexicalChunkMeaningPrompts.length
+  };
+}
+
 export async function getCourseProgress():Promise<CourseUnitProgress[]>{
   const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
   const state=replayStudyEvents(events);
@@ -274,7 +306,7 @@ export async function recordStudyAnswer(input:{prompt:StudyPrompt;response:strin
 }
 
 function insertFirstExposureLessons(queue:StudyPrompt[],byId:Map<string,Awaited<ReturnType<typeof listMemoryTraces>>[number]>,extraPrompts:StudyPrompt[]=[]):StudyStep[]{
-  const lessons={...foundationLessons,...vocabularyLessons,...pronunciationLessons,...grammarCourseLessons,...conjugationLessons};
+  const lessons={...foundationLessons,...vocabularyLessons,...pronunciationLessons,...grammarCourseLessons,...conjugationLessons,...lexicalChunkLessons};
   const promptByTrace=new Map([...allPrompts(),...extraPrompts].map((prompt)=>[traceIdFor(prompt),prompt]));
   const seenContexts=new Set<string>();
   for(const trace of byId.values()){const prompt=promptByTrace.get(trace.id);if(prompt?.contextId)seenContexts.add(prompt.contextId);}
@@ -289,6 +321,11 @@ function insertFirstExposureLessons(queue:StudyPrompt[],byId:Map<string,Awaited<
 
 export function isApplicationPromptReady(prompt:StudyPrompt,traceIds:ReadonlySet<string>):boolean{
   if(prompt.primaryTarget.kind==="grammar"||prompt.primaryTarget.kind==="sentence")return isGrammarCoursePromptReady(prompt,traceIds);
+  if(prompt.primaryTarget.kind==="lexical_chunk"){
+    if(prompt.skill==="meaning_recognition")return true;
+    if(prompt.skill==="active_use")return traceIds.has("lexical_chunk:"+prompt.primaryTarget.id+":meaning_recognition:chunk-to-meaning");
+    return true;
+  }
   if(prompt.primaryTarget.kind==="production_task"){
     const targetGrammarIds=Array.isArray(prompt.eventMetadata?.targetGrammarIds)?prompt.eventMetadata!.targetGrammarIds.filter((id):id is string=>typeof id==="string"):[];
     return targetGrammarIds.length===0||targetGrammarIds.every((id)=>[...traceIds].some((trace)=>trace.startsWith("grammar:"+id+":")));
