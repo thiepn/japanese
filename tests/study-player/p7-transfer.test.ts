@@ -17,7 +17,7 @@ describe("P7 B2 transfer breadth",()=>{
     const progress:ImmersionProgress={
       texts:coreContent.readingTexts.map((text)=>({
         id:text.id,title:text.title,description:text.description,level:text.level,kind:text.kind,estimatedMinutes:text.estimatedMinutes,
-        readiness:text.tags.includes("p7")?.82:.5,knownWords:5,totalWords:8,readingMastery:0,listeningMastery:0,readingEvidence:0,listeningEvidence:0
+        readiness:text.tags.includes("p7") ? .82 : .5,knownWords:5,totalWords:8,readingMastery:0,listeningMastery:0,readingEvidence:0,listeningEvidence:0
       })),
       minedWords:0,lookups:0,readingChecks:0,listeningChecks:0
     };
