@@ -7,8 +7,8 @@ Status: implementation complete; live provider/native-media breadth remains depl
 P7 expands the focused P6 B2 bridge into a materially broader B2 practice layer without introducing C1 labels.
 
 - [x] content package advances to v0.9.0 / schema 10
-- [x] 634 canonical lexemes, up from 416
-- [x] 634 canonical senses
+- [x] 626 canonical lexemes, up from 416
+- [x] 626 canonical senses
 - [x] 102 grammar concepts, including the existing 16 B2 discourse/qualification concepts
 - [x] 327 linked canonical sentences, up from 267
 - [x] 58 Can-do descriptors and 58 structured course units
@@ -17,7 +17,7 @@ P7 expands the focused P6 B2 bridge into a materially broader B2 practice layer 
 - [x] eight additional B2 capability units (51–58)
 - [x] breadth domains include work/organization, public services, society, housing/transport, environment, research/data, media/information reliability, technology and negotiation
 
-The expanded vocabulary remains a curated pedagogical core, not a claim that 634 lexemes equal all vocabulary required for CEFR B2.
+The expanded vocabulary remains a curated pedagogical core, not a claim that 626 lexemes equal all vocabulary required for CEFR B2.
 
 ## First-class lexical chunks and collocations
 
