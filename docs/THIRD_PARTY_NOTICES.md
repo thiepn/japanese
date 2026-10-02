@@ -31,3 +31,15 @@ Tatoeba imports are learner-initiated private documents. They are not copied int
 ## Mozilla Common Voice
 
 Mozilla Common Voice was evaluated as a possible Japanese native-speech source. P4 does not mirror or bundle Common Voice dataset material in this repository. Dataset acquisition and redistribution remain outside the app's public content package.
+
+
+## Sudachi morphology provider boundary
+
+P7 includes a server adapter contract compatible with Sudachi-style token output. The repository does not bundle Sudachi dictionaries or claim that the browser fallback is Sudachi.
+
+- Project: **WorksApplications/Sudachi**
+- License: **Apache License 2.0**
+- Integration status: optional server-side runtime/provider
+- Output use: segmentation, dictionary form, reading and part-of-speech data are mapped back into the app's canonical/private identity model.
+
+Deployments that install Sudachi or a dictionary package remain responsible for the notices and redistribution conditions of the exact runtime and dictionary artifacts they choose.
