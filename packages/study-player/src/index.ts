@@ -21,6 +21,8 @@ interface StudyPromptBase {
   sourceId?: string;
   contentVersion?: string;
   audio?: AudioAssetRecord;
+  speechSynthesisText?: string;
+  speechSynthesisLanguage?: string;
   activity?: ActivityType;
   languageActivity?: LanguageActivity;
   eventMetadata?: Record<string,unknown>;
@@ -91,6 +93,10 @@ export function createStudyEvent(input: StudyEventInput): StudyEvent {
     metadata.audioAssetId=input.prompt.audio.id;
     metadata.audioSourceIds=input.prompt.audio.sourceIds;
     metadata.audioLanguage=input.prompt.audio.language;
+  }
+  if(input.prompt.speechSynthesisText){
+    metadata.speechSynthesis=true;
+    metadata.speechSynthesisLanguage=input.prompt.speechSynthesisLanguage??"ja-JP";
   }
   return {
     id: input.id, userId: input.userId, deviceId: input.deviceId, occurredAt: input.occurredAt,
