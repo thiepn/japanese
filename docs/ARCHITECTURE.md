@@ -66,3 +66,40 @@ Recorded audio is canonical or reusable only when its source, credit and license
 Tofugu/WaniKani vocabulary recordings are referenced from a pinned upstream commit and retain CC BY-SA 4.0 attribution metadata. For Tatoeba runtime imports, sentence text and audio licensing are evaluated separately; a recording is attached only when that individual recording declares a license admitted by the app's reuse policy. Missing-license, noncommercial and no-derivatives recordings are not admitted to the reusable-audio path.
 
 Device speech synthesis is always a playback adapter/fallback and must never be labeled or scored as source-provenanced native recording.
+
+
+## Productive-language evidence rule
+
+Canonical productive tasks define a situation, target language features, minimum response size, model response and transparent rubric. They are pedagogical content entities, not learner mastery themselves.
+
+Writing responses emit normal StudyEvents against a `production_task` target and the `writing_quality` dimension. P5's automatic writing check measures only explicit structural target coverage and minimum connected-response length. It must not be interpreted as complete semantic correction, discourse-quality judgment or a CEFR rating.
+
+Speaking responses use the browser's Japanese speech-recognition capability when available. The recognized transcript may be checked against the task's structural targets and emit production evidence. A successful transcript is evidence that the browser recognized an intelligible target-language response; it is not an acoustic pronunciation score.
+
+If speech recognition is unavailable or fails, the learner may skip the item. The app must not convert missing microphone evidence into successful speaking mastery.
+
+## Pronunciation and shadowing rule
+
+Shadowing is an evidence source distinct from general spoken production. The listen → record → compare workflow may emit `pronunciation` evidence from learner self-review, but that event must remain explicitly marked as self-rated rather than model-scored.
+
+P5 MediaRecorder output is kept only as an ephemeral browser object URL for immediate playback/comparison. The shadowing workflow does not upload or persist the recording.
+
+Reference playback that uses browser/device speech synthesis remains a playback adapter and cannot be labeled native-speaker audio. A future acoustic scorer must use an actual documented model/provider and expose its limitations before it can produce machine-scored pronunciation evidence.
+
+## Adaptive-immersion projection rule
+
+Adaptive recommendations are derived at request time from existing learner projections, lexical readiness and the current material graph. They are recommendations, not stored truth and not progression locks.
+
+A recommendation algorithm may rank canonical graded texts and private learner-owned documents, but it must not create an independent mastery score or overwrite reading/listening projections. Changing the ranking algorithm therefore does not require migrating learner truth.
+
+## Private sentence-mining rule
+
+A learner-owned imported sentence becomes a private sentence identity only after the learner supplies the meaning used for review. Identity is stable by normalized Japanese text; repeated mining merges source-document references rather than generating duplicate review identities.
+
+Private sentence prompts reuse the normal comprehension/production StudyPrompt, StudyEvent, learner-projection and FSRS paths. Private sentences remain account-scoped learner data and never become public canonical content merely because they were mined.
+
+## B1 morphology rule
+
+P5 extends authentic-input resolution with common B1 potential/passive, causative, volitional and conditional surfaces plus selected compound patterns such as 〜てしまう, 〜ておく and 〜てみる.
+
+Resolution metadata distinguishes canonical, generated and deinflected matches. This improves canonical identity recovery for authentic input, but remains a bounded compatibility layer rather than a claim of complete morphology, dictionary-grade lemmatization, compound segmentation or sense disambiguation.

@@ -2,11 +2,12 @@ import { describe,expect,it } from "vitest";
 import { buildReaderText,segmentSentence } from "../../apps/web/src/immerse/reader";
 import { coreContent,sentenceRecord } from "../../apps/web/src/coreContent";
 
-describe("P4 graded reader",()=>{
+describe("P5 graded reader",()=>{
   it("ships an A1 to A2-entry bridge as canonical text entities",()=>{
-    expect(coreContent.readingTexts).toHaveLength(16);
+    expect(coreContent.readingTexts).toHaveLength(22);
     expect(coreContent.readingTexts.map((text)=>text.level)).toContain("A2-entry");
     expect(coreContent.readingTexts.map((text)=>text.level)).toContain("A2");
+    expect(coreContent.readingTexts.map((text)=>text.level)).toContain("B1");
     expect(coreContent.readingTexts.every((text)=>text.sentenceIds.length>=5&&text.comprehensionQuestions.length===2)).toBe(true);
   });
 

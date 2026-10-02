@@ -11,6 +11,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   const [saving,setSaving]=useState(false);
   const [audioState,setAudioState]=useState<"idle"|"playing"|"error">("idle");
   const [audioPlayed,setAudioPlayed]=useState(false);
+  const [speechState,setSpeechState]=useState<"idle"|"listening"|"unsupported"|"error">("idle");
   const startedAt=useRef(performance.now());
   const audioProvider=useRef(getDefaultAudioProvider());
   const step=steps[index];
@@ -20,6 +21,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
     provider.stop();
     setAudioState("idle");
     setAudioPlayed(false);
+    setSpeechState("idle");
     return()=>provider.stop();
   },[index]);
 
@@ -41,6 +43,21 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
       else await audioProvider.current.play(activeStep.audio);
       setAudioPlayed(true);setAudioState("idle");
     }catch{setAudioState("error");}
+  }
+
+  function startSpeechRecognition(){
+    const w=window as unknown as {
+      SpeechRecognition?:new()=>{lang:string;interimResults:boolean;continuous:boolean;start():void;abort():void;onresult:((event:{results:ArrayLike<{0?:{transcript?:string}}>} )=>void)|null;onerror:(()=>void)|null;onend:(()=>void)|null};
+      webkitSpeechRecognition?:new()=>{lang:string;interimResults:boolean;continuous:boolean;start():void;abort():void;onresult:((event:{results:ArrayLike<{0?:{transcript?:string}}>} )=>void)|null;onerror:(()=>void)|null;onend:(()=>void)|null};
+    };
+    const Recognition=w.SpeechRecognition??w.webkitSpeechRecognition;
+    if(!Recognition){setSpeechState("unsupported");return;}
+    const recognition=new Recognition();recognition.lang="ja-JP";recognition.interimResults=false;recognition.continuous=false;
+    recognition.onresult=(event)=>{const transcript=event.results[0]?.[0]?.transcript?.trim()??"";if(transcript)setResponse(transcript);};
+    recognition.onerror=()=>setSpeechState("error");
+    recognition.onend=()=>setSpeechState((value)=>value==="error"?value:"idle");
+    setSpeechState("listening");
+    try{recognition.start();}catch{setSpeechState("error");}
   }
 
   if(isStudyLesson(activeStep)){
@@ -85,12 +102,17 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
         :<div className="study-prompt" lang={currentPrompt.promptLanguage}>{currentPrompt.prompt}</div>}
       {currentPrompt.promptType==="choice"?
         <div className="study-choices">{currentPrompt.choices.map((choice)=><button disabled={Boolean(feedback)||saving||interactionLocked} type="button" key={choice} onClick={()=>void submit(choice)}>{choice}</button>)}</div>
+        :currentPrompt.promptType==="textarea"?
+          <form className="productive-response" onSubmit={(event)=>{event.preventDefault();void submit();}}><textarea autoFocus disabled={Boolean(feedback)||saving||interactionLocked} value={response} onChange={(event)=>setResponse(event.target.value)} placeholder={currentPrompt.placeholder??"日本語で書いてください…"} rows={7}/><div className="productive-response-meta"><span>{response.length} characters{currentPrompt.minimumCharacters?" · target "+currentPrompt.minimumCharacters+"+":""}</span><button className="primary" disabled={!response.trim()||Boolean(feedback)||saving||interactionLocked} type="submit">Check structure</button></div></form>
+        :currentPrompt.promptType==="speech"?
+          <div className="speech-response"><button className="primary" disabled={Boolean(feedback)||saving||interactionLocked||speechState==="listening"} type="button" onClick={startSpeechRecognition}>{speechState==="listening"?"Listening…":response?"Speak again":"Start speaking"}</button>{response?<div className="speech-transcript"><span>Recognized transcript</span><strong lang="ja">{response}</strong></div>:null}{speechState==="unsupported"?<p className="audio-error">Japanese speech recognition is not available in this browser. Skip this item; no speaking mastery will be recorded.</p>:null}{speechState==="error"?<p className="audio-error">Speech recognition failed. Try again or skip without recording speaking mastery.</p>:null}<div className="speech-actions">{response?<button className="unit-action" disabled={Boolean(feedback)||saving||interactionLocked} type="button" onClick={()=>void submit(response)}>Check transcript</button>:null}<button className="quiet-button" type="button" onClick={advance}>Skip for now</button></div></div>
         :<form onSubmit={(event)=>{event.preventDefault();void submit();}}><input autoFocus disabled={Boolean(feedback)||saving||interactionLocked} value={response} onChange={(event)=>setResponse(event.target.value)} placeholder={currentPrompt.placeholder}/><button className="primary" disabled={!response.trim()||Boolean(feedback)||saving||interactionLocked} type="submit">Check</button></form>}
       {currentPrompt.audio&&!audioPlayed&&audioState!=="error"?<p className="audio-gate">Play the recording before answering.</p>:null}
       {feedback&&<div className={`study-feedback ${feedback.result}`}>
         <strong>{feedback.result==="correct"?"Correct":`Answer: ${feedback.expectedAnswer}`}</strong>
         {currentPrompt.audio?<div className="audio-reveal"><span lang="ja">{currentPrompt.audio.text}</span>{currentPrompt.audio.reading&&<small lang="ja">{currentPrompt.audio.reading}</small>}</div>:null}
         {currentPrompt.explanation&&<p>{currentPrompt.explanation}</p>}
+        {(currentPrompt.promptType==="textarea"||currentPrompt.promptType==="speech")&&currentPrompt.requiredTerms?.length?<p className="productive-rubric">Structural check: include at least 60% of these targets: {currentPrompt.requiredTerms.join(" · ")}. This is not a full semantic or pronunciation score.</p>:null}
         <button className="primary study-next" type="button" onClick={advance}>{index+1>=steps.length?"Finish":"Continue"}</button>
       </div>}
     </div>

@@ -1,10 +1,10 @@
-export type EntityKind = "lexeme" | "sense" | "kanji" | "grammar" | "sentence" | "text" | "document" | "kana" | "can_do";
+export type EntityKind = "lexeme" | "sense" | "kanji" | "grammar" | "sentence" | "text" | "document" | "production_task" | "kana" | "can_do";
 export interface EntityRef { kind: EntityKind; id: string; }
 
 export type SkillDimension =
   | "meaning_recognition" | "reading" | "audio_recognition" | "active_use"
   | "comprehension" | "form_selection" | "listening" | "production"
-  | "recognition" | "fluency" | "word_recognition" | "handwriting";
+  | "recognition" | "fluency" | "word_recognition" | "handwriting" | "pronunciation" | "writing_quality";
 
 export type ActivityType = "lesson" | "review" | "reading" | "listening" | "speaking" | "writing" | "assessment" | "lookup" | "mining";
 export type StudyResult = "correct" | "partial" | "incorrect" | "revealed" | "skipped";

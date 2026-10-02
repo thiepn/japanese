@@ -9,6 +9,7 @@ import {
   traceIdFor
 } from "./grammarCourse";
 import { vocabularyListeningPrompts } from "./vocabulary";
+import { productiveSpeakingPrompts,productiveWritingPrompts } from "./productivePractice";
 
 export const UNIT_ASSESSMENT_DELAY_MS=20*60*60*1000;
 export const UNIT_ASSESSMENT_PASS_MARK=0.75;
@@ -148,6 +149,71 @@ export function getA1MilestoneProgress(events:readonly StudyEvent[]):MilestoneAs
   })) as Record<LanguageActivity,MilestoneActivityScore>;
   const answered=prompts.filter((prompt)=>latest.has(prompt.id)).length;
   return {complete:answered===prompts.length,answered,total:prompts.length,scores};
+}
+
+export function buildB1MilestoneAssessment():StudyStep[]{
+  const prompts=b1MilestoneAssessmentPrompts();
+  const intro:StudyLesson={
+    kind:"lesson",
+    id:"lesson-assessment-b1-milestone",
+    title:"B1 milestone assessment",
+    body:"This milestone reports five language activities separately. Speaking items use browser Japanese speech recognition when available; writing items use connected responses. Structural target checks are deliberately narrower than full human correction or acoustic pronunciation scoring.",
+    contextId:"assessment-b1-milestone",
+    facts:[
+      {label:"Reading",value:"3 connected comprehension tasks"},
+      {label:"Listening",value:"3 native-word listening tasks"},
+      {label:"Spoken interaction",value:"3 microphone responses"},
+      {label:"Spoken production",value:"3 microphone responses"},
+      {label:"Writing",value:"3 connected writing tasks"}
+    ],
+    sourceLabel:"THIEPN Japanese B1 milestone"
+  };
+  return [intro,...prompts];
+}
+
+export function b1MilestoneAssessmentPrompts():StudyPrompt[]{
+  const b1Reading=sentenceComprehensionPrompts.filter((prompt)=>{
+    const sentence=coreContent.sentences.find((item)=>item.id===prompt.primaryTarget.id);
+    return sentence?.level==="B1";
+  });
+  const b1Listening=vocabularyListeningPrompts.filter((prompt)=>{
+    const lexeme=coreContent.lexemes.find((item)=>item.id===prompt.primaryTarget.id);
+    return lexeme?.tags?.includes("b1");
+  });
+  const interaction=spreadPick(productiveSpeakingPrompts.filter((prompt)=>prompt.languageActivity==="spoken_interaction"),3);
+  const production=spreadPick(productiveSpeakingPrompts.filter((prompt)=>prompt.languageActivity!=="spoken_interaction"),3);
+  const writing=spreadPick(productiveWritingPrompts,3);
+  return [
+    ...spreadPick(b1Reading,3).map((prompt,index)=>b1MilestoneClone(prompt,"reading",index)),
+    ...spreadPick(b1Listening,3).map((prompt,index)=>b1MilestoneClone(prompt,"listening",index)),
+    ...interaction.map((prompt,index)=>b1MilestoneClone(prompt,"spoken_interaction",index)),
+    ...production.map((prompt,index)=>b1MilestoneClone(prompt,"spoken_production",index)),
+    ...writing.map((prompt,index)=>b1MilestoneClone(prompt,"writing",index))
+  ];
+}
+
+export function getB1MilestoneProgress(events:readonly StudyEvent[]):MilestoneAssessmentProgress{
+  const prompts=b1MilestoneAssessmentPrompts();
+  const latest=latestAssessmentEvents(events,"assessment-b1-milestone");
+  const activities:LanguageActivity[]=["reading","listening","spoken_interaction","spoken_production","writing"];
+  const scores=Object.fromEntries(activities.map((activity)=>{
+    const activityPrompts=prompts.filter((prompt)=>prompt.languageActivity===activity);
+    const answered=activityPrompts.filter((prompt)=>latest.has(prompt.id)).length;
+    const correct=activityPrompts.filter((prompt)=>latest.get(prompt.id)?.result==="correct").length;
+    const item:MilestoneActivityScore={activity,correct,answered,total:activityPrompts.length,score:answered?correct/answered:0};
+    return [activity,item];
+  })) as Record<LanguageActivity,MilestoneActivityScore>;
+  const answered=prompts.filter((prompt)=>latest.has(prompt.id)).length;
+  return {complete:answered===prompts.length,answered,total:prompts.length,scores};
+}
+
+function b1MilestoneClone(prompt:StudyPrompt,activity:LanguageActivity,index:number):StudyPrompt{
+  return assessmentClone(prompt,{
+    id:"assessment-b1-"+activity+"-"+String(index+1).padStart(2,"0"),
+    contextId:"assessment-b1-milestone",
+    languageActivity:activity,
+    metadata:{assessmentScope:"milestone",milestoneId:"b1",languageActivity:activity,evaluation:prompt.promptType==="speech"?"speech-recognition-structural":prompt.promptType==="textarea"?"connected-writing-structural":"standard"}
+  });
 }
 
 export function unitLearningPrerequisites(unitId:string):StudyPrompt[]{

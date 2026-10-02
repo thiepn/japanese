@@ -2,8 +2,8 @@ import { useEffect,useMemo,useRef,useState } from "react";
 import { getDefaultAudioProvider } from "@thiepn/audio";
 import type { AudioAssetRecord } from "@thiepn/content-schema";
 import {
-  analyzeAuthenticText,createPrivateDocument,importTatoebaSentence,listPrivateDocumentViews,mineKnownLexeme,
-  recordPrivateComprehension,recordPrivateListening,recordPrivateReading,saveUnknownAsPrivateVocabulary,
+  analyzeAuthenticText,createPrivateDocument,importTatoebaSentence,listPrivateDocumentViews,mineKnownLexeme,minePrivateSentence,
+  recordPrivateComprehension,recordPrivateListening,recordPrivateReading,saveUnknownAsPrivateVocabulary,splitJapaneseSentences,
   type AuthenticToken,type PrivateDocumentView
 } from "./authentic";
 import { deletePrivateDocument } from "@thiepn/local-db";
@@ -85,7 +85,11 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
   const [reading,setReading]=useState("");
   const [speaking,setSpeaking]=useState(false);
   const [audioState,setAudioState]=useState<"idle"|"playing"|"error">("idle");
+  const [sentenceCandidate,setSentenceCandidate]=useState<string|null>(null);
+  const [sentenceTranslation,setSentenceTranslation]=useState("");
+  const [mineMessage,setMineMessage]=useState("");
   const analysis=useMemo(()=>analyzeAuthenticText(view.document.text),[view.document.text]);
+  const sourceSentences=useMemo(()=>splitJapaneseSentences(view.document.text),[view.document.text]);
   const audioProvider=useRef(getDefaultAudioProvider());
 
   useEffect(()=>()=>{audioProvider.current.stop();if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();},[]);
@@ -111,6 +115,12 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
     }
   }
   async function remove(){await deletePrivateDocument(AUTHENTIC_ACCOUNT_ID,view.document.id);onDeleted();}
+  async function saveSentence(){
+    if(!sentenceCandidate||!sentenceTranslation.trim())return;
+    const record=await minePrivateSentence({documentId:view.document.id,text:sentenceCandidate,translation:sentenceTranslation});
+    setMineMessage("Saved "+record.text+" to the unified sentence review path.");
+    setSentenceCandidate(null);setSentenceTranslation("");
+  }
 
   return <section className="reader-page authentic-reader">
     <header className="reader-head"><button className="quiet-button reader-back" type="button" onClick={onBack}>← Your Japanese</button><div><span>{view.document.sourceKind.replace("_"," ")}</span><h1>{view.document.title}</h1></div></header>
@@ -126,6 +136,12 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
       return <span className={"auth-token "+token.kind} key={index}>{token.surface}</span>;
     })}</article>
     <div className="authentic-legend"><span><i className="known"/>linked to your lexicon</span><span><i className="unknown"/>unresolved</span></div>
+    {sourceSentences.length?<section className="sentence-mining"><div className="section-heading"><div><span className="course-kicker">SENTENCE MINING</span><h2>Keep useful context</h2></div></div>
+      <p className="course-note">Save a sentence only after supplying the meaning you want to review. Duplicate Japanese sentences merge their source-document references instead of creating duplicate cards.</p>
+      <div className="sentence-mine-list">{sourceSentences.slice(0,12).map((sentence)=><article key={sentence}><span lang="ja">{sentence}</span><button className="quiet-button" type="button" onClick={()=>{setSentenceCandidate(sentence);setSentenceTranslation("");setMineMessage("");}}>Mine sentence</button></article>)}</div>
+      {sentenceCandidate?<div className="sentence-mine-editor"><strong lang="ja">{sentenceCandidate}</strong><input value={sentenceTranslation} onChange={(event)=>setSentenceTranslation(event.target.value)} placeholder="Meaning / translation for your review"/><div><button className="primary" disabled={!sentenceTranslation.trim()} type="button" onClick={()=>void saveSentence()}>Save sentence</button><button className="quiet-button" type="button" onClick={()=>setSentenceCandidate(null)}>Cancel</button></div></div>:null}
+      {mineMessage?<p className="import-message" role="status">{mineMessage}</p>:null}
+    </section>:null}
     {selected?<aside className="reader-lookup authentic-lookup"><button className="reader-lookup-close" type="button" aria-label="Close word lookup" onClick={()=>setSelected(null)}>×</button>
       <span lang="ja">{selected.token.surface}</span>
       {selected.token.kind==="known"?<><small lang="ja">{selected.token.reading}</small><strong>{selected.token.meaning}</strong><button className="unit-action" type="button" onClick={()=>void mine()}>Mine for review</button></>
@@ -133,7 +149,7 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
     </aside>:null}
     <div className="reader-finish"><button className="primary" type="button" onClick={()=>void recordPrivateComprehension(view.document.id,"correct")}>Understood without major help</button><button className="unit-action" type="button" onClick={()=>void recordPrivateComprehension(view.document.id,"incorrect")}>Needed substantial support</button></div>
     <div className="authentic-danger"><button className="quiet-button" type="button" onClick={()=>void remove()}>Delete private document</button></div>
-    <p className="course-note">Analysis uses longest-match canonical/deinflected forms plus the browser's Japanese word segmenter for unresolved material. It can estimate lexical difficulty but does not claim perfect linguistic parsing.</p>
+    <p className="course-note">Analysis resolves canonical forms, generated core inflections and additional B1 potential/passive/causative/conditional forms before using the browser Japanese word segmenter. It provides canonical lemmatization and difficulty guidance without claiming perfect sense disambiguation or full Japanese NLP.</p>
   </section>;
 }
 

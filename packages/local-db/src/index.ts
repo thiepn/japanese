@@ -2,13 +2,14 @@ import type { StudyEvent } from "@thiepn/domain";
 import type { MemoryTrace } from "@thiepn/scheduler";
 import { studyEventToMutation, type CoreSyncMutation, type StudyEventEnvelope } from "@thiepn/sync-protocol";
 
-const DB_VERSION = 4;
+const DB_VERSION = 5;
 const STUDY_EVENTS = "study_events";
 const MEMORY_TRACES = "memory_traces";
 const OUTBOX = "sync_outbox";
 const SYNC_META = "sync_meta";
 const PRIVATE_DOCUMENTS = "private_documents";
 const PRIVATE_VOCABULARY = "private_vocabulary";
+const PRIVATE_SENTENCES = "private_sentences";
 
 export interface SyncMetaRecord { key: string; value: string; }
 
@@ -23,6 +24,10 @@ export interface PrivateDocumentRecord {
 export interface PrivateVocabularyRecord {
   id:string; accountId:string; canonicalForm:string; reading?:string; meaning:string;
   sourceDocumentIds:string[]; createdAt:string; updatedAt:string;
+}
+export interface PrivateSentenceRecord {
+  id:string; accountId:string; text:string; translation:string; sourceDocumentIds:string[];
+  createdAt:string; updatedAt:string;
 }
 
 export function databaseNameForAccount(accountId: string): string {
@@ -43,6 +48,7 @@ export async function openLocalDb(accountId: string): Promise<IDBDatabase> {
       if (!db.objectStoreNames.contains(MEMORY_TRACES)) db.createObjectStore(MEMORY_TRACES, { keyPath: "id" });
       if (!db.objectStoreNames.contains(PRIVATE_DOCUMENTS)) db.createObjectStore(PRIVATE_DOCUMENTS, { keyPath: "id" });
       if (!db.objectStoreNames.contains(PRIVATE_VOCABULARY)) db.createObjectStore(PRIVATE_VOCABULARY, { keyPath: "id" });
+      if (!db.objectStoreNames.contains(PRIVATE_SENTENCES)) db.createObjectStore(PRIVATE_SENTENCES, { keyPath: "id" });
     };
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
@@ -135,6 +141,19 @@ export async function listPrivateVocabulary(accountId:string):Promise<PrivateVoc
 export async function deletePrivateVocabulary(accountId:string,id:string):Promise<void>{
   const db=await openLocalDb(accountId);
   await new Promise<void>((resolve,reject)=>{const tx=db.transaction(PRIVATE_VOCABULARY,"readwrite");tx.objectStore(PRIVATE_VOCABULARY).delete(id);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});
+  db.close();
+}
+
+export async function savePrivateSentence(accountId:string,record:PrivateSentenceRecord):Promise<void>{
+  if(record.accountId!==accountId)throw new Error("PRIVATE_SENTENCE_ACCOUNT_MISMATCH");
+  const db=await openLocalDb(accountId);await putOne(db,PRIVATE_SENTENCES,record);db.close();
+}
+export async function listPrivateSentences(accountId:string):Promise<PrivateSentenceRecord[]>{
+  return getAllFromStore<PrivateSentenceRecord>(accountId,PRIVATE_SENTENCES);
+}
+export async function deletePrivateSentence(accountId:string,id:string):Promise<void>{
+  const db=await openLocalDb(accountId);
+  await new Promise<void>((resolve,reject)=>{const tx=db.transaction(PRIVATE_SENTENCES,"readwrite");tx.objectStore(PRIVATE_SENTENCES).delete(id);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});
   db.close();
 }
 

@@ -1,7 +1,7 @@
 import type { AudioAssetRecord, LanguageActivity } from "@thiepn/content-schema";
 import type { ActivityType, EntityRef, SkillDimension, StudyEvent, StudyResult } from "@thiepn/domain";
 
-export type StudyPromptType = "choice" | "typed";
+export type StudyPromptType = "choice" | "typed" | "textarea" | "speech";
 export type AnswerNormalization = "default" | "romaji" | "japanese";
 
 interface StudyPromptBase {
@@ -24,11 +24,15 @@ interface StudyPromptBase {
   activity?: ActivityType;
   languageActivity?: LanguageActivity;
   eventMetadata?: Record<string,unknown>;
+  requiredTerms?: string[];
+  minimumCharacters?: number;
 }
 
 export interface ChoiceStudyPrompt extends StudyPromptBase { promptType: "choice"; choices: string[]; }
 export interface TypedStudyPrompt extends StudyPromptBase { promptType: "typed"; placeholder?: string; }
-export type StudyPrompt = ChoiceStudyPrompt | TypedStudyPrompt;
+export interface TextareaStudyPrompt extends StudyPromptBase { promptType: "textarea"; placeholder?: string; }
+export interface SpeechStudyPrompt extends StudyPromptBase { promptType: "speech"; placeholder?: string; }
+export type StudyPrompt = ChoiceStudyPrompt | TypedStudyPrompt | TextareaStudyPrompt | SpeechStudyPrompt;
 
 export interface StudyLessonExample { expression: string; note: string; }
 export interface StudyLessonFact { label: string; value: string; language?: "ja" | "en"; }
@@ -67,7 +71,15 @@ export interface StudyEventInput {
 export function gradeStudyPrompt(prompt: StudyPrompt, response: string): GradeResult {
   const mode = prompt.answerNormalization ?? "default";
   const normalizedResponse = normalizeResponse(response, mode);
-  const correct = prompt.acceptedAnswers.some((answer) => normalizeResponse(answer, mode) === normalizedResponse);
+  const rubricMode=(prompt.promptType==="textarea"||prompt.promptType==="speech")&&Boolean(prompt.requiredTerms?.length||prompt.minimumCharacters);
+  const normalizedTerms=(prompt.requiredTerms??[]).map((term)=>normalizeResponse(term,mode));
+  const termHits=normalizedTerms.filter((term)=>normalizedResponse.includes(term)).length;
+  const termRatio=normalizedTerms.length?termHits/normalizedTerms.length:1;
+  const substantiveLength=normalizedResponse.replace(/[\s。、！？!?「」『』（）［］…・,.:;—–-]/gu,"").length;
+  const lengthOk=substantiveLength>=(prompt.minimumCharacters??1);
+  const correct=rubricMode
+    ? lengthOk&&termRatio>=0.6
+    : prompt.acceptedAnswers.some((answer) => normalizeResponse(answer, mode) === normalizedResponse);
   return { result: correct ? "correct" : "incorrect", normalizedResponse, expectedAnswer: prompt.displayAnswer };
 }
 

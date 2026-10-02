@@ -3,10 +3,10 @@ import { coreContent,starterLexemes } from "../../apps/web/src/coreContent";
 import { pronunciationPerceptionPrompts } from "../../apps/web/src/study/audioPrompts";
 import { vocabularyListeningPrompts } from "../../apps/web/src/study/vocabulary";
 
-describe("P1.5 production audio",()=>{
+describe("P5 production audio",()=>{
   it("maps every audio-backed core lexeme to one pinned native recording while preserving gaps",()=>{
     const audioLexemes=starterLexemes.filter((lexeme)=>lexeme.audioIds.length>0);
-    expect(audioLexemes.length).toBeGreaterThanOrEqual(140);
+    expect(audioLexemes.length).toBeGreaterThanOrEqual(195);
     expect(vocabularyListeningPrompts).toHaveLength(audioLexemes.length);
     const ids=new Set(coreContent.audioAssets.map((asset)=>asset.id));
     for(const lexeme of audioLexemes){

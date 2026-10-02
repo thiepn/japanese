@@ -92,17 +92,40 @@ P4 does not claim perfect dictionary-grade morphology or native connected record
 
 ## P5 — B1 Expansion, Productive Language & Adaptive Immersion
 
-**Next.** Move from supported A2 comprehension toward independent B1 use:
+**Implementation complete.**
 
-- broader B1 grammar, lexicon, discourse connectors and multi-paragraph reading/listening;
-- structured writing tasks with reusable correction/evidence contracts;
-- real speaking and pronunciation practice beyond say-then-type proxies;
-- richer shadowing and connected-listening loops with licensed native recordings;
-- adaptive selection of graded vs imported material from learner mastery and unknown density;
-- dictionary-grade morphology/lemmatization for private authentic input without replacing canonical identities;
-- better sentence mining, sense selection and duplicate handling;
-- B1 milestone assessment that reports reading, listening, interaction, production and writing separately.
+P5 moves the unified system from supported A2 comprehension toward independent B1 use:
+
+- 336 canonical lexemes, 86 grammar concepts, 209 linked sentences, 40 Can-do descriptors and 40 course units;
+- 22 graded texts spanning A1 through B1;
+- 10 canonical productive tasks for connected writing and microphone-based speaking;
+- first-class writing and speech StudyPrompt modes using the existing StudyEvent, learner-projection and FSRS paths;
+- a separate 15-item B1 milestone reporting reading, listening, spoken interaction, spoken production and writing independently;
+- Japanese browser speech recognition for actual spoken responses when supported, with skip-without-mastery behavior when unavailable;
+- listen → record → compare shadowing with browser-local recordings and explicit self-rated pronunciation evidence;
+- evidence-derived adaptive immersion recommendations for graded and learner-owned material;
+- 56 additional exact-file-verified native vocabulary recordings from the pinned Tofugu/WaniKani source;
+- improved B1 canonical/deinflected resolution for common potential/passive, causative, volitional and conditional forms;
+- deduplicated private sentence mining with learner-supplied meaning;
+- private sentence comprehension/production returning to the same Today/review system;
+- productive-task persistence, Library search and structural validation as first-class canonical content.
+
+P5 does not claim phonetic/acoustic pronunciation scoring, unrestricted semantic writing correction, complete Japanese morphology, or native connected recordings where none have been licensed. See `docs/P5_ACCEPTANCE.md`.
+
+## P6 — B1→B2 Independent Communication, AI Conversation & Advanced Feedback
+
+**Next.** Expand from controlled B1 production into more independent communication:
+
+- broader B2 lexicon, grammar, discourse organization, register and multi-paragraph/multi-speaker material;
+- AI conversation sessions with explicit evidence contracts rather than opaque replacement of learner truth;
+- richer open-ended writing revision with separated grammar, vocabulary, coherence and task-achievement feedback;
+- pronunciation/acoustic analysis only if a real audio-analysis model or provider is integrated and its limits are explicit;
+- source-provenanced native sentence/passage packs and stronger connected-listening workflows;
+- source-pack and authentic-corpus workflows for learner-owned and redistributable material;
+- stronger dictionary-grade morphology, lemmatization and sense disambiguation mapped back to canonical/private identities;
+- adaptive remediation across course, production and immersion evidence;
+- a B2 milestone reporting receptive and productive activity areas separately.
 
 ## Later
 
-Later phases add AI conversation, adaptive remediation, advanced assessment, source-pack workflows and specialized authentic-language study.
+Later phases add advanced domain-specific Japanese, extensive-reading/listening programs, specialized source packs, higher-level writing/speaking assessment and long-term adaptive curricula.

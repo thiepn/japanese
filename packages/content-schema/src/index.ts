@@ -59,10 +59,18 @@ export interface ReadingText extends ProvenancedContent {
   estimatedMinutes:number; audioMode:ReadingAudioMode; audioAssetId?:string; comprehensionQuestions:ReadingQuestion[];
 }
 
+export type ProductiveTaskMode="writing"|"speaking";
+export interface ProductiveRubricCriterion { id:string; label:string; description:string; weight:number; }
+export interface ProductiveTask extends ProvenancedContent {
+  id:string; title:string; level:string; mode:ProductiveTaskMode; prompt:string; situation:string;
+  targetGrammarIds:string[]; targetLexemeIds:string[]; modelResponse:string; requiredTerms:string[];
+  minimumCharacters:number; rubric:ProductiveRubricCriterion[]; tags:string[]; milestoneArea?:LanguageActivity;
+}
+
 export interface ContentSeedPackage {
   schemaVersion:number; version:string; sourceIds:string[]; lexemes:Lexeme[]; senses:Sense[]; kanji:Kanji[];
   audioAssets:AudioAssetRecord[]; grammar:GrammarConcept[]; sentences:Sentence[]; canDos:CanDoDescriptor[]; courseUnits:CourseUnit[];
-  readingTexts:ReadingText[];
+  readingTexts:ReadingText[]; productiveTasks:ProductiveTask[];
 }
 
 export interface LicensePolicy {

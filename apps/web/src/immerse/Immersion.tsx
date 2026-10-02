@@ -1,6 +1,8 @@
 import { useEffect,useMemo,useRef,useState } from "react";
 import { getDefaultAudioProvider } from "@thiepn/audio";
 import { AuthenticLibrary } from "./AuthenticLibrary";
+import { ShadowingLab } from "./ShadowingLab";
+import { getAdaptiveImmersionRecommendation,type AdaptiveImmersionRecommendation } from "./adaptive";
 import type { ReadingQuestion } from "@thiepn/content-schema";
 import {
   buildReaderText,getImmersionProgress,gradeReadingQuestion,recordListeningExposure,recordMinedWord,
@@ -13,6 +15,7 @@ interface SelectedToken { token:ReaderToken; sentenceId:string; }
 
 export function Immersion(){
   const [progress,setProgress]=useState<ImmersionProgress|null>(null);
+  const [recommendation,setRecommendation]=useState<AdaptiveImmersionRecommendation|null>(null);
   const [activeId,setActiveId]=useState<string|null>(null);
   const [furigana,setFurigana]=useState(true);
   const [translations,setTranslations]=useState<Set<string>>(new Set());
@@ -26,7 +29,12 @@ export function Immersion(){
   const view=useMemo(()=>activeId?buildReaderText(activeId):null,[activeId]);
   const audioProvider=useRef(getDefaultAudioProvider());
 
-  async function refresh(){try{setProgress(await getImmersionProgress());}catch{setProgress(null);}}
+  async function refresh(){
+    try{
+      const [nextProgress,nextRecommendation]=await Promise.all([getImmersionProgress(),getAdaptiveImmersionRecommendation()]);
+      setProgress(nextProgress);setRecommendation(nextRecommendation);
+    }catch{setProgress(null);setRecommendation(null);}
+  }
   useEffect(()=>{void refresh();return()=>{audioProvider.current.stop();if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();};},[]);
 
   async function openText(id:string){
@@ -89,9 +97,16 @@ export function Immersion(){
     questionIndex={questionIndex} feedback={feedback} answerQuestion={answerQuestion} nextQuestion={nextQuestion}/>;
 
   return <section className="dashboard immerse-page">
-    <p className="eyebrow">IMMERSE</p><h1>A1 → A2 bridge</h1>
-    <p className="lead">Read connected Japanese using the same words, grammar, sentences and learner evidence as the course. Tap only when needed; mined words return to the normal review queue.</p>
+    <p className="eyebrow">IMMERSE</p><h1>A1 → B1 immersion</h1>
+    <p className="lead">Move from graded A1/A2 support into B1 connected Japanese and learner-owned material. Recommendations use current lexical readiness and reading/listening evidence; they guide rather than lock content.</p>
     {progress?<div className="stat-row four"><MiniStat value={progress.texts.length} label="Graded texts"/><MiniStat value={progress.minedWords} label="Mined words"/><MiniStat value={progress.readingChecks} label="Reading checks"/><MiniStat value={progress.listeningChecks} label="Listening checks"/></div>:null}
+    {recommendation?<section className="adaptive-immersion">
+      <div className="section-heading"><div><span className="course-kicker">ADAPTIVE NEXT STEP</span><h2>Focus on {recommendation.focus}</h2></div></div>
+      <div className="adaptive-grid">
+        {recommendation.canonical?<article><span>Graded · {recommendation.canonical.level}</span><h3>{recommendation.canonical.title}</h3><p>{recommendation.canonical.reason}</p><small>{Math.round(recommendation.canonical.readiness*100)}% lexical readiness · {Math.round(recommendation.canonical.mastery*100)}% {recommendation.focus} mastery</small><button className="unit-action" type="button" onClick={()=>void openText(recommendation.canonical!.id)}>Open recommended text</button></article>:null}
+        {recommendation.privateDocument?<article><span>Private authentic input</span><h3>{recommendation.privateDocument.title}</h3><p>{recommendation.privateDocument.reason}</p><small>{Math.round(recommendation.privateDocument.knownRatio*100)}% known lexical tokens · {recommendation.privateDocument.difficulty}</small><span className="adaptive-hint">Find it in Your Japanese below.</span></article>:null}
+      </div>
+    </section>:null}
     <div className="immersion-list">
       {(progress?.texts??[]).map((text)=><article className="immersion-card" key={text.id}>
         <div className="immersion-card-main"><div className="immersion-meta"><span>{text.level}</span><span>{text.kind}</span><span>~{text.estimatedMinutes} min</span></div>
@@ -104,6 +119,7 @@ export function Immersion(){
       </article>)}
     </div>
     <p className="course-note">Readiness is derived from lexeme meaning evidence. It is guidance, not a content lock. Curated connected audio uses the device’s Japanese speech-synthesis voice unless a source-provenanced recording is attached.</p>
+    <ShadowingLab/>
     <AuthenticLibrary/>
   </section>;
 }
@@ -139,7 +155,7 @@ function ReaderView({view,furigana,setFurigana,translations,toggleTranslation,se
       </div>
       {selected?<aside className="reader-lookup"><button className="reader-lookup-close" type="button" aria-label="Close word lookup" onClick={closeLookup}>×</button><span lang="ja">{selected.token.surface}</span>{selected.token.reading?<small lang="ja">{selected.token.reading}</small>:null}<strong>{selected.token.meaning}</strong><button className="unit-action" type="button" onClick={()=>void mineSelected()}>Mine for review</button></aside>:null}
       <div className="reader-finish"><button className="primary" type="button" onClick={()=>startCheck("reading")}>Reading check</button><button className="unit-action" disabled={!listeningPlayed} type="button" onClick={()=>startCheck("listening")}>{listeningPlayed?"Listening check":"Listen first"}</button></div>
-      <p className="course-note">Tap a linked word for a reading and meaning. Grammar support stays attached to the canonical sentence. The tokenizer matches canonical forms plus generated core inflections; it is not a general-purpose Japanese morphological parser.</p>
+      <p className="course-note">Tap a linked word for a reading and meaning. Grammar support stays attached to the canonical sentence. The reader resolves canonical and generated forms. Imported-text analysis adds B1 deinflection and browser segmentation, but still does not claim perfect Japanese NLP.</p>
     </>}
   </section>;
 }
