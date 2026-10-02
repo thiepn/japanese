@@ -7,7 +7,7 @@ import {
 } from "@thiepn/local-db";
 import { normalizeJapaneseSearch } from "@thiepn/search";
 import { selectProviderCandidate,senseResolutionForIds,type JapaneseMorphologyProvider,type MorphologyCandidate,type MorphologyResolution,type SenseResolution } from "@thiepn/japanese-nlp";
-import { coreContent,senseForLexeme } from "../coreContent";
+import { coreContent,lexicalChunks,senseForLexeme } from "../coreContent";
 import { conjugateLexeme,type ConjugationForm } from "../study/conjugation";
 
 export const AUTHENTIC_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
@@ -114,8 +114,9 @@ export async function analyzeAuthenticTextWithProvider(text:string,provider:Japa
       if(lexeme){
         const sense=senseForLexeme(lexeme);
         const senseIds=candidate?.senseIds.length?candidate.senseIds:lexeme.senseIds;
+        const reading=candidate?.reading??lexeme.readings[0]?.text;
         tokens.push({
-          surface,kind:"known",lexemeId:lexeme.id,baseForm:lexeme.canonicalForm,reading:candidate?.reading??lexeme.readings[0]?.text,
+          surface,kind:"known",lexemeId:lexeme.id,baseForm:lexeme.canonicalForm,...(reading?{reading}:{}),
           meaning:sense.glosses.join(" / "),resolution:"provider",senseIds,
           senseResolution:candidate?.senseResolution??senseResolutionForIds(senseIds),resolutionConfidence:candidate?.confidence??.95
         });
