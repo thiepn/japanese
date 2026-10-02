@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 7,
-  "version": "0.6.0",
+  "schemaVersion": 8,
+  "version": "0.7.0",
   "sourceIds": [
     "thiepn-original",
     "tofugu-wanikani-audio"
@@ -28894,6 +28894,2372 @@
       "sourceIds": [
         "thiepn-original"
       ]
+    },
+    {
+      "id": "sentence-b1-162",
+      "text": "毎日、日本語のニュースを読むようになりました。",
+      "normalizedText": "毎日、日本語のニュースを読むようになりました。",
+      "translation": "I have come to read Japanese news every day.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-you-ni-naru",
+        "grammar-you-ni-suru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-naru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-suru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-nyuusu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-nihongo"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-nihon"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-yomu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-mainichi"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "毎日、日本語のニュースを読むようになりました。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_production"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-163",
+      "text": "健康のために、毎日運動するようにしています。",
+      "normalizedText": "健康のために、毎日運動するようにしています。",
+      "translation": "For my health, I make an effort to exercise every day.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-you-ni-naru",
+        "grammar-you-ni-suru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-naru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-suru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ima"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-mainichi"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-suru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kenkou"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-undou"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "健康のために、毎日運動するようにしています。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_production"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-164",
+      "text": "最近、生活が少しずつ変わるようになりました。",
+      "normalizedText": "最近、生活が少しずつ変わるようになりました。",
+      "translation": "Recently, my daily life has gradually begun to change.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-you-ni-naru",
+        "grammar-you-ni-suru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-naru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-suru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kawaru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-sukoshi"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-saikin"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-seikatsu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "最近、生活が少しずつ変わるようになりました。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_production"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-165",
+      "text": "忘れないように、予定を確認するようにしています。",
+      "normalizedText": "忘れないように、予定を確認するようにしています。",
+      "translation": "I make a point of checking my schedule so I do not forget.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-you-ni-naru",
+        "grammar-you-ni-suru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-naru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-suru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ima"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-suru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-yotei"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "忘れないように、予定を確認するようにしています。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_production"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-166",
+      "text": "前より自分の意見を話せるようになりました。",
+      "normalizedText": "前より自分の意見を話せるようになりました。",
+      "translation": "I have become able to express my opinion better than before.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-you-ni-naru",
+        "grammar-you-ni-suru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-naru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-suru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-iken"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "前より自分の意見を話せるようになりました。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_production"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-167",
+      "text": "勉強を続けるようにしたら、結果が変わりました。",
+      "normalizedText": "勉強を続けるようにしたら、結果が変わりました。",
+      "translation": "When I made a habit of continuing to study, the results changed.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-you-ni-naru",
+        "grammar-you-ni-suru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-naru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-suru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-tsuzukeru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kekka"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "勉強を続けるようにしたら、結果が変わりました。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_production"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-168",
+      "text": "来年、日本で勉強することにしました。",
+      "normalizedText": "来年、日本で勉強することにしました。",
+      "translation": "I decided to study in Japan next year.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-koto-ni-suru",
+        "grammar-koto-ni-naru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-koto-ni-suru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-koto-ni-naru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-benkyou-suru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-nihon"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-suru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-rainen"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "来年、日本で勉強することにしました。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_interaction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-169",
+      "text": "来月から新しい仕事を始めることになりました。",
+      "normalizedText": "来月から新しい仕事を始めることになりました。",
+      "translation": "It has been decided that I will start a new job next month.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-koto-ni-suru",
+        "grammar-koto-ni-naru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-koto-ni-suru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-koto-ni-naru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-atarashii"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-hajimeru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-raigetsu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-shigoto"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "来月から新しい仕事を始めることになりました。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_interaction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-170",
+      "text": "週末は家で休むことにしました。",
+      "normalizedText": "週末は家で休むことにしました。",
+      "translation": "I decided to rest at home this weekend.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-koto-ni-suru",
+        "grammar-koto-ni-naru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-koto-ni-suru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-koto-ni-naru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-yasumu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-shuumatsu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "週末は家で休むことにしました。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_interaction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-171",
+      "text": "会議はオンラインで行うことになりました。",
+      "normalizedText": "会議はオンラインで行うことになりました。",
+      "translation": "It has been arranged that the meeting will be held online.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-koto-ni-suru",
+        "grammar-koto-ni-naru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-koto-ni-suru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-koto-ni-naru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kaigi"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "会議はオンラインで行うことになりました。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_interaction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-172",
+      "text": "毎朝ニュースを読むことにしています。",
+      "normalizedText": "毎朝ニュースを読むことにしています。",
+      "translation": "I have made it a rule to read the news every morning.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-koto-ni-suru",
+        "grammar-koto-ni-naru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-koto-ni-suru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-koto-ni-naru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-nyuusu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-yomu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ima"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "毎朝ニュースを読むことにしています。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_interaction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-173",
+      "text": "計画が変わって、東京へ行くことになりました。",
+      "normalizedText": "計画が変わって、東京へ行くことになりました。",
+      "translation": "The plan changed, and it was decided that I would go to Tokyo.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-koto-ni-suru",
+        "grammar-koto-ni-naru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-koto-ni-suru"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-koto-ni-naru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-iku"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-tokyo"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-keikaku"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "計画が変わって、東京へ行くことになりました。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_interaction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-174",
+      "text": "空が暗いので、雨が降りそうです。",
+      "normalizedText": "空が暗いので、雨が降りそうです。",
+      "translation": "The sky is dark, so it looks like it will rain.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-sou-appearance",
+        "grammar-sou-hearsay",
+        "grammar-rashii",
+        "grammar-mitai",
+        "grammar-kamoshirenai",
+        "grammar-hazu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-sou-appearance"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-sou-hearsay"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-rashii"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-mitai"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kamoshirenai"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-hazu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "空が暗いので、雨が降りそうです。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_production"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-175",
+      "text": "天気予報によると、明日は雪だそうです。",
+      "normalizedText": "天気予報によると、明日は雪だそうです。",
+      "translation": "According to the weather forecast, it will snow tomorrow.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-sou-appearance",
+        "grammar-sou-hearsay",
+        "grammar-rashii",
+        "grammar-mitai",
+        "grammar-kamoshirenai",
+        "grammar-hazu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-sou-appearance"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-sou-hearsay"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-rashii"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-mitai"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kamoshirenai"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-hazu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ashita"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-yoru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-tenki"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "天気予報によると、明日は雪だそうです。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_production"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-176",
+      "text": "この店は地元で有名らしいです。",
+      "normalizedText": "この店は地元で有名らしいです。",
+      "translation": "Apparently this shop is famous locally.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-sou-appearance",
+        "grammar-sou-hearsay",
+        "grammar-rashii",
+        "grammar-mitai",
+        "grammar-kamoshirenai",
+        "grammar-hazu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-sou-appearance"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-sou-hearsay"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-rashii"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-mitai"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kamoshirenai"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-hazu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kono"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-yuumei"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "この店は地元で有名らしいです。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_production"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-177",
+      "text": "この町は映画の中みたいです。",
+      "normalizedText": "この町は映画の中みたいです。",
+      "translation": "This town feels like something from a movie.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-sou-appearance",
+        "grammar-sou-hearsay",
+        "grammar-rashii",
+        "grammar-mitai",
+        "grammar-kamoshirenai",
+        "grammar-hazu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-sou-appearance"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-sou-hearsay"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-rashii"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-mitai"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kamoshirenai"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-hazu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kono"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-eiga"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "この町は映画の中みたいです。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_production"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-178",
+      "text": "会議は予定より長くなるかもしれません。",
+      "normalizedText": "会議は予定より長くなるかもしれません。",
+      "translation": "The meeting might run longer than planned.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-sou-appearance",
+        "grammar-sou-hearsay",
+        "grammar-rashii",
+        "grammar-mitai",
+        "grammar-kamoshirenai",
+        "grammar-hazu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-sou-appearance"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-sou-hearsay"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-rashii"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-mitai"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kamoshirenai"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-hazu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-sen"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-yotei"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kaigi"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "会議は予定より長くなるかもしれません。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_production"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-179",
+      "text": "電車はもう駅に着いているはずです。",
+      "normalizedText": "電車はもう駅に着いているはずです。",
+      "translation": "The train should have arrived at the station already.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-sou-appearance",
+        "grammar-sou-hearsay",
+        "grammar-rashii",
+        "grammar-mitai",
+        "grammar-kamoshirenai",
+        "grammar-hazu"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-sou-appearance"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-sou-hearsay"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-rashii"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-mitai"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kamoshirenai"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-hazu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-densha"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-iru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-mou"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "電車はもう駅に着いているはずです。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_production"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-180",
+      "text": "試験に合格するために、毎日二時間勉強しています。",
+      "normalizedText": "試験に合格するために、毎日二時間勉強しています。",
+      "translation": "I study two hours every day in order to pass the exam.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-tame-ni-purpose",
+        "grammar-you-ni-purpose"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-tame-ni-purpose"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-purpose"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ima"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-mainichi"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-jikan"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-suru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-shiken"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "試験に合格するために、毎日二時間勉強しています。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "writing"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-181",
+      "text": "忘れないように、予定をスマートフォンに書きます。",
+      "normalizedText": "忘れないように、予定をスマートフォンに書きます。",
+      "translation": "I write the schedule on my smartphone so I do not forget.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-tame-ni-purpose",
+        "grammar-you-ni-purpose"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-tame-ni-purpose"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-purpose"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-yotei"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "忘れないように、予定をスマートフォンに書きます。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "writing"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-182",
+      "text": "健康のために、食生活を変えました。",
+      "normalizedText": "健康のために、食生活を変えました。",
+      "translation": "I changed my eating habits for my health.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-tame-ni-purpose",
+        "grammar-you-ni-purpose"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-tame-ni-purpose"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-purpose"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-seikatsu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kenkou"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "健康のために、食生活を変えました。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "writing"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-183",
+      "text": "日本語で仕事ができるように、会話を練習しています。",
+      "normalizedText": "日本語で仕事ができるように、会話を練習しています。",
+      "translation": "I practice conversation so that I can work in Japanese.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-tame-ni-purpose",
+        "grammar-you-ni-purpose"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-tame-ni-purpose"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-purpose"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-nihongo"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-dekiru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-nihon"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ima"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-shigoto"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-renshuu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "日本語で仕事ができるように、会話を練習しています。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "writing"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-184",
+      "text": "研究のために、たくさんの記事を読みました。",
+      "normalizedText": "研究のために、たくさんの記事を読みました。",
+      "translation": "I read many articles for my research.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-tame-ni-purpose",
+        "grammar-you-ni-purpose"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-tame-ni-purpose"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-purpose"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-takusan"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-san"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kiji"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kenkyuu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "研究のために、たくさんの記事を読みました。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "writing"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-185",
+      "text": "事故が起きないように、安全を確認してください。",
+      "normalizedText": "事故が起きないように、安全を確認してください。",
+      "translation": "Please check safety so that an accident does not happen.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-tame-ni-purpose",
+        "grammar-you-ni-purpose"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-tame-ni-purpose"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-you-ni-purpose"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-anzen"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "事故が起きないように、安全を確認してください。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "writing"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-186",
+      "text": "たくさん勉強したのに、試験は難しかったです。",
+      "normalizedText": "たくさん勉強したのに、試験は難しかったです。",
+      "translation": "Although I studied a lot, the exam was difficult.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-noni",
+        "grammar-temo-concession"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-noni"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-temo-concession"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-takusan"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-san"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-shiken"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "たくさん勉強したのに、試験は難しかったです。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_interaction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-187",
+      "text": "雨が降っても、イベントは行われます。",
+      "normalizedText": "雨が降っても、イベントは行われます。",
+      "translation": "Even if it rains, the event will be held.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-noni",
+        "grammar-temo-concession"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-noni"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-temo-concession"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "雨が降っても、イベントは行われます。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_interaction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-188",
+      "text": "便利なのに、このサービスを利用する人は少ないです。",
+      "normalizedText": "便利なのに、このサービスを利用する人は少ないです。",
+      "translation": "Although it is convenient, few people use this service.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-noni",
+        "grammar-temo-concession"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-noni"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-temo-concession"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kono"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-suru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-benri"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "便利なのに、このサービスを利用する人は少ないです。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_interaction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-189",
+      "text": "忙しくても、毎日家族に連絡します。",
+      "normalizedText": "忙しくても、毎日家族に連絡します。",
+      "translation": "Even when I am busy, I contact my family every day.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-noni",
+        "grammar-temo-concession"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-noni"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-temo-concession"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kazoku"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-mainichi"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-renraku"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "忙しくても、毎日家族に連絡します。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_interaction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-190",
+      "text": "説明を読んだのに、使い方が分かりませんでした。",
+      "normalizedText": "説明を読んだのに、使い方が分かりませんでした。",
+      "translation": "Although I read the explanation, I did not understand how to use it.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-noni",
+        "grammar-temo-concession"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-noni"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-temo-concession"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-sen"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-setsumei"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "説明を読んだのに、使い方が分かりませんでした。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_interaction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-191",
+      "text": "失敗しても、もう一度挑戦したいです。",
+      "normalizedText": "失敗しても、もう一度挑戦したいです。",
+      "translation": "Even if I fail, I want to try again.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-noni",
+        "grammar-temo-concession"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-noni"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-temo-concession"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-mouichido"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-mou"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-shippai"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-chousen"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "失敗しても、もう一度挑戦したいです。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_interaction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-192",
+      "text": "京都へ行くなら、春がおすすめです。",
+      "normalizedText": "京都へ行くなら、春がおすすめです。",
+      "translation": "If you are going to Kyoto, spring is recommended.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-nara",
+        "grammar-ba",
+        "grammar-to-condition"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-nara"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ba"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-to-condition"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-iku"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kyoto"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "京都へ行くなら、春がおすすめです。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_interaction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-193",
+      "text": "時間があれば、一緒に行きましょう。",
+      "normalizedText": "時間があれば、一緒に行きましょう。",
+      "translation": "If you have time, let's go together.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-nara",
+        "grammar-ba",
+        "grammar-to-condition"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-nara"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ba"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-to-condition"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-are"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-jikan"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-issho"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "時間があれば、一緒に行きましょう。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_interaction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-194",
+      "text": "このボタンを押すと、ドアが開きます。",
+      "normalizedText": "このボタンを押すと、ドアが開きます。",
+      "translation": "When you press this button, the door opens.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-nara",
+        "grammar-ba",
+        "grammar-to-condition"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-nara"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ba"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-to-condition"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kono"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "このボタンを押すと、ドアが開きます。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_interaction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-195",
+      "text": "問題があれば、先生に相談してください。",
+      "normalizedText": "問題があれば、先生に相談してください。",
+      "translation": "If there is a problem, please consult the teacher.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-nara",
+        "grammar-ba",
+        "grammar-to-condition"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-nara"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ba"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-to-condition"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-sensei"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-are"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-mondai"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-soudan"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "問題があれば、先生に相談してください。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_interaction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-196",
+      "text": "安全なら、この方法を使ってもいいです。",
+      "normalizedText": "安全なら、この方法を使ってもいいです。",
+      "translation": "If it is safe, you may use this method.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-nara",
+        "grammar-ba",
+        "grammar-to-condition"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-nara"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ba"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-to-condition"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kono"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ii"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-houhou"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-anzen"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "安全なら、この方法を使ってもいいです。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_interaction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-197",
+      "text": "右に曲がると、駅があります。",
+      "normalizedText": "右に曲がると、駅があります。",
+      "translation": "When you turn right, there is a station.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-nara",
+        "grammar-ba",
+        "grammar-to-condition"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-nara"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-ba"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-to-condition"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "右に曲がると、駅があります。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_interaction"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-198",
+      "text": "旅行の前にホテルを予約しておきます。",
+      "normalizedText": "旅行の前にホテルを予約しておきます。",
+      "translation": "I will reserve a hotel in advance before the trip.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-te-shimau",
+        "grammar-te-oku",
+        "grammar-te-miru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-te-shimau"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-oku"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-miru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-hotel"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ryokou"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-yoyaku"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "旅行の前にホテルを予約しておきます。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_production"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-199",
+      "text": "財布を家に忘れてしまいました。",
+      "normalizedText": "財布を家に忘れてしまいました。",
+      "translation": "I accidentally left my wallet at home.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-te-shimau",
+        "grammar-te-oku",
+        "grammar-te-miru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-te-shimau"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-oku"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-miru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ima"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-saifu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "財布を家に忘れてしまいました。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_production"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-200",
+      "text": "この新しいアプリを使ってみます。",
+      "normalizedText": "この新しいアプリを使ってみます。",
+      "translation": "I will try using this new app.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-te-shimau",
+        "grammar-te-oku",
+        "grammar-te-miru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-te-shimau"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-oku"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-miru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-atarashii"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-apuri"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kono"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "この新しいアプリを使ってみます。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_production"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-201",
+      "text": "会議の前に資料を確認しておきます。",
+      "normalizedText": "会議の前に資料を確認しておきます。",
+      "translation": "I will check the materials in advance before the meeting.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-te-shimau",
+        "grammar-te-oku",
+        "grammar-te-miru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-te-shimau"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-oku"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-miru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kaigi"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "会議の前に資料を確認しておきます。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_production"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-202",
+      "text": "大切なメールを消してしまいました。",
+      "normalizedText": "大切なメールを消してしまいました。",
+      "translation": "I accidentally deleted an important email.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-te-shimau",
+        "grammar-te-oku",
+        "grammar-te-miru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-te-shimau"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-oku"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-miru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-meeru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ima"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-taisetsu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "大切なメールを消してしまいました。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_production"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-203",
+      "text": "分からない言葉は辞書で調べてみてください。",
+      "normalizedText": "分からない言葉は辞書で調べてみてください。",
+      "translation": "Please try looking up words you do not understand in a dictionary.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-te-shimau",
+        "grammar-te-oku",
+        "grammar-te-miru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-te-shimau"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-oku"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-te-miru"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "分からない言葉は辞書で調べてみてください。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "spoken_production"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-204",
+      "text": "私は地域の交通をもっと便利にする必要があると思います。",
+      "normalizedText": "私は地域の交通をもっと便利にする必要があると思います。",
+      "translation": "I think local transportation needs to be made more convenient.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-to-omou",
+        "grammar-kara-reason",
+        "grammar-kedo-contrast"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-to-omou"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kara-reason"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kedo-contrast"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-ima"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-aru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-suru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-hitsuyou"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-benri"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-chiiki"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "私は地域の交通をもっと便利にする必要があると思います。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "writing"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-205",
+      "text": "例えば、バスの本数を増やす方法があります。",
+      "normalizedText": "例えば、バスの本数を増やす方法があります。",
+      "translation": "For example, there is a method of increasing the number of buses.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-to-omou",
+        "grammar-kara-reason",
+        "grammar-kedo-contrast"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-to-omou"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kara-reason"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kedo-contrast"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-tatoeba"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-basu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-houhou"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "例えば、バスの本数を増やす方法があります。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "writing"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-206",
+      "text": "この方法はお金がかかりますが、多くの人に役立ちます。",
+      "normalizedText": "この方法はお金がかかりますが、多くの人に役立ちます。",
+      "translation": "This method costs money, but it helps many people.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-to-omou",
+        "grammar-kara-reason",
+        "grammar-kedo-contrast"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-to-omou"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kara-reason"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kedo-contrast"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kono"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-houhou"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "この方法はお金がかかりますが、多くの人に役立ちます。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "writing"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-207",
+      "text": "そのため、まず利用する人の意見を聞くことが大切です。",
+      "normalizedText": "そのため、まず利用する人の意見を聞くことが大切です。",
+      "translation": "Therefore, it is important to first hear the opinions of users.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-to-omou",
+        "grammar-kara-reason",
+        "grammar-kedo-contrast"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-to-omou"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kara-reason"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kedo-contrast"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kiku"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-sono"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-suru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-iken"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-taisetsu"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "そのため、まず利用する人の意見を聞くことが大切です。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "writing"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-208",
+      "text": "一方で、安全についても考えなければなりません。",
+      "normalizedText": "一方で、安全についても考えなければなりません。",
+      "translation": "On the other hand, we must also think about safety.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-to-omou",
+        "grammar-kara-reason",
+        "grammar-kedo-contrast"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-to-omou"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kara-reason"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kedo-contrast"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-sen"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-anzen"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "一方で、安全についても考えなければなりません。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "writing"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sentence-b1-209",
+      "text": "以上の理由から、この計画に賛成です。",
+      "normalizedText": "以上の理由から、この計画に賛成です。",
+      "translation": "For the reasons above, I support this plan.",
+      "level": "B1",
+      "register": "neutral-polite",
+      "grammarIds": [
+        "grammar-to-omou",
+        "grammar-kara-reason",
+        "grammar-kedo-contrast"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "grammar-to-omou"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kara-reason"
+        },
+        {
+          "kind": "grammar",
+          "id": "grammar-kedo-contrast"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-kono"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-riyuu"
+        },
+        {
+          "kind": "lexeme",
+          "id": "lex-keikaku"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "以上の理由から、この計画に賛成です。"
+        }
+      ],
+      "tags": [
+        "b1",
+        "writing"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
     }
   ],
   "audioAssets": [
@@ -33108,6 +35474,205 @@
       "sourceIds": [
         "thiepn-original"
       ]
+    },
+    {
+      "id": "can-do-b1-033",
+      "statement": "Can describe how habits, abilities and situations have changed over time.",
+      "level": "B1",
+      "languageActivity": "spoken_production",
+      "grammarIds": [
+        "grammar-you-ni-naru",
+        "grammar-you-ni-suru"
+      ],
+      "sentenceIds": [
+        "sentence-b1-162",
+        "sentence-b1-163",
+        "sentence-b1-164",
+        "sentence-b1-165",
+        "sentence-b1-166",
+        "sentence-b1-167"
+      ],
+      "prerequisiteIds": [
+        "can-do-a2-032"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-b1-034",
+      "statement": "Can distinguish personal decisions from arrangements determined by circumstances.",
+      "level": "B1",
+      "languageActivity": "spoken_interaction",
+      "grammarIds": [
+        "grammar-koto-ni-suru",
+        "grammar-koto-ni-naru"
+      ],
+      "sentenceIds": [
+        "sentence-b1-168",
+        "sentence-b1-169",
+        "sentence-b1-170",
+        "sentence-b1-171",
+        "sentence-b1-172",
+        "sentence-b1-173"
+      ],
+      "prerequisiteIds": [
+        "can-do-b1-033"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-b1-035",
+      "statement": "Can report indirect information and express different degrees of certainty.",
+      "level": "B1",
+      "languageActivity": "spoken_production",
+      "grammarIds": [
+        "grammar-sou-appearance",
+        "grammar-sou-hearsay",
+        "grammar-rashii",
+        "grammar-mitai",
+        "grammar-kamoshirenai",
+        "grammar-hazu"
+      ],
+      "sentenceIds": [
+        "sentence-b1-174",
+        "sentence-b1-175",
+        "sentence-b1-176",
+        "sentence-b1-177",
+        "sentence-b1-178",
+        "sentence-b1-179"
+      ],
+      "prerequisiteIds": [
+        "can-do-b1-034"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-b1-036",
+      "statement": "Can explain goals, intended outcomes and reasons for actions.",
+      "level": "B1",
+      "languageActivity": "writing",
+      "grammarIds": [
+        "grammar-tame-ni-purpose",
+        "grammar-you-ni-purpose"
+      ],
+      "sentenceIds": [
+        "sentence-b1-180",
+        "sentence-b1-181",
+        "sentence-b1-182",
+        "sentence-b1-183",
+        "sentence-b1-184",
+        "sentence-b1-185"
+      ],
+      "prerequisiteIds": [
+        "can-do-b1-035"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-b1-037",
+      "statement": "Can express unexpected contrast and continue a point despite an obstacle.",
+      "level": "B1",
+      "languageActivity": "spoken_interaction",
+      "grammarIds": [
+        "grammar-noni",
+        "grammar-temo-concession"
+      ],
+      "sentenceIds": [
+        "sentence-b1-186",
+        "sentence-b1-187",
+        "sentence-b1-188",
+        "sentence-b1-189",
+        "sentence-b1-190",
+        "sentence-b1-191"
+      ],
+      "prerequisiteIds": [
+        "can-do-b1-036"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-b1-038",
+      "statement": "Can choose among common conditionals when giving advice, rules and possible outcomes.",
+      "level": "B1",
+      "languageActivity": "spoken_interaction",
+      "grammarIds": [
+        "grammar-nara",
+        "grammar-ba",
+        "grammar-to-condition"
+      ],
+      "sentenceIds": [
+        "sentence-b1-192",
+        "sentence-b1-193",
+        "sentence-b1-194",
+        "sentence-b1-195",
+        "sentence-b1-196",
+        "sentence-b1-197"
+      ],
+      "prerequisiteIds": [
+        "can-do-b1-037"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-b1-039",
+      "statement": "Can talk about preparation, attempts and unintended completed actions.",
+      "level": "B1",
+      "languageActivity": "spoken_production",
+      "grammarIds": [
+        "grammar-te-shimau",
+        "grammar-te-oku",
+        "grammar-te-miru"
+      ],
+      "sentenceIds": [
+        "sentence-b1-198",
+        "sentence-b1-199",
+        "sentence-b1-200",
+        "sentence-b1-201",
+        "sentence-b1-202",
+        "sentence-b1-203"
+      ],
+      "prerequisiteIds": [
+        "can-do-b1-038"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "can-do-b1-040",
+      "statement": "Can present an opinion with a reason, example, contrast and conclusion.",
+      "level": "B1",
+      "languageActivity": "writing",
+      "grammarIds": [
+        "grammar-to-omou",
+        "grammar-kara-reason",
+        "grammar-kedo-contrast"
+      ],
+      "sentenceIds": [
+        "sentence-b1-204",
+        "sentence-b1-205",
+        "sentence-b1-206",
+        "sentence-b1-207",
+        "sentence-b1-208",
+        "sentence-b1-209"
+      ],
+      "prerequisiteIds": [
+        "can-do-b1-039"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
     }
   ],
   "courseUnits": [
@@ -34551,6 +37116,395 @@
       "sourceIds": [
         "thiepn-original"
       ]
+    },
+    {
+      "id": "b1-unit-33",
+      "title": "Explain change and habits",
+      "order": 33,
+      "level": "B1",
+      "canDoId": "can-do-b1-033",
+      "prerequisiteUnitIds": [
+        "a2-unit-32"
+      ],
+      "grammarIds": [
+        "grammar-you-ni-naru",
+        "grammar-you-ni-suru"
+      ],
+      "sentenceIds": [
+        "sentence-b1-162",
+        "sentence-b1-163",
+        "sentence-b1-164",
+        "sentence-b1-165",
+        "sentence-b1-166",
+        "sentence-b1-167"
+      ],
+      "vocabularyIds": [
+        "lex-nyuusu",
+        "lex-nihongo",
+        "lex-nihon",
+        "lex-yomu",
+        "lex-mainichi",
+        "lex-ima",
+        "lex-suru",
+        "lex-kenkou",
+        "lex-undou",
+        "lex-kawaru",
+        "lex-sukoshi",
+        "lex-saikin",
+        "lex-seikatsu",
+        "lex-yotei",
+        "lex-iken",
+        "lex-tsuzukeru",
+        "lex-kekka"
+      ],
+      "conjugationLexemeIds": [
+        "lex-yomu",
+        "lex-suru",
+        "lex-kawaru",
+        "lex-tsuzukeru"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b1-unit-34",
+      "title": "Make and report decisions",
+      "order": 34,
+      "level": "B1",
+      "canDoId": "can-do-b1-034",
+      "prerequisiteUnitIds": [
+        "b1-unit-33"
+      ],
+      "grammarIds": [
+        "grammar-koto-ni-suru",
+        "grammar-koto-ni-naru"
+      ],
+      "sentenceIds": [
+        "sentence-b1-168",
+        "sentence-b1-169",
+        "sentence-b1-170",
+        "sentence-b1-171",
+        "sentence-b1-172",
+        "sentence-b1-173"
+      ],
+      "vocabularyIds": [
+        "lex-benkyou-suru",
+        "lex-nihon",
+        "lex-suru",
+        "lex-rainen",
+        "lex-atarashii",
+        "lex-hajimeru",
+        "lex-raigetsu",
+        "lex-shigoto",
+        "lex-yasumu",
+        "lex-shuumatsu",
+        "lex-kaigi",
+        "lex-nyuusu",
+        "lex-yomu",
+        "lex-ima",
+        "lex-iku",
+        "lex-tokyo",
+        "lex-keikaku"
+      ],
+      "conjugationLexemeIds": [
+        "lex-benkyou-suru",
+        "lex-suru",
+        "lex-atarashii",
+        "lex-hajimeru",
+        "lex-yasumu",
+        "lex-yomu",
+        "lex-iku"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b1-unit-35",
+      "title": "Report uncertainty and evidence",
+      "order": 35,
+      "level": "B1",
+      "canDoId": "can-do-b1-035",
+      "prerequisiteUnitIds": [
+        "b1-unit-34"
+      ],
+      "grammarIds": [
+        "grammar-sou-appearance",
+        "grammar-sou-hearsay",
+        "grammar-rashii",
+        "grammar-mitai",
+        "grammar-kamoshirenai",
+        "grammar-hazu"
+      ],
+      "sentenceIds": [
+        "sentence-b1-174",
+        "sentence-b1-175",
+        "sentence-b1-176",
+        "sentence-b1-177",
+        "sentence-b1-178",
+        "sentence-b1-179"
+      ],
+      "vocabularyIds": [
+        "lex-ashita",
+        "lex-yoru",
+        "lex-tenki",
+        "lex-kono",
+        "lex-yuumei",
+        "lex-eiga",
+        "lex-sen",
+        "lex-yotei",
+        "lex-kaigi",
+        "lex-densha",
+        "lex-iru",
+        "lex-mou"
+      ],
+      "conjugationLexemeIds": [
+        "lex-yuumei",
+        "lex-iru"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b1-unit-36",
+      "title": "Explain purpose and outcomes",
+      "order": 36,
+      "level": "B1",
+      "canDoId": "can-do-b1-036",
+      "prerequisiteUnitIds": [
+        "b1-unit-35"
+      ],
+      "grammarIds": [
+        "grammar-tame-ni-purpose",
+        "grammar-you-ni-purpose"
+      ],
+      "sentenceIds": [
+        "sentence-b1-180",
+        "sentence-b1-181",
+        "sentence-b1-182",
+        "sentence-b1-183",
+        "sentence-b1-184",
+        "sentence-b1-185"
+      ],
+      "vocabularyIds": [
+        "lex-ima",
+        "lex-mainichi",
+        "lex-jikan",
+        "lex-suru",
+        "lex-shiken",
+        "lex-yotei",
+        "lex-seikatsu",
+        "lex-kenkou",
+        "lex-nihongo",
+        "lex-dekiru",
+        "lex-nihon",
+        "lex-shigoto",
+        "lex-renshuu",
+        "lex-takusan",
+        "lex-san",
+        "lex-kiji",
+        "lex-kenkyuu",
+        "lex-anzen"
+      ],
+      "conjugationLexemeIds": [
+        "lex-suru",
+        "lex-dekiru",
+        "lex-anzen"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b1-unit-37",
+      "title": "Handle contrast and concession",
+      "order": 37,
+      "level": "B1",
+      "canDoId": "can-do-b1-037",
+      "prerequisiteUnitIds": [
+        "b1-unit-36"
+      ],
+      "grammarIds": [
+        "grammar-noni",
+        "grammar-temo-concession"
+      ],
+      "sentenceIds": [
+        "sentence-b1-186",
+        "sentence-b1-187",
+        "sentence-b1-188",
+        "sentence-b1-189",
+        "sentence-b1-190",
+        "sentence-b1-191"
+      ],
+      "vocabularyIds": [
+        "lex-takusan",
+        "lex-san",
+        "lex-shiken",
+        "lex-kono",
+        "lex-suru",
+        "lex-benri",
+        "lex-kazoku",
+        "lex-mainichi",
+        "lex-renraku",
+        "lex-sen",
+        "lex-setsumei",
+        "lex-mouichido",
+        "lex-mou",
+        "lex-shippai",
+        "lex-chousen"
+      ],
+      "conjugationLexemeIds": [
+        "lex-suru",
+        "lex-benri"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b1-unit-38",
+      "title": "Give conditional advice",
+      "order": 38,
+      "level": "B1",
+      "canDoId": "can-do-b1-038",
+      "prerequisiteUnitIds": [
+        "b1-unit-37"
+      ],
+      "grammarIds": [
+        "grammar-nara",
+        "grammar-ba",
+        "grammar-to-condition"
+      ],
+      "sentenceIds": [
+        "sentence-b1-192",
+        "sentence-b1-193",
+        "sentence-b1-194",
+        "sentence-b1-195",
+        "sentence-b1-196",
+        "sentence-b1-197"
+      ],
+      "vocabularyIds": [
+        "lex-iku",
+        "lex-kyoto",
+        "lex-are",
+        "lex-jikan",
+        "lex-issho",
+        "lex-kono",
+        "lex-sensei",
+        "lex-mondai",
+        "lex-soudan",
+        "lex-ii",
+        "lex-houhou",
+        "lex-anzen"
+      ],
+      "conjugationLexemeIds": [
+        "lex-iku",
+        "lex-ii",
+        "lex-anzen"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b1-unit-39",
+      "title": "Prepare, try and recover",
+      "order": 39,
+      "level": "B1",
+      "canDoId": "can-do-b1-039",
+      "prerequisiteUnitIds": [
+        "b1-unit-38"
+      ],
+      "grammarIds": [
+        "grammar-te-shimau",
+        "grammar-te-oku",
+        "grammar-te-miru"
+      ],
+      "sentenceIds": [
+        "sentence-b1-198",
+        "sentence-b1-199",
+        "sentence-b1-200",
+        "sentence-b1-201",
+        "sentence-b1-202",
+        "sentence-b1-203"
+      ],
+      "vocabularyIds": [
+        "lex-hotel",
+        "lex-ryokou",
+        "lex-yoyaku",
+        "lex-ima",
+        "lex-saifu",
+        "lex-atarashii",
+        "lex-apuri",
+        "lex-kono",
+        "lex-kaigi",
+        "lex-meeru",
+        "lex-taisetsu"
+      ],
+      "conjugationLexemeIds": [
+        "lex-atarashii",
+        "lex-taisetsu"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b1-unit-40",
+      "title": "Structure an opinion",
+      "order": 40,
+      "level": "B1",
+      "canDoId": "can-do-b1-040",
+      "prerequisiteUnitIds": [
+        "b1-unit-39"
+      ],
+      "grammarIds": [
+        "grammar-to-omou",
+        "grammar-kara-reason",
+        "grammar-kedo-contrast"
+      ],
+      "sentenceIds": [
+        "sentence-b1-204",
+        "sentence-b1-205",
+        "sentence-b1-206",
+        "sentence-b1-207",
+        "sentence-b1-208",
+        "sentence-b1-209"
+      ],
+      "vocabularyIds": [
+        "lex-ima",
+        "lex-aru",
+        "lex-suru",
+        "lex-hitsuyou",
+        "lex-benri",
+        "lex-chiiki",
+        "lex-tatoeba",
+        "lex-basu",
+        "lex-houhou",
+        "lex-kono",
+        "lex-kiku",
+        "lex-sono",
+        "lex-iken",
+        "lex-taisetsu",
+        "lex-sen",
+        "lex-anzen",
+        "lex-riyuu",
+        "lex-keikaku"
+      ],
+      "conjugationLexemeIds": [
+        "lex-aru",
+        "lex-suru",
+        "lex-hitsuyou",
+        "lex-benri",
+        "lex-kiku",
+        "lex-taisetsu",
+        "lex-anzen"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
     }
   ],
   "readingTexts": [
@@ -35836,7 +38790,958 @@
       "sourceIds": [
         "thiepn-original"
       ]
+    },
+    {
+      "id": "text-b1-change",
+      "title": "Changing habits",
+      "description": "A connected account of habit change and gradual progress.",
+      "level": "B1",
+      "kind": "story",
+      "sentenceIds": [
+        "sentence-b1-162",
+        "sentence-b1-163",
+        "sentence-b1-164",
+        "sentence-b1-165",
+        "sentence-b1-166",
+        "sentence-b1-167"
+      ],
+      "targetLexemeIds": [
+        "lex-nyuusu",
+        "lex-nihongo",
+        "lex-nihon",
+        "lex-yomu",
+        "lex-mainichi",
+        "lex-ima",
+        "lex-suru",
+        "lex-kenkou",
+        "lex-undou",
+        "lex-kawaru",
+        "lex-sukoshi",
+        "lex-saikin",
+        "lex-seikatsu",
+        "lex-yotei",
+        "lex-iken",
+        "lex-tsuzukeru",
+        "lex-kekka"
+      ],
+      "grammarIds": [
+        "grammar-you-ni-naru",
+        "grammar-you-ni-suru"
+      ],
+      "tags": [
+        "b1",
+        "change",
+        "habits"
+      ],
+      "estimatedMinutes": 7,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "text-b1-change-q1",
+          "prompt": "Which statement is explicitly made near the beginning?",
+          "choices": [
+            "I have come to read Japanese news every day.",
+            "I make a point of checking my schedule so I do not forget.",
+            "The text says nothing changed.",
+            "The speaker refuses to explain."
+          ],
+          "answer": "I have come to read Japanese news every day.",
+          "explanation": "The beginning includes: 毎日、日本語のニュースを読むようになりました。"
+        },
+        {
+          "id": "text-b1-change-q2",
+          "prompt": "Which idea appears later in the text?",
+          "choices": [
+            "When I made a habit of continuing to study, the results changed.",
+            "Everyone agrees immediately.",
+            "The speaker suddenly leaves the country.",
+            "No conclusion is given."
+          ],
+          "answer": "When I made a habit of continuing to study, the results changed.",
+          "explanation": "Later the text includes: 勉強を続けるようにしたら、結果が変わりました。"
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "text-b1-decisions",
+      "title": "A change of plan",
+      "description": "Personal decisions and arrangements determined by circumstances.",
+      "level": "B1",
+      "kind": "story",
+      "sentenceIds": [
+        "sentence-b1-168",
+        "sentence-b1-169",
+        "sentence-b1-170",
+        "sentence-b1-171",
+        "sentence-b1-172",
+        "sentence-b1-173"
+      ],
+      "targetLexemeIds": [
+        "lex-benkyou-suru",
+        "lex-nihon",
+        "lex-suru",
+        "lex-rainen",
+        "lex-atarashii",
+        "lex-hajimeru",
+        "lex-raigetsu",
+        "lex-shigoto",
+        "lex-yasumu",
+        "lex-shuumatsu",
+        "lex-kaigi",
+        "lex-nyuusu",
+        "lex-yomu",
+        "lex-ima",
+        "lex-iku",
+        "lex-tokyo",
+        "lex-keikaku"
+      ],
+      "grammarIds": [
+        "grammar-koto-ni-suru",
+        "grammar-koto-ni-naru"
+      ],
+      "tags": [
+        "b1",
+        "planning",
+        "decision"
+      ],
+      "estimatedMinutes": 7,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "text-b1-decisions-q1",
+          "prompt": "Which statement is explicitly made near the beginning?",
+          "choices": [
+            "I decided to study in Japan next year.",
+            "It has been arranged that the meeting will be held online.",
+            "The text says nothing changed.",
+            "The speaker refuses to explain."
+          ],
+          "answer": "I decided to study in Japan next year.",
+          "explanation": "The beginning includes: 来年、日本で勉強することにしました。"
+        },
+        {
+          "id": "text-b1-decisions-q2",
+          "prompt": "Which idea appears later in the text?",
+          "choices": [
+            "The plan changed, and it was decided that I would go to Tokyo.",
+            "Everyone agrees immediately.",
+            "The speaker suddenly leaves the country.",
+            "No conclusion is given."
+          ],
+          "answer": "The plan changed, and it was decided that I would go to Tokyo.",
+          "explanation": "Later the text includes: 計画が変わって、東京へ行くことになりました。"
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "text-b1-information",
+      "title": "What can we believe?",
+      "description": "Reported information, uncertainty and evidence in a connected text.",
+      "level": "B1",
+      "kind": "story",
+      "sentenceIds": [
+        "sentence-b1-174",
+        "sentence-b1-175",
+        "sentence-b1-176",
+        "sentence-b1-177",
+        "sentence-b1-178",
+        "sentence-b1-179"
+      ],
+      "targetLexemeIds": [
+        "lex-ashita",
+        "lex-yoru",
+        "lex-tenki",
+        "lex-kono",
+        "lex-yuumei",
+        "lex-eiga",
+        "lex-sen",
+        "lex-yotei",
+        "lex-kaigi",
+        "lex-densha",
+        "lex-iru",
+        "lex-mou"
+      ],
+      "grammarIds": [
+        "grammar-sou-appearance",
+        "grammar-sou-hearsay",
+        "grammar-rashii",
+        "grammar-mitai",
+        "grammar-kamoshirenai",
+        "grammar-hazu"
+      ],
+      "tags": [
+        "b1",
+        "media",
+        "evidence"
+      ],
+      "estimatedMinutes": 7,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "text-b1-information-q1",
+          "prompt": "Which statement is explicitly made near the beginning?",
+          "choices": [
+            "The sky is dark, so it looks like it will rain.",
+            "This town feels like something from a movie.",
+            "The text says nothing changed.",
+            "The speaker refuses to explain."
+          ],
+          "answer": "The sky is dark, so it looks like it will rain.",
+          "explanation": "The beginning includes: 空が暗いので、雨が降りそうです。"
+        },
+        {
+          "id": "text-b1-information-q2",
+          "prompt": "Which idea appears later in the text?",
+          "choices": [
+            "The train should have arrived at the station already.",
+            "Everyone agrees immediately.",
+            "The speaker suddenly leaves the country.",
+            "No conclusion is given."
+          ],
+          "answer": "The train should have arrived at the station already.",
+          "explanation": "Later the text includes: 電車はもう駅に着いているはずです。"
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "text-b1-purpose-contrast",
+      "title": "Goals and obstacles",
+      "description": "Purpose, prevention, contrast and persistence in longer reasoning.",
+      "level": "B1",
+      "kind": "story",
+      "sentenceIds": [
+        "sentence-b1-180",
+        "sentence-b1-181",
+        "sentence-b1-182",
+        "sentence-b1-183",
+        "sentence-b1-184",
+        "sentence-b1-185",
+        "sentence-b1-186",
+        "sentence-b1-187",
+        "sentence-b1-188",
+        "sentence-b1-189",
+        "sentence-b1-190",
+        "sentence-b1-191"
+      ],
+      "targetLexemeIds": [
+        "lex-ima",
+        "lex-mainichi",
+        "lex-jikan",
+        "lex-suru",
+        "lex-shiken",
+        "lex-yotei",
+        "lex-seikatsu",
+        "lex-kenkou",
+        "lex-nihongo",
+        "lex-dekiru",
+        "lex-nihon",
+        "lex-shigoto",
+        "lex-renshuu",
+        "lex-takusan",
+        "lex-san",
+        "lex-kiji",
+        "lex-kenkyuu",
+        "lex-anzen",
+        "lex-kono",
+        "lex-benri",
+        "lex-kazoku",
+        "lex-renraku",
+        "lex-sen",
+        "lex-setsumei",
+        "lex-mouichido",
+        "lex-mou",
+        "lex-shippai",
+        "lex-chousen"
+      ],
+      "grammarIds": [
+        "grammar-tame-ni-purpose",
+        "grammar-you-ni-purpose",
+        "grammar-noni",
+        "grammar-temo-concession"
+      ],
+      "tags": [
+        "b1",
+        "purpose",
+        "contrast"
+      ],
+      "estimatedMinutes": 14,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "text-b1-purpose-contrast-q1",
+          "prompt": "Which statement is explicitly made near the beginning?",
+          "choices": [
+            "I study two hours every day in order to pass the exam.",
+            "Although I studied a lot, the exam was difficult.",
+            "The text says nothing changed.",
+            "The speaker refuses to explain."
+          ],
+          "answer": "I study two hours every day in order to pass the exam.",
+          "explanation": "The beginning includes: 試験に合格するために、毎日二時間勉強しています。"
+        },
+        {
+          "id": "text-b1-purpose-contrast-q2",
+          "prompt": "Which idea appears later in the text?",
+          "choices": [
+            "Even if I fail, I want to try again.",
+            "Everyone agrees immediately.",
+            "The speaker suddenly leaves the country.",
+            "No conclusion is given."
+          ],
+          "answer": "Even if I fail, I want to try again.",
+          "explanation": "Later the text includes: 失敗しても、もう一度挑戦したいです。"
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "text-b1-advice",
+      "title": "Advice and preparation",
+      "description": "Conditions, preparation and practical problem solving.",
+      "level": "B1",
+      "kind": "story",
+      "sentenceIds": [
+        "sentence-b1-192",
+        "sentence-b1-193",
+        "sentence-b1-194",
+        "sentence-b1-195",
+        "sentence-b1-196",
+        "sentence-b1-197",
+        "sentence-b1-198",
+        "sentence-b1-199",
+        "sentence-b1-200",
+        "sentence-b1-201",
+        "sentence-b1-202",
+        "sentence-b1-203"
+      ],
+      "targetLexemeIds": [
+        "lex-iku",
+        "lex-kyoto",
+        "lex-are",
+        "lex-jikan",
+        "lex-issho",
+        "lex-kono",
+        "lex-sensei",
+        "lex-mondai",
+        "lex-soudan",
+        "lex-ii",
+        "lex-houhou",
+        "lex-anzen",
+        "lex-hotel",
+        "lex-ryokou",
+        "lex-yoyaku",
+        "lex-ima",
+        "lex-saifu",
+        "lex-atarashii",
+        "lex-apuri",
+        "lex-kaigi",
+        "lex-meeru",
+        "lex-taisetsu"
+      ],
+      "grammarIds": [
+        "grammar-nara",
+        "grammar-ba",
+        "grammar-to-condition",
+        "grammar-te-shimau",
+        "grammar-te-oku",
+        "grammar-te-miru"
+      ],
+      "tags": [
+        "b1",
+        "advice",
+        "planning"
+      ],
+      "estimatedMinutes": 14,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "text-b1-advice-q1",
+          "prompt": "Which statement is explicitly made near the beginning?",
+          "choices": [
+            "If you are going to Kyoto, spring is recommended.",
+            "I will reserve a hotel in advance before the trip.",
+            "The text says nothing changed.",
+            "The speaker refuses to explain."
+          ],
+          "answer": "If you are going to Kyoto, spring is recommended.",
+          "explanation": "The beginning includes: 京都へ行くなら、春がおすすめです。"
+        },
+        {
+          "id": "text-b1-advice-q2",
+          "prompt": "Which idea appears later in the text?",
+          "choices": [
+            "Please try looking up words you do not understand in a dictionary.",
+            "Everyone agrees immediately.",
+            "The speaker suddenly leaves the country.",
+            "No conclusion is given."
+          ],
+          "answer": "Please try looking up words you do not understand in a dictionary.",
+          "explanation": "Later the text includes: 分からない言葉は辞書で調べてみてください。"
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "text-b1-opinion",
+      "title": "A local proposal",
+      "description": "A short opinion text with example, contrast and conclusion.",
+      "level": "B1",
+      "kind": "functional",
+      "sentenceIds": [
+        "sentence-b1-204",
+        "sentence-b1-205",
+        "sentence-b1-206",
+        "sentence-b1-207",
+        "sentence-b1-208",
+        "sentence-b1-209"
+      ],
+      "targetLexemeIds": [
+        "lex-ima",
+        "lex-aru",
+        "lex-suru",
+        "lex-hitsuyou",
+        "lex-benri",
+        "lex-chiiki",
+        "lex-tatoeba",
+        "lex-basu",
+        "lex-houhou",
+        "lex-kono",
+        "lex-kiku",
+        "lex-sono",
+        "lex-iken",
+        "lex-taisetsu",
+        "lex-sen",
+        "lex-anzen",
+        "lex-riyuu",
+        "lex-keikaku"
+      ],
+      "grammarIds": [
+        "grammar-to-omou",
+        "grammar-kara-reason",
+        "grammar-kedo-contrast"
+      ],
+      "tags": [
+        "b1",
+        "opinion",
+        "writing"
+      ],
+      "estimatedMinutes": 7,
+      "audioMode": "speech_synthesis",
+      "comprehensionQuestions": [
+        {
+          "id": "text-b1-opinion-q1",
+          "prompt": "Which statement is explicitly made near the beginning?",
+          "choices": [
+            "I think local transportation needs to be made more convenient.",
+            "Therefore, it is important to first hear the opinions of users.",
+            "The text says nothing changed.",
+            "The speaker refuses to explain."
+          ],
+          "answer": "I think local transportation needs to be made more convenient.",
+          "explanation": "The beginning includes: 私は地域の交通をもっと便利にする必要があると思います。"
+        },
+        {
+          "id": "text-b1-opinion-q2",
+          "prompt": "Which idea appears later in the text?",
+          "choices": [
+            "For the reasons above, I support this plan.",
+            "Everyone agrees immediately.",
+            "The speaker suddenly leaves the country.",
+            "No conclusion is given."
+          ],
+          "answer": "For the reasons above, I support this plan.",
+          "explanation": "Later the text includes: 以上の理由から、この計画に賛成です。"
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
     }
   ],
-  "productiveTasks": []
+  "productiveTasks": [
+    {
+      "id": "prod-b1-write-opinion",
+      "title": "Write a short opinion",
+      "level": "B1",
+      "mode": "writing",
+      "prompt": "Write 120–180 Japanese characters about whether a local service should change. Give your opinion, one reason, one example and one contrast.",
+      "situation": "A local community survey asks for your view.",
+      "targetGrammarIds": [
+        "grammar-to-omou",
+        "grammar-kara-reason",
+        "grammar-kedo-contrast"
+      ],
+      "targetLexemeIds": [
+        "lex-iken",
+        "lex-rei"
+      ],
+      "modelResponse": "私はこのサービスをもっと便利にする必要があると思います。理由は、利用する人が増えているからです。例えば、時間を長くすると便利です。一方で、安全についても考える必要があります。",
+      "requiredTerms": [
+        "と思います",
+        "から",
+        "例えば"
+      ],
+      "minimumCharacters": 120,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task completion",
+          "description": "Addresses the requested situation and purpose.",
+          "weight": 0.35
+        },
+        {
+          "id": "structure",
+          "label": "Structure",
+          "description": "Uses the requested B1 connectors or grammar targets.",
+          "weight": 0.3
+        },
+        {
+          "id": "range",
+          "label": "Range",
+          "description": "Uses relevant vocabulary to make the response specific.",
+          "weight": 0.2
+        },
+        {
+          "id": "clarity",
+          "label": "Clarity",
+          "description": "Produces a connected response that can be followed.",
+          "weight": 0.15
+        }
+      ],
+      "tags": [
+        "b1",
+        "productive",
+        "opinion"
+      ],
+      "milestoneArea": "writing",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "prod-b1-write-experience",
+      "title": "Describe a learning experience",
+      "level": "B1",
+      "mode": "writing",
+      "prompt": "Write 120–180 Japanese characters about something that was difficult at first but became easier over time.",
+      "situation": "Reflect on learning, work or daily life.",
+      "targetGrammarIds": [
+        "grammar-you-ni-naru",
+        "grammar-noni"
+      ],
+      "targetLexemeIds": [
+        "lex-seichou",
+        "lex-chousen"
+      ],
+      "modelResponse": "最初は人の前で日本語を話すのが難しかったです。練習したのに、うまく話せない日もありました。しかし、毎日続けるうちに少しずつ話せるようになりました。",
+      "requiredTerms": [
+        "ようにな",
+        "のに",
+        "しかし"
+      ],
+      "minimumCharacters": 120,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task completion",
+          "description": "Addresses the requested situation and purpose.",
+          "weight": 0.35
+        },
+        {
+          "id": "structure",
+          "label": "Structure",
+          "description": "Uses the requested B1 connectors or grammar targets.",
+          "weight": 0.3
+        },
+        {
+          "id": "range",
+          "label": "Range",
+          "description": "Uses relevant vocabulary to make the response specific.",
+          "weight": 0.2
+        },
+        {
+          "id": "clarity",
+          "label": "Clarity",
+          "description": "Produces a connected response that can be followed.",
+          "weight": 0.15
+        }
+      ],
+      "tags": [
+        "b1",
+        "productive",
+        "experience"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "prod-b1-write-source",
+      "title": "Summarize a source",
+      "level": "B1",
+      "mode": "writing",
+      "prompt": "Write 100–160 Japanese characters summarizing what a source says and clearly separate it from your own view.",
+      "situation": "A class asks you to summarize a short article.",
+      "targetGrammarIds": [
+        "grammar-sou-hearsay",
+        "grammar-rashii",
+        "grammar-to-omou"
+      ],
+      "targetLexemeIds": [
+        "lex-kiji",
+        "lex-jouhou",
+        "lex-iken"
+      ],
+      "modelResponse": "記事によると、この地域では利用者が増えているそうです。新しい制度も始まるらしいです。ただし、私は結果を見るまで判断しないほうがいいと思います。",
+      "requiredTerms": [
+        "によると",
+        "そうです",
+        "と思います"
+      ],
+      "minimumCharacters": 100,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task completion",
+          "description": "Addresses the requested situation and purpose.",
+          "weight": 0.35
+        },
+        {
+          "id": "structure",
+          "label": "Structure",
+          "description": "Uses the requested B1 connectors or grammar targets.",
+          "weight": 0.3
+        },
+        {
+          "id": "range",
+          "label": "Range",
+          "description": "Uses relevant vocabulary to make the response specific.",
+          "weight": 0.2
+        },
+        {
+          "id": "clarity",
+          "label": "Clarity",
+          "description": "Produces a connected response that can be followed.",
+          "weight": 0.15
+        }
+      ],
+      "tags": [
+        "b1",
+        "productive",
+        "source-literacy"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "prod-b1-speak-plan",
+      "title": "Explain a plan aloud",
+      "level": "B1",
+      "mode": "speaking",
+      "prompt": "Speak for about 30–45 seconds about a plan, its purpose, preparation and one possible problem.",
+      "situation": "You are explaining next month's plan to a friend.",
+      "targetGrammarIds": [
+        "grammar-tame-ni-purpose",
+        "grammar-te-oku",
+        "grammar-kamoshirenai"
+      ],
+      "targetLexemeIds": [
+        "lex-keikaku",
+        "lex-junbi"
+      ],
+      "modelResponse": "来月、京都へ旅行する予定です。文化をもっと知るために行きます。ホテルは早めに予約しておきます。雨が降るかもしれないので、予定を少し変えられるようにします。",
+      "requiredTerms": [
+        "ために",
+        "ておき",
+        "かもしれません"
+      ],
+      "minimumCharacters": 55,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task completion",
+          "description": "Addresses the requested situation and purpose.",
+          "weight": 0.35
+        },
+        {
+          "id": "structure",
+          "label": "Structure",
+          "description": "Uses the requested B1 connectors or grammar targets.",
+          "weight": 0.3
+        },
+        {
+          "id": "range",
+          "label": "Range",
+          "description": "Uses relevant vocabulary to make the response specific.",
+          "weight": 0.2
+        },
+        {
+          "id": "clarity",
+          "label": "Clarity",
+          "description": "Produces a connected response that can be followed.",
+          "weight": 0.15
+        }
+      ],
+      "tags": [
+        "b1",
+        "productive",
+        "planning"
+      ],
+      "milestoneArea": "spoken_production",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "prod-b1-speak-advice",
+      "title": "Give advice aloud",
+      "level": "B1",
+      "mode": "speaking",
+      "prompt": "Give 30–45 seconds of advice to someone visiting your city. Use a condition and a recommendation.",
+      "situation": "A friend is visiting for the first time.",
+      "targetGrammarIds": [
+        "grammar-nara",
+        "grammar-ba",
+        "grammar-to-condition"
+      ],
+      "targetLexemeIds": [
+        "lex-chiiki",
+        "lex-anzen"
+      ],
+      "modelResponse": "この地域に来るなら、まず駅で地図を見るといいです。時間があれば、歩いて町を見るのがおすすめです。夜は安全を確認してください。",
+      "requiredTerms": [
+        "なら",
+        "あれば",
+        "と"
+      ],
+      "minimumCharacters": 50,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task completion",
+          "description": "Addresses the requested situation and purpose.",
+          "weight": 0.35
+        },
+        {
+          "id": "structure",
+          "label": "Structure",
+          "description": "Uses the requested B1 connectors or grammar targets.",
+          "weight": 0.3
+        },
+        {
+          "id": "range",
+          "label": "Range",
+          "description": "Uses relevant vocabulary to make the response specific.",
+          "weight": 0.2
+        },
+        {
+          "id": "clarity",
+          "label": "Clarity",
+          "description": "Produces a connected response that can be followed.",
+          "weight": 0.15
+        }
+      ],
+      "tags": [
+        "b1",
+        "productive",
+        "advice"
+      ],
+      "milestoneArea": "spoken_interaction",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "prod-b1-speak-opinion",
+      "title": "State and support an opinion aloud",
+      "level": "B1",
+      "mode": "speaking",
+      "prompt": "Speak for 30–45 seconds: state an opinion, give a reason and add a contrasting point.",
+      "situation": "Discuss technology, study, work or local life.",
+      "targetGrammarIds": [
+        "grammar-to-omou",
+        "grammar-kedo-contrast",
+        "grammar-noni"
+      ],
+      "targetLexemeIds": [
+        "lex-iken",
+        "lex-gijutsu"
+      ],
+      "modelResponse": "私は新しい技術は生活を便利にすると思います。時間を節約できるからです。しかし、便利なのに使い方が複雑なサービスもあります。",
+      "requiredTerms": [
+        "と思います",
+        "から",
+        "しかし"
+      ],
+      "minimumCharacters": 50,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task completion",
+          "description": "Addresses the requested situation and purpose.",
+          "weight": 0.35
+        },
+        {
+          "id": "structure",
+          "label": "Structure",
+          "description": "Uses the requested B1 connectors or grammar targets.",
+          "weight": 0.3
+        },
+        {
+          "id": "range",
+          "label": "Range",
+          "description": "Uses relevant vocabulary to make the response specific.",
+          "weight": 0.2
+        },
+        {
+          "id": "clarity",
+          "label": "Clarity",
+          "description": "Produces a connected response that can be followed.",
+          "weight": 0.15
+        }
+      ],
+      "tags": [
+        "b1",
+        "productive",
+        "opinion"
+      ],
+      "milestoneArea": "spoken_production",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "prod-b1-write-milestone",
+      "title": "B1 milestone writing",
+      "level": "B1",
+      "mode": "writing",
+      "prompt": "Write a connected 140–200 character response with an opinion, reason, example and conclusion.",
+      "situation": "B1 productive milestone task.",
+      "targetGrammarIds": [
+        "grammar-to-omou",
+        "grammar-kara-reason",
+        "grammar-noni"
+      ],
+      "targetLexemeIds": [
+        "lex-iken",
+        "lex-rei",
+        "lex-kekka"
+      ],
+      "modelResponse": "私は新しいことに挑戦することは大切だと思います。失敗することもありますが、その経験から学べるからです。例えば、難しい勉強を続けると、自分の成長が分かります。",
+      "requiredTerms": [
+        "と思います",
+        "例えば",
+        "から"
+      ],
+      "minimumCharacters": 140,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task completion",
+          "description": "Addresses the requested situation and purpose.",
+          "weight": 0.35
+        },
+        {
+          "id": "structure",
+          "label": "Structure",
+          "description": "Uses the requested B1 connectors or grammar targets.",
+          "weight": 0.3
+        },
+        {
+          "id": "range",
+          "label": "Range",
+          "description": "Uses relevant vocabulary to make the response specific.",
+          "weight": 0.2
+        },
+        {
+          "id": "clarity",
+          "label": "Clarity",
+          "description": "Produces a connected response that can be followed.",
+          "weight": 0.15
+        }
+      ],
+      "tags": [
+        "b1",
+        "productive",
+        "milestone"
+      ],
+      "milestoneArea": "writing",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "prod-b1-speak-milestone",
+      "title": "B1 milestone spoken interaction",
+      "level": "B1",
+      "mode": "speaking",
+      "prompt": "Respond aloud for 30–45 seconds to a friend asking what they should do before an important event.",
+      "situation": "Give practical advice and explain why.",
+      "targetGrammarIds": [
+        "grammar-nara",
+        "grammar-te-oku",
+        "grammar-you-ni-purpose"
+      ],
+      "targetLexemeIds": [
+        "lex-junbi",
+        "lex-soudan"
+      ],
+      "modelResponse": "大切なイベントなら、前の日までに必要なものを確認しておくといいです。問題が起きないように、時間と場所も確認してください。分からないことがあれば、早めに相談すると安心です。",
+      "requiredTerms": [
+        "なら",
+        "ておく",
+        "ように"
+      ],
+      "minimumCharacters": 55,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task completion",
+          "description": "Addresses the requested situation and purpose.",
+          "weight": 0.35
+        },
+        {
+          "id": "structure",
+          "label": "Structure",
+          "description": "Uses the requested B1 connectors or grammar targets.",
+          "weight": 0.3
+        },
+        {
+          "id": "range",
+          "label": "Range",
+          "description": "Uses relevant vocabulary to make the response specific.",
+          "weight": 0.2
+        },
+        {
+          "id": "clarity",
+          "label": "Clarity",
+          "description": "Produces a connected response that can be followed.",
+          "weight": 0.15
+        }
+      ],
+      "tags": [
+        "b1",
+        "productive",
+        "milestone"
+      ],
+      "milestoneArea": "spoken_interaction",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    }
+  ]
 }
