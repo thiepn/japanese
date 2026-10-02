@@ -2,14 +2,16 @@ import { describe,expect,it } from "vitest";
 import { a1Course, allGrammarCoursePrompts, courseUnitPrompts, courseUnitSession, grammarApplicationPrompts, grammarMeaningPrompts, isGrammarCoursePromptReady, sentenceComprehensionPrompts, sentenceProductionPrompts, traceIdFor } from "../../apps/web/src/study/grammarCourse";
 import { coreContent } from "../../apps/web/src/coreContent";
 
-describe("P4 grammar, sentences and A1→B1 course",()=>{
-  it("ships canonical grammar, sentence and course entities",()=>{
-    expect(coreContent.lexemes).toHaveLength(336);
-    expect(coreContent.grammar).toHaveLength(86);
-    expect(coreContent.sentences).toHaveLength(209);
-    expect(coreContent.canDos).toHaveLength(40);
-    expect(coreContent.courseUnits).toHaveLength(40);
-    expect(a1Course.map((item)=>item.unit.order)).toEqual(Array.from({length:40},(_,index)=>index+1));
+describe("P6 grammar, sentences and A1→B2 course",()=>{
+  it("ships canonical grammar, sentence and course entities through B2",()=>{
+    expect(coreContent.lexemes).toHaveLength(416);
+    expect(coreContent.grammar).toHaveLength(102);
+    expect(coreContent.sentences).toHaveLength(257);
+    expect(coreContent.canDos).toHaveLength(50);
+    expect(coreContent.courseUnits).toHaveLength(50);
+    expect(a1Course.map((item)=>item.unit.order)).toEqual(Array.from({length:50},(_,index)=>index+1));
+    expect(coreContent.courseUnits.filter((unit)=>unit.level==="B2")).toHaveLength(10);
+    expect(coreContent.grammar.filter((grammar)=>grammar.level==="B2")).toHaveLength(16);
   });
   it("keeps sentence knowledge linked to canonical grammar and lexemes",()=>{
     const grammarIds=new Set(coreContent.grammar.map((item)=>item.id));
@@ -29,7 +31,11 @@ describe("P4 grammar, sentences and A1→B1 course",()=>{
     expect(appearance?.grammarIds).not.toContain("grammar-sou-hearsay");
     expect(hearsay?.grammarIds).toEqual(["grammar-sou-hearsay"]);
   });
-
+  it("links B2 discourse examples to first-class B2 grammar identities",()=>{
+    const sentence=coreContent.sentences.find((item)=>item.id==="b2-sentence-ippou-de-1");
+    expect(sentence?.grammarIds).toEqual(["b2-ippou-de"]);
+    expect(sentence?.text).toContain("一方で");
+  });
   it("creates independent grammar comprehension/form and sentence comprehension/production evidence",()=>{
     expect(grammarMeaningPrompts).toHaveLength(coreContent.grammar.length);
     expect(grammarApplicationPrompts).toHaveLength(coreContent.grammar.length);
