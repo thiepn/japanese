@@ -1,7 +1,7 @@
 import SQLiteESMFactory from "@journeyapps/wa-sqlite/dist/wa-sqlite-async.mjs";
 import * as SQLite from "@journeyapps/wa-sqlite";
 import { IDBBatchAtomicVFS } from "@journeyapps/wa-sqlite/src/examples/IDBBatchAtomicVFS.js";
-import type { AudioAssetRecord, CanDoDescriptor, ContentSeedPackage, CourseUnit, GrammarConcept, Kanji, Lexeme, ReadingText, Sense, Sentence } from "@thiepn/content-schema";
+import type { AudioAssetRecord, CanDoDescriptor, ContentSeedPackage, CourseUnit, GrammarConcept, Kanji, Lexeme, ProductiveTask, ReadingText, Sense, Sentence } from "@thiepn/content-schema";
 import type { EntityKind, EntityRef } from "@thiepn/domain";
 import { normalizeJapaneseSearch, type SearchDocument, type SearchResult } from "@thiepn/search";
 
@@ -14,6 +14,7 @@ export interface LexemeDetail {
 export interface GrammarDetail { grammar:GrammarConcept; sentences:Sentence[]; }
 export interface CourseUnitDetail { unit:CourseUnit; canDo:CanDoDescriptor|null; grammar:GrammarConcept[]; sentences:Sentence[]; }
 export interface ReadingTextDetail { text:ReadingText; sentences:Sentence[]; }
+export interface ProductiveTaskDetail { task:ProductiveTask; }
 
 export class ContentDatabase {
   private constructor(
@@ -110,6 +111,14 @@ export class ContentDatabase {
           [text.id,text.title,text.description,text.level,text.kind,JSON.stringify(text.sentenceIds),JSON.stringify(text.targetLexemeIds),JSON.stringify(text.grammarIds),JSON.stringify(text.tags),text.estimatedMinutes,text.audioMode,text.audioAssetId ?? null,JSON.stringify(text.comprehensionQuestions),JSON.stringify(text.sourceIds)]
         );
       }
+      for (const task of content.productiveTasks) {
+        await this.run(
+          `INSERT INTO production_tasks(id,title,level,mode,prompt,situation,target_grammar_ids_json,target_lexeme_ids_json,model_response,required_terms_json,minimum_characters,rubric_json,tags_json,milestone_area,source_ids_json)
+           VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+           ON CONFLICT(id) DO UPDATE SET title=excluded.title,level=excluded.level,mode=excluded.mode,prompt=excluded.prompt,situation=excluded.situation,target_grammar_ids_json=excluded.target_grammar_ids_json,target_lexeme_ids_json=excluded.target_lexeme_ids_json,model_response=excluded.model_response,required_terms_json=excluded.required_terms_json,minimum_characters=excluded.minimum_characters,rubric_json=excluded.rubric_json,tags_json=excluded.tags_json,milestone_area=excluded.milestone_area,source_ids_json=excluded.source_ids_json`,
+          [task.id,task.title,task.level,task.mode,task.prompt,task.situation,JSON.stringify(task.targetGrammarIds),JSON.stringify(task.targetLexemeIds),task.modelResponse,JSON.stringify(task.requiredTerms),task.minimumCharacters,JSON.stringify(task.rubric),JSON.stringify(task.tags),task.milestoneArea ?? null,JSON.stringify(task.sourceIds)]
+        );
+      }
       for (const sense of content.senses) {
         await this.run(
           `INSERT INTO senses(id,lexeme_id,glosses_json,pos_json,source_ids_json)
@@ -147,6 +156,9 @@ export class ContentDatabase {
       })),
       ...content.readingTexts.map((item):SearchDocument=>({
         entity:{kind:"text",id:item.id}, title:item.title, glosses:[item.description,item.level], aliases:item.tags
+      })),
+      ...content.productiveTasks.map((item):SearchDocument=>({
+        entity:{kind:"production_task",id:item.id}, title:item.title, glosses:[item.prompt,item.situation,item.level], aliases:[...item.tags,...item.requiredTerms]
       }))
     ]);
   }
@@ -253,6 +265,16 @@ export class ContentDatabase {
     const result:ReadingTextDetail[]=[];
     for(const row of rows){const text=readingTextFromRow(row);const sentences:Sentence[]=[];for(const sentenceId of text.sentenceIds){const sentence=await this.getSentence(sentenceId);if(sentence)sentences.push(sentence);}result.push({text,sentences});}
     return result;
+  }
+
+  async getProductiveTask(id:string):Promise<ProductiveTask|null>{
+    const row=await this.firstRow("SELECT id,title,level,mode,prompt,situation,target_grammar_ids_json,target_lexeme_ids_json,model_response,required_terms_json,minimum_characters,rubric_json,tags_json,milestone_area,source_ids_json FROM production_tasks WHERE id=?",[id]);
+    return row?productiveTaskFromRow(row):null;
+  }
+
+  async listProductiveTasks():Promise<ProductiveTask[]>{
+    const rows=await this.allRows("SELECT id,title,level,mode,prompt,situation,target_grammar_ids_json,target_lexeme_ids_json,model_response,required_terms_json,minimum_characters,rubric_json,tags_json,milestone_area,source_ids_json FROM production_tasks ORDER BY level ASC,title ASC");
+    return rows.map(productiveTaskFromRow);
   }
 
   async upsertSearchDocuments(documents: readonly SearchDocument[]): Promise<void> {
@@ -380,6 +402,11 @@ export class ContentDatabase {
         sentence_ids_json TEXT NOT NULL,target_lexeme_ids_json TEXT NOT NULL,grammar_ids_json TEXT NOT NULL,tags_json TEXT NOT NULL,
         estimated_minutes INTEGER NOT NULL,audio_mode TEXT NOT NULL,audio_asset_id TEXT,questions_json TEXT NOT NULL,source_ids_json TEXT NOT NULL
       );
+      CREATE TABLE IF NOT EXISTS production_tasks(
+        id TEXT PRIMARY KEY,title TEXT NOT NULL,level TEXT NOT NULL,mode TEXT NOT NULL,prompt TEXT NOT NULL,situation TEXT NOT NULL,
+        target_grammar_ids_json TEXT NOT NULL,target_lexeme_ids_json TEXT NOT NULL,model_response TEXT NOT NULL,required_terms_json TEXT NOT NULL,
+        minimum_characters INTEGER NOT NULL,rubric_json TEXT NOT NULL,tags_json TEXT NOT NULL,milestone_area TEXT,source_ids_json TEXT NOT NULL
+      );
       CREATE TABLE IF NOT EXISTS senses(
         id TEXT PRIMARY KEY,
         lexeme_id TEXT NOT NULL,
@@ -448,7 +475,7 @@ export class ContentDatabase {
 }
 
 function asEntityKind(value: string): EntityKind {
-  const allowed: readonly EntityKind[] = ["lexeme", "sense", "kanji", "grammar", "sentence", "text", "document", "kana", "can_do"];
+  const allowed: readonly EntityKind[] = ["lexeme", "sense", "kanji", "grammar", "sentence", "text", "document", "production_task", "kana", "can_do"];
   if (!allowed.includes(value as EntityKind)) throw new Error(`UNKNOWN_ENTITY_KIND:${value}`);
   return value as EntityKind;
 }
@@ -470,5 +497,17 @@ function readingTextFromRow(row:unknown[]):ReadingText{
     tags:JSON.parse(String(row[8])) as string[],estimatedMinutes:Number(row[9]),audioMode:String(row[10]) as ReadingText["audioMode"],
     ...(row[11]===null?{}:{audioAssetId:String(row[11])}),
     comprehensionQuestions:JSON.parse(String(row[12])) as ReadingText["comprehensionQuestions"],sourceIds:JSON.parse(String(row[13])) as string[]
+  };
+}
+
+function productiveTaskFromRow(row:unknown[]):ProductiveTask{
+  return {
+    id:String(row[0]),title:String(row[1]),level:String(row[2]),mode:String(row[3]) as ProductiveTask["mode"],
+    prompt:String(row[4]),situation:String(row[5]),targetGrammarIds:JSON.parse(String(row[6])) as string[],
+    targetLexemeIds:JSON.parse(String(row[7])) as string[],modelResponse:String(row[8]),
+    requiredTerms:JSON.parse(String(row[9])) as string[],minimumCharacters:Number(row[10]),
+    rubric:JSON.parse(String(row[11])) as ProductiveTask["rubric"],tags:JSON.parse(String(row[12])) as string[],
+    ...(row[13]===null?{}:{milestoneArea:String(row[13]) as NonNullable<ProductiveTask["milestoneArea"]>}),
+    sourceIds:JSON.parse(String(row[14])) as string[]
   };
 }
