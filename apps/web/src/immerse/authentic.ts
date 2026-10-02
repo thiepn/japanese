@@ -233,11 +233,11 @@ function addA2SurfaceForms(lexeme:Lexeme,map:Map<string,{reading?:string;resolut
     const i:Record<string,string>={"う":"い","く":"き","ぐ":"ぎ","す":"し","つ":"ち","ぬ":"に","ぶ":"び","む":"み","る":"り"};
     const a:Record<string,string>={"う":"わ","く":"か","ぐ":"が","す":"さ","つ":"た","ぬ":"な","ぶ":"ば","む":"ま","る":"ら"};
     const im=i[last],am=a[last];
-    if(im)for(const ending of ["たい","ながら","やすい","にくい","すぎる"])map.set(stem+im+ending,reading);
-    if(am)for(const ending of ["なければ","なくても"])map.set(stem+am+ending,reading);
+    if(im)for(const ending of ["たい","ながら","やすい","にくい","すぎる"])map.set(stem+im+ending,{...(reading?{reading}:{}),resolution:"generated"});
+    if(am)for(const ending of ["なければ","なくても"])map.set(stem+am+ending,{...(reading?{reading}:{}),resolution:"generated"});
   }
   if(lexeme.inflectionClass==="i-adjective"){
-    const stem=base.endsWith("い")?base.slice(0,-1):base;map.set(stem+"すぎる",reading);map.set(stem+"くなる",reading);
+    const stem=base.endsWith("い")?base.slice(0,-1):base;map.set(stem+"すぎる",{...(reading?{reading}:{}),resolution:"generated"});map.set(stem+"くなる",{...(reading?{reading}:{}),resolution:"generated"});
   }
   if(lexeme.inflectionClass==="na-adjective")map.set(base+"になる",{...(reading?{reading}:{}),resolution:"generated"});
 }
