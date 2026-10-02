@@ -13,7 +13,7 @@ const PRIVATE_SENTENCES = "private_sentences";
 
 export interface SyncMetaRecord { key: string; value: string; }
 
-export type PrivateDocumentSourceKind="paste"|"text_file"|"subtitle"|"tatoeba";
+export type PrivateDocumentSourceKind="paste"|"text_file"|"subtitle"|"tatoeba"|"source_pack";
 export interface PrivateNativeAudio {
   url:string; credit:string; licenseName:string; attributionUrl?:string; externalId?:string;
 }
