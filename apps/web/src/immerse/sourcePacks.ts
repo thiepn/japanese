@@ -82,7 +82,7 @@ export async function importJapaneseSourcePack(pack:JapaneseSourcePack):Promise<
       ...(item.audio.externalId?{externalId:item.audio.externalId}:{})
     }:undefined;
     documents.push(await createPrivateDocument({
-      title:item.title,text:item.text,sourceKind:"text_file",
+      title:item.title,text:item.text,sourceKind:"source_pack",
       sourceLabel:pack.manifest.title+" · "+pack.manifest.attribution,
       sourceUrl:item.sourceUrl??pack.manifest.sourceUrl,
       ...(nativeAudio?{nativeAudio}:{})
