@@ -288,7 +288,7 @@ function segmentUnknownChunk(chunk:string):AuthenticToken[]{
     const lemma=lemmatizeJapaneseSurface(surface);
     if(lemma){
       const lexeme=coreContent.lexemes.find((entry)=>entry.id===lemma.lexemeId);
-      if(lexeme){const sense=senseForLexeme(lexeme);result.push({surface,kind:"known",lexemeId:lexeme.id,baseForm:lexeme.canonicalForm,reading:lexeme.readings[0]?.text,meaning:sense.glosses.join(" / "),resolution:lemma.resolution});continue;}
+      if(lexeme){const sense=senseForLexeme(lexeme);result.push({surface,kind:"known",lexemeId:lexeme.id,baseForm:lexeme.canonicalForm,...(lexeme.readings[0]?.text?{reading:lexeme.readings[0].text}:{}),meaning:sense.glosses.join(" / "),resolution:lemma.resolution});continue;}
     }
     result.push({surface,kind:"unknown"});
   }
