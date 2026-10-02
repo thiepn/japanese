@@ -5,7 +5,8 @@ test("Immerse exposes graded reading support without creating a separate learnin
   await page.getByRole("button",{name:"Immerse"}).click();
 
   await expect(page.getByRole("heading",{name:"A1 → A2 bridge"})).toBeVisible();
-  await expect(page.locator(".immersion-card")).toHaveCount(8);
+  await expect(page.locator(".immersion-card")).toHaveCount(16);
+  await expect(page.getByRole("heading",{name:"Your Japanese"})).toBeVisible();
   const morning=page.locator(".immersion-card").filter({hasText:"A school morning"});
   await expect(morning.getByText(/Known-word readiness/)).toBeVisible();
   await morning.getByRole("button",{name:"Open text"}).click();
