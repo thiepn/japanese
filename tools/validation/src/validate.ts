@@ -11,11 +11,13 @@ interface EntityRef { kind:string; id:string; }
 interface SentenceRecord extends Provenanced { grammarIds?:string[]; entityRefs?:EntityRef[]; }
 interface CanDoRecord extends Provenanced { grammarIds?:string[]; sentenceIds?:string[]; prerequisiteIds?:string[]; }
 interface CourseUnitRecord extends Provenanced { canDoId?:string; prerequisiteUnitIds?:string[]; grammarIds?:string[]; sentenceIds?:string[]; vocabularyIds?:string[]; conjugationLexemeIds?:string[]; }
-interface ReadingTextRecord extends Provenanced { sentenceIds?:string[]; targetLexemeIds?:string[]; grammarIds?:string[]; audioMode?:string; audioAssetId?:string; }
-interface ProductiveTaskRecord extends Provenanced { targetGrammarIds?:string[]; targetLexemeIds?:string[]; requiredTerms?:string[]; minimumCharacters?:number; mode?:string; }
+interface ReadingSegmentRecord { id?:string; sentenceId?:string; startMs?:number; endMs?:number; }
+interface ReadingTextRecord extends Provenanced { sentenceIds?:string[]; targetLexemeIds?:string[]; grammarIds?:string[]; audioMode?:string; audioAssetId?:string; listeningSegments?:ReadingSegmentRecord[]; }
+interface LexicalChunkRecord extends Provenanced { lexemeIds?:string[]; grammarIds?:string[]; exampleSentenceIds?:string[]; expression?:string; meaning?:string; }
+interface ProductiveTaskRecord extends Provenanced { targetGrammarIds?:string[]; targetLexemeIds?:string[]; targetChunkIds?:string[]; requiredTerms?:string[]; minimumCharacters?:number; mode?:string; }
 interface Seed {
   sourceIds?:string[]; lexemes?:LexemeRecord[]; senses?:Provenanced[]; kanji?:Provenanced[]; audioAssets?:AudioRecord[];
-  grammar?:GrammarRecord[]; sentences?:SentenceRecord[]; canDos?:CanDoRecord[]; courseUnits?:CourseUnitRecord[]; readingTexts?:ReadingTextRecord[]; productiveTasks?:ProductiveTaskRecord[];
+  grammar?:GrammarRecord[]; sentences?:SentenceRecord[]; lexicalChunks?:LexicalChunkRecord[]; canDos?:CanDoRecord[]; courseUnits?:CourseUnitRecord[]; readingTexts?:ReadingTextRecord[]; productiveTasks?:ProductiveTaskRecord[];
 }
 
 const registry=JSON.parse(await readFile(new URL("../../../content/sources/registry.json",import.meta.url),"utf8")) as Registry;
@@ -41,7 +43,7 @@ for(const sourceId of seed.sourceIds ?? []) validateSource(sourceId,"seed packag
 
 for(const [collection,items] of Object.entries({
   lexemes:seed.lexemes ?? [],senses:seed.senses ?? [],kanji:seed.kanji ?? [],audioAssets:seed.audioAssets ?? [],
-  grammar:seed.grammar ?? [],sentences:seed.sentences ?? [],canDos:seed.canDos ?? [],courseUnits:seed.courseUnits ?? [],readingTexts:seed.readingTexts ?? [],productiveTasks:seed.productiveTasks ?? []
+  grammar:seed.grammar ?? [],sentences:seed.sentences ?? [],lexicalChunks:seed.lexicalChunks ?? [],canDos:seed.canDos ?? [],courseUnits:seed.courseUnits ?? [],readingTexts:seed.readingTexts ?? [],productiveTasks:seed.productiveTasks ?? []
 })) {
   for(const item of items) {
     if(!item.sourceIds?.length) violations.push("Missing provenance: "+collection+"/"+item.id);
@@ -56,6 +58,7 @@ const sentenceIds=new Set((seed.sentences ?? []).map((item)=>item.id));
 const canDoIds=new Set((seed.canDos ?? []).map((item)=>item.id));
 const courseUnitIds=new Set((seed.courseUnits ?? []).map((item)=>item.id));
 const audioIds=new Set((seed.audioAssets ?? []).map((item)=>item.id));
+const lexicalChunkIds=new Set((seed.lexicalChunks ?? []).map((item)=>item.id));
 
 for(const lexeme of seed.lexemes ?? []){
   for(const id of lexeme.audioIds ?? [])requireRef(audioIds,id,"lexemes/"+lexeme.id+"/audioIds");
@@ -79,6 +82,13 @@ for(const sentence of seed.sentences ?? []){
     else if(ref.kind==="kanji")requireRef(kanjiIds,ref.id,"sentences/"+sentence.id+"/entityRefs");
   }
 }
+for(const chunk of seed.lexicalChunks ?? []){
+  if(!chunk.expression?.trim())violations.push("Lexical chunk missing expression: "+chunk.id);
+  if(!chunk.meaning?.trim())violations.push("Lexical chunk missing meaning: "+chunk.id);
+  for(const id of chunk.lexemeIds ?? [])requireRef(lexemeIds,id,"lexicalChunks/"+chunk.id+"/lexemeIds");
+  for(const id of chunk.grammarIds ?? [])requireRef(grammarIds,id,"lexicalChunks/"+chunk.id+"/grammarIds");
+  for(const id of chunk.exampleSentenceIds ?? [])requireRef(sentenceIds,id,"lexicalChunks/"+chunk.id+"/exampleSentenceIds");
+}
 for(const canDo of seed.canDos ?? []){
   for(const id of canDo.grammarIds ?? [])requireRef(grammarIds,id,"canDos/"+canDo.id+"/grammarIds");
   for(const id of canDo.sentenceIds ?? [])requireRef(sentenceIds,id,"canDos/"+canDo.id+"/sentenceIds");
@@ -90,10 +100,25 @@ for(const text of seed.readingTexts ?? []){
   for(const id of text.grammarIds ?? [])requireRef(grammarIds,id,"readingTexts/"+text.id+"/grammarIds");
   if(text.audioAssetId)requireRef(audioIds,text.audioAssetId,"readingTexts/"+text.id+"/audioAssetId");
   if(text.audioMode==="recorded"&&!text.audioAssetId)violations.push("Recorded reading text missing audioAssetId: "+text.id);
+  const segmentIds=new Set<string>();
+  let previousStart=-1;
+  for(const segment of text.listeningSegments ?? []){
+    if(!segment.id?.trim())violations.push("Reading text segment missing id: "+text.id);
+    else if(segmentIds.has(segment.id))violations.push("Duplicate reading segment id: "+text.id+"/"+segment.id);
+    else segmentIds.add(segment.id);
+    requireRef(sentenceIds,segment.sentenceId,"readingTexts/"+text.id+"/listeningSegments");
+    if(segment.sentenceId&&!text.sentenceIds?.includes(segment.sentenceId))violations.push("Reading segment references sentence outside text: "+text.id+"/"+segment.sentenceId);
+    if(segment.startMs!==undefined||segment.endMs!==undefined){
+      if(segment.startMs===undefined||segment.endMs===undefined||segment.startMs<0||segment.endMs<=segment.startMs)violations.push("Invalid reading segment timing: "+text.id+"/"+String(segment.id));
+      if(segment.startMs!==undefined&&segment.startMs<previousStart)violations.push("Reading segments out of order: "+text.id);
+      previousStart=segment.startMs??previousStart;
+    }
+  }
 }
 for(const task of seed.productiveTasks ?? []){
   for(const id of task.targetGrammarIds ?? [])requireRef(grammarIds,id,"productiveTasks/"+task.id+"/targetGrammarIds");
   for(const id of task.targetLexemeIds ?? [])requireRef(lexemeIds,id,"productiveTasks/"+task.id+"/targetLexemeIds");
+  for(const id of task.targetChunkIds ?? [])requireRef(lexicalChunkIds,id,"productiveTasks/"+task.id+"/targetChunkIds");
   if(task.mode!=="writing"&&task.mode!=="speaking")violations.push("Invalid productive task mode: "+task.id);
   if((task.minimumCharacters??0)<1)violations.push("Productive task missing minimumCharacters: "+task.id);
   if(!(task.requiredTerms?.length))violations.push("Productive task missing requiredTerms: "+task.id);
