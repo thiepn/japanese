@@ -14634,7 +14634,9 @@
       "label": "〜ている",
       "summary": "Express an action in progress, a repeated activity, or a resulting state.",
       "mentalModel": "The て-form connects the action to いる; context decides whether you are seeing 'is doing', a habitual activity, or a state that remains.",
-      "formation": "Verb て-form + いる / います",
+      "formation": [
+        "Verb て-form + いる / います"
+      ],
       "uses": [
         "actions happening now",
         "habitual activities",
@@ -14670,7 +14672,9 @@
       "label": "〜たい",
       "summary": "Express the speaker's desire to do an action.",
       "mentalModel": "Attach たい to the verb's ます-stem. It behaves like an い-adjective.",
-      "formation": "Verb ます-stem + たい",
+      "formation": [
+        "Verb ます-stem + たい"
+      ],
       "uses": [
         "what you want to do",
         "asking what someone wants to do"
@@ -14707,7 +14711,9 @@
       "label": "〜が欲しい",
       "summary": "Express wanting a thing.",
       "mentalModel": "欲しい describes a desired noun; mark that desired thing with が in the basic pattern.",
-      "formation": "Noun + が欲しい",
+      "formation": [
+        "Noun + が欲しい"
+      ],
       "uses": [
         "things you want"
       ],
@@ -14743,7 +14749,9 @@
       "label": "〜たことがある",
       "summary": "Talk about having or not having a past experience.",
       "mentalModel": "Turn the completed action into an experience with こと and state whether that experience exists.",
-      "formation": "Verb plain past + ことがある / あります",
+      "formation": [
+        "Verb plain past + ことがある / あります"
+      ],
       "uses": [
         "life experiences",
         "asking whether someone has ever done something"
@@ -14778,7 +14786,9 @@
       "label": "〜ことができる",
       "summary": "Express ability or possibility to do an action.",
       "mentalModel": "Nominalize the action with こと and say that it is possible with できる.",
-      "formation": "Verb dictionary form + ことができる",
+      "formation": [
+        "Verb dictionary form + ことができる"
+      ],
       "uses": [
         "abilities",
         "what is possible"
@@ -14813,7 +14823,9 @@
       "label": "〜つもり",
       "summary": "State a deliberate intention.",
       "mentalModel": "つもり presents a plan as your current intention rather than merely a scheduled event.",
-      "formation": "Verb dictionary/plain negative + つもりだ / です",
+      "formation": [
+        "Verb dictionary/plain negative + つもりだ / です"
+      ],
       "uses": [
         "personal intentions",
         "plans you have decided on"
@@ -14850,7 +14862,9 @@
       "label": "〜予定",
       "summary": "State a scheduled or arranged plan.",
       "mentalModel": "予定 frames an event as being on the schedule or already arranged.",
-      "formation": "Verb dictionary form / Noun + の + 予定だ / です",
+      "formation": [
+        "Verb dictionary form / Noun + の + 予定だ / です"
+      ],
       "uses": [
         "scheduled plans",
         "arrangements"
@@ -14887,7 +14901,9 @@
       "label": "〜と思う",
       "summary": "Report what you think or believe.",
       "mentalModel": "Quote a plain-form proposition with と and attach 思う.",
-      "formation": "Plain clause + と思う / 思います",
+      "formation": [
+        "Plain clause + と思う / 思います"
+      ],
       "uses": [
         "opinions",
         "beliefs",
@@ -14923,7 +14939,9 @@
       "label": "〜から (reason)",
       "summary": "Give a direct reason for what follows.",
       "mentalModel": "Put から after the reason clause: 'because X, Y.'",
-      "formation": "Reason clause + から",
+      "formation": [
+        "Reason clause + から"
+      ],
       "uses": [
         "reasons",
         "explanations for decisions"
@@ -14960,7 +14978,9 @@
       "label": "〜ので",
       "summary": "Give a relatively explanatory or softer reason.",
       "mentalModel": "ので connects a reason to its consequence with a more explanatory tone than direct から.",
-      "formation": "Plain clause + ので; Noun/な-adjective + なので",
+      "formation": [
+        "Plain clause + ので; Noun/な-adjective + なので"
+      ],
       "uses": [
         "polite explanations",
         "background reasons"
@@ -14997,7 +15017,9 @@
       "label": "〜けど / 〜が",
       "summary": "Connect two ideas with contrast or soften what follows.",
       "mentalModel": "The first clause sets up a contrast; the second clause gives the differing result or evaluation.",
-      "formation": "Clause + けど / が",
+      "formation": [
+        "Clause + けど / が"
+      ],
       "uses": [
         "contrast",
         "soft lead-ins"
@@ -15032,7 +15054,9 @@
       "label": "〜より〜のほうが",
       "summary": "Compare two things.",
       "mentalModel": "より marks the comparison baseline; ほう marks the side that has more of the stated quality.",
-      "formation": "A より B のほうが + adjective",
+      "formation": [
+        "A より B のほうが + adjective"
+      ],
       "uses": [
         "comparisons",
         "preferences between two options"
@@ -15069,7 +15093,9 @@
       "label": "〜が一番",
       "summary": "Express the top choice or highest degree within a group.",
       "mentalModel": "一番 means 'number one / most' in the relevant comparison set.",
-      "formation": "Group + で / among context + Noun が一番 + adjective",
+      "formation": [
+        "Group + で / among context + Noun が一番 + adjective"
+      ],
       "uses": [
         "favorites",
         "superlatives"
@@ -15104,7 +15130,9 @@
       "label": "〜てもいい",
       "summary": "Ask for or give permission.",
       "mentalModel": "The て-form plus もいい presents the action as acceptable.",
-      "formation": "Verb て-form + もいい",
+      "formation": [
+        "Verb て-form + もいい"
+      ],
       "uses": [
         "asking permission",
         "giving permission"
@@ -15141,7 +15169,9 @@
       "label": "〜てはいけない",
       "summary": "State that an action is prohibited.",
       "mentalModel": "The て-form plus はいけない marks the action as unacceptable.",
-      "formation": "Verb て-form + はいけない / はいけません",
+      "formation": [
+        "Verb て-form + はいけない / はいけません"
+      ],
       "uses": [
         "rules",
         "prohibitions"
@@ -15178,7 +15208,9 @@
       "label": "〜なければならない",
       "summary": "Express obligation: something must be done.",
       "mentalModel": "Use the negative base and conditional なければ, then ならない: if it is not done, that will not do.",
-      "formation": "Verb ない-form → なければならない",
+      "formation": [
+        "Verb ない-form → なければならない"
+      ],
       "uses": [
         "obligations",
         "necessary actions"
@@ -15215,7 +15247,9 @@
       "label": "〜なくてもいい",
       "summary": "Express that an action is not necessary.",
       "mentalModel": "Negative なくて + もいい says it is okay even without doing the action.",
-      "formation": "Verb ない-form → なくてもいい",
+      "formation": [
+        "Verb ない-form → なくてもいい"
+      ],
       "uses": [
         "lack of obligation",
         "optional actions"
@@ -15252,7 +15286,9 @@
       "label": "〜てから",
       "summary": "Sequence actions: do one action and then another.",
       "mentalModel": "The first action is completed before the next one begins.",
-      "formation": "Verb て-form + から",
+      "formation": [
+        "Verb て-form + から"
+      ],
       "uses": [
         "ordered routines",
         "instructions"
@@ -15289,7 +15325,9 @@
       "label": "〜たり〜たりする",
       "summary": "Give representative examples of actions.",
       "mentalModel": "Use past-form-like たり on multiple verbs to present examples rather than a complete list.",
-      "formation": "Verb past stem + り ... + する",
+      "formation": [
+        "Verb past stem + り ... + する"
+      ],
       "uses": [
         "weekend activities",
         "non-exhaustive action lists"
@@ -15326,7 +15364,9 @@
       "label": "〜前に / 〜後で",
       "summary": "Place one action before or after another.",
       "mentalModel": "前 and 後 act as time anchors around an action or noun.",
-      "formation": "Verb dictionary + 前に; Verb past / Noun の + 後で",
+      "formation": [
+        "Verb dictionary + 前に; Verb past / Noun の + 後で"
+      ],
       "uses": [
         "before/after sequences",
         "daily planning"
@@ -15363,7 +15403,9 @@
       "label": "〜ながら",
       "summary": "Do two actions at the same time.",
       "mentalModel": "Attach ながら to the ます-stem of the secondary action; the final verb is the main action.",
-      "formation": "Verb ます-stem + ながら",
+      "formation": [
+        "Verb ます-stem + ながら"
+      ],
       "uses": [
         "simultaneous actions"
       ],
@@ -15397,7 +15439,9 @@
       "label": "〜くなる / 〜になる",
       "summary": "Express a change of state.",
       "mentalModel": "い-adjectives use 〜くなる; nouns and な-adjectives use 〜になる.",
-      "formation": "い-adjective: 〜くなる; Noun/な-adjective: 〜になる",
+      "formation": [
+        "い-adjective: 〜くなる; Noun/な-adjective: 〜になる"
+      ],
       "uses": [
         "changes over time",
         "new states"
@@ -15435,7 +15479,9 @@
       "label": "〜にする",
       "summary": "Choose or intentionally make something into a state.",
       "mentalModel": "にする presents an intentional choice or change, unlike になる which describes becoming.",
-      "formation": "Noun/な-adjective + にする",
+      "formation": [
+        "Noun/な-adjective + にする"
+      ],
       "uses": [
         "choosing from options",
         "intentional changes"
@@ -15472,7 +15518,9 @@
       "label": "〜すぎる",
       "summary": "Say that something is excessive.",
       "mentalModel": "Attach すぎる to a verb stem or adjective stem: too much / too X.",
-      "formation": "Verb ます-stem + すぎる; い-adj stem + すぎる; な-adj + すぎる",
+      "formation": [
+        "Verb ます-stem + すぎる; い-adj stem + すぎる; な-adj + すぎる"
+      ],
       "uses": [
         "excessive actions",
         "too much of a quality"
@@ -15508,7 +15556,9 @@
       "label": "〜やすい / 〜にくい",
       "summary": "Describe how easy or difficult an action is to do.",
       "mentalModel": "Attach やすい or にくい to the verb's ます-stem.",
-      "formation": "Verb ます-stem + やすい / にくい",
+      "formation": [
+        "Verb ます-stem + やすい / にくい"
+      ],
       "uses": [
         "usability",
         "ease and difficulty of actions"
@@ -15543,7 +15593,9 @@
       "label": "〜ませんか",
       "summary": "Make a polite invitation.",
       "mentalModel": "A polite negative question can function as an invitation: 'won't you...?'",
-      "formation": "Verb ます-stem + ませんか",
+      "formation": [
+        "Verb ます-stem + ませんか"
+      ],
       "uses": [
         "invitations",
         "suggestions"
@@ -15578,7 +15630,9 @@
       "label": "〜たら",
       "summary": "Express a practical if/when condition.",
       "mentalModel": "Attach ら to the plain past form. In many everyday contexts it means 'if/when X happens, then Y.'",
-      "formation": "Verb/adjective plain past + ら",
+      "formation": [
+        "Verb/adjective plain past + ら"
+      ],
       "uses": [
         "conditions",
         "instructions after a future event"
@@ -15613,7 +15667,9 @@
       "label": "〜とき",
       "summary": "Say when something happens.",
       "mentalModel": "Place とき after a plain-form clause or noun phrase to create a time frame.",
-      "formation": "Plain clause + とき; Noun + のとき",
+      "formation": [
+        "Plain clause + とき; Noun + のとき"
+      ],
       "uses": [
         "situations",
         "when to do something"
@@ -15648,7 +15704,9 @@
       "label": "もう / まだ",
       "summary": "Locate an event relative to an expected point: already, still, or not yet.",
       "mentalModel": "もう often marks a change already reached; まだ marks a state continuing or something not yet completed.",
-      "formation": "もう + affirmative; まだ + affirmative/negative depending meaning",
+      "formation": [
+        "もう + affirmative; まだ + affirmative/negative depending meaning"
+      ],
       "uses": [
         "already/not yet",
         "continuing states"
