@@ -8,11 +8,13 @@ import { FOUNDATION_TOTAL_ITEMS, foundationApplicationPrompts, foundationLessons
 import { a1Course, allGrammarCoursePrompts, courseUnitPrompts, courseUnitSession, grammarCourseLessons, isGrammarCoursePromptReady, selectNewCoursePrompts } from "./grammarCourse";
 import { conjugationLessons, conjugationPrompts } from "./conjugation";
 import {
-  buildA1MilestoneAssessment,buildUnitAssessment,getA1MilestoneProgress,getUnitAssessmentProgress,
+  buildA1MilestoneAssessment,buildB1MilestoneAssessment,buildUnitAssessment,getA1MilestoneProgress,getB1MilestoneProgress,getUnitAssessmentProgress,
   type MilestoneAssessmentProgress,type UnitAssessmentProgress
 } from "./assessment";
 import { VOCABULARY_TOTAL, vocabularyApplicationPrompts, vocabularyLessons, vocabularyMeaningPrompts } from "./vocabulary";
 import { buildPrivateVocabularyPrompts } from "./privateVocabulary";
+import { buildPrivateSentencePrompts } from "./privateSentences";
+import { productivePracticeSession,productivePrompts } from "./productivePractice";
 
 export const DEVELOPMENT_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
 export const DEVELOPMENT_DEVICE_ID="p2-local-browser";
@@ -56,26 +58,27 @@ export interface CourseUnitProgress {
   assessment:UnitAssessmentProgress;
 }
 export type A1MilestoneProgress=MilestoneAssessmentProgress;
+export type B1MilestoneProgress=MilestoneAssessmentProgress;
 
 function foundationApplicationPool():StudyPrompt[]{
-  return [...pronunciationPerceptionPrompts,...foundationApplicationPrompts,...vocabularyApplicationPrompts,...conjugationPrompts];
+  return [...pronunciationPerceptionPrompts,...foundationApplicationPrompts,...vocabularyApplicationPrompts,...conjugationPrompts,...productivePrompts];
 }
 function allPrompts():StudyPrompt[]{
   return [...foundationPrompts,...vocabularyMeaningPrompts,...foundationApplicationPool(),...allGrammarCoursePrompts];
 }
 
 export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
-  const [traces,events,privateSet]=await Promise.all([listMemoryTraces(DEVELOPMENT_ACCOUNT_ID),listStudyEvents(DEVELOPMENT_ACCOUNT_ID),buildPrivateVocabularyPrompts()]);
+  const [traces,events,privateSet,privateSentences]=await Promise.all([listMemoryTraces(DEVELOPMENT_ACCOUNT_ID),listStudyEvents(DEVELOPMENT_ACCOUNT_ID),buildPrivateVocabularyPrompts(),buildPrivateSentencePrompts()]);
   const byId=new Map(traces.map((trace)=>[trace.id,trace]));
   const traceIds=new Set(byId.keys());
-  const privatePrompts=[...privateSet.meaning,...privateSet.application];
+  const privatePrompts=[...privateSet.meaning,...privateSet.application,...privateSentences];
   const all=[...allPrompts(),...privatePrompts];
   const due=all.filter((prompt)=>isDue(prompt,byId,now)).sort((a,b)=>dueAt(a,byId)-dueAt(b,byId));
   if(due.length>=MAX_DUE_PER_SESSION)return insertFirstExposureLessons(due.slice(0,MAX_QUEUE_SIZE),byId,privatePrompts);
 
   const unseenKana=foundationPrompts.filter((prompt)=>!byId.has(traceIdFor(prompt)));
   const unseenVocabulary=[...vocabularyMeaningPrompts,...privateSet.meaning].filter((prompt)=>!byId.has(traceIdFor(prompt)));
-  const readyApplication=[...foundationApplicationPool(),...privateSet.application].filter((prompt)=>!byId.has(traceIdFor(prompt))&&isApplicationPromptReady(prompt,traceIds));
+  const readyApplication=[...foundationApplicationPool(),...privateSet.application,...privateSentences].filter((prompt)=>!byId.has(traceIdFor(prompt))&&isApplicationPromptReady(prompt,traceIds));
   const readyCourse=selectNewCoursePrompts(traceIds,COURSE_ITEMS_PER_SESSION);
   const mined=pendingMinedVocabulary(events,privateSet.meaning).slice(0,2);
   const queue:StudyPrompt[]=[];
@@ -99,21 +102,30 @@ export async function buildUnitAssessmentSession(unitId:string):Promise<StudySte
 export async function buildA1MilestoneSession():Promise<StudyStep[]>{
   return buildA1MilestoneAssessment();
 }
+export async function buildB1MilestoneSession():Promise<StudyStep[]>{
+  return buildB1MilestoneAssessment();
+}
+export async function buildProductivePractice(mode:"writing"|"speaking"):Promise<StudyStep[]>{
+  return productivePracticeSession(mode);
+}
 export async function getA1MilestoneAssessmentProgress():Promise<MilestoneAssessmentProgress>{
   return getA1MilestoneProgress(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));
 }
+export async function getB1MilestoneAssessmentProgress():Promise<MilestoneAssessmentProgress>{
+  return getB1MilestoneProgress(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));
+}
 
 export async function getStudySummary(now=new Date()):Promise<StudySummary>{
-  const [traces,privateSet]=await Promise.all([listMemoryTraces(DEVELOPMENT_ACCOUNT_ID),buildPrivateVocabularyPrompts()]);
+  const [traces,privateSet,privateSentences]=await Promise.all([listMemoryTraces(DEVELOPMENT_ACCOUNT_ID),buildPrivateVocabularyPrompts(),buildPrivateSentencePrompts()]);
   const byId=new Map(traces.map((trace)=>[trace.id,trace]));
   const traceIds=new Set(byId.keys());
-  const privatePrompts=[...privateSet.meaning,...privateSet.application];
+  const privatePrompts=[...privateSet.meaning,...privateSet.application,...privateSentences];
   const all=[...allPrompts(),...privatePrompts];
   const due=all.filter((prompt)=>isDue(prompt,byId,now)).length;
   const learnedKana=foundationPrompts.filter((prompt)=>byId.has(traceIdFor(prompt))).length;
   const allMeaning=[...vocabularyMeaningPrompts,...privateSet.meaning];
   const learnedVocabulary=allMeaning.filter((prompt)=>byId.has(traceIdFor(prompt))).length;
-  const ready=[...foundationApplicationPool(),...privateSet.application].filter((prompt)=>!byId.has(traceIdFor(prompt))&&isApplicationPromptReady(prompt,traceIds));
+  const ready=[...foundationApplicationPool(),...privateSet.application,...privateSentences].filter((prompt)=>!byId.has(traceIdFor(prompt))&&isApplicationPromptReady(prompt,traceIds));
   const listeningReady=ready.filter(isListeningPrompt).length;
   const nonListeningReady=ready.length-listeningReady;
   const course=selectNewCoursePrompts(traceIds,COURSE_ITEMS_PER_SESSION).length;
@@ -206,9 +218,9 @@ export async function getGrammarMasterySummary():Promise<GrammarMasterySummary>{
 }
 
 export async function getSentenceMasterySummary():Promise<SentenceMasterySummary>{
-  const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
+  const [events,privateSentences]=await Promise.all([listStudyEvents(DEVELOPMENT_ACCOUNT_ID),buildPrivateSentencePrompts()]);
   const state=replayStudyEvents(events);
-  const expected=uniqueSkillPrompts(allGrammarCoursePrompts.filter((prompt)=>prompt.primaryTarget.kind==="sentence"));
+  const expected=uniqueSkillPrompts([...allGrammarCoursePrompts.filter((prompt)=>prompt.primaryTarget.kind==="sentence"),...privateSentences]);
   const comprehension=expected.filter((prompt)=>prompt.skill==="comprehension");
   const production=expected.filter((prompt)=>prompt.skill==="production");
   const projections=projectionsFor(expected,state);
@@ -270,6 +282,10 @@ function insertFirstExposureLessons(queue:StudyPrompt[],byId:Map<string,Awaited<
 
 export function isApplicationPromptReady(prompt:StudyPrompt,traceIds:ReadonlySet<string>):boolean{
   if(prompt.primaryTarget.kind==="grammar"||prompt.primaryTarget.kind==="sentence")return isGrammarCoursePromptReady(prompt,traceIds);
+  if(prompt.primaryTarget.kind==="production_task"){
+    const targetGrammarIds=Array.isArray(prompt.eventMetadata?.targetGrammarIds)?prompt.eventMetadata!.targetGrammarIds.filter((id):id is string=>typeof id==="string"):[];
+    return targetGrammarIds.length===0||targetGrammarIds.every((id)=>[...traceIds].some((trace)=>trace.startsWith("grammar:"+id+":")));
+  }
   if(prompt.primaryTarget.kind==="lexeme"){
     const isPrivate=prompt.cueFamily.startsWith("private-");
     const meaning=isPrivate
@@ -326,7 +342,7 @@ function pendingMinedVocabulary(events:Awaited<ReturnType<typeof listStudyEvents
 
 function selectBalancedApplications(prompts:StudyPrompt[],limit:number):StudyPrompt[]{
   const selected:StudyPrompt[]=[];const targets=new Set<string>();
-  const preferredSkills=["audio_recognition","reading","listening","form_selection","active_use"] as const;
+  const preferredSkills=["audio_recognition","reading","listening","form_selection","active_use","production","writing_quality"] as const;
   for(const skill of preferredSkills){
     const candidate=prompts.find((prompt)=>prompt.skill===skill&&!targets.has(prompt.primaryTarget.kind+":"+prompt.primaryTarget.id));
     if(candidate){selected.push(candidate);targets.add(candidate.primaryTarget.kind+":"+candidate.primaryTarget.id);}
