@@ -11,6 +11,7 @@ test("Immerse exposes graded reading support without creating a separate learnin
   await morning.getByRole("button",{name:"Open text"}).click();
 
   await expect(page.getByRole("heading",{name:"A school morning"})).toBeVisible();
+  await page.getByRole("checkbox",{name:"Reading hints"}).uncheck();
   await expect(page.locator(".reader-japanese").first()).toContainText("毎日七時に起きます。");
   await page.getByRole("button",{name:"Show translation"}).first().click();
   await expect(page.getByText("I get up at seven every day.",{exact:true})).toBeVisible();
