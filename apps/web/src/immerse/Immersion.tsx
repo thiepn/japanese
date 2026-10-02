@@ -5,7 +5,7 @@ import { ShadowingLab } from "./ShadowingLab";
 import { getAdaptiveImmersionRecommendation,type AdaptiveImmersionRecommendation } from "./adaptive";
 import type { ReadingQuestion } from "@thiepn/content-schema";
 import {
-  buildReaderText,getImmersionProgress,gradeReadingQuestion,recordListeningExposure,recordMinedWord,
+  buildReaderText,getImmersionProgress,gradeReadingQuestion,recordListeningExposure,recordListeningSegmentReplay,recordMinedWord,
   recordReaderLookup,recordReadingExposure,recordTextCheck,
   type ImmersionProgress,type ReaderTextView,type ReaderToken
 } from "./reader";
@@ -22,6 +22,7 @@ export function Immersion(){
   const [selected,setSelected]=useState<SelectedToken|null>(null);
   const [listeningPlayed,setListeningPlayed]=useState(false);
   const [speaking,setSpeaking]=useState(false);
+  const [speakingSegment,setSpeakingSegment]=useState<string|null>(null);
   const [checkMode,setCheckMode]=useState<CheckMode|null>(null);
   const [questionIndex,setQuestionIndex]=useState(0);
   const [feedback,setFeedback]=useState<{correct:boolean;answer:string;explanation:string}|null>(null);
@@ -75,6 +76,29 @@ export function Immersion(){
     speechSynthesis.speak(utterance);
   }
 
+  async function speakSegment(sentenceId:string,rate=.92,repeats=1){
+    if(!view)return;
+    const item=view.sentences.find((entry)=>entry.sentence.id===sentenceId);if(!item)return;
+    const segment=view.text.listeningSegments?.find((entry)=>entry.sentenceId===sentenceId);
+    setSpeakingSegment(sentenceId);
+    try{
+      if(view.audio&&segment?.startMs!==undefined&&segment.endMs!==undefined){
+        await audioProvider.current.play(view.audio,{rate,repeats,startMs:segment.startMs,endMs:segment.endMs});
+        await recordListeningSegmentReplay(view.text.id,sentenceId,rate,repeats,"recorded");
+        return;
+      }
+      if(typeof speechSynthesis==="undefined")return;
+      for(let index=0;index<Math.max(1,Math.min(3,repeats));index++){
+        await new Promise<void>((resolve)=>{
+          const utterance=new SpeechSynthesisUtterance(item.sentence.text);utterance.lang="ja-JP";utterance.rate=rate;
+          const japanese=speechSynthesis.getVoices().find((voice)=>voice.lang.toLowerCase().startsWith("ja"));if(japanese)utterance.voice=japanese;
+          utterance.onend=()=>resolve();utterance.onerror=()=>resolve();speechSynthesis.speak(utterance);
+        });
+      }
+      await recordListeningSegmentReplay(view.text.id,sentenceId,rate,repeats,"speech_synthesis");
+    }finally{setSpeakingSegment(null);void refresh();}
+  }
+
   function startCheck(mode:CheckMode){
     setCheckMode(mode);setQuestionIndex(0);setFeedback(null);setCheckStartedAt(performance.now());
   }
@@ -94,7 +118,7 @@ export function Immersion(){
   if(view)return <ReaderView view={view} furigana={furigana} setFurigana={setFurigana} translations={translations} toggleTranslation={toggleTranslation}
     selected={selected} chooseToken={chooseToken} mineSelected={mineSelected} closeLookup={()=>setSelected(null)} closeText={closeText}
     listeningPlayed={listeningPlayed} speaking={speaking} speak={speak} checkMode={checkMode} startCheck={startCheck}
-    questionIndex={questionIndex} feedback={feedback} answerQuestion={answerQuestion} nextQuestion={nextQuestion}/>;
+    questionIndex={questionIndex} feedback={feedback} answerQuestion={answerQuestion} nextQuestion={nextQuestion} speakingSegment={speakingSegment} speakSegment={speakSegment}/>;
 
   return <section className="dashboard immerse-page">
     <p className="eyebrow">IMMERSE</p><h1>A1 → B2 immersion</h1>
@@ -124,11 +148,12 @@ export function Immersion(){
   </section>;
 }
 
-function ReaderView({view,furigana,setFurigana,translations,toggleTranslation,selected,chooseToken,mineSelected,closeLookup,closeText,listeningPlayed,speaking,speak,checkMode,startCheck,questionIndex,feedback,answerQuestion,nextQuestion}:{
+function ReaderView({view,furigana,setFurigana,translations,toggleTranslation,selected,chooseToken,mineSelected,closeLookup,closeText,listeningPlayed,speaking,speak,checkMode,startCheck,questionIndex,feedback,answerQuestion,nextQuestion,speakingSegment,speakSegment}:{
   view:ReaderTextView;furigana:boolean;setFurigana:(value:boolean)=>void;translations:Set<string>;toggleTranslation:(id:string)=>void;
   selected:SelectedToken|null;chooseToken:(token:ReaderToken,sentenceId:string)=>Promise<void>;mineSelected:()=>Promise<void>;closeLookup:()=>void;closeText:()=>void;
   listeningPlayed:boolean;speaking:boolean;speak:(rate:number)=>Promise<void>;checkMode:CheckMode|null;startCheck:(mode:CheckMode)=>void;
   questionIndex:number;feedback:{correct:boolean;answer:string;explanation:string}|null;answerQuestion:(question:ReadingQuestion,response:string)=>Promise<void>;nextQuestion:()=>void;
+  speakingSegment:string|null;speakSegment:(sentenceId:string,rate?:number,repeats?:number)=>Promise<void>;
 }){
   const [listeningFirst,setListeningFirst]=useState(false);
   const question=checkMode?view.text.comprehensionQuestions[questionIndex]:null;
@@ -151,13 +176,15 @@ function ReaderView({view,furigana,setFurigana,translations,toggleTranslation,se
             {furigana&&token.reading&&token.reading!==token.surface?<ruby>{token.surface}<rt>{token.reading}</rt></ruby>:token.surface}
           </button>:<span key={sentence.id+":"+index}>{token.surface}</span>)}</div>
           <div className="reader-support"><button className="quiet-button" type="button" onClick={()=>toggleTranslation(sentence.id)}>{translations.has(sentence.id)?"Hide translation":"Show translation"}</button>
+            <button className="quiet-button" type="button" disabled={speakingSegment===sentence.id} onClick={()=>void speakSegment(sentence.id,.92,1)}>{speakingSegment===sentence.id?"Playing…":"Replay sentence"}</button>
+            <button className="quiet-button" type="button" disabled={speakingSegment===sentence.id} onClick={()=>void speakSegment(sentence.id,.82,2)}>Slow ×2</button>
             {grammar.length?<details><summary>{grammar.length} grammar links</summary>{grammar.map((item)=><div className="reader-grammar" key={item.id}><strong>{item.label}</strong><span>{item.summary}</span></div>)}</details>:null}</div>
           {translations.has(sentence.id)?<p className="reader-translation">{sentence.translation}</p>:null}
         </article>)}
       </div>
       {selected?<aside className="reader-lookup"><button className="reader-lookup-close" type="button" aria-label="Close word lookup" onClick={closeLookup}>×</button><span lang="ja">{selected.token.surface}</span>{selected.token.reading?<small lang="ja">{selected.token.reading}</small>:null}<strong>{selected.token.meaning}</strong><button className="unit-action" type="button" onClick={()=>void mineSelected()}>Mine for review</button></aside>:null}
       <div className="reader-finish"><button className="primary" type="button" onClick={()=>startCheck("reading")}>Reading check</button><button className="unit-action" disabled={!listeningPlayed} type="button" onClick={()=>startCheck("listening")}>{listeningPlayed?"Listening check":"Listen first"}</button></div>
-      <p className="course-note">Tap a linked word for a reading and meaning. Listening-first can hide the transcript until a complete playback. Grammar support stays attached to the canonical sentence. Imported-text analysis adds bounded B1/B2 deinflection and explicit sense ambiguity; a dictionary-grade provider remains an integration boundary.</p>
+      <p className="course-note">Tap a linked word for reading and meaning. Listening-first hides the transcript until one full playback. Sentence replay loops use source-timed native segments when available and otherwise stay explicitly labeled device synthesis.</p>
     </>}
   </section>;
 }
