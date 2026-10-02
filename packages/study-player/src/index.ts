@@ -75,7 +75,7 @@ export function gradeStudyPrompt(prompt: StudyPrompt, response: string): GradeRe
   const normalizedTerms=(prompt.requiredTerms??[]).map((term)=>normalizeResponse(term,mode));
   const termHits=normalizedTerms.filter((term)=>normalizedResponse.includes(term)).length;
   const termRatio=normalizedTerms.length?termHits/normalizedTerms.length:1;
-  const substantiveLength=normalizedResponse.replace(/[\\s。、！？!?「」『』（）()［］\\[\\]…・,.:;—–-]/gu,"").length;
+  const substantiveLength=normalizedResponse.replace(/[\s。、！？!?「」『』（）［］…・,.:;—–-]/gu,"").length;
   const lengthOk=substantiveLength>=(prompt.minimumCharacters??1);
   const correct=rubricMode
     ? lengthOk&&termRatio>=0.6
