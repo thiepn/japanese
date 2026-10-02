@@ -106,7 +106,7 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
     if(!selected)return;
     if(selected.token.kind==="known"&&selected.token.lexemeId){await mineKnownLexeme(view.document.id,selected.token.lexemeId);setSelected(null);return;}
     if(selected.token.kind==="unknown"&&meaning.trim()){
-      await saveUnknownAsPrivateVocabulary({surface:selected.token.surface,meaning,reading:reading.trim()||undefined,documentId:view.document.id});
+      await saveUnknownAsPrivateVocabulary({surface:selected.token.surface,meaning,...(reading.trim()?{reading:reading.trim()}:{}),documentId:view.document.id});
       setMeaning("");setReading("");setSelected(null);
     }
   }
