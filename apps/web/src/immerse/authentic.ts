@@ -88,7 +88,7 @@ export function findLexicalChunksInText(text:string):LexicalChunk[]{
   const normalized=text.normalize("NFKC");
   const lexemeById=new Map(coreContent.lexemes.map((lexeme)=>[lexeme.id,lexeme] as const));
   return lexicalChunks.filter((chunk)=>{
-    const forms=new Set<string>([chunk.expression,...(chunk.variants??[])]);
+    const forms=new Set<string>([chunk.expression,...(chunk.variants??[]),...boundedChunkInflections(chunk.expression)]);
     for(const lexemeId of chunk.lexemeIds){
       const lexeme=lexemeById.get(lexemeId);if(!lexeme||!chunk.expression.endsWith(lexeme.canonicalForm))continue;
       const prefix=chunk.expression.slice(0,-lexeme.canonicalForm.length);
@@ -99,6 +99,28 @@ export function findLexicalChunksInText(text:string):LexicalChunk[]{
     }
     return [...forms].some((form)=>form&&normalized.includes(form.normalize("NFKC")));
   });
+}
+
+function boundedChunkInflections(expression:string):string[]{
+  if(expression.endsWith("する")){
+    const stem=expression.slice(0,-2);
+    return ["する","し","して","した","します","しました","すれば","しない"].map((ending)=>stem+ending);
+  }
+  const ending=expression.at(-1);
+  if(!ending)return [];
+  const stem=expression.slice(0,-1);
+  const endings:Record<string,string[]>={
+    "る":["る","て","た","ます","ました","れば","ない","った","ります","りました","らない"],
+    "す":["す","して","した","します","しました","せば","さない"],
+    "む":["む","んで","んだ","みます","みました","めば","まない"],
+    "う":["う","って","った","います","いました","えば","わない"],
+    "く":["く","いて","いた","きます","きました","けば","かない"],
+    "ぐ":["ぐ","いで","いだ","ぎます","ぎました","げば","がない"],
+    "つ":["つ","って","った","ちます","ちました","てば","たない"],
+    "ぶ":["ぶ","んで","んだ","びます","びました","べば","ばない"],
+    "ぬ":["ぬ","んで","んだ","にます","にました","ねば","なない"]
+  };
+  return (endings[ending]??[]).map((value)=>stem+value);
 }
 
 export async function analyzeAuthenticTextWithProvider(text:string,provider:JapaneseMorphologyProvider):Promise<AuthenticAnalysis>{
