@@ -15,7 +15,7 @@ import {
 } from "./study/runtime";
 
 type Surface="Today"|"Learn"|"Immerse"|"Library"|"Progress";
-const EMPTY_SUMMARY:StudySummary={due:0,newKana:5,newVocabulary:2,listening:0,application:0,course:0,learnedKana:0,totalKana:217,learnedVocabulary:0,totalVocabulary:634,memoryTraces:0};
+const EMPTY_SUMMARY:StudySummary={due:0,newKana:5,newVocabulary:2,listening:0,application:0,course:0,learnedKana:0,totalKana:217,learnedVocabulary:0,totalVocabulary:626,memoryTraces:0};
 const EMPTY_KANA:KanaMasterySummary={overall:0,hiragana:0,katakana:0,recognition:0,readingRecall:0,formSelection:0,listening:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
 const EMPTY_VOCAB:VocabularyMasterySummary={overall:0,meaning:0,reading:0,listening:0,activeUse:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
 const EMPTY_CONJUGATION:ConjugationMasterySummary={overall:0,politeNegative:0,politePast:0,politePastNegative:0,teForm:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
@@ -158,7 +158,7 @@ function Learn({summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,c
   const kanaCoverage=summary.totalKana?Math.round(summary.learnedKana/summary.totalKana*100):0;
   const vocabCoverage=summary.totalVocabulary?Math.round(summary.learnedVocabulary/summary.totalVocabulary*100):0;
   return <section className="dashboard learn-page"><p className="eyebrow">LEARN</p><h1>Foundation → B2</h1>
-    <p className="lead">P7 broadens B2 beyond isolated grammar: 634 canonical words, 120 tracked collocations, wider real-world genres, strategic connected-listening replay, independent production and provider-backed authentic-text analysis. AI judgments remain advisory and separate from durable mastery.</p>
+    <p className="lead">P7 broadens B2 beyond isolated grammar: 626 canonical words, 120 tracked collocations, wider real-world genres, strategic connected-listening replay, independent production and provider-backed authentic-text analysis. AI judgments remain advisory and separate from durable mastery.</p>
     <div className="course-stack foundation-stack">
       <article className="course-card"><div><span className="course-kicker">SCRIPT FOUNDATION</span><h2>Kana</h2><p>{foundationSections.map((section)=>section.label).join(" · ")}</p></div><div className="course-progress"><strong>{kanaCoverage}%</strong><span>{summary.learnedKana} / {summary.totalKana} introduced</span></div></article>
       <article className="course-card"><div><span className="course-kicker">A1→B2 LEXICON</span><h2>Useful words + kanji in context</h2><p>Meaning · reading · listening · active recall</p></div><div className="course-progress"><strong>{vocabCoverage}%</strong><span>{summary.learnedVocabulary} / {summary.totalVocabulary} words introduced</span></div></article>
