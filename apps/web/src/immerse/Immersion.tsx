@@ -75,7 +75,7 @@ export function Immersion(){
   }
 
   if(view)return <ReaderView view={view} furigana={furigana} setFurigana={setFurigana} translations={translations} toggleTranslation={toggleTranslation}
-    selected={selected} chooseToken={chooseToken} mineSelected={mineSelected} closeText={closeText}
+    selected={selected} chooseToken={chooseToken} mineSelected={mineSelected} closeLookup={()=>setSelected(null)} closeText={closeText}
     listeningPlayed={listeningPlayed} speaking={speaking} speak={speak} checkMode={checkMode} startCheck={startCheck}
     questionIndex={questionIndex} feedback={feedback} answerQuestion={answerQuestion} nextQuestion={nextQuestion}/>;
 
@@ -98,9 +98,9 @@ export function Immersion(){
   </section>;
 }
 
-function ReaderView({view,furigana,setFurigana,translations,toggleTranslation,selected,chooseToken,mineSelected,closeText,listeningPlayed,speaking,speak,checkMode,startCheck,questionIndex,feedback,answerQuestion,nextQuestion}:{
+function ReaderView({view,furigana,setFurigana,translations,toggleTranslation,selected,chooseToken,mineSelected,closeLookup,closeText,listeningPlayed,speaking,speak,checkMode,startCheck,questionIndex,feedback,answerQuestion,nextQuestion}:{
   view:ReaderTextView;furigana:boolean;setFurigana:(value:boolean)=>void;translations:Set<string>;toggleTranslation:(id:string)=>void;
-  selected:SelectedToken|null;chooseToken:(token:ReaderToken,sentenceId:string)=>Promise<void>;mineSelected:()=>Promise<void>;closeText:()=>void;
+  selected:SelectedToken|null;chooseToken:(token:ReaderToken,sentenceId:string)=>Promise<void>;mineSelected:()=>Promise<void>;closeLookup:()=>void;closeText:()=>void;
   listeningPlayed:boolean;speaking:boolean;speak:(rate:number)=>Promise<void>;checkMode:CheckMode|null;startCheck:(mode:CheckMode)=>void;
   questionIndex:number;feedback:{correct:boolean;answer:string;explanation:string}|null;answerQuestion:(question:ReadingQuestion,response:string)=>Promise<void>;nextQuestion:()=>void;
 }){
@@ -126,7 +126,7 @@ function ReaderView({view,furigana,setFurigana,translations,toggleTranslation,se
           {translations.has(sentence.id)?<p className="reader-translation">{sentence.translation}</p>:null}
         </article>)}
       </div>
-      {selected?<aside className="reader-lookup"><button className="reader-lookup-close" type="button" aria-label="Close word lookup" onClick={()=>setFurigana(furigana) || undefined}>×</button><span lang="ja">{selected.token.surface}</span>{selected.token.reading?<small lang="ja">{selected.token.reading}</small>:null}<strong>{selected.token.meaning}</strong><button className="unit-action" type="button" onClick={()=>void mineSelected()}>Mine for review</button></aside>:null}
+      {selected?<aside className="reader-lookup"><button className="reader-lookup-close" type="button" aria-label="Close word lookup" onClick={closeLookup}>×</button><span lang="ja">{selected.token.surface}</span>{selected.token.reading?<small lang="ja">{selected.token.reading}</small>:null}<strong>{selected.token.meaning}</strong><button className="unit-action" type="button" onClick={()=>void mineSelected()}>Mine for review</button></aside>:null}
       <div className="reader-finish"><button className="primary" type="button" onClick={()=>startCheck("reading")}>Reading check</button><button className="unit-action" disabled={!listeningPlayed} type="button" onClick={()=>startCheck("listening")}>{listeningPlayed?"Listening check":"Listen first"}</button></div>
       <p className="course-note">Tap a linked word for a reading and meaning. Grammar support stays attached to the canonical sentence. The tokenizer matches canonical forms plus generated core inflections; it is not a general-purpose Japanese morphological parser.</p>
     </>}
