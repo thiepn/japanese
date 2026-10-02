@@ -2,22 +2,23 @@ import type { Lexeme } from "@thiepn/content-schema";
 import { entityKey, type StudyEvent } from "@thiepn/domain";
 import { replayStudyEvents } from "@thiepn/learner-engine";
 import {
-  listPrivateDocuments,listPrivateVocabulary,listStudyEvents,savePrivateDocument,savePrivateVocabulary,saveStudyEvent,
-  type PrivateDocumentRecord,type PrivateDocumentSourceKind,type PrivateNativeAudio,type PrivateVocabularyRecord
+  listPrivateDocuments,listPrivateSentences,listPrivateVocabulary,listStudyEvents,savePrivateDocument,savePrivateSentence,savePrivateVocabulary,saveStudyEvent,
+  type PrivateDocumentRecord,type PrivateDocumentSourceKind,type PrivateNativeAudio,type PrivateSentenceRecord,type PrivateVocabularyRecord
 } from "@thiepn/local-db";
 import { normalizeJapaneseSearch } from "@thiepn/search";
 import { coreContent,senseForLexeme } from "../coreContent";
 import { conjugateLexeme,type ConjugationForm } from "../study/conjugation";
 
 export const AUTHENTIC_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
-const DEVICE_ID="p4-local-browser";
+const DEVICE_ID="p5-local-browser";
 const FORMS:ConjugationForm[]=["polite_nonpast","polite_negative","polite_past","polite_past_negative","plain_negative","plain_past","te_form"];
-const FUNCTION_WORDS=new Set(["は","が","を","に","で","と","も","へ","の","から","まで","より","か","ね","よ","ので","けど","が","て","たり","ながら","なら","たら","とき","前","後","そして","でも","しかし","また","です","ます"]);
+const FUNCTION_WORDS=new Set(["は","が","を","に","で","と","も","へ","の","から","まで","より","か","ね","よ","ので","けど","が","て","たり","ながら","なら","たら","とき","前","後","そして","でも","しかし","また","です","ます","のに","ても","そう","らしい","みたい","はず","ため","よう","例えば","それでも"]);
 const PUNCT=/^[\s。、！？!?「」『』（）()［］\[\]…・,.:;—–-]+$/u;
 
 export type AuthenticTokenKind="known"|"function"|"unknown"|"punctuation";
 export interface AuthenticToken {
   surface:string; kind:AuthenticTokenKind; lexemeId?:string; baseForm?:string; reading?:string; meaning?:string;
+  resolution?: "canonical"|"generated"|"deinflected";
 }
 export interface AuthenticAnalysis {
   tokens:AuthenticToken[]; knownTokens:number; lexicalTokens:number; knownRatio:number; unknownDensity:number;
@@ -30,7 +31,7 @@ export interface TatoebaImportResult {
   document:PrivateDocumentRecord; audioAccepted:boolean; audioRejectionReason?:string;
 }
 
-interface SurfaceCandidate { surface:string; lexeme:Lexeme; reading?:string; }
+interface SurfaceCandidate { surface:string; lexeme:Lexeme; reading?:string; resolution:"canonical"|"generated"|"deinflected"; }
 let surfaceCandidates:SurfaceCandidate[]|null=null;
 
 export function normalizeImportedText(value:string,sourceKind:PrivateDocumentSourceKind):string{
@@ -59,7 +60,7 @@ export function analyzeAuthenticText(text:string):AuthenticAnalysis{
       const sense=senseForLexeme(candidate.lexeme);
       tokens.push({
         surface:candidate.surface,kind:"known",lexemeId:candidate.lexeme.id,baseForm:candidate.lexeme.canonicalForm,
-        ...(candidate.reading?{reading:candidate.reading}:{}),meaning:sense.glosses.join(" / ")
+        ...(candidate.reading?{reading:candidate.reading}:{}),meaning:sense.glosses.join(" / "),resolution:candidate.resolution
       });
       offset+=candidate.surface.length;continue;
     }
@@ -122,6 +123,36 @@ export async function mineKnownLexeme(documentId:string,lexemeId:string):Promise
   await saveStudyEvent(eventBase({activity:"mining",primaryTarget:{kind:"lexeme",id:lexemeId},contextId:documentId,metadata:{surface:"authentic-reader",documentId}}));
 }
 
+export function splitJapaneseSentences(text:string):string[]{
+  return text.split(/(?<=[。！？!?])/u).map((item)=>item.trim()).filter((item)=>item.length>=3);
+}
+
+export async function minePrivateSentence(input:{documentId:string;text:string;translation:string}):Promise<PrivateSentenceRecord>{
+  const text=input.text.trim();const translation=input.translation.trim();
+  if(!text||!translation)throw new Error("PRIVATE_SENTENCE_REQUIRES_TEXT_AND_TRANSLATION");
+  const normalized=normalizeJapaneseSearch(text);
+  const existing=(await listPrivateSentences(AUTHENTIC_ACCOUNT_ID)).find((item)=>normalizeJapaneseSearch(item.text)===normalized);
+  const now=new Date().toISOString();
+  const record:PrivateSentenceRecord=existing?{
+    ...existing,translation,updatedAt:now,sourceDocumentIds:[...new Set([...existing.sourceDocumentIds,input.documentId])]
+  }:{
+    id:"private-sentence-"+stableHash(normalized),accountId:AUTHENTIC_ACCOUNT_ID,text,translation,
+    sourceDocumentIds:[input.documentId],createdAt:now,updatedAt:now
+  };
+  await savePrivateSentence(AUTHENTIC_ACCOUNT_ID,record);
+  await saveStudyEvent(eventBase({activity:"mining",primaryTarget:{kind:"sentence",id:record.id},contextId:input.documentId,metadata:{surface:"authentic-reader",privateSentence:true,documentId:input.documentId}}));
+  return record;
+}
+
+export async function recordShadowingResult(sentenceId:string,rating:1|2|3|4):Promise<void>{
+  const result=rating>=3?"correct":rating===2?"partial":"incorrect";
+  await saveStudyEvent(eventBase({
+    activity:"speaking",primaryTarget:{kind:"sentence",id:sentenceId},skillDimension:"pronunciation",result,
+    contextId:"shadowing-"+sentenceId,promptFamily:"listen-record-self-rate",responseMode:"recorded-self-review",
+    confidence:rating/4,metadata:{surface:"shadowing-lab",selfRating:rating,acousticScore:false}
+  }));
+}
+
 export async function recordPrivateReading(documentId:string):Promise<void>{
   await saveStudyEvent(eventBase({activity:"reading",primaryTarget:{kind:"document",id:documentId},contextId:documentId,metadata:{surface:"authentic-reader",exposure:true}}));
 }
@@ -172,29 +203,30 @@ function getSurfaceCandidates():SurfaceCandidate[]{
   const result:SurfaceCandidate[]=[];
   for(const lexeme of coreContent.lexemes){
     const baseReading=lexeme.readings[0]?.text;
-    const map=new Map<string,string|undefined>();
-    map.set(lexeme.canonicalForm,baseReading);
-    for(const form of lexeme.forms)map.set(form.text,baseReading);
+    const map=new Map<string,{reading?:string;resolution:"canonical"|"generated"|"deinflected"}>();
+    map.set(lexeme.canonicalForm,{...(baseReading?{reading:baseReading}:{}),resolution:"canonical"});
+    for(const form of lexeme.forms)map.set(form.text,{...(baseReading?{reading:baseReading}:{}),resolution:"canonical"});
     for(const form of FORMS){
       const surface=conjugateLexeme(lexeme,form);if(!surface)continue;
       let reading=baseReading;
       if(baseReading&&lexeme.inflectionClass)reading=conjugateLexeme({...lexeme,canonicalForm:baseReading},form)??baseReading;
-      map.set(surface,reading);
+      map.set(surface,{...(reading?{reading}:{}),resolution:"generated"});
     }
     addA2SurfaceForms(lexeme,map,baseReading);
-    for(const [surface,reading] of map){
+    addB1SurfaceForms(lexeme,map,baseReading);
+    for(const [surface,info] of map){
       if(surface.length<2&&/^[ぁ-ゖァ-ヶー]$/u.test(surface))continue;
-      result.push({surface,lexeme,...(reading?{reading}:{})});
+      result.push({surface,lexeme,...(info.reading?{reading:info.reading}:{}),resolution:info.resolution});
     }
   }
   result.sort((a,b)=>b.surface.length-a.surface.length||a.surface.localeCompare(b.surface,"ja"));
   surfaceCandidates=result;return result;
 }
 
-function addA2SurfaceForms(lexeme:Lexeme,map:Map<string,string|undefined>,reading?:string):void{
+function addA2SurfaceForms(lexeme:Lexeme,map:Map<string,{reading?:string;resolution:"canonical"|"generated"|"deinflected"}>,reading?:string):void{
   const base=lexeme.canonicalForm;
   if(lexeme.inflectionClass==="ichidan"&&base.endsWith("る")){
-    const stem=base.slice(0,-1);for(const ending of ["ています","ている","たい","たくない","やすい","にくい","すぎる","なければ","なくても"])map.set(stem+ending,reading);
+    const stem=base.slice(0,-1);for(const ending of ["ています","ている","たい","たくない","やすい","にくい","すぎる","なければ","なくても"])map.set(stem+ending,{...(reading?{reading}:{}),resolution:"generated"});
   }
   if(lexeme.inflectionClass==="godan"){
     const last=base.slice(-1);const stem=base.slice(0,-1);
@@ -207,7 +239,35 @@ function addA2SurfaceForms(lexeme:Lexeme,map:Map<string,string|undefined>,readin
   if(lexeme.inflectionClass==="i-adjective"){
     const stem=base.endsWith("い")?base.slice(0,-1):base;map.set(stem+"すぎる",reading);map.set(stem+"くなる",reading);
   }
-  if(lexeme.inflectionClass==="na-adjective")map.set(base+"になる",reading);
+  if(lexeme.inflectionClass==="na-adjective")map.set(base+"になる",{...(reading?{reading}:{}),resolution:"generated"});
+}
+
+function addB1SurfaceForms(lexeme:Lexeme,map:Map<string,{reading?:string;resolution:"canonical"|"generated"|"deinflected"}>,reading?:string):void{
+  const base=lexeme.canonicalForm;const add=(surface:string)=>map.set(surface,{...(reading?{reading}:{}),resolution:"deinflected"});
+  if(lexeme.inflectionClass==="ichidan"&&base.endsWith("る")){
+    const stem=base.slice(0,-1);
+    for(const ending of ["られる","られます","させる","させます","よう","れば","たら","ても","そう","てしまう","ておく","てみる"])add(stem+ending);
+  }else if(lexeme.inflectionClass==="godan"){
+    const last=base.slice(-1),stem=base.slice(0,-1);
+    const a:Record<string,string>={"う":"わ","く":"か","ぐ":"が","す":"さ","つ":"た","ぬ":"な","ぶ":"ば","む":"ま","る":"ら"};
+    const e:Record<string,string>={"う":"え","く":"け","ぐ":"げ","す":"せ","つ":"て","ぬ":"ね","ぶ":"べ","む":"め","る":"れ"};
+    const o:Record<string,string>={"う":"お","く":"こ","ぐ":"ご","す":"そ","つ":"と","ぬ":"の","ぶ":"ぼ","む":"も","る":"ろ"};
+    if(a[last]){add(stem+a[last]+"れる");add(stem+a[last]+"れます");add(stem+a[last]+"せる");add(stem+a[last]+"せます");}
+    if(e[last]){add(stem+e[last]+"る");add(stem+e[last]+"ます");add(stem+e[last]+"ば");}
+    if(o[last])add(stem+o[last]+"う");
+  }else if(lexeme.inflectionClass==="irregular-suru"&&base.endsWith("する")){
+    const stem=base.slice(0,-2);for(const ending of ["できる","される","させる","しよう","すれば","したら","しても","してしまう","しておく","してみる"])add(stem+ending);
+  }else if(lexeme.inflectionClass==="irregular-kuru"&&base.endsWith("来る")){
+    for(const surface of ["来られる","来させる","来よう","来れば","来たら","来ても"])add(surface);
+  }
+}
+
+export function lemmatizeJapaneseSurface(surface:string):{lexemeId:string;baseForm:string;resolution:"canonical"|"generated"|"deinflected"}|null{
+  const normalized=normalizeJapaneseSearch(surface);
+  for(const candidate of getSurfaceCandidates()){
+    if(normalizeJapaneseSearch(candidate.surface)===normalized)return {lexemeId:candidate.lexeme.id,baseForm:candidate.lexeme.canonicalForm,resolution:candidate.resolution};
+  }
+  return null;
 }
 
 function findNextKnownOffset(text:string,start:number,candidates:SurfaceCandidate[]):number{
@@ -225,6 +285,11 @@ function segmentUnknownChunk(chunk:string):AuthenticToken[]{
     const surface=item.segment;if(!surface)continue;
     if(PUNCT.test(surface)){result.push({surface,kind:"punctuation"});continue;}
     if(FUNCTION_WORDS.has(surface)||item.isWordLike===false){result.push({surface,kind:"function"});continue;}
+    const lemma=lemmatizeJapaneseSurface(surface);
+    if(lemma){
+      const lexeme=coreContent.lexemes.find((entry)=>entry.id===lemma.lexemeId);
+      if(lexeme){const sense=senseForLexeme(lexeme);result.push({surface,kind:"known",lexemeId:lexeme.id,baseForm:lexeme.canonicalForm,reading:lexeme.readings[0]?.text,meaning:sense.glosses.join(" / "),resolution:lemma.resolution});continue;}
+    }
     result.push({surface,kind:"unknown"});
   }
   return result;
@@ -235,5 +300,5 @@ function fallbackSegments(chunk:string):AuthenticToken[]{
 function stableHash(value:string):string{let h=2166136261;for(const ch of value){h^=ch.codePointAt(0)??0;h=Math.imul(h,16777619);}return (h>>>0).toString(36);}
 function uuid(prefix:string):string{return typeof crypto!=="undefined"&&"randomUUID" in crypto?`${prefix}-${crypto.randomUUID()}`:`${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`;}
 function eventBase(input:Partial<StudyEvent>&Pick<StudyEvent,"activity">):StudyEvent{
-  return {id:uuid("p4"),userId:AUTHENTIC_ACCOUNT_ID,deviceId:DEVICE_ID,occurredAt:new Date().toISOString(),contentVersion:coreContent.version,learnerModelVersion:"p1.3",...input};
+  return {id:uuid("p5"),userId:AUTHENTIC_ACCOUNT_ID,deviceId:DEVICE_ID,occurredAt:new Date().toISOString(),contentVersion:coreContent.version,learnerModelVersion:"p1.3",...input};
 }
