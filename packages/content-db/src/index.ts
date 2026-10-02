@@ -268,7 +268,7 @@ export class ContentDatabase {
   }
 
   async getReadingText(id:string):Promise<ReadingTextDetail|null>{
-    const row=await this.firstRow("SELECT id,title,description,level,kind,sentence_ids_json,target_lexeme_ids_json,grammar_ids_json,tags_json,estimated_minutes,audio_mode,audio_asset_id,questions_json,source_ids_json FROM reading_texts WHERE id=?",[id]);
+    const row=await this.firstRow("SELECT id,title,description,level,kind,sentence_ids_json,target_lexeme_ids_json,grammar_ids_json,tags_json,estimated_minutes,audio_mode,audio_asset_id,listening_segments_json,questions_json,source_ids_json FROM reading_texts WHERE id=?",[id]);
     if(!row)return null;
     const text=readingTextFromRow(row);
     const sentences:Sentence[]=[];
@@ -277,14 +277,14 @@ export class ContentDatabase {
   }
 
   async listReadingTexts():Promise<ReadingTextDetail[]>{
-    const rows=await this.allRows("SELECT id,title,description,level,kind,sentence_ids_json,target_lexeme_ids_json,grammar_ids_json,tags_json,estimated_minutes,audio_mode,audio_asset_id,questions_json,source_ids_json FROM reading_texts ORDER BY estimated_minutes ASC,title ASC");
+    const rows=await this.allRows("SELECT id,title,description,level,kind,sentence_ids_json,target_lexeme_ids_json,grammar_ids_json,tags_json,estimated_minutes,audio_mode,audio_asset_id,listening_segments_json,questions_json,source_ids_json FROM reading_texts ORDER BY estimated_minutes ASC,title ASC");
     const result:ReadingTextDetail[]=[];
     for(const row of rows){const text=readingTextFromRow(row);const sentences:Sentence[]=[];for(const sentenceId of text.sentenceIds){const sentence=await this.getSentence(sentenceId);if(sentence)sentences.push(sentence);}result.push({text,sentences});}
     return result;
   }
 
   async getProductiveTask(id:string):Promise<ProductiveTask|null>{
-    const row=await this.firstRow("SELECT id,title,level,mode,prompt,situation,target_grammar_ids_json,target_lexeme_ids_json,model_response,required_terms_json,minimum_characters,rubric_json,tags_json,milestone_area,source_ids_json FROM production_tasks WHERE id=?",[id]);
+    const row=await this.firstRow("SELECT id,title,level,mode,prompt,situation,target_grammar_ids_json,target_lexeme_ids_json,target_chunk_ids_json,model_response,required_terms_json,minimum_characters,rubric_json,tags_json,milestone_area,source_ids_json FROM production_tasks WHERE id=?",[id]);
     return row?productiveTaskFromRow(row):null;
   }
 
