@@ -5,7 +5,7 @@ test("Immerse exposes graded A1→B2 reading support without creating a separate
   await page.getByRole("button",{name:"Immerse"}).click();
 
   await expect(page.getByRole("heading",{name:"A1 → B2 immersion"})).toBeVisible();
-  await expect(page.locator(".immersion-card")).toHaveCount(30);
+  await expect(page.locator(".immersion-card")).toHaveCount(42);
   await expect(page.getByRole("heading",{name:/Focus on (reading|listening)/})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Listen → record → compare"})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Your Japanese"})).toBeVisible();
