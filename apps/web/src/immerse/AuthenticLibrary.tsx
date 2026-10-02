@@ -3,7 +3,7 @@ import { getDefaultAudioProvider } from "@thiepn/audio";
 import { createHttpJapaneseMorphologyProvider,type JapaneseMorphologyProvider } from "@thiepn/japanese-nlp";
 import type { AudioAssetRecord } from "@thiepn/content-schema";
 import {
-  analyzeAuthenticText,analyzeAuthenticTextWithProvider,createPrivateDocument,importTatoebaSentence,listPrivateDocumentViews,mineKnownLexeme,minePrivateSentence,
+  analyzeAuthenticText,analyzeAuthenticTextWithProvider,createPrivateDocument,findLexicalChunksInText,importTatoebaSentence,listPrivateDocumentViews,mineKnownLexeme,minePrivateSentence,
   recordPrivateComprehension,recordPrivateListening,recordPrivateReading,saveUnknownAsPrivateVocabulary,splitJapaneseSentences,
   type AuthenticToken,type PrivateDocumentView
 } from "./authentic";
@@ -111,6 +111,7 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
   const [analysis,setAnalysis]=useState(localAnalysis);
   const [analysisStatus,setAnalysisStatus]=useState<"local"|"loading"|"provider"|"fallback">(morphologyProvider?"loading":"local");
   const sourceSentences=useMemo(()=>splitJapaneseSentences(view.document.text),[view.document.text]);
+  const detectedChunks=useMemo(()=>findLexicalChunksInText(view.document.text),[view.document.text]);
   const audioProvider=useRef(getDefaultAudioProvider());
 
   useEffect(()=>{
@@ -178,6 +179,10 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
         {view.document.nativeAudio.segments.map((segment)=><div className="native-segment" key={segment.id}><span lang="ja">{segment.text}</span><div><button className="quiet-button" disabled={audioState==="playing"} type="button" onClick={()=>void playNativeSegment(segment,.95,1)}>Replay</button><button className="quiet-button" disabled={audioState==="playing"} type="button" onClick={()=>void playNativeSegment(segment,.82,2)}>Slow ×2</button></div></div>)}
       </div>:null}
     </div>
+    {detectedChunks.length?<section className="authentic-collocations">
+      <div className="section-heading"><div><span className="course-kicker">COLLOCATIONS IN CONTEXT</span><h2>Reusable phrases found here</h2></div><span>{detectedChunks.length}</span></div>
+      <div className="chunk-chip-list">{detectedChunks.slice(0,16).map((chunk)=><span className="chunk-chip" key={chunk.id}><strong lang="ja">{chunk.expression}</strong><small>{chunk.meaning} · {chunk.register}</small></span>)}</div>
+    </section>:null}
     <article className="authentic-text" lang="ja">{analysis.tokens.map((token,index)=>{
       if(token.kind==="known"||token.kind==="unknown")return <button className={"auth-token "+token.kind} type="button" key={index} onClick={()=>{setSelected({token});setMeaning("");setReading("");}}>{token.surface}</button>;
       return <span className={"auth-token "+token.kind} key={index}>{token.surface}</span>;
@@ -191,7 +196,9 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
     </section>:null}
     {selected?<aside className="reader-lookup authentic-lookup"><button className="reader-lookup-close" type="button" aria-label="Close word lookup" onClick={()=>setSelected(null)}>×</button>
       <span lang="ja">{selected.token.surface}</span>
-      {selected.token.kind==="known"?<><small lang="ja">{selected.token.reading}</small><strong>{selected.token.meaning}</strong><button className="unit-action" type="button" onClick={()=>void mine()}>Mine for review</button></>
+      {selected.token.kind==="known"?<><small lang="ja">{selected.token.reading}</small><strong>{selected.token.meaning}</strong>
+        {selected.token.resolution?<small>{selected.token.resolution==="provider"?"Dictionary provider":"Local resolver"} · {Math.round((selected.token.resolutionConfidence??0)*100)}% resolution confidence{selected.token.senseResolution==="ambiguous"?" · sense remains ambiguous":""}</small>:null}
+        <button className="unit-action" type="button" onClick={()=>void mine()}>Mine for review</button></>
       :<><small>Unknown to the current canonical lexicon. Add a private definition to review it without changing public Japanese content.</small><input value={reading} onChange={(event)=>setReading(event.target.value)} placeholder="Reading (optional)"/><input value={meaning} onChange={(event)=>setMeaning(event.target.value)} placeholder="Meaning"/><button className="unit-action" disabled={!meaning.trim()} type="button" onClick={()=>void mine()}>Save + mine</button></>}
     </aside>:null}
     <div className="reader-finish"><button className="primary" type="button" onClick={()=>void recordPrivateComprehension(view.document.id,"correct")}>Understood without major help</button><button className="unit-action" type="button" onClick={()=>void recordPrivateComprehension(view.document.id,"incorrect")}>Needed substantial support</button></div>
