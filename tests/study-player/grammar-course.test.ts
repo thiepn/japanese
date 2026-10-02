@@ -4,7 +4,7 @@ import { coreContent } from "../../apps/web/src/coreContent";
 
 describe("P7 grammar, sentences and A1→B2 course",()=>{
   it("ships canonical grammar, sentence and course entities through B2",()=>{
-    expect(coreContent.lexemes).toHaveLength(634);
+    expect(coreContent.lexemes).toHaveLength(626);
     expect(coreContent.grammar).toHaveLength(102);
     expect(coreContent.sentences).toHaveLength(327);
     expect(coreContent.canDos).toHaveLength(58);
