@@ -8,6 +8,7 @@ import {
 } from "./authentic";
 import { deletePrivateDocument } from "@thiepn/local-db";
 import { AUTHENTIC_ACCOUNT_ID } from "./authentic";
+import { importJapaneseSourcePack,parseJapaneseSourcePack,validateJapaneseSourcePack } from "./sourcePacks";
 
 interface SelectedToken { token:AuthenticToken; }
 
@@ -52,6 +53,18 @@ export function AuthenticLibrary(){
     }catch(error){setMessage(error instanceof Error?error.message:"Tatoeba import failed.");}finally{setBusy(false);}
   }
 
+  async function importSourcePack(file:File){
+    setBusy(true);setMessage("");
+    try{
+      const pack=parseJapaneseSourcePack(await file.text());
+      const validation=validateJapaneseSourcePack(pack);
+      if(!validation.valid)throw new Error(validation.errors.join(" "));
+      const imported=await importJapaneseSourcePack(pack);
+      await refresh();
+      setMessage(`Imported ${imported.length} source-pack item${imported.length===1?"":"s"}. ${validation.warnings.length?validation.warnings.length+" item(s) have no reusable native recording.":""}`);
+    }catch(error){setMessage(error instanceof Error?error.message:"Source-pack import failed.");}finally{setBusy(false);}
+  }
+
   if(active)return <AuthenticReader view={active} onBack={()=>{setActive(null);void refresh();}} onDeleted={()=>{setActive(null);void refresh();}}/>;
 
   return <section className="authentic-section">
@@ -61,7 +74,9 @@ export function AuthenticLibrary(){
       <label>Title<input value={title} onChange={(event)=>setTitle(event.target.value)} placeholder="My article or dialogue"/></label>
       <label>Japanese text<textarea value={text} onChange={(event)=>setText(event.target.value)} rows={7} placeholder="Paste Japanese here…"/></label>
       <div className="authentic-import-actions"><button className="primary" disabled={busy||!text.trim()} type="button" onClick={()=>void importText()}>{busy?"Working…":"Analyze + import"}</button>
-        <label className="file-button">TXT / SRT / VTT<input type="file" accept=".txt,.md,.srt,.vtt,text/plain,text/vtt" disabled={busy} onChange={(event)=>{const file=event.currentTarget.files?.[0];if(file)void importFile(file);event.currentTarget.value="";}}/></label></div>
+        <label className="file-button">TXT / SRT / VTT<input type="file" accept=".txt,.md,.srt,.vtt,text/plain,text/vtt" disabled={busy} onChange={(event)=>{const file=event.currentTarget.files?.[0];if(file)void importFile(file);event.currentTarget.value="";}}/></label>
+        <label className="file-button">Licensed source pack<input type="file" accept=".json,application/json" disabled={busy} onChange={(event)=>{const file=event.currentTarget.files?.[0];if(file)void importSourcePack(file);event.currentTarget.value="";}}/></label></div>
+      <p className="source-pack-note">Source-pack JSON must declare a redistributable license and attribution. Native audio is admitted only with its own reusable license, credit and explicit native-speaker declaration.</p>
       <div className="tatoeba-import"><div><strong>Licensed native-audio route</strong><span>Import a Japanese Tatoeba sentence by ID. Reusable audio is attached only when its recording declares an admitted license.</span></div><input aria-label="Tatoeba sentence ID" value={tatoebaId} onChange={(event)=>setTatoebaId(event.target.value)} placeholder="e.g. 432825"/><button className="unit-action" disabled={busy||!tatoebaId.trim()} type="button" onClick={()=>void importTatoeba()}>Import Tatoeba</button></div>
     </div>:null}
     {message?<p className="import-message" role="status">{message}</p>:null}
@@ -149,7 +164,7 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
     </aside>:null}
     <div className="reader-finish"><button className="primary" type="button" onClick={()=>void recordPrivateComprehension(view.document.id,"correct")}>Understood without major help</button><button className="unit-action" type="button" onClick={()=>void recordPrivateComprehension(view.document.id,"incorrect")}>Needed substantial support</button></div>
     <div className="authentic-danger"><button className="quiet-button" type="button" onClick={()=>void remove()}>Delete private document</button></div>
-    <p className="course-note">Analysis resolves canonical forms, generated core inflections and additional B1 potential/passive/causative/conditional forms before using the browser Japanese word segmenter. It provides canonical lemmatization and difficulty guidance without claiming perfect sense disambiguation or full Japanese NLP.</p>
+    <p className="course-note">Analysis resolves canonical forms, generated inflections and additional B1/B2 deinflection patterns before using the browser Japanese word segmenter. Canonical sense identities and ambiguity are exposed explicitly. A dictionary-grade morphology provider can replace the bounded local resolver later; the current browser path does not claim dictionary-grade parsing.</p>
   </section>;
 }
 
