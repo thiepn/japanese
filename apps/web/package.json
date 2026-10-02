@@ -21,7 +21,8 @@
     "@thiepn/study-player": "workspace:*",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "@thiepn/audio": "workspace:*"
+    "@thiepn/audio": "workspace:*",
+    "@thiepn/coach": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "19.3.0",
