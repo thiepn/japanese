@@ -8,13 +8,14 @@ import { Immersion } from "./immerse/Immersion";
 import { getImmersionProgress,type ImmersionProgress } from "./immerse/reader";
 import { StudyPlayer,type StudyAnswer } from "./study/StudyPlayer";
 import { AiCoach } from "./ai/AiCoach";
+import { AdaptiveRemediation } from "./study/AdaptiveRemediation";
 import {
   buildA1MilestoneSession,buildB1MilestoneSession,buildB2MilestoneSession,buildCourseUnitSession,buildProductivePractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getSentenceMasterySummary,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,
   type A1MilestoneProgress,type B1MilestoneProgress,type B2MilestoneProgress,type ConjugationMasterySummary,type CourseUnitProgress,type GrammarMasterySummary,type KanaMasterySummary,type SentenceMasterySummary,type StudySummary,type VocabularyMasterySummary
 } from "./study/runtime";
 
 type Surface="Today"|"Learn"|"Immerse"|"Library"|"Progress";
-const EMPTY_SUMMARY:StudySummary={due:0,newKana:5,newVocabulary:2,listening:0,application:0,course:0,learnedKana:0,totalKana:217,learnedVocabulary:0,totalVocabulary:336,memoryTraces:0};
+const EMPTY_SUMMARY:StudySummary={due:0,newKana:5,newVocabulary:2,listening:0,application:0,course:0,learnedKana:0,totalKana:217,learnedVocabulary:0,totalVocabulary:416,memoryTraces:0};
 const EMPTY_KANA:KanaMasterySummary={overall:0,hiragana:0,katakana:0,recognition:0,readingRecall:0,formSelection:0,listening:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
 const EMPTY_VOCAB:VocabularyMasterySummary={overall:0,meaning:0,reading:0,listening:0,activeUse:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
 const EMPTY_CONJUGATION:ConjugationMasterySummary={overall:0,politeNegative:0,politePast:0,politePastNegative:0,teForm:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
@@ -208,6 +209,7 @@ function Learn({summary,kana,vocab,conjugation,grammar,sentence,course,milestone
       <button className="primary" disabled={status==="loading"} onClick={onStartB1Milestone} type="button">{b1Milestone.complete?"Retake B1 milestone":"Start B1 milestone"}</button>
     </section>
 
+    <AdaptiveRemediation onStartUnit={onStartUnit} onStartProduction={onProductive}/>
     <AiCoach/>
     <section className="mastery-section milestone-card">
       <div className="section-heading"><div><span className="course-kicker">B2 MILESTONE</span><h2>Independent receptive + productive activity areas</h2></div><strong>{b2Milestone.answered} / {b2Milestone.total}</strong></div>
