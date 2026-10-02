@@ -44,7 +44,7 @@ Live AI coaching requires a server-side provider behind `VITE_JAPANESE_COACH_END
 
 ## P7 — B2 Breadth, Native Media & Advanced Lexical/Collocational Fluency
 
-P7 is implemented. The unified app now contains 634 canonical lexemes, 120 first-class B2 collocations, 327 linked sentences, 58 structured units, 42 graded texts and 32 productive tasks. B2 input spans workplace, media, research, public/community, environment, technology, negotiation and everyday decision domains.
+P7 is implemented. The unified app now contains 626 canonical lexemes, 120 first-class B2 collocations, 327 linked sentences, 58 structured units, 42 graded texts and 32 productive tasks. B2 input spans workplace, media, research, public/community, environment, technology, negotiation and everyday decision domains.
 
 Lexical chunks have their own recognition/active-use StudyEvents and FSRS traces. Connected listening supports sentence replay and source-timed native-audio segments when licensed media provides timing. Authentic input can use a configured dictionary-grade morphology endpoint while retaining visible confidence, ambiguity and deterministic fallback. AI revision history reconstructs recurring advisory correction patterns without changing learner mastery.
 
