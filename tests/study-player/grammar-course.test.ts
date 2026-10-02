@@ -2,14 +2,14 @@ import { describe,expect,it } from "vitest";
 import { a1Course, allGrammarCoursePrompts, courseUnitPrompts, courseUnitSession, grammarApplicationPrompts, grammarMeaningPrompts, isGrammarCoursePromptReady, sentenceComprehensionPrompts, sentenceProductionPrompts, traceIdFor } from "../../apps/web/src/study/grammarCourse";
 import { coreContent } from "../../apps/web/src/coreContent";
 
-describe("P2.5 grammar, sentences and A1 course",()=>{
+describe("P4 grammar, sentences and A1→A2 course",()=>{
   it("ships canonical grammar, sentence and course entities",()=>{
-    expect(coreContent.lexemes).toHaveLength(145);
-    expect(coreContent.grammar).toHaveLength(37);
-    expect(coreContent.sentences).toHaveLength(89);
-    expect(coreContent.canDos).toHaveLength(20);
+    expect(coreContent.lexemes).toHaveLength(274);
+    expect(coreContent.grammar).toHaveLength(66);
+    expect(coreContent.sentences).toHaveLength(161);
+    expect(coreContent.canDos).toHaveLength(32);
     expect(coreContent.courseUnits).toHaveLength(20);
-    expect(a1Course.map((item)=>item.unit.order)).toEqual(Array.from({length:20},(_,index)=>index+1));
+    expect(a1Course.map((item)=>item.unit.order)).toEqual(Array.from({length:32},(_,index)=>index+1));
   });
   it("keeps sentence knowledge linked to canonical grammar and lexemes",()=>{
     const grammarIds=new Set(coreContent.grammar.map((item)=>item.id));
