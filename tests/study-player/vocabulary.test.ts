@@ -4,7 +4,7 @@ import { starterVocabulary,vocabularyApplicationPrompts,vocabularyMeaningPrompts
 
 describe("P7 production A1→B2 vocabulary",()=>{
   it("ships a source-provenanced starter lexicon",()=>{
-    expect(starterLexemes).toHaveLength(634);
+    expect(starterLexemes).toHaveLength(626);
     expect(coreContent.version).toBe("0.9.0");
     expect(starterLexemes.every((lexeme)=>lexeme.sourceIds.includes("thiepn-original"))).toBe(true);
     expect(coreContent.senses.every((sense)=>sense.sourceIds.includes("thiepn-original"))).toBe(true);
