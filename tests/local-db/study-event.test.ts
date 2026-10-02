@@ -1,6 +1,6 @@
 import "fake-indexeddb/auto";
 import { describe, expect, it } from "vitest";
-import { acknowledgeOutbox, databaseNameForAccount, deletePrivateDocument, deletePrivateVocabulary, getMemoryTrace, getSyncCursor, listOutbox, listPrivateDocuments, listPrivateVocabulary, listStudyEvents, saveMemoryTrace, savePrivateDocument, savePrivateVocabulary, saveStudyEvent, setSyncCursor } from "../../packages/local-db/src/index";
+import { acknowledgeOutbox, databaseNameForAccount, deletePrivateDocument, deletePrivateSentence, deletePrivateVocabulary, getMemoryTrace, getSyncCursor, listOutbox, listPrivateDocuments, listPrivateSentences, listPrivateVocabulary, listStudyEvents, saveMemoryTrace, savePrivateDocument, savePrivateSentence, savePrivateVocabulary, saveStudyEvent, setSyncCursor } from "../../packages/local-db/src/index";
 import { createFsrsScheduler } from "../../packages/scheduler/src/index";
 import type { StudyEvent } from "../../packages/domain/src/index";
 
@@ -29,12 +29,17 @@ describe("account-scoped local persistence", () => {
   it("persists private authentic documents and mined vocabulary account-locally",async()=>{
     await savePrivateDocument("user-a",{id:"doc-1",accountId:"user-a",title:"Private text",sourceKind:"paste",text:"日本語を勉強します。",importedAt:"2026-10-02T00:00:00Z",updatedAt:"2026-10-02T00:00:00Z"});
     await savePrivateVocabulary("user-a",{id:"private-lex-1",accountId:"user-a",canonicalForm:"例",reading:"れい",meaning:"example",sourceDocumentIds:["doc-1"],createdAt:"2026-10-02T00:00:00Z",updatedAt:"2026-10-02T00:00:00Z"});
+    await savePrivateSentence("user-a",{id:"private-sentence-1",accountId:"user-a",text:"例えば、これです。",translation:"For example, this is it.",sourceDocumentIds:["doc-1"],createdAt:"2026-10-02T00:00:00Z",updatedAt:"2026-10-02T00:00:00Z"});
     expect((await listPrivateDocuments("user-a")).map((item)=>item.id)).toContain("doc-1");
     expect(await listPrivateDocuments("user-b")).toHaveLength(0);
     expect((await listPrivateVocabulary("user-a")).map((item)=>item.id)).toContain("private-lex-1");
+    expect((await listPrivateSentences("user-a")).map((item)=>item.id)).toContain("private-sentence-1");
+    expect(await listPrivateSentences("user-b")).toHaveLength(0);
+    await deletePrivateSentence("user-a","private-sentence-1");
     await deletePrivateVocabulary("user-a","private-lex-1");
     await deletePrivateDocument("user-a","doc-1");
     expect(await listPrivateVocabulary("user-a")).toHaveLength(0);
+    expect(await listPrivateSentences("user-a")).toHaveLength(0);
     expect(await listPrivateDocuments("user-a")).toHaveLength(0);
   });
   it("persists FSRS memory traces independently from event history", async () => {
