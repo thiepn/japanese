@@ -207,6 +207,112 @@ export function getB1MilestoneProgress(events:readonly StudyEvent[]):MilestoneAs
   return {complete:answered===prompts.length,answered,total:prompts.length,scores};
 }
 
+export function buildB2MilestoneAssessment():StudyStep[]{
+  const prompts=b2MilestoneAssessmentPrompts();
+  const intro:StudyLesson={
+    kind:"lesson",
+    id:"lesson-assessment-b2-milestone",
+    title:"B2 milestone assessment",
+    body:"This milestone keeps receptive and productive activity areas separate. Connected listening uses the device Japanese speech-synthesis voice unless a source-provenanced recording is attached later. Speaking uses recognition transcripts and structural checks; AI coach judgments are never converted into milestone scores.",
+    contextId:"assessment-b2-milestone",
+    facts:[
+      {label:"Reading",value:"3 B2 discourse tasks"},
+      {label:"Listening",value:"3 connected synthesized listening tasks"},
+      {label:"Spoken interaction",value:"3 microphone responses"},
+      {label:"Spoken production",value:"3 microphone responses"},
+      {label:"Writing",value:"3 connected writing tasks"}
+    ],
+    sourceLabel:"THIEPN Japanese B2 milestone"
+  };
+  return [intro,...prompts];
+}
+
+export function b2MilestoneAssessmentPrompts():StudyPrompt[]{
+  const b2Reading=sentenceComprehensionPrompts.filter((prompt)=>{
+    const sentence=coreContent.sentences.find((item)=>item.id===prompt.primaryTarget.id);
+    return sentence?.level==="B2";
+  });
+  const b2Tasks=new Set(coreContent.productiveTasks.filter((task)=>task.level==="B2").map((task)=>task.id));
+  const interaction=spreadPick(productiveSpeakingPrompts.filter((prompt)=>b2Tasks.has(prompt.primaryTarget.id)&&prompt.languageActivity==="spoken_interaction"),3);
+  const production=spreadPick(productiveSpeakingPrompts.filter((prompt)=>b2Tasks.has(prompt.primaryTarget.id)&&prompt.languageActivity!=="spoken_interaction"),3);
+  const writing=spreadPick(productiveWritingPrompts.filter((prompt)=>b2Tasks.has(prompt.primaryTarget.id)),3);
+  return [
+    ...spreadPick(b2Reading,3).map((prompt,index)=>b2MilestoneClone(prompt,"reading",index)),
+    ...buildB2ListeningPrompts(),
+    ...interaction.map((prompt,index)=>b2MilestoneClone(prompt,"spoken_interaction",index)),
+    ...production.map((prompt,index)=>b2MilestoneClone(prompt,"spoken_production",index)),
+    ...writing.map((prompt,index)=>b2MilestoneClone(prompt,"writing",index))
+  ];
+}
+
+export function getB2MilestoneProgress(events:readonly StudyEvent[]):MilestoneAssessmentProgress{
+  const prompts=b2MilestoneAssessmentPrompts();
+  const latest=latestAssessmentEvents(events,"assessment-b2-milestone");
+  const activities:LanguageActivity[]=["reading","listening","spoken_interaction","spoken_production","writing"];
+  const scores=Object.fromEntries(activities.map((activity)=>{
+    const activityPrompts=prompts.filter((prompt)=>prompt.languageActivity===activity);
+    const answered=activityPrompts.filter((prompt)=>latest.has(prompt.id)).length;
+    const correct=activityPrompts.filter((prompt)=>latest.get(prompt.id)?.result==="correct").length;
+    const item:MilestoneActivityScore={activity,correct,answered,total:activityPrompts.length,score:answered?correct/answered:0};
+    return [activity,item];
+  })) as Record<LanguageActivity,MilestoneActivityScore>;
+  const answered=prompts.filter((prompt)=>latest.has(prompt.id)).length;
+  return {complete:answered===prompts.length,answered,total:prompts.length,scores};
+}
+
+function buildB2ListeningPrompts():StudyPrompt[]{
+  const sentences=spreadPick(coreContent.sentences.filter((sentence)=>sentence.level==="B2"),3);
+  const allTranslations=coreContent.sentences.filter((sentence)=>sentence.level==="B2").map((sentence)=>sentence.translation);
+  return sentences.map((sentence,index)=>{
+    const distractors=allTranslations.filter((value)=>value!==sentence.translation).filter((_,i)=>i%Math.max(1,Math.floor(allTranslations.length/6))===index%Math.max(1,Math.floor(allTranslations.length/6))).slice(0,3);
+    while(distractors.length<3){
+      const candidate=allTranslations[(index+distractors.length+1)%allTranslations.length];
+      if(candidate&&candidate!==sentence.translation&&!distractors.includes(candidate))distractors.push(candidate);
+      else break;
+    }
+    return {
+      id:"assessment-b2-listening-"+String(index+1).padStart(2,"0"),
+      primaryTarget:{kind:"sentence",id:sentence.id},
+      skill:"listening",
+      cueFamily:"b2-connected-listening",
+      promptType:"choice",
+      instruction:"Listen to the connected Japanese sentence and choose the closest meaning.",
+      prompt:"Play the synthesized Japanese listening cue.",
+      acceptedAnswers:[sentence.translation],
+      displayAnswer:sentence.translation,
+      choices:shuffleStable([sentence.translation,...distractors].slice(0,4),index),
+      explanation:"Connected B2 listening check using the device Japanese voice. This is synthesized support, not source-provenanced native audio.",
+      contextId:"assessment-b2-milestone",
+      answerNormalization:"default",
+      sourceId:sentence.sourceIds[0]??"thiepn-original",
+      contentVersion:coreContent.version,
+      speechSynthesisText:sentence.text,
+      speechSynthesisLanguage:"ja-JP",
+      activity:"assessment",
+      languageActivity:"listening",
+      eventMetadata:{assessmentScope:"milestone",milestoneId:"b2",languageActivity:"listening",audioKind:"device-speech-synthesis"}
+    };
+  });
+}
+
+function b2MilestoneClone(prompt:StudyPrompt,activity:LanguageActivity,index:number):StudyPrompt{
+  return assessmentClone(prompt,{
+    id:"assessment-b2-"+activity+"-"+String(index+1).padStart(2,"0"),
+    contextId:"assessment-b2-milestone",
+    languageActivity:activity,
+    metadata:{assessmentScope:"milestone",milestoneId:"b2",languageActivity:activity,evaluation:prompt.promptType==="speech"?"speech-recognition-structural":prompt.promptType==="textarea"?"connected-writing-structural":"standard"}
+  });
+}
+
+function shuffleStable<T>(items:T[],seed:number):T[]{
+  const result=[...items];
+  for(let i=result.length-1;i>0;i--){
+    const j=(seed*7+i*3+1)%(i+1);
+    [result[i],result[j]]=[result[j]!,result[i]!];
+  }
+  return result;
+}
+
 function b1MilestoneClone(prompt:StudyPrompt,activity:LanguageActivity,index:number):StudyPrompt{
   return assessmentClone(prompt,{
     id:"assessment-b1-"+activity+"-"+String(index+1).padStart(2,"0"),
