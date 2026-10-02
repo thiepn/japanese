@@ -4,6 +4,7 @@ import type { SearchResult } from "@thiepn/search";
 import { isStudyLesson,type StudyStep } from "@thiepn/study-player";
 import { searchLocalJapanese } from "./content";
 import { foundationSections } from "./study/foundationPrompts";
+import { Immersion } from "./immerse/Immersion";
 import { StudyPlayer,type StudyAnswer } from "./study/StudyPlayer";
 import {
   buildA1MilestoneSession,buildCourseUnitSession,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getSentenceMasterySummary,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,
@@ -91,11 +92,11 @@ export function App(){
   if(session)return <div className="study-shell"><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></div>;
 
   return <div className="app-shell">
-    <header className="topbar"><div><strong>Japanese</strong><span className="phase">P2.5 A1 breadth + conjugation + assessment</span></div><button className="quiet-button account-button" type="button">Account</button></header>
+    <header className="topbar"><div><strong>Japanese</strong><span className="phase">P3 reader + connected listening</span></div><button className="quiet-button account-button" type="button">Account</button></header>
     <main className="content">
       {surface==="Today"&&<Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
       {surface==="Learn"&&<Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} course={courseProgress} milestone={milestone} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()}/>} 
-      {surface==="Immerse"&&<Placeholder title="Immerse" body="Sentence knowledge is now canonical and linked to vocabulary and grammar. P3 can build reading and connected listening on those same sentence/entity relationships instead of creating another progress system."/>}
+      {surface==="Immerse"&&<Immersion/>}
       {surface==="Progress"&&<Progress kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} milestone={milestone} summary={summary} course={courseProgress} completedToday={completedToday}/>} 
       {surface==="Library"&&<Library query={query} setQuery={setQuery} results={results} status={libraryStatus}/>}
     </main>
