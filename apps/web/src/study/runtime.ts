@@ -322,6 +322,8 @@ function insertFirstExposureLessons(queue:StudyPrompt[],byId:Map<string,Awaited<
 export function isApplicationPromptReady(prompt:StudyPrompt,traceIds:ReadonlySet<string>):boolean{
   if(prompt.primaryTarget.kind==="grammar"||prompt.primaryTarget.kind==="sentence")return isGrammarCoursePromptReady(prompt,traceIds);
   if(prompt.primaryTarget.kind==="lexical_chunk"){
+    const b2Ready=[...traceIds].some((trace)=>trace.startsWith("grammar:b2-")||trace.startsWith("sentence:b2-")||trace.startsWith("production_task:b2-"));
+    if(!b2Ready)return false;
     if(prompt.skill==="meaning_recognition")return true;
     if(prompt.skill==="active_use")return traceIds.has("lexical_chunk:"+prompt.primaryTarget.id+":meaning_recognition:chunk-to-meaning");
     return true;
