@@ -36326,6 +36326,326 @@
       "sourceIds": [
         "thiepn-original"
       ]
+    },
+    {
+      "id": "b2-dialogue-tech-1",
+      "text": "A：新しい制度に関して、まず利用者の意見を調査するべきだと思います。",
+      "normalizedText": "A:新しい制度に関して、まず利用者の意見を調査するべきだと思います。",
+      "translation": "A: Regarding the new system, I think we should first survey users' opinions.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-kanshite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-kanshite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "A：新しい制度に関して、まず利用者の意見を調査するべきだと思います。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dialogue-tech-2",
+      "text": "B：利便性は高まる一方で、個人情報の管理が難しくなるおそれがあります。",
+      "normalizedText": "B:利便性は高まる一方で、個人情報の管理が難しくなるおそれがあります。",
+      "translation": "B: Convenience will increase, but there is a risk that managing personal information will become harder.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ippou-de",
+        "b2-osore-ga-aru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ippou-de"
+        },
+        {
+          "kind": "grammar",
+          "id": "b2-osore-ga-aru"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "B：利便性は高まる一方で、個人情報の管理が難しくなるおそれがあります。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dialogue-tech-3",
+      "text": "A：問題があるからといって、導入すべきではないわけではありません。",
+      "normalizedText": "A:問題があるからといって、導入すべきではないわけではありません。",
+      "translation": "A: Even if there are problems, that does not necessarily mean we should not introduce it.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-wake-dewa-nai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-wake-dewa-nai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "A：問題があるからといって、導入すべきではないわけではありません。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dialogue-tech-4",
+      "text": "B：小さい範囲で試した結果から、一定の効果があると考えられます。",
+      "normalizedText": "B:小さい範囲で試した結果から、一定の効果があると考えられます。",
+      "translation": "B: From the results of a small-scale trial, we can infer that there is some effect.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-koto-kara"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-koto-kara"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "B：小さい範囲で試した結果から、一定の効果があると考えられます。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dialogue-tech-5",
+      "text": "A：では、地域によって結果が違うかどうかも確認してから判断しましょう。",
+      "normalizedText": "A:では、地域によって結果が違うかどうかも確認してから判断しましょう。",
+      "translation": "A: Then let's decide after checking whether the results differ by region.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-yotte"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-yotte"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "A：では、地域によって結果が違うかどうかも確認してから判断しましょう。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dialogue-support-1",
+      "text": "A：若い世代に対しては、オンライン支援を増やすべきだと思います。",
+      "normalizedText": "A:若い世代に対しては、オンライン支援を増やすべきだと思います。",
+      "translation": "A: I think we should increase online support for younger generations.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-taishite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-taishite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "A：若い世代に対しては、オンライン支援を増やすべきだと思います。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dialogue-support-2",
+      "text": "B：賛成できるものの、高齢者の負担も考える必要があります。",
+      "normalizedText": "B:賛成できるものの、高齢者の負担も考える必要があります。",
+      "translation": "B: Although I can agree, we also need to consider the burden on older people.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-mono-no"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-mono-no"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "B：賛成できるものの、高齢者の負担も考える必要があります。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dialogue-support-3",
+      "text": "A：地域によって必要な支援が異なるので、一つの方法だけで十分なわけではありません。",
+      "normalizedText": "A:地域によって必要な支援が異なるので、一つの方法だけで十分なわけではありません。",
+      "translation": "A: Since needed support differs by region, one method alone is not necessarily enough.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-yotte",
+        "b2-wake-dewa-nai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-yotte"
+        },
+        {
+          "kind": "grammar",
+          "id": "b2-wake-dewa-nai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "A：地域によって必要な支援が異なるので、一つの方法だけで十分なわけではありません。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dialogue-support-4",
+      "text": "B：利用者が増えるにつれて、対面での支援も調整したほうがいいですね。",
+      "normalizedText": "B:利用者が増えるにつれて、対面での支援も調整したほうがいいですね。",
+      "translation": "B: As the number of users grows, we should adjust in-person support too.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-tsurete"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-tsurete"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "B：利用者が増えるにつれて、対面での支援も調整したほうがいいですね。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "b2-dialogue-support-5",
+      "text": "A：その方針に関して、世代ごとの結果を比較してからもう一度検討しましょう。",
+      "normalizedText": "A:その方針に関して、世代ごとの結果を比較してからもう一度検討しましょう。",
+      "translation": "A: Regarding that policy, let's compare results by generation and examine it again.",
+      "level": "B2",
+      "register": "neutral",
+      "grammarIds": [
+        "b2-ni-kanshite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "b2-ni-kanshite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "A：その方針に関して、世代ごとの結果を比較してからもう一度検討しましょう。"
+        }
+      ],
+      "tags": [
+        "b2",
+        "p6",
+        "dialogue",
+        "multi-speaker"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
     }
   ],
   "audioAssets": [
@@ -44931,12 +45251,12 @@
       "level": "B2",
       "kind": "functional",
       "sentenceIds": [
-        "b2-sentence-wake-dewa-nai-1",
-        "b2-sentence-wake-da-1",
-        "b2-sentence-ni-chigainai-1",
         "b2-sentence-koto-kara-1",
-        "b2-sentence-ippou-de-1",
-        "b2-sentence-osore-ga-aru-1"
+        "b2-sentence-ni-yotte-1",
+        "b2-sentence-ni-suginai-1",
+        "b2-sentence-mono-no-1",
+        "b2-sentence-osore-ga-aru-3",
+        "b2-sentence-wake-dewa-nai-1"
       ],
       "targetLexemeIds": [
         "b2-evidence",
@@ -44959,19 +45279,19 @@
         "b2-challenge"
       ],
       "grammarIds": [
-        "b2-wake-dewa-nai",
-        "b2-wake-da",
-        "b2-ni-chigainai",
         "b2-koto-kara",
-        "b2-ippou-de",
-        "b2-osore-ga-aru"
+        "b2-ni-yotte",
+        "b2-ni-suginai",
+        "b2-mono-no",
+        "b2-osore-ga-aru",
+        "b2-wake-dewa-nai"
       ],
       "tags": [
         "b2",
         "p6",
         "independent-communication"
       ],
-      "estimatedMinutes": 5,
+      "estimatedMinutes": 6,
       "audioMode": "speech_synthesis",
       "comprehensionQuestions": [
         {
@@ -45010,12 +45330,11 @@
       "level": "B2",
       "kind": "dialogue",
       "sentenceIds": [
-        "b2-sentence-ippou-de-2",
-        "b2-sentence-ippou-de-3",
-        "b2-sentence-ni-yotte-1",
-        "b2-sentence-ni-yotte-2",
-        "b2-sentence-osore-ga-aru-2",
-        "b2-sentence-osore-ga-aru-3"
+        "b2-dialogue-tech-1",
+        "b2-dialogue-tech-2",
+        "b2-dialogue-tech-3",
+        "b2-dialogue-tech-4",
+        "b2-dialogue-tech-5"
       ],
       "targetLexemeIds": [
         "b2-evidence",
@@ -45038,16 +45357,19 @@
         "b2-challenge"
       ],
       "grammarIds": [
+        "b2-ni-kanshite",
         "b2-ippou-de",
-        "b2-ni-yotte",
-        "b2-osore-ga-aru"
+        "b2-osore-ga-aru",
+        "b2-wake-dewa-nai",
+        "b2-koto-kara",
+        "b2-ni-yotte"
       ],
       "tags": [
         "b2",
         "p6",
         "independent-communication"
       ],
-      "estimatedMinutes": 5,
+      "estimatedMinutes": 6,
       "audioMode": "speech_synthesis",
       "comprehensionQuestions": [
         {
@@ -45086,11 +45408,11 @@
       "level": "B2",
       "kind": "functional",
       "sentenceIds": [
-        "b2-sentence-ni-oite-1",
-        "b2-sentence-ni-kanshite-1",
-        "b2-sentence-ni-tomonatte-1",
         "b2-sentence-ni-tomonatte-2",
-        "b2-sentence-ba-hodo-1",
+        "b2-sentence-ni-tomonatte-3",
+        "b2-sentence-ni-oite-1",
+        "b2-sentence-ni-yotte-2",
+        "b2-sentence-ni-tsurete-3",
         "b2-sentence-ba-hodo-2"
       ],
       "targetLexemeIds": [
@@ -45114,9 +45436,10 @@
         "b2-challenge"
       ],
       "grammarIds": [
-        "b2-ni-oite",
-        "b2-ni-kanshite",
         "b2-ni-tomonatte",
+        "b2-ni-oite",
+        "b2-ni-yotte",
+        "b2-ni-tsurete",
         "b2-ba-hodo"
       ],
       "tags": [
@@ -45124,7 +45447,7 @@
         "p6",
         "independent-communication"
       ],
-      "estimatedMinutes": 5,
+      "estimatedMinutes": 6,
       "audioMode": "speech_synthesis",
       "comprehensionQuestions": [
         {
@@ -45161,14 +45484,13 @@
       "title": "Support across generations",
       "description": "A community case about changing needs and intergenerational support.",
       "level": "B2",
-      "kind": "story",
+      "kind": "dialogue",
       "sentenceIds": [
-        "b2-sentence-ni-taishite-1",
-        "b2-sentence-ni-tsurete-1",
-        "b2-sentence-ni-tsurete-2",
-        "b2-sentence-ni-tomonatte-3",
-        "b2-sentence-ba-hodo-3",
-        "b2-sentence-ni-mo-kakawarazu-2"
+        "b2-dialogue-support-1",
+        "b2-dialogue-support-2",
+        "b2-dialogue-support-3",
+        "b2-dialogue-support-4",
+        "b2-dialogue-support-5"
       ],
       "targetLexemeIds": [
         "b2-evidence",
@@ -45192,17 +45514,18 @@
       ],
       "grammarIds": [
         "b2-ni-taishite",
+        "b2-mono-no",
+        "b2-ni-yotte",
+        "b2-wake-dewa-nai",
         "b2-ni-tsurete",
-        "b2-ni-tomonatte",
-        "b2-ba-hodo",
-        "b2-ni-mo-kakawarazu"
+        "b2-ni-kanshite"
       ],
       "tags": [
         "b2",
         "p6",
         "independent-communication"
       ],
-      "estimatedMinutes": 5,
+      "estimatedMinutes": 6,
       "audioMode": "speech_synthesis",
       "comprehensionQuestions": [
         {
@@ -45241,12 +45564,12 @@
       "level": "B2",
       "kind": "functional",
       "sentenceIds": [
-        "b2-sentence-koto-kara-2",
         "b2-sentence-koto-kara-3",
-        "b2-sentence-mono-no-1",
         "b2-sentence-ni-suginai-1",
-        "b2-sentence-ni-suginai-2",
-        "b2-sentence-ni-suginai-3"
+        "b2-sentence-ni-chigainai-1",
+        "b2-sentence-mono-no-1",
+        "b2-sentence-ni-mo-kakawarazu-3",
+        "b2-sentence-osore-ga-aru-3"
       ],
       "targetLexemeIds": [
         "b2-evidence",
@@ -45270,15 +45593,18 @@
       ],
       "grammarIds": [
         "b2-koto-kara",
+        "b2-ni-suginai",
+        "b2-ni-chigainai",
         "b2-mono-no",
-        "b2-ni-suginai"
+        "b2-ni-mo-kakawarazu",
+        "b2-osore-ga-aru"
       ],
       "tags": [
         "b2",
         "p6",
         "independent-communication"
       ],
-      "estimatedMinutes": 5,
+      "estimatedMinutes": 6,
       "audioMode": "speech_synthesis",
       "comprehensionQuestions": [
         {
@@ -45317,12 +45643,12 @@
       "level": "B2",
       "kind": "dialogue",
       "sentenceIds": [
-        "b2-sentence-wake-dewa-nai-3",
-        "b2-sentence-ni-taishite-2",
-        "b2-sentence-mono-no-2",
+        "b2-sentence-ni-taishite-3",
         "b2-sentence-mono-no-3",
-        "b2-sentence-ni-mo-kakawarazu-1",
-        "b2-sentence-ni-mo-kakawarazu-3"
+        "b2-sentence-wake-dewa-nai-3",
+        "b2-sentence-ni-suginai-3",
+        "b2-sentence-ni-kanshite-3",
+        "b2-sentence-ba-hodo-3"
       ],
       "targetLexemeIds": [
         "b2-evidence",
@@ -45345,17 +45671,19 @@
         "b2-challenge"
       ],
       "grammarIds": [
-        "b2-wake-dewa-nai",
         "b2-ni-taishite",
         "b2-mono-no",
-        "b2-ni-mo-kakawarazu"
+        "b2-wake-dewa-nai",
+        "b2-ni-suginai",
+        "b2-ni-kanshite",
+        "b2-ba-hodo"
       ],
       "tags": [
         "b2",
         "p6",
         "independent-communication"
       ],
-      "estimatedMinutes": 5,
+      "estimatedMinutes": 6,
       "audioMode": "speech_synthesis",
       "comprehensionQuestions": [
         {
@@ -45394,12 +45722,12 @@
       "level": "B2",
       "kind": "functional",
       "sentenceIds": [
-        "b2-sentence-wake-da-3",
-        "b2-sentence-ni-kanshite-2",
-        "b2-sentence-ni-yotte-3",
-        "b2-sentence-ni-tsurete-3",
+        "b2-sentence-osore-ga-aru-1",
         "b2-sentence-osore-ga-aru-2",
-        "b2-sentence-osore-ga-aru-3"
+        "b2-sentence-ni-chigainai-1",
+        "b2-sentence-ni-kanshite-2",
+        "b2-sentence-ni-mo-kakawarazu-3",
+        "b2-sentence-ni-suginai-1"
       ],
       "targetLexemeIds": [
         "b2-evidence",
@@ -45422,18 +45750,18 @@
         "b2-challenge"
       ],
       "grammarIds": [
-        "b2-wake-da",
+        "b2-osore-ga-aru",
+        "b2-ni-chigainai",
         "b2-ni-kanshite",
-        "b2-ni-yotte",
-        "b2-ni-tsurete",
-        "b2-osore-ga-aru"
+        "b2-ni-mo-kakawarazu",
+        "b2-ni-suginai"
       ],
       "tags": [
         "b2",
         "p6",
         "independent-communication"
       ],
-      "estimatedMinutes": 5,
+      "estimatedMinutes": 6,
       "audioMode": "speech_synthesis",
       "comprehensionQuestions": [
         {
@@ -45472,12 +45800,12 @@
       "level": "B2",
       "kind": "functional",
       "sentenceIds": [
-        "b2-sentence-wake-da-2",
-        "b2-sentence-ni-chigainai-3",
-        "b2-sentence-ni-taishite-3",
-        "b2-sentence-ni-oite-3",
-        "b2-sentence-ni-mo-kakawarazu-3",
-        "b2-sentence-ni-suginai-3"
+        "b2-sentence-ippou-de-1",
+        "b2-sentence-koto-kara-2",
+        "b2-sentence-mono-no-1",
+        "b2-sentence-ni-suginai-1",
+        "b2-sentence-osore-ga-aru-2",
+        "b2-sentence-wake-da-2"
       ],
       "targetLexemeIds": [
         "b2-evidence",
@@ -45500,19 +45828,19 @@
         "b2-challenge"
       ],
       "grammarIds": [
-        "b2-wake-da",
-        "b2-ni-chigainai",
-        "b2-ni-taishite",
-        "b2-ni-oite",
-        "b2-ni-mo-kakawarazu",
-        "b2-ni-suginai"
+        "b2-ippou-de",
+        "b2-koto-kara",
+        "b2-mono-no",
+        "b2-ni-suginai",
+        "b2-osore-ga-aru",
+        "b2-wake-da"
       ],
       "tags": [
         "b2",
         "p6",
         "independent-communication"
       ],
-      "estimatedMinutes": 5,
+      "estimatedMinutes": 6,
       "audioMode": "speech_synthesis",
       "comprehensionQuestions": [
         {
