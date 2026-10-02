@@ -7,6 +7,29 @@ export interface JsonCoachModel {
   completeJson(input:{system:string;user:string;schema:Record<string,unknown>}):Promise<unknown>;
 }
 
+export function createCoachFetchHandler(model:JsonCoachModel){
+  const handle=createCoachHandler(model);
+  return async function handleCoachRequest(request:Request):Promise<Response>{
+    if(request.method!=="POST")return jsonResponse({error:"METHOD_NOT_ALLOWED"},405,{Allow:"POST"});
+    const contentLength=Number(request.headers.get("content-length")??0);
+    if(Number.isFinite(contentLength)&&contentLength>16_384)return jsonResponse({error:"REQUEST_TOO_LARGE"},413);
+    let input:unknown;
+    try{input=await request.json();}catch{return jsonResponse({error:"INVALID_JSON"},400);}
+    try{
+      const response=await handle(input as CoachRequest);
+      return jsonResponse(response,200);
+    }catch(error){
+      const message=error instanceof Error?error.message:"COACH_FAILED";
+      const clientError=message.startsWith("COACH_")&&(message.includes("REQUIRED")||message.includes("INVALID")||message.includes("TOO_LONG"));
+      return jsonResponse({error:clientError?message:"COACH_PROVIDER_FAILED"},clientError?400:502);
+    }
+  };
+}
+
+function jsonResponse(body:unknown,status:number,headers:Record<string,string>={}):Response{
+  return new Response(JSON.stringify(body),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store",...headers}});
+}
+
 export function createCoachHandler(model:JsonCoachModel){
   return async function handleCoach(request:CoachRequest):Promise<CoachResponse>{
     validateRequest(request);
