@@ -20,6 +20,7 @@ test("structured A1→B2 course and canonical grammar/sentence search work on ev
   await expect(page.getByText(/polite/i).first()).toBeVisible();
 
   await page.getByRole("button",{name:"Exit"}).click();
+  await expect(page.getByRole("heading",{name:"Foundation → B2"})).toBeVisible();
   await page.getByRole("button",{name:"Library"}).click();
   const search=page.getByRole("textbox",{name:"Search Japanese"});
 
