@@ -15,7 +15,7 @@ import { VOCABULARY_TOTAL, vocabularyApplicationPrompts, vocabularyLessons, voca
 import { buildPrivateVocabularyPrompts } from "./privateVocabulary";
 import { buildPrivateSentencePrompts } from "./privateSentences";
 import { productivePracticeSession,productiveTaskSession,productivePrompts } from "./productivePractice";
-import { lexicalChunkLessons,lexicalChunkMeaningPrompts,lexicalChunkActivePrompts,lexicalChunkPrompts,lexicalFluencySession } from "./lexicalFluency";
+import { lexicalChunkLessons,lexicalChunkMeaningPrompts,lexicalChunkActivePrompts,lexicalChunkTransferPrompts,lexicalChunkPrompts,lexicalFluencySession } from "./lexicalFluency";
 
 export const DEVELOPMENT_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
 export const DEVELOPMENT_DEVICE_ID="p2-local-browser";
@@ -54,8 +54,8 @@ export interface SentenceMasterySummary {
   matureSkills:number; expectedSkills:number; evidenceCount:number;
 }
 export interface LexicalFluencySummary {
-  overall:number; recognition:number; activeUse:number; confidence:number; accuracy:number;
-  matureSkills:number; expectedSkills:number; evidenceCount:number; totalChunks:number;
+  overall:number; recognition:number; activeUse:number; registerTransfer:number; confidence:number; accuracy:number;
+  matureSkills:number; expectedSkills:number; evidenceCount:number; totalChunks:number; transferPrompts:number;
 }
 export type CourseUnitStatus="ready"|"challenging"|"learning"|"mastered";
 export interface CourseUnitProgress {
@@ -195,6 +195,7 @@ export async function getVocabularyMasterySummary():Promise<VocabularyMasterySum
   const reading=expected.filter((prompt)=>prompt.skill==="reading");
   const listening=expected.filter((prompt)=>prompt.skill==="audio_recognition");
   const active=expected.filter((prompt)=>prompt.skill==="active_use");
+  const transfer=expected.filter((prompt)=>prompt.skill==="form_selection");
   const projections=projectionsFor(expected,state);
   const expectedIds=new Set(expected.map((prompt)=>prompt.primaryTarget.id));
   const graded=gradedEvents(events,"lexeme").filter((event)=>event.primaryTarget&&expectedIds.has(event.primaryTarget.id));
@@ -267,10 +268,10 @@ export async function getLexicalFluencySummary():Promise<LexicalFluencySummary>{
   const projections=projectionsFor(expected,state);
   const graded=events.filter((event)=>event.primaryTarget?.kind==="lexical_chunk"&&["correct","incorrect","partial","revealed"].includes(event.result??""));
   return {
-    overall:scoreFor(expected,state),recognition:scoreFor(recognition,state),activeUse:scoreFor(active,state),
+    overall:scoreFor(expected,state),recognition:scoreFor(recognition,state),activeUse:scoreFor(active,state),registerTransfer:scoreFor(transfer,state),
     confidence:meanConfidence(projections,expected.length),
     accuracy:graded.length?graded.filter((event)=>event.result==="correct").length/graded.length:0,
-    matureSkills:matureCount(projections),expectedSkills:expected.length,evidenceCount:graded.length,totalChunks:lexicalChunkMeaningPrompts.length
+    matureSkills:matureCount(projections),expectedSkills:expected.length,evidenceCount:graded.length,totalChunks:lexicalChunkMeaningPrompts.length,transferPrompts:lexicalChunkTransferPrompts.length
   };
 }
 
@@ -328,7 +329,7 @@ export function isApplicationPromptReady(prompt:StudyPrompt,traceIds:ReadonlySet
     const b2Ready=[...traceIds].some((trace)=>trace.startsWith("grammar:b2-")||trace.startsWith("sentence:b2-")||trace.startsWith("production_task:b2-"));
     if(!b2Ready)return false;
     if(prompt.skill==="meaning_recognition")return true;
-    if(prompt.skill==="active_use")return traceIds.has("lexical_chunk:"+prompt.primaryTarget.id+":meaning_recognition:chunk-to-meaning");
+    if(prompt.skill==="active_use"||prompt.skill==="form_selection")return traceIds.has("lexical_chunk:"+prompt.primaryTarget.id+":meaning_recognition:chunk-to-meaning");
     return true;
   }
   if(prompt.primaryTarget.kind==="production_task"){
