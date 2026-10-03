@@ -90,7 +90,8 @@ export function AiCoach(){
       const ageHours=(now-Date.parse(event.occurredAt))/3_600_000;
       if(!Number.isFinite(ageHours)||ageHours<20)continue;
       const taskId=event.primaryTarget?.kind==="production_task"?event.primaryTarget.id:"";
-      if(!taskId)continue;
+      const task=productiveTasks.find((item)=>item.id===taskId);
+      if(!taskId||task?.mode!=="writing"||event.activity!=="writing")continue;
       const feedbackMessages:string[]=[];
       const feedback=event.metadata?.feedback;
       if(feedback&&typeof feedback==="object"){
