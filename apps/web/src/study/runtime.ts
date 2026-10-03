@@ -265,6 +265,7 @@ export async function getLexicalFluencySummary():Promise<LexicalFluencySummary>{
   const expected=uniqueSkillPrompts(lexicalChunkPrompts);
   const recognition=expected.filter((prompt)=>prompt.skill==="meaning_recognition");
   const active=expected.filter((prompt)=>prompt.skill==="active_use");
+  const transfer=expected.filter((prompt)=>prompt.skill==="form_selection");
   const projections=projectionsFor(expected,state);
   const graded=events.filter((event)=>event.primaryTarget?.kind==="lexical_chunk"&&["correct","incorrect","partial","revealed"].includes(event.result??""));
   return {
