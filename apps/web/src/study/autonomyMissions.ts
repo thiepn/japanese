@@ -169,9 +169,9 @@ function taskStage(id:string,kind:"production",title:string,taskId:string):Auton
   const task=productiveTask(taskId);
   return {id,kind,title,instruction:(task.mode==="writing"?"Write":"Speak")+" a response for "+task.title+".",taskId};
 }
-function delayedStage(id:string,title:string,taskId:string):AutonomyMissionStage{
+function delayedStage(id:string,title:string,instruction:string,taskId:string):AutonomyMissionStage{
   productiveTask(taskId);
-  return {id,kind:"delayed_transfer",title,instruction:"Complete the same production target on at least two different days separated by 20+ hours.",taskId};
+  return {id,kind:"delayed_transfer",title,instruction:instruction+" Complete the same production target on at least two different days separated by 20+ hours.",taskId};
 }
 
 function stageProgress(stage:AutonomyMissionStage,events:readonly StudyEvent[]):AutonomyMissionStageProgress{
