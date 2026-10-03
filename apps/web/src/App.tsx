@@ -141,7 +141,7 @@ export function App(){
     await recordStudyAnswer({prompt:answer.prompt,response:answer.response,result:answer.grade.result,responseTimeMs:answer.responseTimeMs});
     setCompletedToday((value)=>value+1);
   }
-  function finishSession(){setSession(null);void refreshDashboard();}
+  function finishSession(){window.scrollTo(0,0);setSession(null);void refreshDashboard();}
 
   if(session)return <div className="study-shell"><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></div>;
 
