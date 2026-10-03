@@ -6,8 +6,8 @@ export function ProviderHealthPanel(){
   useEffect(()=>{void getProviderHealthSnapshot().then(setItems).catch(()=>setItems([]));},[]);
   if(!items)return null;
   return <section className="provider-health">
-    <div className="section-heading"><div><span className="course-kicker">P8 PROVIDER OBSERVABILITY</span><h2>AI + morphology runtime status</h2></div><span className="course-count">fallback certified</span></div>
-    <p>Provider status is operational metadata only. An unavailable external provider triggers the documented local/unavailable path rather than fabricating provider-grade output.</p>
+    <div className="section-heading"><div><span className="course-kicker">P9 PROVIDER OBSERVABILITY</span><h2>AI + morphology runtime status</h2></div><span className="course-count">fallback certified</span></div>
+    <p>Provider status is operational metadata only. P9 adds a repeatable server-side feedback-grounding benchmark for release qualification; runtime outages still trigger the documented local/unavailable path rather than fabricating provider-grade output.</p>
     <div className="provider-health-grid">{items.map((item)=><article key={item.id} className={"provider-health-card "+item.state}>
       <div><strong>{item.label}</strong><span>{healthLabel(item)}</span></div>
       <small>{item.provider??(item.state==="unconfigured"?"not configured":"provider not reported")}{item.model?" · "+item.model:""}</small>
