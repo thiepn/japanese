@@ -21,5 +21,14 @@ describe("Study Player domain",()=>{
     const event=createStudyEvent({id:"write-event",userId:"u",deviceId:"d",prompt:writing,response:"理由を説明します。",occurredAt:"2026-10-03T08:00:00Z",responseTimeMs:1500});
     expect(event.metadata).toMatchObject({learnerResponse:"理由を説明します。",structuralResult:"correct"});
   });
+  it("records timed qualification evidence without converting lateness into an automatic failure",()=>{
+    const timed:StudyPrompt={id:"timed",primaryTarget:{kind:"production_task",id:"p9"},skill:"production",cueFamily:"p9-real-world",promptType:"speech",instruction:"Respond.",prompt:"Explain.",acceptedAnswers:["理由"],displayAnswer:"No single answer.",requiredTerms:["理由"],minimumCharacters:2,timeLimitSeconds:60,eventMetadata:{schedulerExcluded:true,qualificationOnly:true}};
+    const onTime=createStudyEvent({id:"timed-1",userId:"u",deviceId:"d",prompt:timed,response:"理由です。",occurredAt:"2026-10-03T08:00:00Z",responseTimeMs:59000});
+    const late=createStudyEvent({id:"timed-2",userId:"u",deviceId:"d",prompt:timed,response:"理由です。",occurredAt:"2026-10-03T08:02:00Z",responseTimeMs:61000});
+    expect(onTime.result).toBe("correct");
+    expect(onTime.metadata).toMatchObject({timeLimitSeconds:60,withinTimeLimit:true,schedulerExcluded:true,qualificationOnly:true});
+    expect(late.result).toBe("correct");
+    expect(late.metadata).toMatchObject({withinTimeLimit:false});
+  });
   it("keeps lesson cards distinct from graded prompts",()=>{const lesson:StudyLesson={kind:"lesson",id:"l",title:"Five vowels",body:"Learn them.",contextId:"hiragana-vowels"};expect(isStudyLesson(lesson)).toBe(true);expect(isStudyLesson(prompt)).toBe(false);});
 });
