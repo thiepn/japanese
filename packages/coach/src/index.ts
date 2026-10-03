@@ -47,12 +47,20 @@ export interface CoachRequest {
   register?:"casual"|"neutral"|"polite"|"formal";
 }
 
+export interface CoachQualityReport {
+  score:number;
+  anchoredCorrections:number;
+  correctionItems:number;
+  goalMentions:number;
+  warningCodes:string[];
+}
 export interface CoachResponse {
   replyJapanese:string;
   replyEnglishHint?:string;
   feedback:CoachFeedback;
   revisionPrompt?:string;
   evidenceContract:CoachEvidenceContract;
+  quality?:CoachQualityReport;
 }
 
 export interface CoachTransport {
@@ -102,8 +110,57 @@ export function parseCoachResponse(value:unknown):CoachResponse{
       advisoryOnly:true,changesMastery:false,modelJudgmentIsLearnerTruth:false,acousticAnalysis:false,
       provider:requiredString(contract.provider,"provider"),
       ...(typeof contract.model==="string"&&contract.model.trim()?{model:contract.model}:{})
-    }
+    },
+    ...(input.quality&&typeof input.quality==="object"?{quality:parseQuality(input.quality)}:{})
   };
+}
+
+export function evaluateCoachResponseQuality(request:CoachRequest,response:CoachResponse):CoachQualityReport{
+  const areas=Object.values(response.feedback);
+  const items=areas.flatMap((area)=>area.items);
+  const learner=normalizeLoose(request.learnerText);
+  let anchored=0;
+  const warnings:string[]=[];
+  for(const item of items){
+    if(!item.original?.trim())continue;
+    if(learner.includes(normalizeLoose(item.original)))anchored+=1;
+    else warnings.push("UNANCHORED_CORRECTION");
+  }
+  const searchable=normalizeLoose([
+    response.replyJapanese,response.replyEnglishHint??"",response.revisionPrompt??"",
+    ...areas.map((area)=>area.summary),
+    ...items.flatMap((item)=>[item.message,item.suggestion??"",item.explanation??""])
+  ].join(" "));
+  const goalMentions=request.goals.filter((goal)=>searchable.includes(normalizeLoose(goal))).length;
+  if(request.mode==="writing_revision"&&!response.revisionPrompt)warnings.push("MISSING_REVISION_PROMPT");
+  if(items.length>16)warnings.push("FEEDBACK_TOO_DENSE");
+  if(authorityLanguageDetected(searchable))warnings.push("AUTHORITY_LANGUAGE");
+  const anchoredRatio=items.filter((item)=>item.original?.trim()).length?anchored/items.filter((item)=>item.original?.trim()).length:1;
+  const goalRatio=request.goals.length?goalMentions/request.goals.length:1;
+  const penalty=Math.min(.45,new Set(warnings).size*.1);
+  const score=Math.max(0,Math.min(1,.55*anchoredRatio+.25*goalRatio+.2-penalty));
+  return {score,anchoredCorrections:anchored,correctionItems:items.length,goalMentions,warningCodes:[...new Set(warnings)]};
+}
+
+function parseQuality(value:unknown):CoachQualityReport{
+  const input=value as Record<string,unknown>;
+  return {
+    score:clampNumber(input.score),
+    anchoredCorrections:nonNegativeInt(input.anchoredCorrections),
+    correctionItems:nonNegativeInt(input.correctionItems),
+    goalMentions:nonNegativeInt(input.goalMentions),
+    warningCodes:Array.isArray(input.warningCodes)?input.warningCodes.filter((item):item is string=>typeof item==="string").slice(0,12):[]
+  };
+}
+
+function normalizeLoose(value:string):string{
+  return value.normalize("NFKC").toLowerCase().replace(/[\s。、！？!?「」『』（）()[\],.:;'"’‘“”—–-]+/gu,"");
+}
+function authorityLanguageDetected(value:string):boolean{
+  return /(cefr.*(?:pass|passed|master|b2)|(?:pass|passed).*cefr|you(?:have|'ve)?mastered|b2(?:level)?(?:achieved|certified)|合格しました|b2に合格|習得済み)/i.test(value);
+}
+function nonNegativeInt(value:unknown):number{
+  return typeof value==="number"&&Number.isFinite(value)?Math.max(0,Math.floor(value)):0;
 }
 
 function parseArea(value:unknown,label:string):CoachFeedbackArea{
