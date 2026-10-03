@@ -182,7 +182,7 @@ export async function createPrivateDocument(input:{title:string;text:string;sour
     id:uuid("private-doc"),accountId:AUTHENTIC_ACCOUNT_ID,title:input.title.trim()||"Imported Japanese",sourceKind:input.sourceKind,
     text:normalized,importedAt:now,updatedAt:now,
     ...(input.sourceLabel?{sourceLabel:input.sourceLabel}:{}),...(input.sourceUrl?{sourceUrl:input.sourceUrl}:{}),...(input.nativeAudio?{nativeAudio:input.nativeAudio}:{}),
-    ...(input.nativeAudioVariants?.length?{nativeAudioVariants:input.nativeAudioVariants.map((audio)=>({...audio,segments:audio.segments?.map((segment)=>({...segment}))}))}:{})
+    ...(input.nativeAudioVariants?.length?{nativeAudioVariants:input.nativeAudioVariants.map((audio)=>({...audio,...(audio.segments?{segments:audio.segments.map((segment)=>({...segment}))}:{})}))}:{})
   };
   await savePrivateDocument(AUTHENTIC_ACCOUNT_ID,document);
   return document;
