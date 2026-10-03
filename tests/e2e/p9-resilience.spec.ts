@@ -33,7 +33,8 @@ test("P9 real-world performance, native listening and provider fallbacks survive
   await expect(page.getByRole("heading",{name:/Continue Japanese|You’re caught up/})).toBeVisible();
   await page.getByRole("button",{name:"Learn"}).click();
   await expect(page.getByRole("heading",{name:"Functional chains under time pressure"})).toBeVisible();
-  await page.getByRole("button",{name:"Immerse"}).click();
+  // Compact mobile headless Chromium has the same fixed-nav scrollIntoView drift while offline.
+  await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
   await expect(page.getByRole("heading",{name:"Listen → note → synthesize → recall later"})).toBeVisible();
   await context.setOffline(false);
 });
