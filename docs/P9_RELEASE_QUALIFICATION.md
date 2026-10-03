@@ -55,3 +55,24 @@ This gate describes **product/system readiness**. It does not classify a learner
 ## Source-dependent status
 
 The repository intentionally does not fabricate or relabel audio to satisfy the native-media threshold. If the connected deployment does not contain enough reusable native material, the qualification result must remain blocked until verified sources are added.
+
+
+## Automated certification evidence
+
+The repository now carries an auditable release manifest and a deterministic qualification command:
+
+- `release/p9-native-inventory.json` is the only repository-owned native-media inventory used by the release certifier;
+- `pnpm certify:p9` generates `artifacts/p9-release-qualification.json` and `artifacts/p9-release-qualification.md` without failing when the gate is still blocked;
+- `pnpm certify:p9:strict` generates the same evidence and exits non-zero unless every P9 release check passes;
+- normal CI writes regression evidence only after typecheck, unit/integration tests, content validation, production build and certified E2E have all succeeded, then uploads the qualification report as a workflow artifact;
+- the manual **P9 Release Qualification** workflow runs the full suite and then invokes the strict gate.
+
+The certification CLI derives B2 text/task/chunk counts directly from `content/seed/jp-core.json` and derives the real-world chain/prompt inventory from the checked-in P9 performance bank. Native-media counts are derived from individual manifest entries rather than editable summary totals.
+
+Every listed native recording must have a stable id, source URL, recording URL, reusable license, credit, explicit `nativeSpeaker:true`, and valid register/rate metadata when those fields are claimed. Attribution-required licenses require an attribution URL.
+
+### Current checked-in state
+
+The checked-in native-media inventory intentionally starts empty. Therefore the automated report must currently show the static product/performance gates as satisfied while the native-media gates remain blocked.
+
+Do not replace the empty inventory with synthetic, inferred or weakly sourced entries. Add only independently verified reusable recordings whose provenance supports the existing P9 rules.

@@ -31,6 +31,6 @@ The software implementation is complete, but **release qualification is intentio
 
 See `docs/P9_ACCEPTANCE.md` and `docs/P9_RELEASE_QUALIFICATION.md`.
 
-The next roadmap step is to satisfy and certify the P9 release gate. A separate C1 roadmap remains blocked until every gate is green.
+The next roadmap step is to satisfy and certify the P9 release gate. CI now emits an auditable P9 qualification artifact, `pnpm certify:p9` generates the same report locally, and `pnpm certify:p9:strict` enforces the gate. The checked-in native-media inventory remains intentionally empty until independently verified reusable native connected audio is added. A separate C1 roadmap remains blocked until every gate is green.
 
 See `docs/P1_ACCEPTANCE.md`, `docs/P2_ACCEPTANCE.md`, `docs/P2_5_ACCEPTANCE.md`, `docs/P3_ACCEPTANCE.md`, `docs/P4_ACCEPTANCE.md`, `docs/P5_ACCEPTANCE.md`, `docs/P6_ACCEPTANCE.md`, `docs/P7_ACCEPTANCE.md`, `docs/P8_ACCEPTANCE.md`, `docs/P9_ACCEPTANCE.md`, `docs/P9_RELEASE_QUALIFICATION.md`, `docs/SOURCE_PACK_FORMAT.md`, `docs/P1_5_MOBILE_CERTIFICATION.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md` and `docs/THIRD_PARTY_NOTICES.md`.

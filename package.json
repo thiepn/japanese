@@ -3,14 +3,18 @@
   "private": true,
   "version": "0.0.0",
   "packageManager": "pnpm@11.19.0",
-  "engines": { "node": ">=24.15.0 <25" },
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
   "scripts": {
     "dev": "pnpm --filter @thiepn/japanese-web dev",
     "build": "pnpm -r build",
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "validate:content": "pnpm --filter @thiepn/content-validation validate"
+    "validate:content": "pnpm --filter @thiepn/content-validation validate",
+    "certify:p9": "node scripts/p9-release-certify.mjs",
+    "certify:p9:strict": "node scripts/p9-release-certify.mjs --strict"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
