@@ -88,6 +88,10 @@ export function gradeStudyPrompt(prompt: StudyPrompt, response: string): GradeRe
 export function createStudyEvent(input: StudyEventInput): StudyEvent {
   const grade = gradeStudyPrompt(input.prompt, input.response);
   const metadata:Record<string,unknown>={promptId:input.prompt.id,...(input.prompt.eventMetadata ?? {})};
+  if(input.prompt.promptType==="textarea"||input.prompt.promptType==="speech"){
+    metadata.learnerResponse=input.response;
+    metadata.structuralResult=grade.result;
+  }
   if(input.prompt.languageActivity)metadata.languageActivity=input.prompt.languageActivity;
   if(input.prompt.audio){
     metadata.audioAssetId=input.prompt.audio.id;

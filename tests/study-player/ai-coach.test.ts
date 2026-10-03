@@ -9,7 +9,7 @@ const safeFeedback={
   taskAchievement:{summary:"The main task is addressed.",items:[],confidence:.85}
 };
 
-describe("P6 AI coach evidence contract",()=>{
+describe("P8 AI coach evidence contract and provider observability",()=>{
   it("accepts advisory feedback only when it explicitly cannot alter mastery",()=>{
     const response=parseCoachResponse({
       replyJapanese:"なるほど。では、反対の立場からも考えてみましょう。",
@@ -40,6 +40,20 @@ describe("P6 AI coach evidence contract",()=>{
       advisoryOnly:true,changesMastery:false,modelJudgmentIsLearnerTruth:false,acousticAnalysis:false,
       provider:"fixture-provider",model:"fixture-model"
     });
+  });
+
+  it("exposes a no-store provider health probe without invoking learner evaluation",async()=>{
+    let completions=0;
+    const handler=createCoachFetchHandler({
+      provider:"fixture-provider",model:"fixture-model",
+      async completeJson(){completions+=1;return {replyJapanese:"unused",feedback:safeFeedback};},
+      async healthCheck(){return {ok:true,detail:"fixture reachable"};}
+    });
+    const response=await handler(new Request("https://example.test/api/japanese/coach",{method:"GET"}));
+    expect(response.status).toBe(200);
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(await response.json()).toMatchObject({service:"japanese-coach",status:"ok",provider:"fixture-provider",model:"fixture-model",operational:true});
+    expect(completions).toBe(0);
   });
 
   it("exposes the coach as a no-store POST fetch handler without leaking provider errors",async()=>{

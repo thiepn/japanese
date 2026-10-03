@@ -154,15 +154,34 @@ The 15-item B2 milestone remains an internal five-activity diagnostic rather tha
 
 ## P8 — B2 Consolidation, Long-Form Autonomy & Production Reliability
 
-**Next.** Consolidate B2 before introducing C1 labels:
+**Implementation complete.** P8 consolidates B2 across time, sources and changing contexts rather than adding premature C1 labels:
 
-- longer multi-document reading/listening tasks and sustained topic chains;
-- multi-turn real-world scenario chains that require planning, repair, clarification and follow-up;
-- stronger production reliability from delayed revision, recurring-error remediation and cross-session transfer;
-- broader licensed native connected-audio packs and listening under natural speed/register variation;
-- deployed morphology and AI providers with production observability/fallback certification;
-- deeper vocabulary sense/register contrasts and phrase-family transfer;
-- cumulative B2 portfolios and longitudinal evidence without manufacturing an overall CEFR pass/fail score.
+- six multi-document autonomy missions combining reading, connected listening, speaking/writing and delayed transfer;
+- mission progress projected from normal StudyEvents with no separate mastery store;
+- four-stage AI scenario chains requiring planning, clarification, repair and follow-up;
+- delayed AI revision after 20+ hours with links back to the original learner response;
+- cross-session production reliability requiring structurally successful evidence on different days;
+- a cumulative descriptive B2 portfolio with learner-authored productive artifacts and no pass/fail score;
+- 18 phrase-family/register-transfer prompts layered onto the 120 first-class B2 lexical chunks;
+- source-pack support for multiple independently licensed native recordings with speed/register/speaker metadata;
+- browser switching between native recording variants while preserving segment replay;
+- no-store provider health probes for AI coaching and dictionary morphology;
+- visible configured/operational/degraded/fallback states without turning provider metadata into learner evidence.
+
+P8 retains the same evidence boundaries: structural success is not complete semantic quality, AI feedback is advisory, browser speech recognition is not acoustic scoring, device TTS is not native audio and the internal B2 milestone is not an accredited CEFR examination. See `docs/P8_ACCEPTANCE.md`.
+
+## P9 — B2 Real-World Performance, Native Listening Depth & Release Qualification
+
+**Next.** Harden sustained B2 performance before any C1-oriented curriculum:
+
+- larger licensed native connected-audio inventory across speakers, natural speed and register;
+- multi-source listening tasks with note-taking, synthesis and delayed recall;
+- real-world functional chains such as appointments, workplace incidents, service problems, travel changes and community coordination;
+- production qualification across unseen prompts, paraphrase, repair and timed response;
+- stronger semantic feedback evaluation and provider-quality benchmarking without granting opaque model judgments mastery authority;
+- real-device long-session testing, offline/media resilience and provider outage drills;
+- longitudinal B2 portfolio exports and release-level regression certification;
+- explicit criteria for when the system has enough B2 breadth/reliability to begin a separate C1 roadmap.
 
 ## Later
 

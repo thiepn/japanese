@@ -4,6 +4,7 @@ import { AuthenticLibrary } from "./AuthenticLibrary";
 import { buildExtensiveTracks } from "./extensive";
 import { ShadowingLab } from "./ShadowingLab";
 import { getAdaptiveImmersionRecommendation,type AdaptiveImmersionRecommendation } from "./adaptive";
+import { getAutonomyMissionProgress,type AutonomyMissionProgress } from "../study/autonomyMissions";
 import type { ReadingQuestion } from "@thiepn/content-schema";
 import {
   buildReaderText,getImmersionProgress,gradeReadingQuestion,recordListeningExposure,recordListeningSegmentReplay,recordMinedWord,
@@ -14,9 +15,10 @@ import {
 type CheckMode="reading"|"listening";
 interface SelectedToken { token:ReaderToken; sentenceId:string; }
 
-export function Immersion(){
+export function Immersion({onStartProductionTask}:{onStartProductionTask:(taskId:string)=>void}){
   const [progress,setProgress]=useState<ImmersionProgress|null>(null);
   const [recommendation,setRecommendation]=useState<AdaptiveImmersionRecommendation|null>(null);
+  const [missions,setMissions]=useState<AutonomyMissionProgress[]>([]);
   const [activeId,setActiveId]=useState<string|null>(null);
   const [furigana,setFurigana]=useState(true);
   const [translations,setTranslations]=useState<Set<string>>(new Set());
@@ -34,9 +36,9 @@ export function Immersion(){
 
   async function refresh(){
     try{
-      const [nextProgress,nextRecommendation]=await Promise.all([getImmersionProgress(),getAdaptiveImmersionRecommendation()]);
-      setProgress(nextProgress);setRecommendation(nextRecommendation);
-    }catch{setProgress(null);setRecommendation(null);}
+      const [nextProgress,nextRecommendation,nextMissions]=await Promise.all([getImmersionProgress(),getAdaptiveImmersionRecommendation(),getAutonomyMissionProgress()]);
+      setProgress(nextProgress);setRecommendation(nextRecommendation);setMissions(nextMissions);
+    }catch{setProgress(null);setRecommendation(null);setMissions([]);}
   }
   useEffect(()=>{void refresh();return()=>{audioProvider.current.stop();if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();};},[]);
 
@@ -123,8 +125,8 @@ export function Immersion(){
     questionIndex={questionIndex} feedback={feedback} answerQuestion={answerQuestion} nextQuestion={nextQuestion} speakingSegment={speakingSegment} speakSegment={speakSegment}/>;
 
   return <section className="dashboard immerse-page">
-    <p className="eyebrow">IMMERSE</p><h1>A1 → B2 immersion</h1>
-    <p className="lead">Move from graded A1/A2 support into B1/B2 connected Japanese and learner-owned material. Recommendations use current lexical readiness and reading/listening evidence; they guide rather than lock content.</p>
+    <p className="eyebrow">IMMERSE</p><h1>A1 → B2 autonomy</h1>
+    <p className="lead">P8 adds sustained B2 missions that combine several texts, listening checks, independent production and delayed transfer. Recommendations remain advisory; all source texts and tasks stay directly accessible.</p>
     {progress?<div className="stat-row four"><MiniStat value={progress.texts.length} label="Graded texts"/><MiniStat value={progress.minedWords} label="Mined words"/><MiniStat value={progress.readingChecks} label="Reading checks"/><MiniStat value={progress.listeningChecks} label="Listening checks"/></div>:null}
     {recommendation?<section className="adaptive-immersion">
       <div className="section-heading"><div><span className="course-kicker">ADAPTIVE NEXT STEP</span><h2>Focus on {recommendation.focus}</h2></div></div>
@@ -132,6 +134,23 @@ export function Immersion(){
         {recommendation.canonical?<article><span>Graded · {recommendation.canonical.level}</span><h3>{recommendation.canonical.title}</h3><p>{recommendation.canonical.reason}</p><small>{Math.round(recommendation.canonical.readiness*100)}% lexical readiness · {Math.round(recommendation.canonical.mastery*100)}% {recommendation.focus} mastery</small><button className="unit-action" type="button" onClick={()=>void openText(recommendation.canonical!.id)}>Open recommended text</button></article>:null}
         {recommendation.privateDocument?<article><span>Private authentic input</span><h3>{recommendation.privateDocument.title}</h3><p>{recommendation.privateDocument.reason}</p><small>{Math.round(recommendation.privateDocument.knownRatio*100)}% known lexical tokens · {recommendation.privateDocument.difficulty}</small><span className="adaptive-hint">Find it in Your Japanese below.</span></article>:null}
       </div>
+    </section>:null}
+    {missions.length?<section className="autonomy-missions">
+      <div className="section-heading"><div><span className="course-kicker">P8 AUTONOMY MISSIONS</span><h2>Long-form B2 task chains</h2></div><span className="course-count">multi-document · cross-session</span></div>
+      <p className="course-note">Each mission combines reading, listening and production across several sources. Final transfer stages require the same production target on a later day; progress is inferred from normal StudyEvents rather than a separate mission score.</p>
+      <div className="mission-grid">{missions.map((entry)=>{
+        const next=entry.nextStage;
+        return <article className="mission-card" key={entry.mission.id}>
+          <div className="mission-card-head"><span>{entry.mission.domain} · ~{entry.mission.estimatedMinutes} min</span><strong>{entry.completedStages}/{entry.totalStages}</strong></div>
+          <h3>{entry.mission.title}</h3><p>{entry.mission.description}</p>
+          <div className="mission-stage-list">{entry.stages.map((stage)=><span className={stage.complete?"done":""} key={stage.id}>{stage.complete?"✓":"○"} {stage.title}</span>)}</div>
+          <small>{entry.activeDays} active day{entry.activeDays===1?"":"s"} · delayed transfer requires 20+ hours</small>
+          {next?<button className="unit-action" type="button" onClick={()=>{
+            if(next.textId)void openText(next.textId);
+            else if(next.taskId)onStartProductionTask(next.taskId);
+          }}>Next: {next.title}</button>:<span className="mission-complete">All mission evidence collected</span>}
+        </article>;
+      })}</div>
     </section>:null}
     {extensiveTracks.length?<section className="extensive-tracks">
       <div className="section-heading"><div><span className="course-kicker">EXTENSIVE B2</span><h2>Read + listen across a topic track</h2></div><span className="course-count">readiness-guided · no locks</span></div>

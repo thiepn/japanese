@@ -20,13 +20,18 @@ export interface PrivateAudioSegment {
   startMs:number;
   endMs:number;
 }
+export type PrivateAudioSpeechRate="slow"|"natural"|"fast";
+export type PrivateAudioRegister="casual"|"neutral"|"polite"|"formal";
 export interface PrivateNativeAudio {
   url:string; credit:string; licenseName:string; attributionUrl?:string; externalId?:string;
   segments?:PrivateAudioSegment[];
+  speechRate?:PrivateAudioSpeechRate;
+  register?:PrivateAudioRegister;
+  speakerLabel?:string;
 }
 export interface PrivateDocumentRecord {
   id:string; accountId:string; title:string; sourceKind:PrivateDocumentSourceKind; text:string;
-  importedAt:string; updatedAt:string; sourceLabel?:string; sourceUrl?:string; nativeAudio?:PrivateNativeAudio;
+  importedAt:string; updatedAt:string; sourceLabel?:string; sourceUrl?:string; nativeAudio?:PrivateNativeAudio; nativeAudioVariants?:PrivateNativeAudio[];
 }
 export interface PrivateVocabularyRecord {
   id:string; accountId:string; canonicalForm:string; reading?:string; meaning:string;

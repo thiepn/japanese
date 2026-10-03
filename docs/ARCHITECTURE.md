@@ -167,3 +167,50 @@ The recommendation is advisory. Every text remains directly accessible; a track 
 AI revision history is reconstructed from immutable advisory coach StudyEvents. Feedback-area counts, repeated messages and recent drafts can be shown to the learner as correction patterns.
 
 These summaries are remediation hints only. They do not create graded events, alter FSRS scheduling, change CEFR milestone scores, or become authoritative claims about the learner.
+
+
+## P8 autonomy-mission orchestration rule
+
+Long-form B2 missions are orchestration over existing canonical reading texts and productive tasks. A mission may group several reading/listening checks, production targets and a delayed-transfer requirement, but it does not create a parallel mastery database.
+
+Mission completion is projected from immutable StudyEvents. Reading/listening stages require graded text checks rather than exposure. Delayed-transfer stages require production evidence separated by at least 20 hours.
+
+A mission recommendation may identify the next unfinished stage, but all underlying texts/tasks remain directly accessible.
+
+## P8 production-reliability projection rule
+
+Production reliability is a longitudinal projection over B2 productive StudyEvents.
+
+A task may be described as cross-session reliable only when structurally successful evidence appears on at least two different days and spans at least 20 hours. This is a narrow structural-retrieval measure; it is not a semantic-quality, pragmatic-appropriateness, pronunciation or CEFR judgment.
+
+Lexical transfer may be reported when the same chunk is demonstrated in structurally successful production across different productive tasks and different days.
+
+Reliability projections can change as the projection algorithm changes without migrating learner truth.
+
+## P8 portfolio rule
+
+The B2 portfolio is a descriptive view over learner evidence, not a credential.
+
+Textarea and speech responses are retained in StudyEvent metadata as learner-authored artifacts so recent writing/speaking can be reviewed longitudinally. The portfolio may summarize activity breadth, autonomy missions, delayed revisions and reliability projections, but it must not infer an overall CEFR pass/fail score.
+
+AI-coach artifacts remain explicitly advisory even when displayed beside Study Player artifacts.
+
+## P8 delayed-revision rule
+
+AI coach events can become delayed-revision candidates after 20 hours. A later revision records `revisionOfEventId` and the approximate delay.
+
+Prior model feedback may be used to choose revision goals, but neither the original model feedback nor the existence of a later revision modifies mastery. Delayed AI revision remains an advisory practice workflow until separately graded learner evidence exists.
+
+## P8 native-audio variation rule
+
+A learner/source-pack document may reference multiple admitted native recordings of the same Japanese text. Each recording retains independent source, credit, license, attribution, native-speaker, rate/register and segment metadata.
+
+Switching recordings changes playback context only. It does not create a new lexical/text identity or relax license validation. Device synthesis remains a separate fallback.
+
+## P8 provider-observability rule
+
+AI coach and morphology routes may expose no-store health metadata independently of learner requests.
+
+A health response distinguishes configured, operational and degraded states. If a provider exposes no active health-check function, the API may report configured status but must not invent operational success.
+
+Browser UI can surface provider/fallback state, but operational metadata never becomes learner evidence.

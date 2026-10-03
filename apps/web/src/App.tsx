@@ -9,8 +9,10 @@ import { getImmersionProgress,type ImmersionProgress } from "./immerse/reader";
 import { StudyPlayer,type StudyAnswer } from "./study/StudyPlayer";
 import { AiCoach } from "./ai/AiCoach";
 import { AdaptiveRemediation } from "./study/AdaptiveRemediation";
+import { B2Portfolio } from "./study/B2Portfolio";
+import { ProviderHealthPanel } from "./study/ProviderHealthPanel";
 import {
-  buildA1MilestoneSession,buildB1MilestoneSession,buildB2MilestoneSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildProductivePractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,
+  buildA1MilestoneSession,buildB1MilestoneSession,buildB2MilestoneSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,
   type A1MilestoneProgress,type B1MilestoneProgress,type B2MilestoneProgress,type ConjugationMasterySummary,type CourseUnitProgress,type GrammarMasterySummary,type KanaMasterySummary,type LexicalFluencySummary,type SentenceMasterySummary,type StudySummary,type VocabularyMasterySummary
 } from "./study/runtime";
 
@@ -42,7 +44,7 @@ const EMPTY_B2_MILESTONE:B2MilestoneProgress={complete:false,answered:0,total:15
   writing:{activity:"writing",correct:0,answered:0,total:3,score:0}
 }};
 const EMPTY_SENTENCE:SentenceMasterySummary={overall:0,comprehension:0,production:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
-const EMPTY_LEXICAL_FLUENCY:LexicalFluencySummary={overall:0,recognition:0,activeUse:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0,totalChunks:120};
+const EMPTY_LEXICAL_FLUENCY:LexicalFluencySummary={overall:0,recognition:0,activeUse:0,registerTransfer:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0,totalChunks:120,transferPrompts:18};
 const EMPTY_IMMERSION:ImmersionProgress={texts:[],minedWords:0,lookups:0,readingChecks:0,listeningChecks:0};
 
 export function App(){
@@ -121,6 +123,10 @@ export function App(){
     setSessionStatus("loading");
     try{openSession(await buildLexicalFluencyPractice(12));setSessionStatus("idle");}catch{setSessionStatus("error");}
   }
+  async function startProductiveTask(taskId:string){
+    setSessionStatus("loading");
+    try{openSession(await buildProductiveTaskPractice(taskId));setSessionStatus("idle");}catch{setSessionStatus("error");}
+  }
 
   async function handleAnswer(answer:StudyAnswer){
     await recordStudyAnswer({prompt:answer.prompt,response:answer.response,result:answer.grade.result,responseTimeMs:answer.responseTimeMs});
@@ -131,11 +137,11 @@ export function App(){
   if(session)return <div className="study-shell"><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></div>;
 
   return <div className="app-shell">
-    <header className="topbar"><div><strong>Japanese</strong><span className="phase">P7 B2 breadth · native media · collocations</span></div><button className="quiet-button account-button" type="button">Account</button></header>
+    <header className="topbar"><div><strong>Japanese</strong><span className="phase">P8 B2 consolidation · long-form autonomy · reliability</span></div><button className="quiet-button account-button" type="button">Account</button></header>
     <main className="content">
       {surface==="Today"&&<Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
       {surface==="Learn"&&<Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()}/>} 
-      {surface==="Immerse"&&<Immersion/>}
+      {surface==="Immerse"&&<Immersion onStartProductionTask={(taskId)=>void startProductiveTask(taskId)}/>} 
       {surface==="Progress"&&<Progress kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} immersion={immersion} summary={summary} course={courseProgress} completedToday={completedToday}/>} 
       {surface==="Library"&&<Library query={query} setQuery={setQuery} results={results} status={libraryStatus}/>}
     </main>
@@ -158,7 +164,7 @@ function Learn({summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,c
   const kanaCoverage=summary.totalKana?Math.round(summary.learnedKana/summary.totalKana*100):0;
   const vocabCoverage=summary.totalVocabulary?Math.round(summary.learnedVocabulary/summary.totalVocabulary*100):0;
   return <section className="dashboard learn-page"><p className="eyebrow">LEARN</p><h1>Foundation → B2</h1>
-    <p className="lead">P7 broadens B2 beyond isolated grammar: 626 canonical words, 120 tracked collocations, wider real-world genres, strategic connected-listening replay, independent production and provider-backed authentic-text analysis. AI judgments remain advisory and separate from durable mastery.</p>
+    <p className="lead">P8 consolidates B2 across time and context: multi-document autonomy missions, delayed transfer, sustained interaction chains, phrase-family/register contrast and longitudinal production reliability now sit on top of the existing B2 breadth. AI judgments remain advisory and separate from durable mastery.</p>
     <div className="course-stack foundation-stack">
       <article className="course-card"><div><span className="course-kicker">SCRIPT FOUNDATION</span><h2>Kana</h2><p>{foundationSections.map((section)=>section.label).join(" · ")}</p></div><div className="course-progress"><strong>{kanaCoverage}%</strong><span>{summary.learnedKana} / {summary.totalKana} introduced</span></div></article>
       <article className="course-card"><div><span className="course-kicker">A1→B2 LEXICON</span><h2>Useful words + kanji in context</h2><p>Meaning · reading · listening · active recall</p></div><div className="course-progress"><strong>{vocabCoverage}%</strong><span>{summary.learnedVocabulary} / {summary.totalVocabulary} words introduced</span></div></article>
@@ -166,8 +172,8 @@ function Learn({summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,c
 
     <section className="mastery-section productive-card">
       <div className="section-heading"><div><span className="course-kicker">B2 LEXICAL FLUENCY</span><h2>Collocations + reusable chunks</h2></div><span className="course-count">{lexicalFluency.totalChunks} chunks</span></div>
-      <p>Knowing individual words is not counted as knowing the combination. P7 tracks recognition and active production of phrases such as 影響を与える, 合意に達する and 根拠を示す as their own durable evidence.</p>
-      <div className="mastery-grid"><MasteryBar label="Chunk recognition" value={lexicalFluency.recognition}/><MasteryBar label="Chunk active use" value={lexicalFluency.activeUse}/></div>
+      <p>Knowing individual words is not counted as knowing the combination. P8 adds context/register transfer on top of recognition and active production, so similar phrases must be selected appropriately rather than merely recognized.</p>
+      <div className="mastery-grid"><MasteryBar label="Chunk recognition" value={lexicalFluency.recognition}/><MasteryBar label="Chunk active use" value={lexicalFluency.activeUse}/><MasteryBar label="Register + phrase-family transfer" value={lexicalFluency.registerTransfer}/></div>
       <button className="unit-action" disabled={status==="loading"} type="button" onClick={onLexicalFluency}>Practice lexical fluency</button>
     </section>
 
@@ -256,10 +262,12 @@ function Progress({kana,vocab,conjugation,grammar,sentence,lexicalFluency,milest
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">VOCABULARY</span><h2>Word mastery</h2></div><strong>{percent(vocab.overall)}</strong></div><div className="mastery-grid"><MasteryBar label="Meaning recognition" value={vocab.meaning}/><MasteryBar label="Reading recall" value={vocab.reading}/><MasteryBar label="Listening recognition" value={vocab.listening}/><MasteryBar label="Active use" value={vocab.activeUse}/><MasteryBar label="Model confidence" value={vocab.confidence}/></div></section>
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">CONJUGATION</span><h2>Generated forms</h2></div><strong>{percent(conjugation.overall)}</strong></div><div className="mastery-grid"><MasteryBar label="Polite negative" value={conjugation.politeNegative}/><MasteryBar label="Polite past" value={conjugation.politePast}/><MasteryBar label="Polite past negative" value={conjugation.politePastNegative}/><MasteryBar label="て-form" value={conjugation.teForm}/><MasteryBar label="Model confidence" value={conjugation.confidence}/></div></section>
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">GRAMMAR</span><h2>Concept + contextual form</h2></div><strong>{percent(grammar.overall)}</strong></div><div className="mastery-grid"><MasteryBar label="Function comprehension" value={grammar.comprehension}/><MasteryBar label="Contextual form selection" value={grammar.formSelection}/><MasteryBar label="Model confidence" value={grammar.confidence}/></div></section>
-    <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">SENTENCES</span><h2>Connected knowledge</h2></div><strong>{percent(sentence.overall)}</strong></div><div className="mastery-grid"><MasteryBar label="Sentence comprehension" value={sentence.comprehension}/><MasteryBar label="Sentence production" value={sentence.production}/><MasteryBar label="B2 lexical chunks" value={lexicalFluency.overall}/><MasteryBar label="Model confidence" value={sentence.confidence}/></div></section>
+    <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">SENTENCES</span><h2>Connected knowledge</h2></div><strong>{percent(sentence.overall)}</strong></div><div className="mastery-grid"><MasteryBar label="Sentence comprehension" value={sentence.comprehension}/><MasteryBar label="Sentence production" value={sentence.production}/><MasteryBar label="B2 lexical chunks" value={lexicalFluency.overall}/><MasteryBar label="Register transfer" value={lexicalFluency.registerTransfer}/><MasteryBar label="Model confidence" value={sentence.confidence}/></div></section>
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">IMMERSION</span><h2>Connected text transfer</h2></div><strong>{immersion.texts.length} texts</strong></div><div className="mastery-grid"><MasteryBar label="Reading text mastery" value={mean(immersion.texts.map((item)=>item.readingMastery))}/><MasteryBar label="Connected listening mastery" value={mean(immersion.texts.map((item)=>item.listeningMastery))}/><MasteryBar label="Average lexical readiness" value={mean(immersion.texts.map((item)=>item.readiness))}/></div><p className="course-note">{immersion.minedWords} mined words · {immersion.lookups} reader lookups · {immersion.readingChecks} reading checks · {immersion.listeningChecks} listening checks</p></section>
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">A1 ASSESSMENT</span><h2>Language activities</h2></div><strong>{milestone.answered} / {milestone.total}</strong></div><div className="mastery-grid"><MasteryBar label="Reading" value={milestone.scores.reading.score}/><MasteryBar label="Listening" value={milestone.scores.listening.score}/><MasteryBar label="Spoken interaction*" value={milestone.scores.spoken_interaction.score}/><MasteryBar label="Spoken production*" value={milestone.scores.spoken_production.score}/><MasteryBar label="Writing" value={milestone.scores.writing.score}/></div><p className="course-note">*Text-backed say-then-type proxy; pronunciation is not scored in P2.5.</p></section>
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">B1 ASSESSMENT</span><h2>Independent language activities</h2></div><strong>{b1Milestone.answered} / {b1Milestone.total}</strong></div><div className="mastery-grid"><MasteryBar label="Reading" value={b1Milestone.scores.reading.score}/><MasteryBar label="Listening" value={b1Milestone.scores.listening.score}/><MasteryBar label="Spoken interaction" value={b1Milestone.scores.spoken_interaction.score}/><MasteryBar label="Spoken production" value={b1Milestone.scores.spoken_production.score}/><MasteryBar label="Writing" value={b1Milestone.scores.writing.score}/></div><p className="course-note">Speech uses recognized Japanese transcripts and writing uses structural target coverage. Shadowing self-review is tracked separately as pronunciation evidence.</p></section>
+    <B2Portfolio/>
+    <ProviderHealthPanel/>
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">B2 ASSESSMENT</span><h2>Independent communication</h2></div><strong>{b2Milestone.answered} / {b2Milestone.total}</strong></div><div className="mastery-grid"><MasteryBar label="Reading" value={b2Milestone.scores.reading.score}/><MasteryBar label="Listening" value={b2Milestone.scores.listening.score}/><MasteryBar label="Spoken interaction" value={b2Milestone.scores.spoken_interaction.score}/><MasteryBar label="Spoken production" value={b2Milestone.scores.spoken_production.score}/><MasteryBar label="Writing" value={b2Milestone.scores.writing.score}/></div><p className="course-note">B2 listening currently uses an explicitly labeled device Japanese voice where no reusable native recording exists. AI feedback never changes these scores.</p></section>
     <div className="stat-row four"><Stat value={kana.evidenceCount+vocab.evidenceCount+conjugation.evidenceCount+grammar.evidenceCount+sentence.evidenceCount+lexicalFluency.evidenceCount} label="Graded answers"/><Stat value={course.filter((unit)=>unit.assessment.status==="passed").length} label="Unit checks passed"/><Stat value={summary.due} label="Due now"/><Stat value={summary.memoryTraces} label="Memory traces"/></div>
     <p className="session-note">{completedToday} answers recorded in this open session.</p>

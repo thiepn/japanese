@@ -10,46 +10,28 @@ Primary product surfaces: **Today · Learn · Immerse · Library · Progress**.
 
 ## Current phase
 
-**P6 — B1→B2 Independent Communication, AI Conversation & Advanced Feedback is implemented.**
+**P8 — B2 Consolidation, Long-Form Autonomy & Production Reliability is implemented.**
 
-The app now provides one connected Foundation → A1 → A2 → B1 → B2-bridge → immersion system:
+The unified Foundation → A1 → A2 → B1 → B2 system now includes:
 
-- reusable Study Player for lessons, reviews, listening, grammar, conjugation, sentences, connected writing, microphone speaking and assessments;
-- complete hiragana/katakana Foundation with multi-skill evidence;
-- **416 canonical lexemes** with meanings, readings, source provenance and native audio where verified;
-- **102 grammar concepts**, including B2 qualification, evidence, concession, formal framing, linked change and risk language;
-- **267 linked sentences** and **50 capability-centered course units** in one course graph;
-- delayed unit checks plus separate A1, B1 and B2 five-area milestones;
-- **30 canonical graded texts** spanning A1 through B2, including coherent multi-speaker B2 dialogue;
-- **20 canonical productive tasks**: 10 B1 and 10 B2;
-- connected writing and browser-microphone speaking through the same learner-evidence path;
-- multi-turn AI conversation and writing revision with feedback split into grammar, vocabulary, coherence and task achievement;
-- an explicit AI evidence contract that prevents model judgments from silently changing durable mastery;
-- listening-first connected playback that can hide the transcript until one full playback finishes;
-- listen → record → compare shadowing with local-only recording playback and self-rated pronunciation evidence;
-- cross-surface adaptive remediation derived from course, production and immersion evidence;
-- **203 canonical native vocabulary audio assets** with explicit license, attribution and native-speaker metadata;
-- bounded B1/B2 deinflection with explicit confidence and canonical sense-ambiguity metadata;
-- a provider contract for dictionary-grade morphology without falsely labeling the built-in heuristic as dictionary-grade;
-- private paste / TXT / Markdown / SRT / VTT ingestion plus licensed JSON source-pack import;
-- source-pack admission that keeps text/audio licensing separate and refuses NC/ND or unverifiable native-audio claims;
-- contextual vocabulary and full-sentence mining back into the normal Today/FSRS path;
-- persistent account-scoped learner data without copying learner-owned material into the public content package.
+- 626 canonical lexemes, 102 grammar concepts, 327 linked sentences and 58 structured capability units;
+- 120 first-class B2 lexical chunks with separate recognition, active-use and contextual register-transfer evidence;
+- 42 graded texts and readiness-driven extensive B2 tracks;
+- six long-form autonomy missions that combine multiple texts, listening checks, independent production and delayed transfer;
+- 32 productive tasks plus focused mission-specific Study Player sessions;
+- four-stage AI scenario chains for planning, clarification, repair and follow-up;
+- delayed AI revisions linked to earlier learner responses after 20+ hours;
+- cross-session production-reliability projections that require successful evidence on different days;
+- a descriptive cumulative B2 portfolio with recent learner-authored writing/speaking artifacts and no manufactured CEFR verdict;
+- licensed source-pack support for multiple native connected-audio variants with explicit rate/register/speaker metadata;
+- sentence/turn replay with source timing where recordings provide it;
+- dictionary-grade morphology and AI-coach provider boundaries with no-store health probes and visible fallback state;
+- private authentic-input mining, contextual collocation detection, account-scoped persistence and unified FSRS scheduling.
 
-Current core content package: **v0.8.0 / schema 9** with 416 lexemes, 102 grammar concepts, 267 sentences, 50 Can-do descriptors, 50 structured units, 30 graded texts, 203 canonical audio assets and 20 productive tasks.
+P8 preserves strict evidence boundaries: AI feedback remains advisory, structural target checks are not complete semantic assessment, speech-recognition transcripts are not acoustic pronunciation scores, device synthesis is never labeled native and provider status never becomes learner mastery.
 
-P6 deliberately keeps several evidence boundaries strict. AI feedback is advisory rather than learner truth; browser speech recognition is not acoustic pronunciation scoring; device speech synthesis is not native audio; the internal B2 milestone is not an accredited CEFR examination; and the built-in morphology layer remains bounded until a real dictionary-grade provider is connected.
+External AI/morphology runtimes and broader native-audio inventory remain deployment/source dependent. See `docs/P8_ACCEPTANCE.md`.
 
-Live AI coaching requires a server-side provider behind `VITE_JAPANESE_COACH_ENDPOINT` (default `/api/japanese/coach`). No API secret is placed in the browser.
+The next development phase is **P9 — B2 Real-World Performance, Native Listening Depth & Release Qualification**.
 
-## P7 — B2 Breadth, Native Media & Advanced Lexical/Collocational Fluency
-
-P7 is implemented. The unified app now contains 626 canonical lexemes, 120 first-class B2 collocations, 327 linked sentences, 58 structured units, 42 graded texts and 32 productive tasks. B2 input spans workplace, media, research, public/community, environment, technology, negotiation and everyday decision domains.
-
-Lexical chunks have their own recognition/active-use StudyEvents and FSRS traces. Connected listening supports sentence replay and source-timed native-audio segments when licensed media provides timing. Authentic input can use a configured dictionary-grade morphology endpoint while retaining visible confidence, ambiguity and deterministic fallback. AI revision history reconstructs recurring advisory correction patterns without changing learner mastery.
-
-Native recordings are still admitted only with explicit source/license/native-speaker metadata; original THIEPN passages with no licensed recording continue to use visibly labeled synthesis rather than fake native audio. See `docs/P7_ACCEPTANCE.md`.
-
-The next development phase is **P8 — B2 Consolidation, Long-Form Autonomy & Production Reliability**.
-
-See `docs/P1_ACCEPTANCE.md`, `docs/P2_ACCEPTANCE.md`, `docs/P2_5_ACCEPTANCE.md`, `docs/P3_ACCEPTANCE.md`, `docs/P4_ACCEPTANCE.md`, `docs/P5_ACCEPTANCE.md`, `docs/P6_ACCEPTANCE.md`, `docs/P7_ACCEPTANCE.md`, `docs/SOURCE_PACK_FORMAT.md`, `docs/P1_5_MOBILE_CERTIFICATION.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md` and `docs/THIRD_PARTY_NOTICES.md`.
+See `docs/P1_ACCEPTANCE.md`, `docs/P2_ACCEPTANCE.md`, `docs/P2_5_ACCEPTANCE.md`, `docs/P3_ACCEPTANCE.md`, `docs/P4_ACCEPTANCE.md`, `docs/P5_ACCEPTANCE.md`, `docs/P6_ACCEPTANCE.md`, `docs/P7_ACCEPTANCE.md`, `docs/P8_ACCEPTANCE.md`, `docs/SOURCE_PACK_FORMAT.md`, `docs/P1_5_MOBILE_CERTIFICATION.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md` and `docs/THIRD_PARTY_NOTICES.md`.

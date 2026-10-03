@@ -21,7 +21,7 @@ function pack(){
   });
 }
 
-describe("P7 Japanese source-pack policy",()=>{
+describe("P8 Japanese source-pack policy",()=>{
   it("admits an explicitly redistributable attributed pack and native recording",()=>{
     expect(validateJapaneseSourcePack(pack())).toEqual({valid:true,errors:[],warnings:[]});
   });
@@ -48,6 +48,25 @@ describe("P7 Japanese source-pack policy",()=>{
     const result=validateJapaneseSourcePack(invalid);
     expect(result.valid).toBe(false);
     expect(result.errors.join(" ")).toMatch(/nativeSpeaker|audio license/);
+  });
+
+  it("admits multiple licensed native variants with explicit speed and register metadata",()=>{
+    const varied=pack();
+    varied.items[0]!.audio!.speechRate="natural";
+    varied.items[0]!.audio!.register="polite";
+    varied.items[0]!.audioVariants=[{
+      url:"https://example.test/audio-casual.mp3",credit:"Fixture Speaker 2",licenseName:"CC BY 4.0",
+      attributionUrl:"https://example.test/audio-casual",nativeSpeaker:true,speechRate:"fast",register:"casual",speakerLabel:"Speaker B"
+    }];
+    const result=validateJapaneseSourcePack(varied);
+    expect(result.valid).toBe(true);
+    expect(result.errors).toEqual([]);
+  });
+
+  it("rejects duplicate audio-variant identities",()=>{
+    const varied=pack();
+    varied.items[0]!.audioVariants=[{...varied.items[0]!.audio!}];
+    expect(validateJapaneseSourcePack(varied).valid).toBe(false);
   });
 
   it("warns instead of fabricating native audio when text has no recording",()=>{
