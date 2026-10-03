@@ -5,8 +5,8 @@ import {
 } from "@thiepn/local-db";
 import { coreContent } from "../coreContent";
 import { AUTHENTIC_ACCOUNT_ID } from "./authentic";
-import { DEVELOPMENT_DEVICE_ID } from "../study/runtime";
 
+const DEVICE_ID="p9-native-listening";
 const DELAY_MS=20*60*60*1000;
 
 export interface NativeListeningSource {
@@ -161,7 +161,7 @@ function baseEvent(input:Partial<StudyEvent>&Pick<StudyEvent,"activity">):StudyE
   return {
     id:crypto.randomUUID(),
     userId:AUTHENTIC_ACCOUNT_ID,
-    deviceId:DEVELOPMENT_DEVICE_ID,
+    deviceId:DEVICE_ID,
     occurredAt:new Date().toISOString(),
     contentVersion:coreContent.version,
     learnerModelVersion:"p9",
