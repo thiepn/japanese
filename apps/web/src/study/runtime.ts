@@ -16,6 +16,7 @@ import { buildPrivateVocabularyPrompts } from "./privateVocabulary";
 import { buildPrivateSentencePrompts } from "./privateSentences";
 import { productivePracticeSession,productiveTaskSession,productivePrompts } from "./productivePractice";
 import { lexicalChunkLessons,lexicalChunkMeaningPrompts,lexicalChunkActivePrompts,lexicalChunkTransferPrompts,lexicalChunkPrompts,lexicalFluencySession } from "./lexicalFluency";
+import { buildNextRealWorldChainSession,buildP9QualificationSession } from "./realWorldPerformance";
 
 export const DEVELOPMENT_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
 export const DEVELOPMENT_DEVICE_ID="p2-local-browser";
@@ -119,6 +120,12 @@ export async function buildProductivePractice(mode:"writing"|"speaking"):Promise
 }
 export async function buildProductiveTaskPractice(taskId:string):Promise<StudyStep[]>{
   return productiveTaskSession(taskId);
+}
+export async function buildP9RealWorldChainSession(chainId:string):Promise<StudyStep[]>{
+  return buildNextRealWorldChainSession(chainId);
+}
+export async function buildP9RealWorldQualificationSession(limit=10):Promise<StudyStep[]>{
+  return buildP9QualificationSession(limit);
 }
 export async function buildLexicalFluencyPractice(limit=12):Promise<StudyStep[]>{
   const prompts=lexicalFluencySession(limit);
