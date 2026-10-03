@@ -1,7 +1,8 @@
 import { describe,expect,it } from "vitest";
 import { createHttpJapaneseMorphologyProvider,parseMorphologyAnalysis,selectProviderCandidate,senseResolutionForIds } from "../../packages/japanese-nlp/src/index";
+import { createMorphologyFetchHandler } from "../../services/api/src/morphology";
 
-describe("P7 morphology contracts",()=>{
+describe("P8 morphology contracts and observability",()=>{
   it("keeps ambiguous senses explicit instead of pretending to disambiguate them",()=>{
     expect(senseResolutionForIds(["sense-a","sense-b"])).toBe("ambiguous");
     expect(senseResolutionForIds(["sense-a"])).toBe("single");
@@ -25,6 +26,19 @@ describe("P7 morphology contracts",()=>{
     const result=await provider.analyze("制度");
     expect(result.provider).toBe("sudachi");
     expect(result.tokens[0]?.candidates[0]).toMatchObject({lexemeId:"b2-system",resolution:"provider"});
+  });
+
+  it("reports dictionary-provider health independently of tokenization requests",async()=>{
+    let tokenizations=0;
+    const handler=createMorphologyFetchHandler({
+      provider:"fixture-dictionary",
+      tokenize(){tokenizations+=1;return [];},
+      healthCheck(){return {ok:true,detail:"dictionary loaded"};}
+    });
+    const response=await handler(new Request("https://example.test/api/japanese/morphology",{method:"GET"}));
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({service:"japanese-morphology",status:"ok",provider:"fixture-dictionary",dictionaryGrade:true,operational:true});
+    expect(tokenizations).toBe(0);
   });
 
   it("prefers provider-backed dictionary analysis when one is available",()=>{
