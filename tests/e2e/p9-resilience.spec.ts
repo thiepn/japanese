@@ -15,16 +15,7 @@ test("P9 real-world performance, native listening and provider fallbacks survive
   await expect(page.getByText("Timed response",{exact:true})).toBeVisible();
   await page.getByRole("button",{name:"Exit"}).click();
 
-  const navTargetProgress=page.getByRole("button",{name:"Progress"});
-  const navDebugProgress=await navTargetProgress.evaluate((element)=>{
-    const rect=element.getBoundingClientRect();
-    const nav=element.closest(".nav");
-    const hit=document.elementFromPoint(rect.left+rect.width/2,rect.top+rect.height/2);
-    const style=getComputedStyle(element),navStyle=nav?getComputedStyle(nav):null;
-    return {rect:{left:rect.left,top:rect.top,width:rect.width,height:rect.height},hit:hit?hit.tagName+"."+hit.className:"none",buttonPointer:style.pointerEvents,buttonZ:style.zIndex,navPointer:navStyle?.pointerEvents,navPosition:navStyle?.position,navZ:navStyle?.zIndex,navVisibility:navStyle?.visibility,navOpacity:navStyle?.opacity};
-  });
-  console.log("NAV_DEBUG_Progress",JSON.stringify(navDebugProgress));
-  await navTargetProgress.click({force:true});
+  await page.getByRole("button",{name:"Progress"}).click();
   await expect(page.getByRole("heading",{name:"AI + morphology runtime status"})).toBeVisible();
   await expect(page.locator(".provider-health-card.degraded,.provider-health-card.unreachable").first()).toBeVisible();
 
@@ -32,6 +23,8 @@ test("P9 real-world performance, native listening and provider fallbacks survive
   await expect(page.getByRole("heading",{name:"Listen → note → synthesize → recall later"})).toBeVisible();
 
   await page.evaluate(async()=>{if(!("serviceWorker" in navigator))throw new Error("SERVICE_WORKER_UNAVAILABLE");await navigator.serviceWorker.ready;});
+  await page.reload();
+  await expect(page.getByRole("heading",{name:/Continue Japanese|You’re caught up/})).toBeVisible();
   await context.setOffline(true);
   await page.reload();
   await expect(page.getByRole("heading",{name:/Continue Japanese|You’re caught up/})).toBeVisible();
