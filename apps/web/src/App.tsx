@@ -164,7 +164,7 @@ function Learn({summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,c
   const kanaCoverage=summary.totalKana?Math.round(summary.learnedKana/summary.totalKana*100):0;
   const vocabCoverage=summary.totalVocabulary?Math.round(summary.learnedVocabulary/summary.totalVocabulary*100):0;
   return <section className="dashboard learn-page"><p className="eyebrow">LEARN</p><h1>Foundation → B2</h1>
-    <p className="lead">P7 broadens B2 beyond isolated grammar: 626 canonical words, 120 tracked collocations, wider real-world genres, strategic connected-listening replay, independent production and provider-backed authentic-text analysis. AI judgments remain advisory and separate from durable mastery.</p>
+    <p className="lead">P8 consolidates B2 across time and context: multi-document autonomy missions, delayed transfer, sustained interaction chains, phrase-family/register contrast and longitudinal production reliability now sit on top of the existing B2 breadth. AI judgments remain advisory and separate from durable mastery.</p>
     <div className="course-stack foundation-stack">
       <article className="course-card"><div><span className="course-kicker">SCRIPT FOUNDATION</span><h2>Kana</h2><p>{foundationSections.map((section)=>section.label).join(" · ")}</p></div><div className="course-progress"><strong>{kanaCoverage}%</strong><span>{summary.learnedKana} / {summary.totalKana} introduced</span></div></article>
       <article className="course-card"><div><span className="course-kicker">A1→B2 LEXICON</span><h2>Useful words + kanji in context</h2><p>Meaning · reading · listening · active recall</p></div><div className="course-progress"><strong>{vocabCoverage}%</strong><span>{summary.learnedVocabulary} / {summary.totalVocabulary} words introduced</span></div></article>
@@ -172,7 +172,7 @@ function Learn({summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,c
 
     <section className="mastery-section productive-card">
       <div className="section-heading"><div><span className="course-kicker">B2 LEXICAL FLUENCY</span><h2>Collocations + reusable chunks</h2></div><span className="course-count">{lexicalFluency.totalChunks} chunks</span></div>
-      <p>Knowing individual words is not counted as knowing the combination. P7 tracks recognition and active production of phrases such as 影響を与える, 合意に達する and 根拠を示す as their own durable evidence.</p>
+      <p>Knowing individual words is not counted as knowing the combination. P8 adds context/register transfer on top of recognition and active production, so similar phrases must be selected appropriately rather than merely recognized.</p>
       <div className="mastery-grid"><MasteryBar label="Chunk recognition" value={lexicalFluency.recognition}/><MasteryBar label="Chunk active use" value={lexicalFluency.activeUse}/><MasteryBar label="Register + phrase-family transfer" value={lexicalFluency.registerTransfer}/></div>
       <button className="unit-action" disabled={status==="loading"} type="button" onClick={onLexicalFluency}>Practice lexical fluency</button>
     </section>
