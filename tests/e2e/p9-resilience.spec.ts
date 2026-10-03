@@ -14,6 +14,7 @@ test("P9 real-world performance, native listening and provider fallbacks survive
   await page.getByRole("button",{name:"Continue"}).click();
   await expect(page.getByText("Timed response",{exact:true})).toBeVisible();
   await page.getByRole("button",{name:"Exit"}).click();
+  await expect(page.getByRole("heading",{name:"Foundation → B2"})).toBeVisible();
 
   await page.getByRole("button",{name:"Progress"}).click();
   await expect(page.getByRole("heading",{name:"AI + morphology runtime status"})).toBeVisible();
