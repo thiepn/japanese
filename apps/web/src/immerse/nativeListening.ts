@@ -49,8 +49,8 @@ export async function getNativeListeningDepthSummary():Promise<NativeListeningDe
   const sessions=events.filter((event)=>event.metadata?.p9NativeMultiSourceSynthesis===true);
   const recalls=events.filter((event)=>event.metadata?.p9NativeDelayedRecall===true);
   const speakers=new Set(recordings.map((audio)=>audio.speakerLabel??audio.credit).filter(Boolean));
-  const registers=[...new Set(recordings.map((audio)=>audio.register).filter((value):value is string=>Boolean(value)))].sort();
-  const speechRates=[...new Set(recordings.map((audio)=>audio.speechRate).filter((value):value is string=>Boolean(value)))].sort();
+  const registers=[...new Set(recordings.flatMap((audio)=>audio.register?[audio.register]:[]))].sort();
+  const speechRates=[...new Set(recordings.flatMap((audio)=>audio.speechRate?[audio.speechRate]:[]))].sort();
   const latest=[...sessions].sort((a,b)=>b.occurredAt.localeCompare(a.occurredAt))[0];
   return {
     sourceDocuments:sources.length,
