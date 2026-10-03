@@ -5,12 +5,20 @@ export interface JsonCoachModel {
   provider:string;
   model?:string;
   completeJson(input:{system:string;user:string;schema:Record<string,unknown>}):Promise<unknown>;
+  healthCheck?:()=>Promise<{ok:boolean;detail?:string}>|{ok:boolean;detail?:string};
 }
 
 export function createCoachFetchHandler(model:JsonCoachModel){
   const handle=createCoachHandler(model);
   return async function handleCoachRequest(request:Request):Promise<Response>{
-    if(request.method!=="POST")return jsonResponse({error:"METHOD_NOT_ALLOWED"},405,{Allow:"POST"});
+    if(request.method==="GET"){
+      if(!model.healthCheck)return jsonResponse({service:"japanese-coach",status:"configured",provider:model.provider,...(model.model?{model:model.model}:{}),operational:null},200);
+      try{
+        const health=await model.healthCheck();
+        return jsonResponse({service:"japanese-coach",status:health.ok?"ok":"degraded",provider:model.provider,...(model.model?{model:model.model}:{}),operational:health.ok,...(health.detail?{detail:health.detail}:{})},health.ok?200:503);
+      }catch{return jsonResponse({service:"japanese-coach",status:"degraded",provider:model.provider,...(model.model?{model:model.model}:{}),operational:false},503);}
+    }
+    if(request.method!=="POST")return jsonResponse({error:"METHOD_NOT_ALLOWED"},405,{Allow:"GET, POST"});
     const contentLength=Number(request.headers.get("content-length")??0);
     if(Number.isFinite(contentLength)&&contentLength>16_384)return jsonResponse({error:"REQUEST_TOO_LARGE"},413);
     let input:unknown;
