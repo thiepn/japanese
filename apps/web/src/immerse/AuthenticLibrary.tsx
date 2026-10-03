@@ -7,7 +7,7 @@ import {
   recordPrivateComprehension,recordPrivateListening,recordPrivateReading,saveUnknownAsPrivateVocabulary,splitJapaneseSentences,
   type AuthenticToken,type PrivateDocumentView
 } from "./authentic";
-import { deletePrivateDocument } from "@thiepn/local-db";
+import { deletePrivateDocument,type PrivateNativeAudio } from "@thiepn/local-db";
 import { AUTHENTIC_ACCOUNT_ID } from "./authentic";
 import { importJapaneseSourcePack,parseJapaneseSourcePack,validateJapaneseSourcePack } from "./sourcePacks";
 
@@ -86,7 +86,7 @@ export function AuthenticLibrary(){
     {message?<p className="import-message" role="status">{message}</p>:null}
     <div className="private-doc-list">
       {documents.map((view)=><article className="private-doc-card" key={view.document.id}>
-        <div><div className="immersion-meta"><span>{view.document.sourceKind.replace("_"," ")}</span><span>{view.analysis.difficulty}</span>{view.document.nativeAudio?<span>native audio</span>:null}</div>
+        <div><div className="immersion-meta"><span>{view.document.sourceKind.replace("_"," ")}</span><span>{view.analysis.difficulty}</span>{view.document.nativeAudio||view.document.nativeAudioVariants?.length?<span>{Math.max(1,view.document.nativeAudioVariants?.length??0)} native audio{(view.document.nativeAudioVariants?.length??0)>1?" variants":""}</span>:null}</div>
           <h3>{view.document.title}</h3><p>{preview(view.document.text)}</p>
           <div className="readiness"><div><span>Known lexical tokens</span><strong>{Math.round(view.analysis.knownRatio*100)}%</strong></div><div className="meter"><span style={{width:Math.round(view.analysis.knownRatio*100)+"%"}}/></div>
             <small>{view.analysis.unknownTypes.length} unique unresolved forms · reading {Math.round(view.readingMastery*100)}% · listening {Math.round(view.listeningMastery*100)}%</small></div>
@@ -104,6 +104,7 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
   const [reading,setReading]=useState("");
   const [speaking,setSpeaking]=useState(false);
   const [audioState,setAudioState]=useState<"idle"|"playing"|"error">("idle");
+  const [audioVariantIndex,setAudioVariantIndex]=useState(0);
   const [sentenceCandidate,setSentenceCandidate]=useState<string|null>(null);
   const [sentenceTranslation,setSentenceTranslation]=useState("");
   const [mineMessage,setMineMessage]=useState("");
@@ -112,8 +113,14 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
   const [analysisStatus,setAnalysisStatus]=useState<"local"|"loading"|"provider"|"fallback">(morphologyProvider?"loading":"local");
   const sourceSentences=useMemo(()=>splitJapaneseSentences(view.document.text),[view.document.text]);
   const detectedChunks=useMemo(()=>findLexicalChunksInText(view.document.text),[view.document.text]);
+  const audioVariants=useMemo<PrivateNativeAudio[]>(()=>{
+    if(view.document.nativeAudioVariants?.length)return view.document.nativeAudioVariants;
+    return view.document.nativeAudio?[view.document.nativeAudio]:[];
+  },[view.document.nativeAudio,view.document.nativeAudioVariants]);
+  const activeNativeAudio=audioVariants[Math.min(audioVariantIndex,Math.max(0,audioVariants.length-1))]??null;
   const audioProvider=useRef(getDefaultAudioProvider());
 
+  useEffect(()=>{setAudioVariantIndex(0);},[view.document.id]);
   useEffect(()=>{
     let cancelled=false;
     setAnalysis(localAnalysis);
@@ -126,9 +133,9 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
     return()=>{cancelled=true;audioProvider.current.stop();if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();};
   },[localAnalysis,view.document.text]);
 
-  function nativeAsset():AudioAssetRecord|null{
-    const native=view.document.nativeAudio;if(!native)return null;
-    return {id:"private-"+view.document.id,kind:"sentence",text:view.document.text,language:"ja",format:native.url.toLowerCase().includes(".ogg")?"ogg":"mp3",url:native.url,credit:native.credit,licenseName:native.licenseName,...(native.attributionUrl?{attributionUrl:native.attributionUrl}:{}),...(native.externalId?{externalId:native.externalId}:{}),nativeSpeaker:true,sourceIds:["private-native-media"]};
+  function nativeAsset(native:PrivateNativeAudio|null=activeNativeAudio):AudioAssetRecord|null{
+    if(!native)return null;
+    return {id:"private-"+view.document.id+"-"+(native.externalId??audioVariantIndex),kind:"sentence",text:view.document.text,language:"ja",format:native.url.toLowerCase().includes(".ogg")?"ogg":"mp3",url:native.url,credit:native.credit,licenseName:native.licenseName,...(native.attributionUrl?{attributionUrl:native.attributionUrl}:{}),...(native.externalId?{externalId:native.externalId}:{}),nativeSpeaker:true,sourceIds:["private-native-media"]};
   }
   async function playNative(rate=1){
     const asset=nativeAsset();if(!asset)return;
@@ -170,13 +177,14 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
     <div className="authentic-summary"><div><strong>{Math.round(analysis.knownRatio*100)}%</strong><span>known lexical tokens</span></div><div><strong>{analysis.unknownTypes.length}</strong><span>unique unresolved forms</span></div><div><strong>{analysis.difficulty}</strong><span>estimated stretch</span></div></div>
     <p className="morphology-status">{analysisStatus==="provider"?`Dictionary-grade analysis · ${analysis.analysisProvider??"provider"}`:analysisStatus==="loading"?"Checking dictionary-grade morphology…":analysisStatus==="fallback"?"Dictionary provider unavailable · bounded local analysis in use":"Bounded local analysis · configure VITE_JAPANESE_MORPHOLOGY_ENDPOINT for dictionary-grade parsing"}</p>
     <div className="authentic-audio">
-      {view.document.nativeAudio?<><button className="primary" disabled={audioState==="playing"} type="button" onClick={()=>void playNative(1)}>{audioState==="playing"?"Playing…":"Play native recording"}</button><button className="unit-action" disabled={audioState==="playing"} type="button" onClick={()=>void playNative(.82)}>Native slower</button></>:null}
+      {audioVariants.length>1?<div className="native-variant-picker"><strong>Native variants</strong><div>{audioVariants.map((audio,index)=><button className={index===audioVariantIndex?"active":""} type="button" key={audio.externalId??audio.url} disabled={audioState==="playing"} onClick={()=>setAudioVariantIndex(index)}>{audio.speechRate??"recording"} · {audio.register??"register n/a"}{audio.speakerLabel?" · "+audio.speakerLabel:""}</button>)}</div></div>:null}
+      {activeNativeAudio?<><button className="primary" disabled={audioState==="playing"} type="button" onClick={()=>void playNative(1)}>{audioState==="playing"?"Playing…":"Play native recording"}</button><button className="unit-action" disabled={audioState==="playing"} type="button" onClick={()=>void playNative(.82)}>Playback at 0.82×</button></>:null}
       <button className="unit-action" disabled={speaking||typeof speechSynthesis==="undefined"} type="button" onClick={()=>void speak(.92)}>{speaking?"Playing…":"Device voice fallback"}</button>
-      {view.document.nativeAudio?<small>{view.document.nativeAudio.credit} · {view.document.nativeAudio.licenseName}</small>:<small>No reusable native recording is attached. Device speech synthesis is labeled as fallback, not native audio.</small>}
+      {activeNativeAudio?<small>{activeNativeAudio.credit} · {activeNativeAudio.licenseName}{activeNativeAudio.speechRate?" · source rate: "+activeNativeAudio.speechRate:""}{activeNativeAudio.register?" · "+activeNativeAudio.register:""}</small>:<small>No reusable native recording is attached. Device speech synthesis is labeled as fallback, not native audio.</small>}
       {audioState==="error"?<span className="error-text">Native recording could not be played from its source.</span>:null}
-      {view.document.nativeAudio?.segments?.length?<div className="native-segment-list">
+      {activeNativeAudio?.segments?.length?<div className="native-segment-list">
         <strong>Native replay segments</strong>
-        {view.document.nativeAudio.segments.map((segment)=><div className="native-segment" key={segment.id}><span lang="ja">{segment.text}</span><div><button className="quiet-button" disabled={audioState==="playing"} type="button" onClick={()=>void playNativeSegment(segment,.95,1)}>Replay</button><button className="quiet-button" disabled={audioState==="playing"} type="button" onClick={()=>void playNativeSegment(segment,.82,2)}>Slow ×2</button></div></div>)}
+        {activeNativeAudio.segments.map((segment)=><div className="native-segment" key={segment.id}><span lang="ja">{segment.text}</span><div><button className="quiet-button" disabled={audioState==="playing"} type="button" onClick={()=>void playNativeSegment(segment,.95,1)}>Replay</button><button className="quiet-button" disabled={audioState==="playing"} type="button" onClick={()=>void playNativeSegment(segment,.82,2)}>Slow ×2</button></div></div>)}
       </div>:null}
     </div>
     {detectedChunks.length?<section className="authentic-collocations">
