@@ -214,3 +214,40 @@ AI coach and morphology routes may expose no-store health metadata independently
 A health response distinguishes configured, operational and degraded states. If a provider exposes no active health-check function, the API may report configured status but must not invent operational success.
 
 Browser UI can surface provider/fallback state, but operational metadata never becomes learner evidence.
+
+
+## P9 qualification-only prompt rule
+
+Real-world P9 performance prompts are stable application-defined `production_task` identities used for qualification rather than spaced repetition.
+
+They emit normal immutable StudyEvents, including learner response/transcript, structural result, first-presentation status and response-time evidence. Their metadata carries `schedulerExcluded:true`; the runtime must not create/update FSRS traces for these prompts.
+
+A time target is descriptive evidence. Exceeding the target never automatically changes a structurally correct answer into an incorrect result.
+
+## P9 native multi-source listening rule
+
+Native-listening depth is built only from account-scoped documents that contain recordings already admitted through the reusable-license/native-speaker policy.
+
+A multi-source listening session requires at least two source documents. Source notes, cross-source synthesis and delayed recall are retained as learner artifacts with `result=skipped` and semantic grading disabled.
+
+Delayed recall requires at least 20 hours from the original synthesis. The original synthesis is not surfaced by the recall workflow before the learner submits the recall.
+
+Synthetic TTS cannot satisfy a native-listening release gate.
+
+## P9 provider-quality rule
+
+Coach feedback quality is a bounded operational diagnostic. It may inspect correction anchoring, goal mentions, revision-prompt presence, feedback density and prohibited authority-style language.
+
+The diagnostic may be used for provider benchmarking and release admission. Its score is not learner mastery and must never be replayed into FSRS or milestone projections.
+
+## P9 portfolio-export rule
+
+B2 portfolio export is a versioned projection over existing evidence plus P9 performance/native-listening summaries.
+
+Exports must carry explicit evidence-boundary declarations and must not add an overall CEFR pass/fail field.
+
+## P9 release-gate rule
+
+C1 roadmap eligibility is a product/system release property. It requires every content, performance, native-media and regression gate in `releaseQualification.ts` to pass.
+
+A missing licensed native inventory is a legitimate blocking state. The software must not synthesize, relabel or infer native media simply to satisfy the gate.
