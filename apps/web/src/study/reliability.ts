@@ -1,6 +1,6 @@
 import type { StudyEvent } from "@thiepn/domain";
 import { listStudyEvents } from "@thiepn/local-db";
-import { productiveTasks } from "../coreContent";
+import { coreContent,productiveTasks } from "../coreContent";
 import { buildAutonomyMissionProgress,autonomyMissions,type AutonomyMissionProgress } from "./autonomyMissions";
 import { DEVELOPMENT_ACCOUNT_ID } from "./runtime";
 
@@ -157,8 +157,9 @@ export async function getB2PortfolioSummary():Promise<B2PortfolioSummary>{
 
 export function buildB2PortfolioSummary(events:readonly StudyEvent[]):B2PortfolioSummary{
   const b2TaskById=new Map(productiveTasks.filter((task)=>task.level==="B2").map((task)=>[task.id,task] as const));
-  const reading=new Set(events.filter((event)=>event.primaryTarget?.kind==="text"&&event.activity==="reading"&&isGraded(event)).map((event)=>event.primaryTarget!.id));
-  const listening=new Set(events.filter((event)=>event.primaryTarget?.kind==="text"&&event.activity==="listening"&&isGraded(event)).map((event)=>event.primaryTarget!.id));
+  const b2TextIds=new Set(coreContent.readingTexts.filter((text)=>text.level==="B2").map((text)=>text.id));
+  const reading=new Set(events.filter((event)=>event.primaryTarget?.kind==="text"&&b2TextIds.has(event.primaryTarget.id)&&event.activity==="reading"&&isGraded(event)).map((event)=>event.primaryTarget!.id));
+  const listening=new Set(events.filter((event)=>event.primaryTarget?.kind==="text"&&b2TextIds.has(event.primaryTarget.id)&&event.activity==="listening"&&isGraded(event)).map((event)=>event.primaryTarget!.id));
   const speaking=new Set(events.filter((event)=>event.primaryTarget?.kind==="production_task"&&b2TaskById.has(event.primaryTarget.id)&&event.activity==="speaking"&&isGraded(event)).map((event)=>event.primaryTarget!.id));
   const writing=new Set(events.filter((event)=>event.primaryTarget?.kind==="production_task"&&b2TaskById.has(event.primaryTarget.id)&&event.activity==="writing"&&isGraded(event)).map((event)=>event.primaryTarget!.id));
   const reliability=buildProductionReliabilitySummary(events);
@@ -181,7 +182,7 @@ export function buildB2PortfolioSummary(events:readonly StudyEvent[]):B2Portfoli
 
   const b2Evidence=events.filter((event)=>{
     if(event.primaryTarget?.kind==="production_task")return b2TaskById.has(event.primaryTarget.id);
-    if(event.primaryTarget?.kind==="text")return event.primaryTarget.id.startsWith("b2-")||event.primaryTarget.id.startsWith("p7-");
+    if(event.primaryTarget?.kind==="text")return b2TextIds.has(event.primaryTarget.id);
     if(event.primaryTarget?.kind==="lexical_chunk")return true;
     return false;
   }).sort((a,b)=>a.occurredAt.localeCompare(b.occurredAt));
