@@ -1,4 +1,4 @@
-import { useEffect,useState } from "react";
+import { useEffect,useLayoutEffect,useState } from "react";
 import { getDefaultAudioProvider } from "@thiepn/audio";
 import type { SearchResult } from "@thiepn/search";
 import { isStudyLesson,type StudyStep } from "@thiepn/study-player";
@@ -143,10 +143,12 @@ export function App(){
   }
   function finishSession(){window.scrollTo(0,0);setSession(null);void refreshDashboard();}
 
-  if(session)return <div className="study-shell"><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></div>;
+  useLayoutEffect(()=>{
+    if(session===null)window.scrollTo({top:0,left:0,behavior:"instant"});
+  },[session]);
 
   return <>
-    <div className="app-shell">
+    {session?<div className="study-shell"><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></div>:<div className="app-shell">
       <header className="topbar"><div><strong>Japanese</strong><span className="phase">P9 real-world B2 · native listening · release qualification</span></div><button className="quiet-button account-button" type="button">Account</button></header>
       <main className="content">
         {surface==="Today"&&<Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
@@ -155,8 +157,8 @@ export function App(){
         {surface==="Progress"&&<Progress kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} immersion={immersion} summary={summary} course={courseProgress} completedToday={completedToday}/>} 
         {surface==="Library"&&<Library query={query} setQuery={setQuery} results={results} status={libraryStatus}/>}
       </main>
-    </div>
-    <nav className="nav" aria-label="Primary">{(["Today","Learn","Immerse","Library","Progress"] as Surface[]).map((item)=><button key={item} className={surface===item?"active":""} onClick={()=>setSurface(item)} type="button">{item}</button>)}</nav>
+    </div>}
+    <nav className={"nav"+(session?" study-active":"")} aria-label="Primary" aria-hidden={session?true:undefined}>{(["Today","Learn","Immerse","Library","Progress"] as Surface[]).map((item)=><button key={item} disabled={Boolean(session)} tabIndex={session?-1:0} className={surface===item?"active":""} onClick={()=>setSurface(item)} type="button">{item}</button>)}</nav>
   </>;
 }
 
