@@ -10,6 +10,7 @@ export interface DictionaryMorpheme {
 export interface JapaneseDictionaryTokenizer {
   provider:string;
   tokenize(text:string):Promise<DictionaryMorpheme[]>|DictionaryMorpheme[];
+  healthCheck?:()=>Promise<{ok:boolean;detail?:string}>|{ok:boolean;detail?:string};
 }
 
 export function createSudachiMorphologyAdapter(tokenizer:{tokenize(text:string):unknown[]}):JapaneseDictionaryTokenizer{
@@ -32,7 +33,14 @@ export function createSudachiMorphologyAdapter(tokenizer:{tokenize(text:string):
 
 export function createMorphologyFetchHandler(tokenizer:JapaneseDictionaryTokenizer){
   return async function handleMorphologyRequest(request:Request):Promise<Response>{
-    if(request.method!=="POST")return json({error:"METHOD_NOT_ALLOWED"},405,{Allow:"POST"});
+    if(request.method==="GET"){
+      if(!tokenizer.healthCheck)return json({service:"japanese-morphology",status:"configured",provider:tokenizer.provider,dictionaryGrade:true,operational:null},200);
+      try{
+        const health=await tokenizer.healthCheck();
+        return json({service:"japanese-morphology",status:health.ok?"ok":"degraded",provider:tokenizer.provider,dictionaryGrade:true,operational:health.ok,...(health.detail?{detail:health.detail}:{})},health.ok?200:503);
+      }catch{return json({service:"japanese-morphology",status:"degraded",provider:tokenizer.provider,dictionaryGrade:true,operational:false},503);}
+    }
+    if(request.method!=="POST")return json({error:"METHOD_NOT_ALLOWED"},405,{Allow:"GET, POST"});
     const contentLength=Number(request.headers.get("content-length")??0);
     if(Number.isFinite(contentLength)&&contentLength>32_768)return json({error:"REQUEST_TOO_LARGE"},413);
     let raw:unknown;
