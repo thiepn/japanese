@@ -16,5 +16,10 @@ describe("Study Player domain",()=>{
     expect(event.activity).toBe("assessment");
     expect(event.metadata).toMatchObject({assessmentScope:"milestone",milestoneId:"a1",languageActivity:"writing"});
   });
+  it("stores learner-authored productive artifacts in immutable event metadata",()=>{
+    const writing:StudyPrompt={id:"write",primaryTarget:{kind:"production_task",id:"task"},skill:"writing_quality",cueFamily:"connected-writing",promptType:"textarea",instruction:"Write.",prompt:"Explain.",acceptedAnswers:["例"],displayAnswer:"例",requiredTerms:["理由"],minimumCharacters:3};
+    const event=createStudyEvent({id:"write-event",userId:"u",deviceId:"d",prompt:writing,response:"理由を説明します。",occurredAt:"2026-10-03T08:00:00Z",responseTimeMs:1500});
+    expect(event.metadata).toMatchObject({learnerResponse:"理由を説明します。",structuralResult:"correct"});
+  });
   it("keeps lesson cards distinct from graded prompts",()=>{const lesson:StudyLesson={kind:"lesson",id:"l",title:"Five vowels",body:"Learn them.",contextId:"hiragana-vowels"};expect(isStudyLesson(lesson)).toBe(true);expect(isStudyLesson(prompt)).toBe(false);});
 });
