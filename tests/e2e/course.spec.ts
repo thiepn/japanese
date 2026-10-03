@@ -20,16 +20,7 @@ test("structured A1→B2 course and canonical grammar/sentence search work on ev
   await expect(page.getByText(/polite/i).first()).toBeVisible();
 
   await page.getByRole("button",{name:"Exit"}).click();
-  const navTargetLibrary=page.getByRole("button",{name:"Library"});
-  const navDebugLibrary=await navTargetLibrary.evaluate((element)=>{
-    const rect=element.getBoundingClientRect();
-    const nav=element.closest(".nav");
-    const hit=document.elementFromPoint(rect.left+rect.width/2,rect.top+rect.height/2);
-    const style=getComputedStyle(element),navStyle=nav?getComputedStyle(nav):null;
-    return {rect:{left:rect.left,top:rect.top,width:rect.width,height:rect.height},hit:hit?hit.tagName+"."+hit.className:"none",buttonPointer:style.pointerEvents,buttonZ:style.zIndex,navPointer:navStyle?.pointerEvents,navPosition:navStyle?.position,navZ:navStyle?.zIndex,navVisibility:navStyle?.visibility,navOpacity:navStyle?.opacity};
-  });
-  console.log("NAV_DEBUG_Library",JSON.stringify(navDebugLibrary));
-  await navTargetLibrary.click({force:true});
+  await page.getByRole("button",{name:"Library"}).click();
   const search=page.getByRole("textbox",{name:"Search Japanese"});
 
   await search.fill("topic");
