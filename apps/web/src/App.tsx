@@ -141,7 +141,13 @@ export function App(){
     await recordStudyAnswer({prompt:answer.prompt,response:answer.response,result:answer.grade.result,responseTimeMs:answer.responseTimeMs});
     setCompletedToday((value)=>value+1);
   }
-  function finishSession(){window.scrollTo(0,0);setSession(null);void refreshDashboard();}
+  function finishSession(){
+    const active=document.activeElement;
+    if(active instanceof HTMLElement)active.blur();
+    setSession(null);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:"auto"})));
+    void refreshDashboard();
+  }
 
   useLayoutEffect(()=>{
     if(session===null)window.scrollTo({top:0,left:0,behavior:"instant"});
