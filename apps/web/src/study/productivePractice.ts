@@ -31,6 +31,25 @@ export function productivePromptForTask(taskId:string):StudyPrompt{
   return makePrompt(task);
 }
 
+export function productiveTaskSession(taskId:string):StudyStep[]{
+  const task=productiveTasks.find((item)=>item.id===taskId);
+  if(!task)throw new Error("UNKNOWN_PRODUCTIVE_TASK:"+taskId);
+  const intro:StudyLesson={
+    kind:"lesson",
+    id:"productive-single-"+task.id,
+    title:task.title,
+    body:"This task is part of a longer B2 autonomy chain. Produce the response independently; the built-in check only verifies transparent structural targets and response length.",
+    contextId:"productive-"+task.id,
+    facts:[
+      {label:"Mode",value:task.mode},
+      {label:"Level",value:task.level},
+      {label:"Targets",value:task.requiredTerms.join(" · "),language:"ja"}
+    ],
+    sourceLabel:"THIEPN Japanese B2 autonomy mission"
+  };
+  return [intro,makePrompt(task)];
+}
+
 function makePrompt(task:ProductiveTask):StudyPrompt{
   return {
     id:"productive-"+task.id,
