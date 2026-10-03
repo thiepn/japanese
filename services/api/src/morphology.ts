@@ -13,9 +13,10 @@ export interface JapaneseDictionaryTokenizer {
   healthCheck?:()=>Promise<{ok:boolean;detail?:string}>|{ok:boolean;detail?:string};
 }
 
-export function createSudachiMorphologyAdapter(tokenizer:{tokenize(text:string):unknown[]}):JapaneseDictionaryTokenizer{
+export function createSudachiMorphologyAdapter(tokenizer:{tokenize(text:string):unknown[];healthCheck?:()=>Promise<{ok:boolean;detail?:string}>|{ok:boolean;detail?:string}}):JapaneseDictionaryTokenizer{
   return {
     provider:"sudachi",
+    ...(tokenizer.healthCheck?{healthCheck:tokenizer.healthCheck}:{}),
     tokenize(text:string):DictionaryMorpheme[]{
       return tokenizer.tokenize(text).map((raw,index)=>{
         if(!raw||typeof raw!=="object")throw new Error("SUDACHI_TOKEN_INVALID:"+index);
