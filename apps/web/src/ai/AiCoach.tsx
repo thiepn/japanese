@@ -216,6 +216,7 @@ function FeedbackPanel({response}:{response:CoachResponse}){
       <FeedbackArea title="Task achievement" area={response.feedback.taskAchievement}/>
     </div>
     {response.revisionPrompt?<div className="coach-revision"><strong>Next revision</strong><p>{response.revisionPrompt}</p></div>:null}
+    {response.quality?<div className="coach-quality"><strong>Feedback grounding {Math.round(response.quality.score*100)}%</strong><span>{response.quality.anchoredCorrections}/{response.quality.correctionItems} correction items anchored to the learner text · {response.quality.goalMentions} goal mentions</span>{response.quality.warningCodes.length?<small>{response.quality.warningCodes.join(" · ")}</small>:<small>No grounding warnings detected by the bounded evaluator.</small>}</div>:null}
     <p className="course-note">AI feedback is advisory only · mastery unchanged · acoustic analysis: off</p>
   </div>;
 }

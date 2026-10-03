@@ -1,17 +1,29 @@
 import { useEffect,useState } from "react";
 import { getB2PortfolioSummary,type B2PortfolioSummary } from "./reliability";
+import { downloadPortfolioText,getB2PortfolioExport,serializeB2PortfolioJson,serializeB2PortfolioMarkdown } from "./portfolioExport";
 
 export function B2Portfolio(){
   const [portfolio,setPortfolio]=useState<B2PortfolioSummary|null>(null);
+  const [exporting,setExporting]=useState(false);
   useEffect(()=>{void getB2PortfolioSummary().then(setPortfolio).catch(()=>setPortfolio(null));},[]);
+  async function exportPortfolio(format:"json"|"markdown"){
+    setExporting(true);
+    try{
+      const value=await getB2PortfolioExport();
+      const stamp=value.generatedAt.slice(0,10);
+      if(format==="json")downloadPortfolioText("japanese-b2-portfolio-"+stamp+".json",serializeB2PortfolioJson(value),"application/json");
+      else downloadPortfolioText("japanese-b2-portfolio-"+stamp+".md",serializeB2PortfolioMarkdown(value),"text/markdown");
+    }finally{setExporting(false);}
+  }
   if(!portfolio)return null;
 
   return <section className="b2-portfolio">
     <div className="section-heading">
-      <div><span className="course-kicker">P8 B2 PORTFOLIO</span><h2>Longitudinal evidence, not a pass/fail badge</h2></div>
+      <div><span className="course-kicker">P9 B2 PORTFOLIO</span><h2>Longitudinal evidence, not a pass/fail badge</h2></div>
       <span className="course-count">{portfolio.activeDays} active days</span>
     </div>
     <p>Portfolio evidence accumulates from normal reading, listening, speaking, writing and advisory revision events. It shows breadth and repeated performance without turning the internal data into an accredited CEFR verdict.</p>
+    <div className="portfolio-export-actions"><button className="unit-action" disabled={exporting} type="button" onClick={()=>void exportPortfolio("json")}>Export JSON</button><button className="quiet-button" disabled={exporting} type="button" onClick={()=>void exportPortfolio("markdown")}>Export Markdown</button></div>
 
     <div className="portfolio-stats">
       <PortfolioStat value={portfolio.readingTexts} label="B2 texts read"/>

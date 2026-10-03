@@ -12,6 +12,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   const [audioState,setAudioState]=useState<"idle"|"playing"|"error">("idle");
   const [audioPlayed,setAudioPlayed]=useState(false);
   const [speechState,setSpeechState]=useState<"idle"|"listening"|"unsupported"|"error">("idle");
+  const [timerTick,setTimerTick]=useState(0);
   const startedAt=useRef(performance.now());
   const audioProvider=useRef(getDefaultAudioProvider());
   const step=steps[index];
@@ -28,11 +29,21 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
 
   if(!step)return null;
   const activeStep=step;
+  const timeLimitSeconds=!isStudyLesson(activeStep)?activeStep.timeLimitSeconds:undefined;
+  const elapsedSeconds=Math.max(0,Math.floor((performance.now()-startedAt.current)/1000));
+  const remainingSeconds=timeLimitSeconds===undefined?null:Math.max(0,timeLimitSeconds-elapsedSeconds);
+  void timerTick;
+
+  useEffect(()=>{
+    if(!step||isStudyLesson(step)||!step.timeLimitSeconds||feedback)return;
+    const id=window.setInterval(()=>setTimerTick((value)=>value+1),1000);
+    return()=>window.clearInterval(id);
+  },[step,index,feedback]);
 
   function advance(){
     audioProvider.current.stop();
     if(index+1>=steps.length){onComplete();return;}
-    setIndex((value)=>value+1);setResponse("");setFeedback(null);startedAt.current=performance.now();
+    setIndex((value)=>value+1);setResponse("");setFeedback(null);setTimerTick(0);startedAt.current=performance.now();
   }
 
   async function playAudio(mode:"normal"|"slow"|"shadow"){
@@ -96,6 +107,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
     <StudyHeader index={index} total={steps.length} completed={Boolean(feedback)} onExit={onExit}/>
     <div className="study-card">
       <p className="eyebrow">{currentPrompt.instruction.toUpperCase()}</p>
+      {remainingSeconds!==null?<div className={"timed-prompt "+(remainingSeconds===0?"expired":"")}><span>Timed response</span><strong>{remainingSeconds>0?remainingSeconds+"s remaining":"time target elapsed"}</strong><small>Submissions after the target are still accepted but recorded as outside the time limit.</small></div>:null}
       {hasListeningCue?
         <div className="audio-question">
           <p className="audio-question-label">{currentPrompt.prompt}</p>

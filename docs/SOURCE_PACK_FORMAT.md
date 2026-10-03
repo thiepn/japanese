@@ -94,3 +94,19 @@ Canonical publication is a separate editorial action: content must be reviewed, 
 Prefer coherent sentence/dialogue/passage items that can be studied independently. Keep provenance at the pack level and use an item-specific `sourceUrl` when the exact sentence or recording has its own source page.
 
 For connected listening, prefer one coherent source recording per variant. P8 can retain several independently licensed variants of the same text so learners can compare natural speed/register/speaker conditions. Add timed segments when the original recording can be replayed at sentence/turn boundaries. Do not splice unrelated recordings and then label the result as a native passage recording without source and editing rights.
+
+
+## P9 release-inventory use
+
+P9 can use source-pack recordings toward a deployment's native-listening release inventory only after normal source-pack validation succeeds.
+
+Release inventory counts are descriptive operational metadata:
+
+- one source document can contain several independently licensed recording variants;
+- each recording keeps its own credit/license/attribution/native-speaker declaration;
+- speaker coverage is derived from explicit speaker labels when supplied, otherwise from recording credit;
+- register coverage uses explicit `register` metadata;
+- source-rate coverage uses explicit `speechRate` metadata;
+- device speech synthesis never contributes to native inventory counts.
+
+The P9 release contract intentionally stays blocked when these verified fields are missing or the inventory is too small.

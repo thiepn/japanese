@@ -28,6 +28,7 @@ interface StudyPromptBase {
   eventMetadata?: Record<string,unknown>;
   requiredTerms?: string[];
   minimumCharacters?: number;
+  timeLimitSeconds?: number;
 }
 
 export interface ChoiceStudyPrompt extends StudyPromptBase { promptType: "choice"; choices: string[]; }
@@ -101,6 +102,10 @@ export function createStudyEvent(input: StudyEventInput): StudyEvent {
   if(input.prompt.speechSynthesisText){
     metadata.speechSynthesis=true;
     metadata.speechSynthesisLanguage=input.prompt.speechSynthesisLanguage??"ja-JP";
+  }
+  if(input.prompt.timeLimitSeconds!==undefined){
+    metadata.timeLimitSeconds=input.prompt.timeLimitSeconds;
+    metadata.withinTimeLimit=input.responseTimeMs<=input.prompt.timeLimitSeconds*1000;
   }
   return {
     id: input.id, userId: input.userId, deviceId: input.deviceId, occurredAt: input.occurredAt,

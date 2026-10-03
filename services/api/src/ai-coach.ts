@@ -1,5 +1,5 @@
 import type { CoachRequest,CoachResponse,CoachFeedbackArea } from "@thiepn/coach";
-import { parseCoachResponse } from "@thiepn/coach";
+import { evaluateCoachResponseQuality,parseCoachResponse } from "@thiepn/coach";
 
 export interface JsonCoachModel {
   provider:string;
@@ -57,7 +57,7 @@ export function createCoachHandler(model:JsonCoachModel){
         ...(model.model?{model:model.model}:{})
       }
     });
-    return parsed;
+    return {...parsed,quality:evaluateCoachResponseQuality(request,parsed)};
   };
 }
 

@@ -3,6 +3,7 @@ import { getDefaultAudioProvider } from "@thiepn/audio";
 import { AuthenticLibrary } from "./AuthenticLibrary";
 import { buildExtensiveTracks } from "./extensive";
 import { ShadowingLab } from "./ShadowingLab";
+import { NativeListeningLab } from "./NativeListeningLab";
 import { getAdaptiveImmersionRecommendation,type AdaptiveImmersionRecommendation } from "./adaptive";
 import { getAutonomyMissionProgress,type AutonomyMissionProgress } from "../study/autonomyMissions";
 import type { ReadingQuestion } from "@thiepn/content-schema";
@@ -173,6 +174,7 @@ export function Immersion({onStartProductionTask}:{onStartProductionTask:(taskId
       </article>)}
     </div>
     <p className="course-note">Readiness is derived from lexeme meaning evidence. It is guidance, not a content lock. Curated connected audio uses the device’s Japanese speech-synthesis voice unless a source-provenanced recording is attached.</p>
+    <NativeListeningLab/>
     <ShadowingLab/>
     <AuthenticLibrary/>
   </section>;
