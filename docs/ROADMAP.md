@@ -195,7 +195,9 @@ The C1-roadmap gate is a **product/system readiness gate**, not a learner CEFR j
 
 - populate the deployment with enough independently licensed connected native material to meet the P9 media thresholds;
 - run the full release workflow and provider benchmark against the deployed providers;
-- record the qualifying commit/workflow evidence;
+- record the qualifying commit/workflow evidence through the automated P9 qualification artifact;
+- populate `release/p9-native-inventory.json` only with independently verified reusable native connected recordings;
+- run `pnpm certify:p9:strict` or the manual **P9 Release Qualification** workflow;
 - open a C1 roadmap only if every P9 release check passes.
 
 ## Later
