@@ -3,15 +3,25 @@ import { createHttpCoachTransport,type CoachFeedback,type CoachHistoryTurn,type 
 import { listStudyEvents,saveStudyEvent } from "@thiepn/local-db";
 import { productiveTasks } from "../coreContent";
 import { DEVELOPMENT_ACCOUNT_ID,DEVELOPMENT_DEVICE_ID } from "../study/runtime";
+import { scenarioChains,scenarioChain } from "./scenarioChains";
 
 type InputMode="text"|"speech";
+interface DelayedRevisionCandidate {
+  eventId:string;
+  taskId:string;
+  learnerText:string;
+  at:string;
+  delayHours:number;
+  feedbackMessages:string[];
+}
 interface CoachHistorySummary {
   turns:number;
   areaCounts:Record<"grammar"|"vocabulary"|"coherence"|"taskAchievement",number>;
   patterns:Array<{message:string;count:number}>;
   recent:Array<{mode:string;learnerText:string;at:string}>;
+  dueRevisions:DelayedRevisionCandidate[];
 }
-const EMPTY_HISTORY:CoachHistorySummary={turns:0,areaCounts:{grammar:0,vocabulary:0,coherence:0,taskAchievement:0},patterns:[],recent:[]};
+const EMPTY_HISTORY:CoachHistorySummary={turns:0,areaCounts:{grammar:0,vocabulary:0,coherence:0,taskAchievement:0},patterns:[],recent:[],dueRevisions:[]};
 const endpoint=import.meta.env.VITE_JAPANESE_COACH_ENDPOINT??"/api/japanese/coach";
 
 export function AiCoach(){
@@ -24,12 +34,26 @@ export function AiCoach(){
   const [speechState,setSpeechState]=useState<"idle"|"listening"|"unsupported"|"error">("idle");
   const [inputMode,setInputMode]=useState<InputMode>("text");
   const [revisionHistory,setRevisionHistory]=useState<CoachHistorySummary>(EMPTY_HISTORY);
+  const [chainId,setChainId]=useState(scenarioChains[0]!.id);
+  const [delayedRevision,setDelayedRevision]=useState<DelayedRevisionCandidate|null>(null);
   const sessionId=useRef(crypto.randomUUID());
+  const learnerTurns=history.filter((turn)=>turn.role==="learner").length;
+  const chain=scenarioChain(chainId);
+  const chainStage=chain.stages[Math.min(learnerTurns,chain.stages.length-1)]!;
   const conversationTask=productiveTasks.find((task)=>task.level==="B2"&&task.tags.includes("ai-conversation"));
   const writingTask=productiveTasks.find((task)=>task.level==="B2"&&task.tags.includes("writing-revision"));
-  const activeTask=mode==="conversation"?conversationTask:writingTask;
-  const scenario=activeTask?.situation??(mode==="conversation"?"Discuss a current everyday issue and support your view with reasons and examples.":"Write and revise a connected B2-level response.");
-  const goals=activeTask?.requiredTerms?.length?activeTask.requiredTerms:["clear stance","supporting reason","appropriate register"];
+  const delayedTask=delayedRevision?productiveTasks.find((task)=>task.id===delayedRevision.taskId):undefined;
+  const activeTask=delayedTask??(mode==="conversation"?conversationTask:writingTask);
+  const scenario=mode==="conversation"
+    ?chainStage.scenario
+    :delayedRevision
+      ?"Rewrite a previous B2 response after a delay. Preserve the intended meaning, fix high-value recurring issues, and improve coherence without copying a model answer."
+      :(activeTask?.situation??"Write and revise a connected B2-level response.");
+  const goals=mode==="conversation"
+    ?chainStage.goals
+    :delayedRevision
+      ?[...new Set([...(activeTask?.requiredTerms??[]),...delayedRevision.feedbackMessages.slice(0,3).map((item)=>"Address prior feedback: "+item)])]
+      :(activeTask?.requiredTerms?.length?activeTask.requiredTerms:["clear stance","supporting reason","appropriate register"]);
 
   async function refreshRevisionHistory(){
     const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
@@ -56,7 +80,35 @@ export function AiCoach(){
       if(learnerText&&recent.length<5)recent.push({mode:String(metadata.mode??""),learnerText,at:event.occurredAt});
     }
     const patterns=[...patternCounts.entries()].map(([message,count])=>({message,count})).sort((a,b)=>b.count-a.count||a.message.localeCompare(b.message)).slice(0,5);
-    setRevisionHistory({turns:coachEvents.length,areaCounts,patterns,recent});
+    const revised=new Set(coachEvents.map((event)=>typeof event.metadata?.revisionOfEventId==="string"?event.metadata.revisionOfEventId:null).filter((id):id is string=>Boolean(id)));
+    const now=Date.now();
+    const dueRevisions:DelayedRevisionCandidate[]=[];
+    for(const event of coachEvents){
+      if(revised.has(event.id))continue;
+      const learnerText=typeof event.metadata?.learnerText==="string"?event.metadata.learnerText.trim():"";
+      if(!learnerText)continue;
+      const ageHours=(now-Date.parse(event.occurredAt))/3_600_000;
+      if(!Number.isFinite(ageHours)||ageHours<20)continue;
+      const taskId=event.primaryTarget?.kind==="production_task"?event.primaryTarget.id:"";
+      if(!taskId)continue;
+      const feedbackMessages:string[]=[];
+      const feedback=event.metadata?.feedback;
+      if(feedback&&typeof feedback==="object"){
+        for(const rawArea of Object.values(feedback as Record<string,unknown>)){
+          if(!rawArea||typeof rawArea!=="object")continue;
+          const items=Array.isArray((rawArea as Record<string,unknown>).items)?(rawArea as Record<string,unknown>).items as unknown[]:[];
+          for(const raw of items){
+            if(raw&&typeof raw==="object"){
+              const message=String((raw as Record<string,unknown>).message??"").trim();
+              if(message&&!feedbackMessages.includes(message))feedbackMessages.push(message);
+            }
+          }
+        }
+      }
+      dueRevisions.push({eventId:event.id,taskId,learnerText,at:event.occurredAt,delayHours:ageHours,feedbackMessages});
+      if(dueRevisions.length>=5)break;
+    }
+    setRevisionHistory({turns:coachEvents.length,areaCounts,patterns,recent,dueRevisions});
   }
   useEffect(()=>{void refreshRevisionHistory().catch(()=>setRevisionHistory(EMPTY_HISTORY));},[]);
 
@@ -82,15 +134,24 @@ export function AiCoach(){
         metadata:{
           coachSessionId:sessionId.current,mode,targetLevel:"B2",learnerText,coachReply:response.replyJapanese,
           feedback:response.feedback,evidenceContract:response.evidenceContract,
-          modelFeedbackAppliedToMastery:false
+          modelFeedbackAppliedToMastery:false,
+          ...(mode==="conversation"?{scenarioChainId:chain.id,scenarioStageId:chainStage.id,scenarioStageIndex:Math.min(learnerTurns,chain.stages.length-1)}:{}),
+          ...(delayedRevision?{revisionOfEventId:delayedRevision.eventId,revisionDelayHours:Math.round(delayedRevision.delayHours)}:{})
         }
       });
+      if(delayedRevision)setDelayedRevision(null);
       void refreshRevisionHistory();
     }catch{setStatus("error");}
   }
 
   function switchMode(next:CoachMode){
-    setMode(next);setText("");setLast(null);setHistory([]);setStatus("idle");sessionId.current=crypto.randomUUID();
+    setMode(next);setText("");setLast(null);setHistory([]);setDelayedRevision(null);setStatus("idle");sessionId.current=crypto.randomUUID();
+  }
+  function selectChain(nextId:string){
+    setChainId(nextId);setHistory([]);setLast(null);setText("");setDelayedRevision(null);sessionId.current=crypto.randomUUID();
+  }
+  function startDelayedRevision(candidate:DelayedRevisionCandidate){
+    setMode("writing_revision");setDelayedRevision(candidate);setHistory([]);setLast(null);setText("");setStatus("idle");sessionId.current=crypto.randomUUID();
   }
 
   function startSpeech(){
@@ -108,13 +169,19 @@ export function AiCoach(){
   }
 
   return <section className="ai-coach-card">
-    <div className="section-heading"><div><span className="course-kicker">B2 INDEPENDENT COMMUNICATION</span><h2>AI conversation & revision coach</h2></div><span className="status-pill">advisory</span></div>
+    <div className="section-heading"><div><span className="course-kicker">P8 SUSTAINED INTERACTION</span><h2>Scenario chains & delayed revision</h2></div><span className="status-pill">advisory</span></div>
     <p className="coach-explainer">Model feedback is kept separate from durable learner mastery. It can suggest corrections and next revisions, but it cannot silently mark grammar, writing or speaking as mastered. No acoustic pronunciation score is claimed.</p>
     <div className="coach-mode" role="tablist" aria-label="Coach mode">
       <button className={mode==="conversation"?"active":""} type="button" onClick={()=>switchMode("conversation")}>Conversation</button>
       <button className={mode==="writing_revision"?"active":""} type="button" onClick={()=>switchMode("writing_revision")}>Writing revision</button>
     </div>
-    <div className="coach-scenario"><small>Scenario</small><p>{scenario}</p></div>
+    {mode==="conversation"?<div className="coach-chain">
+      <label><span>Scenario chain</span><select value={chainId} onChange={(event)=>selectChain(event.target.value)}>{scenarioChains.map((item)=><option value={item.id} key={item.id}>{item.title}</option>)}</select></label>
+      <div className="coach-chain-stages">{chain.stages.map((stage,index)=><span className={index<learnerTurns?"done":index===Math.min(learnerTurns,chain.stages.length-1)?"active":""} key={stage.id}>{index+1}. {stage.title}</span>)}</div>
+      <p>{chain.description}</p>
+    </div>:null}
+    {delayedRevision?<section className="delayed-revision-source"><div><span className="course-kicker">DELAYED REVISION</span><strong>{Math.round(delayedRevision.delayHours)}h since original attempt</strong></div><details><summary>Original response + prior feedback targets</summary><p lang="ja">{delayedRevision.learnerText}</p>{delayedRevision.feedbackMessages.length?<ul>{delayedRevision.feedbackMessages.slice(0,5).map((item)=><li key={item}>{item}</li>)}</ul>:null}</details></section>:null}
+    <div className="coach-scenario"><small>{mode==="conversation"?"Current stage":"Scenario"}</small><p>{scenario}</p>{goals.length?<ul className="coach-goals">{goals.map((goal)=><li key={goal}>{goal}</li>)}</ul>:null}</div>
     {mode==="conversation"&&history.length?<div className="coach-thread">{history.map((turn,index)=><div className={"coach-turn "+turn.role} key={index}><span>{turn.role==="learner"?"You":"Coach"}</span><p lang="ja">{turn.text}</p></div>)}</div>:null}
     <label className="coach-input"><span>{mode==="conversation"?"Respond in Japanese":"Draft or paste your Japanese response"}</span><textarea rows={mode==="conversation"?4:8} value={text} onChange={(event)=>{setText(event.target.value);setInputMode("text");}} placeholder="日本語で書いてください…"/></label>
     <div className="coach-actions">
@@ -131,8 +198,9 @@ export function AiCoach(){
         <span>Grammar {revisionHistory.areaCounts.grammar}</span><span>Vocabulary {revisionHistory.areaCounts.vocabulary}</span><span>Coherence {revisionHistory.areaCounts.coherence}</span><span>Task {revisionHistory.areaCounts.taskAchievement}</span>
       </div>
       {revisionHistory.patterns.length?<div className="coach-patterns"><strong>Repeated correction themes</strong><ul>{revisionHistory.patterns.map((pattern)=><li key={pattern.message}>{pattern.message}{pattern.count>1?<small> ×{pattern.count}</small>:null}</li>)}</ul></div>:null}
+      {revisionHistory.dueRevisions.length?<div className="delayed-revision-queue"><strong>Delayed revisions due</strong>{revisionHistory.dueRevisions.map((candidate)=><article key={candidate.eventId}><div><span>{Math.round(candidate.delayHours)}h old</span><p lang="ja">{candidate.learnerText}</p></div><button className="unit-action" type="button" onClick={()=>startDelayedRevision(candidate)}>Revise after delay</button></article>)}</div>:null}
       {revisionHistory.recent.length?<details><summary>Recent learner revisions</summary>{revisionHistory.recent.map((item,index)=><div className="coach-history-turn" key={item.at+index}><small>{item.mode} · {new Date(item.at).toLocaleDateString()}</small><p lang="ja">{item.learnerText}</p></div>)}</details>:null}
-      <p className="course-note">History is derived from stored advisory coach events. It can guide what to revise next but does not alter mastery or FSRS scheduling.</p>
+      <p className="course-note">History is derived from stored advisory coach events. P8 can schedule a delayed rewrite after 20+ hours, but AI judgments still do not alter mastery or FSRS scheduling.</p>
     </section>:null}
   </section>;
 }
