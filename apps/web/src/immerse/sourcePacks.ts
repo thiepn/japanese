@@ -18,6 +18,7 @@ export interface SourcePackItem {
   text:string;
   sourceUrl?:string;
   audio?:PrivateNativeAudio&{nativeSpeaker:boolean};
+  audioVariants?:Array<PrivateNativeAudio&{nativeSpeaker:boolean}>;
 }
 
 export interface JapaneseSourcePack {
@@ -60,23 +61,17 @@ export function validateJapaneseSourcePack(pack:JapaneseSourcePack):SourcePackVa
     else ids.add(item.id);
     if(!item.title?.trim())errors.push(where+" title is required.");
     if(!item.text?.trim())errors.push(where+" Japanese text is required.");
-    if(item.audio){
-      if(item.audio.nativeSpeaker!==true)errors.push(where+" audio must explicitly declare nativeSpeaker:true before it can be labeled native.");
-      if(!item.audio.url?.trim())errors.push(where+" audio URL is required.");
-      if(!item.audio.credit?.trim())errors.push(where+" audio credit is required.");
-      if(!item.audio.licenseName?.trim()||!isAllowedReusableAudioLicense(item.audio.licenseName))errors.push(where+" audio license is missing or not admitted.");
-      if(requiresAttribution(item.audio.licenseName)&&!item.audio.attributionUrl?.trim())errors.push(where+" audio attribution URL is required for this license.");
-      if(item.audio.segments){
-        let previousEnd=-1;
-        for(const [segmentIndex,segment] of item.audio.segments.entries()){
-          const segmentWhere=where+" audio segment "+(segmentIndex+1);
-          if(!segment.id?.trim())errors.push(segmentWhere+" id is required.");
-          if(!segment.text?.trim())errors.push(segmentWhere+" text is required.");
-          if(!Number.isFinite(segment.startMs)||!Number.isFinite(segment.endMs)||segment.startMs<0||segment.endMs<=segment.startMs)errors.push(segmentWhere+" has invalid timing.");
-          if(segment.startMs<previousEnd)errors.push(segmentWhere+" overlaps or is out of order.");
-          previousEnd=segment.endMs;
-        }
+    const recordings=[...(item.audio?[item.audio]:[]),...(item.audioVariants??[])];
+    if(recordings.length){
+      const variantKeys=new Set<string>();
+      for(const [audioIndex,audio] of recordings.entries()){
+        const audioWhere=where+" audio "+(audioIndex+1);
+        validateAudio(audio,audioWhere,errors);
+        const key=(audio.externalId??audio.url)+"|"+(audio.speechRate??"unspecified")+"|"+(audio.register??"unspecified");
+        if(variantKeys.has(key))errors.push(audioWhere+" duplicates another audio variant identity.");
+        variantKeys.add(key);
       }
+      if(recordings.length>1&&!recordings.some((audio)=>audio.speechRate==="natural"))warnings.push(where+" has multiple audio variants but none explicitly marked speechRate:natural.");
     }else warnings.push(where+" has no reusable native recording; device voice may be used only as a labeled fallback.");
   }
   return {valid:errors.length===0,errors,warnings};
@@ -87,20 +82,46 @@ export async function importJapaneseSourcePack(pack:JapaneseSourcePack):Promise<
   if(!validation.valid)throw new Error("SOURCE_PACK_REJECTED: "+validation.errors.join(" "));
   const documents:PrivateDocumentRecord[]=[];
   for(const item of pack.items){
-    const nativeAudio=item.audio?{
-      url:item.audio.url,credit:item.audio.credit,licenseName:item.audio.licenseName,
-      ...(item.audio.attributionUrl?{attributionUrl:item.audio.attributionUrl}:{}),
-      ...(item.audio.externalId?{externalId:item.audio.externalId}:{}),
-      ...(item.audio.segments?.length?{segments:item.audio.segments.map((segment)=>({...segment}))}:{})
-    }:undefined;
+    const rawRecordings=[...(item.audio?[item.audio]:[]),...(item.audioVariants??[])];
+    const recordings=rawRecordings.map((audio)=>({
+      url:audio.url,credit:audio.credit,licenseName:audio.licenseName,
+      ...(audio.attributionUrl?{attributionUrl:audio.attributionUrl}:{}),
+      ...(audio.externalId?{externalId:audio.externalId}:{}),
+      ...(audio.segments?.length?{segments:audio.segments.map((segment)=>({...segment}))}:{}),
+      ...(audio.speechRate?{speechRate:audio.speechRate}:{}),
+      ...(audio.register?{register:audio.register}:{}),
+      ...(audio.speakerLabel?{speakerLabel:audio.speakerLabel}:{})
+    }));
     documents.push(await createPrivateDocument({
       title:item.title,text:item.text,sourceKind:"source_pack",
       sourceLabel:pack.manifest.title+" · "+pack.manifest.attribution,
       sourceUrl:item.sourceUrl??pack.manifest.sourceUrl,
-      ...(nativeAudio?{nativeAudio}:{})
+      ...(recordings[0]?{nativeAudio:recordings[0]}:{}),
+      ...(recordings.length?{nativeAudioVariants:recordings}:{})
     }));
   }
   return documents;
+}
+
+function validateAudio(audio:PrivateNativeAudio&{nativeSpeaker:boolean},where:string,errors:string[]):void{
+  if(audio.nativeSpeaker!==true)errors.push(where+" must explicitly declare nativeSpeaker:true before it can be labeled native.");
+  if(!audio.url?.trim())errors.push(where+" URL is required.");
+  if(!audio.credit?.trim())errors.push(where+" credit is required.");
+  if(!audio.licenseName?.trim()||!isAllowedReusableAudioLicense(audio.licenseName))errors.push(where+" license is missing or not admitted.");
+  if(requiresAttribution(audio.licenseName)&&!audio.attributionUrl?.trim())errors.push(where+" attribution URL is required for this license.");
+  if(audio.speechRate&&!["slow","natural","fast"].includes(audio.speechRate))errors.push(where+" has invalid speechRate.");
+  if(audio.register&&!["casual","neutral","polite","formal"].includes(audio.register))errors.push(where+" has invalid register.");
+  if(audio.segments){
+    let previousEnd=-1;
+    for(const [segmentIndex,segment] of audio.segments.entries()){
+      const segmentWhere=where+" segment "+(segmentIndex+1);
+      if(!segment.id?.trim())errors.push(segmentWhere+" id is required.");
+      if(!segment.text?.trim())errors.push(segmentWhere+" text is required.");
+      if(!Number.isFinite(segment.startMs)||!Number.isFinite(segment.endMs)||segment.startMs<0||segment.endMs<=segment.startMs)errors.push(segmentWhere+" has invalid timing.");
+      if(segment.startMs<previousEnd)errors.push(segmentWhere+" overlaps or is out of order.");
+      previousEnd=segment.endMs;
+    }
+  }
 }
 
 export function isAllowedReusablePackLicense(value:string):boolean{
