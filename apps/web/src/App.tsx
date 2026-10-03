@@ -11,8 +11,9 @@ import { AiCoach } from "./ai/AiCoach";
 import { AdaptiveRemediation } from "./study/AdaptiveRemediation";
 import { B2Portfolio } from "./study/B2Portfolio";
 import { ProviderHealthPanel } from "./study/ProviderHealthPanel";
+import { RealWorldPerformancePanel } from "./study/RealWorldPerformancePanel";
 import {
-  buildA1MilestoneSession,buildB1MilestoneSession,buildB2MilestoneSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,
+  buildA1MilestoneSession,buildB1MilestoneSession,buildB2MilestoneSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildP9RealWorldChainSession,buildP9RealWorldQualificationSession,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,
   type A1MilestoneProgress,type B1MilestoneProgress,type B2MilestoneProgress,type ConjugationMasterySummary,type CourseUnitProgress,type GrammarMasterySummary,type KanaMasterySummary,type LexicalFluencySummary,type SentenceMasterySummary,type StudySummary,type VocabularyMasterySummary
 } from "./study/runtime";
 
@@ -127,6 +128,14 @@ export function App(){
     setSessionStatus("loading");
     try{openSession(await buildProductiveTaskPractice(taskId));setSessionStatus("idle");}catch{setSessionStatus("error");}
   }
+  async function startRealWorldChain(chainId:string){
+    setSessionStatus("loading");
+    try{openSession(await buildP9RealWorldChainSession(chainId));setSessionStatus("idle");}catch{setSessionStatus("error");}
+  }
+  async function startRealWorldQualification(){
+    setSessionStatus("loading");
+    try{openSession(await buildP9RealWorldQualificationSession(10));setSessionStatus("idle");}catch{setSessionStatus("error");}
+  }
 
   async function handleAnswer(answer:StudyAnswer){
     await recordStudyAnswer({prompt:answer.prompt,response:answer.response,result:answer.grade.result,responseTimeMs:answer.responseTimeMs});
@@ -137,10 +146,10 @@ export function App(){
   if(session)return <div className="study-shell"><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></div>;
 
   return <div className="app-shell">
-    <header className="topbar"><div><strong>Japanese</strong><span className="phase">P8 B2 consolidation · long-form autonomy · reliability</span></div><button className="quiet-button account-button" type="button">Account</button></header>
+    <header className="topbar"><div><strong>Japanese</strong><span className="phase">P9 real-world B2 · native listening · release qualification</span></div><button className="quiet-button account-button" type="button">Account</button></header>
     <main className="content">
       {surface==="Today"&&<Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
-      {surface==="Learn"&&<Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()}/>} 
+      {surface==="Learn"&&<Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>} 
       {surface==="Immerse"&&<Immersion onStartProductionTask={(taskId)=>void startProductiveTask(taskId)}/>} 
       {surface==="Progress"&&<Progress kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} immersion={immersion} summary={summary} course={courseProgress} completedToday={completedToday}/>} 
       {surface==="Library"&&<Library query={query} setQuery={setQuery} results={results} status={libraryStatus}/>}
@@ -160,11 +169,11 @@ function Today({summary,completedToday,status,onStart}:{summary:StudySummary;com
   </section>;
 }
 
-function Learn({summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,milestone,b1Milestone,b2Milestone,status,onStart,onStartUnit,onStartAssessment,onStartMilestone,onStartB1Milestone,onStartB2Milestone,onProductive,onLexicalFluency}:{summary:StudySummary;kana:KanaMasterySummary;vocab:VocabularyMasterySummary;conjugation:ConjugationMasterySummary;grammar:GrammarMasterySummary;sentence:SentenceMasterySummary;lexicalFluency:LexicalFluencySummary;course:CourseUnitProgress[];milestone:A1MilestoneProgress;b1Milestone:B1MilestoneProgress;b2Milestone:B2MilestoneProgress;status:string;onStart:()=>void;onStartUnit:(id:string)=>void;onStartAssessment:(id:string)=>void;onStartMilestone:()=>void;onStartB1Milestone:()=>void;onStartB2Milestone:()=>void;onProductive:(mode:"writing"|"speaking")=>void;onLexicalFluency:()=>void}){
+function Learn({summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,milestone,b1Milestone,b2Milestone,status,onStart,onStartUnit,onStartAssessment,onStartMilestone,onStartB1Milestone,onStartB2Milestone,onProductive,onLexicalFluency,onRealWorldChain,onRealWorldQualification}:{summary:StudySummary;kana:KanaMasterySummary;vocab:VocabularyMasterySummary;conjugation:ConjugationMasterySummary;grammar:GrammarMasterySummary;sentence:SentenceMasterySummary;lexicalFluency:LexicalFluencySummary;course:CourseUnitProgress[];milestone:A1MilestoneProgress;b1Milestone:B1MilestoneProgress;b2Milestone:B2MilestoneProgress;status:string;onStart:()=>void;onStartUnit:(id:string)=>void;onStartAssessment:(id:string)=>void;onStartMilestone:()=>void;onStartB1Milestone:()=>void;onStartB2Milestone:()=>void;onProductive:(mode:"writing"|"speaking")=>void;onLexicalFluency:()=>void;onRealWorldChain:(id:string)=>void;onRealWorldQualification:()=>void}){
   const kanaCoverage=summary.totalKana?Math.round(summary.learnedKana/summary.totalKana*100):0;
   const vocabCoverage=summary.totalVocabulary?Math.round(summary.learnedVocabulary/summary.totalVocabulary*100):0;
   return <section className="dashboard learn-page"><p className="eyebrow">LEARN</p><h1>Foundation → B2</h1>
-    <p className="lead">P8 consolidates B2 across time and context: multi-document autonomy missions, delayed transfer, sustained interaction chains, phrase-family/register contrast and longitudinal production reliability now sit on top of the existing B2 breadth. AI judgments remain advisory and separate from durable mastery.</p>
+    <p className="lead">P9 hardens B2 performance in functional situations: unseen timed prompts, paraphrase and repair, multi-source native listening, delayed recall, provider-quality diagnostics and release qualification now sit on top of the P8 autonomy/reliability layer.</p>
     <div className="course-stack foundation-stack">
       <article className="course-card"><div><span className="course-kicker">SCRIPT FOUNDATION</span><h2>Kana</h2><p>{foundationSections.map((section)=>section.label).join(" · ")}</p></div><div className="course-progress"><strong>{kanaCoverage}%</strong><span>{summary.learnedKana} / {summary.totalKana} introduced</span></div></article>
       <article className="course-card"><div><span className="course-kicker">A1→B2 LEXICON</span><h2>Useful words + kanji in context</h2><p>Meaning · reading · listening · active recall</p></div><div className="course-progress"><strong>{vocabCoverage}%</strong><span>{summary.learnedVocabulary} / {summary.totalVocabulary} words introduced</span></div></article>
@@ -229,6 +238,7 @@ function Learn({summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,c
     </section>
 
     <AdaptiveRemediation onStartUnit={onStartUnit} onStartProduction={onProductive}/>
+    <RealWorldPerformancePanel onStartChain={onRealWorldChain} onStartQualification={onRealWorldQualification}/>
     <AiCoach/>
     <section className="mastery-section milestone-card">
       <div className="section-heading"><div><span className="course-kicker">B2 MILESTONE</span><h2>Independent receptive + productive activity areas</h2></div><strong>{b2Milestone.answered} / {b2Milestone.total}</strong></div>
