@@ -172,16 +172,31 @@ P8 retains the same evidence boundaries: structural success is not complete sema
 
 ## P9 — B2 Real-World Performance, Native Listening Depth & Release Qualification
 
-**Next.** Harden sustained B2 performance before any C1-oriented curriculum:
+**Implementation complete; release qualification is conditional on real native-media inventory and green regression evidence.**
 
-- larger licensed native connected-audio inventory across speakers, natural speed and register;
-- multi-source listening tasks with note-taking, synthesis and delayed recall;
-- real-world functional chains such as appointments, workplace incidents, service problems, travel changes and community coordination;
-- production qualification across unseen prompts, paraphrase, repair and timed response;
-- stronger semantic feedback evaluation and provider-quality benchmarking without granting opaque model judgments mastery authority;
-- real-device long-session testing, offline/media resilience and provider outage drills;
-- longitudinal B2 portfolio exports and release-level regression certification;
-- explicit criteria for when the system has enough B2 breadth/reliability to begin a separate C1 roadmap.
+P9 hardens sustained B2 performance before any C1-oriented curriculum:
+
+- five functional real-world chains: appointments, workplace incidents, service failures, travel disruption and community coordination;
+- 20 stable qualification-only prompts spanning unseen response, paraphrase, misunderstanding repair and timed follow-up;
+- non-blocking time targets recorded separately from structural correctness;
+- qualification prompts excluded from FSRS so testing does not create artificial review obligations;
+- source-provenanced native multi-source listening with two/three-source selection, note taking, synthesis and 20+ hour delayed recall;
+- native recording variation across source rate, register and speaker labels without weakening licensing/native-speaker rules;
+- bounded AI feedback-grounding diagnostics plus repeatable provider benchmarking;
+- offline/provider-outage/long-history regression drills;
+- longitudinal B2 portfolio export in JSON and Markdown;
+- explicit system-level release criteria for B2 breadth, real-world performance, licensed native-media depth and regression reliability.
+
+The release contract currently requires at least 20 B2 connected texts, 20 B2 productive tasks, 120 B2 lexical chunks, five real-world chains, 20 performance prompts, four licensed native connected-source documents, eight licensed recordings, three independent speaker labels/credits, two registers, natural-rate audio, a faster source condition and all regression gates green.
+
+The C1-roadmap gate is a **product/system readiness gate**, not a learner CEFR judgment. It remains closed whenever the connected deployment lacks the required licensed native inventory. See `docs/P9_ACCEPTANCE.md` and `docs/P9_RELEASE_QUALIFICATION.md`.
+
+### Required operational step before any C1 phase
+
+- populate the deployment with enough independently licensed connected native material to meet the P9 media thresholds;
+- run the full release workflow and provider benchmark against the deployed providers;
+- record the qualifying commit/workflow evidence;
+- open a C1 roadmap only if every P9 release check passes.
 
 ## Later
 
