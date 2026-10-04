@@ -157,7 +157,7 @@ export function App(){
 
   return <>
     {session?<div className="study-shell"><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></div>:<div className="app-shell">
-      <header className="topbar"><div><strong>Japanese</strong><span className="phase">P11.2 native corpus · provenance audit · P9 media gate</span></div><button className="quiet-button account-button" type="button">Account</button></header>
+      <header className="topbar"><div><strong>Japanese</strong><span className="phase">P11.3 external review · offline handoff · final C1 gate</span></div><button className="quiet-button account-button" type="button">Account</button></header>
       <main className="content">
         {surface==="Today"&&<Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
         {surface==="Learn"&&<Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>} 
@@ -185,7 +185,7 @@ function Learn({summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,c
   const kanaCoverage=summary.totalKana?Math.round(summary.learnedKana/summary.totalKana*100):0;
   const vocabCoverage=summary.totalVocabulary?Math.round(summary.learnedVocabulary/summary.totalVocabulary*100):0;
   return <section className="dashboard learn-page"><p className="eyebrow">LEARN</p><h1>Foundation → B2</h1>
-    <p className="lead">P11.2 closes the repository native-media gap with provenance-audited connected speech. P9 remains a hard dependency, and the C1 roadmap stays closed until real external productive-language validation is admitted and the full P11 release candidate is green.</p>
+    <p className="lead">P11.3 turns the final human-evidence dependency into a concrete offline handoff: representative B2 writing/speaking evidence can be exported to an external reviewer, returned as a packet-bound submission, and admitted without changing mastery. C1 remains closed until that real review makes the full P11 release candidate green.</p>
     <div className="course-stack foundation-stack">
       <article className="course-card"><div><span className="course-kicker">SCRIPT FOUNDATION</span><h2>Kana</h2><p>{foundationSections.map((section)=>section.label).join(" · ")}</p></div><div className="course-progress"><strong>{kanaCoverage}%</strong><span>{summary.learnedKana} / {summary.totalKana} introduced</span></div></article>
       <article className="course-card"><div><span className="course-kicker">A1→B2 LEXICON</span><h2>Useful words + kanji in context</h2><p>Meaning · reading · listening · active recall</p></div><div className="course-progress"><strong>{vocabCoverage}%</strong><span>{summary.learnedVocabulary} / {summary.totalVocabulary} words introduced</span></div></article>
