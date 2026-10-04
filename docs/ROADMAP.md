@@ -256,7 +256,23 @@ The provider-profile blockers are therefore resolved in the checked-in baseline.
 - `release/p9-native-inventory.json` is reproducibly generated from the registry;
 - normal CI plus strict P9/P11 workflows enforce the P11.2 audit.
 
-The P9 media gate is no longer the reason P11 is held. The remaining substantive blocker is real external teacher/tutor/language-professional review of representative B2 production. See `docs/P11_2_ACCEPTANCE.md`.
+The P9 media gate is no longer the reason P11 is held. P11.3 operationalizes the remaining external-review handoff without fabricating the reviewer evidence itself. See `docs/P11_2_ACCEPTANCE.md`.
+
+## P11.3 — External Review Handoff, Reviewer Workspace & Final Gate Operations
+
+**Implementation complete; the final gate now depends on a real external human action rather than missing product infrastructure.**
+
+- derives external-review readiness from actual B2 learner-authored productive evidence;
+- deterministically selects six representative artifacts, preferring recent and task-diverse evidence while balancing writing and speaking when possible;
+- exports the immutable JSON packet plus a self-contained offline reviewer HTML workspace in one handoff action;
+- lets an external teacher/tutor/language professional score every artifact with the existing 0–4 rubric and return a structured reviewer JSON;
+- records spoken-interaction vs spoken-production coverage explicitly;
+- computes a packet SHA-256 in the reviewer workspace when Web Crypto is available;
+- rejects a returned submission whose declared packet fingerprint does not match the supplied packet;
+- exposes final external-review handoff readiness in Release Operations;
+- preserves the non-mastery / non-CEFR evidence boundary end to end.
+
+At this point, all implementation-only work required to obtain and admit the P11 external review is present. The repository must remain at `HOLD_B2_RELEASE_CANDIDATE` until an actual external reviewer completes the handoff and the returned evidence passes strict P11 qualification. See `docs/P11_3_ACCEPTANCE.md`.
 
 ## P12 — C1 Foundation & Advanced Independent Japanese
 
