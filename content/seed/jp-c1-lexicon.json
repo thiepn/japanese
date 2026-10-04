@@ -326,21 +326,21 @@
       ]
     },
     {
-      "id": "c1-interpretation",
-      "canonicalForm": "解釈",
+      "id": "c1-inference",
+      "canonicalForm": "推論",
       "forms": [
         {
-          "text": "解釈",
+          "text": "推論",
           "script": "mixed"
         }
       ],
       "readings": [
         {
-          "text": "かいしゃく"
+          "text": "すいろん"
         }
       ],
       "senseIds": [
-        "sense-c1-interpretation"
+        "sense-c1-inference"
       ],
       "kanjiLinks": [],
       "audioIds": [],
@@ -1080,10 +1080,10 @@
       ]
     },
     {
-      "id": "sense-c1-interpretation",
-      "lexemeId": "c1-interpretation",
+      "id": "sense-c1-inference",
+      "lexemeId": "c1-inference",
       "glosses": [
-        "interpretation"
+        "inference; reasoning"
       ],
       "partOfSpeech": [
         "noun"
