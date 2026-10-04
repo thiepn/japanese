@@ -2,7 +2,7 @@
   "schema": "thiepn-japanese-p11-provider-benchmarks",
   "schemaVersion": 1,
   "generatedAt": "2026-10-04T00:00:00.000Z",
-  "releaseProfile": "undecided",
+  "releaseProfile": "offline-only",
   "configuredProviders": [],
   "runs": []
 }
