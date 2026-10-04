@@ -1,13 +1,14 @@
 import { expect,test } from "@playwright/test";
 
-test("Immerse exposes graded A1→B2 autonomy and long-form missions without creating a separate learning silo",async({page})=>{
+test("Immerse exposes graded A1→C1 autonomy and long-form missions without creating a separate learning silo",async({page})=>{
   await page.goto("/");
   await page.getByRole("button",{name:"Immerse"}).click();
 
-  await expect(page.getByRole("heading",{name:"A1 → B2 autonomy"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"A1 → C1 autonomy"})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Long-form B2 task chains"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"C1 evidence, policy & causal reasoning"})).toBeVisible();
   await expect(page.locator(".mission-card")).toHaveCount(6);
-  await expect(page.locator(".immersion-card")).toHaveCount(42);
+  await expect(page.locator(".immersion-card")).toHaveCount(50);
   await expect(page.getByRole("heading",{name:/Focus on (reading|listening)/})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Listen → record → compare"})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Your Japanese"})).toBeVisible();
