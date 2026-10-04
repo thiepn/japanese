@@ -16,7 +16,9 @@
     "certify:p9": "node scripts/p9-release-certify.mjs",
     "certify:p9:strict": "node scripts/p9-release-certify.mjs --strict",
     "native:p10:preview": "node scripts/p10-native-promote.mjs",
-    "native:p10:apply": "node scripts/p10-native-promote.mjs --apply"
+    "native:p10:apply": "node scripts/p10-native-promote.mjs --apply",
+    "qualify:p11": "node scripts/p11-release-candidate.mjs",
+    "qualify:p11:strict": "node scripts/p11-release-candidate.mjs --strict"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
