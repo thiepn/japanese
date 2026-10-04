@@ -231,6 +231,19 @@ The P9 release gate remains authoritative and source-dependent. P10 does not fab
 
 The current checked-in decision remains `HOLD_B2_RELEASE_CANDIDATE`: the P9 native inventory is empty, no external validation has been admitted, and the provider release profile is still undecided. This is an evidence state, not an implementation defect. See `docs/P11_ACCEPTANCE.md`.
 
+## P11.1 — Release Evidence Closure & External Review Intake
+
+**Implementation complete; release qualification still awaits real evidence.** P11.1 closes the remaining process gaps without weakening the P11 decision:
+
+- freezes the current release profile as conservative `offline-only`, so the qualified baseline does not claim an unbenchmarked live AI/morphology dependency;
+- adds cryptographic external-review intake bound to the exact exported P10 review packet;
+- derives reviewed artifact count and writing/speaking modality from packet-linked evidence instead of hand-entered summary claims;
+- requires one rubric review per admitted artifact and validates the existing 0–4 human-review dimensions;
+- records SHA-256 digests for both packet and reviewer submission;
+- refuses conflicting review identities and preserves the non-mastery / non-CEFR evidence boundary.
+
+The provider-profile blockers are therefore resolved in the checked-in baseline. The remaining gate work is external human review plus independently verified reusable connected native media. See `docs/P11_1_ACCEPTANCE.md`.
+
 ## P12 — C1 Foundation & Advanced Independent Japanese
 
 **Blocked until P11 returns `OPEN_C1_ROADMAP`.** No C1 curriculum should be implemented while the B2 release candidate is still held. Once opened, P12 should establish C1-oriented source breadth, advanced discourse/comprehension targets and higher-level productive work without weakening the existing evidence boundaries.
