@@ -1,6 +1,6 @@
 # P11 — B2 Release Candidate Qualification, External Validation & C1 Gate Decision
 
-Status: implementation complete; the current repository is **not yet B2 release-candidate qualified** because P11 deliberately preserves the P9 native-media gate and requires external/product evidence that is not yet present.
+Status: implementation complete; the current repository is **not yet B2 release-candidate qualified** because real external productive-language validation has not yet been admitted. P11.1 resolved the provider posture and P11.2 satisfies the P9 native-media portion of the gate.
 
 ## Purpose
 
@@ -25,7 +25,7 @@ The C1 roadmap gate cannot open unless all P9 checks are green, including:
 - typecheck, tests, content validation, production build and certified E2E;
 - offline, provider-outage and long-history resilience.
 
-An empty or insufficient `release/p9-native-inventory.json` therefore keeps P11 blocked.
+P11.2 now provides a provenance-audited `release/p9-native-inventory.json` that satisfies the native-media thresholds. P11 still recomputes P9 as a hard dependency, so future provenance drift or regression failure will close the gate again.
 
 ## External validation evidence
 
@@ -114,25 +114,23 @@ The UI cannot open the gate itself.
 
 ## Current checked-in decision
 
-At P11 implementation time:
+After P11.1 and P11.2:
 
-- P9 native inventory remains empty;
-- P11 external validation contains no reviews;
-- the provider release profile is `undecided`.
+- the provider release profile is explicitly `offline-only`;
+- the P9 native-media thresholds are satisfied by the provenance-audited native registry;
+- P11 external validation still contains no qualifying real external review.
 
-Therefore the expected result is **HOLD_B2_RELEASE_CANDIDATE**.
+Therefore the expected result remains **HOLD_B2_RELEASE_CANDIDATE** until the external-review checks pass.
 
-This is intentional. P11 is complete as a qualification system without pretending that missing external evidence exists.
+This is intentional. P11 does not treat source/runtime completion as a substitute for independent productive-language validation.
 
 ## How to qualify later
 
-1. Curate and promote enough independently verified reusable native connected recordings through the P10 workflow.
-2. Export representative B2 productive evidence for an external teacher/tutor/language professional.
-3. Record the external review in `release/p11-external-validation.json`, preserving the packet SHA-256.
-4. Decide the actual release provider profile.
-5. If connected, record passing benchmark runs for every configured provider.
-6. Run the manual **P11 Release Candidate Qualification** workflow.
-7. Open a C1 roadmap only when the generated decision is `OPEN_C1_ROADMAP`.
+1. Export at least six representative B2 productive artifacts covering writing and speaking.
+2. Have a real external teacher, tutor or language professional review that packet.
+3. Admit the reviewer submission through the P11.1 cryptographic intake workflow so the exact packet SHA-256 and derived modality coverage are preserved.
+4. Run the manual **P11 Release Candidate Qualification** workflow.
+5. Open a C1 roadmap only when the generated decision is `OPEN_C1_ROADMAP`.
 
 ## Deliberate boundaries
 

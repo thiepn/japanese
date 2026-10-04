@@ -119,14 +119,11 @@ P11.1 makes those facts reproducible from packet-linked review data rather than 
 
 ## Remaining blockers
 
-After P11.1, the provider decision is no longer a blocker.
+After P11.1, the provider decision is no longer a blocker. P11.2 subsequently closes the native-media side of the release gate with a provenance-audited connected-speech registry.
 
-The remaining substantive evidence work is:
+The remaining substantive evidence work is now a real external review of representative B2 productive evidence, admitted through the P11.1 intake workflow.
 
-1. admit enough independently verified reusable connected native media to satisfy P9;
-2. perform a real external review of representative B2 productive evidence and admit it through the P11.1 intake workflow.
-
-Until those exist, `HOLD_B2_RELEASE_CANDIDATE` remains correct.
+Until that review exists and passes the P11 checks, `HOLD_B2_RELEASE_CANDIDATE` remains correct.
 
 ## Deliberate boundaries
 
@@ -142,4 +139,4 @@ P11.1 does not:
 
 ## P11.1 milestone
 
-The release now has a conservative provider baseline and an auditable external-review handoff/intake path. The remaining C1-gate blockers require real native-media provenance and real external human review rather than more implementation-only work.
+The release now has a conservative provider baseline and an auditable external-review handoff/intake path. P11.2 supplies the required native-media provenance; real external human review is the remaining substantive C1-gate dependency.

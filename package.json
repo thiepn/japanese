@@ -19,7 +19,9 @@
     "native:p10:apply": "node scripts/p10-native-promote.mjs --apply",
     "qualify:p11": "node scripts/p11-release-candidate.mjs",
     "qualify:p11:strict": "node scripts/p11-release-candidate.mjs --strict",
-    "review:p11:intake": "node scripts/p11-external-review-intake.mjs"
+    "review:p11:intake": "node scripts/p11-external-review-intake.mjs",
+    "native:p11:audit": "node scripts/p11-native-source-audit.mjs",
+    "native:p11:apply": "node scripts/p11-native-source-audit.mjs --apply"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
