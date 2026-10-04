@@ -73,6 +73,19 @@ Every listed native recording must have a stable id, source URL, recording URL, 
 
 ### Current checked-in state
 
-The checked-in native-media inventory intentionally starts empty. Therefore the automated report must currently show the static product/performance gates as satisfied while the native-media gates remain blocked.
+P11.2 now supplies a provenance-audited native connected-speech registry at `release/p11-native-sources.json` and a derived `release/p9-native-inventory.json`.
 
-Do not replace the empty inventory with synthetic, inferred or weakly sourced entries. Add only independently verified reusable recordings whose provenance supports the existing P9 rules.
+The checked-in media evidence currently provides:
+
+- 8 connected-source documents;
+- 8 licensed native recordings;
+- 5 independent speaker labels;
+- 2 represented registers;
+- natural-rate source conditions;
+- relative fast/stretch source conditions.
+
+`pnpm native:p11:audit` validates source/media identity, reusable licensing, attribution, explicit native-speaker evidence, connected-speech duration, content provenance, register/rate review and exact inventory reproducibility. Inventory drift from the registry is a failure.
+
+The `fast` label is a relative pedagogical stretch-source condition, not an acoustic words-per-minute measurement. Synthetic TTS, inferred native status, restricted licensing and short pronunciation clips still do not count.
+
+The native-media portion of P9 is therefore satisfied by the checked-in repository evidence. Full strict P9 qualification still requires the complete green regression suite.
