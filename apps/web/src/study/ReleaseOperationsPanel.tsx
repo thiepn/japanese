@@ -33,10 +33,10 @@ export function ReleaseOperationsPanel(){
 
   return <section className="release-operations">
     <div className="section-heading">
-      <div><span className="course-kicker">P11.2 RELEASE EVIDENCE</span><h2>Qualify B2 before opening C1</h2></div>
+      <div><span className="course-kicker">P11.3 FINAL GATE OPERATIONS</span><h2>Qualify B2 before opening C1</h2></div>
       <span className="course-count">P9 media provenance + external evidence remain authoritative</span>
     </div>
-    <p>P11.2 adds repository-owned provenance verification for the P9 native-media gate. Local curation remains preparatory; the official release-candidate decision is still produced in repository CI from provenance-audited P9 evidence, admitted external validation, the release profile and the full regression suite.</p>
+    <p>P11.3 operationalizes the final external-review dependency. P9 native provenance and the release profile are already green; the official release-candidate decision still comes from repository CI after a real external reviewer submission has been admitted and the full regression suite passes.</p>
 
     <div className="release-check-columns">
       <article>
