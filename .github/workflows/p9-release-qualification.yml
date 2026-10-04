@@ -18,6 +18,8 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm validate:content
+      - name: Audit P11.2 native provenance and P9 media gate
+        run: pnpm native:p11:audit
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e
@@ -44,5 +46,7 @@ jobs:
         with:
           name: p9-release-qualification-strict
           path: |
+            artifacts/p11-native-source-audit.json
+            artifacts/p11-native-source-audit.md
             artifacts/p9-release-qualification.json
             artifacts/p9-release-qualification.md
