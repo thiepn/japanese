@@ -42,10 +42,14 @@ jobs:
           JSON
       - name: Generate P9 release qualification report
         run: pnpm certify:p9 --regression artifacts/p9-regression-evidence.json
-      - name: Upload P9 qualification evidence
+      - name: Generate P11 release-candidate decision
+        run: pnpm qualify:p11 --regression artifacts/p9-regression-evidence.json
+      - name: Upload release qualification evidence
         uses: actions/upload-artifact@v4
         with:
-          name: p9-release-qualification
+          name: b2-release-qualification
           path: |
             artifacts/p9-release-qualification.json
             artifacts/p9-release-qualification.md
+            artifacts/p11-release-candidate-qualification.json
+            artifacts/p11-release-candidate-qualification.md
