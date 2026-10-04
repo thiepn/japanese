@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import { describe,expect,it } from "vitest";
 import {
   buildP11QualificationReport,
@@ -84,6 +85,15 @@ describe("P11 release candidate qualification",()=>{
 
   it("supports an explicit offline-only release profile without pretending providers were benchmarked",()=>{
     const summary=summarizeProviderBenchmarks(offlineProviders());
+    expect(summary.releaseProfile).toBe("offline-only");
+    expect(summary.configuredProviders).toBe(0);
+    expect(summary.qualified).toBe(true);
+  });
+
+
+  it("keeps the checked-in release profile explicitly offline-only until connected providers are qualified",()=>{
+    const manifest=JSON.parse(fs.readFileSync("release/p11-provider-benchmarks.json","utf8"));
+    const summary=summarizeProviderBenchmarks(manifest);
     expect(summary.releaseProfile).toBe("offline-only");
     expect(summary.configuredProviders).toBe(0);
     expect(summary.qualified).toBe(true);
