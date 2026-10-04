@@ -172,7 +172,7 @@ P8 retains the same evidence boundaries: structural success is not complete sema
 
 ## P9 — B2 Real-World Performance, Native Listening Depth & Release Qualification
 
-**Implementation complete; release qualification is conditional on real native-media inventory and green regression evidence.**
+**Implementation complete; P11.2 now supplies a provenance-audited native-media inventory, while full release qualification still requires green regression evidence.**
 
 P9 hardens sustained B2 performance before any C1-oriented curriculum:
 
@@ -189,16 +189,15 @@ P9 hardens sustained B2 performance before any C1-oriented curriculum:
 
 The release contract currently requires at least 20 B2 connected texts, 20 B2 productive tasks, 120 B2 lexical chunks, five real-world chains, 20 performance prompts, four licensed native connected-source documents, eight licensed recordings, three independent speaker labels/credits, two registers, natural-rate audio, a faster source condition and all regression gates green.
 
-The C1-roadmap gate is a **product/system readiness gate**, not a learner CEFR judgment. It remains closed whenever the connected deployment lacks the required licensed native inventory. See `docs/P9_ACCEPTANCE.md` and `docs/P9_RELEASE_QUALIFICATION.md`.
+The C1-roadmap gate is a **product/system readiness gate**, not a learner CEFR judgment. P11.2 now satisfies the licensed native-media portion of this contract; the broader P11 gate still remains closed until external validation is admitted. See `docs/P9_ACCEPTANCE.md` and `docs/P9_RELEASE_QUALIFICATION.md`.
 
 ### Required operational step before any C1 phase
 
-- populate the deployment with enough independently licensed connected native material to meet the P9 media thresholds;
-- run the full release workflow and provider benchmark against the deployed providers;
-- record the qualifying commit/workflow evidence through the automated P9 qualification artifact;
-- populate `release/p9-native-inventory.json` only with independently verified reusable native connected recordings;
-- run `pnpm certify:p9:strict` or the manual **P9 Release Qualification** workflow;
-- open a C1 roadmap only if every P9 release check passes.
+- keep `release/p11-native-sources.json` and the derived P9 inventory provenance-clean and CI-audited;
+- run the full release workflow and retain P9/P11 qualification artifacts;
+- obtain and admit the real external productive-language review required by P11;
+- run the strict **P11 Release Candidate Qualification** workflow;
+- open a C1 roadmap only if P11 returns `OPEN_C1_ROADMAP`.
 
 ## P10 — B2 Release Operations, Native Corpus Curation & Human Evaluation
 
@@ -229,7 +228,7 @@ The P9 release gate remains authoritative and source-dependent. P10 does not fab
 - the manual **P11 Release Candidate Qualification** workflow runs the same suite and enforces the strict gate;
 - the only gate-opening outcome is `OPEN_C1_ROADMAP`.
 
-The current checked-in decision remains `HOLD_B2_RELEASE_CANDIDATE`: the P9 native inventory is empty, no external validation has been admitted, and the provider release profile is still undecided. This is an evidence state, not an implementation defect. See `docs/P11_ACCEPTANCE.md`.
+The current checked-in decision remains `HOLD_B2_RELEASE_CANDIDATE`: P11.1 resolved the provider posture, and P11.2 closes the P9 native-media gap, but no qualifying external productive-language validation has yet been admitted. This is an evidence state, not an implementation defect. See `docs/P11_ACCEPTANCE.md`.
 
 ## P11.1 — Release Evidence Closure & External Review Intake
 
@@ -242,7 +241,22 @@ The current checked-in decision remains `HOLD_B2_RELEASE_CANDIDATE`: the P9 nati
 - records SHA-256 digests for both packet and reviewer submission;
 - refuses conflicting review identities and preserves the non-mastery / non-CEFR evidence boundary.
 
-The provider-profile blockers are therefore resolved in the checked-in baseline. The remaining gate work is external human review plus independently verified reusable connected native media. See `docs/P11_1_ACCEPTANCE.md`.
+The provider-profile blockers are therefore resolved in the checked-in baseline. P11.2 subsequently closes the native-media side of the gate, leaving external human review as the remaining substantive release-candidate dependency. See `docs/P11_1_ACCEPTANCE.md`.
+
+## P11.2 — Native Corpus Sourcing, Provenance Verification & P9 Media-Gate Closure
+
+**Implementation complete; P9 native-media thresholds are now satisfied by checked-in provenance evidence.**
+
+- eight connected native recordings are admitted through a dedicated source registry;
+- five explicitly evidenced native speakers are represented;
+- formal and polite registers are represented;
+- natural and relative fast/stretch source conditions are represented without claiming acoustic rate scoring;
+- every entry carries source, media, license, native-speaker and content evidence URLs;
+- clips under 30 seconds, NC/ND licensing, missing provenance, incomplete verification and inventory drift are rejected;
+- `release/p9-native-inventory.json` is reproducibly generated from the registry;
+- normal CI plus strict P9/P11 workflows enforce the P11.2 audit.
+
+The P9 media gate is no longer the reason P11 is held. The remaining substantive blocker is real external teacher/tutor/language-professional review of representative B2 production. See `docs/P11_2_ACCEPTANCE.md`.
 
 ## P12 — C1 Foundation & Advanced Independent Japanese
 
