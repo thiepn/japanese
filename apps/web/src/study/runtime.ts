@@ -4,6 +4,7 @@ import { getMemoryTrace, listMemoryTraces, listStudyEvents, saveMemoryTrace, sav
 import { createFsrsScheduler, type ReviewGrade } from "@thiepn/scheduler";
 import { createStudyEvent, type StudyPrompt, type StudyStep } from "@thiepn/study-player";
 import { pronunciationLessons, pronunciationPerceptionPrompts } from "./audioPrompts";
+import { coreContent } from "../coreContent";
 import { FOUNDATION_TOTAL_ITEMS, foundationApplicationPrompts, foundationLessons, foundationPrompts } from "./foundationPrompts";
 import { a1Course, allGrammarCoursePrompts, courseUnitPrompts, courseUnitSession, grammarCourseLessons, isGrammarCoursePromptReady, selectNewCoursePrompts } from "./grammarCourse";
 import { conjugationLessons, conjugationPrompts } from "./conjugation";
@@ -347,8 +348,12 @@ function insertFirstExposureLessons(queue:StudyPrompt[],byId:Map<string,Awaited<
 export function isApplicationPromptReady(prompt:StudyPrompt,traceIds:ReadonlySet<string>):boolean{
   if(prompt.primaryTarget.kind==="grammar"||prompt.primaryTarget.kind==="sentence")return isGrammarCoursePromptReady(prompt,traceIds);
   if(prompt.primaryTarget.kind==="lexical_chunk"){
-    const b2Ready=[...traceIds].some((trace)=>trace.startsWith("grammar:b2-")||trace.startsWith("sentence:b2-")||trace.startsWith("production_task:b2-"));
-    if(!b2Ready)return false;
+    const chunk=coreContent.lexicalChunks.find((item)=>item.id===prompt.primaryTarget.id);
+    const requiredLevel=chunk?.level==="C1"?"C1":"B2";
+    const levelReady=[...traceIds].some((trace)=>requiredLevel==="C1"
+      ?trace.startsWith("grammar:c1-")||trace.startsWith("sentence:p12-")||trace.startsWith("production_task:p12-")
+      :trace.startsWith("grammar:b2-")||trace.startsWith("sentence:b2-")||trace.startsWith("production_task:b2-"));
+    if(!levelReady)return false;
     if(prompt.skill==="meaning_recognition")return true;
     if(prompt.skill==="active_use"||prompt.skill==="form_selection")return traceIds.has("lexical_chunk:"+prompt.primaryTarget.id+":meaning_recognition:chunk-to-meaning");
     return true;
