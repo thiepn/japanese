@@ -10,17 +10,17 @@ export function productivePracticeSession(mode:"writing"|"speaking"):StudyStep[]
   const tasks=productiveTasks.filter((task)=>task.mode===mode);
   const intro:StudyLesson={
     kind:"lesson",id:"productive-"+mode+"-intro",
-    title:mode==="writing"?"B1→B2 writing + collocation practice":"B1→B2 speaking + collocation practice",
+    title:mode==="writing"?"B1→C1 writing + discourse practice":"B1→C1 speaking + discourse practice",
     body:mode==="writing"
       ?"Write connected Japanese, then receive a structural target check. The check verifies task length and requested language features; it does not pretend to be a full semantic correction."
       :"Speak Japanese into the browser microphone. Speech recognition supplies a transcript for a structural target check. Recognition success is evidence of intelligibility, not a phonetic pronunciation score.",
     contextId:"productive-"+mode,
     facts:[
-      {label:"Level",value:"B1→B2"},
+      {label:"Level",value:"B1→C1"},
       {label:"Tasks",value:String(tasks.length)},
       {label:"Evidence",value:mode==="writing"?"writing quality + production":"spoken production"}
     ],
-    sourceLabel:"THIEPN Japanese B1→B2 productive practice"
+    sourceLabel:"THIEPN Japanese B1→C1 productive practice"
   };
   return [intro,...tasks.map((task)=>makePrompt(task))];
 }
@@ -38,14 +38,14 @@ export function productiveTaskSession(taskId:string):StudyStep[]{
     kind:"lesson",
     id:"productive-single-"+task.id,
     title:task.title,
-    body:"This task is part of a longer B2 autonomy chain. Produce the response independently; the built-in check only verifies transparent structural targets and response length.",
+    body:"This "+task.level+" task belongs to the independent production path. Produce the response independently; the built-in check verifies transparent structural targets and response length, not full semantic quality or accredited CEFR performance.",
     contextId:"productive-"+task.id,
     facts:[
       {label:"Mode",value:task.mode},
       {label:"Level",value:task.level},
       {label:"Targets",value:task.requiredTerms.join(" · "),language:"ja"}
     ],
-    sourceLabel:"THIEPN Japanese B2 autonomy mission"
+    sourceLabel:"THIEPN Japanese "+task.level+" productive task"
   };
   return [intro,makePrompt(task)];
 }
