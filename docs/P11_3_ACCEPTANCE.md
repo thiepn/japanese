@@ -174,6 +174,6 @@ P11.3 does not:
 
 ## P11.3 milestone
 
-All repository-side and user-facing machinery needed to obtain and admit the final external review is now implemented.
+All repository-side and user-facing machinery needed to obtain and admit the final external review is implemented.
 
-The remaining blocker is no longer missing product infrastructure. It is the intentionally human requirement itself.
+The P11 evidence blocker remains the intentionally human requirement itself. P12 curriculum development has since proceeded by explicit roadmap override, without changing P11's HOLD decision or inventing reviewer evidence.
