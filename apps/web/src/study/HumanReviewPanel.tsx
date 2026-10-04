@@ -59,7 +59,7 @@ export function HumanReviewPanel(){
 
   return <section className="human-review-panel">
     <div className="section-heading">
-      <div><span className="course-kicker">P10 HUMAN EVALUATION</span><h2>Review productive evidence without rewriting mastery</h2></div>
+      <div><span className="course-kicker">P11.3 EXTERNAL REVIEW HANDOFF</span><h2>Review productive evidence without rewriting mastery</h2></div>
       <span className="course-count">{summary?.reviewedArtifacts??0} reviewed · {summary?.unreviewedArtifacts??0} pending</span>
     </div>
     <p>Human feedback is stored separately from structural Study Player results and AI advice. A reviewer can score task fulfillment, meaning/accuracy, coherence and register from 0–4; the score is descriptive and never becomes CEFR certification or FSRS mastery automatically.</p>
