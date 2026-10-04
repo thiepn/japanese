@@ -204,7 +204,7 @@ function validateRubric(rubric:HumanReviewRubric):void{
   for(const value of Object.values(rubric))if(!isScore(value))throw new Error("HUMAN_REVIEW_SCORE_OUT_OF_RANGE");
 }
 function isScore(value:unknown):value is HumanReviewScore{
-  return Number.isInteger(value)&&typeof value==="number"&&value>=0&&value<=4;
+  return typeof value==="number"&&Number.isInteger(value)&&value>=0&&value<=4;
 }
 function mean(values:number[]):number{return values.length?values.reduce((sum,value)=>sum+value,0)/values.length:0;}
 function average(values:number[]):number{return round2(mean(values));}
