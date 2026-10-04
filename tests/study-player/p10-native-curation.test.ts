@@ -25,7 +25,8 @@ describe("P10 native corpus curation",()=>{
   it("blocks promotion until source metadata and every human-verification field are complete",()=>{
     const incomplete={...review,checklist:{...review.checklist,licenseVerified:false}};
     expect(curationBlockers(document,audio,incomplete)).toContain("verification incomplete: licenseVerified");
-    expect(curationBlockers({...document,sourceUrl:undefined},audio,review)).toContain("document source URL missing");
+    const {sourceUrl:_,...withoutSource}=document;
+    expect(curationBlockers(withoutSource,audio,review)).toContain("document source URL missing");
   });
 
   it("summarizes only promotable media toward speaker/register/rate readiness",()=>{
