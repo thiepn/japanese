@@ -1,8 +1,28 @@
 import type { AudioAssetRecord, CanDoDescriptor, ContentSeedPackage, CourseUnit, GrammarConcept, Kanji, Lexeme, LexicalChunk, ProductiveTask, ReadingText, Sense, Sentence } from "@thiepn/content-schema";
 import rawContent from "../../../content/seed/jp-core.json";
+import rawC1Lexicon from "../../../content/seed/jp-c1-lexicon.json";
+import rawC1Language from "../../../content/seed/jp-c1-language.json";
+import rawC1Course from "../../../content/seed/jp-c1-course.json";
 import rawRegistry from "../../../content/sources/registry.json";
 
-export const coreContent = rawContent as unknown as ContentSeedPackage;
+const base=rawContent as unknown as ContentSeedPackage;
+const c1Lexicon=rawC1Lexicon as unknown as Pick<ContentSeedPackage,"lexemes"|"senses">;
+const c1Language=rawC1Language as unknown as Pick<ContentSeedPackage,"grammar"|"sentences"|"lexicalChunks">;
+const c1Course=rawC1Course as unknown as Pick<ContentSeedPackage,"canDos"|"courseUnits"|"readingTexts"|"productiveTasks">;
+
+export const coreContent:ContentSeedPackage={
+  ...base,
+  version:"0.10.0",
+  lexemes:[...base.lexemes,...c1Lexicon.lexemes],
+  senses:[...base.senses,...c1Lexicon.senses],
+  grammar:[...base.grammar,...c1Language.grammar],
+  sentences:[...base.sentences,...c1Language.sentences],
+  lexicalChunks:[...base.lexicalChunks,...c1Language.lexicalChunks],
+  canDos:[...base.canDos,...c1Course.canDos],
+  courseUnits:[...base.courseUnits,...c1Course.courseUnits],
+  readingTexts:[...base.readingTexts,...c1Course.readingTexts],
+  productiveTasks:[...base.productiveTasks,...c1Course.productiveTasks]
+};
 
 const sensesByLexeme = new Map<string,Sense>();
 for (const sense of coreContent.senses) {
