@@ -14,7 +14,9 @@
     "test:e2e": "playwright test",
     "validate:content": "pnpm --filter @thiepn/content-validation validate",
     "certify:p9": "node scripts/p9-release-certify.mjs",
-    "certify:p9:strict": "node scripts/p9-release-certify.mjs --strict"
+    "certify:p9:strict": "node scripts/p9-release-certify.mjs --strict",
+    "native:p10:preview": "node scripts/p10-native-promote.mjs",
+    "native:p10:apply": "node scripts/p10-native-promote.mjs --apply"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

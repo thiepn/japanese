@@ -200,6 +200,32 @@ The C1-roadmap gate is a **product/system readiness gate**, not a learner CEFR j
 - run `pnpm certify:p9:strict` or the manual **P9 Release Qualification** workflow;
 - open a C1 roadmap only if every P9 release check passes.
 
+## P10 — B2 Release Operations, Native Corpus Curation & Human Evaluation
+
+**Implementation complete.** P10 operationalizes the remaining B2 release gap without introducing C1 curriculum:
+
+- human review for learner writing/speaking using a four-dimension 0–4 rubric;
+- human review stored as separate non-mastery StudyEvents;
+- portable review packets for teachers/tutors;
+- native-media curation with candidate/verified/rejected states and six explicit verification checks;
+- versioned export of promotion-eligible media with reviewer audit metadata;
+- repository promotion tooling with preview/apply modes and conflict/license validation;
+- CI validation of the P10 candidate queue;
+- a release operations dashboard exposing static product gates and local verified-media readiness;
+- B2 portfolio schema v2 including human-review summaries.
+
+The P9 release gate remains authoritative and source-dependent. P10 does not fabricate native media or convert reviewer judgment into CEFR certification. See `docs/P10_ACCEPTANCE.md`.
+
+## P11 — B2 Release Candidate Qualification, External Validation & C1 Gate Decision
+
+**Next, but conditional.** P11 should run only as a B2 release-candidate/external-validation phase until the P9 native-media gate is actually satisfied. It should cover:
+
+- curated native inventory admission and release-candidate certification;
+- external teacher/tutor validation of representative productive evidence;
+- provider benchmark history and release evidence capture;
+- final B2 release candidate hardening across offline, long-session and provider-failure paths;
+- explicit decision record for whether the product/system C1 roadmap gate may open.
+
 ## Later
 
 Later phases add advanced domain-specific Japanese, C1-oriented comprehension and production only after B2 breadth is credible, specialized source packs, higher-level writing/speaking assessment and long-term adaptive curricula.

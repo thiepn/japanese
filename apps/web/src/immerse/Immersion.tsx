@@ -4,6 +4,7 @@ import { AuthenticLibrary } from "./AuthenticLibrary";
 import { buildExtensiveTracks } from "./extensive";
 import { ShadowingLab } from "./ShadowingLab";
 import { NativeListeningLab } from "./NativeListeningLab";
+import { NativeCurationPanel } from "./NativeCurationPanel";
 import { getAdaptiveImmersionRecommendation,type AdaptiveImmersionRecommendation } from "./adaptive";
 import { getAutonomyMissionProgress,type AutonomyMissionProgress } from "../study/autonomyMissions";
 import type { ReadingQuestion } from "@thiepn/content-schema";
@@ -127,7 +128,7 @@ export function Immersion({onStartProductionTask}:{onStartProductionTask:(taskId
 
   return <section className="dashboard immerse-page">
     <p className="eyebrow">IMMERSE</p><h1>A1 → B2 autonomy</h1>
-    <p className="lead">P8 adds sustained B2 missions that combine several texts, listening checks, independent production and delayed transfer. Recommendations remain advisory; all source texts and tasks stay directly accessible.</p>
+    <p className="lead">P10 keeps B2 release work honest: sustained missions and native listening remain available, while imported recordings can now be manually curated and exported only after provenance, license, native-speaker, transcript, register and rate checks are complete.</p>
     {progress?<div className="stat-row four"><MiniStat value={progress.texts.length} label="Graded texts"/><MiniStat value={progress.minedWords} label="Mined words"/><MiniStat value={progress.readingChecks} label="Reading checks"/><MiniStat value={progress.listeningChecks} label="Listening checks"/></div>:null}
     {recommendation?<section className="adaptive-immersion">
       <div className="section-heading"><div><span className="course-kicker">ADAPTIVE NEXT STEP</span><h2>Focus on {recommendation.focus}</h2></div></div>
@@ -175,6 +176,7 @@ export function Immersion({onStartProductionTask}:{onStartProductionTask:(taskId
     </div>
     <p className="course-note">Readiness is derived from lexeme meaning evidence. It is guidance, not a content lock. Curated connected audio uses the device’s Japanese speech-synthesis voice unless a source-provenanced recording is attached.</p>
     <NativeListeningLab/>
+    <NativeCurationPanel/>
     <ShadowingLab/>
     <AuthenticLibrary/>
   </section>;

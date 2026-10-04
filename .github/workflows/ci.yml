@@ -20,6 +20,8 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm validate:content
+      - name: Validate P10 native candidate queue
+        run: pnpm native:p10:preview
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e

@@ -1,6 +1,7 @@
 import { getNativeListeningDepthSummary,type NativeListeningDepthSummary } from "../immerse/nativeListening";
 import { getRealWorldPerformanceSummary,type RealWorldPerformanceSummary } from "./realWorldPerformance";
 import { getB2PortfolioSummary,type B2PortfolioSummary } from "./reliability";
+import { getHumanReviewSummary,type HumanReviewSummary } from "./humanReview";
 
 export interface B2PortfolioExportV1 {
   schema:"thiepn-japanese-b2-portfolio";
@@ -18,38 +19,58 @@ export interface B2PortfolioExportV1 {
   nativeListening:NativeListeningDepthSummary;
 }
 
-export async function getB2PortfolioExport(now=new Date()):Promise<B2PortfolioExportV1>{
-  const [portfolio,realWorldPerformance,nativeListening]=await Promise.all([
-    getB2PortfolioSummary(),getRealWorldPerformanceSummary(),getNativeListeningDepthSummary()
+export interface B2PortfolioExportV2 {
+  schema:"thiepn-japanese-b2-portfolio";
+  schemaVersion:2;
+  generatedAt:string;
+  phase:"P10";
+  evidenceBoundary:{
+    accreditedCefrVerdict:false;
+    aiFeedbackChangesMastery:false;
+    humanReviewChangesMastery:false;
+    structuralChecksAreSemanticScores:false;
+    speechRecognitionIsAcousticScoring:false;
+  };
+  portfolio:B2PortfolioSummary;
+  realWorldPerformance:RealWorldPerformanceSummary;
+  nativeListening:NativeListeningDepthSummary;
+  humanReviews:HumanReviewSummary;
+}
+
+export async function getB2PortfolioExport(now=new Date()):Promise<B2PortfolioExportV2>{
+  const [portfolio,realWorldPerformance,nativeListening,humanReviews]=await Promise.all([
+    getB2PortfolioSummary(),getRealWorldPerformanceSummary(),getNativeListeningDepthSummary(),getHumanReviewSummary()
   ]);
   return {
-    schema:"thiepn-japanese-b2-portfolio",schemaVersion:1,generatedAt:now.toISOString(),phase:"P9",
+    schema:"thiepn-japanese-b2-portfolio",schemaVersion:2,generatedAt:now.toISOString(),phase:"P10",
     evidenceBoundary:{
       accreditedCefrVerdict:false,
       aiFeedbackChangesMastery:false,
+      humanReviewChangesMastery:false,
       structuralChecksAreSemanticScores:false,
       speechRecognitionIsAcousticScoring:false
     },
-    portfolio,realWorldPerformance,nativeListening
+    portfolio,realWorldPerformance,nativeListening,humanReviews
   };
 }
 
-export function serializeB2PortfolioJson(value:B2PortfolioExportV1):string{
+export function serializeB2PortfolioJson(value:B2PortfolioExportV1|B2PortfolioExportV2):string{
   return JSON.stringify(value,null,2);
 }
 
-export function serializeB2PortfolioMarkdown(value:B2PortfolioExportV1):string{
+export function serializeB2PortfolioMarkdown(value:B2PortfolioExportV1|B2PortfolioExportV2):string{
   const p=value.portfolio,r=p.reliability,perf=value.realWorldPerformance,native=value.nativeListening;
   const lines=[
     "# THIEPN Japanese — B2 Portfolio Export",
     "",
     "Generated: "+value.generatedAt,
-    "Phase: P9",
+    "Phase: "+value.phase,
     "",
     "## Evidence boundary",
     "",
     "- Descriptive learner evidence only; this is not an accredited CEFR result.",
     "- AI feedback is advisory and does not alter mastery.",
+    ...("humanReviews" in value?["- Human review is descriptive evidence and does not alter mastery automatically."]:[]),
     "- Structural target checks are not complete semantic-quality scores.",
     "- Browser speech recognition is transcript evidence, not acoustic pronunciation scoring.",
     "",
@@ -83,6 +104,18 @@ export function serializeB2PortfolioMarkdown(value:B2PortfolioExportV1):string{
     "- Multi-source syntheses: "+native.multiSourceSessions,
     "- Delayed recalls: "+native.delayedRecalls,
     "",
+    ...("humanReviews" in value?[
+      "## Human review",
+      "",
+      "- Reviewed artifacts: "+value.humanReviews.reviewedArtifacts,
+      "- Unreviewed artifacts: "+value.humanReviews.unreviewedArtifacts,
+      "- Average overall rubric: "+value.humanReviews.averageOverall+" / 4",
+      "- Average task fulfillment: "+value.humanReviews.averageTaskFulfillment+" / 4",
+      "- Average meaning/accuracy: "+value.humanReviews.averageMeaningAccuracy+" / 4",
+      "- Average coherence: "+value.humanReviews.averageCoherence+" / 4",
+      "- Average register: "+value.humanReviews.averageRegister+" / 4",
+      ""
+    ]:[]),
     "## Recent productive artifacts",
     "",
     ...p.recentArtifacts.flatMap((artifact)=>[

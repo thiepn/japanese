@@ -10,27 +10,24 @@ Primary product surfaces: **Today · Learn · Immerse · Library · Progress**.
 
 ## Current phase
 
-**P9 — B2 Real-World Performance, Native Listening Depth & Release Qualification is implemented.**
+**P10 — B2 Release Operations, Native Corpus Curation & Human Evaluation is implemented.**
 
-The unified Foundation → A1 → A2 → B1 → B2 system now includes the P8 autonomy/reliability layer plus:
+P10 adds the operational layer needed to move from feature-complete B2 software toward a genuinely release-qualified system:
 
-- five real-world functional chains covering appointments, workplace incidents, service problems, travel disruption and community coordination;
-- 20 qualification-only performance prompts across unseen response, paraphrase, repair and timed follow-up;
-- non-blocking timed response targets with explicit within-time evidence;
-- qualification prompts excluded from FSRS scheduling;
-- a source-provenanced multi-source native-listening lab with per-source notes, synthesis and 20+ hour delayed recall;
-- support for multiple licensed native recording variants across source rate, register and speaker labels;
-- bounded AI feedback-grounding diagnostics and a repeatable provider benchmark;
-- longitudinal B2 portfolio export as versioned JSON or readable Markdown;
-- provider-outage, offline and long-history regression drills;
-- explicit release/C1-roadmap gates for B2 content breadth, real-world performance, native-media inventory and CI reliability.
+- optional human review of B2 writing/speaking artifacts using task fulfillment, meaning/accuracy, coherence and register scores;
+- review packets that can be shared with a teacher/tutor;
+- human-verified native-media curation with explicit source/license/native-speaker/transcript/register/rate checks;
+- candidate export plus repository preview/apply promotion commands;
+- CI validation of the native candidate queue;
+- a release-operations dashboard showing static P9 gates and local verified-media readiness;
+- B2 portfolio schema v2 with human-review summaries.
 
-P9 preserves the evidence boundaries: structural checks are not complete semantic assessment, AI feedback is advisory, browser speech recognition is not acoustic scoring, synthetic TTS does not count as native audio and portfolio exports are not accredited CEFR results.
+Human review remains descriptive evidence and does not change mastery automatically. Local media verification does not count toward P9 until promoted into the checked-in release inventory and recertified by CI.
 
-The software implementation is complete, but **release qualification is intentionally conditional**. A deployment must still satisfy the real licensed native-media inventory threshold and the recorded regression gates. The repository will not fabricate or relabel audio merely to open the C1-roadmap gate.
+The P9 software implementation is complete. Its release gate is still intentionally blocked whenever the repository lacks enough independently verified reusable native connected audio. P10 provides the workflow to close that gap without weakening the criteria.
 
-See `docs/P9_ACCEPTANCE.md` and `docs/P9_RELEASE_QUALIFICATION.md`.
+See `docs/P10_ACCEPTANCE.md`, `docs/P9_RELEASE_QUALIFICATION.md` and `docs/SOURCE_PACK_FORMAT.md`.
 
-The next roadmap step is to satisfy and certify the P9 release gate. CI now emits an auditable P9 qualification artifact, `pnpm certify:p9` generates the same report locally, and `pnpm certify:p9:strict` enforces the gate. The checked-in native-media inventory remains intentionally empty until independently verified reusable native connected audio is added. A separate C1 roadmap remains blocked until every gate is green.
+The next phase is **P11 — B2 Release Candidate Qualification, External Validation & C1 Gate Decision**. It remains B2-focused until the P9 release gate is fully green.
 
-See `docs/P1_ACCEPTANCE.md`, `docs/P2_ACCEPTANCE.md`, `docs/P2_5_ACCEPTANCE.md`, `docs/P3_ACCEPTANCE.md`, `docs/P4_ACCEPTANCE.md`, `docs/P5_ACCEPTANCE.md`, `docs/P6_ACCEPTANCE.md`, `docs/P7_ACCEPTANCE.md`, `docs/P8_ACCEPTANCE.md`, `docs/P9_ACCEPTANCE.md`, `docs/P9_RELEASE_QUALIFICATION.md`, `docs/SOURCE_PACK_FORMAT.md`, `docs/P1_5_MOBILE_CERTIFICATION.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md` and `docs/THIRD_PARTY_NOTICES.md`.
+See `docs/P1_ACCEPTANCE.md`, `docs/P2_ACCEPTANCE.md`, `docs/P2_5_ACCEPTANCE.md`, `docs/P3_ACCEPTANCE.md`, `docs/P4_ACCEPTANCE.md`, `docs/P5_ACCEPTANCE.md`, `docs/P6_ACCEPTANCE.md`, `docs/P7_ACCEPTANCE.md`, `docs/P8_ACCEPTANCE.md`, `docs/P9_ACCEPTANCE.md`, `docs/P9_RELEASE_QUALIFICATION.md`, `docs/P10_ACCEPTANCE.md`, `docs/SOURCE_PACK_FORMAT.md`, `docs/P1_5_MOBILE_CERTIFICATION.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md` and `docs/THIRD_PARTY_NOTICES.md`.

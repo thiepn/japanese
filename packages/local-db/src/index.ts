@@ -2,7 +2,7 @@ import type { StudyEvent } from "@thiepn/domain";
 import type { MemoryTrace } from "@thiepn/scheduler";
 import { studyEventToMutation, type CoreSyncMutation, type StudyEventEnvelope } from "@thiepn/sync-protocol";
 
-const DB_VERSION = 6;
+const DB_VERSION = 7;
 const STUDY_EVENTS = "study_events";
 const MEMORY_TRACES = "memory_traces";
 const OUTBOX = "sync_outbox";
@@ -10,6 +10,7 @@ const SYNC_META = "sync_meta";
 const PRIVATE_DOCUMENTS = "private_documents";
 const PRIVATE_VOCABULARY = "private_vocabulary";
 const PRIVATE_SENTENCES = "private_sentences";
+const PRIVATE_MEDIA_REVIEWS = "private_media_reviews";
 
 export interface SyncMetaRecord { key: string; value: string; }
 
@@ -42,6 +43,27 @@ export interface PrivateSentenceRecord {
   createdAt:string; updatedAt:string;
 }
 
+export type PrivateMediaReviewStatus="candidate"|"verified"|"rejected";
+export interface PrivateMediaReviewChecklist {
+  sourceReachable:boolean;
+  licenseVerified:boolean;
+  nativeSpeakerVerified:boolean;
+  transcriptMatchVerified:boolean;
+  registerReviewed:boolean;
+  speechRateReviewed:boolean;
+}
+export interface PrivateMediaReviewRecord {
+  id:string;
+  accountId:string;
+  documentId:string;
+  recordingKey:string;
+  status:PrivateMediaReviewStatus;
+  reviewerLabel:string;
+  reviewedAt:string;
+  checklist:PrivateMediaReviewChecklist;
+  notes?:string;
+}
+
 export function databaseNameForAccount(accountId: string): string {
   if (!accountId.trim()) throw new Error("ACCOUNT_ID_REQUIRED");
   return `thiepn-japanese:${accountId}`;
@@ -61,6 +83,7 @@ export async function openLocalDb(accountId: string): Promise<IDBDatabase> {
       if (!db.objectStoreNames.contains(PRIVATE_DOCUMENTS)) db.createObjectStore(PRIVATE_DOCUMENTS, { keyPath: "id" });
       if (!db.objectStoreNames.contains(PRIVATE_VOCABULARY)) db.createObjectStore(PRIVATE_VOCABULARY, { keyPath: "id" });
       if (!db.objectStoreNames.contains(PRIVATE_SENTENCES)) db.createObjectStore(PRIVATE_SENTENCES, { keyPath: "id" });
+      if (!db.objectStoreNames.contains(PRIVATE_MEDIA_REVIEWS)) db.createObjectStore(PRIVATE_MEDIA_REVIEWS, { keyPath: "id" });
     };
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
@@ -166,6 +189,19 @@ export async function listPrivateSentences(accountId:string):Promise<PrivateSent
 export async function deletePrivateSentence(accountId:string,id:string):Promise<void>{
   const db=await openLocalDb(accountId);
   await new Promise<void>((resolve,reject)=>{const tx=db.transaction(PRIVATE_SENTENCES,"readwrite");tx.objectStore(PRIVATE_SENTENCES).delete(id);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});
+  db.close();
+}
+
+export async function savePrivateMediaReview(accountId:string,record:PrivateMediaReviewRecord):Promise<void>{
+  if(record.accountId!==accountId)throw new Error("PRIVATE_MEDIA_REVIEW_ACCOUNT_MISMATCH");
+  const db=await openLocalDb(accountId);await putOne(db,PRIVATE_MEDIA_REVIEWS,record);db.close();
+}
+export async function listPrivateMediaReviews(accountId:string):Promise<PrivateMediaReviewRecord[]>{
+  return getAllFromStore<PrivateMediaReviewRecord>(accountId,PRIVATE_MEDIA_REVIEWS);
+}
+export async function deletePrivateMediaReview(accountId:string,id:string):Promise<void>{
+  const db=await openLocalDb(accountId);
+  await new Promise<void>((resolve,reject)=>{const tx=db.transaction(PRIVATE_MEDIA_REVIEWS,"readwrite");tx.objectStore(PRIVATE_MEDIA_REVIEWS).delete(id);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});
   db.close();
 }
 
