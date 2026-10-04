@@ -3,11 +3,12 @@ import { coreContent } from "../../apps/web/src/coreContent";
 import { productivePracticeSession,productiveSpeakingPrompts,productiveWritingPrompts } from "../../apps/web/src/study/productivePractice";
 import { gradeStudyPrompt } from "../../packages/study-player/src/index";
 
-describe("P7 productive language",()=>{
-  it("ships canonical B1 and B2 productive tasks with reusable rubrics",()=>{
-    expect(coreContent.productiveTasks).toHaveLength(32);
+describe("P12 productive language",()=>{
+  it("preserves canonical B1/B2 tasks and extends reusable productive work into C1",()=>{
+    expect(coreContent.productiveTasks).toHaveLength(44);
     expect(coreContent.productiveTasks.filter((task)=>task.level==="B1")).toHaveLength(10);
     expect(coreContent.productiveTasks.filter((task)=>task.level==="B2")).toHaveLength(22);
+    expect(coreContent.productiveTasks.filter((task)=>task.level==="C1")).toHaveLength(12);
     expect(coreContent.productiveTasks.every((task)=>task.rubric.length===4&&task.requiredTerms.length>=3)).toBe(true);
     expect(coreContent.productiveTasks.filter((task)=>task.tags.includes("p7")).every((task)=>(task.targetChunkIds?.length??0)>=3)).toBe(true);
     expect(coreContent.productiveTasks.filter((task)=>task.level==="B2"&&task.tags.includes("ai-conversation"))).toHaveLength(6);

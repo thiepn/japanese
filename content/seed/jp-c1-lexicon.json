@@ -1,0 +1,1356 @@
+{
+  "schema": "thiepn-japanese-c1-lexicon",
+  "schemaVersion": 1,
+  "version": "0.10.0",
+  "sourceIds": [
+    "thiepn-original"
+  ],
+  "lexemes": [
+    {
+      "id": "c1-implication",
+      "canonicalForm": "含意",
+      "forms": [
+        {
+          "text": "含意",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "がんい"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-implication"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 627,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-coherence",
+      "canonicalForm": "整合性",
+      "forms": [
+        {
+          "text": "整合性",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "せいごうせい"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-coherence"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 628,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-constraint",
+      "canonicalForm": "制約",
+      "forms": [
+        {
+          "text": "制約",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "せいやく"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-constraint"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 629,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-exception",
+      "canonicalForm": "例外",
+      "forms": [
+        {
+          "text": "例外",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "れいがい"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-exception"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 630,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-provisional",
+      "canonicalForm": "暫定",
+      "forms": [
+        {
+          "text": "暫定",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ざんてい"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-provisional"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 631,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-structural",
+      "canonicalForm": "構造的",
+      "forms": [
+        {
+          "text": "構造的",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "こうぞうてき"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-structural"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 632,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-multifaceted",
+      "canonicalForm": "多面的",
+      "forms": [
+        {
+          "text": "多面的",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ためんてき"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-multifaceted"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 633,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-discrepancy",
+      "canonicalForm": "乖離",
+      "forms": [
+        {
+          "text": "乖離",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かいり"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-discrepancy"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 634,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-causality",
+      "canonicalForm": "因果関係",
+      "forms": [
+        {
+          "text": "因果関係",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "いんがかんけい"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-causality"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 635,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-correlation",
+      "canonicalForm": "相関",
+      "forms": [
+        {
+          "text": "相関",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "そうかん"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-correlation"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 636,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-assumption",
+      "canonicalForm": "想定",
+      "forms": [
+        {
+          "text": "想定",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "そうてい"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-assumption"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 637,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-inference",
+      "canonicalForm": "推論",
+      "forms": [
+        {
+          "text": "推論",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "すいろん"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-inference"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 638,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-framework",
+      "canonicalForm": "枠組み",
+      "forms": [
+        {
+          "text": "枠組み",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "わくぐみ"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-framework"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 639,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-remedy",
+      "canonicalForm": "対応策",
+      "forms": [
+        {
+          "text": "対応策",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "たいおうさく"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-remedy"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 640,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-consensus-building",
+      "canonicalForm": "合意形成",
+      "forms": [
+        {
+          "text": "合意形成",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ごういけいせい"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-consensus-building"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 641,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-feasibility",
+      "canonicalForm": "実現可能性",
+      "forms": [
+        {
+          "text": "実現可能性",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "じつげんかのうせい"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-feasibility"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 642,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-sustainability",
+      "canonicalForm": "持続可能性",
+      "forms": [
+        {
+          "text": "持続可能性",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "じぞくかのうせい"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-sustainability"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 643,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-accountability",
+      "canonicalForm": "説明責任",
+      "forms": [
+        {
+          "text": "説明責任",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "せつめいせきにん"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-accountability"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 644,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-transparency",
+      "canonicalForm": "透明性",
+      "forms": [
+        {
+          "text": "透明性",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "とうめいせい"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-transparency"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 645,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-autonomy",
+      "canonicalForm": "自律性",
+      "forms": [
+        {
+          "text": "自律性",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "じりつせい"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-autonomy"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 646,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-intervention",
+      "canonicalForm": "介入",
+      "forms": [
+        {
+          "text": "介入",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "かいにゅう"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-intervention"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 647,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-polarization",
+      "canonicalForm": "二極化",
+      "forms": [
+        {
+          "text": "二極化",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "にきょくか"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-polarization"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 648,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-institutional",
+      "canonicalForm": "制度的",
+      "forms": [
+        {
+          "text": "制度的",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "せいどてき"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-institutional"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 649,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-perspective",
+      "canonicalForm": "視座",
+      "forms": [
+        {
+          "text": "視座",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "しざ"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-perspective"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 650,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-integration",
+      "canonicalForm": "統合",
+      "forms": [
+        {
+          "text": "統合",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "とうごう"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-integration"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 651,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-ambiguity",
+      "canonicalForm": "曖昧性",
+      "forms": [
+        {
+          "text": "曖昧性",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "あいまいせい"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-ambiguity"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 652,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-granularity",
+      "canonicalForm": "粒度",
+      "forms": [
+        {
+          "text": "粒度",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "りゅうど"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-granularity"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 653,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-rhetoric",
+      "canonicalForm": "修辞",
+      "forms": [
+        {
+          "text": "修辞",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "しゅうじ"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-rhetoric"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 654,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-concession",
+      "canonicalForm": "譲歩",
+      "forms": [
+        {
+          "text": "譲歩",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "じょうほ"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-concession"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 655,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-caveat",
+      "canonicalForm": "留保",
+      "forms": [
+        {
+          "text": "留保",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "りゅうほ"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-caveat"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 656,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-deliberation",
+      "canonicalForm": "熟議",
+      "forms": [
+        {
+          "text": "熟議",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "じゅくぎ"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-deliberation"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 657,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-distribution",
+      "canonicalForm": "分配",
+      "forms": [
+        {
+          "text": "分配",
+          "script": "mixed"
+        }
+      ],
+      "readings": [
+        {
+          "text": "ぶんぱい"
+        }
+      ],
+      "senseIds": [
+        "sense-c1-distribution"
+      ],
+      "kanjiLinks": [],
+      "audioIds": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "priority": 658,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    }
+  ],
+  "senses": [
+    {
+      "id": "sense-c1-implication",
+      "lexemeId": "c1-implication",
+      "glosses": [
+        "implication"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-coherence",
+      "lexemeId": "c1-coherence",
+      "glosses": [
+        "consistency; coherence"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-constraint",
+      "lexemeId": "c1-constraint",
+      "glosses": [
+        "constraint"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-exception",
+      "lexemeId": "c1-exception",
+      "glosses": [
+        "exception"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-provisional",
+      "lexemeId": "c1-provisional",
+      "glosses": [
+        "provisional status; interim"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-structural",
+      "lexemeId": "c1-structural",
+      "glosses": [
+        "structural"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-multifaceted",
+      "lexemeId": "c1-multifaceted",
+      "glosses": [
+        "multifaceted"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-discrepancy",
+      "lexemeId": "c1-discrepancy",
+      "glosses": [
+        "gap; divergence"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-causality",
+      "lexemeId": "c1-causality",
+      "glosses": [
+        "causal relationship"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-correlation",
+      "lexemeId": "c1-correlation",
+      "glosses": [
+        "correlation"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-assumption",
+      "lexemeId": "c1-assumption",
+      "glosses": [
+        "assumption; scenario"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-inference",
+      "lexemeId": "c1-inference",
+      "glosses": [
+        "inference; reasoning"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-framework",
+      "lexemeId": "c1-framework",
+      "glosses": [
+        "framework"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-remedy",
+      "lexemeId": "c1-remedy",
+      "glosses": [
+        "response measure; remedy"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-consensus-building",
+      "lexemeId": "c1-consensus-building",
+      "glosses": [
+        "consensus building"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-feasibility",
+      "lexemeId": "c1-feasibility",
+      "glosses": [
+        "feasibility"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-sustainability",
+      "lexemeId": "c1-sustainability",
+      "glosses": [
+        "sustainability"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-accountability",
+      "lexemeId": "c1-accountability",
+      "glosses": [
+        "accountability"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-transparency",
+      "lexemeId": "c1-transparency",
+      "glosses": [
+        "transparency"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-autonomy",
+      "lexemeId": "c1-autonomy",
+      "glosses": [
+        "autonomy"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-intervention",
+      "lexemeId": "c1-intervention",
+      "glosses": [
+        "intervention"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-polarization",
+      "lexemeId": "c1-polarization",
+      "glosses": [
+        "polarization"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-institutional",
+      "lexemeId": "c1-institutional",
+      "glosses": [
+        "institutional"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-perspective",
+      "lexemeId": "c1-perspective",
+      "glosses": [
+        "perspective; vantage point"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-integration",
+      "lexemeId": "c1-integration",
+      "glosses": [
+        "integration; synthesis"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-ambiguity",
+      "lexemeId": "c1-ambiguity",
+      "glosses": [
+        "ambiguity"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-granularity",
+      "lexemeId": "c1-granularity",
+      "glosses": [
+        "granularity; level of detail"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-rhetoric",
+      "lexemeId": "c1-rhetoric",
+      "glosses": [
+        "rhetoric"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-concession",
+      "lexemeId": "c1-concession",
+      "glosses": [
+        "concession"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-caveat",
+      "lexemeId": "c1-caveat",
+      "glosses": [
+        "reservation; caveat"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-deliberation",
+      "lexemeId": "c1-deliberation",
+      "glosses": [
+        "deliberation"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "sense-c1-distribution",
+      "lexemeId": "c1-distribution",
+      "glosses": [
+        "distribution"
+      ],
+      "partOfSpeech": [
+        "noun"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    }
+  ]
+}

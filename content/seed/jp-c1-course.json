@@ -1,0 +1,2232 @@
+{
+  "schema": "thiepn-japanese-c1-course",
+  "schemaVersion": 1,
+  "version": "0.10.0",
+  "sourceIds": [
+    "thiepn-original"
+  ],
+  "canDos": [
+    {
+      "id": "p12-can-do-59",
+      "statement": "I can distinguish evidence, assumptions and implications in a complex formal argument.",
+      "level": "C1",
+      "languageActivity": "reading",
+      "grammarIds": [
+        "c1-o-fumaete",
+        "c1-o-megutte",
+        "c1-ni-taru",
+        "b2-wake-dewa-nai",
+        "c1-to-iedomo"
+      ],
+      "sentenceIds": [
+        "p12-text-policy-evidence-s1",
+        "p12-text-policy-evidence-s2",
+        "p12-text-policy-evidence-s3",
+        "p12-text-policy-evidence-s4",
+        "p12-text-policy-evidence-s5",
+        "p12-text-policy-evidence-s6"
+      ],
+      "prerequisiteIds": [
+        "p7-can-do-58"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-can-do-60",
+      "statement": "I can follow extended formal discourse that changes stance, qualification and emphasis.",
+      "level": "C1",
+      "languageActivity": "listening",
+      "grammarIds": [
+        "c1-ni-terashite",
+        "c1-ni-mo-mashite",
+        "c1-to-aimatte",
+        "c1-o-yoginaku-sareru",
+        "c1-beku"
+      ],
+      "sentenceIds": [
+        "p12-text-ai-judgment-s1",
+        "p12-text-ai-judgment-s2",
+        "p12-text-ai-judgment-s3",
+        "p12-text-ai-judgment-s4",
+        "p12-text-ai-judgment-s5",
+        "p12-text-ai-judgment-s6"
+      ],
+      "prerequisiteIds": [
+        "p12-can-do-59"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-can-do-61",
+      "statement": "I can compare competing interpretations without collapsing important nuance.",
+      "level": "C1",
+      "languageActivity": "spoken_interaction",
+      "grammarIds": [
+        "c1-ni-sokushite",
+        "c1-to-atte",
+        "c1-ni-itaru-made",
+        "c1-nai-mademo",
+        "c1-o-fumaete"
+      ],
+      "sentenceIds": [
+        "p12-text-urban-resilience-s1",
+        "p12-text-urban-resilience-s2",
+        "p12-text-urban-resilience-s3",
+        "p12-text-urban-resilience-s4",
+        "p12-text-urban-resilience-s5",
+        "p12-text-urban-resilience-s6"
+      ],
+      "prerequisiteIds": [
+        "p12-can-do-60"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-can-do-62",
+      "statement": "I can present a structured position with explicit caveats, implications and priorities.",
+      "level": "C1",
+      "languageActivity": "spoken_production",
+      "grammarIds": [
+        "c1-to-iedomo",
+        "c1-ni-terashite",
+        "c1-ni-taru",
+        "c1-ga-yue-ni",
+        "c1-ni-hokanaranai"
+      ],
+      "sentenceIds": [
+        "p12-text-causality-s1",
+        "p12-text-causality-s2",
+        "p12-text-causality-s3",
+        "p12-text-causality-s4",
+        "p12-text-causality-s5",
+        "p12-text-causality-s6"
+      ],
+      "prerequisiteIds": [
+        "p12-can-do-61"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-can-do-63",
+      "statement": "I can synthesize evidence from several viewpoints into a qualified written conclusion.",
+      "level": "C1",
+      "languageActivity": "writing",
+      "grammarIds": [
+        "c1-o-megutte",
+        "c1-to-aimatte",
+        "c1-o-fumaete",
+        "c1-ni-itaru-made",
+        "c1-ni-mo-mashite"
+      ],
+      "sentenceIds": [
+        "p12-text-transparency-s1",
+        "p12-text-transparency-s2",
+        "p12-text-transparency-s3",
+        "p12-text-transparency-s4",
+        "p12-text-transparency-s5",
+        "p12-text-transparency-s6"
+      ],
+      "prerequisiteIds": [
+        "p12-can-do-62"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-can-do-64",
+      "statement": "I can adapt rhetorical force and register to audience, purpose and evidential certainty.",
+      "level": "C1",
+      "languageActivity": "writing",
+      "grammarIds": [
+        "c1-ni-sokushite",
+        "c1-ga-yue-ni",
+        "c1-nai-mademo",
+        "c1-beku",
+        "c1-to-atte"
+      ],
+      "sentenceIds": [
+        "p12-text-education-autonomy-s1",
+        "p12-text-education-autonomy-s2",
+        "p12-text-education-autonomy-s3",
+        "p12-text-education-autonomy-s4",
+        "p12-text-education-autonomy-s5",
+        "p12-text-education-autonomy-s6"
+      ],
+      "prerequisiteIds": [
+        "p12-can-do-63"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-can-do-65",
+      "statement": "I can evaluate causal claims by separating correlation, assumptions and limitations.",
+      "level": "C1",
+      "languageActivity": "reading",
+      "grammarIds": [
+        "c1-ni-terashite",
+        "c1-o-yoginaku-sareru",
+        "c1-to-aimatte",
+        "c1-ni-taru",
+        "c1-ni-itaru-made"
+      ],
+      "sentenceIds": [
+        "p12-text-climate-transition-s1",
+        "p12-text-climate-transition-s2",
+        "p12-text-climate-transition-s3",
+        "p12-text-climate-transition-s4",
+        "p12-text-climate-transition-s5",
+        "p12-text-climate-transition-s6"
+      ],
+      "prerequisiteIds": [
+        "p12-can-do-64"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-can-do-66",
+      "statement": "I can negotiate institutional trade-offs and build common ground across constraints.",
+      "level": "C1",
+      "languageActivity": "spoken_interaction",
+      "grammarIds": [
+        "c1-to-iedomo",
+        "b2-wake-dewa-nai",
+        "c1-o-kinjienai",
+        "c1-o-megutte",
+        "c1-ni-hokanaranai"
+      ],
+      "sentenceIds": [
+        "p12-text-editorial-argument-s1",
+        "p12-text-editorial-argument-s2",
+        "p12-text-editorial-argument-s3",
+        "p12-text-editorial-argument-s4",
+        "p12-text-editorial-argument-s5",
+        "p12-text-editorial-argument-s6"
+      ],
+      "prerequisiteIds": [
+        "p12-can-do-65"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-can-do-67",
+      "statement": "I can reframe disagreement and answer counterarguments precisely rather than rhetorically.",
+      "level": "C1",
+      "languageActivity": "spoken_interaction",
+      "grammarIds": [
+        "c1-o-fumaete",
+        "c1-o-megutte",
+        "c1-ni-taru",
+        "b2-wake-dewa-nai",
+        "c1-to-iedomo"
+      ],
+      "sentenceIds": [
+        "p12-text-policy-evidence-s1",
+        "p12-text-policy-evidence-s2",
+        "p12-text-policy-evidence-s3",
+        "p12-text-policy-evidence-s4",
+        "p12-text-policy-evidence-s5",
+        "p12-text-policy-evidence-s6"
+      ],
+      "prerequisiteIds": [
+        "p12-can-do-66"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-can-do-68",
+      "statement": "I can produce an integrated recommendation that addresses feasibility, accountability and long-term consequences.",
+      "level": "C1",
+      "languageActivity": "writing",
+      "grammarIds": [
+        "c1-ni-terashite",
+        "c1-ni-mo-mashite",
+        "c1-to-aimatte",
+        "c1-o-yoginaku-sareru",
+        "c1-beku"
+      ],
+      "sentenceIds": [
+        "p12-text-ai-judgment-s1",
+        "p12-text-ai-judgment-s2",
+        "p12-text-ai-judgment-s3",
+        "p12-text-ai-judgment-s4",
+        "p12-text-ai-judgment-s5",
+        "p12-text-ai-judgment-s6"
+      ],
+      "prerequisiteIds": [
+        "p12-can-do-67"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    }
+  ],
+  "courseUnits": [
+    {
+      "id": "p12-unit-59",
+      "title": "Evidence, assumptions and implications",
+      "order": 59,
+      "level": "C1",
+      "canDoId": "p12-can-do-59",
+      "prerequisiteUnitIds": [
+        "p7-unit-58"
+      ],
+      "grammarIds": [
+        "c1-o-fumaete",
+        "c1-o-megutte",
+        "c1-ni-taru",
+        "b2-wake-dewa-nai",
+        "c1-to-iedomo"
+      ],
+      "sentenceIds": [
+        "p12-text-policy-evidence-s1",
+        "p12-text-policy-evidence-s2",
+        "p12-text-policy-evidence-s3",
+        "p12-text-policy-evidence-s4",
+        "p12-text-policy-evidence-s5",
+        "p12-text-policy-evidence-s6"
+      ],
+      "vocabularyIds": [
+        "c1-discrepancy",
+        "c1-provisional",
+        "c1-remedy"
+      ],
+      "conjugationLexemeIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-unit-60",
+      "title": "Formal listening with stance shifts",
+      "order": 60,
+      "level": "C1",
+      "canDoId": "p12-can-do-60",
+      "prerequisiteUnitIds": [
+        "p12-unit-59"
+      ],
+      "grammarIds": [
+        "c1-ni-terashite",
+        "c1-ni-mo-mashite",
+        "c1-to-aimatte",
+        "c1-o-yoginaku-sareru",
+        "c1-beku"
+      ],
+      "sentenceIds": [
+        "p12-text-ai-judgment-s1",
+        "p12-text-ai-judgment-s2",
+        "p12-text-ai-judgment-s3",
+        "p12-text-ai-judgment-s4",
+        "p12-text-ai-judgment-s5",
+        "p12-text-ai-judgment-s6"
+      ],
+      "vocabularyIds": [
+        "c1-sustainability",
+        "c1-accountability",
+        "c1-transparency",
+        "c1-ambiguity",
+        "c1-assumption",
+        "c1-framework"
+      ],
+      "conjugationLexemeIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-unit-61",
+      "title": "Competing interpretations and nuance",
+      "order": 61,
+      "level": "C1",
+      "canDoId": "p12-can-do-61",
+      "prerequisiteUnitIds": [
+        "p12-unit-60"
+      ],
+      "grammarIds": [
+        "c1-ni-sokushite",
+        "c1-to-atte",
+        "c1-ni-itaru-made",
+        "c1-nai-mademo",
+        "c1-o-fumaete"
+      ],
+      "sentenceIds": [
+        "p12-text-urban-resilience-s1",
+        "p12-text-urban-resilience-s2",
+        "p12-text-urban-resilience-s3",
+        "p12-text-urban-resilience-s4",
+        "p12-text-urban-resilience-s5",
+        "p12-text-urban-resilience-s6"
+      ],
+      "vocabularyIds": [
+        "c1-constraint",
+        "c1-distribution",
+        "c1-multifaceted",
+        "c1-feasibility"
+      ],
+      "conjugationLexemeIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-unit-62",
+      "title": "Qualified position and implications",
+      "order": 62,
+      "level": "C1",
+      "canDoId": "p12-can-do-62",
+      "prerequisiteUnitIds": [
+        "p12-unit-61"
+      ],
+      "grammarIds": [
+        "c1-to-iedomo",
+        "c1-ni-terashite",
+        "c1-ni-taru",
+        "c1-ga-yue-ni",
+        "c1-ni-hokanaranai"
+      ],
+      "sentenceIds": [
+        "p12-text-causality-s1",
+        "p12-text-causality-s2",
+        "p12-text-causality-s3",
+        "p12-text-causality-s4",
+        "p12-text-causality-s5",
+        "p12-text-causality-s6"
+      ],
+      "vocabularyIds": [
+        "c1-causality",
+        "c1-correlation",
+        "b2-interpretation",
+        "c1-caveat",
+        "c1-discrepancy"
+      ],
+      "conjugationLexemeIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-unit-63",
+      "title": "Multi-source written synthesis",
+      "order": 63,
+      "level": "C1",
+      "canDoId": "p12-can-do-63",
+      "prerequisiteUnitIds": [
+        "p12-unit-62"
+      ],
+      "grammarIds": [
+        "c1-o-megutte",
+        "c1-to-aimatte",
+        "c1-o-fumaete",
+        "c1-ni-itaru-made",
+        "c1-ni-mo-mashite"
+      ],
+      "sentenceIds": [
+        "p12-text-transparency-s1",
+        "p12-text-transparency-s2",
+        "p12-text-transparency-s3",
+        "p12-text-transparency-s4",
+        "p12-text-transparency-s5",
+        "p12-text-transparency-s6"
+      ],
+      "vocabularyIds": [
+        "c1-transparency",
+        "c1-ambiguity",
+        "c1-exception",
+        "c1-accountability",
+        "c1-coherence"
+      ],
+      "conjugationLexemeIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-unit-64",
+      "title": "Register, rhetoric and evidential force",
+      "order": 64,
+      "level": "C1",
+      "canDoId": "p12-can-do-64",
+      "prerequisiteUnitIds": [
+        "p12-unit-63"
+      ],
+      "grammarIds": [
+        "c1-ni-sokushite",
+        "c1-ga-yue-ni",
+        "c1-nai-mademo",
+        "c1-beku",
+        "c1-to-atte"
+      ],
+      "sentenceIds": [
+        "p12-text-education-autonomy-s1",
+        "p12-text-education-autonomy-s2",
+        "p12-text-education-autonomy-s3",
+        "p12-text-education-autonomy-s4",
+        "p12-text-education-autonomy-s5",
+        "p12-text-education-autonomy-s6"
+      ],
+      "vocabularyIds": [
+        "c1-multifaceted",
+        "c1-consensus-building",
+        "c1-sustainability"
+      ],
+      "conjugationLexemeIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-unit-65",
+      "title": "Causality, correlation and uncertainty",
+      "order": 65,
+      "level": "C1",
+      "canDoId": "p12-can-do-65",
+      "prerequisiteUnitIds": [
+        "p12-unit-64"
+      ],
+      "grammarIds": [
+        "c1-ni-terashite",
+        "c1-o-yoginaku-sareru",
+        "c1-to-aimatte",
+        "c1-ni-taru",
+        "c1-ni-itaru-made"
+      ],
+      "sentenceIds": [
+        "p12-text-climate-transition-s1",
+        "p12-text-climate-transition-s2",
+        "p12-text-climate-transition-s3",
+        "p12-text-climate-transition-s4",
+        "p12-text-climate-transition-s5",
+        "p12-text-climate-transition-s6"
+      ],
+      "vocabularyIds": [
+        "c1-sustainability",
+        "c1-accountability",
+        "c1-distribution",
+        "c1-remedy"
+      ],
+      "conjugationLexemeIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-unit-66",
+      "title": "Institutional trade-offs and consensus",
+      "order": 66,
+      "level": "C1",
+      "canDoId": "p12-can-do-66",
+      "prerequisiteUnitIds": [
+        "p12-unit-65"
+      ],
+      "grammarIds": [
+        "c1-to-iedomo",
+        "b2-wake-dewa-nai",
+        "c1-o-kinjienai",
+        "c1-o-megutte",
+        "c1-ni-hokanaranai"
+      ],
+      "sentenceIds": [
+        "p12-text-editorial-argument-s1",
+        "p12-text-editorial-argument-s2",
+        "p12-text-editorial-argument-s3",
+        "p12-text-editorial-argument-s4",
+        "p12-text-editorial-argument-s5",
+        "p12-text-editorial-argument-s6"
+      ],
+      "vocabularyIds": [
+        "c1-rhetoric",
+        "c1-granularity",
+        "c1-concession",
+        "c1-polarization",
+        "c1-caveat",
+        "c1-deliberation"
+      ],
+      "conjugationLexemeIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-unit-67",
+      "title": "Precise counterargument and reframing",
+      "order": 67,
+      "level": "C1",
+      "canDoId": "p12-can-do-67",
+      "prerequisiteUnitIds": [
+        "p12-unit-66"
+      ],
+      "grammarIds": [
+        "c1-o-fumaete",
+        "c1-o-megutte",
+        "c1-ni-taru",
+        "b2-wake-dewa-nai",
+        "c1-to-iedomo"
+      ],
+      "sentenceIds": [
+        "p12-text-policy-evidence-s1",
+        "p12-text-policy-evidence-s2",
+        "p12-text-policy-evidence-s3",
+        "p12-text-policy-evidence-s4",
+        "p12-text-policy-evidence-s5",
+        "p12-text-policy-evidence-s6"
+      ],
+      "vocabularyIds": [
+        "c1-discrepancy",
+        "c1-provisional",
+        "c1-remedy"
+      ],
+      "conjugationLexemeIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-unit-68",
+      "title": "Integrated recommendation and accountability",
+      "order": 68,
+      "level": "C1",
+      "canDoId": "p12-can-do-68",
+      "prerequisiteUnitIds": [
+        "p12-unit-67"
+      ],
+      "grammarIds": [
+        "c1-ni-terashite",
+        "c1-ni-mo-mashite",
+        "c1-to-aimatte",
+        "c1-o-yoginaku-sareru",
+        "c1-beku"
+      ],
+      "sentenceIds": [
+        "p12-text-ai-judgment-s1",
+        "p12-text-ai-judgment-s2",
+        "p12-text-ai-judgment-s3",
+        "p12-text-ai-judgment-s4",
+        "p12-text-ai-judgment-s5",
+        "p12-text-ai-judgment-s6"
+      ],
+      "vocabularyIds": [
+        "c1-sustainability",
+        "c1-accountability",
+        "c1-transparency",
+        "c1-ambiguity",
+        "c1-assumption",
+        "c1-framework"
+      ],
+      "conjugationLexemeIds": [],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    }
+  ],
+  "readingTexts": [
+    {
+      "id": "p12-text-policy-evidence",
+      "title": "When evidence shifts the policy debate",
+      "description": "A policy-analysis passage that separates assumptions, evidence, validity and qualified conclusions.",
+      "level": "C1",
+      "kind": "functional",
+      "sentenceIds": [
+        "p12-text-policy-evidence-s1",
+        "p12-text-policy-evidence-s2",
+        "p12-text-policy-evidence-s3",
+        "p12-text-policy-evidence-s4",
+        "p12-text-policy-evidence-s5",
+        "p12-text-policy-evidence-s6"
+      ],
+      "targetLexemeIds": [
+        "c1-discrepancy",
+        "c1-provisional",
+        "c1-remedy"
+      ],
+      "grammarIds": [
+        "c1-o-fumaete",
+        "c1-o-megutte",
+        "c1-ni-taru",
+        "b2-wake-dewa-nai",
+        "c1-to-iedomo",
+        "c1-ni-hokanaranai",
+        "c1-nai-mademo"
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "policy",
+        "research",
+        "synthesis"
+      ],
+      "estimatedMinutes": 8,
+      "audioMode": "speech_synthesis",
+      "listeningSegments": [
+        {
+          "id": "p12-text-policy-evidence-seg1",
+          "sentenceId": "p12-text-policy-evidence-s1"
+        },
+        {
+          "id": "p12-text-policy-evidence-seg2",
+          "sentenceId": "p12-text-policy-evidence-s2"
+        },
+        {
+          "id": "p12-text-policy-evidence-seg3",
+          "sentenceId": "p12-text-policy-evidence-s3"
+        },
+        {
+          "id": "p12-text-policy-evidence-seg4",
+          "sentenceId": "p12-text-policy-evidence-s4"
+        },
+        {
+          "id": "p12-text-policy-evidence-seg5",
+          "sentenceId": "p12-text-policy-evidence-s5"
+        },
+        {
+          "id": "p12-text-policy-evidence-seg6",
+          "sentenceId": "p12-text-policy-evidence-s6"
+        }
+      ],
+      "comprehensionQuestions": [
+        {
+          "id": "p12-text-policy-evidence-q1",
+          "prompt": "What is the passage's central stance?",
+          "choices": [
+            "Evidence supports reconsideration, but conclusions must remain qualified.",
+            "The evidence proves one universal policy.",
+            "Expert judgment removes uncertainty."
+          ],
+          "answer": "Evidence supports reconsideration, but conclusions must remain qualified.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        },
+        {
+          "id": "p12-text-policy-evidence-q2",
+          "prompt": "What does the regional gap imply?",
+          "choices": [
+            "A single criterion may not capture all local realities.",
+            "The data should be ignored.",
+            "All regions need identical measures."
+          ],
+          "answer": "A single criterion may not capture all local realities.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        },
+        {
+          "id": "p12-text-policy-evidence-q3",
+          "prompt": "What action remains possible without total reform?",
+          "choices": [
+            "Introduce provisional response measures.",
+            "Abandon evaluation entirely.",
+            "Treat the current system as final."
+          ],
+          "answer": "Introduce provisional response measures.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-ai-judgment",
+      "title": "Automation and professional judgment",
+      "description": "A workplace analysis of automation, transparency, responsibility and the limits of machine-supported decisions.",
+      "level": "C1",
+      "kind": "dialogue",
+      "sentenceIds": [
+        "p12-text-ai-judgment-s1",
+        "p12-text-ai-judgment-s2",
+        "p12-text-ai-judgment-s3",
+        "p12-text-ai-judgment-s4",
+        "p12-text-ai-judgment-s5",
+        "p12-text-ai-judgment-s6"
+      ],
+      "targetLexemeIds": [
+        "c1-sustainability",
+        "c1-accountability",
+        "c1-transparency",
+        "c1-ambiguity",
+        "c1-assumption",
+        "c1-framework"
+      ],
+      "grammarIds": [
+        "c1-ni-terashite",
+        "c1-ni-mo-mashite",
+        "c1-to-aimatte",
+        "c1-o-yoginaku-sareru",
+        "c1-beku",
+        "c1-ga-yue-ni"
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "technology",
+        "workplace",
+        "accountability"
+      ],
+      "estimatedMinutes": 8,
+      "audioMode": "speech_synthesis",
+      "listeningSegments": [
+        {
+          "id": "p12-text-ai-judgment-seg1",
+          "sentenceId": "p12-text-ai-judgment-s1"
+        },
+        {
+          "id": "p12-text-ai-judgment-seg2",
+          "sentenceId": "p12-text-ai-judgment-s2"
+        },
+        {
+          "id": "p12-text-ai-judgment-seg3",
+          "sentenceId": "p12-text-ai-judgment-s3"
+        },
+        {
+          "id": "p12-text-ai-judgment-seg4",
+          "sentenceId": "p12-text-ai-judgment-s4"
+        },
+        {
+          "id": "p12-text-ai-judgment-seg5",
+          "sentenceId": "p12-text-ai-judgment-s5"
+        },
+        {
+          "id": "p12-text-ai-judgment-seg6",
+          "sentenceId": "p12-text-ai-judgment-s6"
+        }
+      ],
+      "comprehensionQuestions": [
+        {
+          "id": "p12-text-ai-judgment-q1",
+          "prompt": "What is insufficient as the only success metric?",
+          "choices": [
+            "Processing speed.",
+            "Transparency.",
+            "Human review."
+          ],
+          "answer": "Processing speed.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        },
+        {
+          "id": "p12-text-ai-judgment-q2",
+          "prompt": "Why is human rechecking retained?",
+          "choices": [
+            "To complement professional judgment.",
+            "To eliminate accountability.",
+            "To increase ambiguity."
+          ],
+          "answer": "To complement professional judgment.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        },
+        {
+          "id": "p12-text-ai-judgment-q3",
+          "prompt": "What does the final sentence reject?",
+          "choices": [
+            "Simply shifting responsibility to the system.",
+            "Using automation at all.",
+            "Long-term evaluation."
+          ],
+          "answer": "Simply shifting responsibility to the system.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-urban-resilience",
+      "title": "Urban resilience and unequal burdens",
+      "description": "A public-policy passage about local constraints, distributional burdens and staged consensus building.",
+      "level": "C1",
+      "kind": "functional",
+      "sentenceIds": [
+        "p12-text-urban-resilience-s1",
+        "p12-text-urban-resilience-s2",
+        "p12-text-urban-resilience-s3",
+        "p12-text-urban-resilience-s4",
+        "p12-text-urban-resilience-s5",
+        "p12-text-urban-resilience-s6"
+      ],
+      "targetLexemeIds": [
+        "c1-constraint",
+        "c1-distribution",
+        "c1-multifaceted",
+        "c1-feasibility"
+      ],
+      "grammarIds": [
+        "c1-ni-sokushite",
+        "c1-to-atte",
+        "c1-ni-itaru-made",
+        "c1-nai-mademo",
+        "c1-o-fumaete",
+        "c1-ni-mo-mashite"
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "community",
+        "public",
+        "society"
+      ],
+      "estimatedMinutes": 8,
+      "audioMode": "speech_synthesis",
+      "listeningSegments": [
+        {
+          "id": "p12-text-urban-resilience-seg1",
+          "sentenceId": "p12-text-urban-resilience-s1"
+        },
+        {
+          "id": "p12-text-urban-resilience-seg2",
+          "sentenceId": "p12-text-urban-resilience-s2"
+        },
+        {
+          "id": "p12-text-urban-resilience-seg3",
+          "sentenceId": "p12-text-urban-resilience-s3"
+        },
+        {
+          "id": "p12-text-urban-resilience-seg4",
+          "sentenceId": "p12-text-urban-resilience-s4"
+        },
+        {
+          "id": "p12-text-urban-resilience-seg5",
+          "sentenceId": "p12-text-urban-resilience-s5"
+        },
+        {
+          "id": "p12-text-urban-resilience-seg6",
+          "sentenceId": "p12-text-urban-resilience-s6"
+        }
+      ],
+      "comprehensionQuestions": [
+        {
+          "id": "p12-text-urban-resilience-q1",
+          "prompt": "What should shape local priorities?",
+          "choices": [
+            "Local conditions and budget constraints.",
+            "A single national template.",
+            "Only processing speed."
+          ],
+          "answer": "Local conditions and budget constraints.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        },
+        {
+          "id": "p12-text-urban-resilience-q2",
+          "prompt": "What can be revised without a major reorganization?",
+          "choices": [
+            "The distribution of burdens.",
+            "The existence of disasters.",
+            "The need for information."
+          ],
+          "answer": "The distribution of burdens.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        },
+        {
+          "id": "p12-text-urban-resilience-q3",
+          "prompt": "What should outrank efficiency?",
+          "choices": [
+            "Feasibility of reaching vulnerable residents.",
+            "Administrative convenience.",
+            "Uniformity."
+          ],
+          "answer": "Feasibility of reaching vulnerable residents.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-causality",
+      "title": "Interpreting correlation without overstating causality",
+      "description": "A research-literacy passage distinguishing correlation, causal claims, alternative interpretations and evidential limits.",
+      "level": "C1",
+      "kind": "functional",
+      "sentenceIds": [
+        "p12-text-causality-s1",
+        "p12-text-causality-s2",
+        "p12-text-causality-s3",
+        "p12-text-causality-s4",
+        "p12-text-causality-s5",
+        "p12-text-causality-s6"
+      ],
+      "targetLexemeIds": [
+        "c1-causality",
+        "c1-correlation",
+        "b2-interpretation",
+        "c1-caveat",
+        "c1-discrepancy"
+      ],
+      "grammarIds": [
+        "c1-to-iedomo",
+        "c1-ni-terashite",
+        "c1-ni-taru",
+        "c1-ga-yue-ni",
+        "c1-ni-hokanaranai",
+        "c1-o-kinjienai"
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "research",
+        "media",
+        "evidence"
+      ],
+      "estimatedMinutes": 8,
+      "audioMode": "speech_synthesis",
+      "listeningSegments": [
+        {
+          "id": "p12-text-causality-seg1",
+          "sentenceId": "p12-text-causality-s1"
+        },
+        {
+          "id": "p12-text-causality-seg2",
+          "sentenceId": "p12-text-causality-s2"
+        },
+        {
+          "id": "p12-text-causality-seg3",
+          "sentenceId": "p12-text-causality-s3"
+        },
+        {
+          "id": "p12-text-causality-seg4",
+          "sentenceId": "p12-text-causality-s4"
+        },
+        {
+          "id": "p12-text-causality-seg5",
+          "sentenceId": "p12-text-causality-s5"
+        },
+        {
+          "id": "p12-text-causality-seg6",
+          "sentenceId": "p12-text-causality-s6"
+        }
+      ],
+      "comprehensionQuestions": [
+        {
+          "id": "p12-text-causality-q1",
+          "prompt": "What cannot establish causality by itself?",
+          "choices": [
+            "Correlation.",
+            "A research design.",
+            "Alternative explanations."
+          ],
+          "answer": "Correlation.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        },
+        {
+          "id": "p12-text-causality-q2",
+          "prompt": "Why are caveats needed?",
+          "choices": [
+            "Unobserved factors may affect the inference.",
+            "Because all data are useless.",
+            "Because theory is unnecessary."
+          ],
+          "answer": "Unobserved factors may affect the inference.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        },
+        {
+          "id": "p12-text-causality-q3",
+          "prompt": "What should be examined with the evidence?",
+          "choices": [
+            "The research design.",
+            "Only the headline.",
+            "Only sample size."
+          ],
+          "answer": "The research design.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-transparency",
+      "title": "Institutional transparency and public trust",
+      "description": "A governance passage on contested procedures, transparency, accountability and consistency of explanation.",
+      "level": "C1",
+      "kind": "functional",
+      "sentenceIds": [
+        "p12-text-transparency-s1",
+        "p12-text-transparency-s2",
+        "p12-text-transparency-s3",
+        "p12-text-transparency-s4",
+        "p12-text-transparency-s5",
+        "p12-text-transparency-s6"
+      ],
+      "targetLexemeIds": [
+        "c1-transparency",
+        "c1-ambiguity",
+        "c1-exception",
+        "c1-accountability",
+        "c1-coherence"
+      ],
+      "grammarIds": [
+        "c1-o-megutte",
+        "c1-to-aimatte",
+        "c1-o-fumaete",
+        "c1-ni-itaru-made",
+        "c1-ni-mo-mashite",
+        "c1-ni-hokanaranai"
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "public",
+        "governance",
+        "argument"
+      ],
+      "estimatedMinutes": 8,
+      "audioMode": "speech_synthesis",
+      "listeningSegments": [
+        {
+          "id": "p12-text-transparency-seg1",
+          "sentenceId": "p12-text-transparency-s1"
+        },
+        {
+          "id": "p12-text-transparency-seg2",
+          "sentenceId": "p12-text-transparency-s2"
+        },
+        {
+          "id": "p12-text-transparency-seg3",
+          "sentenceId": "p12-text-transparency-s3"
+        },
+        {
+          "id": "p12-text-transparency-seg4",
+          "sentenceId": "p12-text-transparency-s4"
+        },
+        {
+          "id": "p12-text-transparency-seg5",
+          "sentenceId": "p12-text-transparency-s5"
+        },
+        {
+          "id": "p12-text-transparency-seg6",
+          "sentenceId": "p12-text-transparency-s6"
+        }
+      ],
+      "comprehensionQuestions": [
+        {
+          "id": "p12-text-transparency-q1",
+          "prompt": "What issue has emerged?",
+          "choices": [
+            "Whether the decision process is sufficiently transparent.",
+            "Whether data should be hidden.",
+            "Whether exceptions are impossible."
+          ],
+          "answer": "Whether the decision process is sufficiently transparent.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        },
+        {
+          "id": "p12-text-transparency-q2",
+          "prompt": "What is more important than disclosure alone?",
+          "choices": [
+            "Consistency of explanation.",
+            "Speed.",
+            "Secrecy."
+          ],
+          "answer": "Consistency of explanation.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        },
+        {
+          "id": "p12-text-transparency-q3",
+          "prompt": "What did criticism cause the institution to publish?",
+          "choices": [
+            "Criteria and conditions for exceptions.",
+            "Only positive outcomes.",
+            "No procedural information."
+          ],
+          "answer": "Criteria and conditions for exceptions.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-education-autonomy",
+      "title": "Education reform and local autonomy",
+      "description": "A passage balancing common standards, local autonomy, intervention and consensus building.",
+      "level": "C1",
+      "kind": "dialogue",
+      "sentenceIds": [
+        "p12-text-education-autonomy-s1",
+        "p12-text-education-autonomy-s2",
+        "p12-text-education-autonomy-s3",
+        "p12-text-education-autonomy-s4",
+        "p12-text-education-autonomy-s5",
+        "p12-text-education-autonomy-s6"
+      ],
+      "targetLexemeIds": [
+        "c1-multifaceted",
+        "c1-consensus-building",
+        "c1-sustainability"
+      ],
+      "grammarIds": [
+        "c1-ni-sokushite",
+        "c1-ga-yue-ni",
+        "c1-nai-mademo",
+        "c1-beku",
+        "c1-to-atte",
+        "c1-o-yoginaku-sareru"
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "education",
+        "community",
+        "negotiation"
+      ],
+      "estimatedMinutes": 8,
+      "audioMode": "speech_synthesis",
+      "listeningSegments": [
+        {
+          "id": "p12-text-education-autonomy-seg1",
+          "sentenceId": "p12-text-education-autonomy-s1"
+        },
+        {
+          "id": "p12-text-education-autonomy-seg2",
+          "sentenceId": "p12-text-education-autonomy-s2"
+        },
+        {
+          "id": "p12-text-education-autonomy-seg3",
+          "sentenceId": "p12-text-education-autonomy-s3"
+        },
+        {
+          "id": "p12-text-education-autonomy-seg4",
+          "sentenceId": "p12-text-education-autonomy-s4"
+        },
+        {
+          "id": "p12-text-education-autonomy-seg5",
+          "sentenceId": "p12-text-education-autonomy-s5"
+        },
+        {
+          "id": "p12-text-education-autonomy-seg6",
+          "sentenceId": "p12-text-education-autonomy-s6"
+        }
+      ],
+      "comprehensionQuestions": [
+        {
+          "id": "p12-text-education-autonomy-q1",
+          "prompt": "What balance does the passage favor?",
+          "choices": [
+            "Common goals with room for local adaptation.",
+            "Complete centralization.",
+            "No shared goals."
+          ],
+          "answer": "Common goals with room for local adaptation.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        },
+        {
+          "id": "p12-text-education-autonomy-q2",
+          "prompt": "Why is one indicator insufficient?",
+          "choices": [
+            "Educational settings are multifaceted.",
+            "Local autonomy is impossible.",
+            "All outcomes are identical."
+          ],
+          "answer": "Educational settings are multifaceted.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        },
+        {
+          "id": "p12-text-education-autonomy-q3",
+          "prompt": "Who participates in consensus building?",
+          "choices": [
+            "Teachers, parents, and administrators.",
+            "Only external consultants.",
+            "Only students."
+          ],
+          "answer": "Teachers, parents, and administrators.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-climate-transition",
+      "title": "Climate transition and implementation trade-offs",
+      "description": "An implementation-focused passage on sustainability, forced adjustment, combined pressures and staged measures.",
+      "level": "C1",
+      "kind": "functional",
+      "sentenceIds": [
+        "p12-text-climate-transition-s1",
+        "p12-text-climate-transition-s2",
+        "p12-text-climate-transition-s3",
+        "p12-text-climate-transition-s4",
+        "p12-text-climate-transition-s5",
+        "p12-text-climate-transition-s6"
+      ],
+      "targetLexemeIds": [
+        "c1-sustainability",
+        "c1-accountability",
+        "c1-distribution",
+        "c1-remedy"
+      ],
+      "grammarIds": [
+        "c1-ni-terashite",
+        "c1-o-yoginaku-sareru",
+        "c1-to-aimatte",
+        "c1-ni-taru",
+        "c1-ni-itaru-made",
+        "c1-o-fumaete"
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "environment",
+        "policy",
+        "synthesis"
+      ],
+      "estimatedMinutes": 8,
+      "audioMode": "speech_synthesis",
+      "listeningSegments": [
+        {
+          "id": "p12-text-climate-transition-seg1",
+          "sentenceId": "p12-text-climate-transition-s1"
+        },
+        {
+          "id": "p12-text-climate-transition-seg2",
+          "sentenceId": "p12-text-climate-transition-s2"
+        },
+        {
+          "id": "p12-text-climate-transition-seg3",
+          "sentenceId": "p12-text-climate-transition-s3"
+        },
+        {
+          "id": "p12-text-climate-transition-seg4",
+          "sentenceId": "p12-text-climate-transition-s4"
+        },
+        {
+          "id": "p12-text-climate-transition-seg5",
+          "sentenceId": "p12-text-climate-transition-s5"
+        },
+        {
+          "id": "p12-text-climate-transition-seg6",
+          "sentenceId": "p12-text-climate-transition-s6"
+        }
+      ],
+      "comprehensionQuestions": [
+        {
+          "id": "p12-text-climate-transition-q1",
+          "prompt": "Why should short-term cost not settle the evaluation?",
+          "choices": [
+            "Long-term sustainability also matters.",
+            "Costs never matter.",
+            "Supply changes are irrelevant."
+          ],
+          "answer": "Long-term sustainability also matters.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        },
+        {
+          "id": "p12-text-climate-transition-q2",
+          "prompt": "What makes the transition burden uneven?",
+          "choices": [
+            "Price increases combined with regional inequality.",
+            "Only policy design.",
+            "Uniform implementation."
+          ],
+          "answer": "Price increases combined with regional inequality.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        },
+        {
+          "id": "p12-text-climate-transition-q3",
+          "prompt": "What implementation style is recommended?",
+          "choices": [
+            "Staged rather than uniform measures.",
+            "Immediate identical measures everywhere.",
+            "No verification."
+          ],
+          "answer": "Staged rather than uniform measures.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-editorial-argument",
+      "title": "Editorial disagreement without false certainty",
+      "description": "A discourse-focused passage on rhetoric, evidence, concession, interpretive framing and common ground.",
+      "level": "C1",
+      "kind": "story",
+      "sentenceIds": [
+        "p12-text-editorial-argument-s1",
+        "p12-text-editorial-argument-s2",
+        "p12-text-editorial-argument-s3",
+        "p12-text-editorial-argument-s4",
+        "p12-text-editorial-argument-s5",
+        "p12-text-editorial-argument-s6"
+      ],
+      "targetLexemeIds": [
+        "c1-rhetoric",
+        "c1-granularity",
+        "c1-concession",
+        "c1-polarization",
+        "c1-caveat",
+        "c1-deliberation"
+      ],
+      "grammarIds": [
+        "c1-to-iedomo",
+        "b2-wake-dewa-nai",
+        "c1-o-kinjienai",
+        "c1-o-megutte",
+        "c1-ni-hokanaranai",
+        "c1-ni-sokushite",
+        "c1-beku"
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "media",
+        "argument",
+        "rhetoric"
+      ],
+      "estimatedMinutes": 8,
+      "audioMode": "speech_synthesis",
+      "listeningSegments": [
+        {
+          "id": "p12-text-editorial-argument-seg1",
+          "sentenceId": "p12-text-editorial-argument-s1"
+        },
+        {
+          "id": "p12-text-editorial-argument-seg2",
+          "sentenceId": "p12-text-editorial-argument-s2"
+        },
+        {
+          "id": "p12-text-editorial-argument-seg3",
+          "sentenceId": "p12-text-editorial-argument-s3"
+        },
+        {
+          "id": "p12-text-editorial-argument-seg4",
+          "sentenceId": "p12-text-editorial-argument-s4"
+        },
+        {
+          "id": "p12-text-editorial-argument-seg5",
+          "sentenceId": "p12-text-editorial-argument-s5"
+        },
+        {
+          "id": "p12-text-editorial-argument-seg6",
+          "sentenceId": "p12-text-editorial-argument-s6"
+        }
+      ],
+      "comprehensionQuestions": [
+        {
+          "id": "p12-text-editorial-argument-q1",
+          "prompt": "What does the passage say rhetorical force cannot determine?",
+          "choices": [
+            "The validity of a claim.",
+            "The speaker's identity.",
+            "The existence of disagreement."
+          ],
+          "answer": "The validity of a claim.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        },
+        {
+          "id": "p12-text-editorial-argument-q2",
+          "prompt": "How should a counterargument be grounded?",
+          "choices": [
+            "In what was actually said.",
+            "In assumed intentions.",
+            "In rhetorical intensity."
+          ],
+          "answer": "In what was actually said.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        },
+        {
+          "id": "p12-text-editorial-argument-q3",
+          "prompt": "What is the purpose of concession here?",
+          "choices": [
+            "To make the issue more precise.",
+            "To abandon the argument.",
+            "To remove all caveats."
+          ],
+          "answer": "To make the issue more precise.",
+          "explanation": "Answer from the passage's overall reasoning, qualification and evidence relationship rather than matching one isolated expression."
+        }
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    }
+  ],
+  "productiveTasks": [
+    {
+      "id": "p12-speaking-source-synthesis",
+      "title": "Synthesize two interpretations aloud",
+      "level": "C1",
+      "mode": "speaking",
+      "prompt": "Present two plausible interpretations of the same evidence, explain what each assumes, and give a qualified conclusion.",
+      "situation": "C1 source synthesis and epistemic control",
+      "targetGrammarIds": [
+        "c1-o-fumaete",
+        "c1-to-iedomo"
+      ],
+      "targetLexemeIds": [
+        "b2-interpretation",
+        "c1-caveat"
+      ],
+      "targetChunkIds": [
+        "c1-chunk-interpretive-range",
+        "c1-chunk-caveat-state",
+        "c1-chunk-provisional-conclusion"
+      ],
+      "modelResponse": "複数の解釈の幅を残しつつ、前提と限界を踏まえて留保を明示し、結論は暫定的に扱うべきだと考えます。",
+      "requiredTerms": [
+        "解釈の幅を残す",
+        "留保を明示する",
+        "結論を暫定的に扱う"
+      ],
+      "minimumCharacters": 90,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Address the full communicative task, including constraints, counterpositions and implications.",
+          "weight": 0.25
+        },
+        {
+          "id": "evidence",
+          "label": "Evidence + qualification",
+          "description": "Distinguish evidence, inference, caveats and degree of certainty.",
+          "weight": 0.3
+        },
+        {
+          "id": "coherence",
+          "label": "Discourse control",
+          "description": "Organize complex reasoning with clear stance shifts, concessions and synthesis.",
+          "weight": 0.25
+        },
+        {
+          "id": "range",
+          "label": "Range + register",
+          "description": "Use advanced grammar, collocations and register choices appropriately.",
+          "weight": 0.2
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-production",
+        "discourse-control"
+      ],
+      "milestoneArea": "spoken_production",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-speaking-counterargument",
+      "title": "Answer a strong counterargument precisely",
+      "level": "C1",
+      "mode": "speaking",
+      "prompt": "Respond to a strong opposing view by acknowledging its strongest point, narrowing the disagreement, and defending your position without overstating certainty.",
+      "situation": "C1 counterargument and concession",
+      "targetGrammarIds": [
+        "c1-nai-mademo",
+        "c1-ni-sokushite"
+      ],
+      "targetLexemeIds": [
+        "c1-concession",
+        "c1-granularity"
+      ],
+      "targetChunkIds": [
+        "c1-chunk-concession-room",
+        "c1-chunk-issue-organize",
+        "c1-chunk-common-premise"
+      ],
+      "modelResponse": "まず共通の前提を確認し、相手の主張に譲歩の余地を示したうえで、実際の論点を整理して違いを限定します。",
+      "requiredTerms": [
+        "譲歩の余地を示す",
+        "論点を整理する",
+        "共通の前提を確認する"
+      ],
+      "minimumCharacters": 90,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Address the full communicative task, including constraints, counterpositions and implications.",
+          "weight": 0.25
+        },
+        {
+          "id": "evidence",
+          "label": "Evidence + qualification",
+          "description": "Distinguish evidence, inference, caveats and degree of certainty.",
+          "weight": 0.3
+        },
+        {
+          "id": "coherence",
+          "label": "Discourse control",
+          "description": "Organize complex reasoning with clear stance shifts, concessions and synthesis.",
+          "weight": 0.25
+        },
+        {
+          "id": "range",
+          "label": "Range + register",
+          "description": "Use advanced grammar, collocations and register choices appropriately.",
+          "weight": 0.2
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-production",
+        "discourse-control"
+      ],
+      "milestoneArea": "spoken_interaction",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-speaking-policy-brief",
+      "title": "Deliver a qualified policy briefing",
+      "level": "C1",
+      "mode": "speaking",
+      "prompt": "Brief a decision maker on a policy option, covering evidence, feasibility, distributional burden and one explicit caveat.",
+      "situation": "C1 formal policy briefing",
+      "targetGrammarIds": [
+        "c1-ni-terashite",
+        "c1-ni-taru"
+      ],
+      "targetLexemeIds": [
+        "c1-feasibility",
+        "c1-distribution"
+      ],
+      "targetChunkIds": [
+        "c1-chunk-feasibility-assess",
+        "c1-chunk-transition-distribute",
+        "c1-chunk-caveat-state"
+      ],
+      "modelResponse": "長期的な基準に照らして実現可能性を見極め、移行の負担を分配する必要があります。ただし、現時点のデータには留保を明示すべきです。",
+      "requiredTerms": [
+        "実現可能性を見極める",
+        "移行の負担を分配する",
+        "留保を明示する"
+      ],
+      "minimumCharacters": 95,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Address the full communicative task, including constraints, counterpositions and implications.",
+          "weight": 0.25
+        },
+        {
+          "id": "evidence",
+          "label": "Evidence + qualification",
+          "description": "Distinguish evidence, inference, caveats and degree of certainty.",
+          "weight": 0.3
+        },
+        {
+          "id": "coherence",
+          "label": "Discourse control",
+          "description": "Organize complex reasoning with clear stance shifts, concessions and synthesis.",
+          "weight": 0.25
+        },
+        {
+          "id": "range",
+          "label": "Range + register",
+          "description": "Use advanced grammar, collocations and register choices appropriately.",
+          "weight": 0.2
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-production",
+        "discourse-control"
+      ],
+      "milestoneArea": "spoken_production",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-speaking-uncertainty",
+      "title": "Explain uncertainty without becoming vague",
+      "level": "C1",
+      "mode": "speaking",
+      "prompt": "Explain why a result is uncertain, distinguish correlation from causality, and state what additional evidence would change your judgment.",
+      "situation": "C1 research discussion",
+      "targetGrammarIds": [
+        "c1-to-iedomo",
+        "c1-ga-yue-ni"
+      ],
+      "targetLexemeIds": [
+        "c1-causality",
+        "c1-correlation"
+      ],
+      "targetChunkIds": [
+        "c1-chunk-correlation-causality",
+        "c1-chunk-inference-limit",
+        "c1-chunk-validity-examine"
+      ],
+      "modelResponse": "相関と因果を区別し、観測できない要因があるがゆえに推論の限界を示す必要があります。追加データで妥当性を検証すべきです。",
+      "requiredTerms": [
+        "相関と因果を区別する",
+        "推論の限界を示す",
+        "妥当性を検証する"
+      ],
+      "minimumCharacters": 90,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Address the full communicative task, including constraints, counterpositions and implications.",
+          "weight": 0.25
+        },
+        {
+          "id": "evidence",
+          "label": "Evidence + qualification",
+          "description": "Distinguish evidence, inference, caveats and degree of certainty.",
+          "weight": 0.3
+        },
+        {
+          "id": "coherence",
+          "label": "Discourse control",
+          "description": "Organize complex reasoning with clear stance shifts, concessions and synthesis.",
+          "weight": 0.25
+        },
+        {
+          "id": "range",
+          "label": "Range + register",
+          "description": "Use advanced grammar, collocations and register choices appropriately.",
+          "weight": 0.2
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-production",
+        "discourse-control"
+      ],
+      "milestoneArea": "spoken_interaction",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-speaking-negotiation",
+      "title": "Negotiate institutional trade-offs",
+      "level": "C1",
+      "mode": "speaking",
+      "prompt": "Negotiate between two institutional priorities, identify constraints, offer a concession, and propose a route to consensus.",
+      "situation": "C1 institutional negotiation",
+      "targetGrammarIds": [
+        "c1-ni-sokushite",
+        "c1-beku"
+      ],
+      "targetLexemeIds": [
+        "c1-constraint",
+        "c1-consensus-building"
+      ],
+      "targetChunkIds": [
+        "c1-chunk-constraint-account",
+        "c1-chunk-concession-room",
+        "c1-chunk-consensus-build"
+      ],
+      "modelResponse": "双方の制約を踏まえ、譲歩の余地を示しながら、共通の目標に沿って合意形成を図ることが現実的です。",
+      "requiredTerms": [
+        "制約を踏まえる",
+        "譲歩の余地を示す",
+        "合意形成を図る"
+      ],
+      "minimumCharacters": 95,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Address the full communicative task, including constraints, counterpositions and implications.",
+          "weight": 0.25
+        },
+        {
+          "id": "evidence",
+          "label": "Evidence + qualification",
+          "description": "Distinguish evidence, inference, caveats and degree of certainty.",
+          "weight": 0.3
+        },
+        {
+          "id": "coherence",
+          "label": "Discourse control",
+          "description": "Organize complex reasoning with clear stance shifts, concessions and synthesis.",
+          "weight": 0.25
+        },
+        {
+          "id": "range",
+          "label": "Range + register",
+          "description": "Use advanced grammar, collocations and register choices appropriately.",
+          "weight": 0.2
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-production",
+        "discourse-control"
+      ],
+      "milestoneArea": "spoken_interaction",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-speaking-register-shift",
+      "title": "Reframe the same claim for a formal audience",
+      "level": "C1",
+      "mode": "speaking",
+      "prompt": "Take a direct everyday claim and reformulate it as a careful formal statement suitable for a public meeting or professional briefing.",
+      "situation": "C1 register transfer",
+      "targetGrammarIds": [
+        "c1-ni-mo-mashite",
+        "c1-o-fumaete"
+      ],
+      "targetLexemeIds": [
+        "c1-rhetoric",
+        "c1-accountability"
+      ],
+      "targetChunkIds": [
+        "c1-chunk-rhetoric-evidence",
+        "c1-chunk-accountability-fulfill",
+        "c1-chunk-coherence-maintain"
+      ],
+      "modelResponse": "修辞と根拠を切り分け、これまでの経緯を踏まえたうえで、説明の整合性を保ちながら説明責任を果たす必要があります。",
+      "requiredTerms": [
+        "修辞と根拠を切り分ける",
+        "説明責任を果たす",
+        "説明の整合性を保つ"
+      ],
+      "minimumCharacters": 90,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Address the full communicative task, including constraints, counterpositions and implications.",
+          "weight": 0.25
+        },
+        {
+          "id": "evidence",
+          "label": "Evidence + qualification",
+          "description": "Distinguish evidence, inference, caveats and degree of certainty.",
+          "weight": 0.3
+        },
+        {
+          "id": "coherence",
+          "label": "Discourse control",
+          "description": "Organize complex reasoning with clear stance shifts, concessions and synthesis.",
+          "weight": 0.25
+        },
+        {
+          "id": "range",
+          "label": "Range + register",
+          "description": "Use advanced grammar, collocations and register choices appropriately.",
+          "weight": 0.2
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-production",
+        "discourse-control"
+      ],
+      "milestoneArea": "spoken_production",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-writing-evidence-synthesis",
+      "title": "Write a qualified evidence synthesis",
+      "level": "C1",
+      "mode": "writing",
+      "prompt": "Synthesize several pieces of evidence into a conclusion that separates observations, interpretations, caveats and implications.",
+      "situation": "C1 analytical synthesis",
+      "targetGrammarIds": [
+        "c1-o-fumaete",
+        "c1-ni-hokanaranai"
+      ],
+      "targetLexemeIds": [
+        "c1-implication",
+        "b2-interpretation"
+      ],
+      "targetChunkIds": [
+        "c1-chunk-premise-reconsider",
+        "c1-chunk-implication-weigh",
+        "c1-chunk-caveat-state"
+      ],
+      "modelResponse": "複数の結果を踏まえて前提を問い直す必要がある。ただし、観察事実と解釈を区別し、含意を慎重に捉えたうえで留保を明示する。",
+      "requiredTerms": [
+        "前提を問い直す",
+        "含意を慎重に捉える",
+        "留保を明示する"
+      ],
+      "minimumCharacters": 180,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Address the full communicative task, including constraints, counterpositions and implications.",
+          "weight": 0.25
+        },
+        {
+          "id": "evidence",
+          "label": "Evidence + qualification",
+          "description": "Distinguish evidence, inference, caveats and degree of certainty.",
+          "weight": 0.3
+        },
+        {
+          "id": "coherence",
+          "label": "Discourse control",
+          "description": "Organize complex reasoning with clear stance shifts, concessions and synthesis.",
+          "weight": 0.25
+        },
+        {
+          "id": "range",
+          "label": "Range + register",
+          "description": "Use advanced grammar, collocations and register choices appropriately.",
+          "weight": 0.2
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-production",
+        "discourse-control"
+      ],
+      "milestoneArea": "writing",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-writing-policy-memo",
+      "title": "Write an institutional policy memo",
+      "level": "C1",
+      "mode": "writing",
+      "prompt": "Recommend a policy while addressing local constraints, implementation stages, accountability and a realistic exception condition.",
+      "situation": "C1 professional writing",
+      "targetGrammarIds": [
+        "c1-ni-sokushite",
+        "c1-ni-itaru-made"
+      ],
+      "targetLexemeIds": [
+        "c1-accountability",
+        "c1-remedy"
+      ],
+      "targetChunkIds": [
+        "c1-chunk-local-context",
+        "c1-chunk-stage-implementation",
+        "c1-chunk-accountability-fulfill"
+      ],
+      "modelResponse": "地域の実情に即して対応策を段階的に実施し、設計から検証に至るまで説明責任を果たす体制を整えるべきである。",
+      "requiredTerms": [
+        "地域の実情に即する",
+        "対応策を段階的に実施する",
+        "説明責任を果たす"
+      ],
+      "minimumCharacters": 190,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Address the full communicative task, including constraints, counterpositions and implications.",
+          "weight": 0.25
+        },
+        {
+          "id": "evidence",
+          "label": "Evidence + qualification",
+          "description": "Distinguish evidence, inference, caveats and degree of certainty.",
+          "weight": 0.3
+        },
+        {
+          "id": "coherence",
+          "label": "Discourse control",
+          "description": "Organize complex reasoning with clear stance shifts, concessions and synthesis.",
+          "weight": 0.25
+        },
+        {
+          "id": "range",
+          "label": "Range + register",
+          "description": "Use advanced grammar, collocations and register choices appropriately.",
+          "weight": 0.2
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-production",
+        "discourse-control"
+      ],
+      "milestoneArea": "writing",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-writing-causal-analysis",
+      "title": "Write a cautious causal analysis",
+      "level": "C1",
+      "mode": "writing",
+      "prompt": "Analyze a reported relationship between two variables without confusing correlation and causation. State alternative explanations and evidential limits.",
+      "situation": "C1 research literacy",
+      "targetGrammarIds": [
+        "c1-to-iedomo",
+        "c1-ni-taru"
+      ],
+      "targetLexemeIds": [
+        "c1-causality",
+        "c1-correlation"
+      ],
+      "targetChunkIds": [
+        "c1-chunk-correlation-causality",
+        "c1-chunk-inference-limit",
+        "c1-chunk-provisional-conclusion"
+      ],
+      "modelResponse": "大規模な調査といえども相関だけでは因果を確定できない。代替説明を検討し、推論の限界を示したうえで結論を暫定的に扱うべきだ。",
+      "requiredTerms": [
+        "相関と因果を区別する",
+        "推論の限界を示す",
+        "結論を暫定的に扱う"
+      ],
+      "minimumCharacters": 190,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Address the full communicative task, including constraints, counterpositions and implications.",
+          "weight": 0.25
+        },
+        {
+          "id": "evidence",
+          "label": "Evidence + qualification",
+          "description": "Distinguish evidence, inference, caveats and degree of certainty.",
+          "weight": 0.3
+        },
+        {
+          "id": "coherence",
+          "label": "Discourse control",
+          "description": "Organize complex reasoning with clear stance shifts, concessions and synthesis.",
+          "weight": 0.25
+        },
+        {
+          "id": "range",
+          "label": "Range + register",
+          "description": "Use advanced grammar, collocations and register choices appropriately.",
+          "weight": 0.2
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-production",
+        "discourse-control"
+      ],
+      "milestoneArea": "writing",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-writing-editorial",
+      "title": "Write a precise editorial response",
+      "level": "C1",
+      "mode": "writing",
+      "prompt": "Respond to a controversial public argument by separating rhetoric from evidence, acknowledging a valid point and narrowing the actual disagreement.",
+      "situation": "C1 editorial argument",
+      "targetGrammarIds": [
+        "c1-o-megutte",
+        "c1-o-kinjienai"
+      ],
+      "targetLexemeIds": [
+        "c1-rhetoric",
+        "c1-concession"
+      ],
+      "targetChunkIds": [
+        "c1-chunk-rhetoric-evidence",
+        "c1-chunk-concession-room",
+        "c1-chunk-issue-organize"
+      ],
+      "modelResponse": "対立が強い議題ほど修辞と根拠を切り分け、相手の妥当な点には譲歩の余地を示しつつ、実際の論点を整理する必要がある。",
+      "requiredTerms": [
+        "修辞と根拠を切り分ける",
+        "譲歩の余地を示す",
+        "論点を整理する"
+      ],
+      "minimumCharacters": 180,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Address the full communicative task, including constraints, counterpositions and implications.",
+          "weight": 0.25
+        },
+        {
+          "id": "evidence",
+          "label": "Evidence + qualification",
+          "description": "Distinguish evidence, inference, caveats and degree of certainty.",
+          "weight": 0.3
+        },
+        {
+          "id": "coherence",
+          "label": "Discourse control",
+          "description": "Organize complex reasoning with clear stance shifts, concessions and synthesis.",
+          "weight": 0.25
+        },
+        {
+          "id": "range",
+          "label": "Range + register",
+          "description": "Use advanced grammar, collocations and register choices appropriately.",
+          "weight": 0.2
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-production",
+        "discourse-control"
+      ],
+      "milestoneArea": "writing",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-writing-critical-response",
+      "title": "Write a critical response to an expert claim",
+      "level": "C1",
+      "mode": "writing",
+      "prompt": "Evaluate an expert claim against criteria, identify what would count as sufficient evidence, and explain where the argument remains ambiguous.",
+      "situation": "C1 critical response",
+      "targetGrammarIds": [
+        "c1-ni-terashite",
+        "c1-ni-taru"
+      ],
+      "targetLexemeIds": [
+        "c1-ambiguity",
+        "c1-coherence"
+      ],
+      "targetChunkIds": [
+        "c1-chunk-validity-examine",
+        "c1-chunk-caveat-state",
+        "c1-chunk-coherence-maintain"
+      ],
+      "modelResponse": "専門家の主張を既存の基準に照らして妥当性を検証し、十分な根拠がどこまで示されたかを確認する。曖昧な部分には留保を明示し、説明の整合性を保つべきだ。",
+      "requiredTerms": [
+        "妥当性を検証する",
+        "留保を明示する",
+        "説明の整合性を保つ"
+      ],
+      "minimumCharacters": 185,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Address the full communicative task, including constraints, counterpositions and implications.",
+          "weight": 0.25
+        },
+        {
+          "id": "evidence",
+          "label": "Evidence + qualification",
+          "description": "Distinguish evidence, inference, caveats and degree of certainty.",
+          "weight": 0.3
+        },
+        {
+          "id": "coherence",
+          "label": "Discourse control",
+          "description": "Organize complex reasoning with clear stance shifts, concessions and synthesis.",
+          "weight": 0.25
+        },
+        {
+          "id": "range",
+          "label": "Range + register",
+          "description": "Use advanced grammar, collocations and register choices appropriately.",
+          "weight": 0.2
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-production",
+        "discourse-control"
+      ],
+      "milestoneArea": "writing",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-writing-integrated-recommendation",
+      "title": "Write an integrated C1 recommendation",
+      "level": "C1",
+      "mode": "writing",
+      "prompt": "Produce an integrated recommendation that weighs feasibility, sustainability, distributional consequences, transparency and accountability.",
+      "situation": "P12 C1 foundation capstone",
+      "targetGrammarIds": [
+        "c1-o-fumaete",
+        "c1-ni-terashite"
+      ],
+      "targetLexemeIds": [
+        "c1-feasibility",
+        "c1-sustainability",
+        "c1-accountability"
+      ],
+      "targetChunkIds": [
+        "c1-chunk-feasibility-assess",
+        "c1-chunk-sustainability-examine",
+        "c1-chunk-accountability-fulfill"
+      ],
+      "modelResponse": "複数の事例を踏まえて実現可能性を見極め、長期的な持続可能性を検討する。同時に負担の分配と透明性を示し、実施主体が説明責任を果たせる設計にすべきである。",
+      "requiredTerms": [
+        "実現可能性を見極める",
+        "持続可能性を検討する",
+        "説明責任を果たす"
+      ],
+      "minimumCharacters": 220,
+      "rubric": [
+        {
+          "id": "task",
+          "label": "Task achievement",
+          "description": "Address the full communicative task, including constraints, counterpositions and implications.",
+          "weight": 0.25
+        },
+        {
+          "id": "evidence",
+          "label": "Evidence + qualification",
+          "description": "Distinguish evidence, inference, caveats and degree of certainty.",
+          "weight": 0.3
+        },
+        {
+          "id": "coherence",
+          "label": "Discourse control",
+          "description": "Organize complex reasoning with clear stance shifts, concessions and synthesis.",
+          "weight": 0.25
+        },
+        {
+          "id": "range",
+          "label": "Range + register",
+          "description": "Use advanced grammar, collocations and register choices appropriately.",
+          "weight": 0.2
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-production",
+        "discourse-control"
+      ],
+      "milestoneArea": "writing",
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    }
+  ]
+}

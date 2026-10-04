@@ -272,12 +272,29 @@ The P9 media gate is no longer the reason P11 is held. P11.3 operationalizes the
 - exposes final external-review handoff readiness in Release Operations;
 - preserves the non-mastery / non-CEFR evidence boundary end to end.
 
-At this point, all implementation-only work required to obtain and admit the P11 external review is present. The repository must remain at `HOLD_B2_RELEASE_CANDIDATE` until an actual external reviewer completes the handoff and the returned evidence passes strict P11 qualification. See `docs/P11_3_ACCEPTANCE.md`.
+At this point, all implementation-only work required to obtain and admit the P11 external review is present. P11 itself remains at `HOLD_B2_RELEASE_CANDIDATE` until an actual external reviewer completes the handoff. P12 curriculum development was subsequently authorized by explicit roadmap override; that override does not alter the P11 evidence result. See `docs/P11_3_ACCEPTANCE.md`.
 
 ## P12 — C1 Foundation & Advanced Independent Japanese
 
-**Blocked until P11 returns `OPEN_C1_ROADMAP`.** No C1 curriculum should be implemented while the B2 release candidate is still held. Once opened, P12 should establish C1-oriented source breadth, advanced discourse/comprehension targets and higher-level productive work without weakening the existing evidence boundaries.
+**Implementation complete under explicit roadmap override while P11 release evidence remains independently held.** P12 deliberately decouples curriculum development from the unfinished external-review qualification without fabricating or rewriting that evidence.
+
+P12 establishes:
+
+- 32 C1 foundation lexemes and senses;
+- 16 advanced grammar/discourse concepts;
+- 48 linked C1 sentences;
+- 32 first-class C1 lexical chunks;
+- 10 new Can-do descriptors and course units, extending the graph through unit 68;
+- eight connected C1 reading/listening texts;
+- 12 advanced productive tasks across speaking and writing;
+- eight explicit discourse-control moves with 12 canonical practice prompts;
+- a 15-item five-area C1 foundation diagnostic;
+- A1→C1 course continuity and B2→C1 extensive immersion tracks;
+- merged local search, SQLite persistence, StudyEvent evidence and FSRS integration;
+- content validation that enforces P12 minimums and cross-overlay reference integrity.
+
+P12 remains a **foundation**, not a claim of comprehensive CEFR C1 preparation or learner certification. Device synthesis, speech-recognition transcripts, structural productive checks and internal diagnostics keep their existing evidence labels. See `docs/P12_ACCEPTANCE.md`.
 
 ## Later
 
-Later phases add advanced domain-specific Japanese, specialized source packs, higher-level writing/speaking assessment and long-term adaptive curricula after the C1 gate is legitimately open.
+Later phases deepen C1 native-source breadth, spontaneous interaction, domain-specific Japanese, long-form multi-source autonomy and higher-level productive reliability while preserving the independent P11 release-evidence record.

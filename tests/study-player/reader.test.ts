@@ -2,14 +2,16 @@ import { describe,expect,it } from "vitest";
 import { buildReaderText,segmentSentence } from "../../apps/web/src/immerse/reader";
 import { coreContent,sentenceRecord } from "../../apps/web/src/coreContent";
 
-describe("P7 graded reader",()=>{
-  it("ships a canonical A1→B2 connected-reading path",()=>{
-    expect(coreContent.readingTexts).toHaveLength(42);
+describe("P12 graded reader",()=>{
+  it("ships a canonical A1→C1 connected-reading path",()=>{
+    expect(coreContent.readingTexts).toHaveLength(50);
     expect(coreContent.readingTexts.map((text)=>text.level)).toContain("A2-entry");
     expect(coreContent.readingTexts.map((text)=>text.level)).toContain("A2");
     expect(coreContent.readingTexts.map((text)=>text.level)).toContain("B1");
     expect(coreContent.readingTexts.map((text)=>text.level)).toContain("B2");
+    expect(coreContent.readingTexts.map((text)=>text.level)).toContain("C1");
     expect(coreContent.readingTexts.filter((text)=>text.level==="B2")).toHaveLength(20);
+    expect(coreContent.readingTexts.filter((text)=>text.level==="C1")).toHaveLength(8);
     expect(coreContent.readingTexts.every((text)=>text.sentenceIds.length>=5&&text.comprehensionQuestions.length>=2)).toBe(true);
     const p7=coreContent.readingTexts.filter((text)=>text.tags.includes("p7"));
     expect(p7).toHaveLength(12);

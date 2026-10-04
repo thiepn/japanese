@@ -1,0 +1,3311 @@
+{
+  "schema": "thiepn-japanese-c1-language",
+  "schemaVersion": 1,
+  "version": "0.10.0",
+  "sourceIds": [
+    "thiepn-original"
+  ],
+  "grammar": [
+    {
+      "id": "c1-o-fumaete",
+      "label": "〜を踏まえて",
+      "summary": "based on; taking into account",
+      "mentalModel": "Treats prior evidence, circumstances or discussion as the explicit basis for the next judgment or action.",
+      "formation": [
+        "noun + を踏まえて",
+        "clause/context + ことを踏まえて"
+      ],
+      "uses": [
+        "evidence-based transition",
+        "policy reasoning"
+      ],
+      "prerequisiteIds": [
+        "b2-koto-kara"
+      ],
+      "contrastIds": [
+        "b2-koto-kara"
+      ],
+      "level": "C1",
+      "register": "formal",
+      "priority": 103,
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "practice": {
+        "prompt": "複数の調査結果を踏まえて、制度の前提を問い直す必要がある。",
+        "answer": "複数の調査結果を踏まえて、制度の前提を問い直す必要がある。",
+        "choices": [
+          "複数の調査結果を踏まえて、制度の前提を問い直す必要がある。",
+          "文脈や根拠を示さずに断定する。",
+          "意味の違いを無視して同じ形に置き換える。",
+          "どの場面でも同じ強さで使える。"
+        ],
+        "explanation": "Taking multiple survey results into account, the assumptions behind the system need to be reconsidered."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-o-megutte",
+      "label": "〜をめぐって",
+      "summary": "concerning; surrounding a disputed issue",
+      "mentalModel": "Frames an issue as the center of discussion, disagreement, negotiation or competing positions.",
+      "formation": [
+        "noun + をめぐって",
+        "noun + をめぐる + noun"
+      ],
+      "uses": [
+        "controversy framing",
+        "multi-party discussion"
+      ],
+      "prerequisiteIds": [
+        "b2-ni-kanshite"
+      ],
+      "contrastIds": [
+        "b2-ni-kanshite"
+      ],
+      "level": "C1",
+      "register": "formal",
+      "priority": 104,
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "practice": {
+        "prompt": "評価指標の妥当性をめぐって、研究者の間でも見解が分かれている。",
+        "answer": "評価指標の妥当性をめぐって、研究者の間でも見解が分かれている。",
+        "choices": [
+          "評価指標の妥当性をめぐって、研究者の間でも見解が分かれている。",
+          "文脈や根拠を示さずに断定する。",
+          "意味の違いを無視して同じ形に置き換える。",
+          "どの場面でも同じ強さで使える。"
+        ],
+        "explanation": "Researchers are divided over the validity of the evaluation indicator."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-ni-terashite",
+      "label": "〜に照らして",
+      "summary": "in light of; judged against",
+      "mentalModel": "Evaluates a case against a standard, principle, evidence base or long-term criterion.",
+      "formation": [
+        "noun + に照らして",
+        "noun + に照らすと"
+      ],
+      "uses": [
+        "criterion-based evaluation",
+        "formal policy reasoning"
+      ],
+      "prerequisiteIds": [
+        "b2-ni-taishite"
+      ],
+      "contrastIds": [
+        "b2-ni-oite"
+      ],
+      "level": "C1",
+      "register": "formal",
+      "priority": 105,
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "practice": {
+        "prompt": "長期的な持続可能性に照らして考えると、短期の効率だけでは判断できない。",
+        "answer": "長期的な持続可能性に照らして考えると、短期の効率だけでは判断できない。",
+        "choices": [
+          "長期的な持続可能性に照らして考えると、短期の効率だけでは判断できない。",
+          "文脈や根拠を示さずに断定する。",
+          "意味の違いを無視して同じ形に置き換える。",
+          "どの場面でも同じ強さで使える。"
+        ],
+        "explanation": "In light of long-term sustainability, short-term efficiency alone is not enough for judgment."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-ni-sokushite",
+      "label": "〜に即して",
+      "summary": "in accordance with; closely fitted to",
+      "mentalModel": "Aligns an action or interpretation closely with concrete facts, rules, local conditions or actual circumstances.",
+      "formation": [
+        "noun + に即して",
+        "noun + に即した + noun"
+      ],
+      "uses": [
+        "context-sensitive adaptation",
+        "rule-based action"
+      ],
+      "prerequisiteIds": [
+        "b2-ni-yotte"
+      ],
+      "contrastIds": [
+        "c1-ni-terashite"
+      ],
+      "level": "C1",
+      "register": "formal",
+      "priority": 106,
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "practice": {
+        "prompt": "地域ごとの制約に即して、対応策を調整する必要がある。",
+        "answer": "地域ごとの制約に即して、対応策を調整する必要がある。",
+        "choices": [
+          "地域ごとの制約に即して、対応策を調整する必要がある。",
+          "文脈や根拠を示さずに断定する。",
+          "意味の違いを無視して同じ形に置き換える。",
+          "どの場面でも同じ強さで使える。"
+        ],
+        "explanation": "Response measures need to be adjusted to the constraints of each region."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-to-aimatte",
+      "label": "〜と相まって",
+      "summary": "together with; combined with",
+      "mentalModel": "Shows two factors interacting and jointly intensifying or shaping one result.",
+      "formation": [
+        "noun + と相まって",
+        "clause + のと相まって"
+      ],
+      "uses": [
+        "combined causation",
+        "multi-factor analysis"
+      ],
+      "prerequisiteIds": [
+        "b2-ni-tomonatte"
+      ],
+      "contrastIds": [
+        "b2-ippou-de"
+      ],
+      "level": "C1",
+      "register": "formal",
+      "priority": 107,
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "practice": {
+        "prompt": "情報の曖昧性が制度への不信と相まって、議論を二極化させている。",
+        "answer": "情報の曖昧性が制度への不信と相まって、議論を二極化させている。",
+        "choices": [
+          "情報の曖昧性が制度への不信と相まって、議論を二極化させている。",
+          "文脈や根拠を示さずに断定する。",
+          "意味の違いを無視して同じ形に置き換える。",
+          "どの場面でも同じ強さで使える。"
+        ],
+        "explanation": "Ambiguity in the information, combined with distrust in the system, is polarizing the debate."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-nai-mademo",
+      "label": "〜ないまでも",
+      "summary": "even if not to the extent of",
+      "mentalModel": "Concedes that a stronger claim may not hold while preserving a meaningful weaker claim.",
+      "formation": [
+        "verb negative + までも",
+        "noun/na-adjective でない + までも"
+      ],
+      "uses": [
+        "measured concession",
+        "qualified claim"
+      ],
+      "prerequisiteIds": [
+        "b2-mono-no"
+      ],
+      "contrastIds": [
+        "b2-wake-dewa-nai"
+      ],
+      "level": "C1",
+      "register": "formal",
+      "priority": 108,
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "practice": {
+        "prompt": "全面的な改革には至らないまでも、透明性を高める余地は大きい。",
+        "answer": "全面的な改革には至らないまでも、透明性を高める余地は大きい。",
+        "choices": [
+          "全面的な改革には至らないまでも、透明性を高める余地は大きい。",
+          "文脈や根拠を示さずに断定する。",
+          "意味の違いを無視して同じ形に置き換える。",
+          "どの場面でも同じ強さで使える。"
+        ],
+        "explanation": "Even if it does not amount to complete reform, there is considerable room to increase transparency."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-ni-itaru-made",
+      "label": "〜に至るまで",
+      "summary": "all the way to; extending as far as",
+      "mentalModel": "Marks the endpoint of a wide process, range or chain of responsibility.",
+      "formation": [
+        "noun + に至るまで",
+        "verb dictionary + に至るまで"
+      ],
+      "uses": [
+        "process scope",
+        "extended range"
+      ],
+      "prerequisiteIds": [
+        "b2-ni-tsurete"
+      ],
+      "contrastIds": [
+        "b2-ni-tsurete"
+      ],
+      "level": "C1",
+      "register": "formal",
+      "priority": 109,
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "practice": {
+        "prompt": "企画から実施後の検証に至るまで、説明責任を明確にすべきだ。",
+        "answer": "企画から実施後の検証に至るまで、説明責任を明確にすべきだ。",
+        "choices": [
+          "企画から実施後の検証に至るまで、説明責任を明確にすべきだ。",
+          "文脈や根拠を示さずに断定する。",
+          "意味の違いを無視して同じ形に置き換える。",
+          "どの場面でも同じ強さで使える。"
+        ],
+        "explanation": "Accountability should be clear from planning through post-implementation verification."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-o-yoginaku-sareru",
+      "label": "〜を余儀なくされる",
+      "summary": "to be forced to; have no choice but",
+      "mentalModel": "Presents an action as compelled by circumstances rather than freely chosen.",
+      "formation": [
+        "noun + を余儀なくされる"
+      ],
+      "uses": [
+        "constraint-driven action",
+        "formal reporting"
+      ],
+      "prerequisiteIds": [
+        "b2-osore-ga-aru"
+      ],
+      "contrastIds": [
+        "b2-wake-da"
+      ],
+      "level": "C1",
+      "register": "formal",
+      "priority": 110,
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "practice": {
+        "prompt": "想定を超える需要により、自治体は計画の見直しを余儀なくされた。",
+        "answer": "想定を超える需要により、自治体は計画の見直しを余儀なくされた。",
+        "choices": [
+          "想定を超える需要により、自治体は計画の見直しを余儀なくされた。",
+          "文脈や根拠を示さずに断定する。",
+          "意味の違いを無視して同じ形に置き換える。",
+          "どの場面でも同じ強さで使える。"
+        ],
+        "explanation": "Demand beyond expectations forced the municipality to revise its plan."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-ni-taru",
+      "label": "〜に足る",
+      "summary": "sufficient to; worthy of",
+      "mentalModel": "Judges whether evidence or action meets a threshold high enough to justify a conclusion or evaluation.",
+      "formation": [
+        "verb dictionary + に足る",
+        "noun + に足る"
+      ],
+      "uses": [
+        "threshold judgment",
+        "evidential sufficiency"
+      ],
+      "prerequisiteIds": [
+        "b2-ni-suginai"
+      ],
+      "contrastIds": [
+        "b2-ni-suginai"
+      ],
+      "level": "C1",
+      "register": "formal",
+      "priority": 111,
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "practice": {
+        "prompt": "結論を変更するに足る根拠が示されたかどうかを慎重に検討する。",
+        "answer": "結論を変更するに足る根拠が示されたかどうかを慎重に検討する。",
+        "choices": [
+          "結論を変更するに足る根拠が示されたかどうかを慎重に検討する。",
+          "文脈や根拠を示さずに断定する。",
+          "意味の違いを無視して同じ形に置き換える。",
+          "どの場面でも同じ強さで使える。"
+        ],
+        "explanation": "We should carefully examine whether evidence sufficient to change the conclusion has been presented."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-ni-mo-mashite",
+      "label": "〜にもまして",
+      "summary": "even more than; above all compared with",
+      "mentalModel": "Ranks one factor as more important or pronounced than another already acknowledged factor.",
+      "formation": [
+        "noun + にもまして"
+      ],
+      "uses": [
+        "priority ranking",
+        "emphatic comparison"
+      ],
+      "prerequisiteIds": [
+        "b2-ba-hodo"
+      ],
+      "contrastIds": [
+        "b2-ippou-de"
+      ],
+      "level": "C1",
+      "register": "formal",
+      "priority": 112,
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "practice": {
+        "prompt": "速度にもまして、判断過程の透明性が重要である。",
+        "answer": "速度にもまして、判断過程の透明性が重要である。",
+        "choices": [
+          "速度にもまして、判断過程の透明性が重要である。",
+          "文脈や根拠を示さずに断定する。",
+          "意味の違いを無視して同じ形に置き換える。",
+          "どの場面でも同じ強さで使える。"
+        ],
+        "explanation": "More than speed, transparency in the decision process is important."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-to-atte",
+      "label": "〜とあって",
+      "summary": "given the special circumstances of",
+      "mentalModel": "Explains an exceptional reaction or result by highlighting a notable circumstance.",
+      "formation": [
+        "noun + とあって",
+        "plain form + とあって"
+      ],
+      "uses": [
+        "contextual explanation",
+        "news-style reporting"
+      ],
+      "prerequisiteIds": [
+        "b2-koto-kara"
+      ],
+      "contrastIds": [
+        "b2-wake-da"
+      ],
+      "level": "C1",
+      "register": "formal",
+      "priority": 113,
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "practice": {
+        "prompt": "社会的影響が大きいテーマとあって、修辞よりも根拠の質が問われる。",
+        "answer": "社会的影響が大きいテーマとあって、修辞よりも根拠の質が問われる。",
+        "choices": [
+          "社会的影響が大きいテーマとあって、修辞よりも根拠の質が問われる。",
+          "文脈や根拠を示さずに断定する。",
+          "意味の違いを無視して同じ形に置き換える。",
+          "どの場面でも同じ強さで使える。"
+        ],
+        "explanation": "Because the topic has major social impact, the quality of evidence matters more than rhetoric."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-ga-yue-ni",
+      "label": "〜がゆえに",
+      "summary": "precisely because; owing to the very fact that",
+      "mentalModel": "Gives a formal cause, often emphasizing that the cited quality itself creates the result or difficulty.",
+      "formation": [
+        "plain form + がゆえに",
+        "noun + であるがゆえに"
+      ],
+      "uses": [
+        "formal causal reasoning",
+        "paradoxical cause"
+      ],
+      "prerequisiteIds": [
+        "b2-wake-da"
+      ],
+      "contrastIds": [
+        "b2-koto-kara"
+      ],
+      "level": "C1",
+      "register": "formal",
+      "priority": 114,
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "practice": {
+        "prompt": "枠組みが複雑であるがゆえに、単純な因果関係を想定するのは危険だ。",
+        "answer": "枠組みが複雑であるがゆえに、単純な因果関係を想定するのは危険だ。",
+        "choices": [
+          "枠組みが複雑であるがゆえに、単純な因果関係を想定するのは危険だ。",
+          "文脈や根拠を示さずに断定する。",
+          "意味の違いを無視して同じ形に置き換える。",
+          "どの場面でも同じ強さで使える。"
+        ],
+        "explanation": "Precisely because the framework is complex, assuming a simple causal relationship is risky."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-ni-hokanaranai",
+      "label": "〜にほかならない",
+      "summary": "is nothing other than; precisely",
+      "mentalModel": "Identifies a phenomenon with a strong interpretive conclusion while keeping formal register.",
+      "formation": [
+        "noun + にほかならない"
+      ],
+      "uses": [
+        "interpretive conclusion",
+        "formal emphasis"
+      ],
+      "prerequisiteIds": [
+        "b2-wake-da"
+      ],
+      "contrastIds": [
+        "b2-ni-suginai"
+      ],
+      "level": "C1",
+      "register": "formal",
+      "priority": 115,
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "practice": {
+        "prompt": "この乖離は、評価基準が現場を十分に捉えていないことの表れにほかならない。",
+        "answer": "この乖離は、評価基準が現場を十分に捉えていないことの表れにほかならない。",
+        "choices": [
+          "この乖離は、評価基準が現場を十分に捉えていないことの表れにほかならない。",
+          "文脈や根拠を示さずに断定する。",
+          "意味の違いを無視して同じ形に置き換える。",
+          "どの場面でも同じ強さで使える。"
+        ],
+        "explanation": "This gap is nothing other than a sign that the evaluation criteria fail to capture reality on the ground."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-o-kinjienai",
+      "label": "〜を禁じ得ない",
+      "summary": "cannot help feeling; cannot suppress",
+      "mentalModel": "Expresses an unavoidable evaluative reaction in highly formal written or public discourse.",
+      "formation": [
+        "noun + を禁じ得ない",
+        "verb dictionary + ことを禁じ得ない"
+      ],
+      "uses": [
+        "formal stance",
+        "editorial reaction"
+      ],
+      "prerequisiteIds": [
+        "b2-mono-no"
+      ],
+      "contrastIds": [
+        "b2-osore-ga-aru"
+      ],
+      "level": "C1",
+      "register": "formal",
+      "priority": 116,
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "practice": {
+        "prompt": "説明の整合性を欠く対応には、疑問を抱くことを禁じ得ない。",
+        "answer": "説明の整合性を欠く対応には、疑問を抱くことを禁じ得ない。",
+        "choices": [
+          "説明の整合性を欠く対応には、疑問を抱くことを禁じ得ない。",
+          "文脈や根拠を示さずに断定する。",
+          "意味の違いを無視して同じ形に置き換える。",
+          "どの場面でも同じ強さで使える。"
+        ],
+        "explanation": "One cannot help but question a response that lacks consistency in its explanation."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-to-iedomo",
+      "label": "〜といえども",
+      "summary": "even; even though; even if one is",
+      "mentalModel": "Concedes a strong category or status but denies that it removes a limitation or obligation.",
+      "formation": [
+        "noun + といえども",
+        "plain form + といえども"
+      ],
+      "uses": [
+        "formal concession",
+        "limitation of authority"
+      ],
+      "prerequisiteIds": [
+        "b2-ni-mo-kakawarazu"
+      ],
+      "contrastIds": [
+        "b2-mono-no"
+      ],
+      "level": "C1",
+      "register": "formal",
+      "priority": 117,
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "practice": {
+        "prompt": "専門家といえども、限られたデータから断定的な結論を出すべきではない。",
+        "answer": "専門家といえども、限られたデータから断定的な結論を出すべきではない。",
+        "choices": [
+          "専門家といえども、限られたデータから断定的な結論を出すべきではない。",
+          "文脈や根拠を示さずに断定する。",
+          "意味の違いを無視して同じ形に置き換える。",
+          "どの場面でも同じ強さで使える。"
+        ],
+        "explanation": "Even experts should not draw categorical conclusions from limited data."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-beku",
+      "label": "〜べく",
+      "summary": "in order to; with the aim of",
+      "mentalModel": "Marks a deliberate formal purpose, common in written institutional or public language.",
+      "formation": [
+        "verb dictionary + べく",
+        "する → すべく"
+      ],
+      "uses": [
+        "formal purpose",
+        "institutional action"
+      ],
+      "prerequisiteIds": [
+        "b2-koto-kara"
+      ],
+      "contrastIds": [
+        "b2-ni-kanshite"
+      ],
+      "level": "C1",
+      "register": "formal",
+      "priority": 118,
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse"
+      ],
+      "practice": {
+        "prompt": "合意形成を進めるべく、異なる視座を整理して共通の論点を確認した。",
+        "answer": "合意形成を進めるべく、異なる視座を整理して共通の論点を確認した。",
+        "choices": [
+          "合意形成を進めるべく、異なる視座を整理して共通の論点を確認した。",
+          "文脈や根拠を示さずに断定する。",
+          "意味の違いを無視して同じ形に置き換える。",
+          "どの場面でも同じ強さで使える。"
+        ],
+        "explanation": "To advance consensus building, different perspectives were organized and common issues confirmed."
+      },
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    }
+  ],
+  "sentences": [
+    {
+      "id": "p12-text-policy-evidence-s1",
+      "text": "複数の調査結果を踏まえて、制度の前提そのものを問い直す必要がある。",
+      "normalizedText": "複数の調査結果を踏まえて、制度の前提そのものを問い直す必要がある。",
+      "translation": "Taking multiple survey results into account, the assumptions underlying the system itself need to be reconsidered.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-o-fumaete"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-o-fumaete"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "複数の調査結果を踏まえて、制度の前提そのものを問い直す必要がある。",
+          "grammarRole": "c1-o-fumaete"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "policy",
+        "research",
+        "synthesis"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-policy-evidence-s2",
+      "text": "評価指標の妥当性をめぐって、研究者の間でも見解が分かれている。",
+      "normalizedText": "評価指標の妥当性をめぐって、研究者の間でも見解が分かれている。",
+      "translation": "Researchers are divided over the validity of the evaluation indicator.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-o-megutte"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-o-megutte"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "評価指標の妥当性をめぐって、研究者の間でも見解が分かれている。",
+          "grammarRole": "c1-o-megutte"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "policy",
+        "research",
+        "synthesis"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-policy-evidence-s3",
+      "text": "一部の結果は政策変更に足る根拠を示しているが、すべての地域に当てはまるわけではない。",
+      "normalizedText": "一部の結果は政策変更に足る根拠を示しているが、すべての地域に当てはまるわけではない。",
+      "translation": "Some results provide evidence sufficient to justify policy change, but they do not apply to every region.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ni-taru",
+        "b2-wake-dewa-nai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ni-taru"
+        },
+        {
+          "kind": "grammar",
+          "id": "b2-wake-dewa-nai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "一部の結果は政策変更に足る根拠を示しているが、すべての地域に当てはまるわけではない。",
+          "grammarRole": "c1-ni-taru"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "policy",
+        "research",
+        "synthesis"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-policy-evidence-s4",
+      "text": "専門家といえども、限られたデータから断定的な結論を出すべきではない。",
+      "normalizedText": "専門家といえども、限られたデータから断定的な結論を出すべきではない。",
+      "translation": "Even experts should not draw categorical conclusions from limited data.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-to-iedomo"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-to-iedomo"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "専門家といえども、限られたデータから断定的な結論を出すべきではない。",
+          "grammarRole": "c1-to-iedomo"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "policy",
+        "research",
+        "synthesis"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-policy-evidence-s5",
+      "text": "地域間の乖離は、単一の評価基準では実態を捉えきれないことの表れにほかならない。",
+      "normalizedText": "地域間の乖離は、単一の評価基準では実態を捉えきれないことの表れにほかならない。",
+      "translation": "The gap between regions is precisely a sign that a single evaluation criterion cannot capture the full reality.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ni-hokanaranai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ni-hokanaranai"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-discrepancy"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "地域間の乖離は、単一の評価基準では実態を捉えきれないことの表れにほかならない。",
+          "grammarRole": "c1-ni-hokanaranai"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "policy",
+        "research",
+        "synthesis"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-policy-evidence-s6",
+      "text": "全面的な制度変更には至らないまでも、暫定的な対応策を導入する余地はある。",
+      "normalizedText": "全面的な制度変更には至らないまでも、暫定的な対応策を導入する余地はある。",
+      "translation": "Even if a complete institutional change is not warranted, there is room to introduce provisional measures.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-nai-mademo"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-nai-mademo"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-provisional"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-remedy"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "全面的な制度変更には至らないまでも、暫定的な対応策を導入する余地はある。",
+          "grammarRole": "c1-nai-mademo"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "policy",
+        "research",
+        "synthesis"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-ai-judgment-s1",
+      "text": "導入の目的を長期的な持続可能性に照らして考えると、処理速度だけを成功指標にするのは不十分だ。",
+      "normalizedText": "導入の目的を長期的な持続可能性に照らして考えると、処理速度だけを成功指標にするのは不十分だ。",
+      "translation": "In light of long-term sustainability, processing speed alone is an insufficient measure of success.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ni-terashite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ni-terashite"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-sustainability"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "導入の目的を長期的な持続可能性に照らして考えると、処理速度だけを成功指標にするのは不十分だ。",
+          "grammarRole": "c1-ni-terashite"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "technology",
+        "workplace",
+        "accountability"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-ai-judgment-s2",
+      "text": "速度にもまして、判断過程の透明性と説明責任が重要になる。",
+      "normalizedText": "速度にもまして、判断過程の透明性と説明責任が重要になる。",
+      "translation": "More than speed, transparency and accountability in the decision process become important.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ni-mo-mashite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ni-mo-mashite"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-accountability"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-transparency"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "速度にもまして、判断過程の透明性と説明責任が重要になる。",
+          "grammarRole": "c1-ni-mo-mashite"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "technology",
+        "workplace",
+        "accountability"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-ai-judgment-s3",
+      "text": "出力の曖昧性が担当者の過度な信頼と相まって、誤った判断につながる可能性がある。",
+      "normalizedText": "出力の曖昧性が担当者の過度な信頼と相まって、誤った判断につながる可能性がある。",
+      "translation": "Ambiguous output, combined with excessive staff trust, can lead to mistaken decisions.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-to-aimatte"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-to-aimatte"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-ambiguity"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "出力の曖昧性が担当者の過度な信頼と相まって、誤った判断につながる可能性がある。",
+          "grammarRole": "c1-to-aimatte"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "technology",
+        "workplace",
+        "accountability"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-ai-judgment-s4",
+      "text": "想定を超える処理量により、現場は自動化の範囲を広げることを余儀なくされた。",
+      "normalizedText": "想定を超える処理量により、現場は自動化の範囲を広げることを余儀なくされた。",
+      "translation": "Workload beyond expectations forced the team to expand the scope of automation.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-o-yoginaku-sareru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-o-yoginaku-sareru"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-assumption"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "想定を超える処理量により、現場は自動化の範囲を広げることを余儀なくされた。",
+          "grammarRole": "c1-o-yoginaku-sareru"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "technology",
+        "workplace",
+        "accountability"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-ai-judgment-s5",
+      "text": "専門的判断を補完すべく、重要な案件には人による再確認を残している。",
+      "normalizedText": "専門的判断を補完すべく、重要な案件には人による再確認を残している。",
+      "translation": "To complement professional judgment, human rechecking is retained for important cases.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-beku"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-beku"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "専門的判断を補完すべく、重要な案件には人による再確認を残している。",
+          "grammarRole": "c1-beku"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "technology",
+        "workplace",
+        "accountability"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-ai-judgment-s6",
+      "text": "枠組みが複雑であるがゆえに、責任の所在を単純にシステムへ移すことはできない。",
+      "normalizedText": "枠組みが複雑であるがゆえに、責任の所在を単純にシステムへ移すことはできない。",
+      "translation": "Precisely because the framework is complex, responsibility cannot simply be shifted to the system.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ga-yue-ni"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ga-yue-ni"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-framework"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "枠組みが複雑であるがゆえに、責任の所在を単純にシステムへ移すことはできない。",
+          "grammarRole": "c1-ga-yue-ni"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "technology",
+        "workplace",
+        "accountability"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-urban-resilience-s1",
+      "text": "地域の実情と予算上の制約に即して、災害対応の優先順位を調整する必要がある。",
+      "normalizedText": "地域の実情と予算上の制約に即して、災害対応の優先順位を調整する必要がある。",
+      "translation": "Disaster-response priorities need to be adjusted to local realities and budget constraints.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ni-sokushite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ni-sokushite"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-constraint"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "地域の実情と予算上の制約に即して、災害対応の優先順位を調整する必要がある。",
+          "grammarRole": "c1-ni-sokushite"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "community",
+        "public",
+        "society"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-urban-resilience-s2",
+      "text": "高齢化が急速に進む地域とあって、避難計画には追加の支援体制が欠かせない。",
+      "normalizedText": "高齢化が急速に進む地域とあって、避難計画には追加の支援体制が欠かせない。",
+      "translation": "Given that the area is aging rapidly, evacuation planning requires additional support structures.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-to-atte"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-to-atte"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "高齢化が急速に進む地域とあって、避難計画には追加の支援体制が欠かせない。",
+          "grammarRole": "c1-to-atte"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "community",
+        "public",
+        "society"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-urban-resilience-s3",
+      "text": "情報収集から復旧後の検証に至るまで、自治体と住民の役割を明確にしておくべきだ。",
+      "normalizedText": "情報収集から復旧後の検証に至るまで、自治体と住民の役割を明確にしておくべきだ。",
+      "translation": "Roles of municipalities and residents should be clear from information gathering through post-recovery review.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ni-itaru-made"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ni-itaru-made"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "情報収集から復旧後の検証に至るまで、自治体と住民の役割を明確にしておくべきだ。",
+          "grammarRole": "c1-ni-itaru-made"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "community",
+        "public",
+        "society"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-urban-resilience-s4",
+      "text": "大規模な再編には至らないまでも、負担の分配を見直すことはできる。",
+      "normalizedText": "大規模な再編には至らないまでも、負担の分配を見直すことはできる。",
+      "translation": "Even without a major reorganization, the distribution of burdens can be reconsidered.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-nai-mademo"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-nai-mademo"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-distribution"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "大規模な再編には至らないまでも、負担の分配を見直すことはできる。",
+          "grammarRole": "c1-nai-mademo"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "community",
+        "public",
+        "society"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-urban-resilience-s5",
+      "text": "過去の被害と人口動態を踏まえて、支援拠点の配置を多面的に評価する必要がある。",
+      "normalizedText": "過去の被害と人口動態を踏まえて、支援拠点の配置を多面的に評価する必要がある。",
+      "translation": "Support-hub placement should be evaluated from multiple angles based on past damage and demographic trends.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-o-fumaete"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-o-fumaete"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-multifaceted"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "過去の被害と人口動態を踏まえて、支援拠点の配置を多面的に評価する必要がある。",
+          "grammarRole": "c1-o-fumaete"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "community",
+        "public",
+        "society"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-urban-resilience-s6",
+      "text": "効率にもまして、脆弱な住民に支援が届く実現可能性を重視すべきだ。",
+      "normalizedText": "効率にもまして、脆弱な住民に支援が届く実現可能性を重視すべきだ。",
+      "translation": "More than efficiency, priority should be given to the feasibility of reaching vulnerable residents.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ni-mo-mashite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ni-mo-mashite"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-feasibility"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "効率にもまして、脆弱な住民に支援が届く実現可能性を重視すべきだ。",
+          "grammarRole": "c1-ni-mo-mashite"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "community",
+        "public",
+        "society"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-causality-s1",
+      "text": "大規模な調査といえども、相関だけで因果関係を確定することはできない。",
+      "normalizedText": "大規模な調査といえども、相関だけで因果関係を確定することはできない。",
+      "translation": "Even a large-scale study cannot establish causality from correlation alone.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-to-iedomo"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-to-iedomo"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-causality"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-correlation"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "大規模な調査といえども、相関だけで因果関係を確定することはできない。",
+          "grammarRole": "c1-to-iedomo"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "research",
+        "media",
+        "evidence"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-causality-s2",
+      "text": "既存の理論に照らして結果を解釈すると、複数の説明が成り立つ。",
+      "normalizedText": "既存の理論に照らして結果を解釈すると、複数の説明が成り立つ。",
+      "translation": "Interpreting the results in light of existing theory leaves several explanations possible.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ni-terashite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ni-terashite"
+        },
+        {
+          "kind": "lexeme",
+          "id": "b2-interpretation"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "既存の理論に照らして結果を解釈すると、複数の説明が成り立つ。",
+          "grammarRole": "c1-ni-terashite"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "research",
+        "media",
+        "evidence"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-causality-s3",
+      "text": "因果を主張するに足る証拠があるかどうかは、研究設計まで含めて検討すべきだ。",
+      "normalizedText": "因果を主張するに足る証拠があるかどうかは、研究設計まで含めて検討すべきだ。",
+      "translation": "Whether there is evidence sufficient to claim causality should be evaluated together with the research design.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ni-taru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ni-taru"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "因果を主張するに足る証拠があるかどうかは、研究設計まで含めて検討すべきだ。",
+          "grammarRole": "c1-ni-taru"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "research",
+        "media",
+        "evidence"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-causality-s4",
+      "text": "観測できない要因が存在するがゆえに、推論には一定の留保が必要である。",
+      "normalizedText": "観測できない要因が存在するがゆえに、推論には一定の留保が必要である。",
+      "translation": "Because unobserved factors exist, the inference requires a degree of reservation.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ga-yue-ni"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ga-yue-ni"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-caveat"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "観測できない要因が存在するがゆえに、推論には一定の留保が必要である。",
+          "grammarRole": "c1-ga-yue-ni"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "research",
+        "media",
+        "evidence"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-causality-s5",
+      "text": "結果の乖離は、対象集団や測定方法の違いを反映したものにほかならない可能性もある。",
+      "normalizedText": "結果の乖離は、対象集団や測定方法の違いを反映したものにほかならない可能性もある。",
+      "translation": "The divergence in results may simply reflect differences in populations or measurement methods.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ni-hokanaranai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ni-hokanaranai"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-discrepancy"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "結果の乖離は、対象集団や測定方法の違いを反映したものにほかならない可能性もある。",
+          "grammarRole": "c1-ni-hokanaranai"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "research",
+        "media",
+        "evidence"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-causality-s6",
+      "text": "不確実性を示さずに断定する説明には、慎重さを求めることを禁じ得ない。",
+      "normalizedText": "不確実性を示さずに断定する説明には、慎重さを求めることを禁じ得ない。",
+      "translation": "One cannot help but demand caution from explanations that state conclusions categorically without showing uncertainty.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-o-kinjienai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-o-kinjienai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "不確実性を示さずに断定する説明には、慎重さを求めることを禁じ得ない。",
+          "grammarRole": "c1-o-kinjienai"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "research",
+        "media",
+        "evidence"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-transparency-s1",
+      "text": "意思決定の手続きをめぐって、透明性が十分かどうかという論点が浮上している。",
+      "normalizedText": "意思決定の手続きをめぐって、透明性が十分かどうかという論点が浮上している。",
+      "translation": "Debate has emerged over whether the decision-making process is sufficiently transparent.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-o-megutte"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-o-megutte"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-transparency"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "意思決定の手続きをめぐって、透明性が十分かどうかという論点が浮上している。",
+          "grammarRole": "c1-o-megutte"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "public",
+        "governance",
+        "argument"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-transparency-s2",
+      "text": "説明の曖昧性が過去の不信と相まって、制度への評価をさらに厳しくしている。",
+      "normalizedText": "説明の曖昧性が過去の不信と相まって、制度への評価をさらに厳しくしている。",
+      "translation": "Ambiguity in explanations, combined with past distrust, is making evaluations of the institution harsher.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-to-aimatte"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-to-aimatte"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-ambiguity"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "説明の曖昧性が過去の不信と相まって、制度への評価をさらに厳しくしている。",
+          "grammarRole": "c1-to-aimatte"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "public",
+        "governance",
+        "argument"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-transparency-s3",
+      "text": "批判を踏まえて、判断基準だけでなく例外を認める条件も公開することになった。",
+      "normalizedText": "批判を踏まえて、判断基準だけでなく例外を認める条件も公開することになった。",
+      "translation": "In response to criticism, the institution decided to publish not only its criteria but also the conditions for exceptions.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-o-fumaete"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-o-fumaete"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-exception"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "批判を踏まえて、判断基準だけでなく例外を認める条件も公開することになった。",
+          "grammarRole": "c1-o-fumaete"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "public",
+        "governance",
+        "argument"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-transparency-s4",
+      "text": "方針の策定から実施後の検証に至るまで、説明責任を一貫させる必要がある。",
+      "normalizedText": "方針の策定から実施後の検証に至るまで、説明責任を一貫させる必要がある。",
+      "translation": "Accountability needs to remain consistent from policy formulation through post-implementation review.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ni-itaru-made"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ni-itaru-made"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-accountability"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "方針の策定から実施後の検証に至るまで、説明責任を一貫させる必要がある。",
+          "grammarRole": "c1-ni-itaru-made"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "public",
+        "governance",
+        "argument"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-transparency-s5",
+      "text": "形式的な公開にもまして、説明の整合性が信頼回復には重要である。",
+      "normalizedText": "形式的な公開にもまして、説明の整合性が信頼回復には重要である。",
+      "translation": "More than formal disclosure, consistency of explanation is important for rebuilding trust.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ni-mo-mashite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ni-mo-mashite"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-coherence"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "形式的な公開にもまして、説明の整合性が信頼回復には重要である。",
+          "grammarRole": "c1-ni-mo-mashite"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "public",
+        "governance",
+        "argument"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-transparency-s6",
+      "text": "手続きへの疑念は、透明性が制度の正当性を支える条件であることの表れにほかならない。",
+      "normalizedText": "手続きへの疑念は、透明性が制度の正当性を支える条件であることの表れにほかならない。",
+      "translation": "Doubt about the process is precisely a sign that transparency is a condition supporting institutional legitimacy.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ni-hokanaranai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ni-hokanaranai"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-transparency"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "手続きへの疑念は、透明性が制度の正当性を支える条件であることの表れにほかならない。",
+          "grammarRole": "c1-ni-hokanaranai"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "public",
+        "governance",
+        "argument"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-education-autonomy-s1",
+      "text": "全国共通の目標を保ちつつ、地域の状況に即して運用方法を変える余地を残すべきだ。",
+      "normalizedText": "全国共通の目標を保ちつつ、地域の状況に即して運用方法を変える余地を残すべきだ。",
+      "translation": "Common national goals should be retained while leaving room to adapt implementation to local circumstances.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ni-sokushite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ni-sokushite"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "全国共通の目標を保ちつつ、地域の状況に即して運用方法を変える余地を残すべきだ。",
+          "grammarRole": "c1-ni-sokushite"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "education",
+        "community",
+        "negotiation"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-education-autonomy-s2",
+      "text": "教育現場は多面的であるがゆえに、単一の指標で成果を測ることには限界がある。",
+      "normalizedText": "教育現場は多面的であるがゆえに、単一の指標で成果を測ることには限界がある。",
+      "translation": "Because educational settings are multifaceted, there are limits to measuring outcomes with a single indicator.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ga-yue-ni"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ga-yue-ni"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-multifaceted"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "教育現場は多面的であるがゆえに、単一の指標で成果を測ることには限界がある。",
+          "grammarRole": "c1-ga-yue-ni"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "education",
+        "community",
+        "negotiation"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-education-autonomy-s3",
+      "text": "完全な自律運営には至らないまでも、現場の裁量を広げることは可能だ。",
+      "normalizedText": "完全な自律運営には至らないまでも、現場の裁量を広げることは可能だ。",
+      "translation": "Even if full autonomy is not reached, local discretion can still be expanded.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-nai-mademo"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-nai-mademo"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "完全な自律運営には至らないまでも、現場の裁量を広げることは可能だ。",
+          "grammarRole": "c1-nai-mademo"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "education",
+        "community",
+        "negotiation"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-education-autonomy-s4",
+      "text": "合意形成を進めるべく、教員・保護者・行政が共通の論点を整理した。",
+      "normalizedText": "合意形成を進めるべく、教員・保護者・行政が共通の論点を整理した。",
+      "translation": "To advance consensus building, teachers, parents, and administrators organized the issues they share.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-beku"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-beku"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-consensus-building"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "合意形成を進めるべく、教員・保護者・行政が共通の論点を整理した。",
+          "grammarRole": "c1-beku"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "education",
+        "community",
+        "negotiation"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-education-autonomy-s5",
+      "text": "制度改革とあって、短期的な成果だけでなく持続可能性も問われる。",
+      "normalizedText": "制度改革とあって、短期的な成果だけでなく持続可能性も問われる。",
+      "translation": "Because this is institutional reform, sustainability as well as short-term results is at stake.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-to-atte"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-to-atte"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-sustainability"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "制度改革とあって、短期的な成果だけでなく持続可能性も問われる。",
+          "grammarRole": "c1-to-atte"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "education",
+        "community",
+        "negotiation"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-education-autonomy-s6",
+      "text": "予算削減により、一部の自治体は支援策の縮小を余儀なくされた。",
+      "normalizedText": "予算削減により、一部の自治体は支援策の縮小を余儀なくされた。",
+      "translation": "Budget cuts forced some municipalities to reduce support measures.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-o-yoginaku-sareru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-o-yoginaku-sareru"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "予算削減により、一部の自治体は支援策の縮小を余儀なくされた。",
+          "grammarRole": "c1-o-yoginaku-sareru"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "education",
+        "community",
+        "negotiation"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-climate-transition-s1",
+      "text": "政策の効果を長期的な持続可能性に照らして評価すると、短期の費用増だけで否定することはできない。",
+      "normalizedText": "政策の効果を長期的な持続可能性に照らして評価すると、短期の費用増だけで否定することはできない。",
+      "translation": "Evaluating the policy in light of long-term sustainability means it cannot be rejected solely because of short-term cost increases.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ni-terashite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ni-terashite"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-sustainability"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "政策の効果を長期的な持続可能性に照らして評価すると、短期の費用増だけで否定することはできない。",
+          "grammarRole": "c1-ni-terashite"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "environment",
+        "policy",
+        "synthesis"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-climate-transition-s2",
+      "text": "国際的な供給変化により、企業は調達計画の修正を余儀なくされている。",
+      "normalizedText": "国際的な供給変化により、企業は調達計画の修正を余儀なくされている。",
+      "translation": "International supply changes are forcing companies to revise procurement plans.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-o-yoginaku-sareru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-o-yoginaku-sareru"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "国際的な供給変化により、企業は調達計画の修正を余儀なくされている。",
+          "grammarRole": "c1-o-yoginaku-sareru"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "environment",
+        "policy",
+        "synthesis"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-climate-transition-s3",
+      "text": "価格上昇が地域間の格差と相まって、移行の負担を不均等にしている。",
+      "normalizedText": "価格上昇が地域間の格差と相まって、移行の負担を不均等にしている。",
+      "translation": "Price increases, combined with regional inequality, are making the burden of transition uneven.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-to-aimatte"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-to-aimatte"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "価格上昇が地域間の格差と相まって、移行の負担を不均等にしている。",
+          "grammarRole": "c1-to-aimatte"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "environment",
+        "policy",
+        "synthesis"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-climate-transition-s4",
+      "text": "政策を継続するに足る効果が確認できるかどうか、段階ごとに検証する必要がある。",
+      "normalizedText": "政策を継続するに足る効果が確認できるかどうか、段階ごとに検証する必要がある。",
+      "translation": "It is necessary to verify at each stage whether effects sufficient to justify continuing the policy can be confirmed.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ni-taru"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ni-taru"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "政策を継続するに足る効果が確認できるかどうか、段階ごとに検証する必要がある。",
+          "grammarRole": "c1-ni-taru"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "environment",
+        "policy",
+        "synthesis"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-climate-transition-s5",
+      "text": "設計から実施、再評価に至るまで、負担の分配と説明責任を追跡すべきだ。",
+      "normalizedText": "設計から実施、再評価に至るまで、負担の分配と説明責任を追跡すべきだ。",
+      "translation": "The distribution of burdens and accountability should be tracked from design through implementation and reassessment.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ni-itaru-made"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ni-itaru-made"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-accountability"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-distribution"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "設計から実施、再評価に至るまで、負担の分配と説明責任を追跡すべきだ。",
+          "grammarRole": "c1-ni-itaru-made"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "environment",
+        "policy",
+        "synthesis"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-climate-transition-s6",
+      "text": "複数の地域事例を踏まえて、対応策を一律ではなく段階的に実施することが望ましい。",
+      "normalizedText": "複数の地域事例を踏まえて、対応策を一律ではなく段階的に実施することが望ましい。",
+      "translation": "Based on cases from multiple regions, it is preferable to implement measures in stages rather than uniformly.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-o-fumaete"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-o-fumaete"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-remedy"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "複数の地域事例を踏まえて、対応策を一律ではなく段階的に実施することが望ましい。",
+          "grammarRole": "c1-o-fumaete"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "environment",
+        "policy",
+        "synthesis"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-editorial-argument-s1",
+      "text": "影響力のある論者といえども、修辞の強さだけで主張の妥当性が決まるわけではない。",
+      "normalizedText": "影響力のある論者といえども、修辞の強さだけで主張の妥当性が決まるわけではない。",
+      "translation": "Even influential commentators do not make a claim valid merely through rhetorical force.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-to-iedomo",
+        "b2-wake-dewa-nai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-to-iedomo"
+        },
+        {
+          "kind": "grammar",
+          "id": "b2-wake-dewa-nai"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-rhetoric"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "影響力のある論者といえども、修辞の強さだけで主張の妥当性が決まるわけではない。",
+          "grammarRole": "c1-to-iedomo"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "media",
+        "argument",
+        "rhetoric"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-editorial-argument-s2",
+      "text": "根拠を示さずに相手の立場を単純化する議論には、違和感を禁じ得ない。",
+      "normalizedText": "根拠を示さずに相手の立場を単純化する議論には、違和感を禁じ得ない。",
+      "translation": "One cannot help but feel uneasy about arguments that simplify an opponent's position without showing evidence.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-o-kinjienai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-o-kinjienai"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "根拠を示さずに相手の立場を単純化する議論には、違和感を禁じ得ない。",
+          "grammarRole": "c1-o-kinjienai"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "media",
+        "argument",
+        "rhetoric"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-editorial-argument-s3",
+      "text": "表現の自由をめぐって意見が対立していても、共通の前提を確認する余地はある。",
+      "normalizedText": "表現の自由をめぐって意見が対立していても、共通の前提を確認する余地はある。",
+      "translation": "Even when views conflict over freedom of expression, there is room to confirm shared premises.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-o-megutte"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-o-megutte"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "表現の自由をめぐって意見が対立していても、共通の前提を確認する余地はある。",
+          "grammarRole": "c1-o-megutte"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "media",
+        "argument",
+        "rhetoric"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-editorial-argument-s4",
+      "text": "譲歩を示すことは弱さではなく、論点の粒度を上げるための手段にほかならない。",
+      "normalizedText": "譲歩を示すことは弱さではなく、論点の粒度を上げるための手段にほかならない。",
+      "translation": "Making a concession is not weakness but precisely a way to increase the granularity of the discussion.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ni-hokanaranai"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ni-hokanaranai"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-granularity"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-concession"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "譲歩を示すことは弱さではなく、論点の粒度を上げるための手段にほかならない。",
+          "grammarRole": "c1-ni-hokanaranai"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "media",
+        "argument",
+        "rhetoric"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-editorial-argument-s5",
+      "text": "相手の意図ではなく実際の発言に即して反論すれば、不必要な二極化を避けやすい。",
+      "normalizedText": "相手の意図ではなく実際の発言に即して反論すれば、不必要な二極化を避けやすい。",
+      "translation": "Responding to what was actually said rather than presumed intentions makes needless polarization easier to avoid.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-ni-sokushite"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-ni-sokushite"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-polarization"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "相手の意図ではなく実際の発言に即して反論すれば、不必要な二極化を避けやすい。",
+          "grammarRole": "c1-ni-sokushite"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "media",
+        "argument",
+        "rhetoric"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "p12-text-editorial-argument-s6",
+      "text": "熟議を成立させるべく、修辞と根拠を切り分け、どこに留保が必要かを明示する。",
+      "normalizedText": "熟議を成立させるべく、修辞と根拠を切り分け、どこに留保が必要かを明示する。",
+      "translation": "To make deliberation possible, rhetoric is separated from evidence and points requiring caveats are made explicit.",
+      "level": "C1",
+      "register": "formal",
+      "grammarIds": [
+        "c1-beku"
+      ],
+      "entityRefs": [
+        {
+          "kind": "grammar",
+          "id": "c1-beku"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-rhetoric"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-caveat"
+        },
+        {
+          "kind": "lexeme",
+          "id": "c1-deliberation"
+        }
+      ],
+      "tokens": [
+        {
+          "surface": "熟議を成立させるべく、修辞と根拠を切り分け、どこに留保が必要かを明示する。",
+          "grammarRole": "c1-beku"
+        }
+      ],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-discourse",
+        "media",
+        "argument",
+        "rhetoric"
+      ],
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    }
+  ],
+  "lexicalChunks": [
+    {
+      "id": "c1-chunk-premise-reconsider",
+      "expression": "前提を問い直す",
+      "meaning": "to revisit an assumption",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-assumption"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-policy-evidence-s1"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 121,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-implication-weigh",
+      "expression": "含意を慎重に捉える",
+      "meaning": "to interpret implications cautiously",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-implication"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-policy-evidence-s2"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 122,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-validity-examine",
+      "expression": "妥当性を検証する",
+      "meaning": "to examine validity",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-coherence"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-policy-evidence-s2"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 123,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-caveat-state",
+      "expression": "留保を明示する",
+      "meaning": "to state a caveat explicitly",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-caveat"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-policy-evidence-s4"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 124,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-constraint-account",
+      "expression": "制約を踏まえる",
+      "meaning": "to take constraints into account",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-constraint"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-ai-judgment-s1"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 125,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-transparency-raise",
+      "expression": "透明性を高める",
+      "meaning": "to increase transparency",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-transparency"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-ai-judgment-s2"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 126,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-judgment-complement",
+      "expression": "専門的判断を補完する",
+      "meaning": "to complement professional judgment",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-integration"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-ai-judgment-s5"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 127,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-accountability-fulfill",
+      "expression": "説明責任を果たす",
+      "meaning": "to fulfill accountability",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-accountability"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-ai-judgment-s6"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 128,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-local-context",
+      "expression": "地域の実情に即する",
+      "meaning": "to fit local realities",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-framework"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-urban-resilience-s1"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 129,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-burden-correct",
+      "expression": "負担の偏りを是正する",
+      "meaning": "to correct an imbalance of burdens",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-distribution"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-urban-resilience-s4"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 130,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-feasibility-assess",
+      "expression": "実現可能性を見極める",
+      "meaning": "to assess feasibility",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-feasibility"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-urban-resilience-s6"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 131,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-consensus-build",
+      "expression": "合意形成を図る",
+      "meaning": "to work toward consensus",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-consensus-building"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-urban-resilience-s5"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 132,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-correlation-causality",
+      "expression": "相関と因果を区別する",
+      "meaning": "to distinguish correlation from causality",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-correlation"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-causality-s1"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 133,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-interpretive-range",
+      "expression": "解釈の幅を残す",
+      "meaning": "to leave room for interpretation",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "b2-interpretation"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-causality-s2"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 134,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-inference-limit",
+      "expression": "推論の限界を示す",
+      "meaning": "to show the limits of an inference",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-caveat"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-causality-s4"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 135,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-provisional-conclusion",
+      "expression": "結論を暫定的に扱う",
+      "meaning": "to treat a conclusion as provisional",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-provisional"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-causality-s6"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 136,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-framework-review",
+      "expression": "制度的な枠組みを見直す",
+      "meaning": "to review an institutional framework",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-institutional"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-transparency-s1"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 137,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-transparency-secure",
+      "expression": "透明性を確保する",
+      "meaning": "to ensure transparency",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-transparency"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-transparency-s3"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 138,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-trust-undermine",
+      "expression": "信頼を損なう",
+      "meaning": "to undermine trust",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-coherence"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-transparency-s2"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 139,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-coherence-maintain",
+      "expression": "説明の整合性を保つ",
+      "meaning": "to maintain consistency of explanation",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-coherence"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-transparency-s5"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 140,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-autonomy-respect",
+      "expression": "自律性を尊重する",
+      "meaning": "to respect autonomy",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-autonomy"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-education-autonomy-s1"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 141,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-intervention-limit",
+      "expression": "介入の範囲を限定する",
+      "meaning": "to limit the scope of intervention",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-intervention"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-education-autonomy-s3"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 142,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-discretion-secure",
+      "expression": "現場の裁量を確保する",
+      "meaning": "to preserve local discretion",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-autonomy"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-education-autonomy-s3"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 143,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-multifaceted-evaluate",
+      "expression": "多面的に評価する",
+      "meaning": "to evaluate from multiple angles",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-multifaceted"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-education-autonomy-s2"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 144,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-sustainability-examine",
+      "expression": "持続可能性を検討する",
+      "meaning": "to examine sustainability",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-sustainability"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-climate-transition-s1"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 145,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-transition-distribute",
+      "expression": "移行の負担を分配する",
+      "meaning": "to distribute transition burdens",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-distribution"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-climate-transition-s3"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 146,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-longterm-perspective",
+      "expression": "長期的な視座を持つ",
+      "meaning": "to take a long-term perspective",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-perspective"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-climate-transition-s1"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 147,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-stage-implementation",
+      "expression": "対応策を段階的に実施する",
+      "meaning": "to implement measures in stages",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-remedy"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-climate-transition-s6"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 148,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-issue-organize",
+      "expression": "論点を整理する",
+      "meaning": "to organize the issues",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-deliberation"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-editorial-argument-s3"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 149,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-concession-room",
+      "expression": "譲歩の余地を示す",
+      "meaning": "to show room for concession",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-concession"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-editorial-argument-s4"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 150,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-rhetoric-evidence",
+      "expression": "修辞と根拠を切り分ける",
+      "meaning": "to separate rhetoric from evidence",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-rhetoric"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-editorial-argument-s6"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 151,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    },
+    {
+      "id": "c1-chunk-common-premise",
+      "expression": "共通の前提を確認する",
+      "meaning": "to confirm shared premises",
+      "level": "C1",
+      "register": "formal",
+      "lexemeIds": [
+        "c1-assumption"
+      ],
+      "grammarIds": [],
+      "exampleSentenceIds": [
+        "p12-text-editorial-argument-s3"
+      ],
+      "variants": [],
+      "tags": [
+        "c1",
+        "p12",
+        "advanced-collocation"
+      ],
+      "priority": 152,
+      "sourceIds": [
+        "thiepn-original"
+      ]
+    }
+  ],
+  "passageSentenceIds": {
+    "p12-text-policy-evidence": [
+      "p12-text-policy-evidence-s1",
+      "p12-text-policy-evidence-s2",
+      "p12-text-policy-evidence-s3",
+      "p12-text-policy-evidence-s4",
+      "p12-text-policy-evidence-s5",
+      "p12-text-policy-evidence-s6"
+    ],
+    "p12-text-ai-judgment": [
+      "p12-text-ai-judgment-s1",
+      "p12-text-ai-judgment-s2",
+      "p12-text-ai-judgment-s3",
+      "p12-text-ai-judgment-s4",
+      "p12-text-ai-judgment-s5",
+      "p12-text-ai-judgment-s6"
+    ],
+    "p12-text-urban-resilience": [
+      "p12-text-urban-resilience-s1",
+      "p12-text-urban-resilience-s2",
+      "p12-text-urban-resilience-s3",
+      "p12-text-urban-resilience-s4",
+      "p12-text-urban-resilience-s5",
+      "p12-text-urban-resilience-s6"
+    ],
+    "p12-text-causality": [
+      "p12-text-causality-s1",
+      "p12-text-causality-s2",
+      "p12-text-causality-s3",
+      "p12-text-causality-s4",
+      "p12-text-causality-s5",
+      "p12-text-causality-s6"
+    ],
+    "p12-text-transparency": [
+      "p12-text-transparency-s1",
+      "p12-text-transparency-s2",
+      "p12-text-transparency-s3",
+      "p12-text-transparency-s4",
+      "p12-text-transparency-s5",
+      "p12-text-transparency-s6"
+    ],
+    "p12-text-education-autonomy": [
+      "p12-text-education-autonomy-s1",
+      "p12-text-education-autonomy-s2",
+      "p12-text-education-autonomy-s3",
+      "p12-text-education-autonomy-s4",
+      "p12-text-education-autonomy-s5",
+      "p12-text-education-autonomy-s6"
+    ],
+    "p12-text-climate-transition": [
+      "p12-text-climate-transition-s1",
+      "p12-text-climate-transition-s2",
+      "p12-text-climate-transition-s3",
+      "p12-text-climate-transition-s4",
+      "p12-text-climate-transition-s5",
+      "p12-text-climate-transition-s6"
+    ],
+    "p12-text-editorial-argument": [
+      "p12-text-editorial-argument-s1",
+      "p12-text-editorial-argument-s2",
+      "p12-text-editorial-argument-s3",
+      "p12-text-editorial-argument-s4",
+      "p12-text-editorial-argument-s5",
+      "p12-text-editorial-argument-s6"
+    ]
+  }
+}

@@ -4,8 +4,11 @@ import { lexicalChunkActivePrompts,lexicalChunkLessons,lexicalChunkMeaningPrompt
 
 describe("P8 lexical and collocational fluency",()=>{
   it("ships first-class B2 lexical chunks instead of inferring fluency from single words",()=>{
-    expect(coreContent.lexicalChunks).toHaveLength(120);
-    expect(lexicalChunks.every((chunk)=>chunk.level==="B2"&&chunk.tags?.includes("collocation"))).toBe(true);
+    expect(coreContent.lexicalChunks).toHaveLength(152);
+    const b2=lexicalChunks.filter((chunk)=>chunk.level==="B2");
+    expect(b2).toHaveLength(120);
+    expect(b2.every((chunk)=>chunk.tags?.includes("collocation"))).toBe(true);
+    expect(lexicalChunks.filter((chunk)=>chunk.level==="C1")).toHaveLength(32);
     expect(lexicalChunks.some((chunk)=>chunk.expression==="影響を与える")).toBe(true);
     expect(lexicalChunks.some((chunk)=>chunk.expression==="合意に達する")).toBe(true);
     expect(lexicalChunks.some((chunk)=>chunk.expression==="根拠を示す")).toBe(true);
@@ -23,8 +26,8 @@ describe("P8 lexical and collocational fluency",()=>{
   });
 
   it("creates separate recognition and active-use evidence for every chunk",()=>{
-    expect(lexicalChunkMeaningPrompts).toHaveLength(120);
-    expect(lexicalChunkActivePrompts).toHaveLength(120);
+    expect(lexicalChunkMeaningPrompts).toHaveLength(152);
+    expect(lexicalChunkActivePrompts).toHaveLength(152);
     expect(lexicalChunkMeaningPrompts.every((prompt)=>prompt.primaryTarget.kind==="lexical_chunk"&&prompt.skill==="meaning_recognition")).toBe(true);
     expect(lexicalChunkActivePrompts.every((prompt)=>prompt.primaryTarget.kind==="lexical_chunk"&&prompt.skill==="active_use")).toBe(true);
   });

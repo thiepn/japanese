@@ -4,11 +4,12 @@ import { getMemoryTrace, listMemoryTraces, listStudyEvents, saveMemoryTrace, sav
 import { createFsrsScheduler, type ReviewGrade } from "@thiepn/scheduler";
 import { createStudyEvent, type StudyPrompt, type StudyStep } from "@thiepn/study-player";
 import { pronunciationLessons, pronunciationPerceptionPrompts } from "./audioPrompts";
+import { coreContent } from "../coreContent";
 import { FOUNDATION_TOTAL_ITEMS, foundationApplicationPrompts, foundationLessons, foundationPrompts } from "./foundationPrompts";
 import { a1Course, allGrammarCoursePrompts, courseUnitPrompts, courseUnitSession, grammarCourseLessons, isGrammarCoursePromptReady, selectNewCoursePrompts } from "./grammarCourse";
 import { conjugationLessons, conjugationPrompts } from "./conjugation";
 import {
-  buildA1MilestoneAssessment,buildB1MilestoneAssessment,buildB2MilestoneAssessment,buildUnitAssessment,getA1MilestoneProgress,getB1MilestoneProgress,getB2MilestoneProgress,getUnitAssessmentProgress,
+  buildA1MilestoneAssessment,buildB1MilestoneAssessment,buildB2MilestoneAssessment,buildC1FoundationAssessment,buildUnitAssessment,getA1MilestoneProgress,getB1MilestoneProgress,getB2MilestoneProgress,getC1FoundationProgress,getUnitAssessmentProgress,
   type MilestoneAssessmentProgress,type UnitAssessmentProgress
 } from "./assessment";
 import { VOCABULARY_TOTAL, vocabularyApplicationPrompts, vocabularyLessons, vocabularyMeaningPrompts } from "./vocabulary";
@@ -17,6 +18,7 @@ import { buildPrivateSentencePrompts } from "./privateSentences";
 import { productivePracticeSession,productiveTaskSession,productivePrompts } from "./productivePractice";
 import { lexicalChunkLessons,lexicalChunkMeaningPrompts,lexicalChunkActivePrompts,lexicalChunkTransferPrompts,lexicalChunkPrompts,lexicalFluencySession } from "./lexicalFluency";
 import { buildNextRealWorldChainSession,buildP9QualificationSession } from "./realWorldPerformance";
+import { c1DiscoursePrompts,c1FoundationPractice } from "./c1Foundation";
 
 export const DEVELOPMENT_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
 export const DEVELOPMENT_DEVICE_ID="p2-local-browser";
@@ -66,9 +68,10 @@ export interface CourseUnitProgress {
 export type A1MilestoneProgress=MilestoneAssessmentProgress;
 export type B1MilestoneProgress=MilestoneAssessmentProgress;
 export type B2MilestoneProgress=MilestoneAssessmentProgress;
+export type C1FoundationProgress=MilestoneAssessmentProgress;
 
 function foundationApplicationPool():StudyPrompt[]{
-  return [...pronunciationPerceptionPrompts,...foundationApplicationPrompts,...vocabularyApplicationPrompts,...conjugationPrompts,...lexicalChunkPrompts,...productivePrompts];
+  return [...pronunciationPerceptionPrompts,...foundationApplicationPrompts,...vocabularyApplicationPrompts,...conjugationPrompts,...lexicalChunkPrompts,...productivePrompts,...c1DiscoursePrompts];
 }
 function allPrompts():StudyPrompt[]{
   return [...foundationPrompts,...vocabularyMeaningPrompts,...foundationApplicationPool(),...allGrammarCoursePrompts];
@@ -115,6 +118,12 @@ export async function buildB1MilestoneSession():Promise<StudyStep[]>{
 export async function buildB2MilestoneSession():Promise<StudyStep[]>{
   return buildB2MilestoneAssessment();
 }
+export async function buildC1FoundationSession():Promise<StudyStep[]>{
+  return buildC1FoundationAssessment();
+}
+export async function buildC1FoundationPractice(limit=12):Promise<StudyStep[]>{
+  return c1FoundationPractice(limit);
+}
 export async function buildProductivePractice(mode:"writing"|"speaking"):Promise<StudyStep[]>{
   return productivePracticeSession(mode);
 }
@@ -145,6 +154,9 @@ export async function getB1MilestoneAssessmentProgress():Promise<MilestoneAssess
 }
 export async function getB2MilestoneAssessmentProgress():Promise<MilestoneAssessmentProgress>{
   return getB2MilestoneProgress(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));
+}
+export async function getC1FoundationAssessmentProgress():Promise<MilestoneAssessmentProgress>{
+  return getC1FoundationProgress(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));
 }
 
 export async function getStudySummary(now=new Date()):Promise<StudySummary>{
@@ -336,8 +348,12 @@ function insertFirstExposureLessons(queue:StudyPrompt[],byId:Map<string,Awaited<
 export function isApplicationPromptReady(prompt:StudyPrompt,traceIds:ReadonlySet<string>):boolean{
   if(prompt.primaryTarget.kind==="grammar"||prompt.primaryTarget.kind==="sentence")return isGrammarCoursePromptReady(prompt,traceIds);
   if(prompt.primaryTarget.kind==="lexical_chunk"){
-    const b2Ready=[...traceIds].some((trace)=>trace.startsWith("grammar:b2-")||trace.startsWith("sentence:b2-")||trace.startsWith("production_task:b2-"));
-    if(!b2Ready)return false;
+    const chunk=coreContent.lexicalChunks.find((item)=>item.id===prompt.primaryTarget.id);
+    const requiredLevel=chunk?.level==="C1"?"C1":"B2";
+    const levelReady=[...traceIds].some((trace)=>requiredLevel==="C1"
+      ?trace.startsWith("grammar:c1-")||trace.startsWith("sentence:p12-")||trace.startsWith("production_task:p12-")
+      :trace.startsWith("grammar:b2-")||trace.startsWith("sentence:b2-")||trace.startsWith("production_task:b2-"));
+    if(!levelReady)return false;
     if(prompt.skill==="meaning_recognition")return true;
     if(prompt.skill==="active_use"||prompt.skill==="form_selection")return traceIds.has("lexical_chunk:"+prompt.primaryTarget.id+":meaning_recognition:chunk-to-meaning");
     return true;

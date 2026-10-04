@@ -148,4 +148,4 @@ P11 does not:
 
 The repository now has one auditable release-candidate decision path from P9 evidence, P10 operational curation, external human validation and provider/runtime evidence to an explicit C1 roadmap gate.
 
-The next phase must remain blocked from C1 curriculum work until that gate actually opens.
+P11 remains the authoritative release-evidence decision. P12 curriculum development may proceed only by an explicit roadmap/product-owner override; such an override does not alter, satisfy or fabricate the P11 qualification result.

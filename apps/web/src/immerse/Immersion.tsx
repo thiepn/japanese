@@ -127,8 +127,8 @@ export function Immersion({onStartProductionTask}:{onStartProductionTask:(taskId
     questionIndex={questionIndex} feedback={feedback} answerQuestion={answerQuestion} nextQuestion={nextQuestion} speakingSegment={speakingSegment} speakSegment={speakSegment}/>;
 
   return <section className="dashboard immerse-page">
-    <p className="eyebrow">IMMERSE</p><h1>A1 → B2 autonomy</h1>
-    <p className="lead">P10 keeps B2 release work honest: sustained missions and native listening remain available, while imported recordings can now be manually curated and exported only after provenance, license, native-speaker, transcript, register and rate checks are complete.</p>
+    <p className="eyebrow">IMMERSE</p><h1>A1 → C1 autonomy</h1>
+    <p className="lead">P12 extends immersion beyond B2 into advanced independent reading and listening. C1 material emphasizes stance, qualification, causal restraint, institutional argument and synthesis; synthesized audio remains explicitly labeled wherever no source-provenanced recording is attached.</p>
     {progress?<div className="stat-row four"><MiniStat value={progress.texts.length} label="Graded texts"/><MiniStat value={progress.minedWords} label="Mined words"/><MiniStat value={progress.readingChecks} label="Reading checks"/><MiniStat value={progress.listeningChecks} label="Listening checks"/></div>:null}
     {recommendation?<section className="adaptive-immersion">
       <div className="section-heading"><div><span className="course-kicker">ADAPTIVE NEXT STEP</span><h2>Focus on {recommendation.focus}</h2></div></div>
@@ -155,8 +155,8 @@ export function Immersion({onStartProductionTask}:{onStartProductionTask:(taskId
       })}</div>
     </section>:null}
     {extensiveTracks.length?<section className="extensive-tracks">
-      <div className="section-heading"><div><span className="course-kicker">EXTENSIVE B2</span><h2>Read + listen across a topic track</h2></div><span className="course-count">readiness-guided · no locks</span></div>
-      <p className="course-note">Tracks combine several connected B2 texts so endurance grows beyond one passage. The next item is ranked from your lexical readiness and prior reading/listening evidence; every text remains open.</p>
+      <div className="section-heading"><div><span className="course-kicker">EXTENSIVE B2→C1</span><h2>Read + listen across a topic track</h2></div><span className="course-count">readiness-guided · no locks</span></div>
+      <p className="course-note">Tracks combine connected B2 and C1 texts so endurance grows from independent comprehension into advanced discourse. The next item is ranked from lexical readiness and prior reading/listening evidence; every text remains open.</p>
       <div className="extensive-grid">{extensiveTracks.map((track)=><article className="extensive-card" key={track.id}>
         <span>{track.total} texts · ~{track.minutes} min</span><h3>{track.title}</h3><p>{track.description}</p>
         <div className="readiness"><div><span>Average readiness</span><strong>{Math.round(track.readiness*100)}%</strong></div><div className="meter"><span style={{width:Math.round(track.readiness*100)+"%"}}/></div><small>{track.completed} / {track.total} with both reading + listening evidence</small></div>

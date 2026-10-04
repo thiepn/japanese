@@ -22,7 +22,25 @@ interface Seed {
 
 const registry=JSON.parse(await readFile(new URL("../../../content/sources/registry.json",import.meta.url),"utf8")) as Registry;
 const manifest=JSON.parse(await readFile(new URL("../../../content/manifests/jp-core.json",import.meta.url),"utf8")) as Manifest;
-const seed=JSON.parse(await readFile(new URL("../../../content/seed/jp-core.json",import.meta.url),"utf8")) as Seed;
+const baseSeed=JSON.parse(await readFile(new URL("../../../content/seed/jp-core.json",import.meta.url),"utf8")) as Seed;
+const c1Lexicon=JSON.parse(await readFile(new URL("../../../content/seed/jp-c1-lexicon.json",import.meta.url),"utf8")) as Seed;
+const c1Language=JSON.parse(await readFile(new URL("../../../content/seed/jp-c1-language.json",import.meta.url),"utf8")) as Seed;
+const c1Course=JSON.parse(await readFile(new URL("../../../content/seed/jp-c1-course.json",import.meta.url),"utf8")) as Seed;
+const seed:Seed={
+  ...baseSeed,
+  sourceIds:unique([...(baseSeed.sourceIds??[]),...(c1Lexicon.sourceIds??[]),...(c1Language.sourceIds??[]),...(c1Course.sourceIds??[])]),
+  lexemes:[...(baseSeed.lexemes??[]),...(c1Lexicon.lexemes??[])],
+  senses:[...(baseSeed.senses??[]),...(c1Lexicon.senses??[])],
+  kanji:[...(baseSeed.kanji??[])],
+  audioAssets:[...(baseSeed.audioAssets??[])],
+  grammar:[...(baseSeed.grammar??[]),...(c1Language.grammar??[])],
+  sentences:[...(baseSeed.sentences??[]),...(c1Language.sentences??[])],
+  lexicalChunks:[...(baseSeed.lexicalChunks??[]),...(c1Language.lexicalChunks??[])],
+  canDos:[...(baseSeed.canDos??[]),...(c1Course.canDos??[])],
+  courseUnits:[...(baseSeed.courseUnits??[]),...(c1Course.courseUnits??[])],
+  readingTexts:[...(baseSeed.readingTexts??[]),...(c1Course.readingTexts??[])],
+  productiveTasks:[...(baseSeed.productiveTasks??[]),...(c1Course.productiveTasks??[])]
+};
 const sourceMap=new Map(registry.sources.map((source)=>[source.id,source]));
 const manifestSources=new Set(manifest.sources ?? []);
 const violations:string[]=[];
@@ -37,6 +55,14 @@ function validateSource(sourceId:string,where:string):void {
 function requireRef(set:ReadonlySet<string>,id:string|undefined,where:string):void {
   if(!id||!set.has(id))violations.push("Unresolved reference "+String(id)+" at "+where);
 }
+function unique<T>(items:readonly T[]):T[]{return [...new Set(items)];}
+function validateUniqueIds(items:readonly Provenanced[],collection:string):void {
+  const seen=new Set<string>();
+  for(const item of items){
+    if(seen.has(item.id))violations.push("Duplicate id in "+collection+": "+item.id);
+    seen.add(item.id);
+  }
+}
 
 for(const sourceId of manifest.sources ?? []) validateSource(sourceId,"manifest");
 for(const sourceId of seed.sourceIds ?? []) validateSource(sourceId,"seed package");
@@ -50,6 +76,12 @@ for(const [collection,items] of Object.entries({
     for(const sourceId of item.sourceIds ?? []) validateSource(sourceId,collection+"/"+item.id);
   }
 }
+
+for(const [collection,items] of Object.entries({
+  lexemes:seed.lexemes ?? [],senses:seed.senses ?? [],kanji:seed.kanji ?? [],audioAssets:seed.audioAssets ?? [],
+  grammar:seed.grammar ?? [],sentences:seed.sentences ?? [],lexicalChunks:seed.lexicalChunks ?? [],canDos:seed.canDos ?? [],
+  courseUnits:seed.courseUnits ?? [],readingTexts:seed.readingTexts ?? [],productiveTasks:seed.productiveTasks ?? []
+}))validateUniqueIds(items as Provenanced[],collection);
 
 const lexemeIds=new Set((seed.lexemes ?? []).map((item)=>item.id));
 const kanjiIds=new Set((seed.kanji ?? []).map((item)=>item.id));
@@ -131,6 +163,25 @@ for(const unit of seed.courseUnits ?? []){
   for(const id of unit.vocabularyIds ?? [])requireRef(lexemeIds,id,"courseUnits/"+unit.id+"/vocabularyIds");
   for(const id of unit.conjugationLexemeIds ?? [])requireRef(lexemeIds,id,"courseUnits/"+unit.id+"/conjugationLexemeIds");
 }
+
+const p12Counts={
+  lexemes:(seed.lexemes??[]).filter((item)=>(item as LexemeRecord & {tags?:string[]}).tags?.includes("c1")).length,
+  grammar:(seed.grammar??[]).filter((item)=>(item as GrammarRecord & {level?:string}).level==="C1").length,
+  sentences:(seed.sentences??[]).filter((item)=>(item as SentenceRecord & {level?:string}).level==="C1").length,
+  chunks:(seed.lexicalChunks??[]).filter((item)=>(item as LexicalChunkRecord & {level?:string}).level==="C1").length,
+  canDos:(seed.canDos??[]).filter((item)=>(item as CanDoRecord & {level?:string}).level==="C1").length,
+  units:(seed.courseUnits??[]).filter((item)=>(item as CourseUnitRecord & {level?:string}).level==="C1").length,
+  texts:(seed.readingTexts??[]).filter((item)=>(item as ReadingTextRecord & {level?:string}).level==="C1").length,
+  tasks:(seed.productiveTasks??[]).filter((item)=>(item as ProductiveTaskRecord & {level?:string}).level==="C1").length
+};
+const p12Minimums={lexemes:32,grammar:16,sentences:48,chunks:32,canDos:10,units:10,texts:8,tasks:12};
+for(const [key,minimum] of Object.entries(p12Minimums)){
+  const actual=p12Counts[key as keyof typeof p12Counts];
+  if(actual<minimum)violations.push("P12 C1 foundation "+key+" below minimum: "+actual+" < "+minimum);
+}
+const c1Tasks=(seed.productiveTasks??[]).filter((item)=>(item as ProductiveTaskRecord & {level?:string}).level==="C1") as Array<ProductiveTaskRecord & {level?:string}>;
+if(!c1Tasks.some((item)=>item.mode==="writing"))violations.push("P12 C1 foundation requires writing tasks");
+if(!c1Tasks.some((item)=>item.mode==="speaking"))violations.push("P12 C1 foundation requires speaking tasks");
 
 if(violations.length){
   console.error([...new Set(violations)].join("\n"));

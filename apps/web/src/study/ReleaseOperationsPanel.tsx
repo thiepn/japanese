@@ -33,10 +33,10 @@ export function ReleaseOperationsPanel(){
 
   return <section className="release-operations">
     <div className="section-heading">
-      <div><span className="course-kicker">P11.3 FINAL GATE OPERATIONS</span><h2>Qualify B2 before opening C1</h2></div>
+      <div><span className="course-kicker">P11 RELEASE EVIDENCE</span><h2>Qualify B2 before opening C1</h2></div>
       <span className="course-count">P9 media provenance + external evidence remain authoritative</span>
     </div>
-    <p>P11.3 operationalizes the final external-review dependency. P9 native provenance and the release profile are already green; the official release-candidate decision still comes from repository CI after a real external reviewer submission has been admitted and the full regression suite passes.</p>
+    <p>P11 release qualification remains an independent evidence track. P9 native provenance and the release profile are green, while external productive-language validation is still absent. P12 development is proceeding under an explicit roadmap override; that decision does not rewrite the P11 qualification result.</p>
 
     <div className="release-check-columns">
       <article>
@@ -64,6 +64,6 @@ export function ReleaseOperationsPanel(){
       <span>{external?external.selectedArtifacts:0} / 6 packet artifacts · {external?external.selectedWriting:0} writing · {external?external.selectedSpeaking:0} speaking</span>
       <p>{external?.ready?"Representative learner evidence is ready for the offline external-review workspace.":"Complete enough B2 productive work to produce a six-artifact packet containing both writing and speaking evidence."}</p>
     </div>
-    <p className="course-note">The repository-native media gate is handled by the P11.2 provenance audit. The final remaining release-candidate dependency is a real external review: export the P11 handoff from Human Evaluation, receive the reviewer JSON, admit it with <code>pnpm review:p11:intake</code>, then run <code>pnpm qualify:p11:strict</code>. C1 remains closed until that decision is fully green.</p>
+    <p className="course-note">P11 remains <code>HOLD_B2_RELEASE_CANDIDATE</code> until a real external review is admitted. P12 curriculum development is intentionally decoupled from that release-evidence gate by project-owner decision; the evidence record itself remains unchanged and can still be completed later.</p>
   </section>;
 }
