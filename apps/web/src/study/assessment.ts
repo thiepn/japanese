@@ -260,6 +260,110 @@ export function getB2MilestoneProgress(events:readonly StudyEvent[]):MilestoneAs
   return {complete:answered===prompts.length,answered,total:prompts.length,scores};
 }
 
+export function buildC1FoundationAssessment():StudyStep[]{
+  const prompts=c1FoundationAssessmentPrompts();
+  const intro:StudyLesson={
+    kind:"lesson",
+    id:"lesson-assessment-c1-foundation",
+    title:"C1 foundation diagnostic",
+    body:"This internal diagnostic samples advanced reading, connected listening, interaction, sustained production and writing. It checks the new P12 foundation and keeps every activity separate. It is not an accredited CEFR examination and does not convert AI, speech recognition or synthesized audio into external certification.",
+    contextId:"assessment-c1-foundation",
+    facts:[
+      {label:"Reading",value:"3 advanced discourse tasks"},
+      {label:"Listening",value:"3 connected synthesized listening tasks"},
+      {label:"Spoken interaction",value:"3 microphone responses"},
+      {label:"Spoken production",value:"3 microphone responses"},
+      {label:"Writing",value:"3 advanced connected writing tasks"}
+    ],
+    sourceLabel:"THIEPN Japanese P12 C1 foundation diagnostic"
+  };
+  return [intro,...prompts];
+}
+
+export function c1FoundationAssessmentPrompts():StudyPrompt[]{
+  const c1Reading=sentenceComprehensionPrompts.filter((prompt)=>{
+    const sentence=coreContent.sentences.find((item)=>item.id===prompt.primaryTarget.id);
+    return sentence?.level==="C1";
+  });
+  const c1Tasks=new Set(coreContent.productiveTasks.filter((task)=>task.level==="C1").map((task)=>task.id));
+  const interaction=spreadPick(productiveSpeakingPrompts.filter((prompt)=>c1Tasks.has(prompt.primaryTarget.id)&&prompt.languageActivity==="spoken_interaction"),3);
+  const production=spreadPick(productiveSpeakingPrompts.filter((prompt)=>c1Tasks.has(prompt.primaryTarget.id)&&prompt.languageActivity==="spoken_production"),3);
+  const writing=spreadPick(productiveWritingPrompts.filter((prompt)=>c1Tasks.has(prompt.primaryTarget.id)),3);
+  return [
+    ...spreadPick(c1Reading,3).map((prompt,index)=>c1FoundationClone(prompt,"reading",index)),
+    ...buildC1ListeningPrompts(),
+    ...interaction.map((prompt,index)=>c1FoundationClone(prompt,"spoken_interaction",index)),
+    ...production.map((prompt,index)=>c1FoundationClone(prompt,"spoken_production",index)),
+    ...writing.map((prompt,index)=>c1FoundationClone(prompt,"writing",index))
+  ];
+}
+
+export function getC1FoundationProgress(events:readonly StudyEvent[]):MilestoneAssessmentProgress{
+  const prompts=c1FoundationAssessmentPrompts();
+  const latest=latestAssessmentEvents(events,"assessment-c1-foundation");
+  const activities:LanguageActivity[]=["reading","listening","spoken_interaction","spoken_production","writing"];
+  const scores=Object.fromEntries(activities.map((activity)=>{
+    const activityPrompts=prompts.filter((prompt)=>prompt.languageActivity===activity);
+    const answered=activityPrompts.filter((prompt)=>latest.has(prompt.id)).length;
+    const correct=activityPrompts.filter((prompt)=>latest.get(prompt.id)?.result==="correct").length;
+    const item:MilestoneActivityScore={activity,correct,answered,total:activityPrompts.length,score:answered?correct/answered:0};
+    return [activity,item];
+  })) as Record<LanguageActivity,MilestoneActivityScore>;
+  const answered=prompts.filter((prompt)=>latest.has(prompt.id)).length;
+  return {complete:answered===prompts.length,answered,total:prompts.length,scores};
+}
+
+function buildC1ListeningPrompts():StudyPrompt[]{
+  const sentences=spreadPick(coreContent.sentences.filter((sentence)=>sentence.level==="C1"),3);
+  const allTranslations=coreContent.sentences.filter((sentence)=>sentence.level==="C1").map((sentence)=>sentence.translation);
+  return sentences.map((sentence,index)=>{
+    const distractors=allTranslations.filter((value)=>value!==sentence.translation).filter((_,i)=>i%Math.max(1,Math.floor(allTranslations.length/6))===index%Math.max(1,Math.floor(allTranslations.length/6))).slice(0,3);
+    while(distractors.length<3){
+      const candidate=allTranslations[(index+distractors.length+1)%allTranslations.length];
+      if(candidate&&candidate!==sentence.translation&&!distractors.includes(candidate))distractors.push(candidate);
+      else break;
+    }
+    return {
+      id:"assessment-c1-foundation-listening-"+String(index+1).padStart(2,"0"),
+      primaryTarget:{kind:"sentence",id:sentence.id},
+      skill:"listening",
+      cueFamily:"c1-connected-listening",
+      promptType:"choice",
+      instruction:"Listen to the advanced Japanese sentence and choose the closest meaning.",
+      prompt:"Play the synthesized Japanese listening cue.",
+      acceptedAnswers:[sentence.translation],
+      displayAnswer:sentence.translation,
+      choices:shuffleStable([sentence.translation,...distractors].slice(0,4),index+11),
+      explanation:"P12 C1-foundation listening check using the device Japanese voice. This is synthesized support, not source-provenanced native audio or external CEFR evidence.",
+      contextId:"assessment-c1-foundation",
+      answerNormalization:"default",
+      sourceId:sentence.sourceIds[0]??"thiepn-original",
+      contentVersion:coreContent.version,
+      speechSynthesisText:sentence.text,
+      speechSynthesisLanguage:"ja-JP",
+      activity:"assessment",
+      languageActivity:"listening",
+      eventMetadata:{assessmentScope:"milestone",milestoneId:"c1-foundation",languageActivity:"listening",audioKind:"device-speech-synthesis",diagnosticOnly:true,accreditedCefrVerdict:false}
+    };
+  });
+}
+
+function c1FoundationClone(prompt:StudyPrompt,activity:LanguageActivity,index:number):StudyPrompt{
+  return assessmentClone(prompt,{
+    id:"assessment-c1-foundation-"+activity+"-"+String(index+1).padStart(2,"0"),
+    contextId:"assessment-c1-foundation",
+    languageActivity:activity,
+    metadata:{
+      assessmentScope:"milestone",
+      milestoneId:"c1-foundation",
+      languageActivity:activity,
+      diagnosticOnly:true,
+      accreditedCefrVerdict:false,
+      evaluation:prompt.promptType==="speech"?"speech-recognition-structural":prompt.promptType==="textarea"?"connected-writing-structural":"standard"
+    }
+  });
+}
+
 function buildB2ListeningPrompts():StudyPrompt[]{
   const sentences=spreadPick(coreContent.sentences.filter((sentence)=>sentence.level==="B2"),3);
   const allTranslations=coreContent.sentences.filter((sentence)=>sentence.level==="B2").map((sentence)=>sentence.translation);
