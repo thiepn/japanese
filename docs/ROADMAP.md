@@ -218,14 +218,23 @@ The P9 release gate remains authoritative and source-dependent. P10 does not fab
 
 ## P11 — B2 Release Candidate Qualification, External Validation & C1 Gate Decision
 
-**Next, but conditional.** P11 should run only as a B2 release-candidate/external-validation phase until the P9 native-media gate is actually satisfied. It should cover:
+**Implementation complete; qualification currently blocked by missing release evidence.** P11 composes the existing P9/P10 work into one auditable release-candidate decision:
 
-- curated native inventory admission and release-candidate certification;
-- external teacher/tutor validation of representative productive evidence;
-- provider benchmark history and release evidence capture;
-- final B2 release candidate hardening across offline, long-session and provider-failure paths;
-- explicit decision record for whether the product/system C1 roadmap gate may open.
+- P9 release qualification is recomputed as a hard dependency rather than copied as a flag;
+- external teacher/tutor/language-professional review is recorded in a versioned repository manifest;
+- a qualifying external review must cover at least six representative productive artifacts across writing and speaking, preserve a review-packet SHA-256 and contain no blocking issues;
+- provider release posture is explicit: offline-only, connected or undecided;
+- connected providers require current passing benchmark evidence with full case success and verified fallback behavior;
+- normal CI generates a non-strict P11 decision artifact after the full regression suite;
+- the manual **P11 Release Candidate Qualification** workflow runs the same suite and enforces the strict gate;
+- the only gate-opening outcome is `OPEN_C1_ROADMAP`.
+
+The current checked-in decision remains `HOLD_B2_RELEASE_CANDIDATE`: the P9 native inventory is empty, no external validation has been admitted, and the provider release profile is still undecided. This is an evidence state, not an implementation defect. See `docs/P11_ACCEPTANCE.md`.
+
+## P12 — C1 Foundation & Advanced Independent Japanese
+
+**Blocked until P11 returns `OPEN_C1_ROADMAP`.** No C1 curriculum should be implemented while the B2 release candidate is still held. Once opened, P12 should establish C1-oriented source breadth, advanced discourse/comprehension targets and higher-level productive work without weakening the existing evidence boundaries.
 
 ## Later
 
-Later phases add advanced domain-specific Japanese, C1-oriented comprehension and production only after B2 breadth is credible, specialized source packs, higher-level writing/speaking assessment and long-term adaptive curricula.
+Later phases add advanced domain-specific Japanese, specialized source packs, higher-level writing/speaking assessment and long-term adaptive curricula after the C1 gate is legitimately open.
