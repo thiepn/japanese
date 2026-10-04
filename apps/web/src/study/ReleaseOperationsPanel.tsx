@@ -32,10 +32,10 @@ export function ReleaseOperationsPanel(){
 
   return <section className="release-operations">
     <div className="section-heading">
-      <div><span className="course-kicker">P10 RELEASE OPERATIONS</span><h2>Turn source-dependent blockers into auditable work</h2></div>
-      <span className="course-count">P9 gate remains authoritative</span>
+      <div><span className="course-kicker">P11 RELEASE CANDIDATE</span><h2>Qualify B2 before opening C1</h2></div>
+      <span className="course-count">P9 + external evidence remain authoritative</span>
     </div>
-    <p>P10 does not weaken the P9 release gate. It adds the operational path needed to satisfy it: human-verified media curation, reviewable production evidence and export/promotion tooling. The official release result still comes from repository CI and the checked-in native inventory.</p>
+    <p>P11 does not turn local readiness into a release verdict. Local human review and native-media curation remain preparatory evidence; the official release-candidate decision is produced in repository CI from P9 qualification, admitted external validation, provider release evidence and the full regression suite.</p>
 
     <div className="release-check-columns">
       <article>
@@ -56,8 +56,8 @@ export function ReleaseOperationsPanel(){
     <div className="release-human-note">
       <strong>Human production review</strong>
       <span>{human?human.reviewedArtifacts:0} artifacts reviewed · {human?human.unreviewedArtifacts:0} awaiting review</span>
-      <p>Human scores remain descriptive. They improve release-quality evidence and external reviewability without silently converting reviewer judgment into learner mastery.</p>
+      <p>Human scores remain descriptive. External review can support P11 release qualification, but neither local nor external reviewer judgment silently becomes learner mastery or an accredited CEFR result.</p>
     </div>
-    <p className="course-note">To move verified recordings into the repository gate: export candidates from Immerse, place the reviewed manifest into the repository candidate queue, preview with <code>pnpm native:p10:preview</code>, review the diff, then apply with <code>pnpm native:p10:apply</code> and let CI recertify P9.</p>
+    <p className="course-note">To advance the release candidate: promote verified native media through P10, admit external review and provider evidence into the P11 manifests, then run the strict <code>pnpm qualify:p11:strict</code> workflow. C1 remains closed until that decision is fully green.</p>
   </section>;
 }

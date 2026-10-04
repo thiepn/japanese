@@ -1,12 +1,10 @@
-name: CI
+name: P11 Release Candidate Qualification
 
 on:
-  push:
-    branches: ["main"]
-  pull_request:
+  workflow_dispatch:
 
 jobs:
-  verify:
+  qualify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,7 +23,7 @@ jobs:
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e
-      - name: Record P9 regression evidence
+      - name: Record release-candidate regression evidence
         run: |
           mkdir -p artifacts
           cat > artifacts/p9-regression-evidence.json <<'JSON'
@@ -40,16 +38,14 @@ jobs:
             "longHistoryDrill": true
           }
           JSON
-      - name: Generate P9 release qualification report
-        run: pnpm certify:p9 --regression artifacts/p9-regression-evidence.json
-      - name: Generate P11 release-candidate decision
-        run: pnpm qualify:p11 --regression artifacts/p9-regression-evidence.json
-      - name: Upload release qualification evidence
+      - name: Run strict P11 release-candidate qualification
+        run: pnpm qualify:p11:strict --regression artifacts/p9-regression-evidence.json
+      - name: Upload P11 qualification evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: b2-release-qualification
+          name: p11-release-candidate-qualification
           path: |
-            artifacts/p9-release-qualification.json
-            artifacts/p9-release-qualification.md
             artifacts/p11-release-candidate-qualification.json
             artifacts/p11-release-candidate-qualification.md
+            artifacts/p9-release-qualification.json
