@@ -411,7 +411,7 @@
       "vocabularyIds": [
         "c1-causality",
         "c1-correlation",
-        "c1-interpretation",
+        "b2-interpretation",
         "c1-caveat",
         "c1-discrepancy"
       ],
@@ -960,7 +960,7 @@
       "targetLexemeIds": [
         "c1-causality",
         "c1-correlation",
-        "c1-interpretation",
+        "b2-interpretation",
         "c1-caveat",
         "c1-discrepancy"
       ],
@@ -1471,7 +1471,7 @@
         "c1-to-iedomo"
       ],
       "targetLexemeIds": [
-        "c1-interpretation",
+        "b2-interpretation",
         "c1-caveat"
       ],
       "targetChunkIds": [
@@ -1856,7 +1856,7 @@
       ],
       "targetLexemeIds": [
         "c1-implication",
-        "c1-interpretation"
+        "b2-interpretation"
       ],
       "targetChunkIds": [
         "c1-chunk-premise-reconsider",
