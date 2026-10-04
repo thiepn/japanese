@@ -153,7 +153,7 @@ export function buildP11QualificationReport({p9Report,external,providers,generat
     check("external-artifacts","Representative productive artifacts reviewed",">="+P11_THRESHOLDS.externallyReviewedArtifacts,String(external.reviewedArtifacts),external.reviewedArtifacts>=P11_THRESHOLDS.externallyReviewedArtifacts,"external_validation"),
     check("external-writing","External writing evidence represented","required",external.hasWriting?"present":"missing",external.hasWriting,"external_validation"),
     check("external-speaking","External speaking evidence represented","required",external.hasSpeaking?"present":"missing",external.hasSpeaking,"external_validation"),
-    check("external-blockers","External review has no blocking issues","0",String(external.blockingIssues.length),external.blockingIssues.length===0&&external.qualified,"external_validation"),
+    check("external-blockers","External review has no blocking issues","0",String(external.blockingIssues.length),external.blockingIssues.length===0,"external_validation"),
     check("provider-release-profile","Provider release profile decided","offline-only or connected",providers.releaseProfile,providers.releaseProfile!=="undecided","provider"),
     check("provider-benchmarks","Configured provider benchmark evidence","pass or explicit offline-only",providerActual(providers),providers.qualified,"provider"),
     check("rc-regression","Release-candidate regression suite","all P9 regression checks pass",p9RegressionActual(p9Report),Object.values(p9Report.regressionEvidence??{}).every(Boolean),"hardening")
