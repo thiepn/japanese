@@ -70,6 +70,19 @@ describe("P11.1 external review intake",()=>{
     expect(()=>validateExternalReviewSubmission(bad,packet())).toThrow(/ARTIFACT_NOT_IN_PACKET/);
   });
 
+
+
+  it("verifies a reviewer-declared packet fingerprint against the exact packet payload",()=>{
+    const sourcePacket=packet();
+    const good=submission();
+    good.packetSha256=sha256Text(JSON.stringify(sourcePacket,null,2));
+    expect(()=>validateExternalReviewSubmission(good,sourcePacket)).not.toThrow();
+
+    const bad=submission();
+    bad.packetSha256="0".repeat(64);
+    expect(()=>validateExternalReviewSubmission(bad,sourcePacket)).toThrow(/PACKET_DIGEST_MISMATCH/);
+  });
+
   it("builds deterministic packet and submission digests into the release evidence entry",()=>{
     const packetText=JSON.stringify(packet(),null,2)+"\n";
     const submissionText=JSON.stringify(submission(),null,2)+"\n";
