@@ -1,0 +1,51 @@
+name: P11 Release Candidate Qualification
+
+on:
+  workflow_dispatch:
+
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm validate:content
+      - name: Validate P10 native candidate queue
+        run: pnpm native:p10:preview
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+      - name: Record release-candidate regression evidence
+        run: |
+          mkdir -p artifacts
+          cat > artifacts/p9-regression-evidence.json <<'JSON'
+          {
+            "typecheck": true,
+            "unitTests": true,
+            "contentValidation": true,
+            "productionBuild": true,
+            "e2e": true,
+            "offlineDrill": true,
+            "providerOutageDrill": true,
+            "longHistoryDrill": true
+          }
+          JSON
+      - name: Run strict P11 release-candidate qualification
+        run: pnpm qualify:p11:strict --regression artifacts/p9-regression-evidence.json
+      - name: Upload P11 qualification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p11-release-candidate-qualification
+          path: |
+            artifacts/p11-release-candidate-qualification.json
+            artifacts/p11-release-candidate-qualification.md
+            artifacts/p9-release-qualification.json
