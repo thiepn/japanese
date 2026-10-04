@@ -32,10 +32,10 @@ export function ReleaseOperationsPanel(){
 
   return <section className="release-operations">
     <div className="section-heading">
-      <div><span className="course-kicker">P11 RELEASE CANDIDATE</span><h2>Qualify B2 before opening C1</h2></div>
-      <span className="course-count">P9 + external evidence remain authoritative</span>
+      <div><span className="course-kicker">P11.2 RELEASE EVIDENCE</span><h2>Qualify B2 before opening C1</h2></div>
+      <span className="course-count">P9 media provenance + external evidence remain authoritative</span>
     </div>
-    <p>P11 does not turn local readiness into a release verdict. Local human review and native-media curation remain preparatory evidence; the official release-candidate decision is produced in repository CI from P9 qualification, admitted external validation, provider release evidence and the full regression suite.</p>
+    <p>P11.2 adds repository-owned provenance verification for the P9 native-media gate. Local curation remains preparatory; the official release-candidate decision is still produced in repository CI from provenance-audited P9 evidence, admitted external validation, the release profile and the full regression suite.</p>
 
     <div className="release-check-columns">
       <article>
@@ -58,6 +58,6 @@ export function ReleaseOperationsPanel(){
       <span>{human?human.reviewedArtifacts:0} artifacts reviewed · {human?human.unreviewedArtifacts:0} awaiting review</span>
       <p>Human scores remain descriptive. External review can support P11 release qualification, but neither local nor external reviewer judgment silently becomes learner mastery or an accredited CEFR result.</p>
     </div>
-    <p className="course-note">To advance the release candidate: promote verified native media through P10, admit external review and provider evidence into the P11 manifests, then run the strict <code>pnpm qualify:p11:strict</code> workflow. C1 remains closed until that decision is fully green.</p>
+    <p className="course-note">The repository-native media gate is now handled by the P11.2 provenance audit. To advance the release candidate, admit a real external review through the P11.1 intake workflow, then run <code>pnpm qualify:p11:strict</code>. C1 remains closed until that decision is fully green.</p>
   </section>;
 }
