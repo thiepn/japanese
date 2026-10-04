@@ -10,24 +10,22 @@ Primary product surfaces: **Today · Learn · Immerse · Library · Progress**.
 
 ## Current phase
 
-**P10 — B2 Release Operations, Native Corpus Curation & Human Evaluation is implemented.**
+**P11 — B2 Release Candidate Qualification, External Validation & C1 Gate Decision is implemented.**
 
-P10 adds the operational layer needed to move from feature-complete B2 software toward a genuinely release-qualified system:
+P11 adds the final B2 product/system qualification layer:
 
-- optional human review of B2 writing/speaking artifacts using task fulfillment, meaning/accuracy, coherence and register scores;
-- review packets that can be shared with a teacher/tutor;
-- human-verified native-media curation with explicit source/license/native-speaker/transcript/register/rate checks;
-- candidate export plus repository preview/apply promotion commands;
-- CI validation of the native candidate queue;
-- a release-operations dashboard showing static P9 gates and local verified-media readiness;
-- B2 portfolio schema v2 with human-review summaries.
+- recomputes the full P9 release gate as a hard dependency;
+- admits versioned external teacher/tutor/language-professional validation of representative writing and speaking evidence;
+- records an explicit offline-only / connected / undecided provider release profile;
+- requires passing benchmark history for every connected provider;
+- composes release, external-validation, provider and regression evidence into one machine-readable decision;
+- generates `OPEN_C1_ROADMAP` only when every gate is green;
+- provides a manual strict release-candidate workflow plus non-strict CI evidence generation.
 
-Human review remains descriptive evidence and does not change mastery automatically. Local media verification does not count toward P9 until promoted into the checked-in release inventory and recertified by CI.
+The current repository remains intentionally **blocked** at `HOLD_B2_RELEASE_CANDIDATE`: the checked-in P9 native inventory is still empty, the P11 external-validation manifest has no reviews, and the provider release profile is undecided. P11 does not fabricate these missing facts or treat implementation completion as release qualification.
 
-The P9 software implementation is complete. Its release gate is still intentionally blocked whenever the repository lacks enough independently verified reusable native connected audio. P10 provides the workflow to close that gap without weakening the criteria.
+See `docs/P11_ACCEPTANCE.md`, `docs/P10_ACCEPTANCE.md` and `docs/P9_RELEASE_QUALIFICATION.md`.
 
-See `docs/P10_ACCEPTANCE.md`, `docs/P9_RELEASE_QUALIFICATION.md` and `docs/SOURCE_PACK_FORMAT.md`.
+The next phase, **P12 — C1 Foundation & Advanced Independent Japanese**, is blocked until a strict P11 run returns `OPEN_C1_ROADMAP`.
 
-The next phase is **P11 — B2 Release Candidate Qualification, External Validation & C1 Gate Decision**. It remains B2-focused until the P9 release gate is fully green.
-
-See `docs/P1_ACCEPTANCE.md`, `docs/P2_ACCEPTANCE.md`, `docs/P2_5_ACCEPTANCE.md`, `docs/P3_ACCEPTANCE.md`, `docs/P4_ACCEPTANCE.md`, `docs/P5_ACCEPTANCE.md`, `docs/P6_ACCEPTANCE.md`, `docs/P7_ACCEPTANCE.md`, `docs/P8_ACCEPTANCE.md`, `docs/P9_ACCEPTANCE.md`, `docs/P9_RELEASE_QUALIFICATION.md`, `docs/P10_ACCEPTANCE.md`, `docs/SOURCE_PACK_FORMAT.md`, `docs/P1_5_MOBILE_CERTIFICATION.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md` and `docs/THIRD_PARTY_NOTICES.md`.
+See `docs/P1_ACCEPTANCE.md`, `docs/P2_ACCEPTANCE.md`, `docs/P2_5_ACCEPTANCE.md`, `docs/P3_ACCEPTANCE.md`, `docs/P4_ACCEPTANCE.md`, `docs/P5_ACCEPTANCE.md`, `docs/P6_ACCEPTANCE.md`, `docs/P7_ACCEPTANCE.md`, `docs/P8_ACCEPTANCE.md`, `docs/P9_ACCEPTANCE.md`, `docs/P9_RELEASE_QUALIFICATION.md`, `docs/P10_ACCEPTANCE.md`, `docs/P11_ACCEPTANCE.md`, `docs/SOURCE_PACK_FORMAT.md`, `docs/P1_5_MOBILE_CERTIFICATION.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md` and `docs/THIRD_PARTY_NOTICES.md`.
