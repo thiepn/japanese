@@ -1,6 +1,359 @@
 {
   "schema": "thiepn-japanese-p9-native-inventory",
   "schemaVersion": 1,
-  "updatedAt": "2026-10-03",
-  "documents": []
+  "updatedAt": "2026-10-04",
+  "documents": [
+    {
+      "id": "kantei-kan-20110104-new-year-press",
+      "title": "菅内閣総理大臣年頭記者会見 — 平成23年1月4日",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Naoto_Kan_voice_20110104.oga",
+      "recordings": [
+        {
+          "id": "kantei-kan-20110104-new-year-press:recording",
+          "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Naoto_Kan_voice_20110104.oga",
+          "credit": "首相官邸",
+          "licenseName": "CC BY 3.0",
+          "attributionUrl": "https://commons.wikimedia.org/wiki/File:Naoto_Kan_voice_20110104.oga",
+          "nativeSpeaker": true,
+          "speechRate": "natural",
+          "register": "polite",
+          "speakerLabel": "Naoto Kan",
+          "verification": {
+            "phase": "P11.2",
+            "reviewedBy": "P11.2 repository provenance audit",
+            "reviewedAt": "2026-10-04T17:24:00.000Z",
+            "mediaPageUrl": "https://commons.wikimedia.org/wiki/File:Naoto_Kan_voice_20110104.oga",
+            "licenseEvidenceUrl": "https://commons.wikimedia.org/wiki/File:Naoto_Kan_voice_20110104.oga",
+            "nativeSpeakerEvidenceUrl": "https://www.wikidata.org/wiki/Q47846",
+            "contentEvidenceUrl": "https://commons.wikimedia.org/wiki/File:Naoto_Kan_voice_20110104.oga",
+            "durationSeconds": 689,
+            "rateEvidence": {
+              "method": "genre-relative-source-condition",
+              "stretchCondition": false,
+              "evidenceUrl": "https://commons.wikimedia.org/wiki/File:Naoto_Kan_voice_20110104.oga",
+              "rationale": "Prepared New Year press conference used as a natural-rate baseline; this is a pedagogical source-condition label, not an acoustic speed measurement."
+            },
+            "checklist": {
+              "sourceIdentityVerified": true,
+              "recordingIdentityVerified": true,
+              "licenseVerified": true,
+              "nativeSpeakerVerified": true,
+              "contentMatchVerified": true,
+              "connectedSpeechVerified": true,
+              "registerReviewed": true,
+              "speechRateReviewed": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "kantei-noda-20110902-inaugural-press",
+      "title": "野田内閣総理大臣就任記者会見 — 平成23年9月2日",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Yoshihiko_Noda_voice_20110902.oga",
+      "recordings": [
+        {
+          "id": "kantei-noda-20110902-inaugural-press:recording",
+          "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Yoshihiko_Noda_voice_20110902.oga",
+          "credit": "首相官邸",
+          "licenseName": "CC BY 3.0",
+          "attributionUrl": "https://commons.wikimedia.org/wiki/File:Yoshihiko_Noda_voice_20110902.oga",
+          "nativeSpeaker": true,
+          "speechRate": "fast",
+          "register": "polite",
+          "speakerLabel": "Yoshihiko Noda",
+          "verification": {
+            "phase": "P11.2",
+            "reviewedBy": "P11.2 repository provenance audit",
+            "reviewedAt": "2026-10-04T17:24:00.000Z",
+            "mediaPageUrl": "https://commons.wikimedia.org/wiki/File:Yoshihiko_Noda_voice_20110902.oga",
+            "licenseEvidenceUrl": "https://commons.wikimedia.org/wiki/File:Yoshihiko_Noda_voice_20110902.oga",
+            "nativeSpeakerEvidenceUrl": "https://www.wikidata.org/wiki/Q57647",
+            "contentEvidenceUrl": "https://commons.wikimedia.org/wiki/File:Yoshihiko_Noda_voice_20110902.oga",
+            "durationSeconds": 802,
+            "rateEvidence": {
+              "method": "genre-relative-source-condition",
+              "stretchCondition": true,
+              "evidenceUrl": "https://commons.wikimedia.org/wiki/File:Yoshihiko_Noda_voice_20110902.oga",
+              "rationale": "Unscripted inaugural press-conference material is admitted as the relative stretch condition against prepared speeches. The label does not claim an acoustic words-per-minute measurement."
+            },
+            "checklist": {
+              "sourceIdentityVerified": true,
+              "recordingIdentityVerified": true,
+              "licenseVerified": true,
+              "nativeSpeakerVerified": true,
+              "contentMatchVerified": true,
+              "connectedSpeechVerified": true,
+              "registerReviewed": true,
+              "speechRateReviewed": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "kantei-abe-20200828-press",
+      "title": "安倍内閣総理大臣記者会見 — 令和2年8月28日",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Shinzo_Abe_voice_20200828.ogg",
+      "recordings": [
+        {
+          "id": "kantei-abe-20200828-press:recording",
+          "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Shinzo_Abe_voice_20200828.ogg",
+          "credit": "首相官邸",
+          "licenseName": "CC BY 3.0",
+          "attributionUrl": "https://commons.wikimedia.org/wiki/File:Shinzo_Abe_voice_20200828.ogg",
+          "nativeSpeaker": true,
+          "speechRate": "fast",
+          "register": "polite",
+          "speakerLabel": "Shinzō Abe",
+          "verification": {
+            "phase": "P11.2",
+            "reviewedBy": "P11.2 repository provenance audit",
+            "reviewedAt": "2026-10-04T17:24:00.000Z",
+            "mediaPageUrl": "https://commons.wikimedia.org/wiki/File:Shinzo_Abe_voice_20200828.ogg",
+            "licenseEvidenceUrl": "https://commons.wikimedia.org/wiki/File:Shinzo_Abe_voice_20200828.ogg",
+            "nativeSpeakerEvidenceUrl": "https://www.wikidata.org/wiki/Q132345",
+            "contentEvidenceUrl": "https://commons.wikimedia.org/wiki/File:Shinzo_Abe_voice_20200828.ogg",
+            "durationSeconds": 749,
+            "rateEvidence": {
+              "method": "genre-relative-source-condition",
+              "stretchCondition": true,
+              "evidenceUrl": "https://commons.wikimedia.org/wiki/File:Shinzo_Abe_voice_20200828.ogg",
+              "rationale": "Press-conference speech is retained as a relative stretch source against scripted formal addresses; no acoustic speed score is asserted."
+            },
+            "checklist": {
+              "sourceIdentityVerified": true,
+              "recordingIdentityVerified": true,
+              "licenseVerified": true,
+              "nativeSpeakerVerified": true,
+              "contentMatchVerified": true,
+              "connectedSpeechVerified": true,
+              "registerReviewed": true,
+              "speechRateReviewed": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "kantei-abe-20180311-memorial",
+      "title": "東日本大震災七周年追悼式 内閣総理大臣式辞",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:「東日本大震災七周年追悼式」における内閣総理大臣式辞―平成30年3月11日.webm",
+      "recordings": [
+        {
+          "id": "kantei-abe-20180311-memorial:recording",
+          "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/「東日本大震災七周年追悼式」における内閣総理大臣式辞―平成30年3月11日.webm",
+          "credit": "首相官邸",
+          "licenseName": "CC BY 3.0",
+          "attributionUrl": "https://commons.wikimedia.org/wiki/File:「東日本大震災七周年追悼式」における内閣総理大臣式辞―平成30年3月11日.webm",
+          "nativeSpeaker": true,
+          "speechRate": "natural",
+          "register": "formal",
+          "speakerLabel": "Shinzō Abe",
+          "verification": {
+            "phase": "P11.2",
+            "reviewedBy": "P11.2 repository provenance audit",
+            "reviewedAt": "2026-10-04T17:24:00.000Z",
+            "mediaPageUrl": "https://commons.wikimedia.org/wiki/File:「東日本大震災七周年追悼式」における内閣総理大臣式辞―平成30年3月11日.webm",
+            "licenseEvidenceUrl": "https://commons.wikimedia.org/wiki/File:「東日本大震災七周年追悼式」における内閣総理大臣式辞―平成30年3月11日.webm",
+            "nativeSpeakerEvidenceUrl": "https://www.wikidata.org/wiki/Q132345",
+            "contentEvidenceUrl": "https://commons.wikimedia.org/wiki/File:「東日本大震災七周年追悼式」における内閣総理大臣式辞―平成30年3月11日.webm",
+            "durationSeconds": 333.621,
+            "rateEvidence": {
+              "method": "genre-relative-source-condition",
+              "stretchCondition": false,
+              "evidenceUrl": "https://commons.wikimedia.org/wiki/File:「東日本大震災七周年追悼式」における内閣総理大臣式辞―平成30年3月11日.webm",
+              "rationale": "Prepared memorial address is used as formal natural-rate connected speech; the rate label is not an acoustic measurement."
+            },
+            "checklist": {
+              "sourceIdentityVerified": true,
+              "recordingIdentityVerified": true,
+              "licenseVerified": true,
+              "nativeSpeakerVerified": true,
+              "contentMatchVerified": true,
+              "connectedSpeechVerified": true,
+              "registerReviewed": true,
+              "speechRateReviewed": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "kantei-ishiba-20241004-policy",
+      "title": "第214回国会 石破内閣総理大臣所信表明演説",
+      "sourceUrl": "https://www.kantei.go.jp/jp/102_ishiba/statement/2024/1004shoshinhyomei.html",
+      "recordings": [
+        {
+          "id": "kantei-ishiba-20241004-policy:recording",
+          "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/第214回国会における石破内閣総理大臣所信表明演説ー令和6年10月4日.webm",
+          "credit": "Cabinet Secretariat",
+          "licenseName": "CC BY 4.0 (Public Data License Ver.1.0 compatible)",
+          "attributionUrl": "https://commons.wikimedia.org/wiki/File:第214回国会における石破内閣総理大臣所信表明演説ー令和6年10月4日.webm",
+          "nativeSpeaker": true,
+          "speechRate": "natural",
+          "register": "formal",
+          "speakerLabel": "Shigeru Ishiba",
+          "verification": {
+            "phase": "P11.2",
+            "reviewedBy": "P11.2 repository provenance audit",
+            "reviewedAt": "2026-10-04T17:24:00.000Z",
+            "mediaPageUrl": "https://commons.wikimedia.org/wiki/File:第214回国会における石破内閣総理大臣所信表明演説ー令和6年10月4日.webm",
+            "licenseEvidenceUrl": "https://www.digital.go.jp/en/resources/open_data",
+            "nativeSpeakerEvidenceUrl": "https://www.wikidata.org/wiki/Q1335527",
+            "contentEvidenceUrl": "https://www.kantei.go.jp/jp/102_ishiba/statement/2024/1004shoshinhyomei.html",
+            "durationSeconds": 2055.068,
+            "rateEvidence": {
+              "method": "genre-relative-source-condition",
+              "stretchCondition": false,
+              "evidenceUrl": "https://www.kantei.go.jp/jp/102_ishiba/statement/2024/1004shoshinhyomei.html",
+              "rationale": "Prepared Diet policy address is the formal natural-rate reference condition."
+            },
+            "checklist": {
+              "sourceIdentityVerified": true,
+              "recordingIdentityVerified": true,
+              "licenseVerified": true,
+              "nativeSpeakerVerified": true,
+              "contentMatchVerified": true,
+              "connectedSpeechVerified": true,
+              "registerReviewed": true,
+              "speechRateReviewed": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "kantei-ishiba-20250124-policy",
+      "title": "第217回国会 石破内閣総理大臣施政方針演説",
+      "sourceUrl": "https://www.kantei.go.jp/jp/103/statement/2025/0124shiseihoshin.html",
+      "recordings": [
+        {
+          "id": "kantei-ishiba-20250124-policy:recording",
+          "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/第217回国会における石破内閣総理大臣施政方針演説_石破総理.webm",
+          "credit": "Cabinet Secretariat",
+          "licenseName": "CC BY 4.0 (Public Data License Ver.1.0 compatible)",
+          "attributionUrl": "https://commons.wikimedia.org/wiki/File:第217回国会における石破内閣総理大臣施政方針演説_石破総理.webm",
+          "nativeSpeaker": true,
+          "speechRate": "natural",
+          "register": "formal",
+          "speakerLabel": "Shigeru Ishiba",
+          "verification": {
+            "phase": "P11.2",
+            "reviewedBy": "P11.2 repository provenance audit",
+            "reviewedAt": "2026-10-04T17:24:00.000Z",
+            "mediaPageUrl": "https://commons.wikimedia.org/wiki/File:第217回国会における石破内閣総理大臣施政方針演説_石破総理.webm",
+            "licenseEvidenceUrl": "https://www.digital.go.jp/en/resources/open_data",
+            "nativeSpeakerEvidenceUrl": "https://www.wikidata.org/wiki/Q1335527",
+            "contentEvidenceUrl": "https://www.kantei.go.jp/jp/103/statement/2025/0124shiseihoshin.html",
+            "durationSeconds": 2453,
+            "rateEvidence": {
+              "method": "genre-relative-source-condition",
+              "stretchCondition": false,
+              "evidenceUrl": "https://www.kantei.go.jp/jp/103/statement/2025/0124shiseihoshin.html",
+              "rationale": "Prepared Diet policy address is retained as formal connected natural-rate material."
+            },
+            "checklist": {
+              "sourceIdentityVerified": true,
+              "recordingIdentityVerified": true,
+              "licenseVerified": true,
+              "nativeSpeakerVerified": true,
+              "contentMatchVerified": true,
+              "connectedSpeechVerified": true,
+              "registerReviewed": true,
+              "speechRateReviewed": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "govonline-suga-20190401-reiwa-press",
+      "title": "平成31年4月1日 午前 内閣官房長官記者会見",
+      "sourceUrl": "https://www.gov-online.go.jp/prg/prg18707.html",
+      "recordings": [
+        {
+          "id": "govonline-suga-20190401-reiwa-press:recording",
+          "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/平成31年4月1日(月)午前-内閣官房長官記者会見.webm",
+          "credit": "政府広報オンライン / 内閣官房",
+          "licenseName": "CC BY 4.0 compatible (Government Standard Terms of Use 2.0)",
+          "attributionUrl": "https://www.gov-online.go.jp/prg/prg18707.html",
+          "nativeSpeaker": true,
+          "speechRate": "fast",
+          "register": "polite",
+          "speakerLabel": "Yoshihide Suga",
+          "verification": {
+            "phase": "P11.2",
+            "reviewedBy": "P11.2 repository provenance audit",
+            "reviewedAt": "2026-10-04T17:24:00.000Z",
+            "mediaPageUrl": "https://commons.wikimedia.org/wiki/File:平成31年4月1日(月)午前-内閣官房長官記者会見.webm",
+            "licenseEvidenceUrl": "https://www.gov-online.go.jp/sns_policy/",
+            "nativeSpeakerEvidenceUrl": "https://www.wikidata.org/wiki/Q122465",
+            "contentEvidenceUrl": "https://www.gov-online.go.jp/prg/prg18707.html",
+            "durationSeconds": 436,
+            "rateEvidence": {
+              "method": "genre-relative-source-condition",
+              "stretchCondition": true,
+              "evidenceUrl": "https://www.gov-online.go.jp/prg/prg18707.html",
+              "rationale": "Live cabinet press-conference question/answer material is deliberately used as a relative stretch condition versus scripted addresses; no acoustic words-per-minute claim is made."
+            },
+            "checklist": {
+              "sourceIdentityVerified": true,
+              "recordingIdentityVerified": true,
+              "licenseVerified": true,
+              "nativeSpeakerVerified": true,
+              "contentMatchVerified": true,
+              "connectedSpeechVerified": true,
+              "registerReviewed": true,
+              "speechRateReviewed": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "govonline-suga-20201225-press",
+      "title": "新型コロナウイルス感染症に関する菅内閣総理大臣記者会見",
+      "sourceUrl": "https://www.gov-online.go.jp/prg/prg21917.html",
+      "recordings": [
+        {
+          "id": "govonline-suga-20201225-press:recording",
+          "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/菅内閣総理大臣記者会見―令和2年12月25日.webm",
+          "credit": "政府広報オンライン / 首相官邸",
+          "licenseName": "CC BY 4.0 compatible (Government Standard Terms of Use 2.0)",
+          "attributionUrl": "https://www.gov-online.go.jp/prg/prg21917.html",
+          "nativeSpeaker": true,
+          "speechRate": "natural",
+          "register": "polite",
+          "speakerLabel": "Yoshihide Suga",
+          "verification": {
+            "phase": "P11.2",
+            "reviewedBy": "P11.2 repository provenance audit",
+            "reviewedAt": "2026-10-04T17:24:00.000Z",
+            "mediaPageUrl": "https://commons.wikimedia.org/wiki/File:菅内閣総理大臣記者会見―令和2年12月25日.webm",
+            "licenseEvidenceUrl": "https://www.gov-online.go.jp/sns_policy/",
+            "nativeSpeakerEvidenceUrl": "https://www.wikidata.org/wiki/Q122465",
+            "contentEvidenceUrl": "https://www.gov-online.go.jp/prg/prg21917.html",
+            "durationSeconds": 4078,
+            "rateEvidence": {
+              "method": "genre-relative-source-condition",
+              "stretchCondition": false,
+              "evidenceUrl": "https://www.gov-online.go.jp/prg/prg21917.html",
+              "rationale": "Full-length official press conference retained as natural spontaneous connected speech; separate shorter Q&A sources satisfy the stretch condition."
+            },
+            "checklist": {
+              "sourceIdentityVerified": true,
+              "recordingIdentityVerified": true,
+              "licenseVerified": true,
+              "nativeSpeakerVerified": true,
+              "contentMatchVerified": true,
+              "connectedSpeechVerified": true,
+              "registerReviewed": true,
+              "speechRateReviewed": true
+            }
+          }
+        }
+      ]
+    }
+  ]
 }
