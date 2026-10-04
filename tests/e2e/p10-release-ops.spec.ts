@@ -9,7 +9,7 @@ test("P11.3 exposes the final external-review handoff without weakening release 
   await expect(page.getByText("P9 media provenance + external evidence remain authoritative")).toBeVisible();
   await expect(page.getByText("P11 external-review packet readiness")).toBeVisible();
   await expect(page.getByRole("button",{name:"Export P11 external-review handoff"})).toBeDisabled();
-  await expect(page.getByText("P11 external-review handoff")).toBeVisible();
+  await expect(page.getByText("P11 external-review handoff",{exact:true})).toBeVisible();
 
   await page.getByRole("button",{name:"Immerse"}).click();
   await expect(page.getByRole("heading",{name:"Verify media before it can count toward release"})).toBeVisible();
