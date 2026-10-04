@@ -1405,7 +1405,7 @@
         },
         {
           "kind": "lexeme",
-          "id": "c1-interpretation"
+          "id": "b2-interpretation"
         }
       ],
       "tokens": [
@@ -2792,7 +2792,7 @@
       "level": "C1",
       "register": "formal",
       "lexemeIds": [
-        "c1-interpretation"
+        "b2-interpretation"
       ],
       "grammarIds": [],
       "exampleSentenceIds": [
