@@ -1,18 +1,19 @@
 import { useEffect,useMemo,useState } from "react";
 import { coreContent } from "../coreContent";
 import { buildNativeCurationSummary,listNativeCurationCandidates,type NativeCurationSummary } from "../immerse/nativeCuration";
-import { getHumanReviewSummary,type HumanReviewSummary } from "./humanReview";
+import { getExternalReviewReadiness,getHumanReviewSummary,listHumanReviewArtifacts,type ExternalReviewReadiness,type HumanReviewSummary } from "./humanReview";
 import { realWorldChains } from "./realWorldPerformance";
 import { P9_RELEASE_THRESHOLDS } from "./releaseQualification";
 
 export function ReleaseOperationsPanel(){
   const [curation,setCuration]=useState<NativeCurationSummary|null>(null);
   const [human,setHuman]=useState<HumanReviewSummary|null>(null);
+  const [external,setExternal]=useState<ExternalReviewReadiness|null>(null);
 
   useEffect(()=>{
-    void Promise.all([listNativeCurationCandidates(),getHumanReviewSummary()]).then(([candidates,reviews])=>{
-      setCuration(buildNativeCurationSummary(candidates));setHuman(reviews);
-    }).catch(()=>{setCuration(null);setHuman(null);});
+    void Promise.all([listNativeCurationCandidates(),getHumanReviewSummary(),listHumanReviewArtifacts()]).then(([candidates,reviews,artifacts])=>{
+      setCuration(buildNativeCurationSummary(candidates));setHuman(reviews);setExternal(getExternalReviewReadiness(artifacts));
+    }).catch(()=>{setCuration(null);setHuman(null);setExternal(null);});
   },[]);
 
   const staticChecks=useMemo(()=>[
@@ -32,10 +33,10 @@ export function ReleaseOperationsPanel(){
 
   return <section className="release-operations">
     <div className="section-heading">
-      <div><span className="course-kicker">P11.2 RELEASE EVIDENCE</span><h2>Qualify B2 before opening C1</h2></div>
+      <div><span className="course-kicker">P11.3 FINAL GATE OPERATIONS</span><h2>Qualify B2 before opening C1</h2></div>
       <span className="course-count">P9 media provenance + external evidence remain authoritative</span>
     </div>
-    <p>P11.2 adds repository-owned provenance verification for the P9 native-media gate. Local curation remains preparatory; the official release-candidate decision is still produced in repository CI from provenance-audited P9 evidence, admitted external validation, the release profile and the full regression suite.</p>
+    <p>P11.3 operationalizes the final external-review dependency. P9 native provenance and the release profile are already green; the official release-candidate decision still comes from repository CI after a real external reviewer submission has been admitted and the full regression suite passes.</p>
 
     <div className="release-check-columns">
       <article>
@@ -55,9 +56,14 @@ export function ReleaseOperationsPanel(){
 
     <div className="release-human-note">
       <strong>Human production review</strong>
-      <span>{human?human.reviewedArtifacts:0} artifacts reviewed · {human?human.unreviewedArtifacts:0} awaiting review</span>
+      <span>{human?human.reviewedArtifacts:0} locally reviewed · {human?human.unreviewedArtifacts:0} awaiting local review</span>
       <p>Human scores remain descriptive. External review can support P11 release qualification, but neither local nor external reviewer judgment silently becomes learner mastery or an accredited CEFR result.</p>
     </div>
-    <p className="course-note">The repository-native media gate is now handled by the P11.2 provenance audit. To advance the release candidate, admit a real external review through the P11.1 intake workflow, then run <code>pnpm qualify:p11:strict</code>. C1 remains closed until that decision is fully green.</p>
+    <div className={"release-human-note "+(external?.ready?"pass":"blocked")}>
+      <strong>P11 external-review handoff</strong>
+      <span>{external?external.selectedArtifacts:0} / 6 packet artifacts · {external?external.selectedWriting:0} writing · {external?external.selectedSpeaking:0} speaking</span>
+      <p>{external?.ready?"Representative learner evidence is ready for the offline external-review workspace.":"Complete enough B2 productive work to produce a six-artifact packet containing both writing and speaking evidence."}</p>
+    </div>
+    <p className="course-note">The repository-native media gate is handled by the P11.2 provenance audit. The final remaining release-candidate dependency is a real external review: export the P11 handoff from Human Evaluation, receive the reviewer JSON, admit it with <code>pnpm review:p11:intake</code>, then run <code>pnpm qualify:p11:strict</code>. C1 remains closed until that decision is fully green.</p>
   </section>;
 }

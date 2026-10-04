@@ -36,6 +36,7 @@ export function validateReviewPacket(packet){
 export function validateExternalReviewSubmission(submission,packet){
   validateReviewPacket(packet);
   if(!submission||typeof submission!=="object")throw new Error("P11_EXTERNAL_SUBMISSION_INVALID");
+  if(typeof submission.packetSha256==="string"&&submission.packetSha256!==sha256Text(JSON.stringify(packet,null,2)))throw new Error("P11_EXTERNAL_SUBMISSION_PACKET_DIGEST_MISMATCH");
   if(submission.schema!=="thiepn-japanese-p11-external-review-submission")throw new Error("P11_EXTERNAL_SUBMISSION_SCHEMA_INVALID");
   if(submission.schemaVersion!==1)throw new Error("P11_EXTERNAL_SUBMISSION_VERSION_UNSUPPORTED");
   requireString(submission.reviewerLabel,"reviewerLabel");

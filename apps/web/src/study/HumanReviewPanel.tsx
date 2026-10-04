@@ -1,6 +1,7 @@
 import { useEffect,useMemo,useState } from "react";
 import {
-  buildHumanReviewPacket,getHumanReviewSummary,listHumanReviewArtifacts,saveHumanReview,serializeHumanReviewPacket,
+  buildExternalReviewerWorkspace,buildHumanReviewPacket,getExternalReviewReadiness,getHumanReviewSummary,listHumanReviewArtifacts,
+  saveHumanReview,selectExternalReviewArtifacts,serializeHumanReviewPacket,
   type HumanReviewArtifact,type HumanReviewRubric,type HumanReviewScore,type HumanReviewSummary
 } from "./humanReview";
 import { downloadPortfolioText } from "./portfolioExport";
@@ -27,6 +28,7 @@ export function HumanReviewPanel(){
   useEffect(()=>{void refresh().catch(()=>{setArtifacts([]);setSummary(null);});},[]);
 
   const selected=useMemo(()=>artifacts.find((artifact)=>artifact.eventId===selectedId)??null,[artifacts,selectedId]);
+  const externalReadiness=useMemo(()=>getExternalReviewReadiness(artifacts),[artifacts]);
 
   async function submit(){
     if(!selected)return;
@@ -46,9 +48,18 @@ export function HumanReviewPanel(){
     downloadPortfolioText("japanese-human-review-"+packet.generatedAt.slice(0,10)+".json",serializeHumanReviewPacket(packet),"application/json");
   }
 
+  function exportExternalHandoff(){
+    if(!externalReadiness.ready)return;
+    const packet=buildHumanReviewPacket(selectExternalReviewArtifacts(artifacts));
+    const stamp=packet.generatedAt.slice(0,10);
+    downloadPortfolioText("japanese-p11-review-packet-"+stamp+".json",serializeHumanReviewPacket(packet),"application/json");
+    downloadPortfolioText("japanese-p11-reviewer-workspace-"+stamp+".html",buildExternalReviewerWorkspace(packet),"text/html");
+    setMessage("P11 external-review handoff exported: "+externalReadiness.selectedArtifacts+" artifacts ("+externalReadiness.selectedWriting+" writing · "+externalReadiness.selectedSpeaking+" speaking). Keep the JSON packet unchanged and send the HTML workspace to the external reviewer.");
+  }
+
   return <section className="human-review-panel">
     <div className="section-heading">
-      <div><span className="course-kicker">P10 HUMAN EVALUATION</span><h2>Review productive evidence without rewriting mastery</h2></div>
+      <div><span className="course-kicker">P11.3 EXTERNAL REVIEW HANDOFF</span><h2>Review productive evidence without rewriting mastery</h2></div>
       <span className="course-count">{summary?.reviewedArtifacts??0} reviewed · {summary?.unreviewedArtifacts??0} pending</span>
     </div>
     <p>Human feedback is stored separately from structural Study Player results and AI advice. A reviewer can score task fulfillment, meaning/accuracy, coherence and register from 0–4; the score is descriptive and never becomes CEFR certification or FSRS mastery automatically.</p>
@@ -62,7 +73,14 @@ export function HumanReviewPanel(){
     </div>:null}
 
     <div className="human-review-actions">
-      <button className="quiet-button" type="button" disabled={!artifacts.length} onClick={exportPacket}>Export review packet</button>
+      <button className="primary" type="button" disabled={!externalReadiness.ready} onClick={exportExternalHandoff}>Export P11 external-review handoff</button>
+      <button className="quiet-button" type="button" disabled={!artifacts.length} onClick={exportPacket}>Export general review packet</button>
+    </div>
+
+    <div className={"release-human-note "+(externalReadiness.ready?"pass":"blocked")}>
+      <strong>P11 external-review packet readiness</strong>
+      <span>{externalReadiness.selectedArtifacts} / 6 selected · {externalReadiness.selectedWriting} writing · {externalReadiness.selectedSpeaking} speaking · {externalReadiness.uniqueTasks} unique tasks available</span>
+      {externalReadiness.ready?<p>The handoff is ready. Selection is deterministic, recent-first and task-diverse, while balancing writing and speaking when the available evidence allows it.</p>:<p>{externalReadiness.blockers.join(" ")}</p>}
     </div>
 
     {!artifacts.length?<div className="human-review-empty"><strong>No B2 productive artifacts yet.</strong><p>Complete a B2 writing or speaking task first. Learner-authored responses will appear here for optional human review.</p></div>:<div className="human-review-workspace">
@@ -92,7 +110,7 @@ export function HumanReviewPanel(){
     </div>}
 
     {message?<p className="import-message" role="status">{message}</p>:null}
-    <p className="course-note">Review packets can be sent to a teacher or tutor outside the app. Imported/manual reviews remain reviewer evidence only; there is no automatic CEFR pass/fail conversion.</p>
+    <p className="course-note">The P11 handoff downloads the immutable JSON evidence packet plus a self-contained offline reviewer workspace. The reviewer returns a completed JSON submission, which must be admitted through the repository intake workflow. External scores remain evidence only; there is no automatic CEFR pass/fail conversion.</p>
   </section>;
 }
 
