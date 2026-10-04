@@ -22,6 +22,8 @@ jobs:
       - run: pnpm validate:content
       - name: Validate P10 native candidate queue
         run: pnpm native:p10:preview
+      - name: Audit P11.2 native provenance and P9 media gate
+        run: pnpm native:p11:audit
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e
@@ -49,6 +51,8 @@ jobs:
         with:
           name: b2-release-qualification
           path: |
+            artifacts/p11-native-source-audit.json
+            artifacts/p11-native-source-audit.md
             artifacts/p9-release-qualification.json
             artifacts/p9-release-qualification.md
             artifacts/p11-release-candidate-qualification.json
