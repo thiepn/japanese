@@ -502,3 +502,5 @@ button{touch-action:manipulation}
 .p16-message{margin:14px 0 0;padding:10px 12px;border-radius:10px;background:#f3f0e9;color:#5f594f;font-size:10px}
 @media(max-width:900px){.p16-grid{grid-template-columns:1fr}.p16-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.p16-two,.p16-rubric{grid-template-columns:1fr}.p16-citation-preview>div{align-items:stretch;flex-direction:column}.p16-citation-preview select{width:100%}}
+
+.p16-portfolio-quality{margin:18px 0;padding-top:18px;border-top:1px solid #e2ddd3}
