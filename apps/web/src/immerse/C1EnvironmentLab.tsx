@@ -213,7 +213,7 @@ export function C1EnvironmentLab(){
     {tab==="writing"?<WritingStudio
       progress={progress}
       activeProjectId={activeProjectId}
-      onProject={(id)=>{setActiveProjectId(id);setMessage("");setDraft("");setRevision("");setReflection("");}}
+      onProject={(id)=>{setActiveProjectId(id);setMessage("");setSourceSelection([]);setThesis("");setDraft("");setRevision("");setReflection("");}}
       sourceSelection={sourceSelection}
       setSourceSelection={setSourceSelection}
       thesis={thesis}
