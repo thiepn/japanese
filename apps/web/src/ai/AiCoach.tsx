@@ -25,7 +25,7 @@ interface CoachHistorySummary {
 const EMPTY_HISTORY:CoachHistorySummary={turns:0,areaCounts:{grammar:0,vocabulary:0,coherence:0,taskAchievement:0},patterns:[],recent:[],dueRevisions:[]};
 const endpoint=import.meta.env.VITE_JAPANESE_COACH_ENDPOINT??"/api/japanese/coach";
 
-export function AiCoach(){
+export function AiCoach({preferredChainId}:{preferredChainId?:string|null}={}){
   const transport=useMemo(()=>createHttpCoachTransport(endpoint),[]);
   const [mode,setMode]=useState<CoachMode>("conversation");
   const [text,setText]=useState("");
@@ -42,6 +42,13 @@ export function AiCoach(){
   const learnerTurns=history.filter((turn)=>turn.role==="learner").length;
   const availableChains=scenarioChainsForLevel(targetLevel);
   const chain=scenarioChain(chainId);
+  useEffect(()=>{
+    if(!preferredChainId)return;
+    try{
+      const preferred=scenarioChain(preferredChainId);
+      setTargetLevel(preferred.level);setChainId(preferred.id);setMode("conversation");setHistory([]);setLast(null);
+    }catch{/* ignore stale cross-surface chain requests */}
+  },[preferredChainId]);
   const chainStage=chain.stages[Math.min(learnerTurns,chain.stages.length-1)]!;
   const effectiveLevel:CoachLevel=delayedRevision?.targetLevel??targetLevel;
   const conversationTask=productiveTasks.find((task)=>task.level===effectiveLevel&&task.mode==="speaking"&&(effectiveLevel==="B2"?task.tags.includes("ai-conversation"):task.milestoneArea==="spoken_interaction"))
