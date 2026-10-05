@@ -5,6 +5,8 @@ import { buildExtensiveTracks } from "./extensive";
 import { ShadowingLab } from "./ShadowingLab";
 import { NativeListeningLab } from "./NativeListeningLab";
 import { NativeCurationPanel } from "./NativeCurationPanel";
+import { C1SynthesisLab } from "./C1SynthesisLab";
+import { C1SpontaneousLab } from "../study/C1SpontaneousLab";
 import { getAdaptiveImmersionRecommendation,type AdaptiveImmersionRecommendation } from "./adaptive";
 import { getAutonomyMissionProgress,type AutonomyMissionProgress } from "../study/autonomyMissions";
 import type { ReadingQuestion } from "@thiepn/content-schema";
@@ -128,7 +130,7 @@ export function Immersion({onStartProductionTask}:{onStartProductionTask:(taskId
 
   return <section className="dashboard immerse-page">
     <p className="eyebrow">IMMERSE</p><h1>A1 → C1 autonomy</h1>
-    <p className="lead">P12 extends immersion beyond B2 into advanced independent reading and listening. C1 material emphasizes stance, qualification, causal restraint, institutional argument and synthesis; synthesized audio remains explicitly labeled wherever no source-provenanced recording is attached.</p>
+    <p className="lead">P13 deepens C1 through provenance-audited native sources, cross-source synthesis and staged spontaneous interaction. Advanced work now requires listening across real speakers and registers, integrating competing evidence, and responding to hidden follow-up pressure without turning unreviewed output into mastery.</p>
     {progress?<div className="stat-row four"><MiniStat value={progress.texts.length} label="Graded texts"/><MiniStat value={progress.minedWords} label="Mined words"/><MiniStat value={progress.readingChecks} label="Reading checks"/><MiniStat value={progress.listeningChecks} label="Listening checks"/></div>:null}
     {recommendation?<section className="adaptive-immersion">
       <div className="section-heading"><div><span className="course-kicker">ADAPTIVE NEXT STEP</span><h2>Focus on {recommendation.focus}</h2></div></div>
@@ -175,6 +177,8 @@ export function Immersion({onStartProductionTask}:{onStartProductionTask:(taskId
       </article>)}
     </div>
     <p className="course-note">Readiness is derived from lexeme meaning evidence. It is guidance, not a content lock. Curated connected audio uses the device’s Japanese speech-synthesis voice unless a source-provenanced recording is attached.</p>
+    <C1SynthesisLab/>
+    <C1SpontaneousLab/>
     <NativeListeningLab/>
     <NativeCurationPanel/>
     <ShadowingLab/>
