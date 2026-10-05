@@ -452,8 +452,9 @@ export async function saveC1SpecialistTerm(input:{
   const canonicalForm=input.canonicalForm.trim(),meaning=input.meaning.trim(),context=input.context.trim(),reading=input.reading?.trim();
   if(canonicalForm.length<1||meaning.length<2)throw new Error("P15_SPECIALIST_TERM_REQUIRES_FORM_AND_MEANING");
   if(context.length<12)throw new Error("P15_SPECIALIST_TERM_REQUIRES_CONTEXT");
-  const id="private-lex-p15-"+stableHash(canonicalForm.normalize("NFKC"));
-  const existing=(await listPrivateVocabulary(DEVELOPMENT_ACCOUNT_ID)).find((item)=>item.id===id||item.canonicalForm.normalize("NFKC")===canonicalForm.normalize("NFKC"));
+  const candidateId="private-lex-p15-"+stableHash(canonicalForm.normalize("NFKC"));
+  const existing=(await listPrivateVocabulary(DEVELOPMENT_ACCOUNT_ID)).find((item)=>item.id===candidateId||item.canonicalForm.normalize("NFKC")===canonicalForm.normalize("NFKC"));
+  const id=existing?.id??candidateId;
   const now=new Date().toISOString();
   await savePrivateVocabulary(DEVELOPMENT_ACCOUNT_ID,existing?{
     ...existing,meaning,updatedAt:now,...(reading?{reading}:{}),sourceDocumentIds:[...new Set([...existing.sourceDocumentIds,source.id])]
