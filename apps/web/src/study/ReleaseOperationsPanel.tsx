@@ -4,6 +4,7 @@ import { buildNativeCurationSummary,listNativeCurationCandidates,type NativeCura
 import { getExternalReviewReadiness,getHumanReviewSummary,listHumanReviewArtifacts,type ExternalReviewReadiness,type HumanReviewSummary } from "./humanReview";
 import { realWorldChains } from "./realWorldPerformance";
 import { P9_RELEASE_THRESHOLDS } from "./releaseQualification";
+import { languagePlatformCompatibility } from "../platformCompatibility";
 
 export function ReleaseOperationsPanel(){
   const [curation,setCuration]=useState<NativeCurationSummary|null>(null);
@@ -54,6 +55,11 @@ export function ReleaseOperationsPanel(){
       </article>
     </div>
 
+    <div className="release-human-note pass">
+      <strong>THIEPN Languages platform</strong>
+      <span>Read-only · {languagePlatformCompatibility.platformContractVersion} · package {languagePlatformCompatibility.platformPackageVersion}</span>
+      <p>Japanese remains authoritative for content, learner state, StudyEvents, FSRS memory, mastery, proficiency, orchestration and sync. This P7 integration only reads the shared compatibility contract and is pinned to audited source baseline <code>{languagePlatformCompatibility.consumerRevision.slice(0,8)}</code>.</p>
+    </div>
     <div className="release-human-note">
       <strong>Human production review</strong>
       <span>{human?human.reviewedArtifacts:0} locally reviewed · {human?human.unreviewedArtifacts:0} awaiting local review</span>

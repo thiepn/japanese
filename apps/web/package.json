@@ -23,7 +23,8 @@
     "react-dom": "19.3.0",
     "@thiepn/audio": "workspace:*",
     "@thiepn/coach": "workspace:*",
-    "@thiepn/japanese-nlp": "workspace:*"
+    "@thiepn/japanese-nlp": "workspace:*",
+    "@thiepn/languages": "github:thiepn/languages#56bb7fda23ca179ae233cbc8d6f1c17b2f8cbc49"
   },
   "devDependencies": {
     "@types/react": "19.3.0",
