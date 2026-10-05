@@ -1,6 +1,7 @@
 import { useEffect,useState } from "react";
 import { getC1PortfolioSummary,type C1PortfolioSummary } from "./c1Reliability";
 import { getC1EnvironmentProgress,type C1EnvironmentProgress } from "./c1Environment";
+import { getC1ResearchQualityProgress,type C1ResearchQualityProgress } from "./c1ResearchQuality";
 import {
   downloadC1Portfolio,getC1PortfolioExport,serializeC1PortfolioJson,serializeC1PortfolioMarkdown
 } from "./c1PortfolioExport";
@@ -8,8 +9,9 @@ import {
 export function C1Portfolio(){
   const [portfolio,setPortfolio]=useState<C1PortfolioSummary|null>(null);
   const [environment,setEnvironment]=useState<C1EnvironmentProgress|null>(null);
+  const [quality,setQuality]=useState<C1ResearchQualityProgress|null>(null);
   const [exporting,setExporting]=useState(false);
-  useEffect(()=>{void Promise.all([getC1PortfolioSummary(),getC1EnvironmentProgress()]).then(([nextPortfolio,nextEnvironment])=>{setPortfolio(nextPortfolio);setEnvironment(nextEnvironment);}).catch(()=>{setPortfolio(null);setEnvironment(null);});},[]);
+  useEffect(()=>{void Promise.all([getC1PortfolioSummary(),getC1EnvironmentProgress(),getC1ResearchQualityProgress()]).then(([nextPortfolio,nextEnvironment,nextQuality])=>{setPortfolio(nextPortfolio);setEnvironment(nextEnvironment);setQuality(nextQuality);}).catch(()=>{setPortfolio(null);setEnvironment(null);setQuality(null);});},[]);
 
   async function exportPortfolio(format:"json"|"markdown"){
     setExporting(true);
@@ -26,10 +28,10 @@ export function C1Portfolio(){
 
   return <section className="b2-portfolio">
     <div className="section-heading">
-      <div><span className="course-kicker">P15 C1 PORTFOLIO</span><h2>Long-form autonomy + real-source working evidence</h2></div>
+      <div><span className="course-kicker">P16 C1 PORTFOLIO</span><h2>Long-form autonomy + research-quality evidence</h2></div>
       <span className="course-count">{portfolio.activeDays} active C1 days</span>
     </div>
-    <p>P15 keeps the P14 longitudinal evidence and adds real-source research, source evaluation, specialist vocabulary, cited multi-day writing and unpredictable defense. It remains descriptive internal evidence rather than a CEFR C1 result.</p>
+    <p>P16 keeps the P14–P15 longitudinal and real-source evidence, then adds bibliography provenance, licensed/private source handling, artifact-bound human review and specialist-track depth. It remains descriptive evidence rather than a CEFR C1 result.</p>
     <div className="portfolio-export-actions">
       <button className="unit-action" disabled={exporting} type="button" onClick={()=>void exportPortfolio("json")}>Export C1 JSON</button>
       <button className="quiet-button" disabled={exporting} type="button" onClick={()=>void exportPortfolio("markdown")}>Export C1 Markdown</button>
@@ -64,6 +66,25 @@ export function C1Portfolio(){
         <small>{entry.sourceMap?.sourceIds.length??0} sources · {entry.defenses.length} defenses{entry.revision?" · delayed revision":""}{entry.reflection?" · reflection":""}</small>
       </div>)}</div>
       <p className="course-note">Learner source evaluation is critical-reading evidence, not independent source verification. External pages remain external; P15 stores your traceable notes, source identity and authored work.</p>
+    </section>:null}
+
+    {quality?<section className="p16-portfolio-quality">
+      <div className="section-heading"><div><span className="course-kicker">P16 RESEARCH QUALITY</span><h3>Provenance + human review + specialist depth</h3></div><span>{quality.reviewedProjects} projects human-reviewed</span></div>
+      <div className="portfolio-stats">
+        <PortfolioStat value={quality.bibliographySources} label="Sources documented"/>
+        <PortfolioStat value={quality.privateExcerpts} label="Private excerpts"/>
+        <PortfolioStat value={quality.redistributableExcerpts} label="Licensed excerpts"/>
+        <PortfolioStat value={quality.reviewedProjects} label="Human-reviewed projects"/>
+        <PortfolioStat value={quality.humanReviews.length} label="Review records"/>
+        <PortfolioStat value={quality.specialistTracks.length} label="Specialist tracks"/>
+        <PortfolioStat value={quality.specialistDomains} label="Specialist domains"/>
+        <PortfolioStat value={quality.bibliographyRecords.filter((item)=>Boolean(item.doi)).length} label="DOI-linked sources"/>
+      </div>
+      {quality.humanReviews.length?<div className="portfolio-mission-list">{quality.humanReviews.slice(0,8).map((review)=><div key={review.id}>
+        <div><strong>{review.projectTitle}</strong><span>{review.reviewerRole.replaceAll("_"," ")}</span></div>
+        <small>argument {review.scores.argumentControl}/4 · sources {review.scores.sourceUse}/4 · language {review.scores.languagePrecision}/4 · register {review.scores.registerControl}/4{review.blockingIssues.length?" · "+review.blockingIssues.length+" blocking issue(s)":""}</small>
+      </div>)}</div>:null}
+      <p className="course-note">Human review is external qualitative evidence only. Bibliography metadata and stored excerpts improve traceability; they do not prove source interpretation, change FSRS mastery or award a CEFR result.</p>
     </section>:null}
 
     <div className="portfolio-columns">
@@ -106,7 +127,7 @@ export function C1Portfolio(){
       </article>)}</div>
     </details>:null}
 
-    <p className="course-note">Repeated internal success, source exposure, learner source evaluation and AI-supported interaction remain descriptive learner evidence. P15 does not convert them into external certification, independent fact verification, semantic human review or acoustic scoring.</p>
+    <p className="course-note">Repeated internal success, source exposure, learner source evaluation, human review and AI-supported interaction remain explicitly bounded evidence. P16 does not convert them into accredited certification, independent fact verification, automatic mastery updates or acoustic scoring.</p>
   </section>;
 }
 
