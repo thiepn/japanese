@@ -84,12 +84,13 @@ describe("P14 C1 long-form autonomy and reliability",()=>{
   it("requires cross-day structural success for C1 productive reliability and tracks interaction transfer separately",()=>{
     const events=researchMissionEvidence();
     events.push(
-      event({occurredAt:DAY2,activity:"writing",result:"correct",metadata:{p13MultiSourceSynthesis:true,synthesisPackId:"p13-synthesis-evidence-causality",learnerResponse:"二回目の統合です。"}})
+      event({occurredAt:DAY2,activity:"writing",result:"correct",metadata:{p13MultiSourceSynthesis:true,synthesisPackId:"p13-synthesis-evidence-causality",learnerResponse:"二回目の統合です。"}}),
+      event({occurredAt:DAY2,activity:"speaking",promptFamily:"ai-coach-conversation",metadata:{p13C1SpontaneousInteraction:true,scenarioChainId:"c1-research-defense",scenarioStageId:"position",targetLevel:"C1",learnerText:"同じ立場を別の日に改めて説明します。"}})
     );
     const reliability=buildC1ProductionReliabilitySummary(events);
     expect(reliability.reliableArtifacts).toBeGreaterThanOrEqual(1);
     expect(reliability.artifactEvidence.find((item)=>item.id==="task:p12-writing-causal-analysis")?.reliableAcrossSessions).toBe(true);
-    expect(reliability.interactionEvidence.find((item)=>item.chainId==="c1-research-defense")?.reliableAcrossSessions).toBe(true);
+    expect(reliability.interactionEvidence.find((item)=>item.chainId==="c1-research-defense")).toMatchObject({reliableAcrossSessions:true,repeatedStages:1});
     expect(reliability.reliableInteractions).toBe(1);
   });
 
