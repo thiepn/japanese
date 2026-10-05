@@ -1,5 +1,6 @@
 export type CoachMode="conversation"|"writing_revision";
-export type CoachLevel="B1+"|"B2";
+export type CoachLevel="B1+"|"B2"|"C1";
+export type CoachInteractionStyle="guided"|"spontaneous";
 
 export interface CoachHistoryTurn {
   role:"learner"|"coach";
@@ -45,6 +46,7 @@ export interface CoachRequest {
   scenario:string;
   goals:string[];
   register?:"casual"|"neutral"|"polite"|"formal";
+  interactionStyle?:CoachInteractionStyle;
 }
 
 export interface CoachQualityReport {
