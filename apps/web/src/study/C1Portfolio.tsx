@@ -71,7 +71,7 @@ export function C1Portfolio(){
       <div>{portfolio.reliability.interactionEvidence.map((item)=><article key={item.chainId}>
         <strong>{item.reliableAcrossSessions?"✓":"○"}</strong>
         <p>{item.title}</p>
-        <small>{item.turns} turns · {item.stagesCovered}/{item.totalStages} stages · {item.activeDays} active days · {Math.round(item.spanHours)}h span</small>
+        <small>{item.turns} turns · {item.stagesCovered}/{item.totalStages} stages · {item.repeatedStages} stage{item.repeatedStages===1?"":"s"} repeated across days · {item.activeDays} active days · {Math.round(item.spanHours)}h span</small>
       </article>)}</div>
     </section>:null}
 
