@@ -205,6 +205,130 @@ export async function deletePrivateMediaReview(accountId:string,id:string):Promi
   db.close();
 }
 
+
+export type GuestWorkspaceClaimResult =
+  | "same-account"
+  | "guest-empty"
+  | "target-populated"
+  | "migrated";
+
+export async function claimGuestWorkspace(
+  guestAccountId: string,
+  targetAccountId: string,
+): Promise<GuestWorkspaceClaimResult> {
+  if (!guestAccountId.trim() || !targetAccountId.trim())
+    throw new Error("ACCOUNT_ID_REQUIRED");
+  if (guestAccountId === targetAccountId) return "same-account";
+
+  const stores = [
+    STUDY_EVENTS,
+    MEMORY_TRACES,
+    OUTBOX,
+    PRIVATE_DOCUMENTS,
+    PRIVATE_VOCABULARY,
+    PRIVATE_SENTENCES,
+    PRIVATE_MEDIA_REVIEWS,
+  ] as const;
+
+  const target = await openLocalDb(targetAccountId);
+  try {
+    for (const store of stores) {
+      if ((await getAllFromOpenStore<unknown>(target, store)).length > 0)
+        return "target-populated";
+    }
+    if ((await getAllFromOpenStore<unknown>(target, SYNC_META)).length > 0)
+      return "target-populated";
+  } finally {
+    target.close();
+  }
+
+  const guest = await openLocalDb(guestAccountId);
+  let snapshot: Record<string, unknown[]>;
+  try {
+    snapshot = Object.fromEntries(
+      await Promise.all(
+        stores.map(async (store) => [
+          store,
+          await getAllFromOpenStore<unknown>(guest, store),
+        ]),
+      ),
+    );
+  } finally {
+    guest.close();
+  }
+
+  if (stores.every((store) => snapshot[store]!.length === 0))
+    return "guest-empty";
+
+  const destination = await openLocalDb(targetAccountId);
+  try {
+    await new Promise<void>((resolve, reject) => {
+      const transaction = destination.transaction([...stores], "readwrite");
+      for (const event of snapshot[STUDY_EVENTS] as StudyEvent[]) {
+        transaction
+          .objectStore(STUDY_EVENTS)
+          .put({ ...event, userId: targetAccountId });
+      }
+      for (const trace of snapshot[MEMORY_TRACES] as MemoryTrace[]) {
+        transaction
+          .objectStore(MEMORY_TRACES)
+          .put({ ...trace, userId: targetAccountId });
+      }
+      for (const mutation of snapshot[OUTBOX] as CoreSyncMutation[]) {
+        transaction.objectStore(OUTBOX).put(mutation);
+      }
+      for (const document of snapshot[PRIVATE_DOCUMENTS] as PrivateDocumentRecord[]) {
+        transaction
+          .objectStore(PRIVATE_DOCUMENTS)
+          .put({ ...document, accountId: targetAccountId });
+      }
+      for (const record of snapshot[PRIVATE_VOCABULARY] as PrivateVocabularyRecord[]) {
+        transaction
+          .objectStore(PRIVATE_VOCABULARY)
+          .put({ ...record, accountId: targetAccountId });
+      }
+      for (const record of snapshot[PRIVATE_SENTENCES] as PrivateSentenceRecord[]) {
+        transaction
+          .objectStore(PRIVATE_SENTENCES)
+          .put({ ...record, accountId: targetAccountId });
+      }
+      for (const review of snapshot[PRIVATE_MEDIA_REVIEWS] as PrivateMediaReviewRecord[]) {
+        transaction
+          .objectStore(PRIVATE_MEDIA_REVIEWS)
+          .put({ ...review, accountId: targetAccountId });
+      }
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = () => reject(transaction.error);
+      transaction.onabort = () => reject(transaction.error);
+    });
+  } finally {
+    destination.close();
+  }
+
+  await deleteAccountDatabase(guestAccountId);
+  return "migrated";
+}
+
+async function getAllFromOpenStore<T>(
+  db: IDBDatabase,
+  storeName: string,
+): Promise<T[]> {
+  return new Promise((resolve, reject) => {
+    const request = db.transaction(storeName, "readonly").objectStore(storeName).getAll();
+    request.onsuccess = () => resolve(request.result as T[]);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function deleteAccountDatabase(accountId: string): Promise<void> {
+  await new Promise<void>((resolve, reject) => {
+    const request = indexedDB.deleteDatabase(databaseNameForAccount(accountId));
+    request.onsuccess = () => resolve();
+    request.onerror = () => reject(request.error);
+    request.onblocked = () => reject(new Error("ACCOUNT_DATABASE_DELETE_BLOCKED"));
+  });
+}
+
 async function putOne(db: IDBDatabase, storeName: string, value: unknown): Promise<void> {
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(storeName, "readwrite");
