@@ -159,7 +159,7 @@ function normalizeLoose(value:string):string{
   return value.normalize("NFKC").toLowerCase().replace(/[\s。、！？!?「」『』（）()[\],.:;'"’‘“”—–-]+/gu,"");
 }
 function authorityLanguageDetected(value:string):boolean{
-  return /(cefr.*(?:pass|passed|master|b2)|(?:pass|passed).*cefr|you(?:have|'ve)?mastered|b2(?:level)?(?:achieved|certified)|合格しました|b2に合格|習得済み)/i.test(value);
+  return /(cefr.*(?:pass|passed|master|b2|c1)|(?:pass|passed).*cefr|you(?:have|'ve)?mastered|(?:b2|c1)(?:level)?(?:achieved|certified)|合格しました|(?:b2|c1)に合格|習得済み)/i.test(value);
 }
 function nonNegativeInt(value:unknown):number{
   return typeof value==="number"&&Number.isFinite(value)?Math.max(0,Math.floor(value)):0;
