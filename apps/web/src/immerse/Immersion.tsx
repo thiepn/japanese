@@ -8,6 +8,7 @@ import { NativeCurationPanel } from "./NativeCurationPanel";
 import { C1AdvancedLab } from "./C1AdvancedLab";
 import { C1AutonomyPanel } from "../study/C1AutonomyPanel";
 import { C1EnvironmentLab } from "./C1EnvironmentLab";
+import { C1ResearchQualityLab } from "./C1ResearchQualityLab";
 import { getAdaptiveImmersionRecommendation,type AdaptiveImmersionRecommendation } from "./adaptive";
 import { getAutonomyMissionProgress,type AutonomyMissionProgress } from "../study/autonomyMissions";
 import type { ReadingQuestion } from "@thiepn/content-schema";
@@ -132,7 +133,7 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
 
   return <section className="dashboard immerse-page">
     <p className="eyebrow">IMMERSE</p><h1>A1 → C1 autonomy</h1>
-    <p className="lead">P15 adds an actual C1 working environment on top of the P12–P14 learning graph: read Japanese sources in their real institutional context, evaluate what they can support, mine specialist language, write cited multi-day projects and defend them under hidden pressure before delayed revision.</p>
+    <p className="lead">P16 keeps the P15 authentic C1 environment, then raises the quality bar: document sources properly, keep licensed/private evidence with explicit provenance, export finished work for human review and build specialist tracks from the sources and terminology you actually use.</p>
     {progress?<div className="stat-row four"><MiniStat value={progress.texts.length} label="Graded texts"/><MiniStat value={progress.minedWords} label="Mined words"/><MiniStat value={progress.readingChecks} label="Reading checks"/><MiniStat value={progress.listeningChecks} label="Listening checks"/></div>:null}
     {recommendation?<section className="adaptive-immersion">
       <div className="section-heading"><div><span className="course-kicker">ADAPTIVE NEXT STEP</span><h2>Focus on {recommendation.focus}</h2></div></div>
@@ -142,6 +143,7 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
       </div>
     </section>:null}
     <C1EnvironmentLab/>
+    <C1ResearchQualityLab/>
     {missions.length?<section className="autonomy-missions">
       <div className="section-heading"><div><span className="course-kicker">P8 AUTONOMY MISSIONS</span><h2>Long-form B2 task chains</h2></div><span className="course-count">multi-document · cross-session</span></div>
       <p className="course-note">Each mission combines reading, listening and production across several sources. Final transfer stages require the same production target on a later day; progress is inferred from normal StudyEvents rather than a separate mission score.</p>
