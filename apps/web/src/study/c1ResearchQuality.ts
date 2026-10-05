@@ -238,7 +238,7 @@ export async function saveC1ProjectHumanReview(input:{
     draftOccurredAt:project.draft.occurredAt,revisionOccurredAt:project.revision.occurredAt
   };
   await saveStudyEvent(baseEvent({
-    activity:"writing",primaryTarget:{kind:"task",id:project.project.id},promptFamily:"p16-c1-human-review",responseMode:"human-review",
+    activity:"writing",primaryTarget:{kind:"production_task",id:project.project.id},promptFamily:"p16-c1-human-review",responseMode:"human-review",
     result:"skipped",contextId:project.project.id,
     metadata:{
       p16C1ResearchQuality:true,p16HumanReview:true,humanReview:review,
@@ -289,28 +289,34 @@ export function buildC1ResearchQualityProgress(events:readonly StudyEvent[]):C1R
   };
 }
 
-function latestBy<T extends Record<string,unknown>>(events:readonly StudyEvent[],flag:string,key:string,idKey:keyof T):T[]{
+function latestBy<T extends object>(events:readonly StudyEvent[],flag:string,key:string,idKey:keyof T):T[]{
   const map=new Map<string,T>();
   for(const event of events.filter((item)=>item.metadata?.[flag]===true).sort((a,b)=>a.occurredAt.localeCompare(b.occurredAt))){
     const raw=event.metadata?.[key];
     if(!raw||typeof raw!=="object")continue;
     const item=raw as T;
-    const id=item[idKey];
+    const id=(item as Record<PropertyKey,unknown>)[idKey];
     if(typeof id==="string"&&id)map.set(id,item);
   }
-  return [...map.values()].sort((a,b)=>String(b["savedAt"]??b["reviewedAt"]??b["createdAt"]??"").localeCompare(String(a["savedAt"]??a["reviewedAt"]??a["createdAt"]??"")));
+  return [...map.values()].sort((a,b)=>recordTimestamp(b).localeCompare(recordTimestamp(a)));
 }
 
-function allRecords<T extends Record<string,unknown>>(events:readonly StudyEvent[],flag:string,key:string,idKey:keyof T):T[]{
+function allRecords<T extends object>(events:readonly StudyEvent[],flag:string,key:string,idKey:keyof T):T[]{
   const map=new Map<string,T>();
   for(const event of events.filter((item)=>item.metadata?.[flag]===true).sort((a,b)=>a.occurredAt.localeCompare(b.occurredAt))){
     const raw=event.metadata?.[key];
     if(!raw||typeof raw!=="object")continue;
     const item=raw as T;
-    const id=item[idKey];
+    const id=(item as Record<PropertyKey,unknown>)[idKey];
     if(typeof id==="string"&&id)map.set(id,item);
   }
   return [...map.values()];
+}
+
+function recordTimestamp(value:object):string{
+  const record=value as Record<string,unknown>;
+  const timestamp=record.savedAt??record.reviewedAt??record.createdAt;
+  return typeof timestamp==="string"?timestamp:"";
 }
 
 function normalizeDoi(value:string):string{
