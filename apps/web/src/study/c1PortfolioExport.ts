@@ -1,12 +1,13 @@
 import { getC1NativeDepthProgress,type C1NativeDepthProgress } from "./c1NativeDepth";
 import { getC1PortfolioSummary,type C1PortfolioSummary } from "./c1Reliability";
 import { getC1EnvironmentProgress,type C1EnvironmentProgress } from "./c1Environment";
+import { getC1ResearchQualityProgress,type C1ResearchQualityProgress } from "./c1ResearchQuality";
 
 export interface C1PortfolioExport {
   schema:"thiepn-japanese-c1-portfolio";
-  schemaVersion:2;
+  schemaVersion:3;
   generatedAt:string;
-  phase:"P15";
+  phase:"P16";
   evidenceBoundary:{
     accreditedCefrVerdict:false;
     aiFeedbackChangesMastery:false;
@@ -16,16 +17,21 @@ export interface C1PortfolioExport {
     crossSessionReliabilityIsExternalCertification:false;
     externalSourceEvaluationIsIndependentVerification:false;
     typedDefenseIsAcousticScoring:false;
+    bibliographyFormattingIsSourceVerification:false;
+    privateExcerptIsRedistributable:false;
+    humanReviewIsAccreditedCefrCertification:false;
+    humanReviewChangesMastery:false;
   };
   portfolio:C1PortfolioSummary;
   nativeDepth:C1NativeDepthProgress;
   environment:C1EnvironmentProgress;
+  researchQuality:C1ResearchQualityProgress;
 }
 
 export async function getC1PortfolioExport(now=new Date()):Promise<C1PortfolioExport>{
-  const [portfolio,nativeDepth,environment]=await Promise.all([getC1PortfolioSummary(),getC1NativeDepthProgress(),getC1EnvironmentProgress()]);
+  const [portfolio,nativeDepth,environment,researchQuality]=await Promise.all([getC1PortfolioSummary(),getC1NativeDepthProgress(),getC1EnvironmentProgress(),getC1ResearchQualityProgress()]);
   return {
-    schema:"thiepn-japanese-c1-portfolio",schemaVersion:2,generatedAt:now.toISOString(),phase:"P15",
+    schema:"thiepn-japanese-c1-portfolio",schemaVersion:3,generatedAt:now.toISOString(),phase:"P16",
     evidenceBoundary:{
       accreditedCefrVerdict:false,
       aiFeedbackChangesMastery:false,
@@ -34,9 +40,13 @@ export async function getC1PortfolioExport(now=new Date()):Promise<C1PortfolioEx
       nativePlaybackIsComprehensionMastery:false,
       crossSessionReliabilityIsExternalCertification:false,
       externalSourceEvaluationIsIndependentVerification:false,
-      typedDefenseIsAcousticScoring:false
+      typedDefenseIsAcousticScoring:false,
+      bibliographyFormattingIsSourceVerification:false,
+      privateExcerptIsRedistributable:false,
+      humanReviewIsAccreditedCefrCertification:false,
+      humanReviewChangesMastery:false
     },
-    portfolio,nativeDepth,environment
+    portfolio,nativeDepth,environment,researchQuality
   };
 }
 
@@ -45,7 +55,7 @@ export function serializeC1PortfolioJson(value:C1PortfolioExport):string{
 }
 
 export function serializeC1PortfolioMarkdown(value:C1PortfolioExport):string{
-  const p=value.portfolio,r=p.reliability,n=value.nativeDepth,e=value.environment;
+  const p=value.portfolio,r=p.reliability,n=value.nativeDepth,e=value.environment,q=value.researchQuality;
   const lines=[
     "# THIEPN Japanese — C1 Portfolio Export",
     "",
@@ -62,6 +72,9 @@ export function serializeC1PortfolioMarkdown(value:C1PortfolioExport):string{
     "- Cross-session reliability describes repeated internal evidence; it is not external certification.",
     "- Learner source evaluation is a critical-reading record, not independent verification of the source.",
     "- Typed defense is a speaking-task proxy; speech-recognition transcripts are not acoustic scoring.",
+    "- Bibliography formatting improves traceability; it is not independent verification of source interpretation.",
+    "- Private-reference excerpts are not redistributable unless explicit license evidence is recorded.",
+    "- Human review is external qualitative evidence; it is not accredited CEFR certification and does not update mastery automatically.",
     "",
     "## C1 longitudinal evidence",
     "",
@@ -113,6 +126,24 @@ export function serializeC1PortfolioMarkdown(value:C1PortfolioExport):string{
       const evaluation=e.sourceEvaluations.find((item)=>item.sourceId===source.id);
       return "- "+source.publisher+" — "+source.title+" · "+source.genre+(evaluation?" · evaluated "+evaluation.confidence:" · not yet evaluated")+" · "+source.url;
     }),
+    "",
+    "## P16 research quality",
+    "",
+    "- Sources with bibliography metadata: "+q.bibliographySources,
+    "- Private-reference excerpts: "+q.privateExcerpts,
+    "- Redistributable/licensed excerpts: "+q.redistributableExcerpts,
+    "- Human-reviewed projects: "+q.reviewedProjects,
+    "- Human review records: "+q.humanReviews.length,
+    "- Specialist tracks: "+q.specialistTracks.length,
+    "- Specialist domains: "+q.specialistDomains,
+    "",
+    "### Human review evidence",
+    "",
+    ...q.humanReviews.map((review)=>"- "+review.projectTitle+" — "+review.reviewerRole+" · argument "+review.scores.argumentControl+"/4 · source use "+review.scores.sourceUse+"/4 · language "+review.scores.languagePrecision+"/4 · register "+review.scores.registerControl+"/4"+(review.blockingIssues.length?" · blocking issues: "+review.blockingIssues.length:"")),
+    "",
+    "### Specialist tracks",
+    "",
+    ...q.specialistTracks.map((track)=>"- "+track.title+" — "+track.domain+" · "+track.sourceIds.length+" sources · "+track.termIds.length+" terms · "+track.projectIds.length+" projects"),
     "",
     "## Native-source depth",
     "",
