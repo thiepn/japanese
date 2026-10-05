@@ -214,7 +214,7 @@ export function buildC1PortfolioSummary(events:readonly StudyEvent[]):C1Portfoli
 
 function responseText(event:StudyEvent):string{
   const values=[event.metadata?.learnerResponse,event.metadata?.learnerText,event.metadata?.learnerSynthesis,event.metadata?.learnerReflection];
-  return values.find((value)=>typeof value==="string"&&value.trim()) as string|undefined ?? "";
+  return (values.find((value)=>typeof value==="string"&&value.trim()) as string|undefined) ?? "";
 }
 function isGraded(event:StudyEvent):boolean{
   return event.result==="correct"||event.result==="partial"||event.result==="incorrect"||event.result==="revealed";
