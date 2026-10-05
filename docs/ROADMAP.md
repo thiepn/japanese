@@ -328,6 +328,25 @@ P13 still does not claim CEFR certification, semantic grading of free production
 
 P14 still treats internal reliability as descriptive product evidence rather than external proficiency certification. P11 remains an independent held evidence track. See `docs/P14_ACCEPTANCE.md`.
 
+## P15 — Authentic C1 Environment, Source Evaluation, Multi-Day Writing & Live Defense
+
+**Implementation complete.** P15 moves advanced Japanese beyond a course-authored C1 simulation into a source-driven working environment:
+
+- 12 curated Japanese-language source portals span white papers, official statistics, research releases, academic articles, policy research, legislative briefs, statutory law, institutional speech, digital-government policy and demographic research;
+- the learner registers the exact HTTPS page actually used; URLs are validated against the selected source portal instead of treating a portal click as evidence;
+- sources keep explicit publisher, genre, source-role and domain metadata;
+- source evaluation requires claim, evidence basis, limitation, institutional/rhetorical purpose and learner confidence before a source can enter a long-form project;
+- specialist terminology can be mined from a registered source into the existing private-vocabulary review path;
+- five multi-day C1 writing projects require evaluated-source breadth across multiple genres and publishers/institutions;
+- each project freezes a stable source map and assigns `[S#]` traceability markers that must survive the first draft and delayed revision;
+- 16 hidden pressure types create unpredictable post-draft defense across causality, source credibility, conflicting evidence, legal/implementation constraints, numerical inconsistency, audience/register shift and other advanced reasoning pressure;
+- project defense requires at least two different pressure types after the active first draft;
+- delayed revision unlocks only after 20+ hours and stale evidence from an older draft does not satisfy a later draft;
+- browser speech recognition can capture defense transcripts, with typed fallback explicitly labeled as a proxy rather than acoustic evidence;
+- the C1 portfolio schema advances to v2 and includes authentic-environment sources, evaluations, specialist terms, writing-project stages and defense breadth.
+
+P15 stores source identity and learner-authored work rather than automatically copying external documents into the canonical course. Learner source evaluation remains critical-reading evidence, not independent fact verification, and the independent P11 release-evidence state remains unchanged. See `docs/P15_ACCEPTANCE.md`.
+
 ## Later
 
-Later phases should deepen native genre breadth, source-evaluation/citation discipline, multi-day advanced writing, specialist-domain vocabulary and more unpredictable interaction while preserving the independent P11 release-evidence record.
+Later phases should improve the quality and realism of the established C1 environment: licensed/private source ingestion where appropriate, richer bibliography metadata, selected human review of long-form projects, interest-driven specialist tracks, more natural live voice interaction and a C1→C2 bridge focused on stylistic precision and sustained specialist discourse rather than another progress subsystem.

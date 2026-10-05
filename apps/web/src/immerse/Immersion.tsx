@@ -7,6 +7,7 @@ import { NativeListeningLab } from "./NativeListeningLab";
 import { NativeCurationPanel } from "./NativeCurationPanel";
 import { C1AdvancedLab } from "./C1AdvancedLab";
 import { C1AutonomyPanel } from "../study/C1AutonomyPanel";
+import { C1EnvironmentLab } from "./C1EnvironmentLab";
 import { getAdaptiveImmersionRecommendation,type AdaptiveImmersionRecommendation } from "./adaptive";
 import { getAutonomyMissionProgress,type AutonomyMissionProgress } from "../study/autonomyMissions";
 import type { ReadingQuestion } from "@thiepn/content-schema";
@@ -131,7 +132,7 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
 
   return <section className="dashboard immerse-page">
     <p className="eyebrow">IMMERSE</p><h1>A1 → C1 autonomy</h1>
-    <p className="lead">P13 deepens C1 through repository-verified native listening, cross-source synthesis and advanced transfer. Canonical C1 texts remain available for controlled analysis, while audited native recordings add natural-rate, fast and register-varied listening without relabeling device synthesis as native evidence.</p>
+    <p className="lead">P15 adds an actual C1 working environment on top of the P12–P14 learning graph: read Japanese sources in their real institutional context, evaluate what they can support, mine specialist language, write cited multi-day projects and defend them under hidden pressure before delayed revision.</p>
     {progress?<div className="stat-row four"><MiniStat value={progress.texts.length} label="Graded texts"/><MiniStat value={progress.minedWords} label="Mined words"/><MiniStat value={progress.readingChecks} label="Reading checks"/><MiniStat value={progress.listeningChecks} label="Listening checks"/></div>:null}
     {recommendation?<section className="adaptive-immersion">
       <div className="section-heading"><div><span className="course-kicker">ADAPTIVE NEXT STEP</span><h2>Focus on {recommendation.focus}</h2></div></div>
@@ -140,6 +141,7 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
         {recommendation.privateDocument?<article><span>Private authentic input</span><h3>{recommendation.privateDocument.title}</h3><p>{recommendation.privateDocument.reason}</p><small>{Math.round(recommendation.privateDocument.knownRatio*100)}% known lexical tokens · {recommendation.privateDocument.difficulty}</small><span className="adaptive-hint">Find it in Your Japanese below.</span></article>:null}
       </div>
     </section>:null}
+    <C1EnvironmentLab/>
     {missions.length?<section className="autonomy-missions">
       <div className="section-heading"><div><span className="course-kicker">P8 AUTONOMY MISSIONS</span><h2>Long-form B2 task chains</h2></div><span className="course-count">multi-document · cross-session</span></div>
       <p className="course-note">Each mission combines reading, listening and production across several sources. Final transfer stages require the same production target on a later day; progress is inferred from normal StudyEvents rather than a separate mission score.</p>
@@ -188,7 +190,7 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
       onStartProduction={onStartProductionTask}
       onOpenCoach={onOpenC1Coach}
     />
-    <C1AdvancedLab onOpenText={(id)=>void openText(id)} onStartSynthesis={onStartC1Synthesis} preferredSetId={preferredNativeSet}/>
+        <C1AdvancedLab onOpenText={(id)=>void openText(id)} onStartSynthesis={onStartC1Synthesis} preferredSetId={preferredNativeSet}/>
     <NativeListeningLab/>
     <NativeCurationPanel/>
     <ShadowingLab/>
