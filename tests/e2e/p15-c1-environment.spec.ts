@@ -35,7 +35,7 @@ test("P15 source portal selection keeps the selected institution and source cons
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
   const lab=page.locator(".p15-environment");
 
-  await lab.getByRole("button",{name:"Use source"}).nth(5).click();
+  await lab.getByRole("button",{name:"Use source"}).nth(6).click();
   const registration=lab.locator(".p15-register-source");
   await expect(registration).toContainText("経済産業研究所 RIETI");
   await expect(registration).toContainText("policy research");
