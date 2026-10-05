@@ -1,11 +1,14 @@
 import { useEffect,useLayoutEffect,useState } from "react";
+import { createThiepnAccountAuthProvider,type AuthContext } from "@thiepn/auth";
 import { getDefaultAudioProvider } from "@thiepn/audio";
+import { claimGuestWorkspace } from "@thiepn/local-db";
 import type { SearchResult } from "@thiepn/search";
 import { isStudyLesson,type StudyStep } from "@thiepn/study-player";
 import { searchLocalJapanese } from "./content";
 import { foundationSections } from "./study/foundationPrompts";
 import { Immersion } from "./immerse/Immersion";
 import { getImmersionProgress,type ImmersionProgress } from "./immerse/reader";
+import { AUTHENTIC_GUEST_ACCOUNT_ID,setAuthenticAccountId } from "./immerse/authentic";
 import { StudyPlayer,type StudyAnswer } from "./study/StudyPlayer";
 import { AiCoach } from "./ai/AiCoach";
 import { AdaptiveRemediation } from "./study/AdaptiveRemediation";
@@ -15,8 +18,9 @@ import { ProviderHealthPanel } from "./study/ProviderHealthPanel";
 import { HumanReviewPanel } from "./study/HumanReviewPanel";
 import { ReleaseOperationsPanel } from "./study/ReleaseOperationsPanel";
 import { RealWorldPerformancePanel } from "./study/RealWorldPerformancePanel";
+import { createJapaneseLanguageDashboardPublisher } from "./languageDashboard";
 import {
-  buildA1MilestoneSession,buildB1MilestoneSession,buildB2MilestoneSession,buildC1FoundationPractice,buildC1FoundationSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildP13C1SynthesisSession,buildP9RealWorldChainSession,buildP9RealWorldQualificationSession,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getC1FoundationAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,
+  buildA1MilestoneSession,buildB1MilestoneSession,buildB2MilestoneSession,buildC1FoundationPractice,buildC1FoundationSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildP13C1SynthesisSession,buildP9RealWorldChainSession,buildP9RealWorldQualificationSession,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getC1FoundationAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,GUEST_ACCOUNT_ID,setDevelopmentAccountId,
   type A1MilestoneProgress,type B1MilestoneProgress,type B2MilestoneProgress,type C1FoundationProgress,type ConjugationMasterySummary,type CourseUnitProgress,type GrammarMasterySummary,type KanaMasterySummary,type LexicalFluencySummary,type SentenceMasterySummary,type StudySummary,type VocabularyMasterySummary
 } from "./study/runtime";
 
@@ -58,6 +62,15 @@ const EMPTY_SENTENCE:SentenceMasterySummary={overall:0,comprehension:0,productio
 const EMPTY_LEXICAL_FLUENCY:LexicalFluencySummary={overall:0,recognition:0,activeUse:0,registerTransfer:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0,totalChunks:152,transferPrompts:18};
 const EMPTY_IMMERSION:ImmersionProgress={texts:[],minedWords:0,lookups:0,readingChecks:0,listeningChecks:0};
 
+const JAPANESE_ACCOUNT = createThiepnAccountAuthProvider();
+const JAPANESE_LANGUAGE_DASHBOARD =
+  createJapaneseLanguageDashboardPublisher(JAPANESE_ACCOUNT);
+const ANONYMOUS_AUTH:AuthContext={
+  accountId:null,
+  status:"anonymous",
+  permissions:new Set<string>()
+};
+
 export function App(){
   const [surface,setSurface]=useState<Surface>("Today");
   const [query,setQuery]=useState("");
@@ -80,8 +93,59 @@ export function App(){
   const [immersion,setImmersion]=useState<ImmersionProgress>(EMPTY_IMMERSION);
   const [completedToday,setCompletedToday]=useState(0);
   const [preferredCoachChain,setPreferredCoachChain]=useState<string|null>(null);
+  const [account,setAccount]=useState<AuthContext>(ANONYMOUS_AUTH);
+  const [accountConnected,setAccountConnected]=useState(false);
+  const [accountBusy,setAccountBusy]=useState(false);
 
+  useEffect(()=>{
+    let active=true;
+    let generation=0;
+    const apply=async(next:AuthContext)=>{
+      const epoch=++generation;
+      const authenticatedId=next.status==="authenticated"&&next.accountId
+        ?next.accountId
+        :null;
+      const connected=authenticatedId
+        ?await JAPANESE_ACCOUNT.completePendingConnection()
+        :false;
+      const accountId=authenticatedId&&connected
+        ?authenticatedId
+        :GUEST_ACCOUNT_ID;
+      if(authenticatedId&&connected){
+        await claimGuestWorkspace(GUEST_ACCOUNT_ID,authenticatedId);
+      }
+      if(!active||epoch!==generation)return;
+      setDevelopmentAccountId(accountId);
+      setAuthenticAccountId(accountId);
+      setAccountConnected(connected);
+      setAccount(next);
+    };
+    const unsubscribe=JAPANESE_ACCOUNT.subscribe((next)=>{
+      void apply(next).catch(()=>{
+        if(!active)return;
+        setDevelopmentAccountId(GUEST_ACCOUNT_ID);
+        setAuthenticAccountId(AUTHENTIC_GUEST_ACCOUNT_ID);
+        setAccountConnected(false);
+        setAccount(ANONYMOUS_AUTH);
+      });
+    });
+    void JAPANESE_ACCOUNT.refresh().catch(()=>{
+      if(!active)return;
+      setDevelopmentAccountId(GUEST_ACCOUNT_ID);
+      setAuthenticAccountId(AUTHENTIC_GUEST_ACCOUNT_ID);
+      setAccountConnected(false);
+      setAccount(ANONYMOUS_AUTH);
+    });
+    return()=>{active=false;generation+=1;unsubscribe();};
+  },[]);
   useEffect(()=>{void refreshDashboard();},[]);
+  useEffect(()=>{
+    if(account.status==="authenticated"&&accountConnected){
+      void refreshDashboard().then(()=>{
+        void JAPANESE_LANGUAGE_DASHBOARD.publish().catch(()=>{/* Core dashboard is non-blocking */});
+      });
+    }
+  },[account.status,account.accountId,accountConnected]);
   useEffect(()=>{
     if(surface!=="Library")return;
     let cancelled=false;setLibraryStatus("loading");
@@ -96,6 +160,36 @@ export function App(){
       ]);
       setSummary(nextSummary);setKanaMastery(nextKana);setVocabMastery(nextVocab);setConjugationMastery(nextConjugation);setGrammarMastery(nextGrammar);setSentenceMastery(nextSentence);setLexicalFluency(nextLexicalFluency);setCourseProgress(nextCourse);setMilestone(nextMilestone);setB1Milestone(nextB1Milestone);setB2Milestone(nextB2Milestone);setC1Foundation(nextC1Foundation);setImmersion(nextImmersion);
     }catch{/* local storage can be unavailable in hardened browsers */}
+  }
+
+  async function toggleAccount(){
+    if(accountBusy)return;
+    setAccountBusy(true);
+    try{
+      if(account.status!=="authenticated"){
+        await JAPANESE_ACCOUNT.signIn();
+        return;
+      }
+      if(!accountConnected){
+        await JAPANESE_ACCOUNT.connectApp();
+        const accountId=account.accountId;
+        if(accountId){
+          await claimGuestWorkspace(GUEST_ACCOUNT_ID,accountId);
+          setDevelopmentAccountId(accountId);
+          setAuthenticAccountId(accountId);
+          setAccountConnected(true);
+          await refreshDashboard();
+          await JAPANESE_LANGUAGE_DASHBOARD.publish();
+        }
+        return;
+      }
+      await JAPANESE_ACCOUNT.signOut();
+      setDevelopmentAccountId(GUEST_ACCOUNT_ID);
+      setAuthenticAccountId(AUTHENTIC_GUEST_ACCOUNT_ID);
+      setAccountConnected(false);
+    }finally{
+      setAccountBusy(false);
+    }
   }
 
   function openSession(queue:StudyStep[]){
@@ -170,7 +264,11 @@ export function App(){
     if(active instanceof HTMLElement)active.blur();
     setSession(null);
     requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:"auto"})));
-    void refreshDashboard();
+    void refreshDashboard().then(()=>{
+      if(account.status==="authenticated"&&accountConnected){
+        void JAPANESE_LANGUAGE_DASHBOARD.publish().catch(()=>{/* Core dashboard is non-blocking */});
+      }
+    });
   }
 
   useLayoutEffect(()=>{
@@ -179,7 +277,7 @@ export function App(){
 
   return <>
     {session?<div className="study-shell"><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></div>:<div className="app-shell">
-      <header className="topbar"><div><strong>Japanese</strong><span className="phase">P15 authentic C1 environment · source evaluation · multi-day writing · live defense</span></div><button className="quiet-button account-button" type="button">Account</button></header>
+      <header className="topbar"><div><strong>Japanese</strong><span className="phase">P15 authentic C1 environment · source evaluation · multi-day writing · live defense</span></div><button className="quiet-button account-button" disabled={accountBusy} onClick={()=>void toggleAccount()} type="button">{accountBusy?"Account…":account.status!=="authenticated"?"Connect Account":accountConnected?"Sign out":"Connect Account"}</button></header>
       <main className="content">
         {surface==="Today"&&<Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
         {surface==="Learn"&&<Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} onPreferredCoachChainApplied={()=>setPreferredCoachChain(null)} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>} 
