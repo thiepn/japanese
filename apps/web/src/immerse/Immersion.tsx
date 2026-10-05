@@ -9,6 +9,7 @@ import { C1AdvancedLab } from "./C1AdvancedLab";
 import { C1AutonomyPanel } from "../study/C1AutonomyPanel";
 import { C1EnvironmentLab } from "./C1EnvironmentLab";
 import { C1ResearchQualityLab } from "./C1ResearchQualityLab";
+import { C1PrecisionLab } from "./C1PrecisionLab";
 import { getAdaptiveImmersionRecommendation,type AdaptiveImmersionRecommendation } from "./adaptive";
 import { getAutonomyMissionProgress,type AutonomyMissionProgress } from "../study/autonomyMissions";
 import type { ReadingQuestion } from "@thiepn/content-schema";
@@ -133,7 +134,7 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
 
   return <section className="dashboard immerse-page">
     <p className="eyebrow">IMMERSE</p><h1>A1 → C1 autonomy</h1>
-    <p className="lead">P16 keeps the P15 authentic C1 environment, then raises the quality bar: document sources properly, keep licensed/private evidence with explicit provenance, export finished work for human review and build specialist tracks from the sources and terminology you actually use.</p>
+    <p className="lead">P17 keeps the P15–P16 authentic research environment, then targets the C1→C2 gap: precision rewrites, calibrated register and certainty, sustained specialist discourse, fresh-source reconstruction and deliberate repair after human feedback.</p>
     {progress?<div className="stat-row four"><MiniStat value={progress.texts.length} label="Graded texts"/><MiniStat value={progress.minedWords} label="Mined words"/><MiniStat value={progress.readingChecks} label="Reading checks"/><MiniStat value={progress.listeningChecks} label="Listening checks"/></div>:null}
     {recommendation?<section className="adaptive-immersion">
       <div className="section-heading"><div><span className="course-kicker">ADAPTIVE NEXT STEP</span><h2>Focus on {recommendation.focus}</h2></div></div>
@@ -144,6 +145,7 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
     </section>:null}
     <C1EnvironmentLab/>
     <C1ResearchQualityLab/>
+    <C1PrecisionLab/>
     {missions.length?<section className="autonomy-missions">
       <div className="section-heading"><div><span className="course-kicker">P8 AUTONOMY MISSIONS</span><h2>Long-form B2 task chains</h2></div><span className="course-count">multi-document · cross-session</span></div>
       <p className="course-note">Each mission combines reading, listening and production across several sources. Final transfer stages require the same production target on a later day; progress is inferred from normal StudyEvents rather than a separate mission score.</p>
