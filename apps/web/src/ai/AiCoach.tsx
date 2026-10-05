@@ -164,7 +164,8 @@ export function AiCoach(){
     setTargetLevel(next);setChainId(scenarioChainsForLevel(next)[0]!.id);setHistory([]);setLast(null);setText("");setDelayedRevision(null);setStatus("idle");sessionId.current=crypto.randomUUID();
   }
   function startDelayedRevision(candidate:DelayedRevisionCandidate){
-    setTargetLevel(candidate.targetLevel==="C1"?"C1":"B2");setMode("writing_revision");setDelayedRevision(candidate);setHistory([]);setLast(null);setText("");setStatus("idle");sessionId.current=crypto.randomUUID();
+    const nextLevel:ScenarioLevel=candidate.targetLevel==="C1"?"C1":"B2";
+    setTargetLevel(nextLevel);setChainId(scenarioChainsForLevel(nextLevel)[0]!.id);setMode("writing_revision");setDelayedRevision(candidate);setHistory([]);setLast(null);setText("");setStatus("idle");sessionId.current=crypto.randomUUID();
   }
 
   function startSpeech(){
