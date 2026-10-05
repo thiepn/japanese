@@ -632,7 +632,7 @@ export function buildC1WritingProjectProgress(events:readonly StudyEvent[],nowMs
       pressureId:String(event.metadata?.pressureId??""),
       pressureType:String(event.metadata?.pressureType??"direct_rebuttal") as C1PressureType,
       response:String(event.metadata?.learnerResponse??""),
-      inputMode:event.metadata?.inputMode==="speech"?"speech":"text",
+      inputMode:(event.metadata?.inputMode==="speech"?"speech":"text") as C1ProjectDefense["inputMode"],
       ...(typeof event.metadata?.sourceId==="string"?{sourceId:event.metadata.sourceId}:{})
     })).filter((item)=>item.pressureId&&item.response);
     const delayHours=draft?Math.max(0,(nowMs-Date.parse(draft.occurredAt))/3_600_000):0;
