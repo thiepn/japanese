@@ -133,7 +133,7 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
     questionIndex={questionIndex} feedback={feedback} answerQuestion={answerQuestion} nextQuestion={nextQuestion} speakingSegment={speakingSegment} speakSegment={speakSegment}/>;
 
   return <section className="dashboard immerse-page">
-    <p className="eyebrow">IMMERSE</p><h1>A1 → C1 autonomy</h1>
+    <p className="eyebrow">IMMERSE</p><h1>A1 → C1 autonomy → C2 precision</h1>
     <p className="lead">P17 keeps the P15–P16 authentic research environment, then targets the C1→C2 gap: precision rewrites, calibrated register and certainty, sustained specialist discourse, fresh-source reconstruction and deliberate repair after human feedback.</p>
     {progress?<div className="stat-row four"><MiniStat value={progress.texts.length} label="Graded texts"/><MiniStat value={progress.minedWords} label="Mined words"/><MiniStat value={progress.readingChecks} label="Reading checks"/><MiniStat value={progress.listeningChecks} label="Listening checks"/></div>:null}
     {recommendation?<section className="adaptive-immersion">
