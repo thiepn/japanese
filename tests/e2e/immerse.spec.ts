@@ -7,6 +7,8 @@ test("Immerse exposes graded A1→C1 autonomy and long-form missions without cre
   await expect(page.getByRole("heading",{name:"A1 → C1 autonomy"})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Long-form B2 task chains"})).toBeVisible();
   await expect(page.getByRole("heading",{name:"C1 evidence, policy & causal reasoning"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Listen across real sources, then synthesize"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Respond before you can script the answer"})).toBeVisible();
   await expect(page.locator(".mission-card")).toHaveCount(6);
   await expect(page.locator(".immersion-card")).toHaveCount(50);
   await expect(page.getByRole("heading",{name:/Focus on (reading|listening)/})).toBeVisible();
