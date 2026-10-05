@@ -1,9 +1,9 @@
 import { useEffect,useMemo,useRef,useState } from "react";
-import { createHttpCoachTransport,type CoachFeedback,type CoachHistoryTurn,type CoachMode,type CoachResponse } from "@thiepn/coach";
+import { createHttpCoachTransport,type CoachFeedback,type CoachHistoryTurn,type CoachLevel,type CoachMode,type CoachResponse } from "@thiepn/coach";
 import { listStudyEvents,saveStudyEvent } from "@thiepn/local-db";
 import { productiveTasks } from "../coreContent";
 import { DEVELOPMENT_ACCOUNT_ID,DEVELOPMENT_DEVICE_ID } from "../study/runtime";
-import { scenarioChains,scenarioChain } from "./scenarioChains";
+import { scenarioChain,scenarioChainsForLevel,type ScenarioLevel } from "./scenarioChains";
 
 type InputMode="text"|"speech";
 interface DelayedRevisionCandidate {
@@ -13,6 +13,7 @@ interface DelayedRevisionCandidate {
   at:string;
   delayHours:number;
   feedbackMessages:string[];
+  targetLevel:CoachLevel;
 }
 interface CoachHistorySummary {
   turns:number;
@@ -34,21 +35,26 @@ export function AiCoach(){
   const [speechState,setSpeechState]=useState<"idle"|"listening"|"unsupported"|"error">("idle");
   const [inputMode,setInputMode]=useState<InputMode>("text");
   const [revisionHistory,setRevisionHistory]=useState<CoachHistorySummary>(EMPTY_HISTORY);
-  const [chainId,setChainId]=useState(scenarioChains[0]!.id);
+  const [targetLevel,setTargetLevel]=useState<ScenarioLevel>("C1");
+  const [chainId,setChainId]=useState(scenarioChainsForLevel("C1")[0]!.id);
   const [delayedRevision,setDelayedRevision]=useState<DelayedRevisionCandidate|null>(null);
   const sessionId=useRef(crypto.randomUUID());
   const learnerTurns=history.filter((turn)=>turn.role==="learner").length;
+  const availableChains=scenarioChainsForLevel(targetLevel);
   const chain=scenarioChain(chainId);
   const chainStage=chain.stages[Math.min(learnerTurns,chain.stages.length-1)]!;
-  const conversationTask=productiveTasks.find((task)=>task.level==="B2"&&task.tags.includes("ai-conversation"));
-  const writingTask=productiveTasks.find((task)=>task.level==="B2"&&task.tags.includes("writing-revision"));
+  const effectiveLevel:CoachLevel=delayedRevision?.targetLevel??targetLevel;
+  const conversationTask=productiveTasks.find((task)=>task.level===effectiveLevel&&task.mode==="speaking"&&(effectiveLevel==="B2"?task.tags.includes("ai-conversation"):task.milestoneArea==="spoken_interaction"))
+    ??productiveTasks.find((task)=>task.level===effectiveLevel&&task.mode==="speaking");
+  const writingTask=productiveTasks.find((task)=>task.level===effectiveLevel&&task.mode==="writing"&&(effectiveLevel==="B2"?task.tags.includes("writing-revision"):task.tags.includes("advanced-production")))
+    ??productiveTasks.find((task)=>task.level===effectiveLevel&&task.mode==="writing");
   const delayedTask=delayedRevision?productiveTasks.find((task)=>task.id===delayedRevision.taskId):undefined;
   const activeTask=delayedTask??(mode==="conversation"?conversationTask:writingTask);
   const scenario=mode==="conversation"
     ?chainStage.scenario
     :delayedRevision
-      ?"Rewrite a previous B2 response after a delay. Preserve the intended meaning, fix high-value recurring issues, and improve coherence without copying a model answer."
-      :(activeTask?.situation??"Write and revise a connected B2-level response.");
+      ?"Rewrite a previous "+effectiveLevel+" response after a delay. Preserve the intended meaning, fix high-value recurring issues, and improve coherence without copying a model answer."
+      :(activeTask?.situation??"Write and revise a connected "+effectiveLevel+" response.");
   const goals=mode==="conversation"
     ?chainStage.goals
     :delayedRevision
@@ -106,7 +112,9 @@ export function AiCoach(){
           }
         }
       }
-      dueRevisions.push({eventId:event.id,taskId,learnerText,at:event.occurredAt,delayHours:ageHours,feedbackMessages});
+      const savedLevel=event.metadata?.targetLevel;
+      const revisionLevel:CoachLevel=savedLevel==="C1"||savedLevel==="B1+"||savedLevel==="B2"?savedLevel:(task?.level==="C1"?"C1":"B2");
+      dueRevisions.push({eventId:event.id,taskId,learnerText,at:event.occurredAt,delayHours:ageHours,feedbackMessages,targetLevel:revisionLevel});
       if(dueRevisions.length>=5)break;
     }
     setRevisionHistory({turns:coachEvents.length,areaCounts,patterns,recent,dueRevisions});
@@ -118,8 +126,9 @@ export function AiCoach(){
     setStatus("sending");
     try{
       const response=await transport.evaluate({
-        sessionId:sessionId.current,mode,targetLevel:"B2",learnerText,history,scenario,goals,
-        register:mode==="conversation"?"neutral":"formal"
+        sessionId:sessionId.current,mode,targetLevel:effectiveLevel,learnerText,history,scenario,goals,
+        register:mode==="conversation"?(effectiveLevel==="C1"?"polite":"neutral"):"formal",
+        interactionStyle:mode==="conversation"?chain.interactionStyle:"guided"
       });
       const nextHistory:CoachHistoryTurn[]=mode==="conversation"
         ?[...history,{role:"learner",text:learnerText},{role:"coach",text:response.replyJapanese}]
@@ -133,10 +142,10 @@ export function AiCoach(){
         promptFamily:"ai-coach-"+mode,responseMode:"ai-coach-"+inputMode,result:"skipped",
         contextId:"ai-coach-"+sessionId.current,sourceId:"thiepn-original",
         metadata:{
-          coachSessionId:sessionId.current,mode,targetLevel:"B2",learnerText,coachReply:response.replyJapanese,
+          coachSessionId:sessionId.current,mode,targetLevel:effectiveLevel,learnerText,coachReply:response.replyJapanese,
           feedback:response.feedback,evidenceContract:response.evidenceContract,
           modelFeedbackAppliedToMastery:false,
-          ...(mode==="conversation"?{scenarioChainId:chain.id,scenarioStageId:chainStage.id,scenarioStageIndex:Math.min(learnerTurns,chain.stages.length-1)}:{}),
+          ...(mode==="conversation"?{scenarioChainId:chain.id,scenarioStageId:chainStage.id,scenarioStageIndex:Math.min(learnerTurns,chain.stages.length-1),interactionStyle:chain.interactionStyle,...(chainStage.pressure?{spontaneousPressure:chainStage.pressure}:{}),...(effectiveLevel==="C1"?{p13C1SpontaneousInteraction:true}:{} )}:{}),
           ...(delayedRevision?{revisionOfEventId:delayedRevision.eventId,revisionDelayHours:Math.round(delayedRevision.delayHours)}:{})
         }
       });
@@ -151,8 +160,11 @@ export function AiCoach(){
   function selectChain(nextId:string){
     setChainId(nextId);setHistory([]);setLast(null);setText("");setDelayedRevision(null);sessionId.current=crypto.randomUUID();
   }
+  function selectLevel(next:ScenarioLevel){
+    setTargetLevel(next);setChainId(scenarioChainsForLevel(next)[0]!.id);setHistory([]);setLast(null);setText("");setDelayedRevision(null);setStatus("idle");sessionId.current=crypto.randomUUID();
+  }
   function startDelayedRevision(candidate:DelayedRevisionCandidate){
-    setMode("writing_revision");setDelayedRevision(candidate);setHistory([]);setLast(null);setText("");setStatus("idle");sessionId.current=crypto.randomUUID();
+    setTargetLevel(candidate.targetLevel==="C1"?"C1":"B2");setMode("writing_revision");setDelayedRevision(candidate);setHistory([]);setLast(null);setText("");setStatus("idle");sessionId.current=crypto.randomUUID();
   }
 
   function startSpeech(){
@@ -170,19 +182,23 @@ export function AiCoach(){
   }
 
   return <section className="ai-coach-card">
-    <div className="section-heading"><div><span className="course-kicker">P8 SUSTAINED INTERACTION</span><h2>Scenario chains & delayed revision</h2></div><span className="status-pill">advisory</span></div>
-    <p className="coach-explainer">Model feedback is kept separate from durable learner mastery. It can suggest corrections and next revisions, but it cannot silently mark grammar, writing or speaking as mastered. No acoustic pronunciation score is claimed.</p>
+    <div className="section-heading"><div><span className="course-kicker">P13 SPONTANEOUS INTERACTION</span><h2>Guided B2 → hidden-future C1 pressure</h2></div><span className="status-pill">advisory</span></div>
+    <p className="coach-explainer">C1 conversation now hides future complications and asks you to infer when to clarify, concede, repair, reframe or qualify. Model feedback remains separate from durable learner mastery and no acoustic pronunciation score is claimed.</p>
+    <div className="coach-mode" role="tablist" aria-label="Conversation level">
+      <button className={targetLevel==="B2"?"active":""} type="button" onClick={()=>selectLevel("B2")}>B2 guided</button>
+      <button className={targetLevel==="C1"?"active":""} type="button" onClick={()=>selectLevel("C1")}>C1 spontaneous</button>
+    </div>
     <div className="coach-mode" role="tablist" aria-label="Coach mode">
       <button className={mode==="conversation"?"active":""} type="button" onClick={()=>switchMode("conversation")}>Conversation</button>
       <button className={mode==="writing_revision"?"active":""} type="button" onClick={()=>switchMode("writing_revision")}>Writing revision</button>
     </div>
     {mode==="conversation"?<div className="coach-chain">
-      <label><span>Scenario chain</span><select value={chainId} onChange={(event)=>selectChain(event.target.value)}>{scenarioChains.map((item)=><option value={item.id} key={item.id}>{item.title}</option>)}</select></label>
-      <div className="coach-chain-stages">{chain.stages.map((stage,index)=><span className={index<learnerTurns?"done":index===Math.min(learnerTurns,chain.stages.length-1)?"active":""} key={stage.id}>{index+1}. {stage.title}</span>)}</div>
+      <label><span>Scenario chain</span><select value={chainId} onChange={(event)=>selectChain(event.target.value)}>{availableChains.map((item)=><option value={item.id} key={item.id}>{item.title}</option>)}</select></label>
+      <div className="coach-chain-stages">{(chain.hiddenFutureStages?chain.stages.slice(0,Math.min(learnerTurns,chain.stages.length-1)+1):chain.stages).map((stage,index)=><span className={index<learnerTurns?"done":index===Math.min(learnerTurns,chain.stages.length-1)?"active":""} key={stage.id}>{index+1}. {stage.title}</span>)}{chain.hiddenFutureStages&&learnerTurns<chain.stages.length-1?<span>future pressure hidden · {chain.stages.length-learnerTurns-1}</span>:null}</div>
       <p>{chain.description}</p>
     </div>:null}
     {delayedRevision?<section className="delayed-revision-source"><div><span className="course-kicker">DELAYED REVISION</span><strong>{Math.round(delayedRevision.delayHours)}h since original attempt</strong></div><details><summary>Original response + prior feedback targets</summary><p lang="ja">{delayedRevision.learnerText}</p>{delayedRevision.feedbackMessages.length?<ul>{delayedRevision.feedbackMessages.slice(0,5).map((item)=><li key={item}>{item}</li>)}</ul>:null}</details></section>:null}
-    <div className="coach-scenario"><small>{mode==="conversation"?"Current stage":"Scenario"}</small><p>{scenario}</p>{goals.length?<ul className="coach-goals">{goals.map((goal)=><li key={goal}>{goal}</li>)}</ul>:null}</div>
+    <div className="coach-scenario"><small>{mode==="conversation"?"Current stage · "+effectiveLevel:"Scenario · "+effectiveLevel}</small><p>{scenario}</p>{goals.length?(mode==="conversation"&&chain.hiddenFutureStages?<details><summary>Reveal target moves</summary><ul className="coach-goals">{goals.map((goal)=><li key={goal}>{goal}</li>)}</ul></details>:<ul className="coach-goals">{goals.map((goal)=><li key={goal}>{goal}</li>)}</ul>):null}</div>
     {mode==="conversation"&&history.length?<div className="coach-thread">{history.map((turn,index)=><div className={"coach-turn "+turn.role} key={index}><span>{turn.role==="learner"?"You":"Coach"}</span><p lang="ja">{turn.text}</p></div>)}</div>:null}
     <label className="coach-input"><span>{mode==="conversation"?"Respond in Japanese":"Draft or paste your Japanese response"}</span><textarea rows={mode==="conversation"?4:8} value={text} onChange={(event)=>{setText(event.target.value);setInputMode("text");}} placeholder="日本語で書いてください…"/></label>
     <div className="coach-actions">
@@ -201,7 +217,7 @@ export function AiCoach(){
       {revisionHistory.patterns.length?<div className="coach-patterns"><strong>Repeated correction themes</strong><ul>{revisionHistory.patterns.map((pattern)=><li key={pattern.message}>{pattern.message}{pattern.count>1?<small> ×{pattern.count}</small>:null}</li>)}</ul></div>:null}
       {revisionHistory.dueRevisions.length?<div className="delayed-revision-queue"><strong>Delayed revisions due</strong>{revisionHistory.dueRevisions.map((candidate)=><article key={candidate.eventId}><div><span>{Math.round(candidate.delayHours)}h old</span><p lang="ja">{candidate.learnerText}</p></div><button className="unit-action" type="button" onClick={()=>startDelayedRevision(candidate)}>Revise after delay</button></article>)}</div>:null}
       {revisionHistory.recent.length?<details><summary>Recent learner revisions</summary>{revisionHistory.recent.map((item,index)=><div className="coach-history-turn" key={item.at+index}><small>{item.mode} · {new Date(item.at).toLocaleDateString()}</small><p lang="ja">{item.learnerText}</p></div>)}</details>:null}
-      <p className="course-note">History is derived from stored advisory coach events. P8 can schedule a delayed rewrite after 20+ hours, but AI judgments still do not alter mastery or FSRS scheduling.</p>
+      <p className="course-note">History is derived from stored advisory coach events. P13 can continue a C1 pressure exchange or schedule a delayed rewrite after 20+ hours, but AI judgments still do not alter mastery or FSRS scheduling.</p>
     </section>:null}
   </section>;
 }
