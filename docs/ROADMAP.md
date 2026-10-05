@@ -363,6 +363,23 @@ P15 stores source identity and learner-authored work rather than automatically c
 
 P15 remains authoritative for source evaluation, project sequencing, hidden-pressure defense and delayed revision. P11 remains an independent held release-evidence track until its actual external-review admission requirement is satisfied. See `docs/P16_ACCEPTANCE.md`.
 
+## P17 — C1→C2 Precision Bridge, Stylistic Control & Specialist Discourse
+
+**Implementation complete.** P17 targets advanced control rather than adding more broad curriculum volume:
+
+- eight precision-transformation modes train compression, expansion, register shift, stance/certainty calibration, lexical precision, cohesion restructuring, counterargument integration and audience translation;
+- every transformation preserves the original text, revised text and learner rationale, so the evidence remains inspectable and does not become an opaque style score;
+- compression and expansion receive bounded structural validation, while semantic quality remains outside automatic mastery;
+- P16 specialist tracks become the anchor for a five-function advanced discourse cycle: position, mechanism/evidence, expert challenge, audience shift and synthesis;
+- one complete five-stage cycle records breadth; sustained specialist discourse requires a delayed 20+ hour repeat of every stage;
+- Japanese browser speech recognition is admitted as transcript evidence only, with typed fallback explicitly marked as a speaking proxy;
+- fresh-source refresh work compares two exact P15 registered sources and requires explicit analysis of changed claim, continuity, argumentative impact and remaining uncertainty;
+- P16 human-review evidence feeds a repair loop where the learner explicitly accepts, modifies or rejects feedback and produces a reasoned revised passage;
+- all P17 progress is derived from normal StudyEvents with no second scheduler or mastery store;
+- the C1/C2 portfolio advances to schema v4 and carries precision, specialist-discourse reliability, fresh-source and human-review-repair evidence.
+
+P17 is a C1→C2 **bridge**, not a C2 certificate. Structural precision, delayed specialist repetition, source comparison and human-feedback repair remain bounded evidence. P11 release qualification stays independent. See `docs/P17_ACCEPTANCE.md`.
+
 ## Later
 
-The next phases should focus on a C1→C2 precision bridge rather than another breadth/progress layer: stylistic and rhetorical precision, sustained specialist discourse, fresh-source refresh tasks, richer longitudinal human-review loops and more natural real-time voice interaction where a suitable speech stack can support the evidence claim. The existing P11 release-evidence track should remain independent.
+The next phase should deepen live advanced interaction rather than add another breadth layer: longer unscripted exchanges, interruption/repair, real-time reformulation, expert-domain transfer under unpredictable dialogue pressure, and richer prosodic/acoustic evidence only where the underlying speech stack can support the claim. A later external C2-oriented human evaluation track can be layered on top without rewriting mastery.
