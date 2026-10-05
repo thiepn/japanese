@@ -347,6 +347,22 @@ P14 still treats internal reliability as descriptive product evidence rather tha
 
 P15 stores source identity and learner-authored work rather than automatically copying external documents into the canonical course. Learner source evaluation remains critical-reading evidence, not independent fact verification, and the independent P11 release-evidence state remains unchanged. See `docs/P15_ACCEPTANCE.md`.
 
+## P16 — C1 Research Quality, Bibliography, Human Review & Specialist Tracks
+
+**Implementation complete.** P16 raises the evidential and research quality of the P15 authentic C1 environment instead of creating another progress subsystem:
+
+- registered P15 sources can receive structured bibliography metadata covering responsible author/person, organization, publication date, access date, container/report/journal, DOI and exact URL;
+- one canonical bibliography record renders into Japanese research-note, APA-like and compact citation displays without changing source identity;
+- learner-supplied source excerpts are stored as either private-reference material or explicitly redistributable/licensed material;
+- redistributable excerpts require explicit license metadata, while arbitrary external pages are never automatically scraped or promoted into the public canonical package;
+- completed P15 projects can export reviewer packets binding thesis, first draft, delayed revision, defenses, source map, bibliography and an explicit review rubric;
+- human review records four separate 0–4 dimensions: argument control, source use, language precision and register control;
+- each human review is bound to the exact draft/revision timestamps and remains external qualitative evidence rather than durable mastery or CEFR certification;
+- specialist tracks connect existing real sources, mined specialist terms and C1 projects around the learner's actual interests;
+- P16 progress is projected from the same StudyEvent stream and does not introduce a second scheduler, mastery store or proficiency authority.
+
+P15 remains authoritative for source evaluation, project sequencing, hidden-pressure defense and delayed revision. P11 remains an independent held release-evidence track until its actual external-review admission requirement is satisfied. See `docs/P16_ACCEPTANCE.md`.
+
 ## Later
 
-Later phases should improve the quality and realism of the established C1 environment: licensed/private source ingestion where appropriate, richer bibliography metadata, selected human review of long-form projects, interest-driven specialist tracks, more natural live voice interaction and a C1→C2 bridge focused on stylistic precision and sustained specialist discourse rather than another progress subsystem.
+The next phases should focus on a C1→C2 precision bridge rather than another breadth/progress layer: stylistic and rhetorical precision, sustained specialist discourse, fresh-source refresh tasks, richer longitudinal human-review loops and more natural real-time voice interaction where a suitable speech stack can support the evidence claim. The existing P11 release-evidence track should remain independent.
