@@ -15,12 +15,12 @@ import { HumanReviewPanel } from "./study/HumanReviewPanel";
 import { ReleaseOperationsPanel } from "./study/ReleaseOperationsPanel";
 import { RealWorldPerformancePanel } from "./study/RealWorldPerformancePanel";
 import {
-  buildA1MilestoneSession,buildB1MilestoneSession,buildB2MilestoneSession,buildC1FoundationPractice,buildC1FoundationSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildP9RealWorldChainSession,buildP9RealWorldQualificationSession,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getC1FoundationAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,
+  buildA1MilestoneSession,buildB1MilestoneSession,buildB2MilestoneSession,buildC1FoundationPractice,buildC1FoundationSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildP13C1SynthesisSession,buildP9RealWorldChainSession,buildP9RealWorldQualificationSession,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getC1FoundationAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,
   type A1MilestoneProgress,type B1MilestoneProgress,type B2MilestoneProgress,type C1FoundationProgress,type ConjugationMasterySummary,type CourseUnitProgress,type GrammarMasterySummary,type KanaMasterySummary,type LexicalFluencySummary,type SentenceMasterySummary,type StudySummary,type VocabularyMasterySummary
 } from "./study/runtime";
 
 type Surface="Today"|"Learn"|"Immerse"|"Library"|"Progress";
-const EMPTY_SUMMARY:StudySummary={due:0,newKana:5,newVocabulary:2,listening:0,application:0,course:0,learnedKana:0,totalKana:217,learnedVocabulary:0,totalVocabulary:626,memoryTraces:0};
+const EMPTY_SUMMARY:StudySummary={due:0,newKana:5,newVocabulary:2,listening:0,application:0,course:0,learnedKana:0,totalKana:217,learnedVocabulary:0,totalVocabulary:658,memoryTraces:0};
 const EMPTY_KANA:KanaMasterySummary={overall:0,hiragana:0,katakana:0,recognition:0,readingRecall:0,formSelection:0,listening:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
 const EMPTY_VOCAB:VocabularyMasterySummary={overall:0,meaning:0,reading:0,listening:0,activeUse:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
 const EMPTY_CONJUGATION:ConjugationMasterySummary={overall:0,politeNegative:0,politePast:0,politePastNegative:0,teForm:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
@@ -54,7 +54,7 @@ const EMPTY_C1_FOUNDATION:C1FoundationProgress={complete:false,answered:0,total:
   writing:{activity:"writing",correct:0,answered:0,total:3,score:0}
 }};
 const EMPTY_SENTENCE:SentenceMasterySummary={overall:0,comprehension:0,production:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
-const EMPTY_LEXICAL_FLUENCY:LexicalFluencySummary={overall:0,recognition:0,activeUse:0,registerTransfer:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0,totalChunks:120,transferPrompts:18};
+const EMPTY_LEXICAL_FLUENCY:LexicalFluencySummary={overall:0,recognition:0,activeUse:0,registerTransfer:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0,totalChunks:152,transferPrompts:18};
 const EMPTY_IMMERSION:ImmersionProgress={texts:[],minedWords:0,lookups:0,readingChecks:0,listeningChecks:0};
 
 export function App(){
@@ -146,6 +146,10 @@ export function App(){
     setSessionStatus("loading");
     try{openSession(await buildProductiveTaskPractice(taskId));setSessionStatus("idle");}catch{setSessionStatus("error");}
   }
+  async function startC1Synthesis(packId:string){
+    setSessionStatus("loading");
+    try{openSession(await buildP13C1SynthesisSession(packId));setSessionStatus("idle");}catch{setSessionStatus("error");}
+  }
   async function startRealWorldChain(chainId:string){
     setSessionStatus("loading");
     try{openSession(await buildP9RealWorldChainSession(chainId));setSessionStatus("idle");}catch{setSessionStatus("error");}
@@ -173,11 +177,11 @@ export function App(){
 
   return <>
     {session?<div className="study-shell"><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></div>:<div className="app-shell">
-      <header className="topbar"><div><strong>Japanese</strong><span className="phase">P12 C1 foundation · advanced discourse · independent Japanese</span></div><button className="quiet-button account-button" type="button">Account</button></header>
+      <header className="topbar"><div><strong>Japanese</strong><span className="phase">P13 C1 native depth · multi-source synthesis · spontaneous interaction</span></div><button className="quiet-button account-button" type="button">Account</button></header>
       <main className="content">
         {surface==="Today"&&<Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
         {surface==="Learn"&&<Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>} 
-        {surface==="Immerse"&&<Immersion onStartProductionTask={(taskId)=>void startProductiveTask(taskId)}/>} 
+        {surface==="Immerse"&&<Immersion onStartProductionTask={(taskId)=>void startProductiveTask(taskId)} onStartC1Synthesis={(packId)=>void startC1Synthesis(packId)}/>} 
         {surface==="Progress"&&<Progress kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} immersion={immersion} summary={summary} course={courseProgress} completedToday={completedToday}/>} 
         {surface==="Library"&&<Library query={query} setQuery={setQuery} results={results} status={libraryStatus}/>}
       </main>
@@ -201,7 +205,7 @@ function Learn({summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,c
   const kanaCoverage=summary.totalKana?Math.round(summary.learnedKana/summary.totalKana*100):0;
   const vocabCoverage=summary.totalVocabulary?Math.round(summary.learnedVocabulary/summary.totalVocabulary*100):0;
   return <section className="dashboard learn-page"><p className="eyebrow">LEARN</p><h1>Foundation → C1</h1>
-    <p className="lead">P12 establishes the C1 foundation as advanced independent discourse rather than a pile of rare forms: evidence and inference, qualification, synthesis, counterargument, causal restraint, register and accountability all stay inside the same course, review and immersion system. P11 release evidence remains separate and unchanged.</p>
+    <p className="lead">P13 keeps the C1 foundation inside the same learner graph while adding the missing real-world depth: audited native sources, explicit multi-source synthesis and hidden-future spontaneous interaction. P11 release evidence remains separate and unchanged.</p>
     <div className="course-stack foundation-stack">
       <article className="course-card"><div><span className="course-kicker">SCRIPT FOUNDATION</span><h2>Kana</h2><p>{foundationSections.map((section)=>section.label).join(" · ")}</p></div><div className="course-progress"><strong>{kanaCoverage}%</strong><span>{summary.learnedKana} / {summary.totalKana} introduced</span></div></article>
       <article className="course-card"><div><span className="course-kicker">A1→C1 LEXICON</span><h2>Useful words + kanji in context</h2><p>Meaning · reading · listening · active recall</p></div><div className="course-progress"><strong>{vocabCoverage}%</strong><span>{summary.learnedVocabulary} / {summary.totalVocabulary} words introduced</span></div></article>
