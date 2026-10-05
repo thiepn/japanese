@@ -24,7 +24,7 @@
     "@thiepn/audio": "workspace:*",
     "@thiepn/coach": "workspace:*",
     "@thiepn/japanese-nlp": "workspace:*",
-    "@thiepn/languages": "github:thiepn/languages#e74a10aa9d9d161c7f427ce7691be32df4bbc31c"
+    "@thiepn/languages": "github:thiepn/languages#55d369f2e855b3cd98666492052304b3a0c68f6c"
   },
   "devDependencies": {
     "@types/react": "19.3.0",
