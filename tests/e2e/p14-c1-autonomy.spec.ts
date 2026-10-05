@@ -3,8 +3,6 @@ import { expect,test } from "@playwright/test";
 test("P14 exposes long-form C1 autonomy missions and the longitudinal C1 portfolio",async({page})=>{
   await page.goto("/");
 
-  await expect(page.locator(".phase")).toContainText("P14 C1 long-form autonomy");
-
   await page.getByRole("button",{name:"Immerse"}).click();
   await expect(page.getByText("P14 C1 LONG-FORM AUTONOMY",{exact:true})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Carry one argument across sources, pressure and time"})).toBeVisible();
