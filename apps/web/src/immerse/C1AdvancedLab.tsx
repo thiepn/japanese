@@ -64,6 +64,7 @@ export function C1AdvancedLab({onOpenText,onStartSynthesis}:{onOpenText:(id:stri
       <label><span>C1 native-source set</span><select value={setId} onChange={(event)=>chooseSet(event.target.value)}>
         {c1NativeSourceSets.map((set)=><option key={set.id} value={set.id}>{set.title}</option>)}
       </select></label>
+      <h3>{sourceSet.title}</h3>
       <p>{sourceSet.description}</p>
       <small>{sourceSet.focus}</small>
     </div>
