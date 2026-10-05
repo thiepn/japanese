@@ -37,7 +37,7 @@ describe("P17 C1→C2 precision bridge",()=>{
     const compressed="複数資料を比較すると関連は確認できるが、因果は断定できない。したがって政策判断は限定的な結論と追加検証を前提にすべきである。".repeat(2);
     expect(()=>validateC1PrecisionTransformation(compression,original,compressed,"結論、最強の根拠、最大の留保を残し、背景説明と重複表現を削った。".repeat(3))).not.toThrow();
 
-    const short="観測された関連だけでは因果関係を断定できない。政策判断には追加検証が必要である。".repeat(3);
+    const short="観測された関連だけでは因果関係を断定できない。政策判断には追加検証が必要である。".repeat(6);
     const expanded="観測された関連は政策上重要だが、それだけで因果関係を断定することはできない。対象期間、母集団、代替説明を確認し、どの仮定の下で結論が成立するかを明示する必要がある。さらに、反対方向の因果や未観測要因が残るため、提言は暫定的なものとして見直し条件を設定すべきである。".repeat(4);
     expect(()=>validateC1PrecisionTransformation(expansion,short,expanded,"暗黙の前提、適用範囲、代替説明、見直し条件を明示して専門家向けに論証を展開した。".repeat(3))).not.toThrow();
   });
