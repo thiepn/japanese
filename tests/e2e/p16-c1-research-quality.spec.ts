@@ -13,4 +13,8 @@ test("P16 exposes research-quality tooling without creating a new mastery layer"
   await expect(lab.getByRole("heading",{name:"Bind expert feedback to the exact finished artifact"})).toBeVisible();
   await expect(lab.getByRole("heading",{name:"Build depth around your actual interests"})).toBeVisible();
   await expect(lab.getByText(/does not automatically scrape or republish external pages/i)).toBeVisible();
+
+  await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
+  await expect(page.getByText("P16 C1 PORTFOLIO",{exact:true})).toBeVisible();
+  await expect(page.getByText("P16 RESEARCH QUALITY",{exact:true})).toBeVisible();
 });
