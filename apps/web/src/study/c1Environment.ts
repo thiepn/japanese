@@ -472,6 +472,8 @@ export async function saveC1SpecialistTerm(input:{
 export async function saveC1ProjectSourceMap(input:{projectId:string;sourceIds:string[];thesis:string}):Promise<C1ProjectSourceMap>{
   const project=projectById(input.projectId);
   const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
+  const existingProgress=buildC1WritingProjectProgress(events).find((item)=>item.project.id===project.id)!;
+  if(existingProgress.draft)throw new Error("P15_PROJECT_SOURCE_MAP_LOCKED_AFTER_DRAFT");
   const sources=sourceRecordsFromEvents(events);
   const latestEvaluations=evaluationRecordsFromEvents(events);
   const evaluationIds=new Set(latestEvaluations.map((item)=>item.sourceId));
@@ -617,14 +619,14 @@ export function buildC1WritingProjectProgress(events:readonly StudyEvent[],nowMs
       .sort((a,b)=>a.occurredAt.localeCompare(b.occurredAt));
     const sourceMapEvent=[...relevant].reverse().find((event)=>event.metadata?.projectStage==="source_map");
     const draftEvent=[...relevant].reverse().find((event)=>event.metadata?.projectStage==="draft");
-    const revisionEvent=[...relevant].reverse().find((event)=>event.metadata?.projectStage==="revision");
-    const reflectionEvent=[...relevant].reverse().find((event)=>event.metadata?.projectStage==="reflection");
     const sourceMap=sourceMapEvent?readSourceMap(sourceMapEvent):undefined;
     const draft=draftEvent?readArtifact(draftEvent,"learnerDraft"):undefined;
+    const revisionEvent=[...relevant].reverse().find((event)=>event.metadata?.projectStage==="revision"&&(!draft||event.occurredAt>=draft.occurredAt));
     const revision=revisionEvent?readArtifact(revisionEvent,"learnerRevision"):undefined;
+    const reflectionEvent=[...relevant].reverse().find((event)=>event.metadata?.projectStage==="reflection"&&(!revision||event.occurredAt>=revision.occurredAt));
     const reflectionText=typeof reflectionEvent?.metadata?.learnerReflection==="string"?reflectionEvent.metadata.learnerReflection:"";
     const reflection=reflectionEvent&&reflectionText?{occurredAt:reflectionEvent.occurredAt,text:reflectionText}:undefined;
-    const defenses: C1ProjectDefense[]=relevant.filter((event)=>event.metadata?.projectStage==="defense").map((event)=>({
+    const defenses: C1ProjectDefense[]=relevant.filter((event)=>event.metadata?.projectStage==="defense"&&(!draft||event.occurredAt>=draft.occurredAt)).map((event)=>({
       occurredAt:event.occurredAt,
       pressureId:String(event.metadata?.pressureId??""),
       pressureType:String(event.metadata?.pressureType??"direct_rebuttal") as C1PressureType,
