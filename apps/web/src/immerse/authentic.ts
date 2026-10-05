@@ -10,7 +10,16 @@ import { selectProviderCandidate,senseResolutionForIds,type JapaneseMorphologyPr
 import { coreContent,lexicalChunks,senseForLexeme } from "../coreContent";
 import { conjugateLexeme,type ConjugationForm } from "../study/conjugation";
 
-export const AUTHENTIC_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
+export const AUTHENTIC_GUEST_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
+export let AUTHENTIC_ACCOUNT_ID=AUTHENTIC_GUEST_ACCOUNT_ID;
+export function setAuthenticAccountId(accountId:string):void{
+  const next=accountId.trim();
+  if(!next)throw new Error("ACCOUNT_ID_REQUIRED");
+  AUTHENTIC_ACCOUNT_ID=next;
+}
+export function getAuthenticAccountId():string{
+  return AUTHENTIC_ACCOUNT_ID;
+}
 const DEVICE_ID="p5-local-browser";
 const FORMS:ConjugationForm[]=["polite_nonpast","polite_negative","polite_past","polite_past_negative","plain_negative","plain_past","te_form"];
 const FUNCTION_WORDS=new Set(["は","が","を","に","で","と","も","へ","の","から","まで","より","か","ね","よ","ので","けど","が","て","たり","ながら","なら","たら","とき","前","後","そして","でも","しかし","また","です","ます","のに","ても","そう","らしい","みたい","はず","ため","よう","例えば","それでも"]);
