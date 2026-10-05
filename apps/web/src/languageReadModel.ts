@@ -4,6 +4,10 @@ import {
 } from "@thiepn/languages/read-model";
 import { listStudyEvents } from "@thiepn/local-db";
 import {
+  getC1PortfolioSummary,
+  type C1PortfolioSummary
+} from "./study/c1Reliability";
+import {
   DEVELOPMENT_ACCOUNT_ID,
   getA1MilestoneAssessmentProgress,
   getB1MilestoneAssessmentProgress,
@@ -30,7 +34,7 @@ import {
 } from "./study/runtime";
 
 export const JAPANESE_READ_MODEL_PRODUCER_REVISION =
-  "japanese-p8-read-model-v1";
+  "japanese-p8-read-model-v2";
 
 type MilestoneProgress =
   | A1MilestoneProgress
@@ -53,6 +57,7 @@ export interface JapaneseReadModelInputs {
     readonly b2: B2MilestoneProgress;
     readonly c1: C1FoundationProgress;
   };
+  readonly c1Portfolio?: C1PortfolioSummary;
   readonly activity: {
     readonly todayEvents: number;
     readonly sevenDayEvents: number;
@@ -78,6 +83,7 @@ export async function getJapaneseLanguageReadModel(
     b1,
     b2,
     c1,
+    c1Portfolio,
     events
   ] = await Promise.all([
     getStudySummary(now),
@@ -91,6 +97,7 @@ export async function getJapaneseLanguageReadModel(
     getB1MilestoneAssessmentProgress(),
     getB2MilestoneAssessmentProgress(),
     getC1FoundationAssessmentProgress(),
+    getC1PortfolioSummary(),
     listStudyEvents(DEVELOPMENT_ACCOUNT_ID)
   ]);
 
@@ -110,6 +117,7 @@ export async function getJapaneseLanguageReadModel(
     lexicalFluency,
     course,
     milestones: { a1, b1, b2, c1 },
+    c1Portfolio,
     activity,
     ...(appRoute ? { appRoute } : {})
   });
@@ -179,7 +187,31 @@ export function createJapaneseLanguageReadModel(
           current: masteredUnits,
           total: input.course.length,
           unit: "units"
-        }
+        },
+        ...(input.c1Portfolio
+          ? [
+              {
+                id: "c1-autonomy-missions-completed",
+                label: "C1 autonomy missions completed",
+                current: input.c1Portfolio.autonomyMissionsCompleted,
+                total: input.c1Portfolio.autonomyMissions.length,
+                unit: "missions"
+              },
+              {
+                id: "c1-reliable-artifacts",
+                label: "C1 reliable production artifacts",
+                current: input.c1Portfolio.reliability.reliableArtifacts,
+                total: input.c1Portfolio.reliability.artifactEvidence.length,
+                unit: "artifacts"
+              },
+              {
+                id: "c1-active-days",
+                label: "C1 active evidence days",
+                current: input.c1Portfolio.activeDays,
+                unit: "days"
+              }
+            ]
+          : [])
       ]
     },
     proficiency: {

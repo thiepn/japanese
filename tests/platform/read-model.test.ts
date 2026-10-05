@@ -78,6 +78,31 @@ describe("P8 Japanese language read model",()=>{
         b2:milestone(false,.35) as B2MilestoneProgress,
         c1:milestone(false,.2) as C1FoundationProgress
       },
+      c1Portfolio:{
+        activeDays:4,
+        readingTexts:2,
+        listeningTexts:2,
+        speakingTasks:1,
+        writingTasks:1,
+        synthesisPacks:1,
+        nativeSourceSyntheses:1,
+        spontaneousCoachTurns:3,
+        autonomyMissionsCompleted:0,
+        autonomyMissions:[],
+        domains:[],
+        reliability:{
+          activeDays:4,
+          gradedAttempts:3,
+          successfulAttempts:2,
+          reliableArtifacts:0,
+          interactionTurns:3,
+          reliableInteractions:0,
+          delayedRevisions:1,
+          artifactEvidence:[],
+          interactionEvidence:[]
+        },
+        recentArtifacts:[]
+      },
       activity:{
         todayEvents:17,sevenDayEvents:88,streakDays:6,
         lastStudiedAt:"2026-10-05T12:45:00.000Z",
@@ -85,10 +110,13 @@ describe("P8 Japanese language read model",()=>{
       }
     });
 
+    expect(JAPANESE_READ_MODEL_PRODUCER_REVISION).toBe("japanese-p8-read-model-v2");
     expect(model.producerRevision).toBe(JAPANESE_READ_MODEL_PRODUCER_REVISION);
     expect(model.workload.dueItems).toBe(12);
     expect(model.workload.totalItems).toBe(22);
     expect(model.progress.metrics.find((metric)=>metric.id==="course-units-mastered")?.current).toBe(1);
+    expect(model.progress.metrics.find((metric)=>metric.id==="c1-active-days")?.current).toBe(4);
+    expect(model.progress.metrics.some((metric)=>metric.id==="c1-autonomy-missions-completed")).toBe(true);
     expect(model.proficiency.currentBand).toBe("A1");
     expect(model.proficiency.frontierBand).toBe("B1");
     expect(model.nextAction.kind).toBe("review");
