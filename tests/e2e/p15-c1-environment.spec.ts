@@ -23,7 +23,7 @@ test("P15 exposes the real-source C1 environment, multi-day writing and hidden-p
   await expect(lab.getByText("Save a first draft in the Writing studio before opening live defense.")).toBeVisible();
 
   await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
-  await expect(page.getByText("P15 C1 PORTFOLIO",{exact:true})).toBeVisible();
+  await expect(page.getByText("P16 C1 PORTFOLIO",{exact:true})).toBeVisible();
   await expect(page.getByText("P15 AUTHENTIC ENVIRONMENT",{exact:true})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Real-source research + multi-day production"})).toBeVisible();
 });
