@@ -10,6 +10,7 @@ import { StudyPlayer,type StudyAnswer } from "./study/StudyPlayer";
 import { AiCoach } from "./ai/AiCoach";
 import { AdaptiveRemediation } from "./study/AdaptiveRemediation";
 import { B2Portfolio } from "./study/B2Portfolio";
+import { C1Portfolio } from "./study/C1Portfolio";
 import { ProviderHealthPanel } from "./study/ProviderHealthPanel";
 import { HumanReviewPanel } from "./study/HumanReviewPanel";
 import { ReleaseOperationsPanel } from "./study/ReleaseOperationsPanel";
@@ -78,6 +79,7 @@ export function App(){
   const [c1Foundation,setC1Foundation]=useState<C1FoundationProgress>(EMPTY_C1_FOUNDATION);
   const [immersion,setImmersion]=useState<ImmersionProgress>(EMPTY_IMMERSION);
   const [completedToday,setCompletedToday]=useState(0);
+  const [preferredCoachChain,setPreferredCoachChain]=useState<string|null>(null);
 
   useEffect(()=>{void refreshDashboard();},[]);
   useEffect(()=>{
@@ -177,11 +179,11 @@ export function App(){
 
   return <>
     {session?<div className="study-shell"><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></div>:<div className="app-shell">
-      <header className="topbar"><div><strong>Japanese</strong><span className="phase">P13 C1 native depth · multi-source synthesis · spontaneous interaction</span></div><button className="quiet-button account-button" type="button">Account</button></header>
+      <header className="topbar"><div><strong>Japanese</strong><span className="phase">P14 C1 long-form autonomy · domain specialization · cross-session reliability</span></div><button className="quiet-button account-button" type="button">Account</button></header>
       <main className="content">
         {surface==="Today"&&<Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
-        {surface==="Learn"&&<Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>} 
-        {surface==="Immerse"&&<Immersion onStartProductionTask={(taskId)=>void startProductiveTask(taskId)} onStartC1Synthesis={(packId)=>void startC1Synthesis(packId)}/>} 
+        {surface==="Learn"&&<Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>} 
+        {surface==="Immerse"&&<Immersion onStartProductionTask={(taskId)=>void startProductiveTask(taskId)} onStartC1Synthesis={(packId)=>void startC1Synthesis(packId)} onOpenC1Coach={(chainId)=>{setPreferredCoachChain(chainId);setSurface("Learn");}}/>} 
         {surface==="Progress"&&<Progress kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} immersion={immersion} summary={summary} course={courseProgress} completedToday={completedToday}/>} 
         {surface==="Library"&&<Library query={query} setQuery={setQuery} results={results} status={libraryStatus}/>}
       </main>
@@ -201,11 +203,11 @@ function Today({summary,completedToday,status,onStart}:{summary:StudySummary;com
   </section>;
 }
 
-function Learn({summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,milestone,b1Milestone,b2Milestone,c1Foundation,status,onStart,onStartUnit,onStartAssessment,onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,onC1Practice,onProductive,onLexicalFluency,onRealWorldChain,onRealWorldQualification}:{summary:StudySummary;kana:KanaMasterySummary;vocab:VocabularyMasterySummary;conjugation:ConjugationMasterySummary;grammar:GrammarMasterySummary;sentence:SentenceMasterySummary;lexicalFluency:LexicalFluencySummary;course:CourseUnitProgress[];milestone:A1MilestoneProgress;b1Milestone:B1MilestoneProgress;b2Milestone:B2MilestoneProgress;c1Foundation:C1FoundationProgress;status:string;onStart:()=>void;onStartUnit:(id:string)=>void;onStartAssessment:(id:string)=>void;onStartMilestone:()=>void;onStartB1Milestone:()=>void;onStartB2Milestone:()=>void;onStartC1Foundation:()=>void;onC1Practice:()=>void;onProductive:(mode:"writing"|"speaking")=>void;onLexicalFluency:()=>void;onRealWorldChain:(id:string)=>void;onRealWorldQualification:()=>void}){
+function Learn({summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,status,onStart,onStartUnit,onStartAssessment,onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,onC1Practice,onProductive,onLexicalFluency,onRealWorldChain,onRealWorldQualification}:{summary:StudySummary;kana:KanaMasterySummary;vocab:VocabularyMasterySummary;conjugation:ConjugationMasterySummary;grammar:GrammarMasterySummary;sentence:SentenceMasterySummary;lexicalFluency:LexicalFluencySummary;course:CourseUnitProgress[];milestone:A1MilestoneProgress;b1Milestone:B1MilestoneProgress;b2Milestone:B2MilestoneProgress;c1Foundation:C1FoundationProgress;preferredCoachChain:string|null;status:string;onStart:()=>void;onStartUnit:(id:string)=>void;onStartAssessment:(id:string)=>void;onStartMilestone:()=>void;onStartB1Milestone:()=>void;onStartB2Milestone:()=>void;onStartC1Foundation:()=>void;onC1Practice:()=>void;onProductive:(mode:"writing"|"speaking")=>void;onLexicalFluency:()=>void;onRealWorldChain:(id:string)=>void;onRealWorldQualification:()=>void}){
   const kanaCoverage=summary.totalKana?Math.round(summary.learnedKana/summary.totalKana*100):0;
   const vocabCoverage=summary.totalVocabulary?Math.round(summary.learnedVocabulary/summary.totalVocabulary*100):0;
   return <section className="dashboard learn-page"><p className="eyebrow">LEARN</p><h1>Foundation → C1</h1>
-    <p className="lead">P13 keeps the C1 foundation inside the same learner graph while adding the missing real-world depth: audited native sources, explicit multi-source synthesis and hidden-future spontaneous interaction. P11 release evidence remains separate and unchanged.</p>
+    <p className="lead">P14 carries the C1 foundation across time and domains: long-form missions now combine advanced reading, audited native listening, synthesis, spontaneous interaction, production and delayed transfer. Cross-session reliability stays descriptive rather than being inflated into certification.</p>
     <div className="course-stack foundation-stack">
       <article className="course-card"><div><span className="course-kicker">SCRIPT FOUNDATION</span><h2>Kana</h2><p>{foundationSections.map((section)=>section.label).join(" · ")}</p></div><div className="course-progress"><strong>{kanaCoverage}%</strong><span>{summary.learnedKana} / {summary.totalKana} introduced</span></div></article>
       <article className="course-card"><div><span className="course-kicker">A1→C1 LEXICON</span><h2>Useful words + kanji in context</h2><p>Meaning · reading · listening · active recall</p></div><div className="course-progress"><strong>{vocabCoverage}%</strong><span>{summary.learnedVocabulary} / {summary.totalVocabulary} words introduced</span></div></article>
@@ -271,7 +273,7 @@ function Learn({summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,c
 
     <AdaptiveRemediation onStartUnit={onStartUnit} onStartProduction={onProductive}/>
     <RealWorldPerformancePanel onStartChain={onRealWorldChain} onStartQualification={onRealWorldQualification}/>
-    <AiCoach/>
+    <AiCoach preferredChainId={preferredCoachChain}/>
     <section className="mastery-section milestone-card">
       <div className="section-heading"><div><span className="course-kicker">B2 MILESTONE</span><h2>Independent receptive + productive activity areas</h2></div><strong>{b2Milestone.answered} / {b2Milestone.total}</strong></div>
       <p>B2 reading, connected listening, microphone interaction/production and connected writing are reported separately. Device speech synthesis is labeled as synthesized; AI coach feedback is excluded from milestone scoring.</p>
@@ -328,6 +330,7 @@ function Progress({kana,vocab,conjugation,grammar,sentence,lexicalFluency,milest
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">A1 ASSESSMENT</span><h2>Language activities</h2></div><strong>{milestone.answered} / {milestone.total}</strong></div><div className="mastery-grid"><MasteryBar label="Reading" value={milestone.scores.reading.score}/><MasteryBar label="Listening" value={milestone.scores.listening.score}/><MasteryBar label="Spoken interaction*" value={milestone.scores.spoken_interaction.score}/><MasteryBar label="Spoken production*" value={milestone.scores.spoken_production.score}/><MasteryBar label="Writing" value={milestone.scores.writing.score}/></div><p className="course-note">*Text-backed say-then-type proxy; pronunciation is not scored in P2.5.</p></section>
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">B1 ASSESSMENT</span><h2>Independent language activities</h2></div><strong>{b1Milestone.answered} / {b1Milestone.total}</strong></div><div className="mastery-grid"><MasteryBar label="Reading" value={b1Milestone.scores.reading.score}/><MasteryBar label="Listening" value={b1Milestone.scores.listening.score}/><MasteryBar label="Spoken interaction" value={b1Milestone.scores.spoken_interaction.score}/><MasteryBar label="Spoken production" value={b1Milestone.scores.spoken_production.score}/><MasteryBar label="Writing" value={b1Milestone.scores.writing.score}/></div><p className="course-note">Speech uses recognized Japanese transcripts and writing uses structural target coverage. Shadowing self-review is tracked separately as pronunciation evidence.</p></section>
     <B2Portfolio/>
+    <C1Portfolio/>
     <HumanReviewPanel/>
     <ReleaseOperationsPanel/>
     <ProviderHealthPanel/>
