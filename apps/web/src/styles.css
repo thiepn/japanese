@@ -397,3 +397,17 @@ button{touch-action:manipulation}
 .p13-synthesis-card h3{margin:0;font-size:19px}.p13-synthesis-card>p{margin:0;color:#655f56;font-size:12px;line-height:1.55}.p13-synthesis-card>small{color:#817a70;font-size:10px}
 .p13-synthesis-card .unit-action{margin-top:auto;align-self:flex-start}
 @media(max-width:700px){.p13-synthesis-card .unit-action{width:100%}}
+
+
+/* P14 C1 long-form autonomy and cross-session reliability */
+.p14-autonomy{margin-top:48px;padding-top:32px;border-top:1px solid #ddd8ce}
+.p14-autonomy .mission-card{min-height:100%;display:flex;flex-direction:column}
+.p14-autonomy .mission-stage-list span.active{border-color:#9ca99d;background:#f1f5f1;color:#355b43}
+.p14-autonomy .mission-card>.unit-action{margin-top:auto;align-self:flex-start}
+.p14-reflection{display:grid;gap:8px;margin-top:auto;padding-top:10px}
+.p14-reflection p{margin:0;color:#655f56;font-size:11px;line-height:1.5}
+.p14-reflection textarea{width:100%;resize:vertical;padding:10px;border:1px solid #d5cfc4;border-radius:10px;background:#fff;font:inherit;line-height:1.55}
+@media(max-width:700px){
+  .p14-autonomy{margin-top:36px;padding-top:24px}
+  .p14-autonomy .mission-card>.unit-action,.p14-reflection .unit-action{width:100%}
+}

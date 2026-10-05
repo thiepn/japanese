@@ -311,6 +311,23 @@ P12 remains a **foundation**, not a claim of comprehensive CEFR C1 preparation o
 
 P13 still does not claim CEFR certification, semantic grading of free production or acoustic pronunciation scoring. The P11 external-review evidence state remains independent of the continuing C1 roadmap. See `docs/P13_ACCEPTANCE.md`.
 
+## P14 — C1 Long-Form Autonomy, Domain Specialization & Cross-Session Productive Reliability
+
+**Implementation complete.** P14 converts the P12/P13 C1 toolkit into longitudinal autonomy rather than another isolated exercise layer:
+
+- five domain missions span canonical C1 reading, audited native-source synthesis, P13 multi-source synthesis, hidden-future interaction, production, delayed transfer and reflection;
+- delayed transfer requires successful evidence on two different days separated by at least 20 hours;
+- C1 interaction stages require coverage of the full hidden-future scenario chain rather than one AI turn;
+- domain status is derived from normal StudyEvents as not-started, exploring, developing or sustained;
+- canonical C1 productive tasks and P13 synthesis packs gain cross-session reliability projections;
+- spontaneous C1 interaction reliability is tracked separately from structural productive reliability;
+- a dedicated C1 longitudinal portfolio summarizes domain breadth, native-source work, synthesis, interaction and repeated performance;
+- the C1 portfolio exports to JSON and Markdown with the evidence boundary embedded;
+- mission cards route directly into the relevant reading, source set, synthesis pack, C1 coach chain or productive task;
+- no parallel mastery database, scheduler, native registry or CEFR authority is introduced.
+
+P14 still treats internal reliability as descriptive product evidence rather than external proficiency certification. P11 remains an independent held evidence track. See `docs/P14_ACCEPTANCE.md`.
+
 ## Later
 
-Later phases should deepen long-form C1 autonomy, domain specialization, native text/audio breadth and productive reliability across days while preserving the independent P11 release-evidence record.
+Later phases should deepen native genre breadth, source-evaluation/citation discipline, multi-day advanced writing, specialist-domain vocabulary and more unpredictable interaction while preserving the independent P11 release-evidence record.
