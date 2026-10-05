@@ -75,3 +75,5 @@ The transport remains `p8-read-model-v1`; the envelope did not need a schema cha
 Producer revision `japanese-p8-read-model-v2` additionally consumes the current P14 portfolio summary and exposes only aggregate C1 progress metrics. It does **not** export portfolio responses, artifacts, StudyEvents, or raw reliability evidence.
 
 C1 autonomy/reliability is intentionally presented as progress evidence rather than being converted into a synthetic C1 proficiency score.
+
+Verification continues to use the unchanged `p8-read-model-v1` privacy and authority guarantees.
