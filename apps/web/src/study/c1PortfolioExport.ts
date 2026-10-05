@@ -2,12 +2,13 @@ import { getC1NativeDepthProgress,type C1NativeDepthProgress } from "./c1NativeD
 import { getC1PortfolioSummary,type C1PortfolioSummary } from "./c1Reliability";
 import { getC1EnvironmentProgress,type C1EnvironmentProgress } from "./c1Environment";
 import { getC1ResearchQualityProgress,type C1ResearchQualityProgress } from "./c1ResearchQuality";
+import { getC1PrecisionProgress,type C1PrecisionProgress } from "./c1Precision";
 
 export interface C1PortfolioExport {
   schema:"thiepn-japanese-c1-portfolio";
-  schemaVersion:3;
+  schemaVersion:4;
   generatedAt:string;
-  phase:"P16";
+  phase:"P17";
   evidenceBoundary:{
     accreditedCefrVerdict:false;
     aiFeedbackChangesMastery:false;
@@ -21,17 +22,22 @@ export interface C1PortfolioExport {
     privateExcerptIsRedistributable:false;
     humanReviewIsAccreditedCefrCertification:false;
     humanReviewChangesMastery:false;
+    precisionTransformationIsSemanticScore:false;
+    specialistDiscourseStructureIsSubjectExpertise:false;
+    sourceRefreshIsIndependentFactVerification:false;
+    reviewRepairChangesMastery:false;
   };
   portfolio:C1PortfolioSummary;
   nativeDepth:C1NativeDepthProgress;
   environment:C1EnvironmentProgress;
   researchQuality:C1ResearchQualityProgress;
+  precision:C1PrecisionProgress;
 }
 
 export async function getC1PortfolioExport(now=new Date()):Promise<C1PortfolioExport>{
-  const [portfolio,nativeDepth,environment,researchQuality]=await Promise.all([getC1PortfolioSummary(),getC1NativeDepthProgress(),getC1EnvironmentProgress(),getC1ResearchQualityProgress()]);
+  const [portfolio,nativeDepth,environment,researchQuality,precision]=await Promise.all([getC1PortfolioSummary(),getC1NativeDepthProgress(),getC1EnvironmentProgress(),getC1ResearchQualityProgress(),getC1PrecisionProgress()]);
   return {
-    schema:"thiepn-japanese-c1-portfolio",schemaVersion:3,generatedAt:now.toISOString(),phase:"P16",
+    schema:"thiepn-japanese-c1-portfolio",schemaVersion:4,generatedAt:now.toISOString(),phase:"P17",
     evidenceBoundary:{
       accreditedCefrVerdict:false,
       aiFeedbackChangesMastery:false,
@@ -44,9 +50,13 @@ export async function getC1PortfolioExport(now=new Date()):Promise<C1PortfolioEx
       bibliographyFormattingIsSourceVerification:false,
       privateExcerptIsRedistributable:false,
       humanReviewIsAccreditedCefrCertification:false,
-      humanReviewChangesMastery:false
+      humanReviewChangesMastery:false,
+      precisionTransformationIsSemanticScore:false,
+      specialistDiscourseStructureIsSubjectExpertise:false,
+      sourceRefreshIsIndependentFactVerification:false,
+      reviewRepairChangesMastery:false
     },
-    portfolio,nativeDepth,environment,researchQuality
+    portfolio,nativeDepth,environment,researchQuality,precision
   };
 }
 
@@ -55,7 +65,7 @@ export function serializeC1PortfolioJson(value:C1PortfolioExport):string{
 }
 
 export function serializeC1PortfolioMarkdown(value:C1PortfolioExport):string{
-  const p=value.portfolio,r=p.reliability,n=value.nativeDepth,e=value.environment,q=value.researchQuality;
+  const p=value.portfolio,r=p.reliability,n=value.nativeDepth,e=value.environment,q=value.researchQuality,x=value.precision;
   const lines=[
     "# THIEPN Japanese — C1 Portfolio Export",
     "",
@@ -75,6 +85,10 @@ export function serializeC1PortfolioMarkdown(value:C1PortfolioExport):string{
     "- Bibliography formatting improves traceability; it is not independent verification of source interpretation.",
     "- Private-reference excerpts are not redistributable unless explicit license evidence is recorded.",
     "- Human review is external qualitative evidence; it is not accredited CEFR certification and does not update mastery automatically.",
+    "- Precision transformations are structural/reflective evidence, not automatic semantic-quality scores.",
+    "- Specialist discourse stage completion does not prove subject-matter expertise or C2 certification.",
+    "- Fresh-source refresh records learner comparison; it is not independent fact verification.",
+    "- Human-review repair records response to feedback but does not change mastery automatically.",
     "",
     "## C1 longitudinal evidence",
     "",
@@ -144,6 +158,21 @@ export function serializeC1PortfolioMarkdown(value:C1PortfolioExport):string{
     "### Specialist tracks",
     "",
     ...q.specialistTracks.map((track)=>"- "+track.title+" — "+track.domain+" · "+track.sourceIds.length+" sources · "+track.termIds.length+" terms · "+track.projectIds.length+" projects"),
+    "",
+    "## P17 C1→C2 precision bridge",
+    "",
+    "- Active precision days: "+x.activeDays,
+    "- Precision transformations: "+x.precisionArtifacts.length,
+    "- Precision modes practiced: "+x.precisionModes,
+    "- Specialist discourse turns: "+x.specialistTurns.length,
+    "- Complete specialist discourse cycles: "+x.completedDiscourseCycles,
+    "- Specialist tracks with delayed reliability: "+x.sustainedSpecialistTracks,
+    "- Fresh-source refreshes: "+x.sourceRefreshes.length,
+    "- Human-review repair passes: "+x.reviewRepairs.length,
+    "",
+    "### Specialist discourse reliability",
+    "",
+    ...x.specialistTracks.map((track)=>"- "+track.title+" — "+track.domain+" · "+track.turns+" turns · "+track.stagesCovered+"/5 stages · "+track.repeatedStages+"/5 delayed repeats · "+Math.round(track.spanHours)+"h span · "+(track.sustainedAcrossSessions?"sustained across sessions":track.cycleComplete?"one complete cycle":"developing")),
     "",
     "## Native-source depth",
     "",
