@@ -32,6 +32,7 @@ export interface C1InteractionReliability {
   title:string;
   turns:number;
   stagesCovered:number;
+  repeatedStages:number;
   totalStages:number;
   activeDays:number;
   firstAt:string;
@@ -131,12 +132,20 @@ export function buildC1ProductionReliabilitySummary(events:readonly StudyEvent[]
     const chain=scenarioChain(chainId);
     const ordered=[...chainEvents].sort((a,b)=>a.occurredAt.localeCompare(b.occurredAt));
     const stageIds=new Set(ordered.map((event)=>typeof event.metadata?.scenarioStageId==="string"?event.metadata.scenarioStageId:"").filter(Boolean));
+    const daysByStage=new Map<string,Set<string>>();
+    for(const event of ordered){
+      const stageId=typeof event.metadata?.scenarioStageId==="string"?event.metadata.scenarioStageId:"";
+      if(!stageId)continue;
+      const days=daysByStage.get(stageId)??new Set<string>();days.add(dayKey(event.occurredAt));daysByStage.set(stageId,days);
+    }
+    const repeatedStages=[...daysByStage.values()].filter((days)=>days.size>=2).length;
     const activeDays=new Set(ordered.map((event)=>dayKey(event.occurredAt))).size;
     const firstAt=ordered[0]!.occurredAt,lastAt=ordered.at(-1)!.occurredAt;
     const spanHours=Math.max(0,(Date.parse(lastAt)-Date.parse(firstAt))/3_600_000);
     return {
-      chainId,title:chain.title,turns:ordered.length,stagesCovered:stageIds.size,totalStages:chain.stages.length,activeDays,
-      firstAt,lastAt,spanHours,reliableAcrossSessions:activeDays>=2&&spanHours>=20&&stageIds.size>=Math.min(4,chain.stages.length)
+      chainId,title:chain.title,turns:ordered.length,stagesCovered:stageIds.size,repeatedStages,totalStages:chain.stages.length,activeDays,
+      firstAt,lastAt,spanHours,
+      reliableAcrossSessions:activeDays>=2&&spanHours>=20&&stageIds.size>=Math.min(4,chain.stages.length)&&repeatedStages>=1
     };
   }).sort((a,b)=>Number(b.reliableAcrossSessions)-Number(a.reliableAcrossSessions)||b.lastAt.localeCompare(a.lastAt));
 
