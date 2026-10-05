@@ -1,6 +1,6 @@
 import type { StudyEvent } from "@thiepn/domain";
 import { listStudyEvents,saveStudyEvent } from "@thiepn/local-db";
-import { productiveTask,readingText } from "../coreContent";
+import { coreContent,productiveTask,readingText } from "../coreContent";
 import { c1NativeSourceSet } from "./c1NativeDepth";
 import { c1SynthesisPack } from "./c1Synthesis";
 import { DEVELOPMENT_ACCOUNT_ID,DEVELOPMENT_DEVICE_ID } from "./runtime";
@@ -211,7 +211,7 @@ export async function recordC1MissionReflection(input:{missionId:string;reflecti
   await saveStudyEvent({
     id:crypto.randomUUID(),userId:DEVELOPMENT_ACCOUNT_ID,deviceId:DEVELOPMENT_DEVICE_ID,occurredAt:new Date().toISOString(),
     activity:"writing",promptFamily:"p14-c1-autonomy-reflection",responseMode:"textarea",result:"skipped",
-    contextId:mission.id,contentVersion:"p14",learnerModelVersion:"p14",
+    contextId:mission.id,contentVersion:coreContent.version,learnerModelVersion:"p14",
     metadata:{
       p14C1Autonomy:true,missionId:mission.id,domain:mission.domain,learnerReflection:reflection,
       semanticGrading:false,modelFeedbackAppliedToMastery:false,accreditedCefrVerdict:false
