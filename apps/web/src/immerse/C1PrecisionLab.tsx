@@ -70,6 +70,9 @@ export function C1PrecisionLab(){
   const challenge=useMemo(()=>c1PrecisionChallenges.find((item)=>item.id===challengeId)??c1PrecisionChallenges[0]!,[challengeId]);
   const stage=useMemo(()=>c1DiscourseStages.find((item)=>item.id===stageId)??c1DiscourseStages[0]!,[stageId]);
   const discourseProgress=progress.specialistTracks.find((item)=>item.trackId===discourseTrackId)??null;
+  const discourseTrack=quality.specialistTracks.find((item)=>item.id===discourseTrackId)??null;
+  const baseSource=environment.sources.find((item)=>item.id===baseSourceId)??null;
+  const updateSource=environment.sources.find((item)=>item.id===updateSourceId)??null;
   const selectedReview=quality.humanReviews.find((item)=>item.id===reviewId)??null;
 
   async function savePrecision(){
@@ -174,6 +177,7 @@ export function C1PrecisionLab(){
       {quality.specialistTracks.length?<article className="p17-editor">
         <div className="p17-head"><div><span>SPECIALIST DISCOURSE CYCLE</span><h3>Sustain one domain across five discourse functions</h3></div>{discourseProgress?<strong>{discourseProgress.stagesCovered}/5 stages · {discourseProgress.repeatedStages}/5 delayed repeats</strong>:null}</div>
         <label>Specialist track<select value={discourseTrackId} onChange={(event)=>setDiscourseTrackId(event.target.value)}>{quality.specialistTracks.map((track)=><option value={track.id} key={track.id}>{track.domain} · {track.title}</option>)}</select></label>
+        {discourseTrack?<div className="p17-track-context"><strong>{discourseTrack.title}</strong><span>{discourseTrack.domain} · {discourseTrack.sourceIds.length} sources · {discourseTrack.termIds.length} terms · {discourseTrack.projectIds.length} projects</span><p>{discourseTrack.goal}</p></div>:null}
         <div className="p17-stage-grid">{c1DiscourseStages.map((item)=><button className={stageId===item.id?"active":""} type="button" key={item.id} onClick={()=>setStageId(item.id)}>
           <strong>{item.title}</strong><small>{discourseProgress?.stageCounts[item.id]??0} saved</small>
         </button>)}</div>
@@ -194,8 +198,8 @@ export function C1PrecisionLab(){
         <div className="p17-head"><div><span>FRESH-SOURCE REFRESH</span><h3>Reopen a conclusion when newer evidence appears</h3></div><strong>{progress.sourceRefreshes.length} saved</strong></div>
         <p>Choose an earlier source and a different registered source. Compare what changed without pretending the app independently verified either source.</p>
         <div className="p17-two">
-          <label>Earlier source<select value={baseSourceId} onChange={(event)=>setBaseSourceId(event.target.value)}>{environment.sources.map((source)=><option value={source.id} key={source.id}>{sourceLabel(source)}</option>)}</select></label>
-          <label>New / comparison source<select value={updateSourceId} onChange={(event)=>setUpdateSourceId(event.target.value)}>{environment.sources.map((source)=><option value={source.id} key={source.id}>{sourceLabel(source)}</option>)}</select></label>
+          <label>Earlier source<select value={baseSourceId} onChange={(event)=>setBaseSourceId(event.target.value)}>{environment.sources.map((source)=><option value={source.id} key={source.id}>{sourceLabel(source)}</option>)}</select>{baseSource?<a href={baseSource.url} target="_blank" rel="noreferrer">Open earlier source ↗</a>:null}</label>
+          <label>New / comparison source<select value={updateSourceId} onChange={(event)=>setUpdateSourceId(event.target.value)}>{environment.sources.map((source)=><option value={source.id} key={source.id}>{sourceLabel(source)}</option>)}</select>{updateSource?<a href={updateSource.url} target="_blank" rel="noreferrer">Open comparison source ↗</a>:null}</label>
         </div>
         <label>What changed?<textarea lang="ja" rows={5} value={changedClaim} onChange={(event)=>setChangedClaim(event.target.value)} placeholder="新しい資料によって、以前の主張のどの部分を変える必要があるか…"/></label>
         <label>What still holds?<textarea lang="ja" rows={4} value={continuity} onChange={(event)=>setContinuity(event.target.value)} placeholder="以前の結論のうち、どの部分はまだ維持できるか…"/></label>
