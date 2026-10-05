@@ -21,7 +21,16 @@ import { buildNextRealWorldChainSession,buildP9QualificationSession } from "./re
 import { c1DiscoursePrompts,c1FoundationPractice } from "./c1Foundation";
 import { buildC1SynthesisSession } from "./c1Synthesis";
 
-export const DEVELOPMENT_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
+export const GUEST_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
+export let DEVELOPMENT_ACCOUNT_ID=GUEST_ACCOUNT_ID;
+export function setDevelopmentAccountId(accountId:string):void{
+  const next=accountId.trim();
+  if(!next)throw new Error("ACCOUNT_ID_REQUIRED");
+  DEVELOPMENT_ACCOUNT_ID=next;
+}
+export function getDevelopmentAccountId():string{
+  return DEVELOPMENT_ACCOUNT_ID;
+}
 export const DEVELOPMENT_DEVICE_ID="p2-local-browser";
 
 const scheduler=createFsrsScheduler();
