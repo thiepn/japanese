@@ -377,3 +377,18 @@ button{touch-action:manipulation}
   .human-review-stats,.curation-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .human-review-actions{flex-direction:column}.human-review-actions button{width:100%}
 }
+
+/* P13 C1 native-source depth, synthesis and spontaneous interaction */
+.p13-advanced-lab{margin-top:48px;padding-top:32px;border-top:1px solid #ddd8ce}
+.p13-advanced-lab .native-listening-workspace{margin-top:16px}
+.p13-advanced-lab .native-listening-workspace audio{width:100%;margin:6px 0 8px}
+.native-source-links{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 6px}.native-source-links a{font-size:10px;font-weight:750}
+.p13-advanced-lab .native-synthesis{padding:16px;border:1px solid #ddd8ce;border-radius:16px;background:white}
+.p13-advanced-lab .native-synthesis>p{margin:3px 0 6px;line-height:1.55}
+.p13-advanced-lab .coach-goals{display:flex;gap:7px;flex-wrap:wrap;margin:4px 0 8px;padding:0;list-style:none}
+.p13-advanced-lab .coach-goals span{padding:5px 8px;border:1px solid #ddd8ce;border-radius:999px;background:#faf9f6;font-size:10px;color:#655f56}
+.p13-synthesis-packs{margin-top:30px}
+.p13-synthesis-packs .mission-stage-list{display:flex;gap:6px;flex-wrap:wrap}
+.p13-synthesis-packs .mission-stage-list button{font-size:10px}
+.coach-chain-stages>span:last-child:not(.done):not(.active){font-style:italic}
+@media(max-width:700px){.p13-advanced-lab{margin-top:36px;padding-top:24px}.native-source-links{gap:6px}}
