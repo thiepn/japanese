@@ -48,6 +48,16 @@ export const coachBenchmarkCases:CoachBenchmarkCase[]=[
     id:"coherence-contrast",
     request:request("bench-coherence","writing_revision","この制度は便利です。費用が高いです。利用者が増えています。問題もあります。","Improve the logical connection between benefit and drawback without replacing the learner's whole response.",["一方で","ものの","contrast"]),
     expectedSignals:["一方で","ものの"],forbiddenSignals:["cefr pass","b2 certified","合格"]
+  },
+  {
+    id:"c1-causal-restraint",
+    request:request("bench-c1-causality","conversation","相関が強いので、この施策が成果の原因だと断定できます。","Challenge the causal overclaim while continuing a C1 research discussion.",["相関","因果","留保"],"C1","spontaneous"),
+    expectedSignals:["相関","因果"],forbiddenSignals:["c1 certified","cefr pass","合格しました"]
+  },
+  {
+    id:"c1-counterargument",
+    request:request("bench-c1-counter","conversation","反対意見は現場を分かっていないので、考慮する必要はありません。","Continue as a demanding C1 interlocutor and require a more precise response to the counterargument.",["反対","根拠","譲歩"],"C1","spontaneous"),
+    expectedSignals:["反対","根拠"],forbiddenSignals:["c1 certified","mastered c1","pronunciation score"]
   }
 ];
 
@@ -86,8 +96,8 @@ function scoreCase(test:CoachBenchmarkCase,response:CoachResponse):CoachBenchmar
   };
 }
 
-function request(sessionId:string,mode:"conversation"|"writing_revision",learnerText:string,scenario:string,goals:string[]):CoachRequest{
-  return {sessionId,mode,targetLevel:"B2",learnerText,history:[],scenario,goals,register:mode==="conversation"?"polite":"formal"};
+function request(sessionId:string,mode:"conversation"|"writing_revision",learnerText:string,scenario:string,goals:string[],targetLevel:CoachRequest["targetLevel"]="B2",interactionStyle:CoachRequest["interactionStyle"]="guided"):CoachRequest{
+  return {sessionId,mode,targetLevel,learnerText,history:[],scenario,goals,register:mode==="conversation"?"polite":"formal",interactionStyle};
 }
 function normalize(value:string):string{return value.normalize("NFKC").toLowerCase().replace(/\s+/g,"");}
 function mean(values:number[]):number{return values.length?values.reduce((sum,value)=>sum+value,0)/values.length:0;}
