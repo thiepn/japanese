@@ -8,7 +8,8 @@ test("P13 exposes C1 native depth, multi-source synthesis and hidden-future spon
   await expect(page.getByRole("heading",{name:"Guided B2 → hidden-future C1 pressure"})).toBeVisible();
   await expect(page.getByRole("button",{name:"C1 spontaneous"})).toHaveClass(/active/);
   await expect(page.getByText(/future pressure hidden/)).toBeVisible();
-  await expect(page.getByText("Defend a policy recommendation under challenge",{exact:true})).toBeVisible();
+  await expect(page.getByLabel("Scenario chain")).toHaveValue("c1-policy-briefing");
+  await expect(page.getByLabel("Scenario chain").locator("option:checked")).toHaveText("Defend a policy recommendation under challenge");
 
   await page.getByRole("button",{name:"Immerse"}).click();
   await expect(page.getByText("P13 C1 SOURCE DEPTH",{exact:true})).toBeVisible();
