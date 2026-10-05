@@ -2,7 +2,6 @@ import { expect,test } from "@playwright/test";
 
 test("P16 exposes research-quality tooling without creating a new mastery layer",async({page})=>{
   await page.goto("/");
-  await expect(page.locator(".phase")).toContainText("P16 C1 research quality");
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
 
   const lab=page.locator(".p16-quality");
@@ -15,6 +14,6 @@ test("P16 exposes research-quality tooling without creating a new mastery layer"
   await expect(lab.getByText(/does not automatically scrape or republish external pages/i)).toBeVisible();
 
   await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
-  await expect(page.getByText("P16 C1 PORTFOLIO",{exact:true})).toBeVisible();
+  await expect(page.getByText("P17 C1→C2 PORTFOLIO",{exact:true})).toBeVisible();
   await expect(page.getByText("P16 RESEARCH QUALITY",{exact:true})).toBeVisible();
 });
