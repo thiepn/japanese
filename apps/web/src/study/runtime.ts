@@ -19,6 +19,7 @@ import { productivePracticeSession,productiveTaskSession,productivePrompts } fro
 import { lexicalChunkLessons,lexicalChunkMeaningPrompts,lexicalChunkActivePrompts,lexicalChunkTransferPrompts,lexicalChunkPrompts,lexicalFluencySession } from "./lexicalFluency";
 import { buildNextRealWorldChainSession,buildP9QualificationSession } from "./realWorldPerformance";
 import { c1DiscoursePrompts,c1FoundationPractice } from "./c1Foundation";
+import { buildC1SynthesisSession } from "./c1Synthesis";
 
 export const DEVELOPMENT_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
 export const DEVELOPMENT_DEVICE_ID="p2-local-browser";
@@ -123,6 +124,9 @@ export async function buildC1FoundationSession():Promise<StudyStep[]>{
 }
 export async function buildC1FoundationPractice(limit=12):Promise<StudyStep[]>{
   return c1FoundationPractice(limit);
+}
+export async function buildP13C1SynthesisSession(packId:string):Promise<StudyStep[]>{
+  return buildC1SynthesisSession(packId);
 }
 export async function buildProductivePractice(mode:"writing"|"speaking"):Promise<StudyStep[]>{
   return productivePracticeSession(mode);
