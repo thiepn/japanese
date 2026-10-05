@@ -206,7 +206,7 @@ export async function saveC1SourceExcerpt(input:{
     if(licenseUrl&&!isHttpsUrl(licenseUrl))throw new Error("P16_REDISTRIBUTABLE_EXCERPT_LICENSE_URL_INVALID");
   }
   const excerpt:C1SourceExcerpt={
-    id:"p16-excerpt-"+crypto.randomUUID(),sourceId:source.id,locator,text,access,savedAt:new Date().toISOString(),
+    id:"p16-excerpt-"+crypto.randomUUID(),sourceId:source.id,locator,text,access:input.access,savedAt:new Date().toISOString(),
     ...(licenseName?{licenseName}:{}),...(licenseUrl?{licenseUrl}:{})
   };
   await saveStudyEvent(baseEvent({
