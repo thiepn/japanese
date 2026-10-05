@@ -7,7 +7,7 @@ import {
 import { c1SynthesisPacks,getC1SynthesisProgress,type C1SynthesisPackProgress } from "../study/c1Synthesis";
 import { readingText } from "../coreContent";
 
-export function C1AdvancedLab({onOpenText,onStartSynthesis}:{onOpenText:(id:string)=>void;onStartSynthesis:(packId:string)=>void}){
+export function C1AdvancedLab({onOpenText,onStartSynthesis,preferredSetId}:{onOpenText:(id:string)=>void;onStartSynthesis:(packId:string)=>void;preferredSetId?:string|null}){
   const [setId,setSetId]=useState(c1NativeSourceSets[0]!.id);
   const [notes,setNotes]=useState<Record<string,string>>({});
   const [synthesis,setSynthesis]=useState("");
@@ -21,6 +21,9 @@ export function C1AdvancedLab({onOpenText,onStartSynthesis}:{onOpenText:(id:stri
     setNativeProgress(native);setSynthesisProgress(nextSynthesis);
   }
   useEffect(()=>{void refresh().catch(()=>{setNativeProgress(null);setSynthesisProgress([]);});},[]);
+  useEffect(()=>{
+    if(preferredSetId&&c1NativeSourceSets.some((item)=>item.id===preferredSetId))chooseSet(preferredSetId);
+  },[preferredSetId]);
 
   const sourceSet=c1NativeSourceSet(setId);
   const sources=useMemo(()=>sourceSet.sourceIds.map(c1NativeSource),[sourceSet]);
@@ -44,7 +47,7 @@ export function C1AdvancedLab({onOpenText,onStartSynthesis}:{onOpenText:(id:stri
     }catch(error){setMessage(error instanceof Error?error.message:"Could not save C1 native-source synthesis.");}
   }
 
-  return <section className="p13-advanced-lab">
+  return <section className="p13-advanced-lab" id="p13-c1-source-depth">
     <div className="section-heading">
       <div><span className="course-kicker">P13 C1 SOURCE DEPTH</span><h2>Native sources → multi-source synthesis</h2></div>
       <span className="course-count">verified inventory · no transcript-first shortcut</span>
