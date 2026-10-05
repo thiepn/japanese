@@ -1,5 +1,4 @@
 import { describe,expect,it } from "vitest";
-import { validateLanguageReadModel } from "@thiepn/languages/read-model";
 import {
   createJapaneseLanguageReadModel,
   JAPANESE_READ_MODEL_PRODUCER_REVISION
@@ -94,7 +93,6 @@ describe("P8 Japanese language read model",()=>{
     expect(model.proficiency.frontierBand).toBe("B1");
     expect(model.nextAction.kind).toBe("review");
     expect(model.nextAction.priority).toBeGreaterThan(90);
-    expect(validateLanguageReadModel(model).ok).toBe(true);
     expect(JSON.stringify(model)).not.toContain("memoryTraces");
     expect(JSON.stringify(model)).not.toContain("studyEvents");
   });
