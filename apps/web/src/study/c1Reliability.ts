@@ -175,7 +175,7 @@ export function buildC1PortfolioSummary(events:readonly StudyEvent[]):C1Portfoli
   for(const event of events){
     if(event.primaryTarget?.kind==="production_task"&&c1TaskById.has(event.primaryTarget.id)){
       const task=c1TaskById.get(event.primaryTarget.id)!;
-      const response=responseText(event);if(!response)returnContinue();
+      const response=responseText(event);if(!response)continue;
       artifacts.push({eventId:event.id,occurredAt:event.occurredAt,title:task.title,kind:"production",mode:task.mode,response,result:event.result??"skipped",advisory:false});
       continue;
     }
@@ -210,8 +210,6 @@ export function buildC1PortfolioSummary(events:readonly StudyEvent[]):C1Portfoli
     autonomyMissionsCompleted:missions.filter((entry)=>entry.completedStages===entry.totalStages).length,
     autonomyMissions:missions,domains,reliability,recentArtifacts:artifacts.slice(0,16)
   };
-
-  function returnContinue():never{throw new Error("UNREACHABLE");}
 }
 
 function responseText(event:StudyEvent):string{
