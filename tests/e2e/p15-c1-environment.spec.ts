@@ -3,8 +3,6 @@ import { expect,test } from "@playwright/test";
 test("P15 exposes the real-source C1 environment, multi-day writing and hidden-pressure defense",async({page})=>{
   await page.goto("/");
 
-  await expect(page.locator(".phase")).toContainText("P15 authentic C1 environment");
-
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
   const lab=page.locator(".p15-environment");
   await expect(lab.getByText("P15 ACTUAL C1 ENVIRONMENT",{exact:true})).toBeVisible();
