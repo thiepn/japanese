@@ -141,6 +141,7 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
         {recommendation.privateDocument?<article><span>Private authentic input</span><h3>{recommendation.privateDocument.title}</h3><p>{recommendation.privateDocument.reason}</p><small>{Math.round(recommendation.privateDocument.knownRatio*100)}% known lexical tokens · {recommendation.privateDocument.difficulty}</small><span className="adaptive-hint">Find it in Your Japanese below.</span></article>:null}
       </div>
     </section>:null}
+    <C1EnvironmentLab/>
     {missions.length?<section className="autonomy-missions">
       <div className="section-heading"><div><span className="course-kicker">P8 AUTONOMY MISSIONS</span><h2>Long-form B2 task chains</h2></div><span className="course-count">multi-document · cross-session</span></div>
       <p className="course-note">Each mission combines reading, listening and production across several sources. Final transfer stages require the same production target on a later day; progress is inferred from normal StudyEvents rather than a separate mission score.</p>
@@ -189,7 +190,6 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
       onStartProduction={onStartProductionTask}
       onOpenCoach={onOpenC1Coach}
     />
-    <C1EnvironmentLab/>
         <C1AdvancedLab onOpenText={(id)=>void openText(id)} onStartSynthesis={onStartC1Synthesis} preferredSetId={preferredNativeSet}/>
     <NativeListeningLab/>
     <NativeCurationPanel/>
