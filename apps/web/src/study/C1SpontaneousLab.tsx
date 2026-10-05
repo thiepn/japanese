@@ -21,6 +21,7 @@ export function C1SpontaneousLab(){
   const [usedPreparation,setUsedPreparation]=useState(false);
   const [selfRepair,setSelfRepair]=useState(false);
   const [message,setMessage]=useState("");
+  const [scenarioComplete,setScenarioComplete]=useState(false);
   const [summary,setSummary]=useState<C1InteractionSummary>({turns:0,scenarios:0,spontaneousTurns:0,repairedTurns:0});
   const startedAt=useRef(0);
   const recognition=useRef<RecognitionLike|null>(null);
@@ -29,6 +30,7 @@ export function C1SpontaneousLab(){
   useEffect(()=>{void getC1InteractionSummary().then(setSummary);return()=>recognition.current?.stop();},[]);
 
   function reveal(){
+    if(scenarioComplete)return;
     setRevealed(true);setTranscript("");setMessage("");setUsedPreparation(false);setSelfRepair(false);startedAt.current=performance.now();
   }
   function startRecognition(){
@@ -52,10 +54,15 @@ export function C1SpontaneousLab(){
       responseTimeMs:startedAt.current?performance.now()-startedAt.current:0,usedPreparation,selfRepair
     });
     setSummary(await getC1InteractionSummary());
-    setMessage("Spontaneous turn saved as ungraded speaking evidence.");
-    if(stageIndex<scenario.stages.length-1){setStageIndex(v=>v+1);setRevealed(false);setTranscript("");}
+    if(stageIndex<scenario.stages.length-1){
+      setMessage("Spontaneous turn saved as ungraded speaking evidence.");
+      setStageIndex(v=>v+1);setRevealed(false);setTranscript("");
+    }else{
+      setScenarioComplete(true);setRevealed(false);setTranscript("");
+      setMessage("Scenario complete. All four spontaneous turns were saved as ungraded speaking evidence.");
+    }
   }
-  function changeScenario(id:string){setScenarioId(id);setStageIndex(0);setRevealed(false);setTranscript("");setMessage("");}
+  function changeScenario(id:string){setScenarioId(id);setStageIndex(0);setRevealed(false);setScenarioComplete(false);setTranscript("");setMessage("");}
 
   return <section className="native-listening-lab">
     <div className="section-heading"><div><span className="course-kicker">P13 C1 SPONTANEOUS INTERACTION</span><h2>Respond before you can script the answer</h2></div><span className="course-count">{summary.turns} turns · {summary.scenarios} scenarios</span></div>
@@ -63,7 +70,7 @@ export function C1SpontaneousLab(){
     <label className="native-recording-select"><span>Scenario</span><select value={scenarioId} onChange={e=>changeScenario(e.target.value)}>{c1InteractionScenarios.map(s=><option key={s.id} value={s.id}>{s.title}</option>)}</select></label>
     <p>{scenario.description}</p>
     <div className="mission-stage-list">{scenario.stages.map((s,i)=><span className={i<stageIndex?"done":i===stageIndex?"selected":""} key={s.id}>{i<stageIndex?"✓":"○"} {s.title}</span>)}</div>
-    {!revealed?<button className="primary" type="button" onClick={reveal}>Reveal next challenge</button>:<article className="mission-card">
+    {scenarioComplete?<button className="unit-action" type="button" onClick={()=>{setStageIndex(0);setScenarioComplete(false);setMessage("");}}>Restart scenario</button>:!revealed?<button className="primary" type="button" onClick={reveal}>Reveal next challenge</button>:<article className="mission-card">
       <span>{scenario.domain} · target ~{stage.targetSeconds}s</span><h3>{stage.title}</h3>
       <p>{stage.prompt}</p><p className="course-note">{stage.pressure}</p>
       <div className="mission-stage-list">{stage.moves.map(move=><span key={move}>{move}</span>)}</div>
