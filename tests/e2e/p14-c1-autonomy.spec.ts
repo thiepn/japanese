@@ -13,7 +13,7 @@ test("P14 exposes long-form C1 autonomy missions and the longitudinal C1 portfol
   await expect(p14.getByRole("heading",{name:"Research evidence under uncertainty"})).toBeVisible();
   await expect(p14.getByText(/delayed transfer requires 20\+ hours/).first()).toBeVisible();
 
-  await page.getByRole("button",{name:"Progress"}).click();
+  await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
   await expect(page.getByText("P14 C1 PORTFOLIO",{exact:true})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Long-form autonomy across days and domains"})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Breadth first, then sustained evidence"})).toBeVisible();
