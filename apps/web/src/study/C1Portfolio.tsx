@@ -2,6 +2,7 @@ import { useEffect,useState } from "react";
 import { getC1PortfolioSummary,type C1PortfolioSummary } from "./c1Reliability";
 import { getC1EnvironmentProgress,type C1EnvironmentProgress } from "./c1Environment";
 import { getC1ResearchQualityProgress,type C1ResearchQualityProgress } from "./c1ResearchQuality";
+import { getC1PrecisionProgress,type C1PrecisionProgress } from "./c1Precision";
 import {
   downloadC1Portfolio,getC1PortfolioExport,serializeC1PortfolioJson,serializeC1PortfolioMarkdown
 } from "./c1PortfolioExport";
@@ -10,8 +11,9 @@ export function C1Portfolio(){
   const [portfolio,setPortfolio]=useState<C1PortfolioSummary|null>(null);
   const [environment,setEnvironment]=useState<C1EnvironmentProgress|null>(null);
   const [quality,setQuality]=useState<C1ResearchQualityProgress|null>(null);
+  const [precision,setPrecision]=useState<C1PrecisionProgress|null>(null);
   const [exporting,setExporting]=useState(false);
-  useEffect(()=>{void Promise.all([getC1PortfolioSummary(),getC1EnvironmentProgress(),getC1ResearchQualityProgress()]).then(([nextPortfolio,nextEnvironment,nextQuality])=>{setPortfolio(nextPortfolio);setEnvironment(nextEnvironment);setQuality(nextQuality);}).catch(()=>{setPortfolio(null);setEnvironment(null);setQuality(null);});},[]);
+  useEffect(()=>{void Promise.all([getC1PortfolioSummary(),getC1EnvironmentProgress(),getC1ResearchQualityProgress(),getC1PrecisionProgress()]).then(([nextPortfolio,nextEnvironment,nextQuality,nextPrecision])=>{setPortfolio(nextPortfolio);setEnvironment(nextEnvironment);setQuality(nextQuality);setPrecision(nextPrecision);}).catch(()=>{setPortfolio(null);setEnvironment(null);setQuality(null);setPrecision(null);});},[]);
 
   async function exportPortfolio(format:"json"|"markdown"){
     setExporting(true);
@@ -28,10 +30,10 @@ export function C1Portfolio(){
 
   return <section className="b2-portfolio">
     <div className="section-heading">
-      <div><span className="course-kicker">P16 C1 PORTFOLIO</span><h2>Long-form autonomy + research-quality evidence</h2></div>
+      <div><span className="course-kicker">P17 C1→C2 PORTFOLIO</span><h2>Long-form autonomy + precision under specialist pressure</h2></div>
       <span className="course-count">{portfolio.activeDays} active C1 days</span>
     </div>
-    <p>P16 keeps the P14–P15 longitudinal and real-source evidence, then adds bibliography provenance, licensed/private source handling, artifact-bound human review and specialist-track depth. It remains descriptive evidence rather than a CEFR C1 result.</p>
+    <p>P17 keeps the P14–P16 longitudinal, real-source and research-quality evidence, then adds precision transformation, specialist discourse reliability, fresh-source reconstruction and deliberate repair after human feedback. It remains descriptive evidence rather than a CEFR C2 judgment.</p>
     <div className="portfolio-export-actions">
       <button className="unit-action" disabled={exporting} type="button" onClick={()=>void exportPortfolio("json")}>Export C1 JSON</button>
       <button className="quiet-button" disabled={exporting} type="button" onClick={()=>void exportPortfolio("markdown")}>Export C1 Markdown</button>
@@ -87,6 +89,26 @@ export function C1Portfolio(){
       <p className="course-note">Human review is external qualitative evidence only. Bibliography metadata and stored excerpts improve traceability; they do not prove source interpretation, change FSRS mastery or award a CEFR result.</p>
     </section>:null}
 
+    {precision?<section className="p17-portfolio">
+      <div className="section-heading"><div><span className="course-kicker">P17 PRECISION BRIDGE</span><h3>Stylistic control + specialist discourse + repair</h3></div><span>{precision.sustainedSpecialistTracks} sustained specialist tracks</span></div>
+      <div className="portfolio-stats">
+        <PortfolioStat value={precision.precisionArtifacts.length} label="Precision rewrites"/>
+        <PortfolioStat value={precision.precisionModes} label="Precision modes"/>
+        <PortfolioStat value={precision.specialistTurns.length} label="Specialist turns"/>
+        <PortfolioStat value={precision.completedDiscourseCycles} label="Complete discourse cycles"/>
+        <PortfolioStat value={precision.sustainedSpecialistTracks} label="Delayed-reliable tracks"/>
+        <PortfolioStat value={precision.sourceRefreshes.length} label="Source refreshes"/>
+        <PortfolioStat value={precision.reviewRepairs.length} label="Human-review repairs"/>
+        <PortfolioStat value={precision.activeDays} label="Precision days"/>
+      </div>
+      {precision.specialistTracks.length?<div className="portfolio-mission-list">{precision.specialistTracks.map((track)=><div key={track.trackId}>
+        <div><strong>{track.title}</strong><span>{track.sustainedAcrossSessions?"sustained":track.cycleComplete?"cycle complete":"developing"}</span></div>
+        <div className="meter"><span style={{width:Math.round(track.stagesCovered/5*100)+"%"}}/></div>
+        <small>{track.turns} turns · {track.stagesCovered}/5 stages · {track.repeatedStages}/5 delayed repeats · {track.activeDays} active days · {Math.round(track.spanHours)}h span</small>
+      </div>)}</div>:null}
+      <p className="course-note">P17 precision work is structural and reflective evidence. It does not automatically prove semantic quality, expert-level subject knowledge, C2 proficiency or acoustic speaking quality.</p>
+    </section>:null}
+
     <div className="portfolio-columns">
       <article>
         <span className="course-kicker">DOMAIN SPECIALIZATION</span>
@@ -127,7 +149,7 @@ export function C1Portfolio(){
       </article>)}</div>
     </details>:null}
 
-    <p className="course-note">Repeated internal success, source exposure, learner source evaluation, human review and AI-supported interaction remain explicitly bounded evidence. P16 does not convert them into accredited certification, independent fact verification, automatic mastery updates or acoustic scoring.</p>
+    <p className="course-note">Repeated internal success, source exposure, precision transformation, learner source evaluation, human review and AI-supported interaction remain explicitly bounded evidence. P17 does not convert them into accredited C2 certification, independent fact verification, automatic mastery updates, subject-matter expertise or acoustic scoring.</p>
   </section>;
 }
 
