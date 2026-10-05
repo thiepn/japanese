@@ -6,6 +6,7 @@ import { ShadowingLab } from "./ShadowingLab";
 import { NativeListeningLab } from "./NativeListeningLab";
 import { NativeCurationPanel } from "./NativeCurationPanel";
 import { C1AdvancedLab } from "./C1AdvancedLab";
+import { C1AutonomyPanel } from "../study/C1AutonomyPanel";
 import { getAdaptiveImmersionRecommendation,type AdaptiveImmersionRecommendation } from "./adaptive";
 import { getAutonomyMissionProgress,type AutonomyMissionProgress } from "../study/autonomyMissions";
 import type { ReadingQuestion } from "@thiepn/content-schema";
@@ -18,7 +19,7 @@ import {
 type CheckMode="reading"|"listening";
 interface SelectedToken { token:ReaderToken; sentenceId:string; }
 
-export function Immersion({onStartProductionTask,onStartC1Synthesis}:{onStartProductionTask:(taskId:string)=>void;onStartC1Synthesis:(packId:string)=>void}){
+export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coach}:{onStartProductionTask:(taskId:string)=>void;onStartC1Synthesis:(packId:string)=>void;onOpenC1Coach:(chainId:string)=>void}){
   const [progress,setProgress]=useState<ImmersionProgress|null>(null);
   const [recommendation,setRecommendation]=useState<AdaptiveImmersionRecommendation|null>(null);
   const [missions,setMissions]=useState<AutonomyMissionProgress[]>([]);
@@ -32,6 +33,7 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis}:{onStartPro
   const [checkMode,setCheckMode]=useState<CheckMode|null>(null);
   const [questionIndex,setQuestionIndex]=useState(0);
   const [feedback,setFeedback]=useState<{correct:boolean;answer:string;explanation:string}|null>(null);
+  const [preferredNativeSet,setPreferredNativeSet]=useState<string|null>(null);
   const [checkStartedAt,setCheckStartedAt]=useState(0);
   const view=useMemo(()=>activeId?buildReaderText(activeId):null,[activeId]);
   const extensiveTracks=useMemo(()=>progress?buildExtensiveTracks(progress):[],[progress]);
@@ -176,7 +178,17 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis}:{onStartPro
       </article>)}
     </div>
     <p className="course-note">Readiness is derived from lexeme meaning evidence. It is guidance, not a content lock. Curated connected audio uses the device’s Japanese speech-synthesis voice unless a source-provenanced recording is attached.</p>
-    <C1AdvancedLab onOpenText={(id)=>void openText(id)} onStartSynthesis={onStartC1Synthesis}/>
+    <C1AutonomyPanel
+      onOpenText={(id)=>void openText(id)}
+      onOpenNativeSet={(setId)=>{
+        setPreferredNativeSet(setId);
+        requestAnimationFrame(()=>document.getElementById("p13-c1-source-depth")?.scrollIntoView({behavior:"smooth",block:"start"}));
+      }}
+      onStartSynthesis={onStartC1Synthesis}
+      onStartProduction={onStartProductionTask}
+      onOpenCoach={onOpenC1Coach}
+    />
+    <C1AdvancedLab onOpenText={(id)=>void openText(id)} onStartSynthesis={onStartC1Synthesis} preferredSetId={preferredNativeSet}/>
     <NativeListeningLab/>
     <NativeCurationPanel/>
     <ShadowingLab/>
