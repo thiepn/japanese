@@ -1,11 +1,12 @@
 import { getC1NativeDepthProgress,type C1NativeDepthProgress } from "./c1NativeDepth";
 import { getC1PortfolioSummary,type C1PortfolioSummary } from "./c1Reliability";
+import { getC1EnvironmentProgress,type C1EnvironmentProgress } from "./c1Environment";
 
 export interface C1PortfolioExport {
   schema:"thiepn-japanese-c1-portfolio";
-  schemaVersion:1;
+  schemaVersion:2;
   generatedAt:string;
-  phase:"P14";
+  phase:"P15";
   evidenceBoundary:{
     accreditedCefrVerdict:false;
     aiFeedbackChangesMastery:false;
@@ -13,24 +14,29 @@ export interface C1PortfolioExport {
     speechRecognitionIsAcousticScoring:false;
     nativePlaybackIsComprehensionMastery:false;
     crossSessionReliabilityIsExternalCertification:false;
+    externalSourceEvaluationIsIndependentVerification:false;
+    typedDefenseIsAcousticScoring:false;
   };
   portfolio:C1PortfolioSummary;
   nativeDepth:C1NativeDepthProgress;
+  environment:C1EnvironmentProgress;
 }
 
 export async function getC1PortfolioExport(now=new Date()):Promise<C1PortfolioExport>{
-  const [portfolio,nativeDepth]=await Promise.all([getC1PortfolioSummary(),getC1NativeDepthProgress()]);
+  const [portfolio,nativeDepth,environment]=await Promise.all([getC1PortfolioSummary(),getC1NativeDepthProgress(),getC1EnvironmentProgress()]);
   return {
-    schema:"thiepn-japanese-c1-portfolio",schemaVersion:1,generatedAt:now.toISOString(),phase:"P14",
+    schema:"thiepn-japanese-c1-portfolio",schemaVersion:2,generatedAt:now.toISOString(),phase:"P15",
     evidenceBoundary:{
       accreditedCefrVerdict:false,
       aiFeedbackChangesMastery:false,
       structuralChecksAreSemanticScores:false,
       speechRecognitionIsAcousticScoring:false,
       nativePlaybackIsComprehensionMastery:false,
-      crossSessionReliabilityIsExternalCertification:false
+      crossSessionReliabilityIsExternalCertification:false,
+      externalSourceEvaluationIsIndependentVerification:false,
+      typedDefenseIsAcousticScoring:false
     },
-    portfolio,nativeDepth
+    portfolio,nativeDepth,environment
   };
 }
 
@@ -39,7 +45,7 @@ export function serializeC1PortfolioJson(value:C1PortfolioExport):string{
 }
 
 export function serializeC1PortfolioMarkdown(value:C1PortfolioExport):string{
-  const p=value.portfolio,r=p.reliability,n=value.nativeDepth;
+  const p=value.portfolio,r=p.reliability,n=value.nativeDepth,e=value.environment;
   const lines=[
     "# THIEPN Japanese — C1 Portfolio Export",
     "",
@@ -54,6 +60,8 @@ export function serializeC1PortfolioMarkdown(value:C1PortfolioExport):string{
     "- Browser speech recognition is transcript evidence, not acoustic pronunciation scoring.",
     "- Native-source playback documents exposure; it does not by itself prove comprehension.",
     "- Cross-session reliability describes repeated internal evidence; it is not external certification.",
+    "- Learner source evaluation is a critical-reading record, not independent verification of the source.",
+    "- Typed defense is a speaking-task proxy; speech-recognition transcripts are not acoustic scoring.",
     "",
     "## C1 longitudinal evidence",
     "",
@@ -81,6 +89,30 @@ export function serializeC1PortfolioMarkdown(value:C1PortfolioExport):string{
     "- Delayed AI revisions: "+r.delayedRevisions,
     "",
     ...r.artifactEvidence.slice(0,12).map((item)=>"- "+item.title+": "+item.attempts+" attempts · "+item.successfulDays+" successful days · "+Math.round(item.spanHours)+"h span · "+(item.reliableAcrossSessions?"reliable across sessions":"not yet repeated reliably")),
+    "",
+    "## P15 authentic C1 environment",
+    "",
+    "- Active environment days: "+e.activeDays,
+    "- External sources registered: "+e.registeredSources,
+    "- Sources evaluated: "+e.evaluatedSources,
+    "- Source genres represented: "+e.sourceGenres,
+    "- Publishers/institutions represented: "+e.sourcePublishers,
+    "- Specialist terms mined: "+e.specialistTerms,
+    "- Writing projects started: "+e.writingProjectsStarted,
+    "- Writing projects completed: "+e.writingProjectsCompleted,
+    "- Live-defense turns: "+e.defenseTurns,
+    "- Unique pressure types encountered: "+e.uniquePressureTypes,
+    "",
+    "### Writing-project status",
+    "",
+    ...e.projects.map((item)=>"- "+item.project.title+": "+item.nextStage.replaceAll("_"," ")+" · "+item.defenses.length+" defenses"+(item.draft?" · draft saved":"")+(item.revision?" · delayed revision saved":"")),
+    "",
+    "### Evaluated external sources",
+    "",
+    ...e.sources.map((source)=>{
+      const evaluation=e.sourceEvaluations.find((item)=>item.sourceId===source.id);
+      return "- "+source.publisher+" — "+source.title+" · "+source.genre+(evaluation?" · evaluated "+evaluation.confidence:" · not yet evaluated")+" · "+source.url;
+    }),
     "",
     "## Native-source depth",
     "",
