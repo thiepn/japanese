@@ -95,7 +95,7 @@ export function C1AdvancedLab({onOpenText,onStartSynthesis}:{onOpenText:(id:stri
       <p className="course-note">These packs reuse the canonical P12 C1 texts but force cross-source reasoning. The Study Player checks only transparent length and requested target language; semantic quality remains ungraded unless reviewed separately.</p>
       <div className="mission-grid">{c1SynthesisPacks.map((pack)=>{
         const progress=synthesisProgress.find((item)=>item.pack.id===pack.id);
-        return <article className="mission-card" key={pack.id}>
+        return <article className="p13-synthesis-card" key={pack.id}>
           <div className="mission-card-head"><span>{pack.domain} · {pack.mode}</span><strong>{progress?.attempts??0} attempt{(progress?.attempts??0)===1?"":"s"}</strong></div>
           <h3>{pack.title}</h3><p>{pack.description}</p>
           <div className="mission-stage-list">{pack.sourceTextIds.map((id)=><button className="quiet-button" key={id} type="button" onClick={()=>onOpenText(id)}>{readingText(id).title}</button>)}</div>
