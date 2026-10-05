@@ -524,6 +524,8 @@ button{touch-action:manipulation}
 .p17-editor>small{font-size:8px;color:#817a70}
 .p17-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.p17-head>div{display:grid;gap:3px}.p17-head span{font-size:8px;text-transform:uppercase;letter-spacing:.06em;color:#817a70}.p17-head h3{margin:0}.p17-head>strong{max-width:280px;text-align:right;font-size:9px;color:#655f56}
 .p17-requirements{display:flex;gap:5px;flex-wrap:wrap}.p17-requirements span{padding:5px 7px;border-radius:999px;background:#f2efe8;font-size:8px;color:#655f56}
+.p17-track-context{display:grid;gap:4px;padding:11px;border:1px solid #e1ddd4;border-radius:11px;background:#f7f8f5}.p17-track-context strong{font-size:10px}.p17-track-context span{font-size:8px;color:#817a70}.p17-track-context p{margin:0;font-size:9px;line-height:1.5;color:#655f56}
+.p17-editor label>a{font-size:8px;font-weight:750;justify-self:start}
 .p17-stage-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
 .p17-stage-grid button{display:grid;gap:3px;padding:9px;text-align:left;border:1px solid #e2ddd3;border-radius:10px;background:#faf9f6}.p17-stage-grid button.active{border-color:#9ea99e;background:#f0f4ef}.p17-stage-grid strong{font-size:9px}.p17-stage-grid small{font-size:8px;color:#817a70}
 .p17-prompt{display:grid;gap:4px;padding:12px;border:1px solid #e1ddd4;border-radius:11px;background:#faf8f3}.p17-prompt span{font-size:8px;text-transform:uppercase;color:#817a70}.p17-prompt p{margin:0;font-size:11px;line-height:1.55}.p17-prompt small{font-size:8px;color:#817a70}
