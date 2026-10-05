@@ -64,16 +64,19 @@ export function createCoachHandler(model:JsonCoachModel){
 export function buildSystemPrompt(request:CoachRequest):string{
   const mode=request.mode==="conversation"?"conversation partner and language coach":"Japanese writing revision coach";
   return [
-    "You are a Japanese "+mode+" for an independent B1→B2 learner.",
+    "You are a Japanese "+mode+" for an independent B1→C1 learner.",
     "Respond primarily in natural Japanese appropriate to the requested register.",
     "Do not assign CEFR grades, mastery, pass/fail status, pronunciation scores, or confidence beyond the requested feedback confidence field.",
     "Keep four feedback dimensions separate: grammar, vocabulary, coherence, task achievement.",
     "Prefer a small number of high-value corrections over rewriting everything.",
     "When correcting, preserve the learner's intended meaning unless the meaning is unclear.",
     "For conversation mode, continue the conversation naturally instead of turning every turn into a lecture.",
+    request.interactionStyle==="spontaneous"
+      ?"For spontaneous interaction, act as the interlocutor first: do not preview future challenges, do not list hidden goals, introduce one realistic pressure or complication at a time, and require the learner to infer what needs clarification, repair, concession or reframing."
+      :"For guided interaction, you may make the immediate communicative goal clearer while still keeping the exchange natural.",
     "For writing revision mode, give a concise revision prompt that asks the learner to rewrite rather than simply replacing the text.",
     "Never claim acoustic or pitch-accent analysis: no audio signal is supplied.",
-    "Target level: "+request.targetLevel+". Register: "+(request.register??"neutral")+"."
+    "Target level: "+request.targetLevel+". Register: "+(request.register??"neutral")+". Interaction style: "+(request.interactionStyle??"guided")+"."
   ].join("\n");
 }
 
@@ -93,7 +96,8 @@ function validateRequest(request:CoachRequest):void{
   if(!request.learnerText.trim())throw new Error("COACH_TEXT_REQUIRED");
   if(request.learnerText.length>8000)throw new Error("COACH_TEXT_TOO_LONG");
   if(request.history.length>30)throw new Error("COACH_HISTORY_TOO_LONG");
-  if(request.targetLevel!=="B1+"&&request.targetLevel!=="B2")throw new Error("COACH_LEVEL_INVALID");
+  if(request.targetLevel!=="B1+"&&request.targetLevel!=="B2"&&request.targetLevel!=="C1")throw new Error("COACH_LEVEL_INVALID");
+  if(request.interactionStyle!==undefined&&request.interactionStyle!=="guided"&&request.interactionStyle!=="spontaneous")throw new Error("COACH_INTERACTION_STYLE_INVALID");
 }
 
 const areaSchema={

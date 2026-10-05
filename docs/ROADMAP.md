@@ -295,6 +295,22 @@ P12 establishes:
 
 P12 remains a **foundation**, not a claim of comprehensive CEFR C1 preparation or learner certification. Device synthesis, speech-recognition transcripts, structural productive checks and internal diagnostics keep their existing evidence labels. See `docs/P12_ACCEPTANCE.md`.
 
+## P13 — C1 Native-Source Depth, Multi-Source Synthesis & Spontaneous Interaction
+
+**Implementation complete.** P13 deepens the P12 C1 foundation through realistic source and interaction pressure without creating a new mastery silo:
+
+- eight repository-verified connected native sources are exposed as an advanced listening layer;
+- four C1 native-source sets require complete playback, source notes and cross-source synthesis;
+- six canonical C1 multi-source synthesis packs combine two or three P12 C1 texts;
+- synthesis tasks run through the normal Study Player and preserve structural-vs-semantic evidence boundaries;
+- the coach contract now supports C1 plus an explicit spontaneous interaction mode;
+- five hidden-future C1 scenario chains add evidence conflict, methodological challenge, resource constraints, trust/accountability pressure and public-interview reframing;
+- future C1 pressure stages stay hidden from the learner until reached;
+- B2 guided interaction remains unchanged as a separate lower-pressure mode;
+- C1 native-depth and synthesis progress is derived from StudyEvents rather than stored in a parallel progress system.
+
+P13 still does not claim CEFR certification, semantic grading of free production or acoustic pronunciation scoring. The P11 external-review evidence state remains independent of the continuing C1 roadmap. See `docs/P13_ACCEPTANCE.md`.
+
 ## Later
 
-Later phases deepen C1 native-source breadth, spontaneous interaction, domain-specific Japanese, long-form multi-source autonomy and higher-level productive reliability while preserving the independent P11 release-evidence record.
+Later phases should deepen long-form C1 autonomy, domain specialization, native text/audio breadth and productive reliability across days while preserving the independent P11 release-evidence record.
