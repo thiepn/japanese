@@ -295,6 +295,21 @@ P12 establishes:
 
 P12 remains a **foundation**, not a claim of comprehensive CEFR C1 preparation or learner certification. Device synthesis, speech-recognition transcripts, structural productive checks and internal diagnostics keep their existing evidence labels. See `docs/P12_ACCEPTANCE.md`.
 
+## P13 — C1 Native-Source Depth, Multi-Source Synthesis & Spontaneous Interaction
+
+**Implementation complete.** P13 deepens the P12 C1 foundation through real-source listening and unscripted response pressure:
+
+- reuses all eight provenance-audited P11.2 connected native sources without duplicating or weakening their evidence;
+- adds four multi-source C1 synthesis missions using two or three independently identified sources;
+- keeps speaker, license, attribution, register and source-rate condition visible in the learner workflow;
+- records per-source notes and final synthesis as non-mastery StudyEvents;
+- adds four four-stage spontaneous interaction scenarios across research, public policy, executive and media domains;
+- reveals follow-up pressure one stage at a time so the whole exchange cannot be pre-scripted;
+- records response timing, preparation use and self-repair while keeping speech-recognition transcripts explicitly non-acoustic;
+- integrates both labs directly into Immerse rather than creating a parallel progress system.
+
+See `docs/P13_ACCEPTANCE.md`.
+
 ## Later
 
-Later phases deepen C1 native-source breadth, spontaneous interaction, domain-specific Japanese, long-form multi-source autonomy and higher-level productive reliability while preserving the independent P11 release-evidence record.
+Later phases should broaden C1 genres and speakers, add longer multi-document reading/listening synthesis, live provider-driven opposition, domain-specific tracks and cross-session advanced writing reliability while preserving the independent P11 release-evidence record.
