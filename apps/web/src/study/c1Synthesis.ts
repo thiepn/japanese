@@ -27,7 +27,7 @@ export interface C1SynthesisPackProgress {
   lastAttemptAt?:string;
 }
 
-export const c1SynthesisPacks:C1SynthesisPack[]=[
+const C1_SYNTHESIS_PACKS:C1SynthesisPack[]=[
   {
     id:"p13-synthesis-evidence-causality",
     title:"Evidence, causality and justified conclusions",
@@ -106,7 +106,9 @@ export const c1SynthesisPacks:C1SynthesisPack[]=[
     minimumCharacters:110,
     modelOutline:"Principle → first-domain meaning → transfer → mismatch → revised principle."
   }
-].map(validatePack);
+];
+
+export const c1SynthesisPacks:C1SynthesisPack[]=C1_SYNTHESIS_PACKS.map(validatePack);
 
 export function c1SynthesisPack(id:string):C1SynthesisPack{
   const pack=c1SynthesisPacks.find((item)=>item.id===id);
