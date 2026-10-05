@@ -18,6 +18,7 @@ P16 deliberately deepens the P15 authentic C1 environment instead of adding anot
 - Human review is attached to the exact draft/revision timestamps and remains non-mastery, non-CEFR evidence.
 - Interest-driven specialist tracks connect the learner's real sources, mined specialist terms and C1 projects without inventing a new proficiency score.
 - P16 state remains event-derived from the existing StudyEvent stream.
+- The existing C1 portfolio advances to schema v3 and carries P16 bibliography, excerpt, human-review and specialist-track evidence without creating a separate progress authority.
 
 ## Evidence boundary
 
@@ -33,6 +34,7 @@ P11 remains an independent release-evidence track and may remain held until its 
 ## Acceptance checks
 
 - P16 unit coverage verifies bibliography rendering, event-derived quality state and artifact-bound review packet generation.
+- The portable C1 JSON/Markdown portfolio exposes P16 research-quality evidence with the new evidence-boundary flags.
 - Browser coverage verifies the P16 workspace, all four quality areas and the no-scraping/no-new-mastery boundary.
 - Existing P15 source registration, source evaluation, multi-day writing, defense and delayed revision remain authoritative prerequisites.
 - The canonical public content package is not populated from arbitrary external documents.
