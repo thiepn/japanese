@@ -77,7 +77,8 @@ describe("P14 C1 long-form autonomy and reliability",()=>{
     expect(profiles.find((item)=>item.missionId==="p14-research-evidence")).toMatchObject({
       status:"sustained",completedStages:8,totalStages:8,activeDays:2
     });
-    expect(profiles.find((item)=>item.missionId==="p14-media-argument")?.status).toBe("not_started");
+    expect(profiles.find((item)=>item.missionId==="p14-media-argument")?.status).toBe("exploring");
+    expect(profiles.find((item)=>item.missionId==="p14-technology-accountability")?.status).toBe("not_started");
   });
 
   it("requires cross-day structural success for C1 productive reliability and tracks interaction transfer separately",()=>{
