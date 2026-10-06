@@ -18,6 +18,8 @@ permissions:
 jobs:
   activate:
     runs-on: ubuntu-latest
+    env:
+      VITE_PUBLIC_BASE: /japanese/
     steps:
       - name: Validate activation inputs
         env:
