@@ -152,7 +152,20 @@ jobs:
 
       - name: Build stable artifact with release identity
         working-directory: candidate
+        env:
+          VITE_PUBLIC_BASE: /japanese/
         run: pnpm build
+
+      - name: Add deterministic SPA and Account callback routes
+        working-directory: candidate
+        env:
+          RELEASE_COMMIT: ${{ inputs.release_commit }}
+        run: |
+          cp apps/web/dist/index.html apps/web/dist/404.html
+          mkdir -p apps/web/dist/auth/callback
+          cp apps/web/dist/index.html apps/web/dist/auth/callback/index.html
+          grep -q '/japanese/assets/' apps/web/dist/index.html
+          grep -q "$RELEASE_COMMIT" apps/web/dist/release-meta.json
 
       - name: Package static release and digest
         working-directory: candidate
