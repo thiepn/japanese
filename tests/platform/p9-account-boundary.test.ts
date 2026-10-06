@@ -1,7 +1,14 @@
 import "fake-indexeddb/auto";
 import { afterEach,describe,expect,it,vi } from "vitest";
 import {
+  buildJapaneseAccountEntryUrl,
+  createFlowNonce,
   createThiepnAccountAuthProvider,
+  JAPANESE_ACCOUNT_ENTRY_URL,
+  JAPANESE_CALLBACK_URL,
+  readJapaneseCallback,
+  readPendingJapaneseLogin,
+  THIEPN_ACCOUNT_SUPABASE_URL,
   type AuthProvider
 } from "../../packages/auth/src/index";
 import {
@@ -23,6 +30,51 @@ afterEach(()=>{
 });
 
 describe("P9 THIEPN Account boundary",()=>{
+
+  it("routes production sign-in through the shared THIEPN Account entry",()=>{
+    const authorize=new URL("/auth/v1/authorize",THIEPN_ACCOUNT_SUPABASE_URL);
+    authorize.searchParams.set("provider","google");
+    authorize.searchParams.set("redirect_to",`${JAPANESE_CALLBACK_URL}?flow=${"a".repeat(64)}`);
+    authorize.searchParams.set("code_challenge","b".repeat(43));
+    authorize.searchParams.set("code_challenge_method","s256");
+    authorize.searchParams.set("prompt","select_account");
+
+    const entry=new URL(buildJapaneseAccountEntryUrl(authorize.href));
+    expect(entry.origin+entry.pathname).toBe(JAPANESE_ACCOUNT_ENTRY_URL);
+    expect(entry.searchParams.get("request")).toBe(authorize.href);
+    expect(()=>buildJapaneseAccountEntryUrl("https://evil.test/auth/v1/authorize")).toThrow("INVALID_AUTHORIZATION_URL");
+  });
+
+  it("uses a fresh tokenless PKCE flow and rejects unsafe callback state",()=>{
+    const bytes=new Uint8Array(32);
+    bytes[0]=0x0f;
+    bytes[31]=0xff;
+    const flow=createFlowNonce(bytes);
+    expect(flow).toHaveLength(64);
+    expect(flow.startsWith("0f")).toBe(true);
+    expect(flow.endsWith("ff")).toBe(true);
+
+    const now=1_800_000;
+    const raw=JSON.stringify({flow,started:now-30_000,returnTo:"/japanese/"});
+    expect(readPendingJapaneseLogin(raw,flow,now)).toEqual({
+      flow,
+      started:now-30_000,
+      returnTo:"/japanese/"
+    });
+    expect(readPendingJapaneseLogin(raw,"a".repeat(64),now)).toBeNull();
+    expect(readPendingJapaneseLogin(JSON.stringify({flow,started:now-1,returnTo:"https://evil.test/"}),flow,now)).toBeNull();
+
+    expect(
+      readJapaneseCallback(new URLSearchParams({code:"one-use-code",flow}),""),
+    ).toEqual({code:"one-use-code",flow});
+    expect(
+      readJapaneseCallback(new URLSearchParams({code:"one-use-code",flow,extra:"x"}),""),
+    ).toBeNull();
+    expect(
+      readJapaneseCallback(new URLSearchParams({code:"one-use-code",flow}),"#access_token=x"),
+    ).toBeNull();
+  });
+
   it("uses canonical Account user verification and bearer session transport",async()=>{
     const userId="11111111-1111-4111-8111-111111111111";
     const client={
