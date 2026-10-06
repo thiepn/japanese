@@ -1,7 +1,7 @@
 import { expect,test } from "@playwright/test";
 
 test("P15 exposes the real-source C1 environment, multi-day writing and hidden-pressure defense",async({page})=>{
-  await page.goto("/");
+  await page.goto("./");
 
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
   const lab=page.locator(".p15-environment");
@@ -29,7 +29,7 @@ test("P15 exposes the real-source C1 environment, multi-day writing and hidden-p
 });
 
 test("P15 source portal selection keeps the selected institution and source constraints visible",async({page})=>{
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
   const lab=page.locator(".p15-environment");
 
