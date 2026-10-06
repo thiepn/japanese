@@ -1,4 +1,5 @@
 import { entityKey } from "@thiepn/domain";
+import { getJapaneseDeviceId } from "../deviceIdentity";
 import { replayStudyEvents, type LearnerState } from "@thiepn/learner-engine";
 import { getMemoryTrace, listMemoryTraces, listStudyEvents, saveMemoryTrace, saveStudyEvent } from "@thiepn/local-db";
 import { createFsrsScheduler, type ReviewGrade } from "@thiepn/scheduler";
@@ -31,7 +32,7 @@ export function setDevelopmentAccountId(accountId:string):void{
 export function getDevelopmentAccountId():string{
   return DEVELOPMENT_ACCOUNT_ID;
 }
-export const DEVELOPMENT_DEVICE_ID="p2-local-browser";
+export const DEVELOPMENT_DEVICE_ID=getJapaneseDeviceId();
 
 const scheduler=createFsrsScheduler();
 const NEW_KANA_PER_SESSION=5;
