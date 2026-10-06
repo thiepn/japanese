@@ -1,7 +1,7 @@
 import { expect,test } from "@playwright/test";
 
 test("structured A1→C1 course and canonical grammar/sentence search work on every certified viewport",async({page})=>{
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button",{name:"Learn"}).click();
 
   await expect(page.getByRole("heading",{name:"Foundation → C1"})).toBeVisible();
