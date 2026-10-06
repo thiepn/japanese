@@ -142,7 +142,7 @@ export const scenarioChains:ScenarioChain[]=[
       {id:"repair",title:"Overgeneralization repair",scenario:"The interlocutor summarizes your revised position too broadly. Correct the summary and state the boundary condition precisely.",goals:["repair overgeneralization","state boundary condition","avoid unnecessary complexity"],pressure:"misrepresentation"},
       {id:"synthesis",title:"Portable version",scenario:"Give the strongest version of the principle that can responsibly transfer across domains, including one explicit condition where it should not be used.",goals:["synthesize revised principle","state transfer condition","state failure condition"],pressure:"final abstraction"}
     ]
-,
+  },
   {
     id:"c1-live-committee-repair",
     title:"Survive a hostile committee interruption",
@@ -184,7 +184,7 @@ export const scenarioChains:ScenarioChain[]=[
       {id:"repair",title:"Overgeneralized summary",scenario:"The interlocutor repeats your revised position too broadly. Correct the summary concisely and specify the condition that prevents overgeneralization.",goals:["repair summary","state boundary condition","keep language concise"],pressure:"overgeneralization"},
       {id:"synthesis",title:"Portable formulation",scenario:"Give the strongest version of the principle that can travel across domains, plus one explicit case where it should not be used without further evidence.",goals:["formulate portable principle","state failure condition","calibrate certainty"],pressure:"portable synthesis"}
     ]
-  }  }
+  }
 ];
 
 export function scenarioChain(id:string):ScenarioChain{
