@@ -4,8 +4,8 @@ import { replayStudyEvents } from "@thiepn/learner-engine";
 import { listStudyEvents, saveStudyEvent } from "@thiepn/local-db";
 import { audioAsset, coreContent, grammarConcept, readingText, senseForLexeme, sentenceRecord } from "../coreContent";
 import { conjugateLexeme, type ConjugationForm } from "../study/conjugation";
+import { DEVELOPMENT_ACCOUNT_ID } from "../study/runtime";
 
-const ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
 const DEVICE_ID="p3-local-browser";
 const FORMS:ConjugationForm[]=["polite_nonpast","polite_negative","polite_past","polite_past_negative","plain_negative","plain_past","te_form"];
 
@@ -67,7 +67,7 @@ export function buildReaderText(textId:string):ReaderTextView{
 }
 
 export async function getImmersionProgress():Promise<ImmersionProgress>{
-  const events=await listStudyEvents(ACCOUNT_ID);
+  const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
   const state=replayStudyEvents(events);
   const texts=coreContent.readingTexts.map((text)=>{
     const targets=[...new Set(text.targetLexemeIds)];
@@ -182,7 +182,7 @@ export function segmentSentence(sentence:Sentence):ReaderToken[]{
 function eventBase(input:Partial<StudyEvent>&Pick<StudyEvent,"activity">):StudyEvent{
   return {
     id:typeof crypto!=="undefined"&&"randomUUID" in crypto?crypto.randomUUID():`p3-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-    userId:ACCOUNT_ID,deviceId:DEVICE_ID,occurredAt:new Date().toISOString(),
+    userId:DEVELOPMENT_ACCOUNT_ID,deviceId:DEVICE_ID,occurredAt:new Date().toISOString(),
     contentVersion:coreContent.version,learnerModelVersion:"p1.3",...input
   };
 }

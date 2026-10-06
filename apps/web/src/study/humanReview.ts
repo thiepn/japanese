@@ -1,8 +1,8 @@
 import type { StudyEvent } from "@thiepn/domain";
 import { listStudyEvents,saveStudyEvent } from "@thiepn/local-db";
 import { productiveTasks } from "../coreContent";
+import { DEVELOPMENT_ACCOUNT_ID } from "./runtime";
 
-const ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
 const DEVICE_ID="p10-human-review";
 export const P11_EXTERNAL_REVIEW_ARTIFACT_MIN=6;
 
@@ -95,7 +95,7 @@ export interface HumanReviewPacketV1 {
 }
 
 export async function listHumanReviewArtifacts():Promise<HumanReviewArtifact[]>{
-  return buildHumanReviewArtifacts(await listStudyEvents(ACCOUNT_ID));
+  return buildHumanReviewArtifacts(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));
 }
 
 export function buildHumanReviewArtifacts(events:readonly StudyEvent[]):HumanReviewArtifact[]{
@@ -142,7 +142,7 @@ export async function saveHumanReview(input:{
     comment:input.comment.trim(),strengths:input.strengths.trim(),nextPriority:input.nextPriority.trim()
   };
   await saveStudyEvent({
-    id:eventId,userId:ACCOUNT_ID,deviceId:DEVICE_ID,occurredAt:reviewedAt,
+    id:eventId,userId:DEVELOPMENT_ACCOUNT_ID,deviceId:DEVICE_ID,occurredAt:reviewedAt,
     activity:"assessment",primaryTarget:{kind:"production_task",id:input.artifact.taskId},
     skillDimension:input.artifact.mode==="writing"?"writing_quality":"production",
     promptFamily:"p10-human-review",responseMode:"human_rubric",result:"skipped",
@@ -163,7 +163,7 @@ export async function saveHumanReview(input:{
 }
 
 export async function getHumanReviewSummary():Promise<HumanReviewSummary>{
-  const events=await listStudyEvents(ACCOUNT_ID);
+  const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
   const artifacts=buildHumanReviewArtifacts(events);
   const reviews=extractHumanReviews(events);
   return buildHumanReviewSummary(artifacts,reviews);
