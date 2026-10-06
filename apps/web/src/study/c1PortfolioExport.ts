@@ -195,6 +195,7 @@ export function serializeC1PortfolioMarkdown(value:C1PortfolioExport):string{
     "- Active interaction days: "+i.activeDays,
     "- Live pressure turns: "+i.turns.length,
     "- Pressure types encountered: "+i.pressureTypes,
+    "- Advanced AI pressure turns: "+i.aiPressureTurns,
     "- Complete 4-turn pressure sessions: "+i.completeSessions,
     "- Robust pressure sessions: "+i.robustSessions,
     "- Real human interactions logged: "+i.humanInteractions.length,
