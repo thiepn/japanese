@@ -3,7 +3,86 @@
   "schemaVersion": 1,
   "policy": "defect-only",
   "capabilityFreeze": "P20",
-  "entries": [],
+  "entries": [
+    {
+      "id": "p22-2026-10-06-library-reload-crash",
+      "changeType": "reliability",
+      "summary": "Replace crash-prone browser SQLite/WASM Library search with deterministic in-memory search over the bundled canonical corpus; preserve account-scoped IndexedDB for learner state.",
+      "commit": "f85ea746439f854ca9b649e8ca6161431e7e9f46",
+      "risk": "medium",
+      "status": "verified",
+      "regressionScope": [
+        "Library search",
+        "offline reload",
+        "canonical content search",
+        "bundle output"
+      ],
+      "requiresPhysicalDeviceRetest": true,
+      "capabilityExpansion": false
+    },
+    {
+      "id": "p22-2026-10-06-pwa-cache-isolation",
+      "changeType": "privacy",
+      "summary": "Restrict service-worker cache ownership, cleanup and offline reads to Japanese-owned caches and the Japanese same-origin subpath.",
+      "commit": "b3c05493ed90ca7776090b004ada7e3159ba7697",
+      "risk": "medium",
+      "status": "verified",
+      "regressionScope": [
+        "PWA install",
+        "offline shell",
+        "cross-app cache isolation",
+        "cross-origin request boundary"
+      ],
+      "requiresPhysicalDeviceRetest": true,
+      "capabilityExpansion": false
+    },
+    {
+      "id": "p22-2026-10-06-canonical-subpath-certification",
+      "changeType": "operations",
+      "summary": "Run CI and stable browser acceptance against the canonical /japanese/ public base and make E2E navigation base-path aware.",
+      "commit": "e8b2122c36b30de9766ed39d91fb585ce61050c0",
+      "risk": "medium",
+      "status": "verified",
+      "regressionScope": [
+        "GitHub Pages subpath",
+        "service-worker scope",
+        "browser acceptance",
+        "stable release artifact"
+      ],
+      "requiresPhysicalDeviceRetest": false,
+      "capabilityExpansion": false
+    },
+    {
+      "id": "p22-2026-10-06-release-identity-base",
+      "changeType": "defect",
+      "summary": "Read release-meta.json from the configured Japanese app base instead of the site root.",
+      "commit": "403163453480ef1fcd706bafa68c58658c68bd75",
+      "risk": "low",
+      "status": "verified",
+      "regressionScope": [
+        "Progress deployment identity",
+        "candidate metadata",
+        "canonical subpath"
+      ],
+      "requiresPhysicalDeviceRetest": false,
+      "capabilityExpansion": false
+    },
+    {
+      "id": "p22-2026-10-06-tatoeba-boundary",
+      "changeType": "security",
+      "summary": "Bound Tatoeba imports with ID validation, network timeout, JSON failure handling and safe HTTPS attribution fallback.",
+      "commit": "c2102269a5e147965e5bf5522337e8247d349692",
+      "risk": "low",
+      "status": "verified",
+      "regressionScope": [
+        "Tatoeba import",
+        "external-source timeout",
+        "attribution URL safety"
+      ],
+      "requiresPhysicalDeviceRetest": false,
+      "capabilityExpansion": false
+    }
+  ],
   "notes": [
     "After stable activation, maintenance changes must be classified and must not introduce a new proficiency layer, primary surface, mastery authority or scheduler.",
     "Security, privacy, accessibility, dependency, content-correction, reliability and concrete defect fixes are allowed when their regression scope is explicit."
