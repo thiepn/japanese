@@ -4,12 +4,13 @@ import { getC1EnvironmentProgress,type C1EnvironmentProgress } from "./c1Environ
 import { getC1ResearchQualityProgress,type C1ResearchQualityProgress } from "./c1ResearchQuality";
 import { getC1PrecisionProgress,type C1PrecisionProgress } from "./c1Precision";
 import { getC1AdvancedInteractionProgress,type C1AdvancedInteractionProgress } from "./c1AdvancedInteraction";
+import { getC1ProsodyEvaluationProgress,type C1ProsodyEvaluationProgress } from "./c1ProsodyEvaluation";
 
 export interface C1PortfolioExport {
   schema:"thiepn-japanese-c1-portfolio";
-  schemaVersion:5;
+  schemaVersion:6;
   generatedAt:string;
-  phase:"P18";
+  phase:"P19";
   evidenceBoundary:{
     accreditedCefrVerdict:false;
     aiFeedbackChangesMastery:false;
@@ -32,6 +33,11 @@ export interface C1PortfolioExport {
     partnerProfileIsVerified:false;
     humanInteractionChangesMastery:false;
     crossDomainTransferIsSubjectExpertise:false;
+    localAudioSyncsToAccount:false;
+    timingMetricsArePitchAccentScores:false;
+    artificialOverlapIsNaturalConversation:false;
+    externalReviewerIdentityVerified:false;
+    externalC2ReviewIsCertification:false;
   };
   portfolio:C1PortfolioSummary;
   nativeDepth:C1NativeDepthProgress;
@@ -39,12 +45,13 @@ export interface C1PortfolioExport {
   researchQuality:C1ResearchQualityProgress;
   precision:C1PrecisionProgress;
   advancedInteraction:C1AdvancedInteractionProgress;
+  prosodyEvaluation:C1ProsodyEvaluationProgress;
 }
 
 export async function getC1PortfolioExport(now=new Date()):Promise<C1PortfolioExport>{
-  const [portfolio,nativeDepth,environment,researchQuality,precision,advancedInteraction]=await Promise.all([getC1PortfolioSummary(),getC1NativeDepthProgress(),getC1EnvironmentProgress(),getC1ResearchQualityProgress(),getC1PrecisionProgress(),getC1AdvancedInteractionProgress()]);
+  const [portfolio,nativeDepth,environment,researchQuality,precision,advancedInteraction,prosodyEvaluation]=await Promise.all([getC1PortfolioSummary(),getC1NativeDepthProgress(),getC1EnvironmentProgress(),getC1ResearchQualityProgress(),getC1PrecisionProgress(),getC1AdvancedInteractionProgress(),getC1ProsodyEvaluationProgress()]);
   return {
-    schema:"thiepn-japanese-c1-portfolio",schemaVersion:5,generatedAt:now.toISOString(),phase:"P18",
+    schema:"thiepn-japanese-c1-portfolio",schemaVersion:6,generatedAt:now.toISOString(),phase:"P19",
     evidenceBoundary:{
       accreditedCefrVerdict:false,
       aiFeedbackChangesMastery:false,
@@ -66,9 +73,14 @@ export async function getC1PortfolioExport(now=new Date()):Promise<C1PortfolioEx
       responseTimingIsFluencyScore:false,
       partnerProfileIsVerified:false,
       humanInteractionChangesMastery:false,
-      crossDomainTransferIsSubjectExpertise:false
+      crossDomainTransferIsSubjectExpertise:false,
+      localAudioSyncsToAccount:false,
+      timingMetricsArePitchAccentScores:false,
+      artificialOverlapIsNaturalConversation:false,
+      externalReviewerIdentityVerified:false,
+      externalC2ReviewIsCertification:false
     },
-    portfolio,nativeDepth,environment,researchQuality,precision,advancedInteraction
+    portfolio,nativeDepth,environment,researchQuality,precision,advancedInteraction,prosodyEvaluation
   };
 }
 
@@ -77,7 +89,7 @@ export function serializeC1PortfolioJson(value:C1PortfolioExport):string{
 }
 
 export function serializeC1PortfolioMarkdown(value:C1PortfolioExport):string{
-  const p=value.portfolio,r=p.reliability,n=value.nativeDepth,e=value.environment,q=value.researchQuality,x=value.precision,i=value.advancedInteraction;
+  const p=value.portfolio,r=p.reliability,n=value.nativeDepth,e=value.environment,q=value.researchQuality,x=value.precision,i=value.advancedInteraction,a=value.prosodyEvaluation;
   const lines=[
     "# THIEPN Japanese — C1 Portfolio Export",
     "",
@@ -105,6 +117,10 @@ export function serializeC1PortfolioMarkdown(value:C1PortfolioExport):string{
     "- Response latency is descriptive timing, not a fluency score.",
     "- Logged human-partner profile is learner-reported and not independently verified.",
     "- Human interaction logs and cross-domain transfer do not update mastery or establish subject expertise.",
+    "- Raw P19 audio captures remain local to the device and are not included in the synced portfolio export.",
+    "- Timing/amplitude metrics are not pitch-accent or intonation-correctness scores.",
+    "- Artificial overlap of verified native recordings is not naturally occurring multi-speaker conversation.",
+    "- External reviewer identity/credentials are learner-entered and not independently verified; C2-oriented review is not certification.",
     "",
     "## C1 longitudinal evidence",
     "",
@@ -209,6 +225,25 @@ export function serializeC1PortfolioMarkdown(value:C1PortfolioExport):string{
     "### Human interaction logs",
     "",
     ...i.humanInteractions.map((entry)=>"- "+entry.medium+" · "+entry.partnerProfile+" (learner-reported) · "+entry.durationMinutes+" minutes · "+entry.domain),
+    "",
+    "## P19 prosody, overlap listening and external C2-oriented review",
+    "",
+    "- Active P19 days: "+a.activeDays,
+    "- Prosody captures: "+a.prosodyCaptures.length,
+    "- Prosody targets practiced: "+a.prosodyTargets,
+    "- Local audio files currently available on this device: "+a.localCaptureCount,
+    "- Overlap-listening attempts: "+a.overlapAttempts.length,
+    "- Overlap tasks practiced: "+a.overlapTasks,
+    "- External human reviews: "+a.externalReviews.length,
+    "- Broad-coverage external reviews: "+a.broadlyCoveredReviews,
+    "",
+    "### Prosody timing evidence",
+    "",
+    ...a.prosodyCaptures.map((capture)=>"- "+capture.targetId+" · "+(capture.metrics.durationMs/1000).toFixed(1)+"s · active "+Math.round(capture.metrics.activeSpeechRatio*100)+"% · pause "+Math.round(capture.metrics.pauseRatio*100)+"% · "+capture.metrics.longPauseCount+" long pauses · "+capture.metrics.dynamicRangeDb.toFixed(1)+" dB amplitude range · raw audio local-only"),
+    "",
+    "### External C2-oriented reviews",
+    "",
+    ...a.externalReviews.map((review)=>"- "+review.reviewerLabel+" — "+review.reviewerRole+" · "+review.modality+" · "+review.scoreCoverage+"/7 dimensions · "+(review.broadCoverage?"broad evidence coverage":"partial evidence coverage")+" · reviewer identity not independently verified"),
     "",
     "## Native-source depth",
     "",
