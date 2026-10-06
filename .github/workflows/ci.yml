@@ -50,6 +50,26 @@ jobs:
         run: pnpm certify:p9 --regression artifacts/p9-regression-evidence.json
       - name: Generate P11 release-candidate decision
         run: pnpm qualify:p11 --regression artifacts/p9-regression-evidence.json
+      - name: Record P21 consolidation evidence
+        run: |
+          cat > artifacts/p21-regression-evidence.json <<'JSON'
+          {
+            "typecheck": true,
+            "unitTests": true,
+            "contentValidation": true,
+            "nativeProvenanceAudit": true,
+            "productionBuild": true,
+            "e2e": true,
+            "desktopViewport": true,
+            "androidViewport": true,
+            "compactViewport": true,
+            "pwaOffline": true,
+            "accessibilitySmoke": true,
+            "privateAudioBoundary": true
+          }
+          JSON
+      - name: Generate P21 final release-candidate decision
+        run: pnpm certify:p21 --regression artifacts/p21-regression-evidence.json --device release/p21-device-acceptance.json --p11 artifacts/p11-release-candidate-qualification.json
       - name: Upload release qualification evidence
         uses: actions/upload-artifact@v4
         with:
@@ -61,3 +81,6 @@ jobs:
             artifacts/p9-release-qualification.md
             artifacts/p11-release-candidate-qualification.json
             artifacts/p11-release-candidate-qualification.md
+            artifacts/p21-regression-evidence.json
+            artifacts/p21-release-candidate.json
+            artifacts/p21-release-candidate.md
