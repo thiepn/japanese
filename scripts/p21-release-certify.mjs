@@ -65,8 +65,11 @@ export function summarizeDeviceAcceptance(manifest){
     if(ids.has(device.id))throw new Error("P21_DEVICE_ACCEPTANCE_DUPLICATE_DEVICE:"+device.id);
     ids.add(device.id);
     requireString(device?.deviceModel,where+" deviceModel");
+    if(device.platform!=="android")throw new Error("P21_DEVICE_ACCEPTANCE_PLATFORM_INVALID:"+device.id);
     requireString(device?.osVersion,where+" osVersion");
+    if(device.browserEngine!=="chromium")throw new Error("P21_DEVICE_ACCEPTANCE_BROWSER_ENGINE_INVALID:"+device.id);
     requireString(device?.browserVersion,where+" browserVersion");
+    if(typeof device.buildCommit!=="string"||!/^[a-f0-9]{40}$/i.test(device.buildCommit))throw new Error("P21_DEVICE_ACCEPTANCE_BUILD_COMMIT_INVALID:"+device.id);
     if(device.installMode!=="standalone-pwa")throw new Error("P21_DEVICE_ACCEPTANCE_INSTALL_MODE_INVALID:"+device.id);
     requireIsoDate(device.testedAt,"P21_DEVICE_ACCEPTANCE_DATE_INVALID:"+device.id);
     if(!device.checks||typeof device.checks!=="object")throw new Error("P21_DEVICE_ACCEPTANCE_DEVICE_CHECKS_REQUIRED:"+device.id);
@@ -75,8 +78,11 @@ export function summarizeDeviceAcceptance(manifest){
     return {
       id:device.id,
       deviceModel:device.deviceModel,
+      platform:device.platform,
       osVersion:device.osVersion,
+      browserEngine:device.browserEngine,
       browserVersion:device.browserVersion,
+      buildCommit:device.buildCommit,
       installMode:device.installMode,
       testedAt:device.testedAt,
       checks,
@@ -126,8 +132,11 @@ export function buildP21ReleaseReport({regression,device,p11,generatedAt=new Dat
   ));
   const automatedQualified=Object.values(automated).every(Boolean);
   const p11Qualified=p11?.releaseCandidateQualified===true;
+  const matchingDevice=commit?device.devices.find((item)=>item.complete&&item.buildCommit.toLowerCase()===String(commit).toLowerCase()):null;
+  const deviceBuildMatches=commit?Boolean(matchingDevice):device.qualified;
   const deviceChecks=[
     check("physical-device-recorded","Physical Android/PWA acceptance recorded",">=1 complete device",String(device.completeDevices),device.completeDevices>=1,"device"),
+    check("physical-device-build","Physical-device pass matches release commit",commit??"recorded build",matchingDevice?.buildCommit??(device.devices[0]?.buildCommit??"none"),deviceBuildMatches,"device"),
     check("physical-device-status","Physical-device manifest status","passed",device.status,device.status==="passed","device"),
     check("device-blockers","Open release-blocking device defects","0",String(device.blockingDefects.length),device.blockingDefects.length===0,"device")
   ];
@@ -140,7 +149,7 @@ export function buildP21ReleaseReport({regression,device,p11,generatedAt=new Dat
     "evidence"
   );
   const checks=[...automatedChecks,...deviceChecks,evidenceCheck];
-  const technicalReleaseReady=automatedQualified&&device.qualified;
+  const technicalReleaseReady=automatedQualified&&device.qualified&&deviceBuildMatches;
   const evidenceReleaseReady=p11Qualified;
   const stableReleaseReady=technicalReleaseReady&&evidenceReleaseReady;
   let decision;
@@ -208,7 +217,7 @@ export function reportMarkdown(report){
     "- Physical devices recorded: "+report.physicalDeviceAcceptance.physicalDevices,
     "- Complete devices: "+report.physicalDeviceAcceptance.completeDevices,
     "- Open release-blocking defects: "+report.physicalDeviceAcceptance.blockingDefects.length,
-    ...report.physicalDeviceAcceptance.devices.map((item)=>"- "+item.deviceModel+" · "+item.osVersion+" · "+item.browserVersion+" · "+item.passed+"/"+item.total+" checks · "+(item.complete?"complete":"incomplete")),
+    ...report.physicalDeviceAcceptance.devices.map((item)=>"- "+item.deviceModel+" · "+item.osVersion+" · "+item.browserVersion+" · commit "+item.buildCommit.slice(0,8)+" · "+item.passed+"/"+item.total+" checks · "+(item.complete?"complete":"incomplete")),
     "",
     "## Blockers",
     "",
@@ -246,7 +255,7 @@ function requireString(value,label){if(typeof value!=="string"||!value.trim())th
 function requireIsoDate(value,errorCode){if(typeof value!=="string"||!Number.isFinite(Date.parse(value)))throw new Error(errorCode);}
 
 function parseArgs(args){
-  const out={regression:DEFAULT_REGRESSION,device:DEFAULT_DEVICE,p11:DEFAULT_P11,outDir:"artifacts",strict:false};
+  const out={regression:DEFAULT_REGRESSION,device:DEFAULT_DEVICE,p11:DEFAULT_P11,outDir:"artifacts",strict:false,commit:null};
   for(let i=0;i<args.length;i+=1){
     const arg=args[i];
     if(arg==="--strict"){out.strict=true;continue;}
@@ -254,6 +263,7 @@ function parseArgs(args){
     if(arg==="--device"){out.device=args[++i];continue;}
     if(arg==="--p11"){out.p11=args[++i];continue;}
     if(arg==="--out-dir"){out.outDir=args[++i];continue;}
+    if(arg==="--commit"){out.commit=args[++i];continue;}
     throw new Error("UNKNOWN_ARGUMENT:"+arg);
   }
   return out;
@@ -264,7 +274,7 @@ export function runCli(args=process.argv.slice(2)){
   const regression=readJson(path.resolve(ROOT,options.regression));
   const device=summarizeDeviceAcceptance(readJson(path.resolve(ROOT,options.device)));
   const p11=readJson(path.resolve(ROOT,options.p11));
-  const report=buildP21ReleaseReport({regression,device,p11});
+  const report=buildP21ReleaseReport({regression,device,p11,commit:options.commit??process.env.GITHUB_SHA??null});
   const outDir=path.resolve(ROOT,options.outDir);
   fs.mkdirSync(outDir,{recursive:true});
   fs.writeFileSync(path.join(outDir,"p21-release-candidate.json"),JSON.stringify(report,null,2)+"\n");
