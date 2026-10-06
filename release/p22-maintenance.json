@@ -5,6 +5,24 @@
   "capabilityFreeze": "P20",
   "entries": [
     {
+      "id": "p22-2026-10-06-library-search-scalability",
+      "changeType": "reliability",
+      "summary": "Make bundled Library search scale more predictably by lazily building a reusable pre-normalized index, indexing all lexeme glosses and readings, debouncing typed queries, and removing stale SQLite-specific failure copy.",
+      "commit": "210df9683550f9be0337a152ccafffec225db45f",
+      "risk": "low",
+      "status": "verified",
+      "regressionScope": [
+        "Library search",
+        "kana-equivalent search",
+        "English gloss search",
+        "canonical content search",
+        "typecheck and unit tests",
+        "production build and browser acceptance"
+      ],
+      "requiresPhysicalDeviceRetest": false,
+      "capabilityExpansion": false
+    },
+    {
       "id": "p22-2026-10-06-library-reload-crash",
       "changeType": "reliability",
       "summary": "Replace crash-prone browser SQLite/WASM Library search with deterministic in-memory search over the bundled canonical corpus; preserve account-scoped IndexedDB for learner state.",

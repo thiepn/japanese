@@ -183,9 +183,19 @@ export function App(){
   },[account.status,account.accountId,accountConnected]);
   useEffect(()=>{
     if(surface!=="Library")return;
-    let cancelled=false;setLibraryStatus("loading");
-    searchLocalJapanese(query).then((next)=>{if(!cancelled){setResults(next);setLibraryStatus("ready");}}).catch(()=>{if(!cancelled){setResults([]);setLibraryStatus("error");}});
-    return()=>{cancelled=true;};
+    let cancelled=false;
+    const run=()=>{
+      setLibraryStatus("loading");
+      searchLocalJapanese(query)
+        .then((next)=>{if(!cancelled){setResults(next);setLibraryStatus("ready");}})
+        .catch(()=>{if(!cancelled){setResults([]);setLibraryStatus("error");}});
+    };
+    if(!query.trim()){
+      run();
+      return()=>{cancelled=true;};
+    }
+    const timeout=globalThis.setTimeout(run,120);
+    return()=>{cancelled=true;globalThis.clearTimeout(timeout);};
   },[query,surface]);
 
   async function refreshDashboard(){
@@ -494,7 +504,7 @@ function Progress({kana,vocab,conjugation,grammar,sentence,lexicalFluency,milest
 function Library({query,setQuery,results,status}:{query:string;setQuery:(value:string)=>void;results:SearchResult[];status:string}){
   return <section className="library"><p className="eyebrow">LIBRARY</p><h1>Japanese knowledge</h1><p className="lead">Search canonical words, collocations, kanji, grammar, sentences and graded texts by Japanese form, reading or English meaning/function.</p>
     <input aria-label="Search Japanese" value={query} onChange={(event)=>setQuery(event.target.value)} placeholder="食べる, たべる, eat, topic…"/>
-    {status==="loading"&&<p className="muted" role="status">Searching local Japanese content…</p>}{status==="error"&&<p role="status">Local content database is unavailable in this browser.</p>}
+    {status==="loading"&&<p className="muted" role="status">Searching local Japanese content…</p>}{status==="error"&&<p role="status">Local Japanese search is temporarily unavailable in this browser.</p>}
     <div className="results">{results.map((item)=><article className={"result-card result-"+item.entity.kind} key={item.entity.kind+":"+item.entity.id}><div><small>{item.entity.kind}</small><strong lang="ja">{item.title}</strong></div><span>{item.subtitle}</span></article>)}</div>
   </section>;
 }
