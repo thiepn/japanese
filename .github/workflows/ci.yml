@@ -72,6 +72,8 @@ jobs:
         run: pnpm certify:p21 --regression artifacts/p21-regression-evidence.json --device release/p21-device-acceptance.json --p11 artifacts/p11-release-candidate-qualification.json
       - name: Validate P22 production manifest without claiming activation
         run: pnpm monitor:p22
+      - name: Validate P22 defect-only maintenance ledger
+        run: pnpm validate:p22:maintenance
       - name: Generate P22 release status
         run: pnpm status:p22 -- --p21 artifacts/p21-release-candidate.json --production release/p22-production.json
       - name: Upload release qualification evidence
@@ -89,5 +91,6 @@ jobs:
             artifacts/p21-release-candidate.json
             artifacts/p21-release-candidate.md
             artifacts/p22-production-smoke.json
+            artifacts/p22-maintenance-summary.json
             artifacts/p22-release-status.json
             artifacts/p22-release-status.md
