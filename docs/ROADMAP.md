@@ -435,6 +435,26 @@ P19 does not claim pitch-accent scoring, general intonation correctness, pronunc
 
 P20 is a product qualification only. It is not an accredited CEFR examination, does not verify reviewer identity or credentials, does not translate structural evidence into semantic scores, does not update FSRS/mastery from reviewer scores, and does not export local raw audio. See `docs/P20_ACCEPTANCE.md`.
 
+## P21 — Final Product Consolidation, Real-Device Acceptance & Defect-Only Hardening
+
+**Implementation complete; stable-release certification remains gated by real-world evidence.**
+
+P21 freezes capability growth at the P20 learner/product architecture and focuses only on consolidation and release hardening:
+
+- no new proficiency layer, primary product surface, scheduler or mastery authority;
+- keyboard skip navigation, active-page semantics, visible focus treatment and mobile form-size hardening;
+- full-product browser regression across desktop Chromium, Pixel 7 and compact touch profiles;
+- all five primary surfaces are checked for reachability and horizontal-overflow regressions;
+- existing PWA/offline, private-audio, content, provenance and advanced-learning regressions remain mandatory;
+- a new P21 release-certification script combines automated evidence, physical-device acceptance and the independent P11 release-evidence result;
+- physical Android/PWA acceptance is represented by an explicit checked-in manifest that is `pending` until a real device is actually tested;
+- emulation cannot satisfy the physical-device gate;
+- unresolved release-blocking device defects prevent technical release readiness;
+- P21 produces separate technical, evidence and stable-release readiness states rather than hiding missing evidence in one score;
+- the normal CI report may remain HOLD without failing code verification; the strict P21 command is reserved for actual stable-release activation.
+
+P21 does not waive P11, infer physical-device results, or reinterpret product qualification as CEFR certification. See `docs/P21_ACCEPTANCE.md` and `docs/P21_DEVICE_ACCEPTANCE.md`.
+
 ## Later
 
-The next phase should freeze capability growth and focus on release quality: complete real-device/PWA acceptance across the full Foundation→C2-oriented pathway, simplify any accumulated advanced UI that creates friction, verify accessibility and private-data boundaries, close only concrete defects, and produce a stable release candidate. New proficiency layers should not be added unless real learner evidence exposes a specific missing capability.
+Do not add another language-capability phase by default. First complete the outstanding real physical-device acceptance and independent P11 external validation. Once both release gates are open, the next phase is **P22 — Stable Release Activation, Production Monitoring & Maintenance**: deploy the certified release candidate, observe production defects/performance, preserve privacy/evidence boundaries, and make maintenance changes only when real usage justifies them.
