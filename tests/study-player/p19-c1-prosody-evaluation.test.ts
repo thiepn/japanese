@@ -1,7 +1,7 @@
 import { describe,expect,it } from "vitest";
 import type { StudyEvent } from "@thiepn/domain";
 import {
-  analyzeAmplitudeEnvelope,buildC1ProsodyEvaluationProgress,c1OverlapListeningTasks,c1ProsodyTargets,
+  analyzeAmplitudeEnvelope,buildC1ProsodyEvaluationProgress,c1OverlapListeningTasks,c1ProsodyTargets,c2ReviewScaleAnchors,
   isBroadC2ReviewCoverage,overlapTask,reviewScoreCoverage,type C2ExternalHumanReview,type C2ReviewScores
 } from "../../apps/web/src/study/c1ProsodyEvaluation";
 
@@ -38,6 +38,11 @@ describe("P19 prosody, overlap listening and external C2-oriented review",()=>{
       expect(task.maskerVolume).toBeGreaterThan(0);
       expect(task.maskerVolume).toBeLessThan(.5);
     }
+  });
+
+  it("anchors the 0–5 external reviewer scale while preserving not-observed separately",()=>{
+    expect(c2ReviewScaleAnchors.map((item)=>item.score)).toEqual([0,1,2,3,4,5]);
+    expect(c2ReviewScaleAnchors[5]?.description).toMatch(/not a CEFR certification/i);
   });
 
   it("distinguishes partial external review from broad evidence coverage",()=>{
