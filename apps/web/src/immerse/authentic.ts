@@ -1,4 +1,5 @@
 import type { Lexeme,LexicalChunk } from "@thiepn/content-schema";
+import { getJapaneseDeviceId } from "../deviceIdentity";
 import { entityKey, type StudyEvent } from "@thiepn/domain";
 import { replayStudyEvents } from "@thiepn/learner-engine";
 import {
@@ -20,7 +21,7 @@ export function setAuthenticAccountId(accountId:string):void{
 export function getAuthenticAccountId():string{
   return AUTHENTIC_ACCOUNT_ID;
 }
-const DEVICE_ID="p5-local-browser";
+const DEVICE_ID=getJapaneseDeviceId();
 const FORMS:ConjugationForm[]=["polite_nonpast","polite_negative","polite_past","polite_past_negative","plain_negative","plain_past","te_form"];
 const FUNCTION_WORDS=new Set(["は","が","を","に","で","と","も","へ","の","から","まで","より","か","ね","よ","ので","けど","が","て","たり","ながら","なら","たら","とき","前","後","そして","でも","しかし","また","です","ます","のに","ても","そう","らしい","みたい","はず","ため","よう","例えば","それでも"]);
 const PUNCT=/^[\s。、！？!?「」『』（）()［］\[\]…・,.:;—–-]+$/u;
