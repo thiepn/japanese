@@ -5,12 +5,13 @@ import { getC1ResearchQualityProgress,type C1ResearchQualityProgress } from "./c
 import { getC1PrecisionProgress,type C1PrecisionProgress } from "./c1Precision";
 import { getC1AdvancedInteractionProgress,type C1AdvancedInteractionProgress } from "./c1AdvancedInteraction";
 import { getC1ProsodyEvaluationProgress,type C1ProsodyEvaluationProgress } from "./c1ProsodyEvaluation";
+import { getC2ReadinessSummary,type C2ReadinessSummary } from "./c2Readiness";
 
 export interface C1PortfolioExport {
   schema:"thiepn-japanese-c1-portfolio";
-  schemaVersion:6;
+  schemaVersion:7;
   generatedAt:string;
-  phase:"P19";
+  phase:"P20";
   evidenceBoundary:{
     accreditedCefrVerdict:false;
     aiFeedbackChangesMastery:false;
@@ -38,6 +39,9 @@ export interface C1PortfolioExport {
     artificialOverlapIsNaturalConversation:false;
     externalReviewerIdentityVerified:false;
     externalC2ReviewIsCertification:false;
+    c2ReadinessIsAccreditedCertification:false;
+    productQualificationChangesMastery:false;
+    distinctReviewerLabelsVerifyIdentity:false;
   };
   portfolio:C1PortfolioSummary;
   nativeDepth:C1NativeDepthProgress;
@@ -46,12 +50,13 @@ export interface C1PortfolioExport {
   precision:C1PrecisionProgress;
   advancedInteraction:C1AdvancedInteractionProgress;
   prosodyEvaluation:C1ProsodyEvaluationProgress;
+  readiness:C2ReadinessSummary;
 }
 
 export async function getC1PortfolioExport(now=new Date()):Promise<C1PortfolioExport>{
-  const [portfolio,nativeDepth,environment,researchQuality,precision,advancedInteraction,prosodyEvaluation]=await Promise.all([getC1PortfolioSummary(),getC1NativeDepthProgress(),getC1EnvironmentProgress(),getC1ResearchQualityProgress(),getC1PrecisionProgress(),getC1AdvancedInteractionProgress(),getC1ProsodyEvaluationProgress()]);
+  const [portfolio,nativeDepth,environment,researchQuality,precision,advancedInteraction,prosodyEvaluation,readiness]=await Promise.all([getC1PortfolioSummary(),getC1NativeDepthProgress(),getC1EnvironmentProgress(),getC1ResearchQualityProgress(),getC1PrecisionProgress(),getC1AdvancedInteractionProgress(),getC1ProsodyEvaluationProgress(),getC2ReadinessSummary(now)]);
   return {
-    schema:"thiepn-japanese-c1-portfolio",schemaVersion:6,generatedAt:now.toISOString(),phase:"P19",
+    schema:"thiepn-japanese-c1-portfolio",schemaVersion:7,generatedAt:now.toISOString(),phase:"P20",
     evidenceBoundary:{
       accreditedCefrVerdict:false,
       aiFeedbackChangesMastery:false,
@@ -78,9 +83,12 @@ export async function getC1PortfolioExport(now=new Date()):Promise<C1PortfolioEx
       timingMetricsArePitchAccentScores:false,
       artificialOverlapIsNaturalConversation:false,
       externalReviewerIdentityVerified:false,
-      externalC2ReviewIsCertification:false
+      externalC2ReviewIsCertification:false,
+      c2ReadinessIsAccreditedCertification:false,
+      productQualificationChangesMastery:false,
+      distinctReviewerLabelsVerifyIdentity:false
     },
-    portfolio,nativeDepth,environment,researchQuality,precision,advancedInteraction,prosodyEvaluation
+    portfolio,nativeDepth,environment,researchQuality,precision,advancedInteraction,prosodyEvaluation,readiness
   };
 }
 
@@ -89,7 +97,7 @@ export function serializeC1PortfolioJson(value:C1PortfolioExport):string{
 }
 
 export function serializeC1PortfolioMarkdown(value:C1PortfolioExport):string{
-  const p=value.portfolio,r=p.reliability,n=value.nativeDepth,e=value.environment,q=value.researchQuality,x=value.precision,i=value.advancedInteraction,a=value.prosodyEvaluation;
+  const p=value.portfolio,r=p.reliability,n=value.nativeDepth,e=value.environment,q=value.researchQuality,x=value.precision,i=value.advancedInteraction,a=value.prosodyEvaluation,z=value.readiness;
   const lines=[
     "# THIEPN Japanese — C1 Portfolio Export",
     "",
@@ -121,6 +129,9 @@ export function serializeC1PortfolioMarkdown(value:C1PortfolioExport):string{
     "- Timing/amplitude metrics are not pitch-accent or intonation-correctness scores.",
     "- Artificial overlap of verified native recordings is not naturally occurring multi-speaker conversation.",
     "- External reviewer identity/credentials are learner-entered and not independently verified; C2-oriented review is not certification.",
+    "- P20 readiness is an internal product qualification only; it is not accredited CEFR C2 certification.",
+    "- Distinct reviewer labels do not verify that reviewers are independent people.",
+    "- P20 qualification never changes FSRS or durable mastery automatically.",
     "",
     "## C1 longitudinal evidence",
     "",
@@ -244,6 +255,38 @@ export function serializeC1PortfolioMarkdown(value:C1PortfolioExport):string{
     "### External C2-oriented reviews",
     "",
     ...a.externalReviews.map((review)=>"- "+review.reviewerLabel+" — "+review.reviewerRole+" · "+review.modality+" · "+review.scoreCoverage+"/7 dimensions · "+(review.broadCoverage?"broad evidence coverage":"partial evidence coverage")+" · reviewer identity not independently verified"),
+    "",
+    "## P20 longitudinal C2-readiness consolidation",
+    "",
+    "- Status: "+z.statusLabel,
+    "- Internal advanced-pathway qualification: "+(z.qualified?"QUALIFIED":"NOT YET QUALIFIED"),
+    "- Evidence span: "+z.evidenceSpanDays+" days",
+    "- Advanced active days: "+z.advancedActiveDays,
+    "- Qualification gates met: "+z.requirementsMet+"/"+z.requirements.length,
+    "- Stable external dimensions: "+z.stableDimensions+"/7",
+    "- Strong external dimensions: "+z.strongDimensions+"/7",
+    "- Broad external reviews: "+z.broadExternalReviews,
+    "- Distinct reviewer labels: "+z.distinctReviewerLabels+" (identity unverified)",
+    "- External aggregate: "+(z.externalAverage===null?"n/a":z.externalAverage.toFixed(2)+"/5"),
+    "",
+    "### Qualification gates",
+    "",
+    ...z.requirements.map((item)=>"- "+(item.met?"✓":"○")+" "+item.label+" — "+item.current+" · target "+item.target),
+    "",
+    "### Seven-dimension readiness",
+    "",
+    ...z.dimensions.map((item)=>"- "+item.label+" — "+item.status+" · internal support "+item.internalSupport+" ("+item.internalEvidenceCount+") · broad observations "+item.broadObservations+" · mean "+(item.meanScore===null?"n/a":item.meanScore.toFixed(2))+" · latest "+(item.latestScore===null?"n/a":item.latestScore.toFixed(1))),
+    "",
+    "### Reviewer calibration",
+    "",
+    "- Calibration status: "+z.calibration.status.replaceAll("_"," "),
+    "- Mean absolute delta: "+(z.calibration.meanAbsoluteDelta===null?"n/a":z.calibration.meanAbsoluteDelta.toFixed(2)+"/5"),
+    "- Max absolute delta: "+(z.calibration.maxAbsoluteDelta===null?"n/a":z.calibration.maxAbsoluteDelta.toFixed(1)+"/5"),
+    "- Reviewer identity verified: NO",
+    "",
+    "### Next evidence",
+    "",
+    ...(z.nextActions.length?z.nextActions.map((item)=>"- "+item):["- No unmet internal qualification gates."]),
     "",
     "## Native-source depth",
     "",
