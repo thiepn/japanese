@@ -10,7 +10,7 @@ type Tab="live"|"human"|"transfer";
 type SpeechTarget="statement"|"response";
 
 const EMPTY_PROGRESS:C1AdvancedInteractionProgress={
-  activeDays:0,turns:[],sessions:[],completeSessions:0,robustSessions:0,pressureTypes:0,humanInteractions:[],
+  activeDays:0,turns:[],sessions:[],completeSessions:0,robustSessions:0,pressureTypes:0,aiPressureTurns:0,humanInteractions:[],
   humanInteractionMinutes:0,transfers:[]
 };
 const EMPTY_QUALITY:C1ResearchQualityProgress={
@@ -147,6 +147,7 @@ export function C1AdvancedInteractionLab(){
     <div className="p18-stats">
       <P18Stat value={progress.turns.length} label="pressure turns"/>
       <P18Stat value={progress.pressureTypes} label="pressure types"/>
+      <P18Stat value={progress.aiPressureTurns} label="AI pressure turns"/>
       <P18Stat value={progress.completeSessions} label="4-turn sessions"/>
       <P18Stat value={progress.robustSessions} label="robust sessions"/>
       <P18Stat value={progress.humanInteractions.length} label="human interactions"/>
