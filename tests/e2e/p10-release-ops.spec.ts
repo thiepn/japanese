@@ -1,16 +1,16 @@
 import { expect,test } from "@playwright/test";
 
-test("P12 keeps P11 release evidence visible while roadmap development proceeds",async({page})=>{
+test("P21 keeps independent P11 evidence visible inside final release hardening",async({page})=>{
   await page.goto("/");
 
   await page.getByRole("button",{name:"Progress"}).click();
   await expect(page.getByRole("heading",{name:"Review productive evidence without rewriting mastery"})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Qualify B2 before opening C1"})).toBeVisible();
-  await expect(page.getByText("P9 media provenance + external evidence remain authoritative")).toBeVisible();
   await expect(page.getByText("P11 external-review packet readiness")).toBeVisible();
   await expect(page.getByRole("button",{name:"Export P11 external-review handoff"})).toBeDisabled();
   await expect(page.getByText("P11 external-review handoff",{exact:true})).toBeVisible();
-  await expect(page.getByText(/P12 curriculum development is intentionally decoupled/)).toBeVisible();
+  await expect(page.getByText("P21 physical-device gate",{exact:true})).toBeVisible();
+  await expect(page.getByText(/Playwright Pixel\/compact profiles remain automated regression evidence/)).toBeVisible();
   await expect(page.getByText("C1 FOUNDATION",{exact:true})).toBeVisible();
 
   await page.getByRole("button",{name:"Immerse"}).click();
