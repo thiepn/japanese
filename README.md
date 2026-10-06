@@ -10,27 +10,29 @@ Primary product surfaces: **Today · Learn · Immerse · Library · Progress**.
 
 ## Current phase
 
-**P17 — C1→C2 Precision Bridge, Stylistic Control & Specialist Discourse is implemented.**
+**P18 — Advanced Native Interaction, Real-Time Repair & C2-Style Discourse Pressure is implemented.**
 
-P17 keeps the P15 authentic-source environment and P16 research-quality layer, then targets the advanced-control gap that broad C1 coverage does not solve:
+P18 keeps the P15–P17 authentic-source, research-quality and precision stack, then moves advanced Japanese into interaction pressure that is revealed only after the learner commits:
 
-- eight precision-transformation modes covering compression, expansion, register shift, certainty calibration, lexical precision, cohesion, counterargument integration and audience translation;
-- original/revised Japanese plus an explicit rationale so stylistic changes remain inspectable rather than becoming an opaque score;
-- five-function specialist discourse cycles anchored in the learner's P16 specialist tracks;
-- specialist discourse breadth requires position, mechanism/evidence, expert challenge, audience shift and synthesis;
-- sustained specialist discourse requires every stage to survive a 20+ hour delayed repeat;
-- browser Japanese speech recognition can capture specialist turns, while typed fallback remains explicitly labeled as a speaking proxy;
-- fresh-source refresh tasks force earlier conclusions to be reopened when another registered source is introduced;
-- human-review repair loops require the learner to accept, modify or reject feedback and explain the revision decision;
-- P17 remains StudyEvent-derived and does not introduce a new scheduler, mastery silo or C2 authority;
-- the portable C1/C2 portfolio advances to schema v4 with precision, specialist reliability, source-refresh and review-repair evidence.
+- 12 hidden pressure moves covering interruption, clarification, reformulation, implicature, register pivot, conflicting evidence, stance narrowing, time pressure, cross-domain transfer, floor recovery, certainty challenge and synthesis;
+- a committed-position → hidden-pressure → live-repair loop so later turns build on the repaired response instead of acting as isolated prompts;
+- complete simulated sessions require at least four turns across four pressure types;
+- robust simulated sessions require at least six pressure types across four or more pressure families;
+- browser Japanese speech recognition can capture live responses, while typed responses remain explicitly labeled as speaking proxies;
+- response latency is stored descriptively but is never promoted into a fluency or pronunciation score;
+- the C1 AI coach gains three new hidden-future chains for hostile committee interruption, specialist roundtables and cross-domain expert transfer;
+- C1 AI-coach turns are tagged as P18 advanced interaction evidence but remain model simulation rather than native-speaker evidence;
+- actual human interaction is logged separately with medium, learner-reported partner profile, duration, domain, hardest moment, repair used and reflection;
+- P16 specialist tracks can be transferred into unexpected domains with an explicit portable principle and boundary condition;
+- all P18 progress remains derived from the shared StudyEvent stream rather than a second scheduler or mastery system;
+- the portable C1/C2 portfolio advances to schema v5 with simulated pressure, AI pressure, real human-interaction and cross-domain-transfer evidence.
 
-The evidence boundary remains strict: structural precision checks are not semantic grading, specialist-stage completion is not subject expertise, source refresh is not independent fact verification, speech recognition is not acoustic scoring, and delayed repetition is not accredited C2 certification.
+The evidence boundary remains strict: native-style simulation is not a native speaker, AI dialogue is not human evidence, speech recognition is not acoustic scoring, timing is not a fluency grade, partner background is not independently verified, and interaction coverage is not accredited C2 certification.
 
 P11 remains an independent release-evidence track and can still report `HOLD_B2_RELEASE_CANDIDATE` until its separate external-review evidence requirement is actually satisfied.
 
-See `docs/P17_ACCEPTANCE.md`, `docs/P16_ACCEPTANCE.md` and `docs/ROADMAP.md`.
+See `docs/P18_ACCEPTANCE.md`, `docs/P17_ACCEPTANCE.md` and `docs/ROADMAP.md`.
 
-The next useful phase should focus on **P18 — Advanced Native Interaction, Real-Time Repair & C2-Style Discourse Pressure**: longer unscripted interaction, interruption and repair, live reformulation, richer prosodic/acoustic evidence only where the speech stack can support it, and expert-domain transfer under genuinely unpredictable dialogue pressure.
+The next useful phase should focus on **P19 — Prosodic Control, Listening Under Overlap & External C2-Oriented Human Evaluation**: real audio evidence where the stack can support it, overlapping/fast native listening, turn-entry timing, repair under degraded input, and an external advanced human-review protocol without letting evaluator judgments silently rewrite mastery.
 
-See `docs/P1_ACCEPTANCE.md`, `docs/P2_ACCEPTANCE.md`, `docs/P2_5_ACCEPTANCE.md`, `docs/P3_ACCEPTANCE.md`, `docs/P4_ACCEPTANCE.md`, `docs/P5_ACCEPTANCE.md`, `docs/P6_ACCEPTANCE.md`, `docs/P7_ACCEPTANCE.md`, `docs/P8_ACCEPTANCE.md`, `docs/P9_ACCEPTANCE.md`, `docs/P9_RELEASE_QUALIFICATION.md`, `docs/P10_ACCEPTANCE.md`, `docs/P11_ACCEPTANCE.md`, `docs/P11_1_ACCEPTANCE.md`, `docs/P11_2_ACCEPTANCE.md`, `docs/P11_3_ACCEPTANCE.md`, `docs/P12_ACCEPTANCE.md`, `docs/P13_ACCEPTANCE.md`, `docs/P14_ACCEPTANCE.md`, `docs/P15_ACCEPTANCE.md`, `docs/P16_ACCEPTANCE.md`, `docs/P17_ACCEPTANCE.md`, `docs/SOURCE_PACK_FORMAT.md`, `docs/P1_5_MOBILE_CERTIFICATION.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md` and `docs/THIRD_PARTY_NOTICES.md`.
+See `docs/P1_ACCEPTANCE.md`, `docs/P2_ACCEPTANCE.md`, `docs/P2_5_ACCEPTANCE.md`, `docs/P3_ACCEPTANCE.md`, `docs/P4_ACCEPTANCE.md`, `docs/P5_ACCEPTANCE.md`, `docs/P6_ACCEPTANCE.md`, `docs/P7_ACCEPTANCE.md`, `docs/P8_ACCEPTANCE.md`, `docs/P9_ACCEPTANCE.md`, `docs/P9_RELEASE_QUALIFICATION.md`, `docs/P10_ACCEPTANCE.md`, `docs/P11_ACCEPTANCE.md`, `docs/P11_1_ACCEPTANCE.md`, `docs/P11_2_ACCEPTANCE.md`, `docs/P11_3_ACCEPTANCE.md`, `docs/P12_ACCEPTANCE.md`, `docs/P13_ACCEPTANCE.md`, `docs/P14_ACCEPTANCE.md`, `docs/P15_ACCEPTANCE.md`, `docs/P16_ACCEPTANCE.md`, `docs/P17_ACCEPTANCE.md`, `docs/P18_ACCEPTANCE.md`, `docs/SOURCE_PACK_FORMAT.md`, `docs/P1_5_MOBILE_CERTIFICATION.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md` and `docs/THIRD_PARTY_NOTICES.md`.
