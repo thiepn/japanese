@@ -1,0 +1,166 @@
+import {useEffect,useState,type ReactNode} from "react";
+import {JPattern,JSeal,type JPatternName,type JSeason,type JTheme} from "./index";
+
+export type J2Surface="Today"|"Learn"|"Immerse"|"Library"|"Progress";
+
+const SURFACES:readonly {
+  id:J2Surface;
+  japanese:string;
+  english:string;
+  glyph:string;
+  hint:string;
+}[]=[
+  {id:"Today",japanese:"今日",english:"Today",glyph:"今",hint:"Daily study"},
+  {id:"Learn",japanese:"学ぶ",english:"Learn",glyph:"学",hint:"Course path"},
+  {id:"Immerse",japanese:"浸る",english:"Immerse",glyph:"浸",hint:"Read and listen"},
+  {id:"Library",japanese:"蔵",english:"Library",glyph:"蔵",hint:"Knowledge archive"},
+  {id:"Progress",japanese:"道",english:"Progress",glyph:"道",hint:"Your path"},
+];
+
+function initialTheme():JTheme{
+  try{
+    const saved=window.localStorage.getItem("japanese:j-theme");
+    if(saved==="light"||saved==="dark")return saved;
+  }catch{/* storage is optional */}
+  return window.matchMedia?.("(prefers-color-scheme: dark)").matches?"dark":"light";
+}
+
+function currentSeason(now=new Date()):JSeason{
+  const month=now.getMonth()+1;
+  const day=now.getDate();
+  if(month===1&&day<=7)return "new-year";
+  if(month>=3&&month<=5)return "spring";
+  if(month===6)return "tsuyu";
+  if(month===7||month===8)return "summer";
+  if(month>=9&&month<=11)return "autumn";
+  return "winter";
+}
+
+function seasonLabel(season:JSeason):string{
+  if(season==="spring")return "春";
+  if(season==="tsuyu")return "梅雨";
+  if(season==="summer")return "夏";
+  if(season==="autumn")return "秋";
+  if(season==="new-year")return "正月";
+  return "冬";
+}
+
+function seasonPattern(season:JSeason):JPatternName{
+  if(season==="spring")return "shippo";
+  if(season==="tsuyu"||season==="summer")return "seigaiha";
+  if(season==="autumn")return "asanoha";
+  if(season==="new-year")return "ichimatsu";
+  return "kikko";
+}
+
+export function J2AppShell({
+  surface,
+  onSurfaceChange,
+  accountActionLabel,
+  accountBusy,
+  onAccountAction,
+  accountStatus,
+  diagnosticsMode=false,
+  children,
+}:{
+  surface:J2Surface;
+  onSurfaceChange:(surface:J2Surface)=>void;
+  accountActionLabel:string;
+  accountBusy:boolean;
+  onAccountAction:()=>void;
+  accountStatus?:string|null;
+  diagnosticsMode?:boolean;
+  children:ReactNode;
+}){
+  const [theme,setTheme]=useState<JTheme>(initialTheme);
+  const season=currentSeason();
+
+  useEffect(()=>{
+    try{window.localStorage.setItem("japanese:j-theme",theme);}catch{/* storage is optional */}
+    document.documentElement.style.colorScheme=theme;
+    return()=>{document.documentElement.style.colorScheme="";};
+  },[theme]);
+
+  return <div
+    className="j1-root j2-shell j-material-washi"
+    data-j1=""
+    data-j-theme={theme}
+    data-j-season={season}
+  >
+    <div className="j2-ambient" aria-hidden="true">
+      <JPattern name={seasonPattern(season)} className="j2-ambient__pattern"/>
+      <span className="j2-ambient__sun"/>
+      <span className="j2-ambient__brush"/>
+    </div>
+
+    <header className="j2-topbar">
+      <div className="j2-brand" aria-label="Japanese">
+        <JSeal className="j2-brand__seal" size="small" label="Japanese">日</JSeal>
+        <span className="j2-brand__copy">
+          <strong lang="ja">日本語</strong>
+          <small>Japanese</small>
+        </span>
+      </div>
+
+      <div className="j2-topbar__season" aria-hidden="true">
+        <span lang="ja">{seasonLabel(season)}</span>
+        <i/>
+        <span>{diagnosticsMode?"診断":"学びの景色"}</span>
+      </div>
+
+      <div className="j2-topbar__actions">
+        <button
+          aria-label={theme==="light"?"Use dark theme":"Use light theme"}
+          className="j2-theme-toggle"
+          onClick={()=>setTheme((value)=>value==="light"?"dark":"light")}
+          title={theme==="light"?"墨色の夜":"和紙の昼"}
+          type="button"
+        >
+          <span aria-hidden="true">{theme==="light"?"墨":"紙"}</span>
+        </button>
+        <button
+          className="j2-account"
+          disabled={accountBusy}
+          onClick={onAccountAction}
+          type="button"
+        >
+          <span className="j2-account__mon" aria-hidden="true">人</span>
+          <span>{accountBusy?"Account…":accountActionLabel}</span>
+        </button>
+      </div>
+    </header>
+
+    <div className="j2-workspace">
+      <nav className="j2-nav" aria-label="Primary">
+        <div className="j2-nav__caption" aria-hidden="true">
+          <span lang="ja">学習</span>
+          <i/>
+        </div>
+        {SURFACES.map((item)=><button
+          aria-current={!diagnosticsMode&&surface===item.id?"page":undefined}
+          aria-label={item.english}
+          className={!diagnosticsMode&&surface===item.id?"active":""}
+          key={item.id}
+          onClick={()=>onSurfaceChange(item.id)}
+          type="button"
+        >
+          <span className="j2-nav__mon" aria-hidden="true">{item.glyph}</span>
+          <span className="j2-nav__label">
+            <strong lang="ja">{item.japanese}</strong>
+            <small>{item.english}</small>
+          </span>
+          <span className="j2-nav__hint" aria-hidden="true">{item.hint}</span>
+        </button>)}
+        <div className="j2-nav__footer" aria-hidden="true">
+          <span>日本語</span>
+          <small>study · immerse · grow</small>
+        </div>
+      </nav>
+
+      <main className={"j2-content"+(diagnosticsMode?" j2-content--diagnostics":"")} id="main-content" tabIndex={-1}>
+        {accountStatus?<p className="j2-account-status" role="status">{accountStatus}</p>:null}
+        {children}
+      </main>
+    </div>
+  </div>;
+}
