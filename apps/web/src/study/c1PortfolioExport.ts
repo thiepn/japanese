@@ -3,12 +3,13 @@ import { getC1PortfolioSummary,type C1PortfolioSummary } from "./c1Reliability";
 import { getC1EnvironmentProgress,type C1EnvironmentProgress } from "./c1Environment";
 import { getC1ResearchQualityProgress,type C1ResearchQualityProgress } from "./c1ResearchQuality";
 import { getC1PrecisionProgress,type C1PrecisionProgress } from "./c1Precision";
+import { getC1AdvancedInteractionProgress,type C1AdvancedInteractionProgress } from "./c1AdvancedInteraction";
 
 export interface C1PortfolioExport {
   schema:"thiepn-japanese-c1-portfolio";
-  schemaVersion:4;
+  schemaVersion:5;
   generatedAt:string;
-  phase:"P17";
+  phase:"P18";
   evidenceBoundary:{
     accreditedCefrVerdict:false;
     aiFeedbackChangesMastery:false;
@@ -26,18 +27,24 @@ export interface C1PortfolioExport {
     specialistDiscourseStructureIsSubjectExpertise:false;
     sourceRefreshIsIndependentFactVerification:false;
     reviewRepairChangesMastery:false;
+    simulatedPressureIsNativeSpeakerInteraction:false;
+    responseTimingIsFluencyScore:false;
+    partnerProfileIsVerified:false;
+    humanInteractionChangesMastery:false;
+    crossDomainTransferIsSubjectExpertise:false;
   };
   portfolio:C1PortfolioSummary;
   nativeDepth:C1NativeDepthProgress;
   environment:C1EnvironmentProgress;
   researchQuality:C1ResearchQualityProgress;
   precision:C1PrecisionProgress;
+  advancedInteraction:C1AdvancedInteractionProgress;
 }
 
 export async function getC1PortfolioExport(now=new Date()):Promise<C1PortfolioExport>{
-  const [portfolio,nativeDepth,environment,researchQuality,precision]=await Promise.all([getC1PortfolioSummary(),getC1NativeDepthProgress(),getC1EnvironmentProgress(),getC1ResearchQualityProgress(),getC1PrecisionProgress()]);
+  const [portfolio,nativeDepth,environment,researchQuality,precision,advancedInteraction]=await Promise.all([getC1PortfolioSummary(),getC1NativeDepthProgress(),getC1EnvironmentProgress(),getC1ResearchQualityProgress(),getC1PrecisionProgress(),getC1AdvancedInteractionProgress()]);
   return {
-    schema:"thiepn-japanese-c1-portfolio",schemaVersion:4,generatedAt:now.toISOString(),phase:"P17",
+    schema:"thiepn-japanese-c1-portfolio",schemaVersion:5,generatedAt:now.toISOString(),phase:"P18",
     evidenceBoundary:{
       accreditedCefrVerdict:false,
       aiFeedbackChangesMastery:false,
@@ -54,9 +61,14 @@ export async function getC1PortfolioExport(now=new Date()):Promise<C1PortfolioEx
       precisionTransformationIsSemanticScore:false,
       specialistDiscourseStructureIsSubjectExpertise:false,
       sourceRefreshIsIndependentFactVerification:false,
-      reviewRepairChangesMastery:false
+      reviewRepairChangesMastery:false,
+      simulatedPressureIsNativeSpeakerInteraction:false,
+      responseTimingIsFluencyScore:false,
+      partnerProfileIsVerified:false,
+      humanInteractionChangesMastery:false,
+      crossDomainTransferIsSubjectExpertise:false
     },
-    portfolio,nativeDepth,environment,researchQuality,precision
+    portfolio,nativeDepth,environment,researchQuality,precision,advancedInteraction
   };
 }
 
@@ -65,7 +77,7 @@ export function serializeC1PortfolioJson(value:C1PortfolioExport):string{
 }
 
 export function serializeC1PortfolioMarkdown(value:C1PortfolioExport):string{
-  const p=value.portfolio,r=p.reliability,n=value.nativeDepth,e=value.environment,q=value.researchQuality,x=value.precision;
+  const p=value.portfolio,r=p.reliability,n=value.nativeDepth,e=value.environment,q=value.researchQuality,x=value.precision,i=value.advancedInteraction;
   const lines=[
     "# THIEPN Japanese — C1 Portfolio Export",
     "",
@@ -89,6 +101,10 @@ export function serializeC1PortfolioMarkdown(value:C1PortfolioExport):string{
     "- Specialist discourse stage completion does not prove subject-matter expertise or C2 certification.",
     "- Fresh-source refresh records learner comparison; it is not independent fact verification.",
     "- Human-review repair records response to feedback but does not change mastery automatically.",
+    "- Simulated native-style pressure is not verified native-speaker interaction.",
+    "- Response latency is descriptive timing, not a fluency score.",
+    "- Logged human-partner profile is learner-reported and not independently verified.",
+    "- Human interaction logs and cross-domain transfer do not update mastery or establish subject expertise.",
     "",
     "## C1 longitudinal evidence",
     "",
@@ -173,6 +189,25 @@ export function serializeC1PortfolioMarkdown(value:C1PortfolioExport):string{
     "### Specialist discourse reliability",
     "",
     ...x.specialistTracks.map((track)=>"- "+track.title+" — "+track.domain+" · "+track.turns+" turns · "+track.stagesCovered+"/5 stages · "+track.repeatedStages+"/5 delayed repeats · "+Math.round(track.spanHours)+"h span · "+(track.sustainedAcrossSessions?"sustained across sessions":track.cycleComplete?"one complete cycle":"developing")),
+    "",
+    "## P18 advanced interaction",
+    "",
+    "- Active interaction days: "+i.activeDays,
+    "- Live pressure turns: "+i.turns.length,
+    "- Pressure types encountered: "+i.pressureTypes,
+    "- Complete 4-turn pressure sessions: "+i.completeSessions,
+    "- Robust pressure sessions: "+i.robustSessions,
+    "- Real human interactions logged: "+i.humanInteractions.length,
+    "- Real human interaction minutes logged: "+i.humanInteractionMinutes,
+    "- Cross-domain transfer attempts: "+i.transfers.length,
+    "",
+    "### Pressure sessions",
+    "",
+    ...i.sessions.map((session)=>"- "+session.turns+" turns · "+session.pressureTypes+" pressure types · "+session.families+" families · "+session.speechTurns+" speech transcript turns · "+session.averageResponseSeconds.toFixed(1)+"s average latency · "+(session.robustPressureCoverage?"robust pressure coverage":session.complete?"complete session":"developing")),
+    "",
+    "### Human interaction logs",
+    "",
+    ...i.humanInteractions.map((entry)=>"- "+entry.medium+" · "+entry.partnerProfile+" (learner-reported) · "+entry.durationMinutes+" minutes · "+entry.domain),
     "",
     "## Native-source depth",
     "",
