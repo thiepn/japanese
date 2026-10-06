@@ -4,9 +4,10 @@ import {
   type PrivateDocumentRecord,type PrivateNativeAudio
 } from "@thiepn/local-db";
 import { coreContent } from "../coreContent";
+import { getJapaneseDeviceId } from "../deviceIdentity";
 import { AUTHENTIC_ACCOUNT_ID } from "./authentic";
 
-const DEVICE_ID="p9-native-listening";
+const DEVICE_ID=getJapaneseDeviceId();
 const DELAY_MS=20*60*60*1000;
 
 export interface NativeListeningSource {
