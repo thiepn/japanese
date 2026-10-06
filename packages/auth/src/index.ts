@@ -18,11 +18,11 @@ export const JAPANESE_CALLBACK_URL =
   `${JAPANESE_PUBLIC_ORIGIN}${JAPANESE_CALLBACK_PATH}`;
 
 export const JAPANESE_ACCOUNT_STORAGE_KEY =
-  "thiepn:japanese-auth:v2";
+  "thiepn-account-japanese-auth-v1";
 export const JAPANESE_LOGIN_STORAGE_KEY =
   "thiepn:japanese-login:v1";
 export const JAPANESE_CONNECT_INTENT_KEY =
-  "thiepn:japanese-connect-intent:v2";
+  "thiepn-account-japanese-connect-intent-v1";
 
 export type AuthStatus = "authenticated" | "anonymous" | "expired";
 
