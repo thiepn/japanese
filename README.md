@@ -28,7 +28,7 @@ P22 keeps the P20 learner-capability architecture frozen and adds the operationa
 
 The operational boundary remains strict: green CI does not mean production is active, a GitHub release does not prove deployment, synthetic monitoring is not physical-device evidence, and P22 cannot waive unresolved P11/P21 gates.
 
-The checked-in production state is still intentionally **inactive** because the real P21 physical-device pass and independent P11 external productive-language validation have not yet been admitted. The P22 machinery is ready, but stable activation must remain blocked until those real-world gates are genuinely satisfied.
+A public **candidate** is now continuously deployed from `main` at `https://thiepn.dev/japanese/`. Each candidate build embeds its exact Git commit in `/release-meta.json`, and the scheduled P22 monitor validates that candidate identity without promoting it to stable production. The real P21 physical-device pass and independent P11 external productive-language validation are still missing, so stable activation remains blocked until those real-world gates are genuinely satisfied.
 
 See `docs/P22_ACCEPTANCE.md`, `docs/P22_MAINTENANCE.md`, `docs/P21_ACCEPTANCE.md`, `docs/P21_DEVICE_ACCEPTANCE.md` and `docs/ROADMAP.md`.
 
