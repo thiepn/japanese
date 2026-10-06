@@ -1,8 +1,8 @@
 {
   "schema": "thiepn-japanese-p22-production",
   "schemaVersion": 1,
-  "status": "inactive",
-  "publicUrl": null,
+  "status": "candidate",
+  "publicUrl": "https://thiepn.dev/japanese/",
   "releaseCommit": null,
   "releaseTag": null,
   "activatedAt": null,
@@ -18,8 +18,8 @@
   },
   "knownIncidents": [],
   "notes": [
-    "P22 production remains inactive until the strict P21 gate is genuinely open.",
-    "Do not populate releaseCommit, releaseTag or activatedAt before an actual stable activation.",
-    "Production monitoring must verify release-meta.json against the exact activated commit."
+    "A public P22 candidate is continuously deployed from main at https://thiepn.dev/japanese/.",
+    "Candidate identity is read from /release-meta.json on each deployment; candidate status does not claim a frozen stable commit.",
+    "Stable activation still requires strict P11 and P21 evidence, an immutable release tag, and an exact production commit."
   ]
 }
