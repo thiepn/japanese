@@ -251,3 +251,20 @@ Exports must carry explicit evidence-boundary declarations and must not add an o
 C1 roadmap eligibility is a product/system release property. It requires every content, performance, native-media and regression gate in `releaseQualification.ts` to pass.
 
 A missing licensed native inventory is a legitimate blocking state. The software must not synthesize, relabel or infer native media simply to satisfy the gate.
+
+
+## P21 capability-freeze and release-hardening rule
+
+P21 freezes the learner/product capability architecture at P20. New work in this phase may fix defects, improve accessibility/usability, strengthen regression coverage, simplify accumulated UI, or improve release evidence, but it must not introduce a new authoritative mastery store, scheduler, primary product surface or proficiency layer.
+
+Automated browser/device profiles are technical regression evidence only. They cannot be promoted into physical-device evidence for microphone permission, real speakers/headphones, standalone PWA installation, safe areas, OS interruptions or real-device lifecycle behavior.
+
+The P21 release decision keeps three concerns separate:
+
+1. automated technical regression evidence;
+2. real physical-device acceptance;
+3. independent P11 external productive-language release evidence.
+
+A stable release may be marked ready only when all three are satisfied. Normal CI is allowed to produce a HOLD report when manual/external evidence is absent; strict release activation must fail closed.
+
+P20 advanced-pathway qualification remains a learner-facing internal product state and is not an accredited CEFR result. P21 product release qualification likewise must never be presented as learner certification.
