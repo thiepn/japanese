@@ -1,6 +1,6 @@
 import "fake-indexeddb/auto";
 import { describe, expect, it } from "vitest";
-import { acknowledgeOutbox, databaseNameForAccount, deletePrivateDocument, deletePrivateSentence, deletePrivateVocabulary, getMemoryTrace, getSyncCursor, listOutbox, listPrivateDocuments, listPrivateSentences, listPrivateVocabulary, listStudyEvents, saveMemoryTrace, savePrivateDocument, savePrivateSentence, savePrivateVocabulary, saveStudyEvent, setSyncCursor } from "../../packages/local-db/src/index";
+import { acknowledgeOutbox, claimGuestWorkspace, databaseNameForAccount, deletePrivateDocument, deletePrivateSentence, deletePrivateVocabulary, getMemoryTrace, getSyncCursor, listMemoryTraces, listOutbox, listPrivateDocuments, listPrivateSentences, listPrivateVocabulary, listStudyEvents, saveMemoryTrace, savePrivateDocument, savePrivateSentence, savePrivateVocabulary, saveStudyEvent, setSyncCursor } from "../../packages/local-db/src/index";
 import { createFsrsScheduler } from "../../packages/scheduler/src/index";
 import type { StudyEvent } from "../../packages/domain/src/index";
 
@@ -47,5 +47,32 @@ describe("account-scoped local persistence", () => {
     const trace=scheduler.create({id:"trace-1",userId:"user-a",entity:{kind:"kana",id:"kana-a"},skillDimension:"recognition",cueFamily:"kana-to-sound"},"2026-10-01T12:00:00Z");
     await saveMemoryTrace("user-a",trace);
     expect((await getMemoryTrace("user-a","trace-1"))?.card.due).toBe(trace.card.due);
+  });
+  it("claims an anonymous workspace into an empty authenticated account without carrying a server cursor",async()=>{
+    const guest="guest-claim-a",target="account-claim-a";
+    const scheduler=createFsrsScheduler();
+    await saveStudyEvent({
+      id:"evt-guest-claim",userId:guest,deviceId:"browser",occurredAt:"2026-10-05T18:00:00Z",activity:"review",
+      primaryTarget:{kind:"kana",id:"kana-i"},skillDimension:"recognition",result:"correct"
+    });
+    await saveMemoryTrace(guest,scheduler.create({id:"trace-guest-claim",userId:guest,entity:{kind:"kana",id:"kana-i"},skillDimension:"recognition",cueFamily:"kana-to-sound"},"2026-10-05T18:00:00Z"));
+    await savePrivateDocument(guest,{id:"doc-guest-claim",accountId:guest,title:"Guest text",sourceKind:"paste",text:"日本語",importedAt:"2026-10-05T18:00:00Z",updatedAt:"2026-10-05T18:00:00Z"});
+    await setSyncCursor(guest,"must-not-migrate");
+
+    expect(await claimGuestWorkspace(guest,target)).toBe("migrated");
+    expect((await listStudyEvents(target))[0]?.userId).toBe(target);
+    expect((await listMemoryTraces(target))[0]?.userId).toBe(target);
+    expect((await listPrivateDocuments(target))[0]?.accountId).toBe(target);
+    expect(await getSyncCursor(target)).toBeNull();
+    expect(await listStudyEvents(guest)).toHaveLength(0);
+  });
+  it("does not merge guest evidence into an already populated account",async()=>{
+    const guest="guest-claim-b",target="account-claim-b";
+    await saveStudyEvent({id:"evt-guest-b",userId:guest,deviceId:"browser",occurredAt:"2026-10-05T18:00:00Z",activity:"review",result:"correct"});
+    await saveStudyEvent({id:"evt-target-b",userId:target,deviceId:"browser",occurredAt:"2026-10-05T18:01:00Z",activity:"review",result:"correct"});
+
+    expect(await claimGuestWorkspace(guest,target)).toBe("target-populated");
+    expect((await listStudyEvents(target)).map((item)=>item.id)).toEqual(["evt-target-b"]);
+    expect((await listStudyEvents(guest)).map((item)=>item.id)).toEqual(["evt-guest-b"]);
   });
 });
