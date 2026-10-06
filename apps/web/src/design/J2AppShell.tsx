@@ -78,8 +78,14 @@ export function J2AppShell({
   useEffect(()=>{
     try{window.localStorage.setItem("japanese:j-theme",theme);}catch{/* storage is optional */}
     document.documentElement.style.colorScheme=theme;
-    return()=>{document.documentElement.style.colorScheme="";};
-  },[theme]);
+    document.documentElement.dataset.jTheme=theme;
+    document.documentElement.dataset.jSeason=season;
+    return()=>{
+      document.documentElement.style.colorScheme="";
+      delete document.documentElement.dataset.jTheme;
+      delete document.documentElement.dataset.jSeason;
+    };
+  },[theme,season]);
 
   return <div
     className="j1-root j2-shell j-material-washi"
