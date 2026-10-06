@@ -19,7 +19,7 @@ test("P17 exposes the C1-to-C2 precision bridge and keeps evidence boundaries ex
   await expect(lab.getByText(/A P16 human review is required/)).toBeVisible();
 
   await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
-  await expect(page.getByText("P19 C1→C2 PORTFOLIO",{exact:true})).toBeVisible();
+  await expect(page.getByText("P20 C1→C2 PORTFOLIO",{exact:true})).toBeVisible();
   await expect(page.getByText("P17 PRECISION BRIDGE",{exact:true})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Stylistic control + specialist discourse + repair"})).toBeVisible();
 });
