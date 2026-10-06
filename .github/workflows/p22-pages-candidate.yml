@@ -45,6 +45,9 @@ jobs:
           VITE_PUBLIC_BASE: /japanese/
         run: pnpm build
 
+      - name: Add SPA callback fallback
+        run: cp apps/web/dist/index.html apps/web/dist/404.html
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
         with:
