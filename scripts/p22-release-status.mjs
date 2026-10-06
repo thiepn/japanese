@@ -10,7 +10,7 @@ export function buildP22ReleaseStatus({p21,productionManifest,smoke=null,generat
   if(!p21||typeof p21!=="object")throw new Error("P22_P21_REPORT_REQUIRED");
   const production=summarizeProductionManifest(productionManifest);
   const p21Ready=p21.stableReleaseReady===true;
-  const active=production.status==="active";
+  const active=production.active;
   const smokeHealthy=smoke?.healthy===true;
   const productionCommitMatches=active&&production.releaseCommit
     ?String(smoke?.expectedCommit??production.releaseCommit).toLowerCase()===production.releaseCommit.toLowerCase()
