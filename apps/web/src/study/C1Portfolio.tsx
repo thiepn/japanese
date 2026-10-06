@@ -4,6 +4,7 @@ import { getC1EnvironmentProgress,type C1EnvironmentProgress } from "./c1Environ
 import { getC1ResearchQualityProgress,type C1ResearchQualityProgress } from "./c1ResearchQuality";
 import { getC1PrecisionProgress,type C1PrecisionProgress } from "./c1Precision";
 import { getC1AdvancedInteractionProgress,type C1AdvancedInteractionProgress } from "./c1AdvancedInteraction";
+import { getC1ProsodyEvaluationProgress,type C1ProsodyEvaluationProgress } from "./c1ProsodyEvaluation";
 import {
   downloadC1Portfolio,getC1PortfolioExport,serializeC1PortfolioJson,serializeC1PortfolioMarkdown
 } from "./c1PortfolioExport";
@@ -14,8 +15,9 @@ export function C1Portfolio(){
   const [quality,setQuality]=useState<C1ResearchQualityProgress|null>(null);
   const [precision,setPrecision]=useState<C1PrecisionProgress|null>(null);
   const [interaction,setInteraction]=useState<C1AdvancedInteractionProgress|null>(null);
+  const [p19,setP19]=useState<C1ProsodyEvaluationProgress|null>(null);
   const [exporting,setExporting]=useState(false);
-  useEffect(()=>{void Promise.all([getC1PortfolioSummary(),getC1EnvironmentProgress(),getC1ResearchQualityProgress(),getC1PrecisionProgress(),getC1AdvancedInteractionProgress()]).then(([nextPortfolio,nextEnvironment,nextQuality,nextPrecision,nextInteraction])=>{setPortfolio(nextPortfolio);setEnvironment(nextEnvironment);setQuality(nextQuality);setPrecision(nextPrecision);setInteraction(nextInteraction);}).catch(()=>{setPortfolio(null);setEnvironment(null);setQuality(null);setPrecision(null);setInteraction(null);});},[]);
+  useEffect(()=>{void Promise.all([getC1PortfolioSummary(),getC1EnvironmentProgress(),getC1ResearchQualityProgress(),getC1PrecisionProgress(),getC1AdvancedInteractionProgress(),getC1ProsodyEvaluationProgress()]).then(([nextPortfolio,nextEnvironment,nextQuality,nextPrecision,nextInteraction,nextP19])=>{setPortfolio(nextPortfolio);setEnvironment(nextEnvironment);setQuality(nextQuality);setPrecision(nextPrecision);setInteraction(nextInteraction);setP19(nextP19);}).catch(()=>{setPortfolio(null);setEnvironment(null);setQuality(null);setPrecision(null);setInteraction(null);setP19(null);});},[]);
 
   async function exportPortfolio(format:"json"|"markdown"){
     setExporting(true);
@@ -32,10 +34,10 @@ export function C1Portfolio(){
 
   return <section className="b2-portfolio">
     <div className="section-heading">
-      <div><span className="course-kicker">P18 C1→C2 PORTFOLIO</span><h2>Precision + live interaction under unpredictable pressure</h2></div>
+      <div><span className="course-kicker">P19 C1→C2 PORTFOLIO</span><h2>Precision + live interaction + bounded audio and external review</h2></div>
       <span className="course-count">{portfolio.activeDays} active C1 days</span>
     </div>
-    <p>P18 keeps the P14–P17 longitudinal, source, review and precision evidence, then adds hidden interaction pressure, real-time repair, real human-partner logs and cross-domain specialist transfer. It remains descriptive evidence rather than a CEFR C2 judgment.</p>
+    <p>P19 keeps the P14–P18 longitudinal, source, precision and interaction evidence, then adds real local audio timing evidence, overlap listening and external C2-oriented human review. It remains descriptive evidence rather than accredited C2 certification.</p>
     <div className="portfolio-export-actions">
       <button className="unit-action" disabled={exporting} type="button" onClick={()=>void exportPortfolio("json")}>Export C1 JSON</button>
       <button className="quiet-button" disabled={exporting} type="button" onClick={()=>void exportPortfolio("markdown")}>Export C1 Markdown</button>
@@ -132,6 +134,25 @@ export function C1Portfolio(){
       <p className="course-note">Simulator pressure is native-style interaction practice, not verified native-speaker evidence. Human-partner logs are separately identified and partner background is learner-reported. Timing is descriptive and does not become a fluency score.</p>
     </section>:null}
 
+    {p19?<section className="p19-portfolio">
+      <div className="section-heading"><div><span className="course-kicker">P19 AUDIO + EXTERNAL REVIEW</span><h3>Real signal timing + overlap listening + human qualitative evidence</h3></div><span>{p19.broadlyCoveredReviews} broad external reviews</span></div>
+      <div className="portfolio-stats">
+        <PortfolioStat value={p19.prosodyCaptures.length} label="Prosody captures"/>
+        <PortfolioStat value={p19.prosodyTargets} label="Prosody targets"/>
+        <PortfolioStat value={p19.overlapAttempts.length} label="Overlap attempts"/>
+        <PortfolioStat value={p19.overlapTasks} label="Overlap tasks"/>
+        <PortfolioStat value={p19.externalReviews.length} label="External reviews"/>
+        <PortfolioStat value={p19.broadlyCoveredReviews} label="Broad reviews"/>
+        <PortfolioStat value={p19.localCaptureCount} label="Local audio files"/>
+        <PortfolioStat value={p19.activeDays} label="P19 days"/>
+      </div>
+      {p19.externalReviews.length?<div className="portfolio-mission-list">{p19.externalReviews.slice().reverse().slice(0,6).map((review)=><div key={review.id}>
+        <div><strong>{review.reviewerLabel}</strong><span>{review.broadCoverage?"broad coverage":"partial coverage"}</span></div>
+        <small>{review.reviewerRole.replaceAll("_"," ")} · {review.modality.replaceAll("_"," ")} · {review.scoreCoverage}/7 scored dimensions · {new Date(review.reviewedAt).toLocaleDateString()}</small>
+      </div>)}</div>:null}
+      <p className="course-note">P19 signal metrics describe timing, activity, pauses and amplitude dynamics only. Local recordings do not sync. Artificial overlap is not naturally occurring multi-speaker audio, and external reviewer identity is not independently verified by the app.</p>
+    </section>:null}
+
     <div className="portfolio-columns">
       <article>
         <span className="course-kicker">DOMAIN SPECIALIZATION</span>
@@ -172,7 +193,7 @@ export function C1Portfolio(){
       </article>)}</div>
     </details>:null}
 
-    <p className="course-note">Repeated internal success, source exposure, precision transformation, simulated pressure, human-partner logs, learner source evaluation, human review and AI-supported interaction remain explicitly bounded evidence. P18 does not convert them into accredited C2 certification, verified partner identity, automatic mastery updates, subject-matter expertise, fluency scoring or acoustic pronunciation scoring.</p>
+    <p className="course-note">Repeated internal success, source exposure, precision transformation, simulated pressure, local audio timing, overlap listening, human-partner logs and external human review remain explicitly bounded evidence. P19 does not convert them into accredited C2 certification, verified reviewer identity, automatic mastery updates, pitch-accent correctness, fluency scoring or full acoustic pronunciation scoring.</p>
   </section>;
 }
 
