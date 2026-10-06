@@ -34,7 +34,7 @@ import {
 } from "./study/runtime";
 
 export const JAPANESE_READ_MODEL_PRODUCER_REVISION =
-  "japanese-p8-read-model-v2";
+  "japanese-p8-read-model-v3";
 export const JAPANESE_APP_ROUTE="https://thiepn.dev/japanese/";
 
 type MilestoneProgress =
