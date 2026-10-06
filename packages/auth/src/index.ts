@@ -74,6 +74,11 @@ const ANONYMOUS_CONTEXT: AuthContext = Object.freeze({
   status: "anonymous",
   permissions: new Set<string>(),
 });
+const EXPIRED_CONTEXT: AuthContext = Object.freeze({
+  accountId: null,
+  status: "expired",
+  permissions: new Set<string>(),
+});
 
 export function createFlowNonce(
   randomValues: Uint8Array = crypto.getRandomValues(new Uint8Array(32)),
@@ -227,7 +232,8 @@ export function createThiepnAccountAuthProvider(
       );
       sessionStorage.removeItem(JAPANESE_LOGIN_STORAGE_KEY);
     } catch {
-      return publish(ANONYMOUS_CONTEXT);
+      clearConnectIntent();
+      return publish(EXPIRED_CONTEXT);
     }
 
     const returnTo = pending?.returnTo ?? JAPANESE_HOME_PATH;
@@ -235,7 +241,7 @@ export function createThiepnAccountAuthProvider(
 
     if (!pending || !callback) {
       clearConnectIntent();
-      return publish(ANONYMOUS_CONTEXT);
+      return publish(EXPIRED_CONTEXT);
     }
 
     busy = true;
@@ -245,7 +251,7 @@ export function createThiepnAccountAuthProvider(
       return await verify();
     } catch {
       clearConnectIntent();
-      return publish(ANONYMOUS_CONTEXT);
+      return publish(EXPIRED_CONTEXT);
     } finally {
       busy = false;
     }
