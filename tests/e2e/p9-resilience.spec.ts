@@ -4,7 +4,7 @@ test("P9 real-world performance, native listening and provider fallbacks survive
   await page.route("**/api/japanese/coach",async(route)=>{
     await route.fulfill({status:503,contentType:"application/json",body:JSON.stringify({service:"japanese-coach",status:"degraded",provider:"fixture",operational:false})});
   });
-  await page.goto("/");
+  await page.goto("./");
 
   await page.getByRole("button",{name:"Learn"}).click();
   await expect(page.getByRole("heading",{name:"Functional chains under time pressure"})).toBeVisible();
