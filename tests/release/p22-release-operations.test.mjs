@@ -101,6 +101,19 @@ describe("P22 stable release operations",()=>{
     expect(ready.productionStable).toBe(false);
   });
 
+  it("treats maintenance mode as active production but never stable",()=>{
+    const productionManifest={...activeManifest(),status:"maintenance",maintenanceMode:true};
+    const report=buildP22ReleaseStatus({
+      p21:p21(true),
+      productionManifest,
+      smoke:{healthy:true,expectedCommit:COMMIT},
+      commit:COMMIT
+    });
+    expect(report.productionActive).toBe(true);
+    expect(report.productionStable).toBe(false);
+    expect(report.decision).toBe("PRODUCTION_MAINTENANCE");
+  });
+
   it("reports active production stable only with a healthy matching smoke check",()=>{
     const productionManifest=activeManifest();
     const healthySmoke={healthy:true,expectedCommit:COMMIT};
