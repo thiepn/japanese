@@ -109,7 +109,7 @@ jobs:
       - name: Write immutable P22 release identity
         env:
           RELEASE_COMMIT: ${{ inputs.release_commit }}
-        run: pnpm release:p22:meta -- --commit "$RELEASE_COMMIT" --channel stable
+        run: pnpm release:p22:meta --commit "$RELEASE_COMMIT" --channel stable
 
       - name: Build stable artifact with release identity
         run: pnpm build
