@@ -1,7 +1,7 @@
 import { expect,test } from "@playwright/test";
 
 test("P18 exposes hidden live pressure, real-partner evidence and cross-domain transfer",async({page})=>{
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
   const lab=page.locator(".p18-interaction");
   await expect(lab.getByText("P18 ADVANCED NATIVE INTERACTION",{exact:true})).toBeVisible();
@@ -22,7 +22,7 @@ test("P18 exposes hidden live pressure, real-partner evidence and cross-domain t
 });
 
 test("P18 upgrades the C1 AI coach with live-repair scenario chains",async({page})=>{
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button",{name:"Learn"}).evaluate((button)=>(button as HTMLButtonElement).click());
 
   await expect(page.getByText("P18 ADVANCED LIVE INTERACTION",{exact:true})).toBeVisible();
