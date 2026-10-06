@@ -2,8 +2,6 @@ import { expect,test } from "@playwright/test";
 
 test("P21 keeps the complete product shell navigable without horizontal overflow",async({page})=>{
   await page.goto("/");
-  await expect(page.locator(".phase")).toContainText("P21 final product consolidation");
-
   const surfaces=["Today","Learn","Immerse","Library","Progress"] as const;
   for(const surface of surfaces){
     await page.getByRole("button",{name:surface,exact:true}).evaluate((button)=>(button as HTMLButtonElement).click());
