@@ -101,7 +101,7 @@ jobs:
               deployed="$(node -e 'const x=require("fs");const j=JSON.parse(x.readFileSync("/tmp/release-meta.json","utf8"));process.stdout.write(String(j.commit||""))')"
               channel="$(node -e 'const x=require("fs");const j=JSON.parse(x.readFileSync("/tmp/release-meta.json","utf8"));process.stdout.write(String(j.channel||""))')"
               callback_status="$(curl -sS -o /tmp/callback.html -w '%{http_code}' "$base/auth/callback/")"
-              account_status="$(curl -sS -o /tmp/account-entry.html -w '%{http_code}' "https://account.thiepn.dev/japanese/entry")"
+              account_status="$(curl -sS -o /tmp/account-entry.html -w '%{http_code}' "https://account.thiepn.dev/japanese/entry/")"
               if [ "$deployed" = "$CANDIDATE_COMMIT" ] && [ "$channel" = "candidate" ] && [ "$callback_status" = "200" ] && [ "$account_status" = "200" ]; then
                 echo "Verified live Japanese candidate $deployed with Account entry and callback routes."
                 exit 0
