@@ -1,7 +1,7 @@
 import { expect,test } from "@playwright/test";
 
 test("P22 keeps P11/P21 evidence visible inside stable release operations",async({page})=>{
-  await page.goto("/");
+  await page.goto("./");
 
   await page.getByRole("button",{name:"Progress"}).click();
   await expect(page.getByRole("heading",{name:"Review productive evidence without rewriting mastery"})).toBeVisible();
