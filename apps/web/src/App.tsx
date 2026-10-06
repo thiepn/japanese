@@ -19,13 +19,14 @@ import { HumanReviewPanel } from "./study/HumanReviewPanel";
 import { ReleaseOperationsPanel } from "./study/ReleaseOperationsPanel";
 import { ReleaseIdentityPanel } from "./study/ReleaseIdentityPanel";
 import { RealWorldPerformancePanel } from "./study/RealWorldPerformancePanel";
+import { J2AppShell,type J2Surface } from "./design/J2AppShell";
 import { createJapaneseLanguageDashboardPublisher } from "./languageDashboard";
 import {
   buildA1MilestoneSession,buildB1MilestoneSession,buildB2MilestoneSession,buildC1FoundationPractice,buildC1FoundationSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildP13C1SynthesisSession,buildP9RealWorldChainSession,buildP9RealWorldQualificationSession,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getC1FoundationAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,GUEST_ACCOUNT_ID,setDevelopmentAccountId,
   type A1MilestoneProgress,type B1MilestoneProgress,type B2MilestoneProgress,type C1FoundationProgress,type ConjugationMasterySummary,type CourseUnitProgress,type GrammarMasterySummary,type KanaMasterySummary,type LexicalFluencySummary,type SentenceMasterySummary,type StudySummary,type VocabularyMasterySummary
 } from "./study/runtime";
 
-type Surface="Today"|"Learn"|"Immerse"|"Library"|"Progress";
+type Surface=J2Surface;
 const EMPTY_SUMMARY:StudySummary={due:0,newKana:5,newVocabulary:2,listening:0,application:0,course:0,learnedKana:0,totalKana:217,learnedVocabulary:0,totalVocabulary:658,memoryTraces:0};
 const EMPTY_KANA:KanaMasterySummary={overall:0,hiragana:0,katakana:0,recognition:0,readingRecall:0,formSelection:0,listening:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
 const EMPTY_VOCAB:VocabularyMasterySummary={overall:0,meaning:0,reading:0,listening:0,activeUse:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
@@ -334,20 +335,44 @@ export function App(){
     if(session===null)window.scrollTo({top:0,left:0,behavior:"instant"});
   },[session]);
 
+  const diagnosticsMode=new URLSearchParams(window.location.search).get("diagnostics")==="1";
+  const accountActionLabel=account.status!=="authenticated"
+    ?"Sign in with THIEPN Account"
+    :accountConnected
+      ?"Sign out"
+      :"Connect THIEPN Account";
+  const navigateSurface=(next:Surface)=>{
+    if(diagnosticsMode){
+      const url=new URL(window.location.href);
+      url.searchParams.delete("diagnostics");
+      window.history.replaceState({},"",url.pathname+url.search+url.hash);
+    }
+    setSurface(next);
+  };
+
   return <>
     <a className="skip-link" href="#main-content">Skip to main content</a>
-    {session?<main className="study-shell" id="main-content" tabIndex={-1}><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></main>:<div className="app-shell">
-      <header className="topbar"><div><strong>Japanese</strong><span className="phase">P22 stable release activation · production monitoring · maintenance</span></div><button className="quiet-button account-button" disabled={accountBusy} onClick={()=>void toggleAccount()} type="button">{accountBusy?"Account…":account.status!=="authenticated"?"Sign in with THIEPN Account":accountConnected?"Sign out":"Connect THIEPN Account"}</button></header>
-      {accountMessage?<p className="account-status" role="status">{accountMessage}</p>:null}
-      <main className="content" id="main-content" tabIndex={-1}>
-        {surface==="Today"&&<Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
-        {surface==="Learn"&&<Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} onPreferredCoachChainApplied={()=>setPreferredCoachChain(null)} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>} 
-        {surface==="Immerse"&&<Immersion onStartProductionTask={(taskId)=>void startProductiveTask(taskId)} onStartC1Synthesis={(packId)=>void startC1Synthesis(packId)} onOpenC1Coach={(chainId)=>{setPreferredCoachChain(chainId);setSurface("Learn");}}/>} 
-        {surface==="Progress"&&<Progress kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} immersion={immersion} summary={summary} course={courseProgress} completedToday={completedToday}/>} 
-        {surface==="Library"&&<Library query={query} setQuery={setQuery} results={results} status={libraryStatus}/>}
-      </main>
-    </div>}
-    <nav className={"nav"+(session?" study-active":"")} aria-label="Primary" aria-hidden={session?true:undefined}>{(["Today","Learn","Immerse","Library","Progress"] as Surface[]).map((item)=><button key={item} disabled={Boolean(session)} tabIndex={session?-1:0} aria-current={surface===item?"page":undefined} className={surface===item?"active":""} onClick={()=>setSurface(item)} type="button">{item}</button>)}</nav>
+    {session
+      ?<main className="study-shell" id="main-content" tabIndex={-1}><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></main>
+      :<J2AppShell
+        surface={surface}
+        onSurfaceChange={navigateSurface}
+        accountActionLabel={accountActionLabel}
+        accountBusy={accountBusy}
+        onAccountAction={()=>void toggleAccount()}
+        accountStatus={accountMessage}
+        diagnosticsMode={diagnosticsMode}
+      >
+        {diagnosticsMode
+          ?<Diagnostics/>
+          :<>
+            {surface==="Today"&&<Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
+            {surface==="Learn"&&<Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} onPreferredCoachChainApplied={()=>setPreferredCoachChain(null)} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>}
+            {surface==="Immerse"&&<Immersion onStartProductionTask={(taskId)=>void startProductiveTask(taskId)} onStartC1Synthesis={(packId)=>void startC1Synthesis(packId)} onOpenC1Coach={(chainId)=>{setPreferredCoachChain(chainId);setSurface("Learn");}}/>}
+            {surface==="Progress"&&<Progress kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} immersion={immersion} summary={summary} course={courseProgress} completedToday={completedToday}/>}
+            {surface==="Library"&&<Library query={query} setQuery={setQuery} results={results} status={libraryStatus}/>}
+          </>}
+      </J2AppShell>}
   </>;
 }
 
@@ -490,14 +515,26 @@ function Progress({kana,vocab,conjugation,grammar,sentence,lexicalFluency,milest
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">B1 ASSESSMENT</span><h2>Independent language activities</h2></div><strong>{b1Milestone.answered} / {b1Milestone.total}</strong></div><div className="mastery-grid"><MasteryBar label="Reading" value={b1Milestone.scores.reading.score}/><MasteryBar label="Listening" value={b1Milestone.scores.listening.score}/><MasteryBar label="Spoken interaction" value={b1Milestone.scores.spoken_interaction.score}/><MasteryBar label="Spoken production" value={b1Milestone.scores.spoken_production.score}/><MasteryBar label="Writing" value={b1Milestone.scores.writing.score}/></div><p className="course-note">Speech uses recognized Japanese transcripts and writing uses structural target coverage. Shadowing self-review is tracked separately as pronunciation evidence.</p></section>
     <B2Portfolio/>
     <C1Portfolio/>
-    <HumanReviewPanel/>
-    <ReleaseOperationsPanel/>
-    <ReleaseIdentityPanel/>
-    <ProviderHealthPanel/>
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">B2 ASSESSMENT</span><h2>Independent communication</h2></div><strong>{b2Milestone.answered} / {b2Milestone.total}</strong></div><div className="mastery-grid"><MasteryBar label="Reading" value={b2Milestone.scores.reading.score}/><MasteryBar label="Listening" value={b2Milestone.scores.listening.score}/><MasteryBar label="Spoken interaction" value={b2Milestone.scores.spoken_interaction.score}/><MasteryBar label="Spoken production" value={b2Milestone.scores.spoken_production.score}/><MasteryBar label="Writing" value={b2Milestone.scores.writing.score}/></div><p className="course-note">B2 listening currently uses an explicitly labeled device Japanese voice where no reusable native recording exists. AI feedback never changes these scores.</p></section>
     <section className="mastery-section"><div className="section-heading"><div><span className="course-kicker">C1 FOUNDATION</span><h2>Advanced independent discourse diagnostic</h2></div><strong>{c1Foundation.answered} / {c1Foundation.total}</strong></div><div className="mastery-grid"><MasteryBar label="Reading" value={c1Foundation.scores.reading.score}/><MasteryBar label="Listening" value={c1Foundation.scores.listening.score}/><MasteryBar label="Spoken interaction" value={c1Foundation.scores.spoken_interaction.score}/><MasteryBar label="Spoken production" value={c1Foundation.scores.spoken_production.score}/><MasteryBar label="Writing" value={c1Foundation.scores.writing.score}/></div><p className="course-note">Internal P12 diagnostic only. Device synthesis, speech-recognition transcripts and structural writing checks remain explicitly narrower than external CEFR assessment.</p></section>
     <div className="stat-row four"><Stat value={kana.evidenceCount+vocab.evidenceCount+conjugation.evidenceCount+grammar.evidenceCount+sentence.evidenceCount+lexicalFluency.evidenceCount} label="Graded answers"/><Stat value={course.filter((unit)=>unit.assessment.status==="passed").length} label="Unit checks passed"/><Stat value={summary.due} label="Due now"/><Stat value={summary.memoryTraces} label="Memory traces"/></div>
     <p className="session-note">{completedToday} answers recorded in this open session.</p>
+  </section>;
+}
+
+
+function Diagnostics(){
+  return <section className="j2-diagnostics">
+    <header className="j2-diagnostics__head">
+      <span className="j2-diagnostics__flag">Developer / operations</span>
+      <p className="eyebrow" lang="ja">診断</p>
+      <h1>System diagnostics</h1>
+      <p>Operational release identity, provider health, external-review administration and release controls are isolated from the learner Progress surface. Open this workspace explicitly with <code>?diagnostics=1</code>.</p>
+    </header>
+    <HumanReviewPanel/>
+    <ReleaseOperationsPanel/>
+    <ReleaseIdentityPanel/>
+    <ProviderHealthPanel/>
   </section>;
 }
 
