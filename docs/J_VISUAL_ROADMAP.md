@@ -46,6 +46,8 @@ Replace the current shell and navigation:
 
 ## J3 — Today / 今日
 
+**Implementation complete.** Today is now the first fully rebuilt learner surface: a Japanese daily-study ritual with shoji-derived composition, oversized 今日 display, one dominant Continue action and a four-intention ink route replacing the old six-stat dashboard.
+
 Create the first production-quality surface:
 - Japanese morning-study ritual;
 - one dominant Continue action;
