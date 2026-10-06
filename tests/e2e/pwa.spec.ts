@@ -1,7 +1,7 @@
 import { expect,test } from "@playwright/test";
 
 test("PWA shell, integrated Study Player and canonical content survive offline reload",async({page,context})=>{
-  await page.goto("/");
+  await page.goto("./");
   await expect(page.getByRole("heading",{name:"Continue Japanese"})).toBeVisible();
   await page.evaluate(async()=>{if(!("serviceWorker" in navigator))throw new Error("SERVICE_WORKER_UNAVAILABLE");await navigator.serviceWorker.ready;});
   await page.reload();
