@@ -13,15 +13,17 @@ P9 requires Japanese to publish its privacy-minimal language read model to Core.
 
 ## Decision
 
-Japanese uses a thin Supabase client configured against the canonical THIEPN Account Auth project. It does not create app-local credentials, password tables, users, or authorization claims.
+Japanese is a consumer of the canonical THIEPN Account system. Its thin browser adapter is configured against the canonical THIEPN Account Auth project, but the user-facing sign-in flow enters through `https://account.thiepn.dev/japanese/entry`. Japanese does not create app-local credentials, password tables, users, profiles, OAuth issuers, or authorization claims.
 
 The auth adapter:
 
 - verifies current identity with `auth.getUser()`;
 - uses `auth.getSession()` only to transport the bearer token to Core;
-- uses PKCE, persisted browser sessions, refresh tokens and the Japanese-specific browser storage key;
+- keeps the PKCE verifier and resulting browser session in Japanese while handing the authorization request to the Account-owned tokenless entry page;
+- uses the exact production callback `https://thiepn.dev/japanese/auth/callback/`, persisted browser sessions, refresh tokens and a Japanese browser storage key;
 - never treats the session payload itself as authorization;
-- leaves final token verification and owner derivation to Core.
+- leaves final token verification and owner derivation to Core;
+- never sends access tokens, refresh tokens or PKCE verifiers through `account.thiepn.dev`.
 
 Local IndexedDB remains physically partitioned by Account ID. The legacy anonymous/development workspace is treated as a guest workspace. On first authenticated use it may be claimed only when the target Account workspace is empty. Study events, memory traces and private imported content are rewritten to the canonical Account ID; server sync cursors are deliberately not migrated.
 
@@ -34,8 +36,8 @@ If the authenticated Account ID and active local workspace ID differ, P9 dashboa
 - Japanese can support guest-first local study without publishing guest data under an arbitrary signed-in identity.
 - Signing into a second account on the same browser does not expose the first account's IndexedDB workspace.
 - The P9 dashboard carries only the existing P8 read model, never raw StudyEvents, answers, recordings, private documents or account identifiers.
-- A future shared THIEPN Account SDK may replace this thin adapter without changing Japanese domain ownership semantics.
+- The local adapter is only an Account consumer boundary. It is not an independent Japanese account system and may later be replaced by a shared THIEPN Account SDK without changing Japanese domain ownership semantics.
 
 ## Deployment dependency
 
-Production Google sign-in still requires `https://japanese.thiepn.dev` to be accepted by the canonical Account Auth redirect configuration. That hosted configuration is an activation prerequisite, not a reason to create a separate Japanese auth system.
+Production Google sign-in requires `https://thiepn.dev/japanese/auth/callback/` to be accepted by the canonical Account Auth redirect configuration. The Account entry validates that exact callback before forwarding to the canonical provider. Hosted redirect configuration is an activation prerequisite, not a reason to create a separate Japanese auth system.
