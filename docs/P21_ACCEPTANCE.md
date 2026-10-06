@@ -8,7 +8,7 @@ P21 freezes capability growth at the P20 learning architecture. It does not add 
 
 The checked-in release state remains **HOLD** until two independent evidence gaps are resolved:
 
-- a real physical-device PWA acceptance pass is recorded in `release/p21-device-acceptance.json`;
+- a real physical-device PWA acceptance pass, bound to the exact release commit, is recorded in `release/p21-device-acceptance.json`;
 - the independent P11 external productive-language validation is admitted and qualifies.
 
 Automated browser/device profiles are never allowed to satisfy the physical-device gate.
