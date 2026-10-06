@@ -2,7 +2,6 @@ import "fake-indexeddb/auto";
 import { afterEach,describe,expect,it,vi } from "vitest";
 import {
   buildJapaneseAccountEntryUrl,
-  createFlowNonce,
   createThiepnAccountAuthProvider,
   JAPANESE_ACCOUNT_ENTRY_URL,
   JAPANESE_CALLBACK_URL,
@@ -34,7 +33,7 @@ describe("P9 THIEPN Account boundary",()=>{
   it("routes production sign-in through the shared THIEPN Account entry",()=>{
     const authorize=new URL("/auth/v1/authorize",THIEPN_ACCOUNT_SUPABASE_URL);
     authorize.searchParams.set("provider","google");
-    authorize.searchParams.set("redirect_to",`${JAPANESE_CALLBACK_URL}?flow=${"a".repeat(64)}`);
+    authorize.searchParams.set("redirect_to",JAPANESE_CALLBACK_URL);
     authorize.searchParams.set("code_challenge","b".repeat(43));
     authorize.searchParams.set("code_challenge_method","s256");
     authorize.searchParams.set("prompt","select_account");
@@ -45,38 +44,31 @@ describe("P9 THIEPN Account boundary",()=>{
     expect(()=>buildJapaneseAccountEntryUrl("https://evil.test/auth/v1/authorize")).toThrow("INVALID_AUTHORIZATION_URL");
   });
 
-  it("uses a fresh tokenless PKCE flow and rejects unsafe callback state",()=>{
-    const bytes=new Uint8Array(32);
-    bytes[0]=0x0f;
-    bytes[31]=0xff;
-    const flow=createFlowNonce(bytes);
-    expect(flow).toHaveLength(64);
-    expect(flow.startsWith("0f")).toBe(true);
-    expect(flow.endsWith("ff")).toBe(true);
-
+  it("uses a fresh pending-login marker and rejects unsafe callback state",()=>{
     const now=1_800_000;
-    const raw=JSON.stringify({flow,started:now-30_000,returnTo:"/japanese/"});
-    expect(readPendingJapaneseLogin(raw,flow,now)).toEqual({
-      flow,
+    const raw=JSON.stringify({started:now-30_000,returnTo:"/japanese/"});
+    expect(readPendingJapaneseLogin(raw,now)).toEqual({
       started:now-30_000,
       returnTo:"/japanese/"
     });
-    expect(readPendingJapaneseLogin(raw,"a".repeat(64),now)).toBeNull();
-    expect(readPendingJapaneseLogin(JSON.stringify({flow,started:now-1,returnTo:"https://evil.test/"}),flow,now)).toBeNull();
+    expect(readPendingJapaneseLogin(raw,now+10*60*1000+1)).toBeNull();
+    expect(readPendingJapaneseLogin(JSON.stringify({started:now-1,returnTo:"https://evil.test/"}),now)).toBeNull();
 
     expect(
-      readJapaneseCallback(new URLSearchParams({code:"one-use-code",flow}),""),
-    ).toEqual({code:"one-use-code",flow});
+      readJapaneseCallback(new URLSearchParams({code:"one-use-code"}),""),
+    ).toEqual({code:"one-use-code"});
     expect(
-      readJapaneseCallback(new URLSearchParams({code:"one-use-code",flow,extra:"x"}),""),
+      readJapaneseCallback(new URLSearchParams({code:"one-use-code",extra:"x"}),""),
     ).toBeNull();
     expect(
-      readJapaneseCallback(new URLSearchParams({code:"one-use-code",flow}),"#access_token=x"),
+      readJapaneseCallback(new URLSearchParams("code=one&code=two"),""),
+    ).toBeNull();
+    expect(
+      readJapaneseCallback(new URLSearchParams({code:"one-use-code"}),"#access_token=x"),
     ).toBeNull();
   });
 
   it("surfaces an invalid Account callback as expired instead of silently anonymous",async()=>{
-    const flow="d".repeat(64);
     const storage=new Map<string,string>();
     const sessionStorageMock={
       getItem:vi.fn((key:string)=>storage.get(key)??null),
@@ -85,14 +77,14 @@ describe("P9 THIEPN Account boundary",()=>{
     };
     sessionStorageMock.setItem(
       "thiepn:japanese-login:v1",
-      JSON.stringify({flow,started:Date.now(),returnTo:"/japanese/"}),
+      JSON.stringify({started:Date.now(),returnTo:"/japanese/"}),
     );
     const replaceState=vi.fn();
     vi.stubGlobal("sessionStorage",sessionStorageMock);
     vi.stubGlobal("window",{
       location:{
         pathname:"/japanese/auth/callback/",
-        search:`?flow=${flow}`,
+        search:"",
         hash:"",
         assign:vi.fn(),
       },
