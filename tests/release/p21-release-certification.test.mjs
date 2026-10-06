@@ -1,3 +1,4 @@
+const COMMIT="a".repeat(40);
 import fs from "node:fs";
 import { describe,expect,it } from "vitest";
 import {
@@ -19,8 +20,11 @@ function deviceManifest(status="passed"){
     devices:status==="passed"?[{
       id:"android-1",
       deviceModel:"Test Android Phone",
+      platform:"android",
       osVersion:"Android 16",
+      browserEngine:"chromium",
       browserVersion:"Chromium 156",
+      buildCommit:COMMIT,
       installMode:"standalone-pwa",
       testedAt:"2026-10-06T11:00:00Z",
       checks:Object.fromEntries(P21_REQUIRED_DEVICE_CHECKS.map((key)=>[key,true]))
@@ -72,7 +76,7 @@ describe("P21 final release certification",()=>{
       device:summarizeDeviceAcceptance(deviceManifest("passed")),
       p11:p11(true),
       generatedAt:"2026-10-06T12:00:00Z",
-      commit:"fixture"
+      commit:COMMIT
     });
     expect(report.technicalReleaseReady).toBe(true);
     expect(report.evidenceReleaseReady).toBe(true);
