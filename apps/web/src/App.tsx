@@ -174,13 +174,12 @@ export function App(){
     void JAPANESE_ACCOUNT.refresh().catch(authUnavailable);
     return()=>{active=false;generation+=1;unsubscribe();};
   },[]);
-  useEffect(()=>{void refreshDashboard();},[]);
   useEffect(()=>{
-    if(account.status==="authenticated"&&accountConnected){
-      void refreshDashboard().then(()=>{
+    void refreshDashboard().then(()=>{
+      if(account.status==="authenticated"&&accountConnected){
         void JAPANESE_LANGUAGE_DASHBOARD.publish().catch(()=>{/* Core dashboard is non-blocking */});
-      });
-    }
+      }
+    });
   },[account.status,account.accountId,accountConnected]);
   useEffect(()=>{
     if(surface!=="Library")return;
