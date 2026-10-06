@@ -22,6 +22,7 @@
   "notes": [
     "This checked-in manifest is intentionally pending until a real physical-device pass is performed.",
     "Automated Playwright device profiles do not count as physical-device acceptance.",
-    "Do not mark a check true unless it was verified on the recorded device/build."
+    "Do not mark a check true unless it was verified on the recorded device/build.",
+    "A passing device record must identify the exact tested release candidate with platform=android, browserEngine=chromium and a 40-character buildCommit."
   ]
 }
