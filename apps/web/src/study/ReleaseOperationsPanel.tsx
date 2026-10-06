@@ -34,10 +34,10 @@ export function ReleaseOperationsPanel(){
 
   return <section className="release-operations">
     <div className="section-heading">
-      <div><span className="course-kicker">P11 RELEASE EVIDENCE</span><h2>Qualify B2 before opening C1</h2></div>
+      <div><span className="course-kicker">P11 / P21 RELEASE EVIDENCE</span><h2>Keep external validation and final device acceptance explicit</h2></div>
       <span className="course-count">P9 media provenance + external evidence remain authoritative</span>
     </div>
-    <p>P11 release qualification remains an independent evidence track. P9 native provenance and the release profile are green, while external productive-language validation is still absent. P12 development is proceeding under an explicit roadmap override; that decision does not rewrite the P11 qualification result.</p>
+    <p>P11 remains the independent productive-language release-evidence track. P21 adds the final technical/device gate but does not replace P11: automated regression, physical-device acceptance and external validation remain separate evidence classes.</p>
 
     <div className="release-check-columns">
       <article>
@@ -69,6 +69,11 @@ export function ReleaseOperationsPanel(){
       <strong>P11 external-review handoff</strong>
       <span>{external?external.selectedArtifacts:0} / 6 packet artifacts · {external?external.selectedWriting:0} writing · {external?external.selectedSpeaking:0} speaking</span>
       <p>{external?.ready?"Representative learner evidence is ready for the offline external-review workspace.":"Complete enough B2 productive work to produce a six-artifact packet containing both writing and speaking evidence."}</p>
+    </div>
+    <div className="release-human-note">
+      <strong>P21 physical-device gate</strong>
+      <span>Repository/CI evidence only · never inferred from this browser session</span>
+      <p>The final release candidate requires a real Android standalone-PWA pass bound to the exact tested commit. Playwright Pixel/compact profiles remain automated regression evidence and cannot satisfy the physical-device gate.</p>
     </div>
     <p className="course-note">P11 remains <code>HOLD_B2_RELEASE_CANDIDATE</code> until a real external review is admitted. P12 curriculum development is intentionally decoupled from that release-evidence gate by project-owner decision; the evidence record itself remains unchanged and can still be completed later.</p>
   </section>;
