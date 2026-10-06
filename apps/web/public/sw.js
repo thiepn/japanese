@@ -1,5 +1,6 @@
-const CACHE = "japanese-shell-v1";
-const CORE = ["/", "/manifest.webmanifest", "/icon.svg"];
+const CACHE = "japanese-shell-v2";
+const BASE = new URL(self.registration.scope).pathname;
+const CORE = [BASE, `${BASE}manifest.webmanifest`, `${BASE}icon.svg`];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(CORE)));
@@ -18,7 +19,7 @@ self.addEventListener("fetch", (event) => {
   }).catch(async () => {
     const cached = await caches.match(event.request);
     if (cached) return cached;
-    if (event.request.mode === "navigate") return caches.match("/");
+    if (event.request.mode === "navigate") return caches.match(BASE);
     throw new Error("Offline resource unavailable");
   }));
 });
