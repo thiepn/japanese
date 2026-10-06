@@ -276,9 +276,10 @@ export function App(){
   },[session]);
 
   return <>
-    {session?<div className="study-shell"><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></div>:<div className="app-shell">
+    <a className="skip-link" href="#main-content">Skip to main content</a>
+    {session?<main className="study-shell" id="main-content" tabIndex={-1}><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></main>:<div className="app-shell">
       <header className="topbar"><div><strong>Japanese</strong><span className="phase">P20 longitudinal C2 readiness · external calibration · advanced-pathway qualification</span></div><button className="quiet-button account-button" disabled={accountBusy} onClick={()=>void toggleAccount()} type="button">{accountBusy?"Account…":account.status!=="authenticated"?"Connect Account":accountConnected?"Sign out":"Connect Account"}</button></header>
-      <main className="content">
+      <main className="content" id="main-content" tabIndex={-1}>
         {surface==="Today"&&<Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
         {surface==="Learn"&&<Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} onPreferredCoachChainApplied={()=>setPreferredCoachChain(null)} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>} 
         {surface==="Immerse"&&<Immersion onStartProductionTask={(taskId)=>void startProductiveTask(taskId)} onStartC1Synthesis={(packId)=>void startC1Synthesis(packId)} onOpenC1Coach={(chainId)=>{setPreferredCoachChain(chainId);setSurface("Learn");}}/>} 
@@ -286,7 +287,7 @@ export function App(){
         {surface==="Library"&&<Library query={query} setQuery={setQuery} results={results} status={libraryStatus}/>}
       </main>
     </div>}
-    <nav className={"nav"+(session?" study-active":"")} aria-label="Primary" aria-hidden={session?true:undefined}>{(["Today","Learn","Immerse","Library","Progress"] as Surface[]).map((item)=><button key={item} disabled={Boolean(session)} tabIndex={session?-1:0} className={surface===item?"active":""} onClick={()=>setSurface(item)} type="button">{item}</button>)}</nav>
+    <nav className={"nav"+(session?" study-active":"")} aria-label="Primary" aria-hidden={session?true:undefined}>{(["Today","Learn","Immerse","Library","Progress"] as Surface[]).map((item)=><button key={item} disabled={Boolean(session)} tabIndex={session?-1:0} aria-current={surface===item?"page":undefined} className={surface===item?"active":""} onClick={()=>setSurface(item)} type="button">{item}</button>)}</nav>
   </>;
 }
 
