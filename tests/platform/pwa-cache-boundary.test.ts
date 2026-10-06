@@ -12,7 +12,8 @@ describe("Japanese PWA cache boundary",()=>{
     expect(serviceWorker).not.toContain('keys.filter((key) => key !== CACHE)');
   });
 
-  it("does not intercept and cache cross-origin requests",()=>{
+  it("does not intercept data outside the Japanese origin + subpath",()=>{
     expect(serviceWorker).toContain('requestUrl.origin !== self.location.origin');
+    expect(serviceWorker).toContain('!requestUrl.pathname.startsWith(BASE)');
   });
 });
