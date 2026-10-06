@@ -273,7 +273,7 @@ export async function importTatoebaSentence(sentenceId:string):Promise<TatoebaIm
   if(!/^\d{1,12}$/.test(id))throw new Error("TATOEBA_ID_REQUIRED");
 
   const controller=new AbortController();
-  const timeout=window.setTimeout(()=>controller.abort(),10_000);
+  const timeout=globalThis.setTimeout(()=>controller.abort(),10_000);
   let response:Response;
   try{
     response=await fetch(`https://api.tatoeba.org/v1/sentences/${id}?include=audios`,{
@@ -283,7 +283,7 @@ export async function importTatoebaSentence(sentenceId:string):Promise<TatoebaIm
   }catch{
     throw new Error(controller.signal.aborted?"TATOEBA_FETCH_TIMEOUT":"TATOEBA_FETCH_FAILED");
   }finally{
-    window.clearTimeout(timeout);
+    globalThis.clearTimeout(timeout);
   }
   if(!response.ok)throw new Error("TATOEBA_FETCH_FAILED");
   let raw:Record<string,unknown>;
