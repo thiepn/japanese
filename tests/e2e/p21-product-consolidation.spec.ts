@@ -33,3 +33,16 @@ test("P21 provides keyboard skip navigation and visible semantic navigation stat
   await expect(nav.getByRole("button",{name:"Progress"})).toHaveAttribute("aria-current","page");
   await expect(nav.getByRole("button",{name:"Today"})).not.toHaveAttribute("aria-current","page");
 });
+
+
+test("P21 keeps advanced workspace tabs thumb-safe on mobile profiles",async({page},testInfo)=>{
+  test.skip(testInfo.project.name==="desktop-chromium","mobile touch-target hardening only");
+  await page.goto("/");
+  await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
+  const tabs=page.locator(".p15-tabs button,.p17-tabs button,.p18-tabs button,.p19-tabs button");
+  expect(await tabs.count()).toBeGreaterThan(0);
+  for(const button of await tabs.all()){
+    const box=await button.boundingBox();
+    expect(box?.height??0).toBeGreaterThanOrEqual(44);
+  }
+});
