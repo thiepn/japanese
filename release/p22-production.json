@@ -1,0 +1,25 @@
+{
+  "schema": "thiepn-japanese-p22-production",
+  "schemaVersion": 1,
+  "status": "inactive",
+  "publicUrl": null,
+  "releaseCommit": null,
+  "releaseTag": null,
+  "activatedAt": null,
+  "maintenanceMode": false,
+  "monitor": {
+    "requiredPaths": [
+      "/",
+      "/manifest.webmanifest",
+      "/sw.js",
+      "/release-meta.json"
+    ],
+    "maxHomepageMs": 5000
+  },
+  "knownIncidents": [],
+  "notes": [
+    "P22 production remains inactive until the strict P21 gate is genuinely open.",
+    "Do not populate releaseCommit, releaseTag or activatedAt before an actual stable activation.",
+    "Production monitoring must verify release-meta.json against the exact activated commit."
+  ]
+}
