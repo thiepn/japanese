@@ -5,6 +5,7 @@ import { getC1ResearchQualityProgress,type C1ResearchQualityProgress } from "./c
 import { getC1PrecisionProgress,type C1PrecisionProgress } from "./c1Precision";
 import { getC1AdvancedInteractionProgress,type C1AdvancedInteractionProgress } from "./c1AdvancedInteraction";
 import { getC1ProsodyEvaluationProgress,type C1ProsodyEvaluationProgress } from "./c1ProsodyEvaluation";
+import { C2ReadinessPanel } from "./C2ReadinessPanel";
 import {
   downloadC1Portfolio,getC1PortfolioExport,serializeC1PortfolioJson,serializeC1PortfolioMarkdown
 } from "./c1PortfolioExport";
@@ -34,14 +35,16 @@ export function C1Portfolio(){
 
   return <section className="b2-portfolio">
     <div className="section-heading">
-      <div><span className="course-kicker">P19 C1→C2 PORTFOLIO</span><h2>Precision + live interaction + bounded audio and external review</h2></div>
+      <div><span className="course-kicker">P20 C1→C2 PORTFOLIO</span><h2>Longitudinal advanced evidence + external calibration + internal qualification</h2></div>
       <span className="course-count">{portfolio.activeDays} active C1 days</span>
     </div>
-    <p>P19 keeps the P14–P18 longitudinal, source, precision and interaction evidence, then adds real local audio timing evidence, overlap listening and external C2-oriented human review. It remains descriptive evidence rather than accredited C2 certification.</p>
+    <p>P20 consolidates P14–P19 into a transparent longitudinal readiness matrix: durable advanced performance, repeated broad human review, reviewer calibration and an explicit internal advanced-pathway qualification gate. It remains a product qualification rather than accredited CEFR C2 certification.</p>
     <div className="portfolio-export-actions">
       <button className="unit-action" disabled={exporting} type="button" onClick={()=>void exportPortfolio("json")}>Export C1 JSON</button>
       <button className="quiet-button" disabled={exporting} type="button" onClick={()=>void exportPortfolio("markdown")}>Export C1 Markdown</button>
     </div>
+
+    <C2ReadinessPanel/>
 
     <div className="portfolio-stats">
       <PortfolioStat value={portfolio.readingTexts} label="C1 texts read"/>
@@ -193,7 +196,7 @@ export function C1Portfolio(){
       </article>)}</div>
     </details>:null}
 
-    <p className="course-note">Repeated internal success, source exposure, precision transformation, simulated pressure, local audio timing, overlap listening, human-partner logs and external human review remain explicitly bounded evidence. P19 does not convert them into accredited C2 certification, verified reviewer identity, automatic mastery updates, pitch-accent correctness, fluency scoring or full acoustic pronunciation scoring.</p>
+    <p className="course-note">Repeated internal success, source exposure, precision transformation, simulated pressure, local audio timing, overlap listening, human-partner logs and external human review remain explicitly bounded evidence. P20 can issue an internal advanced-pathway qualification only when its transparent gates are met; it still does not create accredited C2 certification, verify reviewer identity, rewrite mastery, or turn bounded signal evidence into pronunciation scoring.</p>
   </section>;
 }
 
