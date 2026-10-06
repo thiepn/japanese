@@ -11,7 +11,7 @@ export interface ReleaseIdentity{
 
 export async function getReleaseIdentity(fetchImpl:typeof fetch=fetch):Promise<ReleaseIdentity|null>{
   try{
-    const response=await fetchImpl("/release-meta.json",{cache:"no-store",headers:{"accept":"application/json"}});
+    const response=await fetchImpl(`${import.meta.env.BASE_URL}release-meta.json`,{cache:"no-store",headers:{"accept":"application/json"}});
     if(!response.ok)return null;
     const raw:unknown=await response.json();
     if(!raw||typeof raw!=="object")return null;
