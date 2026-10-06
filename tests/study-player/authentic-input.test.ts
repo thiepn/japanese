@@ -1,5 +1,10 @@
-import { describe,expect,it } from "vitest";
-import { analyzeAuthenticText,extractSubtitleText,isAllowedReusableAudioLicense,lemmatizeJapaneseSurface,normalizeImportedText,resolveJapaneseSurface,splitJapaneseSentences } from "../../apps/web/src/immerse/authentic";
+import { afterEach,describe,expect,it,vi } from "vitest";
+import { analyzeAuthenticText,extractSubtitleText,importTatoebaSentence,isAllowedReusableAudioLicense,lemmatizeJapaneseSurface,normalizeImportedText,resolveJapaneseSurface,splitJapaneseSentences } from "../../apps/web/src/immerse/authentic";
+
+afterEach(()=>{
+  vi.useRealTimers();
+  vi.unstubAllGlobals();
+});
 
 describe("P4 authentic-input pipeline",()=>{
   it("segments arbitrary Japanese and links known canonical or inflected forms",()=>{
@@ -40,6 +45,24 @@ describe("P4 authentic-input pipeline",()=>{
     expect(cleaned).toContain("駅はどこですか。");
     expect(cleaned).not.toContain("-->");
     expect(normalizeImportedText(raw,"subtitle")).not.toContain("00:00");
+  });
+
+  it("rejects invalid Tatoeba IDs before any network request",async()=>{
+    const fetch=vi.fn();
+    vi.stubGlobal("fetch",fetch);
+    await expect(importTatoebaSentence("1234567890123")).rejects.toThrow("TATOEBA_ID_REQUIRED");
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it("fails closed when the Tatoeba API does not respond",async()=>{
+    vi.useFakeTimers();
+    vi.stubGlobal("fetch",vi.fn((_input:RequestInfo|URL,init?:RequestInit)=>new Promise<Response>((_resolve,reject)=>{
+      const signal=init?.signal;
+      signal?.addEventListener("abort",()=>reject(new Error("aborted")),{once:true});
+    })));
+    const expectation=expect(importTatoebaSentence("432825")).rejects.toThrow("TATOEBA_FETCH_TIMEOUT");
+    await vi.advanceTimersByTimeAsync(10_001);
+    await expectation;
   });
 
   it("admits reusable CC licenses and rejects missing, NC and ND audio",()=>{
