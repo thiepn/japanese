@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: p22-pages-candidate
+  group: p22-pages-candidate-${{ github.event.workflow_run.head_sha || github.sha }}
   cancel-in-progress: true
 
 permissions:
@@ -39,34 +39,56 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ steps.candidate.outputs.sha }}
+          fetch-depth: 1
+
+      - name: Confirm certified candidate is still main
+        id: current
+        env:
+          CANDIDATE_COMMIT: ${{ steps.candidate.outputs.sha }}
+        shell: bash
+        run: |
+          CURRENT_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          if [ "$CURRENT_MAIN" = "$CANDIDATE_COMMIT" ]; then
+            echo "is_current=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_current=false" >> "$GITHUB_OUTPUT"
+            echo "Skipping stale certified candidate $CANDIDATE_COMMIT; main is $CURRENT_MAIN."
+          fi
 
       - uses: pnpm/action-setup@v4
+        if: steps.current.outputs.is_current == 'true'
         with:
           version: 11.19.0
 
       - uses: actions/setup-node@v4
+        if: steps.current.outputs.is_current == 'true'
         with:
           node-version: 24.15.0
 
       - run: pnpm install --no-frozen-lockfile
+        if: steps.current.outputs.is_current == 'true'
 
       - name: Write candidate deployment identity
+        if: steps.current.outputs.is_current == 'true'
         env:
           CANDIDATE_COMMIT: ${{ steps.candidate.outputs.sha }}
         run: pnpm release:p22:meta --commit "$CANDIDATE_COMMIT" --channel candidate
 
       - name: Build GitHub Pages candidate
+        if: steps.current.outputs.is_current == 'true'
         env:
           VITE_PUBLIC_BASE: /japanese/
         run: pnpm build
 
       - name: Add deterministic SPA and Account callback routes
+        if: steps.current.outputs.is_current == 'true'
         run: |
           cp apps/web/dist/index.html apps/web/dist/404.html
           mkdir -p apps/web/dist/auth/callback
           cp apps/web/dist/index.html apps/web/dist/auth/callback/index.html
 
       - name: Verify deployment artifact shape
+        if: steps.current.outputs.is_current == 'true'
         env:
           CANDIDATE_COMMIT: ${{ steps.candidate.outputs.sha }}
         run: |
@@ -77,20 +99,24 @@ jobs:
           grep -q "$CANDIDATE_COMMIT" apps/web/dist/release-meta.json
 
       - name: Configure GitHub Pages
+        if: steps.current.outputs.is_current == 'true'
         uses: actions/configure-pages@v5
         with:
           enablement: true
 
       - name: Upload Pages artifact
+        if: steps.current.outputs.is_current == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: apps/web/dist
 
       - name: Deploy candidate to GitHub Pages
+        if: steps.current.outputs.is_current == 'true'
         id: deployment
         uses: actions/deploy-pages@v4
 
       - name: Verify exact live candidate and shared Account entry
+        if: steps.current.outputs.is_current == 'true'
         env:
           CANDIDATE_COMMIT: ${{ steps.candidate.outputs.sha }}
         shell: bash
