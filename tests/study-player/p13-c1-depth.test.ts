@@ -44,8 +44,9 @@ describe("P13 C1 native depth, multi-source synthesis and spontaneous interactio
     expect(session[1]).toMatchObject({id:"prompt-p13-synthesis-evidence-causality",promptType:"textarea",languageActivity:"writing"});
   });
 
-  it("hides future complications in C1 spontaneous-interaction chains",()=>{
-    const chains=scenarioChainsForLevel("C1");
+  it("keeps the five original P13 hidden-future interaction chains intact",()=>{
+    const originalIds=["c1-policy-briefing","c1-research-defense","c1-institutional-negotiation","c1-public-interview","c1-cross-domain-transfer"];
+    const chains=scenarioChainsForLevel("C1").filter((chain)=>originalIds.includes(chain.id));
     expect(chains).toHaveLength(5);
     for(const chain of chains){
       expect(chain.level).toBe("C1");
