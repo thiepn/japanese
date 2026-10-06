@@ -18,7 +18,7 @@ The repository can now:
 - enforce a defect-only maintenance ledger;
 - report HOLD states honestly when production, device or external evidence is absent.
 
-The checked-in production record remains `inactive` until a real deployment occurs.
+The checked-in production record is now `candidate` and points to the continuously deployed public candidate at `https://thiepn.dev/japanese/`. Candidate identity is observed from `/release-meta.json`; it is not a frozen stable production declaration.
 
 ## Stable release activation
 
@@ -54,7 +54,7 @@ States:
 - `active` — a concrete HTTPS deployment, release tag, exact commit and activation timestamp are recorded;
 - `maintenance` — production is intentionally operating under a maintenance condition.
 
-The current manifest is deliberately `inactive`.
+The current manifest is deliberately `candidate`. It records the public candidate URL but no stable release tag, activation timestamp or frozen production commit.
 
 An inactive manifest must not contain a production URL, release commit, release tag or activation timestamp.
 
@@ -85,7 +85,7 @@ Progress includes a P22 deployment-identity panel that reads this file at runtim
 
 The scheduled **P22 Production Monitor** workflow runs every six hours.
 
-When production is inactive it records a skipped monitor result without inventing a deployment.
+When production is inactive it records a skipped monitor result without inventing a deployment. A public candidate is monitored with `channel: candidate`; its current embedded commit may advance with `main` and is reported as observed identity rather than being misrepresented as a frozen stable release.
 
 When production is active or in maintenance state, monitoring runs in strict mode and fails if required paths or exact release identity are not healthy.
 
@@ -149,4 +149,4 @@ P22 does **not** claim that:
 - manual stable activation fails closed through strict P11 and P21 gates;
 - scheduled production monitoring remains dormant rather than fabricated while production is inactive.
 
-Until real device and P11 evidence are admitted, P22 is operationally implemented but the stable activation state must remain HOLD.
+The public candidate may remain available while real device and P11 evidence are collected. Until those gates are admitted, P22 is operationally implemented but the stable activation state must remain HOLD.
