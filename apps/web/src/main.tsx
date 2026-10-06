@@ -4,6 +4,7 @@ import { App } from "./App";
 import { J1VisualSandbox } from "./design/J1VisualSandbox";
 import "./styles.css";
 import "./design/j1.css";
+import "./design/j2.css";
 
 if ("serviceWorker" in navigator && import.meta.env.PROD) {
   window.addEventListener("load", () => navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`,{scope:import.meta.env.BASE_URL}));
