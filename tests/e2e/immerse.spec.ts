@@ -1,7 +1,7 @@
 import { expect,test } from "@playwright/test";
 
 test("Immerse exposes graded A1→C1 autonomy and long-form missions without creating a separate learning silo",async({page})=>{
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button",{name:"Immerse"}).click();
 
   await expect(page.getByRole("heading",{name:"A1 → C1 autonomy"})).toBeVisible();
