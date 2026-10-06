@@ -14,6 +14,8 @@ test("P21 keeps the complete product shell navigable without horizontal overflow
   }
 
   await expect(page.getByText("P20 LONGITUDINAL C2 READINESS",{exact:true})).toBeVisible();
+  const finalOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
+  expect(finalOverflow).toBeLessThanOrEqual(1);
 });
 
 test("P21 provides keyboard skip navigation and visible semantic navigation state",async({page})=>{
