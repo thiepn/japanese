@@ -16,4 +16,9 @@ describe("Japanese PWA cache boundary",()=>{
     expect(serviceWorker).toContain('requestUrl.origin !== self.location.origin');
     expect(serviceWorker).toContain('!requestUrl.pathname.startsWith(BASE)');
   });
+
+  it("reads offline fallbacks only from the Japanese cache",()=>{
+    expect(serviceWorker).toContain('const cache = await caches.open(CACHE)');
+    expect(serviceWorker).not.toContain('caches.match(event.request)');
+  });
 });
