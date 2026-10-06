@@ -1,0 +1,27 @@
+{
+  "schema": "thiepn-japanese-p21-device-acceptance",
+  "schemaVersion": 1,
+  "status": "pending",
+  "generatedAt": null,
+  "devices": [],
+  "requiredChecks": [
+    "installStandalone",
+    "coreSurfaces",
+    "studyControls",
+    "speakerAudio",
+    "headphoneAudio",
+    "offlineReload",
+    "backgroundResume",
+    "rotation",
+    "largeText",
+    "microphoneRecording",
+    "localAudioDelete",
+    "safeAreaNavigation"
+  ],
+  "defects": [],
+  "notes": [
+    "This checked-in manifest is intentionally pending until a real physical-device pass is performed.",
+    "Automated Playwright device profiles do not count as physical-device acceptance.",
+    "Do not mark a check true unless it was verified on the recorded device/build."
+  ]
+}
