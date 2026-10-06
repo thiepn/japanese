@@ -48,6 +48,7 @@ export function C1ProsodyEvaluationLab(){
 
   const [overlapId,setOverlapId]=useState(c1OverlapListeningTasks[0]!.id);
   const [overlapPlayed,setOverlapPlayed]=useState(false);
+  const [overlapMixValid,setOverlapMixValid]=useState(false);
   const [overlapPlaying,setOverlapPlaying]=useState(false);
   const [recall,setRecall]=useState("");
   const [uncertain,setUncertain]=useState("");
@@ -139,7 +140,7 @@ export function C1ProsodyEvaluationLab(){
   }
 
   async function playOverlap(task:C1OverlapListeningTask){
-    stopAllAudio();setMessage("");setOverlapPlayed(false);setOverlapPlaying(true);
+    stopAllAudio();setMessage("");setOverlapPlayed(false);setOverlapMixValid(false);setOverlapPlaying(true);
     const pair=overlapSources(task);
     const primary=new Audio(pair.primary.recording.url),masker=new Audio(pair.masker.recording.url);
     primaryAudio.current=primary;maskerAudio.current=masker;
@@ -149,14 +150,14 @@ export function C1ProsodyEvaluationLab(){
     masker.onerror=()=>setMessage("The competing recording could not be played; this attempt should not be saved as overlap evidence.");
     try{
       await primary.play();
-      maskerTimer.current=window.setTimeout(()=>{void masker.play().catch(()=>setMessage("The competing recording could not start."));},task.maskerDelayMs);
+      maskerTimer.current=window.setTimeout(()=>{void masker.play().then(()=>setOverlapMixValid(true)).catch(()=>{setOverlapMixValid(false);setMessage("The competing recording could not start; this attempt cannot be saved as overlap evidence.");});},task.maskerDelayMs);
     }catch{
       stopAllAudio();setMessage("The verified native source could not start in this browser.");
     }
   }
 
   function selectOverlap(id:string){
-    stopAllAudio();setOverlapId(id);setOverlapPlayed(false);setRecall("");setUncertain("");setRepairPlan("");setMessage("");
+    stopAllAudio();setOverlapId(id);setOverlapPlayed(false);setOverlapMixValid(false);setRecall("");setUncertain("");setRepairPlan("");setMessage("");
   }
 
   async function saveOverlap(){
@@ -260,7 +261,8 @@ export function C1ProsodyEvaluationLab(){
         <label>Reconstruct the primary message without reopening a transcript<textarea lang="ja" rows={6} value={recall} onChange={(event)=>setRecall(event.target.value)} placeholder="主音声の主張、条件、留保、次の行動などを再構成する…"/></label>
         <label>What could you not resolve confidently?<textarea lang="ja" rows={4} value={uncertain} onChange={(event)=>setUncertain(event.target.value)} placeholder="聞き取れなかった箇所、競合音声で曖昧になった点…"/></label>
         <label>Recovery strategy<textarea lang="ja" rows={4} value={repairPlan} onChange={(event)=>setRepairPlan(event.target.value)} placeholder="次回どの手掛かりを優先するか、聞き逃した後にどう復帰するか…"/></label>
-        <button className="primary" type="button" disabled={!overlapPlayed||recall.trim().length<100||uncertain.trim().length<50||repairPlan.trim().length<50} onClick={()=>void saveOverlap()}>Save overlap attempt</button>
+        <button className="primary" type="button" disabled={!overlapPlayed||!overlapMixValid||recall.trim().length<100||uncertain.trim().length<50||repairPlan.trim().length<50} onClick={()=>void saveOverlap()}>Save overlap attempt</button>
+        {!overlapMixValid&&overlapPlayed?<p className="coach-warning">The competing stream was not confirmed as playing, so this run cannot be saved as overlap evidence. Replay the challenge.</p>:null}
         <p className="p19-boundary">The overlap itself is artificially created in-browser from two separately verified native recordings. That is demanding listening evidence, but not evidence of a naturally occurring multi-speaker conversation.</p>
       </article>
     </div>:null}
