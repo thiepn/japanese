@@ -16,6 +16,8 @@ See `docs/J0_ART_BIBLE.md` and `docs/J0_ACCEPTANCE.md`.
 
 ## J1 — Japanese Design Engine
 
+**Implementation complete.** Reusable Japanese visual primitives are now available behind the J1 visual QA sandbox, with provenance and reduced-motion boundaries in place.
+
 Build reusable visual primitives before page rewrites:
 - design tokens;
 - Japanese type roles;
