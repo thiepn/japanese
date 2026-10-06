@@ -1,7 +1,7 @@
 import { expect,test } from "@playwright/test";
 
 test("P22 exposes stable-release operations without claiming production activation",async({page})=>{
-  await page.goto("/");
+  await page.goto("./");
   await expect(page.locator(".phase")).toContainText("P22 stable release activation");
 
   await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
