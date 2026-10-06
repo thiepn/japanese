@@ -58,6 +58,35 @@ describe("P22 stable release operations",()=>{
     expect(()=>summarizeProductionManifest(invalid)).toThrow("P22_INACTIVE_PRODUCTION_MUST_NOT_CLAIM_RELEASE");
   });
 
+  it("accepts a public candidate URL without pretending it is a frozen stable release",async()=>{
+    const candidate={...inactiveManifest(),status:"candidate",publicUrl:"https://thiepn.dev/japanese/"};
+    const summary=summarizeProductionManifest(candidate);
+    expect(summary.status).toBe("candidate");
+    expect(summary.active).toBe(false);
+    expect(summary.releaseCommit).toBeNull();
+
+    const fetchImpl=async(url)=>{
+      const pathname=new URL(String(url)).pathname;
+      if(pathname.endsWith("/release-meta.json")){
+        return new Response(JSON.stringify({
+          schema:"thiepn-japanese-release-meta",schemaVersion:1,phase:"P22",channel:"candidate",
+          commit:COMMIT,builtAt:"2026-10-06T17:00:00Z"
+        }),{status:200});
+      }
+      return new Response("ok",{status:200});
+    };
+    const smoke=await probeProduction({
+      baseUrl:"https://thiepn.dev/japanese/",
+      expectedCommit:null,
+      expectedChannel:"candidate",
+      requiredPaths:["/","/release-meta.json"],
+      fetchImpl
+    });
+    expect(smoke.healthy).toBe(true);
+    expect(smoke.expectedCommit).toBeNull();
+    expect(smoke.observedCommit).toBe(COMMIT);
+  });
+
   it("verifies production availability and exact release identity",async()=>{
     const fetchImpl=async(url)=>{
       const pathname=new URL(String(url)).pathname;
