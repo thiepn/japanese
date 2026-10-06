@@ -48,6 +48,7 @@ export function validateJapaneseSourcePack(pack:JapaneseSourcePack):SourcePackVa
   if(!m.version?.trim())errors.push("Manifest version is required.");
   if(m.language!=="ja")errors.push("Source pack language must be ja.");
   if(!m.sourceUrl?.trim())errors.push("Source URL is required.");
+  else if(!isSafeHttpsUrl(m.sourceUrl))errors.push("Source URL must be a credential-free HTTPS URL.");
   if(!m.licenseName?.trim())errors.push("Pack license is required.");
   if(m.redistributable!==true)errors.push("Only explicitly redistributable packs can be imported through the public source-pack route.");
   if(!isAllowedReusablePackLicense(m.licenseName))errors.push("Pack license is not admitted for redistributable source packs.");
@@ -61,6 +62,7 @@ export function validateJapaneseSourcePack(pack:JapaneseSourcePack):SourcePackVa
     else ids.add(item.id);
     if(!item.title?.trim())errors.push(where+" title is required.");
     if(!item.text?.trim())errors.push(where+" Japanese text is required.");
+    if(item.sourceUrl&&!isSafeHttpsUrl(item.sourceUrl))errors.push(where+" source URL must be a credential-free HTTPS URL.");
     const recordings=[...(item.audio?[item.audio]:[]),...(item.audioVariants??[])];
     if(recordings.length){
       const variantKeys=new Set<string>();
@@ -106,9 +108,11 @@ export async function importJapaneseSourcePack(pack:JapaneseSourcePack):Promise<
 function validateAudio(audio:PrivateNativeAudio&{nativeSpeaker:boolean},where:string,errors:string[]):void{
   if(audio.nativeSpeaker!==true)errors.push(where+" must explicitly declare nativeSpeaker:true before it can be labeled native.");
   if(!audio.url?.trim())errors.push(where+" URL is required.");
+  else if(!isSafeHttpsUrl(audio.url))errors.push(where+" URL must be a credential-free HTTPS URL.");
   if(!audio.credit?.trim())errors.push(where+" credit is required.");
   if(!audio.licenseName?.trim()||!isAllowedReusableAudioLicense(audio.licenseName))errors.push(where+" license is missing or not admitted.");
   if(requiresAttribution(audio.licenseName)&&!audio.attributionUrl?.trim())errors.push(where+" attribution URL is required for this license.");
+  if(audio.attributionUrl&&!isSafeHttpsUrl(audio.attributionUrl))errors.push(where+" attribution URL must be a credential-free HTTPS URL.");
   if(audio.speechRate&&!["slow","natural","fast"].includes(audio.speechRate))errors.push(where+" has invalid speechRate.");
   if(audio.register&&!["casual","neutral","polite","formal"].includes(audio.register))errors.push(where+" has invalid register.");
   if(audio.segments){
@@ -134,4 +138,14 @@ export function isAllowedReusablePackLicense(value:string):boolean{
 function requiresAttribution(value:string):boolean{
   const normalized=value.toLowerCase();
   return !(normalized.includes("cc0")||normalized.includes("public domain"));
+}
+
+
+function isSafeHttpsUrl(value:string):boolean{
+  try{
+    const url=new URL(value);
+    return url.protocol==="https:"&&!url.username&&!url.password;
+  }catch{
+    return false;
+  }
 }
