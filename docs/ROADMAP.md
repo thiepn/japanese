@@ -380,6 +380,24 @@ P15 remains authoritative for source evaluation, project sequencing, hidden-pres
 
 P17 is a C1→C2 **bridge**, not a C2 certificate. Structural precision, delayed specialist repetition, source comparison and human-feedback repair remain bounded evidence. P11 release qualification stays independent. See `docs/P17_ACCEPTANCE.md`.
 
+## P18 — Advanced Native Interaction, Real-Time Repair & C2-Style Discourse Pressure
+
+**Implementation complete.** P18 extends deliberate P17 precision into hidden, live interaction pressure:
+
+- 12 pressure moves remain hidden until the learner commits a Japanese position, covering interruption, clarification, reformulation, implicature, register pivot, evidence conflict, stance narrowing, time pressure, cross-domain transfer, floor recovery, certainty challenge and synthesis;
+- every saved pressure response becomes the next committed position, creating a continuous repair chain rather than disconnected speaking prompts;
+- pressure moves are grouped into floor-control, repair, stance/evidence, audience/register and transfer/synthesis families;
+- a complete simulated session requires four or more turns across four pressure types; robust coverage requires six or more types across at least four pressure families;
+- browser speech recognition can capture Japanese transcripts where available, while typed fallback stays explicitly labeled as a speaking proxy;
+- response latency is descriptive only and is not converted into a fluency, pronunciation or CEFR score;
+- the existing C1 AI-coach path adds hidden-future committee, specialist-roundtable and cross-domain-transfer chains and emits P18 interaction evidence while remaining advisory;
+- actual human interaction is stored separately from simulation with medium, learner-reported partner profile, duration, domain, difficult moment, repair/adaptation and reflection;
+- P16 specialist tracks can be pushed into unfamiliar domains through explicit portable-principle and boundary-condition work;
+- P18 state is projected from the same StudyEvent stream and does not introduce a second mastery or scheduling system;
+- the C1/C2 portfolio advances to schema v5 and carries simulated pressure, AI pressure, actual human-interaction and cross-domain-transfer evidence.
+
+P18 deliberately refuses several tempting shortcuts: simulated native-style pressure is not native-speaker evidence, AI dialogue is not human evidence, learner-reported partner profile is not independently verified, response timing is not fluency scoring, speech recognition is not acoustic analysis, and pressure coverage is not accredited C2 certification. P11 remains independent. See `docs/P18_ACCEPTANCE.md`.
+
 ## Later
 
-The next phase should deepen live advanced interaction rather than add another breadth layer: longer unscripted exchanges, interruption/repair, real-time reformulation, expert-domain transfer under unpredictable dialogue pressure, and richer prosodic/acoustic evidence only where the underlying speech stack can support the claim. A later external C2-oriented human evaluation track can be layered on top without rewriting mastery.
+The next phase should deepen evidence quality rather than add another interaction breadth layer: prosodic control only where real audio analysis exists, listening under overlap and fast/degraded input, turn-entry and repair under genuine audio pressure, and an external C2-oriented human evaluation protocol that remains separate from automatic mastery.
