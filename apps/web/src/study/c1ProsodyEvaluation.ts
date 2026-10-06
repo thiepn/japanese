@@ -142,6 +142,15 @@ export type C2ReviewDimension=
 
 export type C2ReviewScores=Record<C2ReviewDimension,number|null>;
 
+export const c2ReviewScaleAnchors=[
+  {score:0,label:"Breakdown",description:"The observed task could not be completed or control repeatedly broke down."},
+  {score:1,label:"Fragile",description:"Some advanced behavior is visible, but frequent repair or support is needed."},
+  {score:2,label:"Inconsistent",description:"The task is functional, but precision, flexibility or control is unstable under pressure."},
+  {score:3,label:"Strong advanced",description:"Advanced control is generally effective, with noticeable limitations in demanding moments."},
+  {score:4,label:"Consistently strong",description:"Control remains precise, flexible and effective across demanding observed evidence."},
+  {score:5,label:"Exceptional observed control",description:"The observed evidence shows unusually effortless, precise and adaptable control; this is still not a CEFR certification verdict."}
+] as const;
+
 export interface C2ExternalHumanReview {
   id:string;
   reviewerLabel:string;
@@ -193,6 +202,7 @@ export interface C2OrientedReviewPacket {
     overlapListening:Array<{id:string;taskId:string;recall:string;uncertainSegment:string;repairPlan:string;occurredAt:string}>;
   };
   reviewerInstructions:string[];
+  scaleAnchors:typeof c2ReviewScaleAnchors;
   rubric:Array<{dimension:C2ReviewDimension;prompt:string;scale:"0-5 or not observed"}>;
 }
 
@@ -429,6 +439,7 @@ export async function buildC2OrientedReviewPacket(now=new Date()):Promise<C2Orie
       "Anchor strengths and priorities in specific learner evidence rather than a global CEFR label.",
       "Do not interpret this packet as an accredited C2 examination or as permission to update learner mastery."
     ],
+    scaleAnchors:c2ReviewScaleAnchors,
     rubric:[
       {dimension:"lexicalPrecision",prompt:"How precisely does the learner choose and distinguish advanced lexical items without unnecessary vagueness?",scale:"0-5 or not observed"},
       {dimension:"grammaticalControl",prompt:"How consistently does complex grammar remain controlled under sustained production and pressure?",scale:"0-5 or not observed"},
