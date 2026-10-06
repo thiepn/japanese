@@ -2,8 +2,8 @@ import type { StudyEvent } from "@thiepn/domain";
 import { listStudyEvents } from "@thiepn/local-db";
 import type { StudyLesson,StudyPrompt,StudyStep } from "@thiepn/study-player";
 import { coreContent } from "../coreContent";
+import { DEVELOPMENT_ACCOUNT_ID } from "./runtime";
 
-const ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
 
 export type RealWorldDimension="unseen_response"|"paraphrase"|"repair"|"timed_followup";
 
@@ -121,7 +121,7 @@ const CHAINS:RealWorldChainDefinition[]=[
 export const realWorldChains=CHAINS.map(validateChain);
 
 export async function getRealWorldPerformanceSummary():Promise<RealWorldPerformanceSummary>{
-  return buildRealWorldPerformanceSummary(realWorldChains,await listStudyEvents(ACCOUNT_ID));
+  return buildRealWorldPerformanceSummary(realWorldChains,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));
 }
 
 export function buildRealWorldPerformanceSummary(chains:readonly RealWorldChainDefinition[],events:readonly StudyEvent[]):RealWorldPerformanceSummary{
@@ -139,7 +139,7 @@ export function buildRealWorldPerformanceSummary(chains:readonly RealWorldChainD
 
 export async function buildNextRealWorldChainSession(chainId:string):Promise<StudyStep[]>{
   const chain=realWorldChain(chainId);
-  const events=await listStudyEvents(ACCOUNT_ID);
+  const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
   const progress=buildChainProgress(chain,events);
   const stage=progress.nextStage??progress.stages.sort((a,b)=>a.correctAttempts-b.correctAttempts||a.attempts-b.attempts)[0]!;
   const unseen=stage.attempts===0;
@@ -165,7 +165,7 @@ export async function buildNextRealWorldChainSession(chainId:string):Promise<Stu
 }
 
 export async function buildP9QualificationSession(limit=10):Promise<StudyStep[]>{
-  const events=await listStudyEvents(ACCOUNT_ID);
+  const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
   const progress=buildRealWorldPerformanceSummary(realWorldChains,events);
   const candidates=progress.chains.flatMap((chain)=>chain.stages.map((stage)=>({chain:chain.chain,stage})))
     .sort((a,b)=>Number(a.stage.attempts>0)-Number(b.stage.attempts>0)||a.stage.attempts-b.stage.attempts||a.chain.id.localeCompare(b.chain.id)||a.stage.id.localeCompare(b.stage.id))

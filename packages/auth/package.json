@@ -1,5 +1,16 @@
 {
-  "name": "@thiepn/auth", "private": true, "version": "0.0.0", "type": "module",
-  "exports": { ".": "./src/index.ts" },
-  "scripts": { "build": "tsc --noEmit", "typecheck": "tsc --noEmit" }
+  "name": "@thiepn/auth",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.117.2"
+  }
 }
