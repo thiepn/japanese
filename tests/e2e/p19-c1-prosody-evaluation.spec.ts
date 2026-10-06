@@ -1,7 +1,7 @@
 import { expect,test } from "@playwright/test";
 
 test("P19 exposes bounded real-audio evidence, overlap listening and external review",async({page})=>{
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
   const lab=page.locator(".p19-evidence");
   await expect(lab.getByText("P19 PROSODY · OVERLAP · EXTERNAL REVIEW",{exact:true})).toBeVisible();
@@ -25,7 +25,7 @@ test("P19 exposes bounded real-audio evidence, overlap listening and external re
 });
 
 test("P19 local-audio capture remains visibly local-only before microphone permission",async({page})=>{
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
   const lab=page.locator(".p19-evidence");
   await expect(lab.getByRole("button",{name:"Record real audio"})).toBeVisible();
