@@ -455,6 +455,25 @@ P21 freezes capability growth at the P20 learner/product architecture and focuse
 
 P21 does not waive P11, infer physical-device results, or reinterpret product qualification as CEFR certification. See `docs/P21_ACCEPTANCE.md` and `docs/P21_DEVICE_ACCEPTANCE.md`.
 
+## P22 — Stable Release Activation, Production Monitoring & Maintenance
+
+**Implementation complete; activation remains correctly blocked by outstanding real-world evidence.**
+
+P22 is the operational layer after the P20 capability freeze and P21 hardening baseline:
+
+- an explicit production manifest distinguishes inactive, candidate, active and maintenance state;
+- stable builds receive exact deploy-time release metadata rather than relying on branch names or mutable environment assumptions;
+- the manual stable activation workflow reruns the full automated suite and then requires strict P11 and strict P21 qualification for the exact release commit;
+- stable tags are immutable and cannot be silently overwritten;
+- successful activation produces a packaged static artifact plus the P11/P21 qualification evidence used to authorize it;
+- Progress exposes runtime deployment identity without treating that metadata as release approval;
+- production monitoring checks required public paths, homepage latency and exact deployed release identity;
+- monitoring is scheduled every six hours and remains truthfully skipped while production is inactive;
+- normal CI emits a P22 release-state report instead of collapsing source, deployment and monitoring into a single green/red status;
+- a defect-only maintenance ledger enforces the P20 capability freeze and requires explicit risk, regression scope and device-retest decisions for post-release changes.
+
+The current production manifest remains `inactive`. P22 does not bypass the still-missing real P21 physical-device acceptance or P11 external productive-language evidence. See `docs/P22_ACCEPTANCE.md` and `docs/P22_MAINTENANCE.md`.
+
 ## Later
 
-Do not add another language-capability phase by default. First complete the outstanding real physical-device acceptance and independent P11 external validation. Once both release gates are open, the next phase is **P22 — Stable Release Activation, Production Monitoring & Maintenance**: deploy the certified release candidate, observe production defects/performance, preserve privacy/evidence boundaries, and make maintenance changes only when real usage justifies them.
+There is no planned P23 learner-capability phase. After stable activation, development stays in the P22 production/maintenance loop: observe real defects and incidents, fix only justified problems, preserve privacy and evidence boundaries, and require explicit architectural review before reopening capability growth.
