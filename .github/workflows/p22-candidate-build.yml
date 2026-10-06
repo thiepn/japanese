@@ -33,7 +33,15 @@ jobs:
         run: pnpm release:p22:meta --commit "$CANDIDATE_COMMIT" --channel candidate
 
       - name: Build candidate artifact
+        env:
+          VITE_PUBLIC_BASE: /japanese/
         run: pnpm build
+
+      - name: Add deterministic callback route
+        run: |
+          cp apps/web/dist/index.html apps/web/dist/404.html
+          mkdir -p apps/web/dist/auth/callback
+          cp apps/web/dist/index.html apps/web/dist/auth/callback/index.html
 
       - name: Upload deployable candidate
         uses: actions/upload-artifact@v4
