@@ -2,7 +2,7 @@ import { expect,test } from "@playwright/test";
 
 test("mobile shell keeps navigation and study controls thumb-safe without horizontal overflow",async({page},testInfo)=>{
   test.skip(testInfo.project.name==="desktop-chromium","mobile certification only");
-  await page.goto("/");
+  await page.goto("./");
   const viewport=page.viewportSize();
   expect(viewport).not.toBeNull();
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
