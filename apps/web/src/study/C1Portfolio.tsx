@@ -116,6 +116,7 @@ export function C1Portfolio(){
       <div className="portfolio-stats">
         <PortfolioStat value={interaction.turns.length} label="Pressure turns"/>
         <PortfolioStat value={interaction.pressureTypes} label="Pressure types"/>
+        <PortfolioStat value={interaction.aiPressureTurns} label="AI pressure turns"/>
         <PortfolioStat value={interaction.completeSessions} label="Complete sessions"/>
         <PortfolioStat value={interaction.robustSessions} label="Robust sessions"/>
         <PortfolioStat value={interaction.humanInteractions.length} label="Human interactions"/>
