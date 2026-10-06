@@ -1,7 +1,7 @@
 import { expect,test } from "@playwright/test";
 
 test("P16 exposes research-quality tooling without creating a new mastery layer",async({page})=>{
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
 
   const lab=page.locator(".p16-quality");
