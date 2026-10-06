@@ -405,6 +405,10 @@ export async function buildC2OrientedReviewPacket(now=new Date()):Promise<C2Orie
 
 export async function getC1ProsodyEvaluationProgress():Promise<C1ProsodyEvaluationProgress>{
   const [events,localCaptures]=await Promise.all([listStudyEvents(DEVELOPMENT_ACCOUNT_ID),listPrivateProsodyCaptures(DEVELOPMENT_ACCOUNT_ID)]);
+  return buildC1ProsodyEvaluationProgress(events,localCaptures.length);
+}
+
+export function buildC1ProsodyEvaluationProgress(events:readonly StudyEvent[],localCaptureCount=0):C1ProsodyEvaluationProgress{
   const prosodyCaptures=recordsFromEvents<C1ProsodyCaptureEvidence>(events,"p19ProsodyCapture","prosodyCapture","id");
   const overlapAttempts=recordsFromEvents<C1OverlapListeningAttempt>(events,"p19OverlapListening","overlapAttempt","id");
   const externalReviews=recordsFromEvents<C2ExternalHumanReview>(events,"p19ExternalC2Review","externalC2Review","id");
@@ -416,7 +420,7 @@ export async function getC1ProsodyEvaluationProgress():Promise<C1ProsodyEvaluati
     overlapTasks:new Set(overlapAttempts.map((item)=>item.taskId)).size,
     reviewedSessions:externalReviews.length,
     broadlyCoveredReviews:externalReviews.filter((item)=>item.broadCoverage).length,
-    localCaptureCount:localCaptures.length
+    localCaptureCount
   };
 }
 
