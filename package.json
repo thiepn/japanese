@@ -21,7 +21,9 @@
     "qualify:p11:strict": "node scripts/p11-release-candidate.mjs --strict",
     "review:p11:intake": "node scripts/p11-external-review-intake.mjs",
     "native:p11:audit": "node scripts/p11-native-source-audit.mjs",
-    "native:p11:apply": "node scripts/p11-native-source-audit.mjs --apply"
+    "native:p11:apply": "node scripts/p11-native-source-audit.mjs --apply",
+    "certify:p21": "node scripts/p21-release-certify.mjs",
+    "certify:p21:strict": "node scripts/p21-release-certify.mjs --strict"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
