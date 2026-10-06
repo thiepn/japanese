@@ -75,7 +75,7 @@ jobs:
       - name: Validate P22 defect-only maintenance ledger
         run: pnpm validate:p22:maintenance
       - name: Generate P22 release status
-        run: pnpm status:p22 -- --p21 artifacts/p21-release-candidate.json --production release/p22-production.json
+        run: pnpm status:p22 --p21 artifacts/p21-release-candidate.json --production release/p22-production.json
       - name: Upload release qualification evidence
         uses: actions/upload-artifact@v4
         with:
