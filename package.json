@@ -27,7 +27,8 @@
     "release:p22:meta": "node scripts/p22-write-release-meta.mjs",
     "monitor:p22": "node scripts/p22-production-monitor.mjs",
     "monitor:p22:strict": "node scripts/p22-production-monitor.mjs --strict",
-    "status:p22": "node scripts/p22-release-status.mjs"
+    "status:p22": "node scripts/p22-release-status.mjs",
+    "validate:p22:maintenance": "node scripts/p22-maintenance-validate.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
