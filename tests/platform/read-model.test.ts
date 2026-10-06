@@ -111,7 +111,7 @@ describe("P8 Japanese language read model",()=>{
       }
     });
 
-    expect(JAPANESE_READ_MODEL_PRODUCER_REVISION).toBe("japanese-p8-read-model-v2");
+    expect(JAPANESE_READ_MODEL_PRODUCER_REVISION).toBe("japanese-p8-read-model-v3");
     expect(model.producerRevision).toBe(JAPANESE_READ_MODEL_PRODUCER_REVISION);
     expect(model.workload.dueItems).toBe(12);
     expect(model.workload.totalItems).toBe(22);
