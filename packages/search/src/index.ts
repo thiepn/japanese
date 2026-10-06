@@ -26,10 +26,10 @@ export function createSearchIndex(documents:readonly SearchDocument[]):SearchInd
   const indexed:PreparedSearchDocument[]=documents.map((document)=>({
     document,
     candidates:[
-      {kind:"title",normalized:normalizeJapaneseSearch(document.title)},
-      ...(document.reading?[{kind:"reading" as const,normalized:normalizeJapaneseSearch(document.reading)}]:[]),
-      ...((document.glosses??[]).map((value)=>({kind:"gloss" as const,normalized:normalizeJapaneseSearch(value)}))),
-      ...((document.aliases??[]).map((value)=>({kind:"alias" as const,normalized:normalizeJapaneseSearch(value)})))
+      prepareCandidate("title",document.title),
+      ...(document.reading?[prepareCandidate("reading",document.reading)]:[]),
+      ...((document.glosses??[]).map((value)=>prepareCandidate("gloss",value))),
+      ...((document.aliases??[]).map((value)=>prepareCandidate("alias",value)))
     ].filter((candidate)=>candidate.normalized.length>0)
   }));
 
@@ -57,6 +57,10 @@ export function createSearchIndex(documents:readonly SearchDocument[]):SearchInd
 
 export function searchDocuments(query: string, documents: SearchDocument[]): SearchResult[] {
   return createSearchIndex(documents).search(query);
+}
+
+function prepareCandidate(kind:CandidateKind,value:string):PreparedCandidate{
+  return {kind,normalized:normalizeJapaneseSearch(value)};
 }
 
 function katakanaToHiragana(value:string):string {
