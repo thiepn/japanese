@@ -2,7 +2,7 @@ import type { StudyEvent } from "@thiepn/domain";
 import type { MemoryTrace } from "@thiepn/scheduler";
 import { studyEventToMutation, type CoreSyncMutation, type StudyEventEnvelope } from "@thiepn/sync-protocol";
 
-const DB_VERSION = 7;
+const DB_VERSION = 8;
 const STUDY_EVENTS = "study_events";
 const MEMORY_TRACES = "memory_traces";
 const OUTBOX = "sync_outbox";
@@ -11,6 +11,7 @@ const PRIVATE_DOCUMENTS = "private_documents";
 const PRIVATE_VOCABULARY = "private_vocabulary";
 const PRIVATE_SENTENCES = "private_sentences";
 const PRIVATE_MEDIA_REVIEWS = "private_media_reviews";
+const PRIVATE_PROSODY_CAPTURES = "private_prosody_captures";
 
 export interface SyncMetaRecord { key: string; value: string; }
 
@@ -52,6 +53,23 @@ export interface PrivateMediaReviewChecklist {
   registerReviewed:boolean;
   speechRateReviewed:boolean;
 }
+export interface PrivateProsodyCaptureRecord {
+  id:string;
+  accountId:string;
+  createdAt:string;
+  updatedAt:string;
+  mimeType:string;
+  audioBlob:Blob;
+  sizeBytes:number;
+  durationMs:number;
+  activeSpeechRatio:number;
+  pauseRatio:number;
+  longPauseCount:number;
+  phraseCount:number;
+  dynamicRangeDb:number;
+  targetLabel?:string;
+}
+
 export interface PrivateMediaReviewRecord {
   id:string;
   accountId:string;
@@ -84,6 +102,7 @@ export async function openLocalDb(accountId: string): Promise<IDBDatabase> {
       if (!db.objectStoreNames.contains(PRIVATE_VOCABULARY)) db.createObjectStore(PRIVATE_VOCABULARY, { keyPath: "id" });
       if (!db.objectStoreNames.contains(PRIVATE_SENTENCES)) db.createObjectStore(PRIVATE_SENTENCES, { keyPath: "id" });
       if (!db.objectStoreNames.contains(PRIVATE_MEDIA_REVIEWS)) db.createObjectStore(PRIVATE_MEDIA_REVIEWS, { keyPath: "id" });
+      if (!db.objectStoreNames.contains(PRIVATE_PROSODY_CAPTURES)) db.createObjectStore(PRIVATE_PROSODY_CAPTURES, { keyPath: "id" });
     };
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
@@ -205,6 +224,21 @@ export async function deletePrivateMediaReview(accountId:string,id:string):Promi
   db.close();
 }
 
+export async function savePrivateProsodyCapture(accountId:string,record:PrivateProsodyCaptureRecord):Promise<void>{
+  if(record.accountId!==accountId)throw new Error("PRIVATE_PROSODY_CAPTURE_ACCOUNT_MISMATCH");
+  if(record.audioBlob.size!==record.sizeBytes)throw new Error("PRIVATE_PROSODY_CAPTURE_SIZE_MISMATCH");
+  if(record.sizeBytes<=0||record.sizeBytes>20_000_000)throw new Error("PRIVATE_PROSODY_CAPTURE_SIZE_INVALID");
+  const db=await openLocalDb(accountId);await putOne(db,PRIVATE_PROSODY_CAPTURES,record);db.close();
+}
+export async function listPrivateProsodyCaptures(accountId:string):Promise<PrivateProsodyCaptureRecord[]>{
+  return getAllFromStore<PrivateProsodyCaptureRecord>(accountId,PRIVATE_PROSODY_CAPTURES);
+}
+export async function deletePrivateProsodyCapture(accountId:string,id:string):Promise<void>{
+  const db=await openLocalDb(accountId);
+  await new Promise<void>((resolve,reject)=>{const tx=db.transaction(PRIVATE_PROSODY_CAPTURES,"readwrite");tx.objectStore(PRIVATE_PROSODY_CAPTURES).delete(id);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});
+  db.close();
+}
+
 
 export type GuestWorkspaceClaimResult =
   | "same-account"
@@ -228,6 +262,7 @@ export async function claimGuestWorkspace(
     PRIVATE_VOCABULARY,
     PRIVATE_SENTENCES,
     PRIVATE_MEDIA_REVIEWS,
+    PRIVATE_PROSODY_CAPTURES,
   ] as const;
 
   const target = await openLocalDb(targetAccountId);
@@ -296,6 +331,11 @@ export async function claimGuestWorkspace(
         transaction
           .objectStore(PRIVATE_MEDIA_REVIEWS)
           .put({ ...review, accountId: targetAccountId });
+      }
+      for (const capture of snapshot[PRIVATE_PROSODY_CAPTURES] as PrivateProsodyCaptureRecord[]) {
+        transaction
+          .objectStore(PRIVATE_PROSODY_CAPTURES)
+          .put({ ...capture, accountId: targetAccountId });
       }
       transaction.oncomplete = () => resolve();
       transaction.onerror = () => reject(transaction.error);
