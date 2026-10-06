@@ -20,7 +20,7 @@ The auth adapter:
 - verifies current identity with `auth.getUser()`;
 - uses `auth.getSession()` only to transport the bearer token to Core;
 - keeps the PKCE verifier and resulting browser session in Japanese while handing the authorization request to the Account-owned tokenless entry page;
-- uses the exact production callback `https://thiepn.dev/japanese/auth/callback/`, persisted browser sessions, refresh tokens and a Japanese browser storage key;
+- uses the exact production callback `https://thiepn.dev/japanese/auth/callback/` with no custom callback query parameters, persisted browser sessions, refresh tokens and a Japanese browser storage key;
 - never treats the session payload itself as authorization;
 - leaves final token verification and owner derivation to Core;
 - never sends access tokens, refresh tokens or PKCE verifiers through `account.thiepn.dev`.
@@ -40,4 +40,9 @@ If the authenticated Account ID and active local workspace ID differ, P9 dashboa
 
 ## Deployment dependency
 
-Production Google sign-in requires `https://thiepn.dev/japanese/auth/callback/` to be accepted by the canonical Account Auth redirect configuration. The Account entry validates that exact callback before forwarding to the canonical provider. Hosted redirect configuration is an activation prerequisite, not a reason to create a separate Japanese auth system.
+Production Google sign-in requires the exact `https://thiepn.dev/japanese/auth/callback/` URL to be accepted by the canonical Account Auth redirect configuration. The Account entry validates that exact callback before forwarding to the canonical provider. Hosted redirect configuration is an activation prerequisite, not a reason to create a separate Japanese auth system.
+
+
+## P12 production hardening
+
+The P12 burn-in audit removed the redundant callback `flow` query parameter and now relies on the standard browser-held PKCE verifier plus a fresh tab-local pending-login marker. Japanese dashboard publication also targets the deployed Core Worker at `https://thiepn-core-gateway.thiepn.workers.dev` rather than the undeployed `api.thiepn.dev` hostname.
