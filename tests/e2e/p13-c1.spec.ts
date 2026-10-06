@@ -3,9 +3,9 @@ import { expect,test } from "@playwright/test";
 test("P13 exposes C1 native depth, multi-source synthesis and hidden-future spontaneous interaction",async({page})=>{
   await page.goto("/");
 
-  await page.getByRole("button",{name:"Learn"}).click();
-  await expect(page.getByText("P13 SPONTANEOUS INTERACTION",{exact:true})).toBeVisible();
-  await expect(page.getByRole("heading",{name:"Guided B2 → hidden-future C1 pressure"})).toBeVisible();
+  await page.getByRole("button",{name:"Learn"}).evaluate((button)=>(button as HTMLButtonElement).click());
+  await expect(page.getByText("P18 ADVANCED LIVE INTERACTION",{exact:true})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Hidden pressure, repair and reformulation"})).toBeVisible();
   await expect(page.getByRole("button",{name:"C1 spontaneous"})).toHaveClass(/active/);
   await expect(page.getByText(/future pressure hidden/)).toBeVisible();
   await expect(page.getByLabel("Scenario chain")).toHaveValue("c1-policy-briefing");
