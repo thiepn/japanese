@@ -97,46 +97,70 @@ export function App(){
   const [account,setAccount]=useState<AuthContext>(ANONYMOUS_AUTH);
   const [accountConnected,setAccountConnected]=useState(false);
   const [accountBusy,setAccountBusy]=useState(false);
+  const [accountMessage,setAccountMessage]=useState<string|null>(null);
 
   useEffect(()=>{
     let active=true;
     let generation=0;
+    const useGuestWorkspace=()=>{
+      setDevelopmentAccountId(GUEST_ACCOUNT_ID);
+      setAuthenticAccountId(AUTHENTIC_GUEST_ACCOUNT_ID);
+      setAccountConnected(false);
+    };
     const apply=async(next:AuthContext)=>{
       const epoch=++generation;
       const authenticatedId=next.status==="authenticated"&&next.accountId
         ?next.accountId
         :null;
-      const connected=authenticatedId
-        ?await JAPANESE_ACCOUNT.completePendingConnection()
-        :false;
-      const accountId=authenticatedId&&connected
-        ?authenticatedId
-        :GUEST_ACCOUNT_ID;
-      if(authenticatedId&&connected){
-        await claimGuestWorkspace(GUEST_ACCOUNT_ID,authenticatedId);
+      if(!authenticatedId){
+        if(!active||epoch!==generation)return;
+        useGuestWorkspace();
+        setAccount(next);
+        setAccountMessage(null);
+        return;
       }
+
+      let connected=false;
+      try{
+        connected=await JAPANESE_ACCOUNT.completePendingConnection();
+      }catch{
+        if(!active||epoch!==generation)return;
+        useGuestWorkspace();
+        setAccount(next);
+        setAccountMessage("Signed in to THIEPN Account, but the Japanese connection is temporarily unavailable. Local study remains available.");
+        return;
+      }
+
+      if(connected){
+        try{
+          await claimGuestWorkspace(GUEST_ACCOUNT_ID,authenticatedId);
+        }catch{
+          if(!active||epoch!==generation)return;
+          useGuestWorkspace();
+          setAccount(next);
+          setAccountMessage("THIEPN Account is signed in, but this device workspace could not be attached safely. No local data was overwritten.");
+          return;
+        }
+      }
+
       if(!active||epoch!==generation)return;
+      const accountId=connected?authenticatedId:GUEST_ACCOUNT_ID;
       setDevelopmentAccountId(accountId);
       setAuthenticAccountId(accountId);
       setAccountConnected(connected);
       setAccount(next);
+      setAccountMessage(connected?null:"Signed in to THIEPN Account. Connect Japanese to attach this device.");
+    };
+    const authUnavailable=()=>{
+      if(!active)return;
+      useGuestWorkspace();
+      setAccount(ANONYMOUS_AUTH);
+      setAccountMessage("THIEPN Account could not be verified. Japanese is staying local on this device.");
     };
     const unsubscribe=JAPANESE_ACCOUNT.subscribe((next)=>{
-      void apply(next).catch(()=>{
-        if(!active)return;
-        setDevelopmentAccountId(GUEST_ACCOUNT_ID);
-        setAuthenticAccountId(AUTHENTIC_GUEST_ACCOUNT_ID);
-        setAccountConnected(false);
-        setAccount(ANONYMOUS_AUTH);
-      });
+      void apply(next).catch(authUnavailable);
     });
-    void JAPANESE_ACCOUNT.refresh().catch(()=>{
-      if(!active)return;
-      setDevelopmentAccountId(GUEST_ACCOUNT_ID);
-      setAuthenticAccountId(AUTHENTIC_GUEST_ACCOUNT_ID);
-      setAccountConnected(false);
-      setAccount(ANONYMOUS_AUTH);
-    });
+    void JAPANESE_ACCOUNT.refresh().catch(authUnavailable);
     return()=>{active=false;generation+=1;unsubscribe();};
   },[]);
   useEffect(()=>{void refreshDashboard();},[]);
@@ -166,6 +190,7 @@ export function App(){
   async function toggleAccount(){
     if(accountBusy)return;
     setAccountBusy(true);
+    setAccountMessage(null);
     try{
       if(account.status!=="authenticated"){
         await JAPANESE_ACCOUNT.signIn();
@@ -179,8 +204,11 @@ export function App(){
           setDevelopmentAccountId(accountId);
           setAuthenticAccountId(accountId);
           setAccountConnected(true);
+          setAccountMessage(null);
           await refreshDashboard();
-          await JAPANESE_LANGUAGE_DASHBOARD.publish();
+          void JAPANESE_LANGUAGE_DASHBOARD.publish().catch(()=>{
+            setAccountMessage("Japanese is connected to THIEPN Account, but the shared language dashboard could not be refreshed yet.");
+          });
         }
         return;
       }
@@ -188,6 +216,10 @@ export function App(){
       setDevelopmentAccountId(GUEST_ACCOUNT_ID);
       setAuthenticAccountId(AUTHENTIC_GUEST_ACCOUNT_ID);
       setAccountConnected(false);
+      setAccount(ANONYMOUS_AUTH);
+      setAccountMessage(null);
+    }catch{
+      setAccountMessage("THIEPN Account is temporarily unavailable. Your local Japanese data has not been changed.");
     }finally{
       setAccountBusy(false);
     }
@@ -280,6 +312,7 @@ export function App(){
     <a className="skip-link" href="#main-content">Skip to main content</a>
     {session?<main className="study-shell" id="main-content" tabIndex={-1}><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></main>:<div className="app-shell">
       <header className="topbar"><div><strong>Japanese</strong><span className="phase">P22 stable release activation · production monitoring · maintenance</span></div><button className="quiet-button account-button" disabled={accountBusy} onClick={()=>void toggleAccount()} type="button">{accountBusy?"Account…":account.status!=="authenticated"?"Sign in with THIEPN Account":accountConnected?"Sign out":"Connect THIEPN Account"}</button></header>
+      {accountMessage?<p className="account-status" role="status">{accountMessage}</p>:null}
       <main className="content" id="main-content" tabIndex={-1}>
         {surface==="Today"&&<Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
         {surface==="Learn"&&<Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} onPreferredCoachChainApplied={()=>setPreferredCoachChain(null)} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>} 
