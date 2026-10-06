@@ -151,6 +151,7 @@ export interface C1AdvancedInteractionProgress{
   completeSessions:number;
   robustSessions:number;
   pressureTypes:number;
+  aiPressureTurns:number;
   humanInteractions:C1HumanInteractionRecord[];
   humanInteractionMinutes:number;
   transfers:C1CrossDomainTransfer[];
@@ -268,6 +269,7 @@ export function buildC1AdvancedInteractionProgress(events:readonly StudyEvent[])
     completeSessions:sessions.filter((item)=>item.complete).length,
     robustSessions:sessions.filter((item)=>item.robustPressureCoverage).length,
     pressureTypes:new Set(turns.map((item)=>item.pressureType)).size,
+    aiPressureTurns:events.filter((item)=>item.metadata?.p18AdvancedCoach===true).length,
     humanInteractions,
     humanInteractionMinutes:humanInteractions.reduce((sum,item)=>sum+item.durationMinutes,0),
     transfers
