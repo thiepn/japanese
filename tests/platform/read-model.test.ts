@@ -1,6 +1,7 @@
 import { describe,expect,it } from "vitest";
 import {
   createJapaneseLanguageReadModel,
+  JAPANESE_APP_ROUTE,
   JAPANESE_READ_MODEL_PRODUCER_REVISION
 } from "../../apps/web/src/languageReadModel";
 import type {
@@ -121,6 +122,7 @@ describe("P8 Japanese language read model",()=>{
     expect(model.proficiency.frontierBand).toBe("B1");
     expect(model.nextAction.kind).toBe("review");
     expect(model.nextAction.priority).toBeGreaterThan(90);
+    expect(model.nextAction.route).toBe(JAPANESE_APP_ROUTE);
     expect(JSON.stringify(model)).not.toContain("memoryTraces");
     expect(JSON.stringify(model)).not.toContain("studyEvents");
   });
