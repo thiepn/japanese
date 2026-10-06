@@ -268,3 +268,25 @@ The P21 release decision keeps three concerns separate:
 A stable release may be marked ready only when all three are satisfied. Normal CI is allowed to produce a HOLD report when manual/external evidence is absent; strict release activation must fail closed.
 
 P20 advanced-pathway qualification remains a learner-facing internal product state and is not an accredited CEFR result. P21 product release qualification likewise must never be presented as learner certification.
+
+
+## P22 stable-release and maintenance rule
+
+P22 is an operations layer over the capability-frozen P20 product and P21 hardening baseline. It does not create a new learner capability authority.
+
+Release state is split into distinct evidence classes:
+
+1. repository/automated correctness;
+2. strict P11 external productive-language evidence;
+3. strict P21 technical + physical-device evidence;
+4. immutable source-package activation;
+5. real production deployment identity;
+6. synthetic production availability/identity monitoring.
+
+No later class may be inferred from an earlier one.
+
+A stable package must embed the exact release commit in `/release-meta.json`. Production may be declared active only through the checked-in P22 production record with a real HTTPS URL, immutable commit, release tag and activation timestamp. Synthetic monitoring must verify that deployed identity rather than assuming the latest branch is live.
+
+Post-activation work is defect-only maintenance against the P20 capability freeze. Security, privacy, accessibility, dependency, content-correction, reliability and operations changes are allowed when explicitly scoped. New proficiency layers, primary surfaces, mastery authorities and schedulers require a separate architecture decision and are not maintenance.
+
+Production monitoring must not inspect learner content, expose private audio, or turn operational telemetry into learner evidence.
