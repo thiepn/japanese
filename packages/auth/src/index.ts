@@ -10,7 +10,7 @@ export const THIEPN_ACCOUNT_PUBLISHABLE_KEY =
 
 export const THIEPN_ACCOUNT_URL = "https://account.thiepn.dev/";
 export const JAPANESE_ACCOUNT_ENTRY_URL =
-  "https://account.thiepn.dev/japanese/entry";
+  "https://account.thiepn.dev/japanese/entry/";
 export const JAPANESE_PUBLIC_ORIGIN = "https://thiepn.dev";
 export const JAPANESE_HOME_PATH = "/japanese/";
 export const JAPANESE_CALLBACK_PATH = "/japanese/auth/callback/";
