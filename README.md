@@ -28,6 +28,8 @@ P22 keeps the P20 learner-capability architecture frozen and adds the operationa
 
 The operational boundary remains strict: green CI does not mean production is active, a GitHub release does not prove deployment, synthetic monitoring is not physical-device evidence, and P22 cannot waive unresolved P11/P21 gates.
 
+Japanese uses the **canonical THIEPN Account identity system**. Sign-in enters through `account.thiepn.dev/japanese/entry`, resolves to the same Account UUID used by the rest of THIEPN, and does not create a Japanese-owned identity database. Full Japanese workspace sync/cloud saves are not yet production-enabled; current Account integration is identity, connection state, and privacy-minimal language-dashboard publication. Local study data remains on the device until a real cross-device transport is certified.
+
 A public **candidate** is now continuously deployed from `main` at `https://thiepn.dev/japanese/`. Each candidate build embeds its exact Git commit in `/release-meta.json`, and the scheduled P22 monitor validates that candidate identity without promoting it to stable production. The real P21 physical-device pass and independent P11 external productive-language validation are still missing, so stable activation remains blocked until those real-world gates are genuinely satisfied.
 
 See `docs/P22_ACCEPTANCE.md`, `docs/P22_MAINTENANCE.md`, `docs/P21_ACCEPTANCE.md`, `docs/P21_DEVICE_ACCEPTANCE.md` and `docs/ROADMAP.md`.
