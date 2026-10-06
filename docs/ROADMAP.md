@@ -398,6 +398,25 @@ P17 is a C1→C2 **bridge**, not a C2 certificate. Structural precision, delayed
 
 P18 deliberately refuses several tempting shortcuts: simulated native-style pressure is not native-speaker evidence, AI dialogue is not human evidence, learner-reported partner profile is not independently verified, response timing is not fluency scoring, speech recognition is not acoustic analysis, and pressure coverage is not accredited C2 certification. P11 remains independent. See `docs/P18_ACCEPTANCE.md`.
 
+## P19 — Prosodic Control, Listening Under Overlap & External C2-Oriented Human Evaluation
+
+**Implementation complete.** P19 adds real local audio evidence and external qualitative review without overclaiming what the browser can infer:
+
+- microphone recordings are stored in a private local IndexedDB audio-capture store and are not written into the normal account-sync outbox;
+- actual recorded samples are analyzed for timing/amplitude properties only: duration, speech activity, pause ratio, long pauses, timing phrases and amplitude dynamic range;
+- four advanced speaking targets train formal chunking, contrastive repair, compressed time-pressure answers and polite floor recovery;
+- raw recordings remain local to the device while bounded metrics and learner reflection can enter the shared StudyEvent evidence stream;
+- four demanding overlap tasks combine repository-verified P13 native recordings with controlled primary speed, masker volume and entry delay;
+- overlap attempts require reconstruction, uncertainty and recovery strategy rather than automatically grading comprehension;
+- the product explicitly labels those mixes as artificial overlap rather than naturally occurring multi-speaker recordings;
+- the external C2-oriented reviewer packet uses seven dimensions and allows **not observed** rather than forcing unsupported ratings;
+- broad review coverage requires 6+ scored dimensions and direct observation across long-form production, live interaction, actual audio/prosody and listening under pressure;
+- reviewer identity and professional claims are learner-entered rather than independently verified;
+- external human review remains qualitative evidence and does not rewrite FSRS or durable mastery;
+- the portable C1→C2 portfolio advances to schema v6 and includes P19 timing evidence, overlap attempts and external review while excluding raw local audio.
+
+P19 does not claim pitch-accent scoring, general intonation correctness, pronunciation mastery, natural-conversation overlap, verified reviewer identity or accredited CEFR C2 certification. P11 remains independent. See `docs/P19_ACCEPTANCE.md`.
+
 ## Later
 
-The next phase should deepen evidence quality rather than add another interaction breadth layer: prosodic control only where real audio analysis exists, listening under overlap and fast/degraded input, turn-entry and repair under genuine audio pressure, and an external C2-oriented human evaluation protocol that remains separate from automatic mastery.
+The next phase should consolidate rather than add another major capability family: repeat advanced evidence across time, compare independent external reviewers where available, identify persistent weak dimensions across writing/listening/live interaction/audio, and create a transparent C2-readiness matrix for the product while preserving the boundary between product evidence and accredited language certification.
