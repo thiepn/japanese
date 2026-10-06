@@ -1,0 +1,11 @@
+{
+  "schema": "thiepn-japanese-p22-maintenance",
+  "schemaVersion": 1,
+  "policy": "defect-only",
+  "capabilityFreeze": "P20",
+  "entries": [],
+  "notes": [
+    "After stable activation, maintenance changes must be classified and must not introduce a new proficiency layer, primary surface, mastery authority or scheduler.",
+    "Security, privacy, accessibility, dependency, content-correction, reliability and concrete defect fixes are allowed when their regression scope is explicit."
+  ]
+}
