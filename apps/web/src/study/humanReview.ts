@@ -1,9 +1,10 @@
 import type { StudyEvent } from "@thiepn/domain";
 import { listStudyEvents,saveStudyEvent } from "@thiepn/local-db";
 import { productiveTasks } from "../coreContent";
+import { getJapaneseDeviceId } from "../deviceIdentity";
 import { DEVELOPMENT_ACCOUNT_ID } from "./runtime";
 
-const DEVICE_ID="p10-human-review";
+const DEVICE_ID=getJapaneseDeviceId();
 export const P11_EXTERNAL_REVIEW_ARTIFACT_MIN=6;
 
 export type HumanReviewScore=0|1|2|3|4;
