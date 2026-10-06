@@ -618,7 +618,7 @@ button{touch-action:manipulation}
 /* P21 release hardening */
 .skip-link{position:fixed;left:12px;top:8px;z-index:5000;padding:10px 12px;border-radius:10px;background:#fff;color:#1f2937;border:1px solid #bdb7ac;box-shadow:0 8px 24px rgba(31,41,55,.12);transform:translateY(-160%);transition:transform .12s ease}
 .skip-link:focus{transform:translateY(0)}
-:where(button,a,input,textarea,select,summary):focus-visible{outline:3px solid currentColor;outline-offset:3px}
+:where(button,a,input,textarea,select,summary):focus-visible{outline:3px solid #1f2937;outline-offset:3px}
 :where(code,a,.source-note,.course-note,.p20-boundary){overflow-wrap:anywhere}
 @media(max-width:760px){input,textarea,select{font-size:16px}}
 @media(prefers-reduced-motion:reduce){.skip-link{transition:none}}
