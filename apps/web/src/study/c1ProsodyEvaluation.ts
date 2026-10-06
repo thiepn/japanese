@@ -184,6 +184,15 @@ export interface C2OrientedReviewPacket {
     prosodyCaptures:number;
     overlapAttempts:number;
   };
+  evidence:{
+    precision:Array<{id:string;mode:string;originalText:string;revisedText:string;rationale:string;occurredAt:string}>;
+    specialistDiscourse:Array<{id:string;trackId:string;stageId:string;response:string;inputMode:string;occurredAt:string}>;
+    livePressure:Array<{id:string;pressureType:string;committedStatement:string;pressureResponse:string;inputMode:string;responseSeconds:number;occurredAt:string}>;
+    humanInteraction:Array<{id:string;medium:string;partnerProfile:string;durationMinutes:number;domain:string;interactionSummary:string;difficultMoment:string;repairUsed:string;reflection:string;occurredAt:string}>;
+    prosody:Array<{id:string;localCaptureId:string;targetId:string;transcript:string;selfReflection:string;metrics:C1ProsodyTimingMetrics;occurredAt:string;rawAudioLocalOnly:true}>;
+    overlapListening:Array<{id:string;taskId:string;recall:string;uncertainSegment:string;repairPlan:string;occurredAt:string}>;
+  };
+  reviewerInstructions:string[];
   rubric:Array<{dimension:C2ReviewDimension;prompt:string;scale:"0-5 or not observed"}>;
 }
 
@@ -391,6 +400,35 @@ export async function buildC2OrientedReviewPacket(now=new Date()):Promise<C2Orie
       prosodyCaptures:p19.prosodyCaptures.length,
       overlapAttempts:p19.overlapAttempts.length
     },
+    evidence:{
+      precision:precision.precisionArtifacts.slice(-6).map((item)=>({
+        id:item.id,mode:item.mode,originalText:item.originalText,revisedText:item.revisedText,rationale:item.rationale,occurredAt:item.occurredAt
+      })),
+      specialistDiscourse:precision.specialistTurns.slice(-10).map((item)=>({
+        id:item.id,trackId:item.trackId,stageId:item.stageId,response:item.response,inputMode:item.inputMode,occurredAt:item.occurredAt
+      })),
+      livePressure:interaction.turns.slice(-10).map((item)=>({
+        id:item.id,pressureType:item.pressureType,committedStatement:item.committedStatement,pressureResponse:item.pressureResponse,
+        inputMode:item.inputMode,responseSeconds:item.responseSeconds,occurredAt:item.occurredAt
+      })),
+      humanInteraction:interaction.humanInteractions.slice(-6).map((item)=>({
+        id:item.id,medium:item.medium,partnerProfile:item.partnerProfile,durationMinutes:item.durationMinutes,domain:item.domain,
+        interactionSummary:item.interactionSummary,difficultMoment:item.difficultMoment,repairUsed:item.repairUsed,reflection:item.reflection,occurredAt:item.occurredAt
+      })),
+      prosody:p19.prosodyCaptures.slice(-8).map((item)=>({
+        id:item.id,localCaptureId:item.localCaptureId,targetId:item.targetId,transcript:item.transcript,selfReflection:item.selfReflection,
+        metrics:item.metrics,occurredAt:item.occurredAt,rawAudioLocalOnly:true as const
+      })),
+      overlapListening:p19.overlapAttempts.slice(-8).map((item)=>({
+        id:item.id,taskId:item.taskId,recall:item.recall,uncertainSegment:item.uncertainSegment,repairPlan:item.repairPlan,occurredAt:item.occurredAt
+      }))
+    },
+    reviewerInstructions:[
+      "Score only dimensions you directly observed; use not observed rather than inference.",
+      "Treat raw P19 audio as separate local evidence. The packet carries timing metadata and transcript/reflection, not the recording blob.",
+      "Anchor strengths and priorities in specific learner evidence rather than a global CEFR label.",
+      "Do not interpret this packet as an accredited C2 examination or as permission to update learner mastery."
+    ],
     rubric:[
       {dimension:"lexicalPrecision",prompt:"How precisely does the learner choose and distinguish advanced lexical items without unnecessary vagueness?",scale:"0-5 or not observed"},
       {dimension:"grammaticalControl",prompt:"How consistently does complex grammar remain controlled under sustained production and pressure?",scale:"0-5 or not observed"},
