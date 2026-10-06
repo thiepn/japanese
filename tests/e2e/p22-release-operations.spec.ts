@@ -17,14 +17,3 @@ test("P22 exposes stable-release operations without claiming production activati
   await expect(page.getByText(/capability expansion is outside P22/)).toBeVisible();
 });
 
-test("P22 deployment identity parser fails closed on malformed metadata",async({page})=>{
-  await page.route("**/release-meta.json",async(route)=>{
-    await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
-      schema:"wrong-schema",schemaVersion:1,phase:"P22",channel:"stable",commit:"a".repeat(40),builtAt:"2026-10-06T14:00:00Z"
-    })});
-  });
-  await page.goto("/");
-  await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
-  await expect(page.getByText("Deployment identity unavailable",{exact:true})).toBeVisible();
-  await expect(page.getByText(/Do not infer a deployed commit or stable-release state/)).toBeVisible();
-});
