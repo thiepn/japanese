@@ -3,10 +3,11 @@ import { entityKey, type StudyEvent, type StudyResult } from "@thiepn/domain";
 import { replayStudyEvents } from "@thiepn/learner-engine";
 import { listStudyEvents, saveStudyEvent } from "@thiepn/local-db";
 import { audioAsset, coreContent, grammarConcept, readingText, senseForLexeme, sentenceRecord } from "../coreContent";
+import { getJapaneseDeviceId } from "../deviceIdentity";
 import { conjugateLexeme, type ConjugationForm } from "../study/conjugation";
 import { DEVELOPMENT_ACCOUNT_ID } from "../study/runtime";
 
-const DEVICE_ID="p3-local-browser";
+const DEVICE_ID=getJapaneseDeviceId();
 const FORMS:ConjugationForm[]=["polite_nonpast","polite_negative","polite_past","polite_past_negative","plain_negative","plain_past","te_form"];
 
 export interface ReaderToken {
