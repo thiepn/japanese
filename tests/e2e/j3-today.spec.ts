@@ -13,10 +13,10 @@ test("J3 turns Today into a Japanese daily-study ritual",async({page})=>{
 
   const route=page.locator(".j3-route__item");
   await expect(route).toHaveCount(4);
-  await expect(page.getByText("Review",{exact:true})).toBeVisible();
-  await expect(page.getByText("Learn",{exact:true})).toBeVisible();
-  await expect(page.getByText("Listen",{exact:true})).toBeVisible();
-  await expect(page.getByText("Apply",{exact:true})).toBeVisible();
+  await expect(route.nth(0)).toContainText("Review");
+  await expect(route.nth(1)).toContainText("Learn");
+  await expect(route.nth(2)).toContainText("Listen");
+  await expect(route.nth(3)).toContainText("Apply");
 
   await expect(page.locator(".stat-row.six")).toHaveCount(0);
   await expect(page.locator(".j3-today__continue")).toHaveCount(1);
