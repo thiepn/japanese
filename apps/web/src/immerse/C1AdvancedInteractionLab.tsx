@@ -1,4 +1,4 @@
-import { useEffect,useMemo,useRef,useState } from "react";
+import { useEffect,useRef,useState } from "react";
 import {
   c1InteractionPressureMoves,drawC1InteractionPressure,getC1AdvancedInteractionProgress,
   saveC1AdvancedInteractionTurn,saveC1CrossDomainTransfer,saveC1HumanInteraction,specialistTrackLabel,
@@ -62,8 +62,8 @@ export function C1AdvancedInteractionLab(){
     tick();const timer=window.setInterval(tick,250);return()=>window.clearInterval(timer);
   },[move]);
 
-  const currentTurns=useMemo(()=>progress.turns.filter((item)=>item.sessionId===sessionId.current),[progress]);
-  const currentSession=useMemo(()=>progress.sessions.find((item)=>item.sessionId===sessionId.current)??null,[progress]);
+  const currentTurns=progress.turns.filter((item)=>item.sessionId===sessionId.current);
+  const currentSession=progress.sessions.find((item)=>item.sessionId===sessionId.current)??null;
   const selectedTrack=quality.specialistTracks.find((item)=>item.id===trackId)??null;
   const selectedTransferTrack=quality.specialistTracks.find((item)=>item.id===transferTrackId)??null;
 
