@@ -10,27 +10,28 @@ Primary product surfaces: **Today · Learn · Immerse · Library · Progress**.
 
 ## Current phase
 
-**P21 — Final Product Consolidation, Real-Device Acceptance & Defect-Only Hardening is implemented.**
+**P22 — Stable Release Activation, Production Monitoring & Maintenance is implemented.**
 
-P21 freezes learning-capability growth at the P20 architecture and treats the complete Foundation→C2-oriented path as one release candidate:
+P22 keeps the P20 learner-capability architecture frozen and adds the operational release layer required after P21:
 
-- no new primary surface, mastery model, scheduler or proficiency layer;
-- keyboard skip navigation, semantic active-navigation state, visible focus indicators and mobile form-size hardening;
-- full-product Playwright consolidation across desktop Chromium, Pixel 7 and compact 360×740 touch profiles;
-- explicit horizontal-overflow and navigation-semantic regression coverage across Today, Learn, Immerse, Library and Progress;
-- the existing PWA/offline, native/provenance, private-audio and release-evidence suites remain part of the same CI gate;
-- a new `scripts/p21-release-certify.mjs` combines automated regression evidence, physical-device acceptance and the independent P11 release-evidence decision;
-- a checked-in physical-device manifest remains intentionally `pending` until a real standalone Android PWA pass is recorded;
-- automated mobile emulation cannot satisfy the physical-device gate;
-- open critical/high/medium device defects block technical release readiness;
-- `pnpm certify:p21` produces a truthful HOLD/READY report without failing normal CI when manual evidence is absent;
-- `pnpm certify:p21:strict` is the final stable-release activation gate;
-- P21 preserves the unresolved P11 external-validation boundary rather than silently waiving it.
+- an explicit inactive/candidate/active/maintenance production record instead of inferring deployment from CI;
+- deploy-time `/release-meta.json` containing the exact stable commit and build timestamp;
+- a manual fail-closed stable activation workflow that reruns the complete regression suite and then requires strict P11 + strict P21 qualification for the same commit;
+- immutable semantic release tags and refusal to overwrite an existing stable tag;
+- a packaged static release artifact containing the exact embedded release identity;
+- a Progress deployment-identity panel that shows which build is actually running without treating missing metadata as stable;
+- production smoke checks for the app root, manifest, service worker, release metadata, homepage latency and exact commit equality;
+- a scheduled six-hour production monitor that stays dormant rather than fabricating evidence while production is inactive;
+- a P22 release-state machine separating P21 readiness, source activation, production deployment, runtime health and maintenance state;
+- a defect-only maintenance ledger with an explicit P20 capability freeze and narrowly allowed security/privacy/accessibility/dependency/content/reliability/operations change classes;
+- normal CI validation of the production manifest, maintenance ledger and P22 status artifacts.
 
-The current repository can therefore be **automatically hardened and regression-clean while still correctly reporting that stable release is not yet fully certified**. Stable release requires both a real physical-device acceptance pass and the separate P11 external productive-language validation.
+The operational boundary remains strict: green CI does not mean production is active, a GitHub release does not prove deployment, synthetic monitoring is not physical-device evidence, and P22 cannot waive unresolved P11/P21 gates.
 
-See `docs/P21_ACCEPTANCE.md`, `docs/P21_DEVICE_ACCEPTANCE.md`, `docs/P20_ACCEPTANCE.md` and `docs/ROADMAP.md`.
+The checked-in production state is still intentionally **inactive** because the real P21 physical-device pass and independent P11 external productive-language validation have not yet been admitted. The P22 machinery is ready, but stable activation must remain blocked until those real-world gates are genuinely satisfied.
 
-No further language-learning capability phase should be added by default. Once the real-device and P11 gates are genuinely satisfied, the appropriate next phase is **P22 — Stable Release Activation, Production Monitoring & Maintenance**.
+See `docs/P22_ACCEPTANCE.md`, `docs/P22_MAINTENANCE.md`, `docs/P21_ACCEPTANCE.md`, `docs/P21_DEVICE_ACCEPTANCE.md` and `docs/ROADMAP.md`.
 
-See `docs/P1_ACCEPTANCE.md`, `docs/P2_ACCEPTANCE.md`, `docs/P2_5_ACCEPTANCE.md`, `docs/P3_ACCEPTANCE.md`, `docs/P4_ACCEPTANCE.md`, `docs/P5_ACCEPTANCE.md`, `docs/P6_ACCEPTANCE.md`, `docs/P7_ACCEPTANCE.md`, `docs/P8_ACCEPTANCE.md`, `docs/P9_ACCEPTANCE.md`, `docs/P9_RELEASE_QUALIFICATION.md`, `docs/P10_ACCEPTANCE.md`, `docs/P11_ACCEPTANCE.md`, `docs/P11_1_ACCEPTANCE.md`, `docs/P11_2_ACCEPTANCE.md`, `docs/P11_3_ACCEPTANCE.md`, `docs/P12_ACCEPTANCE.md`, `docs/P13_ACCEPTANCE.md`, `docs/P14_ACCEPTANCE.md`, `docs/P15_ACCEPTANCE.md`, `docs/P16_ACCEPTANCE.md`, `docs/P17_ACCEPTANCE.md`, `docs/P18_ACCEPTANCE.md`, `docs/P19_ACCEPTANCE.md`, `docs/P20_ACCEPTANCE.md`, `docs/P21_ACCEPTANCE.md`, `docs/P21_DEVICE_ACCEPTANCE.md`, `docs/SOURCE_PACK_FORMAT.md`, `docs/P1_5_MOBILE_CERTIFICATION.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md` and `docs/THIRD_PARTY_NOTICES.md`.
+No new language-learning phase should follow P22 by default. After activation, work should stay in the P22 maintenance loop unless real production evidence demonstrates a specific architectural need.
+
+See `docs/P1_ACCEPTANCE.md`, `docs/P2_ACCEPTANCE.md`, `docs/P2_5_ACCEPTANCE.md`, `docs/P3_ACCEPTANCE.md`, `docs/P4_ACCEPTANCE.md`, `docs/P5_ACCEPTANCE.md`, `docs/P6_ACCEPTANCE.md`, `docs/P7_ACCEPTANCE.md`, `docs/P8_ACCEPTANCE.md`, `docs/P9_ACCEPTANCE.md`, `docs/P9_RELEASE_QUALIFICATION.md`, `docs/P10_ACCEPTANCE.md`, `docs/P11_ACCEPTANCE.md`, `docs/P11_1_ACCEPTANCE.md`, `docs/P11_2_ACCEPTANCE.md`, `docs/P11_3_ACCEPTANCE.md`, `docs/P12_ACCEPTANCE.md`, `docs/P13_ACCEPTANCE.md`, `docs/P14_ACCEPTANCE.md`, `docs/P15_ACCEPTANCE.md`, `docs/P16_ACCEPTANCE.md`, `docs/P17_ACCEPTANCE.md`, `docs/P18_ACCEPTANCE.md`, `docs/P19_ACCEPTANCE.md`, `docs/P20_ACCEPTANCE.md`, `docs/P21_ACCEPTANCE.md`, `docs/P21_DEVICE_ACCEPTANCE.md`, `docs/P22_ACCEPTANCE.md`, `docs/P22_MAINTENANCE.md`, `docs/SOURCE_PACK_FORMAT.md`, `docs/P1_5_MOBILE_CERTIFICATION.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md` and `docs/THIRD_PARTY_NOTICES.md`.
