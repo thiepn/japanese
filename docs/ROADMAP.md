@@ -417,6 +417,24 @@ P18 deliberately refuses several tempting shortcuts: simulated native-style pres
 
 P19 does not claim pitch-accent scoring, general intonation correctness, pronunciation mastery, natural-conversation overlap, verified reviewer identity or accredited CEFR C2 certification. P11 remains independent. See `docs/P19_ACCEPTANCE.md`.
 
+## P20 — Longitudinal C2 Readiness Consolidation, External Calibration & Final Advanced-Learner Qualification
+
+**Implementation complete.** P20 consolidates the advanced-learning pathway instead of creating a new isolated skill layer:
+
+- eleven visible gates define the internal advanced-pathway qualification, including a 28-day/8-day longitudinal window, reliable long-form production, P17 precision breadth, delayed specialist discourse, repeated P18 pressure sessions, real human exchange, P19 audio/listening breadth, repeated broad review, repeated observation of all seven dimensions, stable external performance and resolved reviewer calibration;
+- the seven-dimension readiness matrix keeps internal structural support separate from external human scores;
+- each dimension exposes qualifying observation count, broad-review mean, latest score, trend, spread, persistent weakness and a stable/strong/weak state;
+- two broad reviews with two distinct reviewer labels and at least seven days of separation are required for external calibration;
+- reviewer labels are not treated as verified identities or verified independence;
+- reviewer calibration compares per-dimension deltas and blocks qualification on unresolved three-point-or-greater disagreement;
+- persistent weakness cannot be hidden by a high aggregate score;
+- the external aggregate must be at least 3.50/5 and every dimension must be stable or strong before the final internal gate passes;
+- the final status is explicitly named **Advanced pathway qualified**, not C2 certified;
+- dedicated JSON/Markdown readiness reports expose every threshold and next-evidence recommendation;
+- the portable portfolio advances to schema v7/P20 and carries the same readiness state.
+
+P20 is a product qualification only. It is not an accredited CEFR examination, does not verify reviewer identity or credentials, does not translate structural evidence into semantic scores, does not update FSRS/mastery from reviewer scores, and does not export local raw audio. See `docs/P20_ACCEPTANCE.md`.
+
 ## Later
 
-The next phase should consolidate rather than add another major capability family: repeat advanced evidence across time, compare independent external reviewers where available, identify persistent weak dimensions across writing/listening/live interaction/audio, and create a transparent C2-readiness matrix for the product while preserving the boundary between product evidence and accredited language certification.
+The next phase should freeze capability growth and focus on release quality: complete real-device/PWA acceptance across the full Foundation→C2-oriented pathway, simplify any accumulated advanced UI that creates friction, verify accessibility and private-data boundaries, close only concrete defects, and produce a stable release candidate. New proficiency layers should not be added unless real learner evidence exposes a specific missing capability.
