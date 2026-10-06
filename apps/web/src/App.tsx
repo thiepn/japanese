@@ -116,7 +116,9 @@ export function App(){
         if(!active||epoch!==generation)return;
         useGuestWorkspace();
         setAccount(next);
-        setAccountMessage(null);
+        setAccountMessage(next.status==="expired"
+          ?"THIEPN Account sign-in could not be completed. Try signing in again; your local Japanese data is unchanged."
+          :null);
         return;
       }
 
