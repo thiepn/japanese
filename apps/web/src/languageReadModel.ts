@@ -35,6 +35,7 @@ import {
 
 export const JAPANESE_READ_MODEL_PRODUCER_REVISION =
   "japanese-p8-read-model-v2";
+export const JAPANESE_APP_ROUTE="https://thiepn.dev/japanese/";
 
 type MilestoneProgress =
   | A1MilestoneProgress
@@ -102,10 +103,7 @@ export async function getJapaneseLanguageReadModel(
   ]);
 
   const activity = summarizeActivity(events, now);
-  const appRoute =
-    typeof window !== "undefined" && window.location?.origin
-      ? window.location.origin + "/"
-      : undefined;
+  const appRoute=JAPANESE_APP_ROUTE;
 
   return createJapaneseLanguageReadModel({
     generatedAt: now.toISOString(),
@@ -326,7 +324,7 @@ function japaneseNextAction(summary: StudySummary) {
         " due item" +
         (due === 1 ? " is" : "s are") +
         " already in the authoritative Today queue.",
-      route: "/"
+      route: JAPANESE_APP_ROUTE
     };
   }
 
@@ -337,7 +335,7 @@ function japaneseNextAction(summary: StudySummary) {
       kind: "course" as const,
       priority: 72,
       reason: "The authoritative Today queue has course work ready.",
-      route: "/"
+      route: JAPANESE_APP_ROUTE
     };
   }
 
@@ -352,7 +350,7 @@ function japaneseNextAction(summary: StudySummary) {
         " new foundation item" +
         (newItems === 1 ? " is" : "s are") +
         " available in the Today queue.",
-      route: "/"
+      route: JAPANESE_APP_ROUTE
     };
   }
 
@@ -363,7 +361,7 @@ function japaneseNextAction(summary: StudySummary) {
       kind: "practice" as const,
       priority: 56,
       reason: "Listening or application practice is ready.",
-      route: "/"
+      route: JAPANESE_APP_ROUTE
     };
   }
 
