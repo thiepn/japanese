@@ -1,11 +1,13 @@
-import { ContentDatabase } from "@thiepn/content-db";
+import type { ContentDatabase } from "@thiepn/content-db";
 import type { SearchResult } from "@thiepn/search";
 import { coreContent, senseForLexeme, starterLexemes } from "./coreContent";
 
 let dbPromise: Promise<ContentDatabase> | null = null;
 
 async function getDatabase(): Promise<ContentDatabase> {
-  dbPromise ??= ContentDatabase.open().then(async (db) => {
+  dbPromise ??= import("@thiepn/content-db")
+    .then(({ContentDatabase})=>ContentDatabase.open())
+    .then(async (db) => {
     await db.upsertCoreContent(coreContent);
     return db;
   });
