@@ -133,9 +133,10 @@ export function App(){
         return;
       }
 
+      let claimResult:"same-account"|"guest-empty"|"target-populated"|"migrated"="guest-empty";
       if(connected){
         try{
-          await claimGuestWorkspace(GUEST_ACCOUNT_ID,authenticatedId);
+          claimResult=await claimGuestWorkspace(GUEST_ACCOUNT_ID,authenticatedId);
         }catch{
           if(!active||epoch!==generation)return;
           useGuestWorkspace();
@@ -151,7 +152,15 @@ export function App(){
       setAuthenticAccountId(accountId);
       setAccountConnected(connected);
       setAccount(next);
-      setAccountMessage(connected?null:"Signed in to THIEPN Account. Connect Japanese to attach this device.");
+      setAccountMessage(
+        connected
+          ?claimResult==="target-populated"
+            ?"THIEPN Account already has Japanese data on this device. Guest progress was kept separate rather than merged or overwritten; sign out to access the guest workspace."
+            :claimResult==="migrated"
+              ?"Local guest progress was attached to your THIEPN Account on this device."
+              :null
+          :"Signed in to THIEPN Account. Connect Japanese to attach this device.",
+      );
     };
     const authUnavailable=()=>{
       if(!active)return;
@@ -202,11 +211,17 @@ export function App(){
         await JAPANESE_ACCOUNT.connectApp();
         const accountId=account.accountId;
         if(accountId){
-          await claimGuestWorkspace(GUEST_ACCOUNT_ID,accountId);
+          const claimResult=await claimGuestWorkspace(GUEST_ACCOUNT_ID,accountId);
           setDevelopmentAccountId(accountId);
           setAuthenticAccountId(accountId);
           setAccountConnected(true);
-          setAccountMessage(null);
+          setAccountMessage(
+            claimResult==="target-populated"
+              ?"THIEPN Account already has Japanese data on this device. Guest progress was kept separate rather than merged or overwritten; sign out to access the guest workspace."
+              :claimResult==="migrated"
+                ?"Local guest progress was attached to your THIEPN Account on this device."
+                :null,
+          );
           await refreshDashboard();
           void JAPANESE_LANGUAGE_DASHBOARD.publish().catch(()=>{
             setAccountMessage("Japanese is connected to THIEPN Account, but the shared language dashboard could not be refreshed yet.");
