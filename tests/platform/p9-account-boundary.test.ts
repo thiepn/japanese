@@ -77,11 +77,27 @@ describe("P9 THIEPN Account boundary",()=>{
 
   it("surfaces an invalid Account callback as expired instead of silently anonymous",async()=>{
     const flow="d".repeat(64);
-    window.history.replaceState(null,"",`/japanese/auth/callback/?flow=${flow}`);
-    sessionStorage.setItem(
+    const storage=new Map<string,string>();
+    const sessionStorageMock={
+      getItem:vi.fn((key:string)=>storage.get(key)??null),
+      setItem:vi.fn((key:string,value:string)=>{storage.set(key,value);}),
+      removeItem:vi.fn((key:string)=>{storage.delete(key);}),
+    };
+    sessionStorageMock.setItem(
       "thiepn:japanese-login:v1",
       JSON.stringify({flow,started:Date.now(),returnTo:"/japanese/"}),
     );
+    const replaceState=vi.fn();
+    vi.stubGlobal("sessionStorage",sessionStorageMock);
+    vi.stubGlobal("window",{
+      location:{
+        pathname:"/japanese/auth/callback/",
+        search:`?flow=${flow}`,
+        hash:"",
+        assign:vi.fn(),
+      },
+      history:{replaceState},
+    });
     const client={
       auth:{
         getUser:vi.fn(),
@@ -95,7 +111,7 @@ describe("P9 THIEPN Account boundary",()=>{
     const provider=createThiepnAccountAuthProvider({client:client as never});
     expect(await provider.refresh()).toMatchObject({status:"expired",accountId:null});
     expect(client.auth.exchangeCodeForSession).not.toHaveBeenCalled();
-    window.history.replaceState(null,"","/");
+    expect(replaceState).toHaveBeenCalledWith(null,"","/japanese/");
   });
 
   it("uses canonical Account user verification and bearer session transport",async()=>{
