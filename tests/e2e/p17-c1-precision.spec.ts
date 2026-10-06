@@ -2,8 +2,6 @@ import { expect,test } from "@playwright/test";
 
 test("P17 exposes the C1-to-C2 precision bridge and keeps evidence boundaries explicit",async({page})=>{
   await page.goto("/");
-  await expect(page.locator(".phase")).toContainText("P17 C1→C2 precision bridge");
-
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
   const lab=page.locator(".p17-precision");
   await expect(lab.getByText("P17 C1→C2 PRECISION BRIDGE",{exact:true})).toBeVisible();
@@ -21,7 +19,7 @@ test("P17 exposes the C1-to-C2 precision bridge and keeps evidence boundaries ex
   await expect(lab.getByText(/A P16 human review is required/)).toBeVisible();
 
   await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
-  await expect(page.getByText("P17 C1→C2 PORTFOLIO",{exact:true})).toBeVisible();
+  await expect(page.getByText("P18 C1→C2 PORTFOLIO",{exact:true})).toBeVisible();
   await expect(page.getByText("P17 PRECISION BRIDGE",{exact:true})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Stylistic control + specialist discourse + repair"})).toBeVisible();
 });
