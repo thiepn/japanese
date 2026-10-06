@@ -23,7 +23,11 @@
     "native:p11:audit": "node scripts/p11-native-source-audit.mjs",
     "native:p11:apply": "node scripts/p11-native-source-audit.mjs --apply",
     "certify:p21": "node scripts/p21-release-certify.mjs",
-    "certify:p21:strict": "node scripts/p21-release-certify.mjs --strict"
+    "certify:p21:strict": "node scripts/p21-release-certify.mjs --strict",
+    "release:p22:meta": "node scripts/p22-write-release-meta.mjs",
+    "monitor:p22": "node scripts/p22-production-monitor.mjs",
+    "monitor:p22:strict": "node scripts/p22-production-monitor.mjs --strict",
+    "status:p22": "node scripts/p22-release-status.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
