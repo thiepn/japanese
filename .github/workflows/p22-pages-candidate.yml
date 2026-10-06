@@ -1,8 +1,9 @@
 name: P22 Candidate Pages Deploy
 
 on:
-  push:
-    branches: [main]
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
   workflow_dispatch:
 
 concurrency:
@@ -16,12 +17,28 @@ permissions:
 
 jobs:
   deploy:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main')
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Resolve certified candidate commit
+        id: candidate
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_run" ]; then
+            echo "sha=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.candidate.outputs.sha }}
 
       - uses: pnpm/action-setup@v4
         with:
@@ -32,12 +49,10 @@ jobs:
           node-version: 24.15.0
 
       - run: pnpm install --no-frozen-lockfile
-      - run: pnpm typecheck
-      - run: pnpm test
 
       - name: Write candidate deployment identity
         env:
-          CANDIDATE_COMMIT: ${{ github.sha }}
+          CANDIDATE_COMMIT: ${{ steps.candidate.outputs.sha }}
         run: pnpm release:p22:meta --commit "$CANDIDATE_COMMIT" --channel candidate
 
       - name: Build GitHub Pages candidate
@@ -45,8 +60,21 @@ jobs:
           VITE_PUBLIC_BASE: /japanese/
         run: pnpm build
 
-      - name: Add SPA callback fallback
-        run: cp apps/web/dist/index.html apps/web/dist/404.html
+      - name: Add deterministic SPA and Account callback routes
+        run: |
+          cp apps/web/dist/index.html apps/web/dist/404.html
+          mkdir -p apps/web/dist/auth/callback
+          cp apps/web/dist/index.html apps/web/dist/auth/callback/index.html
+
+      - name: Verify deployment artifact shape
+        env:
+          CANDIDATE_COMMIT: ${{ steps.candidate.outputs.sha }}
+        run: |
+          test -f apps/web/dist/index.html
+          test -f apps/web/dist/404.html
+          test -f apps/web/dist/auth/callback/index.html
+          grep -q '/japanese/assets/' apps/web/dist/index.html
+          grep -q "$CANDIDATE_COMMIT" apps/web/dist/release-meta.json
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
@@ -61,3 +89,26 @@ jobs:
       - name: Deploy candidate to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Verify exact live candidate and shared Account entry
+        env:
+          CANDIDATE_COMMIT: ${{ steps.candidate.outputs.sha }}
+        shell: bash
+        run: |
+          base="https://thiepn.dev/japanese"
+          for attempt in {1..12}; do
+            if curl --fail --silent --show-error --location "$base/release-meta.json" -o /tmp/release-meta.json; then
+              deployed="$(node -e 'const x=require("fs");const j=JSON.parse(x.readFileSync("/tmp/release-meta.json","utf8"));process.stdout.write(String(j.commit||""))')"
+              channel="$(node -e 'const x=require("fs");const j=JSON.parse(x.readFileSync("/tmp/release-meta.json","utf8"));process.stdout.write(String(j.channel||""))')"
+              callback_status="$(curl -sS -o /tmp/callback.html -w '%{http_code}' "$base/auth/callback/")"
+              account_status="$(curl -sS -o /tmp/account-entry.html -w '%{http_code}' "https://account.thiepn.dev/japanese/entry")"
+              if [ "$deployed" = "$CANDIDATE_COMMIT" ] && [ "$channel" = "candidate" ] && [ "$callback_status" = "200" ] && [ "$account_status" = "200" ]; then
+                echo "Verified live Japanese candidate $deployed with Account entry and callback routes."
+                exit 0
+              fi
+              echo "Waiting for exact candidate/account routes: commit=$deployed channel=$channel callback=$callback_status account=$account_status"
+            fi
+            sleep 5
+          done
+          echo "Live candidate did not converge to the certified commit/routes."
+          exit 1
