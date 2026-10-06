@@ -17,7 +17,7 @@ test("P18 exposes hidden live pressure, real-partner evidence and cross-domain t
   await expect(lab.getByText(/Create a P16 specialist track before testing expert-domain transfer/)).toBeVisible();
 
   await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
-  await expect(page.getByText("P19 C1→C2 PORTFOLIO",{exact:true})).toBeVisible();
+  await expect(page.getByText("P20 C1→C2 PORTFOLIO",{exact:true})).toBeVisible();
   await expect(page.getByText("P18 ADVANCED INTERACTION",{exact:true})).toBeVisible();
 });
 
