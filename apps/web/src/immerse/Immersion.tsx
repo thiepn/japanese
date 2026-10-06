@@ -136,7 +136,7 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
 
   return <section className="dashboard immerse-page">
     <p className="eyebrow">IMMERSE</p><h1>A1 → C1 autonomy → C2-oriented evidence</h1>
-    <p className="lead">P19 keeps the P15–P18 advanced-production stack, then adds real local audio timing evidence, overlap listening built from verified native recordings, and a separate external C2-oriented human-review protocol without turning any of those signals into automatic mastery.</p>
+    <p className="lead">P20 consolidates the evidence produced here rather than adding another practice silo. Continue P15–P19 source, precision, interaction, audio and overlap work; Progress now tests whether that evidence survives time and external calibration strongly enough for the internal advanced-pathway qualification.</p>
     {progress?<div className="stat-row four"><MiniStat value={progress.texts.length} label="Graded texts"/><MiniStat value={progress.minedWords} label="Mined words"/><MiniStat value={progress.readingChecks} label="Reading checks"/><MiniStat value={progress.listeningChecks} label="Listening checks"/></div>:null}
     {recommendation?<section className="adaptive-immersion">
       <div className="section-heading"><div><span className="course-kicker">ADAPTIVE NEXT STEP</span><h2>Focus on {recommendation.focus}</h2></div></div>
