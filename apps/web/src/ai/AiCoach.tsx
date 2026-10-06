@@ -36,6 +36,7 @@ export function AiCoach({preferredChainId,onPreferredChainApplied}:{preferredCha
   const [inputMode,setInputMode]=useState<InputMode>("text");
   const [revisionHistory,setRevisionHistory]=useState<CoachHistorySummary>(EMPTY_HISTORY);
   const [targetLevel,setTargetLevel]=useState<ScenarioLevel>("C1");
+  const p18Conversation=mode==="conversation"&&targetLevel==="C1";
   const [chainId,setChainId]=useState(scenarioChainsForLevel("C1")[0]!.id);
   const [delayedRevision,setDelayedRevision]=useState<DelayedRevisionCandidate|null>(null);
   const sessionId=useRef(crypto.randomUUID());
@@ -190,8 +191,8 @@ export function AiCoach({preferredChainId,onPreferredChainApplied}:{preferredCha
   }
 
   return <section className="ai-coach-card">
-    <div className="section-heading"><div><span className="course-kicker">{targetLevel==="C1"?"P18 ADVANCED LIVE INTERACTION":"B2 AI COACH"}</span><h2>{targetLevel==="C1"?"Hidden pressure, repair and reformulation":"Guided B2 interaction"}</h2></div><span className="status-pill">advisory</span></div>
-    <p className="coach-explainer">{targetLevel==="C1"?"P18 C1 conversation hides future complications and now includes interruption, hostile paraphrase, register shifts and cross-domain transfer. The AI interlocutor is a simulation, not a native speaker; model feedback remains separate from durable mastery and no acoustic pronunciation score is claimed.":"B2 conversation keeps the immediate communication goal visible and uses advisory model feedback without changing mastery."}</p>
+    <div className="section-heading"><div><span className="course-kicker">{p18Conversation?"P18 ADVANCED LIVE INTERACTION":targetLevel==="C1"?"C1 WRITING REVISION":"B2 AI COACH"}</span><h2>{p18Conversation?"Hidden pressure, repair and reformulation":targetLevel==="C1"?"Delayed advanced writing repair":"Guided B2 interaction"}</h2></div><span className="status-pill">advisory</span></div>
+    <p className="coach-explainer">{p18Conversation?"P18 C1 conversation hides future complications and now includes interruption, hostile paraphrase, register shifts and cross-domain transfer. The AI interlocutor is a simulation, not a native speaker; model feedback remains separate from durable mastery and no acoustic pronunciation score is claimed.":targetLevel==="C1"?"Delayed C1 writing repair remains advisory and separate from mastery.":"B2 conversation keeps the immediate communication goal visible and uses advisory model feedback without changing mastery."}</p>
     <div className="coach-mode" role="tablist" aria-label="Conversation level">
       <button className={targetLevel==="B2"?"active":""} type="button" onClick={()=>selectLevel("B2")}>B2 guided</button>
       <button className={targetLevel==="C1"?"active":""} type="button" onClick={()=>selectLevel("C1")}>C1 spontaneous</button>
