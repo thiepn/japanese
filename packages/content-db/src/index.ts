@@ -38,8 +38,26 @@ export class ContentDatabase {
   }
 
   async upsertCoreContent(content: ContentSeedPackage): Promise<void> {
+    const installedVersion=await this.firstRow("SELECT value FROM content_meta WHERE key='core_version'");
+    if(String(installedVersion?.[0]??"")===content.version)return;
+
     await this.exec("BEGIN IMMEDIATE");
     try {
+      await this.exec(`
+        DELETE FROM search_documents;
+        DELETE FROM lexeme_kanji;
+        DELETE FROM senses;
+        DELETE FROM audio_assets;
+        DELETE FROM grammar;
+        DELETE FROM sentences;
+        DELETE FROM lexical_chunks;
+        DELETE FROM can_dos;
+        DELETE FROM course_units;
+        DELETE FROM reading_texts;
+        DELETE FROM production_tasks;
+        DELETE FROM lexemes;
+        DELETE FROM kanji;
+      `);
       for (const kanji of content.kanji) {
         await this.run(
           `INSERT INTO kanji(id,literal,meanings_json,source_ids_json)
@@ -177,6 +195,10 @@ export class ContentDatabase {
         entity:{kind:"production_task",id:item.id}, title:item.title, glosses:[item.prompt,item.situation,item.level], aliases:[...item.tags,...item.requiredTerms]
       }))
     ]);
+    await this.run(
+      "INSERT INTO content_meta(key,value) VALUES('core_version',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value",
+      [content.version],
+    );
   }
 
   async getLexeme(id:string):Promise<LexemeDetail|null>{
@@ -376,6 +398,10 @@ export class ContentDatabase {
 
   private async ensureSchema(): Promise<void> {
     await this.exec(`
+      CREATE TABLE IF NOT EXISTS content_meta(
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
+      );
       CREATE TABLE IF NOT EXISTS search_documents(
         entity_kind TEXT NOT NULL,
         entity_id TEXT NOT NULL,
