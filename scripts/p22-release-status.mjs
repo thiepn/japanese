@@ -19,8 +19,8 @@ export function buildP22ReleaseStatus({p21,productionManifest,smoke=null,generat
   let decision;
   if(!p21Ready&&!active)decision="HOLD_P21_RELEASE_GATE";
   else if(p21Ready&&!active)decision="READY_TO_ACTIVATE";
-  else if(active&&production.maintenanceMode)decision="PRODUCTION_MAINTENANCE";
   else if(active&&production.blockingIncidents.length)decision="HOLD_PRODUCTION_INCIDENT";
+  else if(active&&production.maintenanceMode)decision="PRODUCTION_MAINTENANCE";
   else if(active&&!smokeHealthy)decision="HOLD_PRODUCTION_MONITOR";
   else if(active&&!productionCommitMatches)decision="HOLD_RELEASE_IDENTITY_MISMATCH";
   else decision="PRODUCTION_STABLE";
