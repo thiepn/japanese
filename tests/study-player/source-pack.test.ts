@@ -69,6 +69,19 @@ describe("P8 Japanese source-pack policy",()=>{
     expect(validateJapaneseSourcePack(varied).valid).toBe(false);
   });
 
+  it("rejects unsafe or insecure source and media URLs",()=>{
+    const insecure=pack();
+    insecure.manifest.sourceUrl="http://example.test/source";
+    expect(validateJapaneseSourcePack(insecure).valid).toBe(false);
+
+    const scripted=pack();
+    scripted.items[0]!.sourceUrl="javascript:alert(1)";
+    scripted.items[0]!.audio!.attributionUrl="javascript:alert(1)";
+    const result=validateJapaneseSourcePack(scripted);
+    expect(result.valid).toBe(false);
+    expect(result.errors.join(" ")).toMatch(/HTTPS URL/i);
+  });
+
   it("warns instead of fabricating native audio when text has no recording",()=>{
     const textOnly=pack();delete textOnly.items[0]!.audio;
     const result=validateJapaneseSourcePack(textOnly);
