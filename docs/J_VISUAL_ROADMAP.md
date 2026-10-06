@@ -32,6 +32,8 @@ Build reusable visual primitives before page rewrites:
 
 ## J2 — Living App Shell
 
+**Implementation complete.** The learner-facing chrome now runs on the J1 design engine with Japanese identity, responsive five-surface navigation, sumi/washi theming, seasonal ambience and an explicit diagnostics boundary.
+
 Replace the current shell and navigation:
 - remove internal phase/release language from learner UI;
 - desktop art rail/sidebar;
