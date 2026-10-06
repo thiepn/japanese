@@ -11,6 +11,7 @@ import { C1EnvironmentLab } from "./C1EnvironmentLab";
 import { C1ResearchQualityLab } from "./C1ResearchQualityLab";
 import { C1PrecisionLab } from "./C1PrecisionLab";
 import { C1AdvancedInteractionLab } from "./C1AdvancedInteractionLab";
+import { C1ProsodyEvaluationLab } from "./C1ProsodyEvaluationLab";
 import { getAdaptiveImmersionRecommendation,type AdaptiveImmersionRecommendation } from "./adaptive";
 import { getAutonomyMissionProgress,type AutonomyMissionProgress } from "../study/autonomyMissions";
 import type { ReadingQuestion } from "@thiepn/content-schema";
@@ -135,7 +136,7 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
 
   return <section className="dashboard immerse-page">
     <p className="eyebrow">IMMERSE</p><h1>A1 → C1 autonomy → C2 precision</h1>
-    <p className="lead">P18 keeps the P15–P17 research and precision stack, then adds advanced live interaction: hidden pressure, interruption and clarification repair, real human-partner evidence, cross-domain transfer and sustained floor control without pretending simulated dialogue is a native speaker.</p>
+    <p className="lead">P19 keeps the P15–P18 advanced-production stack, then adds real local audio timing evidence, overlap listening built from verified native recordings, and a separate external C2-oriented human-review protocol without turning any of those signals into automatic mastery.</p>
     {progress?<div className="stat-row four"><MiniStat value={progress.texts.length} label="Graded texts"/><MiniStat value={progress.minedWords} label="Mined words"/><MiniStat value={progress.readingChecks} label="Reading checks"/><MiniStat value={progress.listeningChecks} label="Listening checks"/></div>:null}
     {recommendation?<section className="adaptive-immersion">
       <div className="section-heading"><div><span className="course-kicker">ADAPTIVE NEXT STEP</span><h2>Focus on {recommendation.focus}</h2></div></div>
@@ -148,6 +149,7 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
     <C1ResearchQualityLab/>
     <C1PrecisionLab/>
     <C1AdvancedInteractionLab/>
+    <C1ProsodyEvaluationLab/>
     {missions.length?<section className="autonomy-missions">
       <div className="section-heading"><div><span className="course-kicker">P8 AUTONOMY MISSIONS</span><h2>Long-form B2 task chains</h2></div><span className="course-count">multi-document · cross-session</span></div>
       <p className="course-note">Each mission combines reading, listening and production across several sources. Final transfer stages require the same production target on a later day; progress is inferred from normal StudyEvents rather than a separate mission score.</p>
