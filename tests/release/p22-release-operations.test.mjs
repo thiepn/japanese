@@ -114,6 +114,25 @@ describe("P22 stable release operations",()=>{
     expect(report.decision).toBe("PRODUCTION_MAINTENANCE");
   });
 
+  it("blocks stable production while a release-blocking incident is open",()=>{
+    const productionManifest={
+      ...activeManifest(),
+      knownIncidents:[{
+        id:"inc-1",severity:"medium",status:"open",summary:"Offline reload is broken on the deployed PWA.",
+        openedAt:"2026-10-06T14:30:00Z",resolvedAt:null,releaseBlocking:true
+      }]
+    };
+    const report=buildP22ReleaseStatus({
+      p21:p21(true),
+      productionManifest,
+      smoke:{healthy:true,expectedCommit:COMMIT},
+      commit:COMMIT
+    });
+    expect(report.productionStable).toBe(false);
+    expect(report.decision).toBe("HOLD_PRODUCTION_INCIDENT");
+    expect(report.production.blockingIncidents).toHaveLength(1);
+  });
+
   it("reports active production stable only with a healthy matching smoke check",()=>{
     const productionManifest=activeManifest();
     const healthySmoke={healthy:true,expectedCommit:COMMIT};
