@@ -338,7 +338,7 @@ export function buildReviewerCalibration(reviews:readonly C2ExternalHumanReview[
     }
   }
   if(!pair&&ordered.length>=2)pair=[ordered.at(-2)!,ordered.at(-1)!];
-  const dimensions:DIMENSIONS extends never?never:C2ReviewerCalibrationDimension[]=DIMENSIONS.map(({id,label})=>{
+  const dimensions:C2ReviewerCalibrationDimension[]=DIMENSIONS.map(({id,label})=>{
     const earlier=pair?.[0].scores[id]??null,later=pair?.[1].scores[id]??null;
     return {dimension:id,label,earlier,later,delta:earlier!==null&&later!==null?round2(later-earlier):null};
   });
