@@ -11,6 +11,8 @@ export function summarizeProductionManifest(manifest){
   if(manifest.schemaVersion!==1)throw new Error("P22_PRODUCTION_VERSION_UNSUPPORTED");
   if(!["inactive","candidate","active","maintenance"].includes(manifest.status))throw new Error("P22_PRODUCTION_STATUS_INVALID");
   if(typeof manifest.maintenanceMode!=="boolean")throw new Error("P22_PRODUCTION_MAINTENANCE_INVALID");
+  if(manifest.status==="maintenance"&&manifest.maintenanceMode!==true)throw new Error("P22_MAINTENANCE_STATUS_REQUIRES_MODE");
+  if(manifest.status!=="maintenance"&&manifest.maintenanceMode!==false)throw new Error("P22_MAINTENANCE_MODE_STATUS_MISMATCH");
   if(!manifest.monitor||!Array.isArray(manifest.monitor.requiredPaths)||manifest.monitor.requiredPaths.length<1)throw new Error("P22_PRODUCTION_MONITOR_PATHS_REQUIRED");
   if(!Number.isFinite(manifest.monitor.maxHomepageMs)||manifest.monitor.maxHomepageMs<=0)throw new Error("P22_PRODUCTION_MONITOR_LATENCY_INVALID");
 
@@ -27,9 +29,27 @@ export function summarizeProductionManifest(manifest){
     }
   }
 
-  const incidents=Array.isArray(manifest.knownIncidents)?manifest.knownIncidents:[];
-  const openIncidents=incidents.filter((item)=>item?.status==="open");
-  const blockingIncidents=openIncidents.filter((item)=>["critical","high"].includes(item?.severity)||item?.releaseBlocking===true);
+  if(!Array.isArray(manifest.knownIncidents))throw new Error("P22_PRODUCTION_INCIDENTS_REQUIRED");
+  const incidentIds=new Set();
+  const incidents=manifest.knownIncidents.map((item,index)=>{
+    const where="incident "+(index+1);
+    requireString(item?.id,where+" id");
+    if(incidentIds.has(item.id))throw new Error("P22_PRODUCTION_INCIDENT_DUPLICATE:"+item.id);
+    incidentIds.add(item.id);
+    if(!["critical","high","medium","low"].includes(item?.severity))throw new Error("P22_PRODUCTION_INCIDENT_SEVERITY_INVALID:"+item.id);
+    if(!["open","monitoring","resolved"].includes(item?.status))throw new Error("P22_PRODUCTION_INCIDENT_STATUS_INVALID:"+item.id);
+    requireString(item?.summary,where+" summary");
+    requireIsoDate(item?.openedAt,"P22_PRODUCTION_INCIDENT_OPENED_AT_INVALID:"+item.id);
+    if(typeof item?.releaseBlocking!=="boolean")throw new Error("P22_PRODUCTION_INCIDENT_BLOCKING_FLAG_REQUIRED:"+item.id);
+    if(item.status==="resolved")requireIsoDate(item?.resolvedAt,"P22_PRODUCTION_INCIDENT_RESOLVED_AT_INVALID:"+item.id);
+    if(item.status!=="resolved"&&item.resolvedAt!=null)throw new Error("P22_PRODUCTION_INCIDENT_PREMATURE_RESOLVED_AT:"+item.id);
+    return {
+      id:item.id,severity:item.severity,status:item.status,summary:item.summary,openedAt:item.openedAt,
+      resolvedAt:item.resolvedAt??null,releaseBlocking:item.releaseBlocking
+    };
+  });
+  const openIncidents=incidents.filter((item)=>item.status==="open"||item.status==="monitoring");
+  const blockingIncidents=openIncidents.filter((item)=>["critical","high"].includes(item.severity)||item.releaseBlocking===true);
   return {
     status:manifest.status,
     active,
