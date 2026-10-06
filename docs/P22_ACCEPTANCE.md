@@ -31,13 +31,15 @@ The manual **P22 Stable Release Activation** workflow requires:
 - strict P21 release qualification for the same commit;
 - physical-device evidence already bound to that commit.
 
+Human/device evidence may be admitted **after** the immutable product commit was built and tested. To avoid a circular "evidence commit changes the product commit" problem, activation checks out the exact product candidate separately, then overlays only the latest admitted `p11-external-validation.json` and `p21-device-acceptance.json` evidence before running the strict gates. The built application code remains the requested immutable product commit.
+
 Only after those checks pass does the workflow:
 
 1. write `/release-meta.json` with the exact stable commit;
 2. rebuild the static web artifact;
 3. package the built site;
 4. refuse to overwrite an existing stable tag;
-5. create an immutable GitHub release containing the deployable artifact and qualification evidence.
+5. create an immutable GitHub release containing the deployable artifact, SHA-256 package digest and qualification evidence.
 
 A GitHub release is **source/package activation evidence**, not proof of successful production deployment.
 
