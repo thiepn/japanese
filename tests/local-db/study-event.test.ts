@@ -1,6 +1,6 @@
 import "fake-indexeddb/auto";
 import { describe, expect, it } from "vitest";
-import { acknowledgeOutbox, claimGuestWorkspace, databaseNameForAccount, deletePrivateDocument, deletePrivateSentence, deletePrivateVocabulary, getMemoryTrace, getSyncCursor, listMemoryTraces, listOutbox, listPrivateDocuments, listPrivateSentences, listPrivateVocabulary, listStudyEvents, saveMemoryTrace, savePrivateDocument, savePrivateSentence, savePrivateVocabulary, saveStudyEvent, setSyncCursor } from "../../packages/local-db/src/index";
+import { acknowledgeOutbox, claimGuestWorkspace, databaseNameForAccount, deletePrivateDocument, deletePrivateProsodyCapture, deletePrivateSentence, deletePrivateVocabulary, getMemoryTrace, getSyncCursor, listMemoryTraces, listOutbox, listPrivateDocuments, listPrivateProsodyCaptures, listPrivateSentences, listPrivateVocabulary, listStudyEvents, saveMemoryTrace, savePrivateDocument, savePrivateProsodyCapture, savePrivateSentence, savePrivateVocabulary, saveStudyEvent, setSyncCursor } from "../../packages/local-db/src/index";
 import { createFsrsScheduler } from "../../packages/scheduler/src/index";
 import type { StudyEvent } from "../../packages/domain/src/index";
 
@@ -42,6 +42,23 @@ describe("account-scoped local persistence", () => {
     expect(await listPrivateSentences("user-a")).toHaveLength(0);
     expect(await listPrivateDocuments("user-a")).toHaveLength(0);
   });
+  it("keeps raw P19 prosody audio in the private local store instead of the sync outbox",async()=>{
+    const blob=new Blob(["local-audio-bytes"],{type:"audio/webm"});
+    await savePrivateProsodyCapture("user-a",{
+      id:"prosody-local-1",accountId:"user-a",createdAt:"2026-10-06T10:00:00Z",updatedAt:"2026-10-06T10:00:00Z",
+      mimeType:"audio/webm",audioBlob:blob,sizeBytes:blob.size,durationMs:4200,activeSpeechRatio:.72,pauseRatio:.18,
+      longPauseCount:2,phraseCount:3,dynamicRangeDb:11.4,targetLabel:"Formal chunking"
+    });
+    const captures=await listPrivateProsodyCaptures("user-a");
+    expect(captures).toHaveLength(1);
+    expect(captures[0]?.audioBlob).toBeInstanceOf(Blob);
+    expect(captures[0]?.sizeBytes).toBe(blob.size);
+    expect((await listOutbox("user-a")).some((mutation)=>JSON.stringify(mutation).includes("local-audio-bytes"))).toBe(false);
+    expect(await listPrivateProsodyCaptures("user-b")).toHaveLength(0);
+    await deletePrivateProsodyCapture("user-a","prosody-local-1");
+    expect(await listPrivateProsodyCaptures("user-a")).toHaveLength(0);
+  });
+
   it("persists FSRS memory traces independently from event history", async () => {
     const scheduler=createFsrsScheduler();
     const trace=scheduler.create({id:"trace-1",userId:"user-a",entity:{kind:"kana",id:"kana-a"},skillDimension:"recognition",cueFamily:"kana-to-sound"},"2026-10-01T12:00:00Z");
