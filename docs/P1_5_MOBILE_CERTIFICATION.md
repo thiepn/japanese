@@ -34,3 +34,10 @@ Automation cannot certify hardware audio, OS-level PWA installation, safe-area b
 8. Increase browser/OS text size and confirm core study actions remain visible and tappable.
 
 Record the phone model, OS version, browser version, install mode, and any defect before closing the gate.
+
+
+## P21 final-release note
+
+This P1.5 checklist remains the historical Foundation/mobile baseline. The final product now includes substantially more surfaces, microphone workflows and local private-audio behavior.
+
+For final stable-release acceptance, use `docs/P21_DEVICE_ACCEPTANCE.md` and `release/p21-device-acceptance.json`. P21 does not infer that the old P1.5 hardware pass covers the later advanced product.
