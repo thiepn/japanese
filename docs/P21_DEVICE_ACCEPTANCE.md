@@ -10,8 +10,11 @@ Record in `release/p21-device-acceptance.json`:
 
 - a stable device ID;
 - device model;
+- `platform: "android"`;
 - OS version;
+- `browserEngine: "chromium"`;
 - browser version;
+- the exact 40-character release-candidate `buildCommit`;
 - `installMode: "standalone-pwa"`;
 - ISO-8601 test timestamp;
 - every required check as an explicit boolean.
@@ -69,7 +72,8 @@ After a complete pass:
 1. populate at least one device record with all required checks set to `true`;
 2. set the manifest top-level `status` to `"passed"`;
 3. ensure no release-blocking defect remains open;
-4. run `pnpm certify:p21 --regression <regression-json> --p11 <p11-report-json>`;
-5. run `pnpm certify:p21:strict ...` only when both the physical-device gate and the independent P11 external-validation gate are genuinely satisfied.
+4. run `pnpm certify:p21 --regression <regression-json> --p11 <p11-report-json> --commit <tested-commit>`;
+5. confirm the device evidence commit exactly matches the release candidate being certified;
+6. run `pnpm certify:p21:strict ...` only when both the physical-device gate and the independent P11 external-validation gate are genuinely satisfied.
 
 P21 never treats different reviewer labels, emulated devices or automated browser profiles as substitutes for the required real-world evidence.
