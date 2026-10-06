@@ -269,10 +269,29 @@ export async function recordPrivateComprehension(documentId:string,result:"corre
 }
 
 export async function importTatoebaSentence(sentenceId:string):Promise<TatoebaImportResult>{
-  const id=sentenceId.trim().replace(/^#/,"");if(!/^\d+$/.test(id))throw new Error("TATOEBA_ID_REQUIRED");
-  const response=await fetch(`https://api.tatoeba.org/v1/sentences/${id}?include=audios`);
+  const id=sentenceId.trim().replace(/^#/,"");
+  if(!/^\d{1,12}$/.test(id))throw new Error("TATOEBA_ID_REQUIRED");
+
+  const controller=new AbortController();
+  const timeout=window.setTimeout(()=>controller.abort(),10_000);
+  let response:Response;
+  try{
+    response=await fetch(`https://api.tatoeba.org/v1/sentences/${id}?include=audios`,{
+      signal:controller.signal,
+      headers:{accept:"application/json"}
+    });
+  }catch{
+    throw new Error(controller.signal.aborted?"TATOEBA_FETCH_TIMEOUT":"TATOEBA_FETCH_FAILED");
+  }finally{
+    window.clearTimeout(timeout);
+  }
   if(!response.ok)throw new Error("TATOEBA_FETCH_FAILED");
-  const raw=await response.json() as Record<string,unknown>;
+  let raw:Record<string,unknown>;
+  try{
+    raw=await response.json() as Record<string,unknown>;
+  }catch{
+    throw new Error("TATOEBA_RESPONSE_INVALID");
+  }
   const data=(raw.data&&typeof raw.data==="object"?raw.data:raw) as Record<string,unknown>;
   const lang=String(data.lang??data.language??"");
   if(lang&&lang!=="jpn"&&lang!=="ja")throw new Error("TATOEBA_SENTENCE_NOT_JAPANESE");
@@ -285,7 +304,9 @@ export async function importTatoebaSentence(sentenceId:string):Promise<TatoebaIm
     if(!isAllowedReusableAudioLicense(licenseName)){rejection=`Audio license ${licenseName} is not admitted by the public-app policy.`;continue;}
     const audioId=String(candidate.id??candidate.audio_id??"").trim();if(!audioId)continue;
     const author=String(candidate.author??candidate.username??candidate.user??"Tatoeba contributor");
-    const attribution=String(candidate.attribution_url??candidate.attributionUrl??candidate.author_url??`https://tatoeba.org/en/audio/index/${audioId}`);
+    const fallbackAttribution=`https://tatoeba.org/en/audio/index/${audioId}`;
+    const attributionCandidate=String(candidate.attribution_url??candidate.attributionUrl??candidate.author_url??"").trim();
+    const attribution=isSafeHttpsUrl(attributionCandidate)?attributionCandidate:fallbackAttribution;
     audio={url:`https://tatoeba.org/audio/download/${audioId}`,credit:`Tatoeba recording by ${author}`,licenseName,attributionUrl:attribution,externalId:audioId};
     break;
   }
@@ -294,6 +315,15 @@ export async function importTatoebaSentence(sentenceId:string):Promise<TatoebaIm
     sourceUrl:`https://tatoeba.org/en/sentences/show/${id}`,...(audio?{nativeAudio:audio}:{})
   });
   return {document,audioAccepted:Boolean(audio),...(audio?{}:{audioRejectionReason:rejection??"No audio was attached to this sentence."})};
+}
+
+function isSafeHttpsUrl(value:string):boolean{
+  try{
+    const url=new URL(value);
+    return url.protocol==="https:"&&!url.username&&!url.password;
+  }catch{
+    return false;
+  }
 }
 
 export function isAllowedReusableAudioLicense(value:string):boolean{
