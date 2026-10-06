@@ -220,7 +220,7 @@ export function C1ProsodyEvaluationLab(){
         <div className="p19-chip-row">{target.intendedControl.map((item)=><span key={item}>{item}</span>)}</div>
         <div className="p19-actions">
           {recordingState!=="recording"?<button className="primary" type="button" disabled={recordingState==="requesting"||recordingState==="analyzing"} onClick={()=>void startRecording()}>Record real audio</button>:<button className="primary" type="button" onClick={stopRecording}>Stop + analyze timing</button>}
-          {pendingBlob?<audio controls src={URL.createObjectURL(pendingBlob)}/>:null}
+          {pendingBlob?<BlobAudio blob={pendingBlob}/>:null}
         </div>
         {pendingMetrics?<div className="p19-metrics">
           <Metric value={(pendingMetrics.durationMs/1000).toFixed(1)+"s"} label="duration"/>
@@ -305,6 +305,12 @@ export function C1ProsodyEvaluationLab(){
 
 function P19Stat({value,label}:{value:number;label:string}){return <div><strong>{value}</strong><span>{label}</span></div>;}
 function Metric({value,label}:{value:string|number;label:string}){return <div><strong>{value}</strong><span>{label}</span></div>;}
+
+function BlobAudio({blob}:{blob:Blob}){
+  const [url,setUrl]=useState("");
+  useEffect(()=>{const next=URL.createObjectURL(blob);setUrl(next);return()=>URL.revokeObjectURL(next);},[blob]);
+  return url?<audio controls src={url}/>:null;
+}
 
 function LocalCapture({capture,onDelete}:{capture:PrivateProsodyCaptureRecord;onDelete:()=>void}){
   const [url,setUrl]=useState("");
