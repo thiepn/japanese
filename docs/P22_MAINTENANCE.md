@@ -10,12 +10,14 @@ A post-activation change belongs in P22 only when it fixes or safely maintains e
 
 1. Complete and admit the independent P11 external productive-language review.
 2. Complete the P21 physical Android standalone-PWA acceptance for the exact candidate commit.
-3. Confirm normal CI is green for that same commit.
-4. Run the manual **P22 Stable Release Activation** workflow with the exact commit and a new immutable `japanese-vX.Y.Z` tag.
-5. Deploy the produced static artifact through the chosen production hosting pipeline.
-6. Update `release/p22-production.json` with the real HTTPS URL, exact deployed commit, release tag, activation timestamp and `status: "active"`.
-7. Run the P22 production monitor in strict mode.
-8. Confirm the deployed `/release-meta.json` matches the recorded production commit exactly.
+3. Admit the later external-review/device evidence on `main`; those evidence files may reference the already-tested product commit without changing its runtime code.
+4. Confirm normal CI is green.
+5. Run the manual **P22 Stable Release Activation** workflow with the exact commit and a new immutable `japanese-vX.Y.Z` tag.
+6. Deploy the produced static artifact through the chosen production hosting pipeline.
+7. Verify its published SHA-256 digest if the hosting/deployment path supports artifact verification.
+8. Update `release/p22-production.json` with the real HTTPS URL, exact deployed commit, release tag, activation timestamp and `status: "active"`.
+9. Run the P22 production monitor in strict mode.
+10. Confirm the deployed `/release-meta.json` matches the recorded production commit exactly.
 
 Do not mark production active before step 6 actually happened.
 
