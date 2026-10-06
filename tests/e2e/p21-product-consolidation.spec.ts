@@ -1,7 +1,7 @@
 import { expect,test } from "@playwright/test";
 
 test("P21 keeps the complete product shell navigable without horizontal overflow",async({page})=>{
-  await page.goto("/");
+  await page.goto("./");
   const surfaces=["Today","Learn","Immerse","Library","Progress"] as const;
   for(const surface of surfaces){
     await page.getByRole("button",{name:surface,exact:true}).evaluate((button)=>(button as HTMLButtonElement).click());
@@ -17,7 +17,7 @@ test("P21 keeps the complete product shell navigable without horizontal overflow
 });
 
 test("P21 provides keyboard skip navigation and visible semantic navigation state",async({page})=>{
-  await page.goto("/");
+  await page.goto("./");
   const skip=page.getByRole("link",{name:"Skip to main content"});
   await expect(skip).toHaveAttribute("href","#main-content");
   await page.keyboard.press("Tab");
@@ -35,7 +35,7 @@ test("P21 provides keyboard skip navigation and visible semantic navigation stat
 
 test("P21 keeps advanced workspace tabs thumb-safe on mobile profiles",async({page},testInfo)=>{
   test.skip(testInfo.project.name==="desktop-chromium","mobile touch-target hardening only");
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
   const tabs=page.locator(".p15-tabs button,.p17-tabs button,.p18-tabs button,.p19-tabs button");
   expect(await tabs.count()).toBeGreaterThan(0);
