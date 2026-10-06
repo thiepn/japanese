@@ -23,6 +23,11 @@ export function summarizeProductionManifest(manifest){
     requireString(manifest.releaseTag,"releaseTag");
     requireIsoDate(manifest.activatedAt,"activatedAt");
   }
+  if(manifest.status==="candidate"){
+    requireHttpsUrl(manifest.publicUrl,"publicUrl");
+    if(manifest.releaseCommit!==null)requireCommit(manifest.releaseCommit,"releaseCommit");
+    if(manifest.releaseTag!==null||manifest.activatedAt!==null)throw new Error("P22_CANDIDATE_MUST_NOT_CLAIM_STABLE_RELEASE");
+  }
   if(manifest.status==="inactive"){
     if(manifest.publicUrl!==null||manifest.releaseCommit!==null||manifest.releaseTag!==null||manifest.activatedAt!==null){
       throw new Error("P22_INACTIVE_PRODUCTION_MUST_NOT_CLAIM_RELEASE");
@@ -67,9 +72,11 @@ export function summarizeProductionManifest(manifest){
   };
 }
 
-export async function probeProduction({baseUrl,expectedCommit,requiredPaths,maxHomepageMs=5000,fetchImpl=fetch,now=new Date()}){
+export async function probeProduction({baseUrl,expectedCommit=null,expectedChannel="stable",requiredPaths,maxHomepageMs=5000,fetchImpl=fetch,now=new Date()}){
   requireHttpsUrl(baseUrl,"baseUrl");
-  requireCommit(expectedCommit,"expectedCommit");
+  if(!["candidate","stable"].includes(expectedChannel))throw new Error("P22_RELEASE_CHANNEL_INVALID");
+  if(expectedCommit!==null)requireCommit(expectedCommit,"expectedCommit");
+  if(expectedChannel==="stable"&&!expectedCommit)throw new Error("P22_STABLE_COMMIT_REQUIRED");
   const normalized=baseUrl.replace(/\/$/,"");
   const paths=[...new Set(requiredPaths)];
   const checks=[];
@@ -94,12 +101,14 @@ export async function probeProduction({baseUrl,expectedCommit,requiredPaths,maxH
   if(releaseMetaCheck?.ok){
     try{
       releaseMeta=JSON.parse(releaseMetaCheck.body);
+      const observedCommit=String(releaseMeta?.commit??"");
       releaseMetaValid=
         releaseMeta?.schema==="thiepn-japanese-release-meta"&&
         releaseMeta?.schemaVersion===1&&
         releaseMeta?.phase==="P22"&&
-        releaseMeta?.channel==="stable"&&
-        String(releaseMeta?.commit??"").toLowerCase()===expectedCommit.toLowerCase();
+        releaseMeta?.channel===expectedChannel&&
+        /^[a-f0-9]{40}$/i.test(observedCommit)&&
+        (expectedCommit===null||observedCommit.toLowerCase()===expectedCommit.toLowerCase());
     }catch{/* invalid JSON stays false */}
   }
   const pathAvailability=checks.every((item)=>item.ok);
@@ -110,7 +119,9 @@ export async function probeProduction({baseUrl,expectedCommit,requiredPaths,maxH
     schemaVersion:1,
     checkedAt:now.toISOString(),
     baseUrl:normalized,
-    expectedCommit:expectedCommit.toLowerCase(),
+    expectedCommit:expectedCommit?.toLowerCase()??null,
+    expectedChannel,
+    observedCommit:typeof releaseMeta?.commit==="string"?releaseMeta.commit.toLowerCase():null,
     healthy,
     pathAvailability,
     homepageLatencyOk,
@@ -128,7 +139,9 @@ export function reportMarkdown(report){
     "",
     "- Checked: "+report.checkedAt,
     "- URL: "+report.baseUrl,
-    "- Expected commit: "+report.expectedCommit,
+    "- Expected channel: "+report.expectedChannel,
+    "- Expected commit: "+(report.expectedCommit??"dynamic candidate"),
+    "- Observed commit: "+(report.observedCommit??"unavailable"),
     "- Result: "+(report.healthy?"HEALTHY":"UNHEALTHY"),
     "- Homepage latency: "+(report.homepageElapsedMs===null?"n/a":report.homepageElapsedMs+" ms")+" / "+report.maxHomepageMs+" ms max",
     "- Release metadata matches: "+(report.releaseMetaValid?"yes":"no"),
@@ -163,7 +176,8 @@ export async function runCli(args=process.argv.slice(2)){
   const production=summarizeProductionManifest(manifest);
   if(!baseUrl)baseUrl=production.publicUrl;
   if(!expectedCommit)expectedCommit=production.releaseCommit;
-  if(!baseUrl||!expectedCommit){
+  const expectedChannel=production.status==="candidate"?"candidate":"stable";
+  if(!baseUrl||(expectedChannel==="stable"&&!expectedCommit)){
     const inactive={
       schema:"thiepn-japanese-p22-production-smoke",
       schemaVersion:1,
@@ -182,7 +196,7 @@ export async function runCli(args=process.argv.slice(2)){
     return inactive;
   }
 
-  const report=await probeProduction({baseUrl,expectedCommit,requiredPaths:production.requiredPaths,maxHomepageMs:production.maxHomepageMs});
+  const report=await probeProduction({baseUrl,expectedCommit,expectedChannel,requiredPaths:production.requiredPaths,maxHomepageMs:production.maxHomepageMs});
   const target=path.resolve(ROOT,outDir);
   fs.mkdirSync(target,{recursive:true});
   fs.writeFileSync(path.join(target,"p22-production-smoke.json"),JSON.stringify(report,null,2)+"\n");
