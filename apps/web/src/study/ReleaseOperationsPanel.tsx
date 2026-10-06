@@ -34,10 +34,10 @@ export function ReleaseOperationsPanel(){
 
   return <section className="release-operations">
     <div className="section-heading">
-      <div><span className="course-kicker">P11 / P21 RELEASE EVIDENCE</span><h2>Keep external validation and final device acceptance explicit</h2></div>
+      <div><span className="course-kicker">P11 / P21 / P22 RELEASE OPERATIONS</span><h2>Activation, production evidence and maintenance stay fail-closed</h2></div>
       <span className="course-count">P9 media provenance + external evidence remain authoritative</span>
     </div>
-    <p>P11 remains the independent productive-language release-evidence track. P21 adds the final technical/device gate but does not replace P11: automated regression, physical-device acceptance and external validation remain separate evidence classes.</p>
+    <p>P22 can package and monitor a stable release only after the independent P11 productive-language evidence and strict P21 real-device/technical gate both pass. Production deployment identity, runtime health and defect-only maintenance remain separate operational evidence rather than being inferred from this screen.</p>
 
     <div className="release-check-columns">
       <article>
@@ -75,6 +75,16 @@ export function ReleaseOperationsPanel(){
       <span>Repository/CI evidence only · never inferred from this browser session</span>
       <p>The final release candidate requires a real Android standalone-PWA pass bound to the exact tested commit. Playwright Pixel/compact profiles remain automated regression evidence and cannot satisfy the physical-device gate.</p>
     </div>
-    <p className="course-note">P11 remains <code>HOLD_B2_RELEASE_CANDIDATE</code> until a real external review is admitted. P12 curriculum development is intentionally decoupled from that release-evidence gate by project-owner decision; the evidence record itself remains unchanged and can still be completed later.</p>
+    <div className="release-human-note">
+      <strong>P22 stable activation</strong>
+      <span>Strict P11 + strict P21 required before an immutable stable package can be created</span>
+      <p>The activation workflow embeds the exact release commit, refuses tag overwrite and produces a deployable static artifact. A GitHub release artifact is not treated as proof that production deployment succeeded.</p>
+    </div>
+    <div className="release-human-note">
+      <strong>P22 production + maintenance</strong>
+      <span>Scheduled identity/availability smoke · defect-only capability freeze</span>
+      <p>Production monitoring verifies the deployed release identity and required public paths. Maintenance accepts defect, security, privacy, accessibility, dependency, content-correction, reliability and operations work only; capability expansion is outside P22.</p>
+    </div>
+    <p className="course-note">P22 does not erase earlier evidence gates. If P11 external validation or P21 physical-device evidence is still incomplete, the stable activation workflow remains blocked even when normal CI is green.</p>
   </section>;
 }
