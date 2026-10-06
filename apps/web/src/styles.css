@@ -620,5 +620,5 @@ button{touch-action:manipulation}
 .skip-link:focus{transform:translateY(0)}
 :where(button,a,input,textarea,select,summary):focus-visible{outline:3px solid #1f2937;outline-offset:3px}
 :where(code,a,.source-note,.course-note,.p20-boundary){overflow-wrap:anywhere}
-@media(max-width:760px){input,textarea,select{font-size:16px}}
+@media(max-width:760px){input,textarea,select{font-size:16px}.p15-tabs button,.p17-tabs button,.p18-tabs button,.p19-tabs button{min-height:44px}}
 @media(prefers-reduced-motion:reduce){.skip-link{transition:none}}
