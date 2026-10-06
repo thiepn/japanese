@@ -75,6 +75,29 @@ describe("P9 THIEPN Account boundary",()=>{
     ).toBeNull();
   });
 
+  it("surfaces an invalid Account callback as expired instead of silently anonymous",async()=>{
+    const flow="d".repeat(64);
+    window.history.replaceState(null,"",`/japanese/auth/callback/?flow=${flow}`);
+    sessionStorage.setItem(
+      "thiepn:japanese-login:v1",
+      JSON.stringify({flow,started:Date.now(),returnTo:"/japanese/"}),
+    );
+    const client={
+      auth:{
+        getUser:vi.fn(),
+        getSession:vi.fn(),
+        exchangeCodeForSession:vi.fn(),
+        signInWithOAuth:vi.fn(),
+        signOut:vi.fn(),
+        onAuthStateChange:vi.fn().mockReturnValue({data:{subscription:{closed:false,unsubscribe:vi.fn()}}}),
+      },
+    };
+    const provider=createThiepnAccountAuthProvider({client:client as never});
+    expect(await provider.refresh()).toMatchObject({status:"expired",accountId:null});
+    expect(client.auth.exchangeCodeForSession).not.toHaveBeenCalled();
+    window.history.replaceState(null,"","/");
+  });
+
   it("uses canonical Account user verification and bearer session transport",async()=>{
     const userId="11111111-1111-4111-8111-111111111111";
     const client={
