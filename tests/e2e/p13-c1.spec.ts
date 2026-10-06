@@ -1,7 +1,7 @@
 import { expect,test } from "@playwright/test";
 
 test("P13 exposes C1 native depth, multi-source synthesis and hidden-future spontaneous interaction",async({page})=>{
-  await page.goto("/");
+  await page.goto("./");
 
   await page.getByRole("button",{name:"Learn"}).evaluate((button)=>(button as HTMLButtonElement).click());
   await expect(page.getByText("P18 ADVANCED LIVE INTERACTION",{exact:true})).toBeVisible();
