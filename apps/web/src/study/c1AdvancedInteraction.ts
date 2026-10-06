@@ -184,7 +184,7 @@ export async function saveC1AdvancedInteractionTurn(input:{
   if(specialistTrackId&&!quality.specialistTracks.some((item)=>item.id===specialistTrackId))throw new Error("P18_UNKNOWN_SPECIALIST_TRACK");
   const turn:C1AdvancedInteractionTurn={
     id:"p18-turn-"+crypto.randomUUID(),sessionId,moveId:move.id,pressureType:move.type,family:move.family,
-    ...(specialistTrackId?{specialistTrackId}:{}),committedStatement,pressureResponse,inputMode,
+    ...(specialistTrackId?{specialistTrackId}:{}),committedStatement,pressureResponse,inputMode:input.inputMode,
     responseSeconds:Math.round(input.responseSeconds*10)/10,occurredAt:new Date().toISOString()
   };
   await saveStudyEvent(baseEvent({
