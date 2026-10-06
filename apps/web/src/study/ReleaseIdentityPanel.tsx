@@ -18,11 +18,13 @@ export async function getReleaseIdentity(fetchImpl:typeof fetch=fetch):Promise<R
     const value=raw as Record<string,unknown>;
     if(value.schema!=="thiepn-japanese-release-meta"||value.schemaVersion!==1||value.phase!=="P22")return null;
     if(!["development","candidate","stable"].includes(String(value.channel)))return null;
+    const channel=value.channel as ReleaseIdentity["channel"];
     const commit=typeof value.commit==="string"&&/^[a-f0-9]{40}$/i.test(value.commit)?value.commit.toLowerCase():null;
     const builtAt=typeof value.builtAt==="string"&&Number.isFinite(Date.parse(value.builtAt))?value.builtAt:null;
+    if(channel!=="development"&&(!commit||!builtAt))return null;
     return {
       schema:"thiepn-japanese-release-meta",schemaVersion:1,phase:"P22",
-      channel:value.channel as ReleaseIdentity["channel"],commit,builtAt
+      channel,commit,builtAt
     };
   }catch{return null;}
 }
