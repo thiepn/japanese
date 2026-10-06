@@ -142,7 +142,49 @@ export const scenarioChains:ScenarioChain[]=[
       {id:"repair",title:"Overgeneralization repair",scenario:"The interlocutor summarizes your revised position too broadly. Correct the summary and state the boundary condition precisely.",goals:["repair overgeneralization","state boundary condition","avoid unnecessary complexity"],pressure:"misrepresentation"},
       {id:"synthesis",title:"Portable version",scenario:"Give the strongest version of the principle that can responsibly transfer across domains, including one explicit condition where it should not be used.",goals:["synthesize revised principle","state transfer condition","state failure condition"],pressure:"final abstraction"}
     ]
-  }
+,
+  {
+    id:"c1-live-committee-repair",
+    title:"Survive a hostile committee interruption",
+    domain:"public hearing + institutional accountability",
+    description:"Hold the floor through interruption, forced clarification, hostile paraphrase and a final compressed answer without losing the argument's caveats.",
+    level:"C1",interactionStyle:"spontaneous",hiddenFutureStages:true,
+    stages:[
+      {id:"position",title:"Opening statement",scenario:"You have ninety seconds before a committee to defend a contested recommendation. State the recommendation, strongest reason and the most important limitation.",goals:["state a bounded position","prioritize one reason","name the decisive caveat"]},
+      {id:"interrupt",title:"Chair interruption",scenario:"The chair interrupts before you finish: 『結局、賛成なのか反対なのか、どちらですか。』 Recover the floor politely, answer the immediate demand and restore the missing qualification.",goals:["recover the floor","answer directly","restore qualification"],pressure:"interruption + forced binary"},
+      {id:"clarify",title:"Reference challenge",scenario:"A member says your use of 『それ』『この対応』 and responsibility language is too vague for the record. Clarify the actor, action and condition without starting over.",goals:["repair reference ambiguity","name responsibility","preserve continuity"],pressure:"clarification demand"},
+      {id:"reframe",title:"Hostile paraphrase",scenario:"Another member summarizes your position as 『失敗を認めず、判断を先送りしたいだけですね』. Correct the paraphrase without attacking the speaker and state the real point in one coherent response.",goals:["reject misrepresentation","acknowledge legitimate concern","restate position"],pressure:"hostile paraphrase"},
+      {id:"close",title:"Thirty-second close",scenario:"The chair gives you thirty seconds. State what is known, what remains uncertain, what action you recommend and when the position should be reviewed.",goals:["compress accurately","state action","state review condition"],pressure:"time pressure"}
+    ]
+  },
+  {
+    id:"c1-specialist-roundtable",
+    title:"Handle a specialist roundtable with shifting audiences",
+    domain:"expert discussion + public explanation",
+    description:"Move between specialist precision and accessible explanation while answering evidence conflict, terminology challenge and rapid audience shifts.",
+    level:"C1",interactionStyle:"spontaneous",hiddenFutureStages:true,
+    stages:[
+      {id:"position",title:"Expert position",scenario:"At a specialist roundtable, state a technically precise position and the evidence distinction that matters most.",goals:["use precise specialist language","state evidential boundary","avoid unnecessary background"]},
+      {id:"terminology",title:"Terminology challenge",scenario:"A specialist says one key term is being used too broadly and asks you to distinguish it from a nearby concept.",goals:["define the term operationally","contrast a near-synonym","repair imprecision"],pressure:"lexical precision"},
+      {id:"public",title:"Audience switch",scenario:"A non-specialist observer joins and asks you to explain the same point without jargon. Keep the important caveat and do not simplify it into a false binary.",goals:["shift register","preserve caveat","replace jargon with explanation"],pressure:"audience shift"},
+      {id:"evidence",title:"Fresh counterevidence",scenario:"A participant introduces evidence that weakens one part of your claim. Recalibrate the position explicitly rather than defending the original wording at all costs.",goals:["absorb counterevidence","narrow claim","state what still holds"],pressure:"evidence conflict"},
+      {id:"synthesis",title:"Roundtable synthesis",scenario:"Summarize the strongest common ground, the unresolved technical disagreement and the next discriminating question for both expert and non-expert listeners.",goals:["synthesize across audiences","name unresolved point","give next question"],pressure:"dual-audience synthesis"}
+    ]
+  },
+  {
+    id:"c1-cross-domain-live-transfer",
+    title:"Transfer expertise under live challenge",
+    domain:"cross-domain specialist transfer",
+    description:"Defend a principle from one specialist domain while the interlocutor moves it into an unfamiliar domain, introduces a counterexample and demands a portable version.",
+    level:"C1",interactionStyle:"spontaneous",hiddenFutureStages:true,
+    stages:[
+      {id:"position",title:"Source-domain principle",scenario:"State one principle from a domain you know well, explain why it works there and name the condition that makes it reliable.",goals:["state principle","name mechanism","state source-domain condition"]},
+      {id:"transfer",title:"Unexpected transfer",scenario:"The interlocutor applies your principle to a very different field and says the same rule should hold unchanged. Decide immediately what transfers and what does not.",goals:["separate portable core from context","name missing assumption","avoid false analogy"],pressure:"domain transfer"},
+      {id:"counterexample",title:"Counterexample",scenario:"A concrete case in the target domain violates your first transferred version. Revise the principle rather than dismissing the example.",goals:["engage counterexample","revise boundary","preserve useful core"],pressure:"counterexample"},
+      {id:"repair",title:"Overgeneralized summary",scenario:"The interlocutor repeats your revised position too broadly. Correct the summary concisely and specify the condition that prevents overgeneralization.",goals:["repair summary","state boundary condition","keep language concise"],pressure:"overgeneralization"},
+      {id:"synthesis",title:"Portable formulation",scenario:"Give the strongest version of the principle that can travel across domains, plus one explicit case where it should not be used without further evidence.",goals:["formulate portable principle","state failure condition","calibrate certainty"],pressure:"portable synthesis"}
+    ]
+  }  }
 ];
 
 export function scenarioChain(id:string):ScenarioChain{
