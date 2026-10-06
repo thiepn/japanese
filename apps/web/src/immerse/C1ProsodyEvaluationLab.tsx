@@ -1,7 +1,7 @@
 import { useEffect,useRef,useState } from "react";
 import type { PrivateProsodyCaptureRecord } from "@thiepn/local-db";
 import {
-  analyzeAmplitudeEnvelope,buildC2OrientedReviewPacket,c1OverlapListeningTasks,c1ProsodyTargets,
+  analyzeAmplitudeEnvelope,buildC2OrientedReviewPacket,c1OverlapListeningTasks,c1ProsodyTargets,c2ReviewScaleAnchors,
   deleteLocalP19ProsodyCapture,getC1ProsodyEvaluationProgress,listLocalP19ProsodyCaptures,
   overlapSources,saveC1OverlapListeningAttempt,saveC1ProsodyCapture,saveC2ExternalHumanReview,
   type C1OverlapListeningTask,type C1ProsodyEvaluationProgress,type C1ProsodyTargetId,
@@ -284,6 +284,7 @@ export function C1ProsodyEvaluationLab(){
             ["overlapListening","Listening under pressure"]
           ] as const).map(([key,label])=><label key={key}><input type="checkbox" checked={observed[key]} onChange={(event)=>setObserved((current)=>({...current,[key]:event.target.checked}))}/><span>{label}</span></label>)}
         </fieldset>
+        <details className="p19-scale"><summary>0–5 reviewer scale anchors</summary><div>{c2ReviewScaleAnchors.map((anchor)=><p key={anchor.score}><strong>{anchor.score} · {anchor.label}</strong><span>{anchor.description}</span></p>)}</div></details>
         <div className="p19-rubric">{DIMENSIONS.map((dimension)=><label key={dimension.id}><span>{dimension.label}</span><select value={scores[dimension.id]===null?"":String(scores[dimension.id])} onChange={(event)=>setScores((current)=>({...current,[dimension.id]:event.target.value===""?null:Number(event.target.value)}))}>
           <option value="">Not observed</option>{[0,1,2,3,4,5].map((value)=><option value={value} key={value}>{value}/5</option>)}
         </select></label>)}</div>
