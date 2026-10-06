@@ -1,6 +1,4 @@
-@layer j1.tokens,j1.base,j1.materials,j1.patterns,j1.primitives,j1.motion,j1.sandbox;
 
-@layer j1.tokens{
   :root{
     --j-washi-0:#fbf8f1;
     --j-washi-1:#f3eee3;
@@ -91,9 +89,9 @@
   [data-j-season="autumn"]{--j-season-accent:#b7412d;--j-season-soft:#d4a35f;--j-season-deep:#5b291f}
   [data-j-season="winter"]{--j-season-accent:#53708a;--j-season-soft:#d8e2e8;--j-season-deep:#1e2b36}
   [data-j-season="new-year"]{--j-season-accent:#c63c2f;--j-season-soft:#f2e8d7;--j-season-deep:#6f1716}
-}
 
-@layer j1.base{
+
+
   .j1-root,.j-surface{
     font-family:var(--j-font-ui);
     color:var(--j-fg);
@@ -136,9 +134,9 @@
     outline:3px solid var(--j-focus);
     outline-offset:3px;
   }
-}
 
-@layer j1.materials{
+
+
   .j-material-washi{
     background-color:var(--j-bg);
     background-image:
@@ -190,9 +188,9 @@
       radial-gradient(ellipse at 12% 45%,rgba(237,231,220,.06),transparent 44%),
       radial-gradient(ellipse at 84% 58%,rgba(84,137,163,.12),transparent 40%);
   }
-}
 
-@layer j1.patterns{
+
+
   .j-pattern{
     --j-pattern-color:color-mix(in srgb,var(--j-fg) 14%,transparent);
     color:var(--j-pattern-color);
@@ -271,9 +269,9 @@
     opacity:.7;
     mask-image:linear-gradient(to bottom,black,transparent 92%);
   }
-}
 
-@layer j1.primitives{
+
+
   .j-surface{
     position:relative;
     overflow:hidden;
@@ -404,9 +402,9 @@
     border-right:1px solid var(--j-line);
     background:color-mix(in srgb,var(--j-bg-elevated) 88%,transparent);
   }
-}
 
-@layer j1.motion{
+
+
   @keyframes j1-hanko-land{
     0%{opacity:0;transform:translateY(-14px) scale(1.18) rotate(-4deg)}
     68%{opacity:1;transform:translateY(2px) scale(.96) rotate(-2deg)}
@@ -437,9 +435,9 @@
     .j-motion-hanko,.j-motion-ink,.j-motion-fusuma,.j-motion-noren{animation:none!important}
     .j-ink-progress__fill,.j-brush-button::after{transition:none!important}
   }
-}
 
-@layer j1.sandbox{
+
+
   .j1-sandbox{
     min-height:100vh;
     padding:24px;
@@ -496,4 +494,4 @@
     .j1-sandbox__motion{grid-template-columns:1fr}
   }
   @media(max-width:460px){.j1-sandbox__grid{grid-template-columns:1fr}.j1-sandbox__title{align-items:flex-start}}
-}
+
