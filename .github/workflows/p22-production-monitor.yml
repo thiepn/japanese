@@ -1,0 +1,49 @@
+name: P22 Production Monitor
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+
+      - run: pnpm install --no-frozen-lockfile
+
+      - name: Read production activation state
+        id: production
+        run: |
+          STATUS="$(node -e 'const x=require("./release/p22-production.json");process.stdout.write(String(x.status))')"
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+
+      - name: Record inactive production state
+        if: steps.production.outputs.status == 'inactive' || steps.production.outputs.status == 'candidate'
+        run: pnpm monitor:p22
+
+      - name: Strict production identity and availability monitor
+        if: steps.production.outputs.status == 'active' || steps.production.outputs.status == 'maintenance'
+        run: pnpm monitor:p22:strict
+
+      - name: Upload production monitor evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p22-production-monitor
+          path: |
+            artifacts/p22-production-smoke.json
+            artifacts/p22-production-smoke.md
+          if-no-files-found: ignore
