@@ -3,6 +3,7 @@ import { getC1PortfolioSummary,type C1PortfolioSummary } from "./c1Reliability";
 import { getC1EnvironmentProgress,type C1EnvironmentProgress } from "./c1Environment";
 import { getC1ResearchQualityProgress,type C1ResearchQualityProgress } from "./c1ResearchQuality";
 import { getC1PrecisionProgress,type C1PrecisionProgress } from "./c1Precision";
+import { getC1AdvancedInteractionProgress,type C1AdvancedInteractionProgress } from "./c1AdvancedInteraction";
 import {
   downloadC1Portfolio,getC1PortfolioExport,serializeC1PortfolioJson,serializeC1PortfolioMarkdown
 } from "./c1PortfolioExport";
@@ -12,8 +13,9 @@ export function C1Portfolio(){
   const [environment,setEnvironment]=useState<C1EnvironmentProgress|null>(null);
   const [quality,setQuality]=useState<C1ResearchQualityProgress|null>(null);
   const [precision,setPrecision]=useState<C1PrecisionProgress|null>(null);
+  const [interaction,setInteraction]=useState<C1AdvancedInteractionProgress|null>(null);
   const [exporting,setExporting]=useState(false);
-  useEffect(()=>{void Promise.all([getC1PortfolioSummary(),getC1EnvironmentProgress(),getC1ResearchQualityProgress(),getC1PrecisionProgress()]).then(([nextPortfolio,nextEnvironment,nextQuality,nextPrecision])=>{setPortfolio(nextPortfolio);setEnvironment(nextEnvironment);setQuality(nextQuality);setPrecision(nextPrecision);}).catch(()=>{setPortfolio(null);setEnvironment(null);setQuality(null);setPrecision(null);});},[]);
+  useEffect(()=>{void Promise.all([getC1PortfolioSummary(),getC1EnvironmentProgress(),getC1ResearchQualityProgress(),getC1PrecisionProgress(),getC1AdvancedInteractionProgress()]).then(([nextPortfolio,nextEnvironment,nextQuality,nextPrecision,nextInteraction])=>{setPortfolio(nextPortfolio);setEnvironment(nextEnvironment);setQuality(nextQuality);setPrecision(nextPrecision);setInteraction(nextInteraction);}).catch(()=>{setPortfolio(null);setEnvironment(null);setQuality(null);setPrecision(null);setInteraction(null);});},[]);
 
   async function exportPortfolio(format:"json"|"markdown"){
     setExporting(true);
@@ -30,10 +32,10 @@ export function C1Portfolio(){
 
   return <section className="b2-portfolio">
     <div className="section-heading">
-      <div><span className="course-kicker">P17 C1→C2 PORTFOLIO</span><h2>Long-form autonomy + precision under specialist pressure</h2></div>
+      <div><span className="course-kicker">P18 C1→C2 PORTFOLIO</span><h2>Precision + live interaction under unpredictable pressure</h2></div>
       <span className="course-count">{portfolio.activeDays} active C1 days</span>
     </div>
-    <p>P17 keeps the P14–P16 longitudinal, real-source and research-quality evidence, then adds precision transformation, specialist discourse reliability, fresh-source reconstruction and deliberate repair after human feedback. It remains descriptive evidence rather than a CEFR C2 judgment.</p>
+    <p>P18 keeps the P14–P17 longitudinal, source, review and precision evidence, then adds hidden interaction pressure, real-time repair, real human-partner logs and cross-domain specialist transfer. It remains descriptive evidence rather than a CEFR C2 judgment.</p>
     <div className="portfolio-export-actions">
       <button className="unit-action" disabled={exporting} type="button" onClick={()=>void exportPortfolio("json")}>Export C1 JSON</button>
       <button className="quiet-button" disabled={exporting} type="button" onClick={()=>void exportPortfolio("markdown")}>Export C1 Markdown</button>
@@ -109,6 +111,26 @@ export function C1Portfolio(){
       <p className="course-note">P17 precision work is structural and reflective evidence. It does not automatically prove semantic quality, expert-level subject knowledge, C2 proficiency or acoustic speaking quality.</p>
     </section>:null}
 
+    {interaction?<section className="p18-portfolio">
+      <div className="section-heading"><div><span className="course-kicker">P18 ADVANCED INTERACTION</span><h3>Hidden pressure + real-time repair + real human exchange</h3></div><span>{interaction.robustSessions} robust pressure sessions</span></div>
+      <div className="portfolio-stats">
+        <PortfolioStat value={interaction.turns.length} label="Pressure turns"/>
+        <PortfolioStat value={interaction.pressureTypes} label="Pressure types"/>
+        <PortfolioStat value={interaction.completeSessions} label="Complete sessions"/>
+        <PortfolioStat value={interaction.robustSessions} label="Robust sessions"/>
+        <PortfolioStat value={interaction.humanInteractions.length} label="Human interactions"/>
+        <PortfolioStat value={interaction.humanInteractionMinutes} label="Human minutes"/>
+        <PortfolioStat value={interaction.transfers.length} label="Domain transfers"/>
+        <PortfolioStat value={interaction.activeDays} label="Interaction days"/>
+      </div>
+      {interaction.sessions.length?<div className="portfolio-mission-list">{interaction.sessions.slice(0,8).map((session)=><div key={session.sessionId}>
+        <div><strong>Pressure session</strong><span>{session.robustPressureCoverage?"robust":session.complete?"complete":"developing"}</span></div>
+        <div className="meter"><span style={{width:Math.min(100,Math.round(session.pressureTypes/6*100))+"%"}}/></div>
+        <small>{session.turns} turns · {session.pressureTypes} pressure types · {session.families} pressure families · {session.speechTurns} speech transcript turns · {session.averageResponseSeconds.toFixed(1)}s average response latency</small>
+      </div>)}</div>:null}
+      <p className="course-note">Simulator pressure is native-style interaction practice, not verified native-speaker evidence. Human-partner logs are separately identified and partner background is learner-reported. Timing is descriptive and does not become a fluency score.</p>
+    </section>:null}
+
     <div className="portfolio-columns">
       <article>
         <span className="course-kicker">DOMAIN SPECIALIZATION</span>
@@ -149,7 +171,7 @@ export function C1Portfolio(){
       </article>)}</div>
     </details>:null}
 
-    <p className="course-note">Repeated internal success, source exposure, precision transformation, learner source evaluation, human review and AI-supported interaction remain explicitly bounded evidence. P17 does not convert them into accredited C2 certification, independent fact verification, automatic mastery updates, subject-matter expertise or acoustic scoring.</p>
+    <p className="course-note">Repeated internal success, source exposure, precision transformation, simulated pressure, human-partner logs, learner source evaluation, human review and AI-supported interaction remain explicitly bounded evidence. P18 does not convert them into accredited C2 certification, verified partner identity, automatic mastery updates, subject-matter expertise, fluency scoring or acoustic pronunciation scoring.</p>
   </section>;
 }
 
