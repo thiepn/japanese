@@ -34,8 +34,6 @@ describe("P22 deployment identity",()=>{
       commit:"short",
       builtAt:"not-a-date"
     }),{status:200}));
-    expect(invalidCommit?.channel).toBe("stable");
-    expect(invalidCommit?.commit).toBeNull();
-    expect(invalidCommit?.builtAt).toBeNull();
+    expect(invalidCommit).toBeNull();
   });
 });
