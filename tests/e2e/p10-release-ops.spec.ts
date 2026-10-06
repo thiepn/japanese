@@ -5,7 +5,7 @@ test("P21 keeps independent P11 evidence visible inside final release hardening"
 
   await page.getByRole("button",{name:"Progress"}).click();
   await expect(page.getByRole("heading",{name:"Review productive evidence without rewriting mastery"})).toBeVisible();
-  await expect(page.getByRole("heading",{name:"Qualify B2 before opening C1"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Keep external validation and final device acceptance explicit"})).toBeVisible();
   await expect(page.getByText("P11 external-review packet readiness")).toBeVisible();
   await expect(page.getByRole("button",{name:"Export P11 external-review handoff"})).toBeDisabled();
   await expect(page.getByText("P11 external-review handoff",{exact:true})).toBeVisible();
