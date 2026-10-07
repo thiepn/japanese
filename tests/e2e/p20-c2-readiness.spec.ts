@@ -3,6 +3,7 @@ import { expect,test } from "@playwright/test";
 test("P20 exposes the longitudinal readiness matrix and preserves the certification boundary",async({page})=>{
   await page.goto("./");
   await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
+  await page.getByTestId("j8-c1-vault").locator("summary").click();
   await expect(page.getByText("P20 C1→C2 PORTFOLIO",{exact:true})).toBeVisible();
 
   const panel=page.locator(".p20-readiness");
@@ -19,6 +20,7 @@ test("P20 exposes the longitudinal readiness matrix and preserves the certificat
 test("P20 keeps reviewer calibration explicit even when no broad review pair exists",async({page})=>{
   await page.goto("./");
   await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
+  await page.getByTestId("j8-c1-vault").locator("summary").click();
   const panel=page.locator(".p20-readiness");
   await expect(panel.getByRole("heading",{name:"Compare broad reviewers instead of averaging disagreement away"})).toBeVisible();
   await expect(panel.getByText(/Two broad reviews are needed before reviewer calibration can be compared/)).toBeVisible();
