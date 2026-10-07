@@ -1,0 +1,463 @@
+:root{
+  --j10-season-ink:var(--j-season-accent);
+  --j10-season-secondary:var(--j-season-deep);
+  --j10-season-wash:transparent;
+  --j10-season-glow:transparent;
+  --j10-season-paper:var(--j-bg-elevated);
+  --j10-season-line:color-mix(in srgb,var(--j-season-accent) 20%,transparent);
+}
+
+[data-j-season="spring"]{
+  --j10-season-ink:#c45d68;
+  --j10-season-secondary:#617d58;
+  --j10-season-wash:color-mix(in srgb,#efc8ce 18%,transparent);
+  --j10-season-glow:color-mix(in srgb,#dfe9ce 16%,transparent);
+  --j10-season-paper:color-mix(in srgb,#fffaf7 96%,#efc8ce);
+  --j10-season-line:color-mix(in srgb,#c45d68 22%,transparent);
+}
+
+[data-j-season="tsuyu"]{
+  --j10-season-ink:#496c8b;
+  --j10-season-secondary:#687c8e;
+  --j10-season-wash:color-mix(in srgb,#aebfd2 18%,transparent);
+  --j10-season-glow:color-mix(in srgb,#c8d3dc 12%,transparent);
+  --j10-season-paper:color-mix(in srgb,var(--j-bg-elevated) 96%,#b9c8dd);
+  --j10-season-line:color-mix(in srgb,#496c8b 28%,transparent);
+}
+
+[data-j-season="summer"]{
+  --j10-season-ink:#d85d37;
+  --j10-season-secondary:#17486b;
+  --j10-season-wash:color-mix(in srgb,#17486b 12%,transparent);
+  --j10-season-glow:color-mix(in srgb,#efc06e 18%,transparent);
+  --j10-season-paper:color-mix(in srgb,var(--j-bg-elevated) 97%,#efc06e);
+  --j10-season-line:color-mix(in srgb,#17486b 26%,transparent);
+}
+
+[data-j-season="autumn"]{
+  --j10-season-ink:#b7412d;
+  --j10-season-secondary:#8a642f;
+  --j10-season-wash:color-mix(in srgb,#d4a35f 16%,transparent);
+  --j10-season-glow:color-mix(in srgb,#b7412d 10%,transparent);
+  --j10-season-paper:color-mix(in srgb,var(--j-bg-elevated) 96%,#d4a35f);
+  --j10-season-line:color-mix(in srgb,#b7412d 24%,transparent);
+}
+
+[data-j-season="winter"]{
+  --j10-season-ink:#53708a;
+  --j10-season-secondary:#7a3842;
+  --j10-season-wash:color-mix(in srgb,#d8e2e8 20%,transparent);
+  --j10-season-glow:color-mix(in srgb,#eef3f5 22%,transparent);
+  --j10-season-paper:color-mix(in srgb,var(--j-bg-elevated) 97%,#d8e2e8);
+  --j10-season-line:color-mix(in srgb,#53708a 22%,transparent);
+}
+
+[data-j-season="new-year"]{
+  --j10-season-ink:#c63c2f;
+  --j10-season-secondary:#b88a3b;
+  --j10-season-wash:color-mix(in srgb,#f2e8d7 18%,transparent);
+  --j10-season-glow:color-mix(in srgb,#d6b76b 14%,transparent);
+  --j10-season-paper:color-mix(in srgb,var(--j-bg-elevated) 96%,#f2e8d7);
+  --j10-season-line:color-mix(in srgb,#b88a3b 28%,transparent);
+}
+
+[data-j-theme="dark"][data-j-season="spring"],
+[data-j-theme="dark"] [data-j-season="spring"]{
+  --j10-season-wash:color-mix(in srgb,#8a4652 12%,transparent);
+  --j10-season-glow:color-mix(in srgb,#60734f 10%,transparent);
+  --j10-season-paper:color-mix(in srgb,var(--j-bg-elevated) 97%,#5b3138);
+}
+
+[data-j-theme="dark"][data-j-season="tsuyu"],
+[data-j-theme="dark"] [data-j-season="tsuyu"]{
+  --j10-season-wash:color-mix(in srgb,#2c536f 18%,transparent);
+  --j10-season-glow:color-mix(in srgb,#355b70 10%,transparent);
+  --j10-season-paper:color-mix(in srgb,var(--j-bg-elevated) 97%,#284458);
+}
+
+[data-j-theme="dark"][data-j-season="summer"],
+[data-j-theme="dark"] [data-j-season="summer"]{
+  --j10-season-wash:color-mix(in srgb,#15384f 22%,transparent);
+  --j10-season-glow:color-mix(in srgb,#b46d2d 12%,transparent);
+  --j10-season-paper:color-mix(in srgb,var(--j-bg-elevated) 97%,#3a2b1d);
+}
+
+[data-j-theme="dark"][data-j-season="autumn"],
+[data-j-theme="dark"] [data-j-season="autumn"]{
+  --j10-season-wash:color-mix(in srgb,#63311f 17%,transparent);
+  --j10-season-glow:color-mix(in srgb,#8f5f2a 10%,transparent);
+  --j10-season-paper:color-mix(in srgb,var(--j-bg-elevated) 97%,#44271e);
+}
+
+[data-j-theme="dark"][data-j-season="winter"],
+[data-j-theme="dark"] [data-j-season="winter"]{
+  --j10-season-wash:color-mix(in srgb,#2d4759 18%,transparent);
+  --j10-season-glow:color-mix(in srgb,#9baeba 8%,transparent);
+  --j10-season-paper:color-mix(in srgb,var(--j-bg-elevated) 98%,#314352);
+}
+
+[data-j-theme="dark"][data-j-season="new-year"],
+[data-j-theme="dark"] [data-j-season="new-year"]{
+  --j10-season-wash:color-mix(in srgb,#72231e 14%,transparent);
+  --j10-season-glow:color-mix(in srgb,#9f7e3f 11%,transparent);
+  --j10-season-paper:color-mix(in srgb,var(--j-bg-elevated) 97%,#3e291c);
+}
+
+.j10-seasonal-world{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+  pointer-events:none;
+  opacity:.82;
+}
+
+.j10-seasonal-world__wash{
+  position:absolute;
+  inset:-8%;
+  background:
+    radial-gradient(circle at 82% 18%,var(--j10-season-glow),transparent 27%),
+    radial-gradient(circle at 18% 72%,var(--j10-season-wash),transparent 34%);
+}
+
+.j10-seasonal-world__motif,
+.j10-seasonal-world__line,
+.j10-seasonal-world__seal{
+  position:absolute;
+  display:block;
+}
+
+.j10-seasonal-world__seal{
+  right:clamp(24px,6vw,96px);
+  bottom:clamp(42px,9vh,110px);
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border:1px solid color-mix(in srgb,var(--j10-season-ink) 26%,transparent);
+  border-radius:4px;
+  color:color-mix(in srgb,var(--j10-season-ink) 38%,transparent);
+  font-family:var(--j-font-editorial);
+  font-size:13px;
+  font-weight:850;
+  transform:rotate(-4deg);
+}
+
+/* Spring — petals + new green, not a full sakura wallpaper. */
+[data-j10-season="spring"] .j10-seasonal-world__motif{
+  width:26px;
+  height:14px;
+  border-radius:100% 0 100% 0;
+  background:color-mix(in srgb,var(--j10-season-ink) 25%,transparent);
+}
+
+[data-j10-season="spring"] .j10-seasonal-world__motif--a{right:14%;top:18%;transform:rotate(24deg)}
+[data-j10-season="spring"] .j10-seasonal-world__motif--b{right:9%;top:26%;transform:rotate(78deg) scale(.72)}
+[data-j10-season="spring"] .j10-seasonal-world__motif--c{left:16%;bottom:18%;transform:rotate(-18deg) scale(.58);background:color-mix(in srgb,var(--j10-season-secondary) 24%,transparent)}
+
+[data-j10-season="spring"] .j10-seasonal-world__line--a{
+  right:5%;
+  top:11%;
+  width:260px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--j10-season-secondary) 18%,transparent));
+  transform:rotate(-22deg);
+}
+
+[data-j10-season="spring"] .j10-seasonal-world__line--b{
+  left:8%;
+  bottom:14%;
+  width:180px;
+  height:1px;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--j10-season-secondary) 14%,transparent),transparent);
+  transform:rotate(13deg);
+}
+
+/* Tsuyu — fine rain and water rings. */
+[data-j10-season="tsuyu"] .j10-seasonal-world__motif{
+  width:92px;
+  height:24px;
+  border:1px solid color-mix(in srgb,var(--j10-season-ink) 17%,transparent);
+  border-radius:50%;
+}
+
+[data-j10-season="tsuyu"] .j10-seasonal-world__motif--a{right:9%;bottom:13%}
+[data-j10-season="tsuyu"] .j10-seasonal-world__motif--b{right:22%;bottom:24%;transform:scale(.7)}
+[data-j10-season="tsuyu"] .j10-seasonal-world__motif--c{left:12%;bottom:19%;transform:scale(.48)}
+
+[data-j10-season="tsuyu"] .j10-seasonal-world__line{
+  top:-8%;
+  width:1px;
+  height:68%;
+  background:linear-gradient(transparent,color-mix(in srgb,var(--j10-season-ink) 17%,transparent),transparent);
+  transform:rotate(8deg);
+}
+
+[data-j10-season="tsuyu"] .j10-seasonal-world__line--a{right:15%}
+[data-j10-season="tsuyu"] .j10-seasonal-world__line--b{right:31%;height:54%;opacity:.72}
+
+/* Summer — indigo evening + restrained lantern glow. */
+[data-j10-season="summer"] .j10-seasonal-world__motif{
+  width:46px;
+  height:58px;
+  border:1px solid color-mix(in srgb,var(--j10-season-ink) 22%,transparent);
+  border-radius:44% 44% 35% 35%;
+  background:
+    repeating-linear-gradient(0deg,color-mix(in srgb,var(--j10-season-ink) 8%,transparent) 0 1px,transparent 1px 8px),
+    color-mix(in srgb,var(--j10-season-glow) 58%,transparent);
+  box-shadow:0 0 34px color-mix(in srgb,var(--j10-season-glow) 40%,transparent);
+}
+
+[data-j10-season="summer"] .j10-seasonal-world__motif::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:-13px;
+  width:1px;
+  height:13px;
+  background:color-mix(in srgb,var(--j10-season-secondary) 20%,transparent);
+}
+
+[data-j10-season="summer"] .j10-seasonal-world__motif--a{right:9%;top:19%}
+[data-j10-season="summer"] .j10-seasonal-world__motif--b{right:18%;top:30%;transform:scale(.7)}
+[data-j10-season="summer"] .j10-seasonal-world__motif--c{left:12%;bottom:15%;transform:scale(.52);opacity:.55}
+
+[data-j10-season="summer"] .j10-seasonal-world__line--a{
+  right:0;
+  top:8%;
+  width:44%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--j10-season-secondary) 22%,transparent));
+}
+
+[data-j10-season="summer"] .j10-seasonal-world__line--b{
+  left:7%;
+  bottom:12%;
+  width:210px;
+  height:34px;
+  border-top:1px solid color-mix(in srgb,var(--j10-season-secondary) 13%,transparent);
+  border-radius:50%;
+}
+
+/* Autumn — abstract momiji geometry and gold air. */
+[data-j10-season="autumn"] .j10-seasonal-world__motif{
+  width:34px;
+  height:34px;
+  clip-path:polygon(50% 0,61% 31%,94% 18%,72% 47%,100% 57%,65% 62%,73% 100%,50% 73%,28% 100%,35% 62%,0 57%,28% 47%,6% 18%,39% 31%);
+  background:color-mix(in srgb,var(--j10-season-ink) 22%,transparent);
+}
+
+[data-j10-season="autumn"] .j10-seasonal-world__motif--a{right:10%;top:17%;transform:rotate(12deg)}
+[data-j10-season="autumn"] .j10-seasonal-world__motif--b{right:18%;top:28%;transform:rotate(-24deg) scale(.72);background:color-mix(in srgb,var(--j10-season-secondary) 23%,transparent)}
+[data-j10-season="autumn"] .j10-seasonal-world__motif--c{left:11%;bottom:13%;transform:rotate(33deg) scale(.55)}
+
+[data-j10-season="autumn"] .j10-seasonal-world__line--a{
+  right:5%;
+  top:10%;
+  width:230px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--j10-season-secondary) 18%,transparent));
+  transform:rotate(-18deg);
+}
+
+[data-j10-season="autumn"] .j10-seasonal-world__line--b{
+  left:5%;
+  bottom:10%;
+  width:180px;
+  height:1px;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--j10-season-ink) 13%,transparent),transparent);
+  transform:rotate(9deg);
+}
+
+/* Winter — quiet snow, cold air, one plum-toned branch line. */
+[data-j10-season="winter"] .j10-seasonal-world__motif{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:color-mix(in srgb,var(--j-fg) 19%,transparent);
+  box-shadow:
+    38px 27px 0 color-mix(in srgb,var(--j-fg) 13%,transparent),
+    -31px 52px 0 color-mix(in srgb,var(--j-fg) 11%,transparent),
+    67px 74px 0 color-mix(in srgb,var(--j-fg) 10%,transparent);
+}
+
+[data-j10-season="winter"] .j10-seasonal-world__motif--a{right:12%;top:14%}
+[data-j10-season="winter"] .j10-seasonal-world__motif--b{right:28%;top:24%;transform:scale(.72)}
+[data-j10-season="winter"] .j10-seasonal-world__motif--c{left:13%;bottom:18%;transform:scale(.55)}
+
+[data-j10-season="winter"] .j10-seasonal-world__line--a{
+  right:1%;
+  bottom:18%;
+  width:270px;
+  height:2px;
+  border-radius:99px;
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--j10-season-secondary) 22%,transparent));
+  transform:rotate(-16deg);
+}
+
+[data-j10-season="winter"] .j10-seasonal-world__line--b{
+  right:14%;
+  bottom:29%;
+  width:110px;
+  height:1px;
+  background:color-mix(in srgb,var(--j10-season-secondary) 15%,transparent);
+  transform:rotate(24deg);
+}
+
+/* New Year — red/white/gold mizuhiki-like loops and formal quiet. */
+[data-j10-season="new-year"] .j10-seasonal-world__motif{
+  width:82px;
+  height:82px;
+  border:2px solid color-mix(in srgb,var(--j10-season-ink) 21%,transparent);
+  border-radius:50%;
+  background:transparent;
+}
+
+[data-j10-season="new-year"] .j10-seasonal-world__motif::after{
+  content:"";
+  position:absolute;
+  inset:10px;
+  border:1px solid color-mix(in srgb,var(--j10-season-secondary) 25%,transparent);
+  border-radius:50%;
+}
+
+[data-j10-season="new-year"] .j10-seasonal-world__motif--a{right:8%;top:16%}
+[data-j10-season="new-year"] .j10-seasonal-world__motif--b{right:16%;top:26%;transform:scale(.66)}
+[data-j10-season="new-year"] .j10-seasonal-world__motif--c{left:10%;bottom:14%;transform:scale(.46)}
+
+[data-j10-season="new-year"] .j10-seasonal-world__line{
+  right:0;
+  width:44%;
+  height:2px;
+}
+
+[data-j10-season="new-year"] .j10-seasonal-world__line--a{
+  top:21%;
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--j10-season-ink) 23%,transparent));
+}
+
+[data-j10-season="new-year"] .j10-seasonal-world__line--b{
+  top:24%;
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--j10-season-secondary) 25%,transparent));
+}
+
+/* Seasonal art changes ambience/material accents, never layout. */
+[data-j-season] .j2-topbar::after{
+  background:linear-gradient(90deg,transparent,var(--j10-season-secondary),var(--j10-season-ink),transparent);
+  opacity:.24;
+}
+
+[data-j-season] .j3-today__hero,
+[data-j-season] .j4-learn__hero,
+[data-j-season] .j6-hero,
+[data-j-season] .j7-library__masthead,
+[data-j-season] .j8-hero{
+  box-shadow:
+    var(--j-shadow-paper),
+    inset 0 1px color-mix(in srgb,var(--j10-season-glow) 36%,transparent);
+}
+
+[data-j-season] .j3-today__hero::after,
+[data-j-season] .j4-learn__hero::after{
+  background-color:color-mix(in srgb,var(--j10-season-ink) 8%,transparent);
+}
+
+[data-j-season] .j6-reader__paper{
+  background:
+    linear-gradient(115deg,transparent 0 96%,color-mix(in srgb,var(--j10-season-ink) 3%,transparent) 96%),
+    var(--j10-season-paper);
+}
+
+[data-j-season] .j6-reader__tools{
+  border-top-color:var(--j10-season-secondary);
+}
+
+[data-j-season] .j7-reference__sheet{
+  background:
+    linear-gradient(135deg,var(--j10-season-paper),color-mix(in srgb,var(--j-bg-muted) 72%,transparent));
+}
+
+[data-j-season] .j8-world{
+  box-shadow:inset 0 0 60px var(--j10-season-wash);
+}
+
+/* Season-specific landscape accents remain extremely light. */
+[data-j-season="spring"] .j8-world__trees i::before{
+  background:color-mix(in srgb,#8ca36f 42%,transparent);
+}
+
+[data-j-season="summer"] .j8-world__sun{
+  background:#d85d37;
+  opacity:.2;
+}
+
+[data-j-season="autumn"] .j8-world__trees i::before{
+  background:color-mix(in srgb,#b7412d 35%,#d4a35f);
+}
+
+[data-j-season="winter"] .j8-world__trees i::before{
+  background:color-mix(in srgb,#6d7c86 28%,transparent);
+}
+
+[data-j-season="new-year"] .j8-world__bridge{
+  border-top-color:color-mix(in srgb,#c63c2f 74%,var(--j-fg));
+}
+
+/* Study inherits the season, but seasonal art is deliberately quieter than shell surfaces. */
+.j5-study .j10-seasonal-world--compact{
+  opacity:.24;
+  z-index:0;
+}
+
+.j5-study .j10-seasonal-world--compact .j10-seasonal-world__seal{
+  display:none;
+}
+
+.j5-study .j10-seasonal-world--compact .j10-seasonal-world__motif{
+  opacity:.55;
+}
+
+.j5-study .j10-seasonal-world--compact .j10-seasonal-world__line{
+  opacity:.45;
+}
+
+[data-j-season] .j5-sheet{
+  box-shadow:
+    10px 12px 0 color-mix(in srgb,var(--j5-accent) 6%,transparent),
+    0 18px 60px rgba(35,29,20,.08),
+    inset 0 1px color-mix(in srgb,var(--j10-season-glow) 22%,transparent)!important;
+}
+
+/* Reader is quieter still: seasonal motif stays outside the reading column. */
+.j6-reader .j10-seasonal-world{
+  display:none;
+}
+
+@media(max-width:760px){
+  .j10-seasonal-world{
+    opacity:.58;
+  }
+
+  .j10-seasonal-world__seal{
+    right:16px;
+    bottom:84px;
+    transform:scale(.84) rotate(-4deg);
+  }
+
+  .j10-seasonal-world__motif--c,
+  .j10-seasonal-world__line--b{
+    display:none;
+  }
+
+  .j5-study .j10-seasonal-world--compact{
+    opacity:.16;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .j10-seasonal-world *,
+  .j10-seasonal-world{
+    animation:none!important;
+    transition:none!important;
+  }
+}
