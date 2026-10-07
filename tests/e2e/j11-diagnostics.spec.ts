@@ -25,7 +25,7 @@ test("J11 direct panel URLs resolve to the requested technical concern",async({p
   await expect(page.getByRole("heading",{name:"Know exactly which build is running"})).toBeVisible();
 
   await page.goto("./?diagnostics=1&panel=runtime");
-  await expect(page.getByRole("heading",{name:/provider/i})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"AI + morphology runtime status"})).toBeVisible();
 });
 
 test("J11 back action returns to the learner shell and removes diagnostics from the URL",async({page})=>{
