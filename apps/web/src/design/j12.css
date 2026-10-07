@@ -216,11 +216,11 @@
     contain-intrinsic-size:auto 700px;
   }
 
-  /* Coarse-pointer devices should not pay for hover-only flourishes. */
-  @media(pointer:coarse){
-    .j2-nav button:hover,.j3-today__continue:hover,.j4-primary:hover,.j6-cover:hover,.j7-result>button:hover,.j8-crest>summary:hover,.j5-sheet button:hover{
-      transform:none!important;
-    }
+}
+
+@media(max-width:760px) and (pointer:coarse){
+  .j2-nav button:hover,.j3-today__continue:hover,.j4-primary:hover,.j6-cover:hover,.j7-result>button:hover,.j8-crest>summary:hover,.j5-sheet button:hover{
+    transform:none!important;
   }
 }
 
