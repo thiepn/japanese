@@ -23,6 +23,11 @@ const loadMobile=()=>{void import("./design/J12MobileRuntime");};
 if(mobileQuery.matches)loadMobile();
 else mobileQuery.addEventListener("change",(event)=>{if(event.matches)loadMobile();},{once:true});
 
+const exhibitionQuery=window.matchMedia("(min-width: 761px)");
+const loadExhibition=()=>{void import("./design/J13ExhibitionRuntime");};
+if(exhibitionQuery.matches)loadExhibition();
+else exhibitionQuery.addEventListener("change",(event)=>{if(event.matches)loadExhibition();},{once:true});
+
 const visualQa=new URLSearchParams(window.location.search).get("visual-qa")==="j1";
 
 createRoot(document.getElementById("root")!).render(
