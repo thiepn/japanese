@@ -74,6 +74,8 @@ Replace the long stacked page with a navigable A1→C1 illustrated learning worl
 
 ## J5 — Study Focus Chamber
 
+**Implementation complete.** Study now runs as an isolated task-adaptive focus chamber with dedicated kana, kanji, vocabulary, grammar, sentence, listening, writing, speaking, assessment and review treatments while preserving the existing StudyStep/StudyEvent learning contracts.
+
 Rebuild StudyPlayer around task-specific learning:
 - kana/kanji writing-sheet language;
 - vocabulary/grammar/listening/production variants;
