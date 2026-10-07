@@ -16,3 +16,10 @@ export function applyJTheme(theme:JTheme):void{
   document.documentElement.dataset.jTheme=theme;
   document.documentElement.style.colorScheme=theme;
 }
+
+let darkStylesPromise:Promise<void>|null=null;
+
+export function ensureJ14DarkStyles():Promise<void>{
+  darkStylesPromise??=import("./J14DarkRuntime").then(()=>undefined);
+  return darkStylesPromise;
+}
