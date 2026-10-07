@@ -29,18 +29,22 @@ test("J2 isolates operations from learner Progress behind diagnostics",async({pa
   await page.goto("./");
   await page.getByRole("button",{name:"Progress",exact:true}).click();
 
-  await expect(page.getByRole("heading",{name:"Real mastery"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"The path you have actually built"})).toBeVisible();
   await expect(page.getByText("P11 / P21 / P22 RELEASE OPERATIONS",{exact:true})).toHaveCount(0);
   await expect(page.getByText("P22 DEPLOYMENT IDENTITY",{exact:true})).toHaveCount(0);
   await expect(page.getByText("P9 PROVIDER OBSERVABILITY",{exact:true})).toHaveCount(0);
 
   await page.goto("./?diagnostics=1");
-  await expect(page.getByRole("heading",{name:"System diagnostics"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Japanese operations"})).toBeVisible();
+  await expect(page.getByRole("navigation",{name:"Primary"})).toHaveCount(0);
+
+  await page.getByRole("button",{name:/Release gates/}).click();
   await expect(page.getByText("P11 / P21 / P22 RELEASE OPERATIONS",{exact:true})).toBeVisible();
+
+  await page.getByRole("button",{name:/Deployment/}).click();
   await expect(page.getByText("P22 DEPLOYMENT IDENTITY",{exact:true})).toBeVisible();
 
-  const nav=page.getByRole("navigation",{name:"Primary"});
-  await nav.getByRole("button",{name:"Today",exact:true}).click();
+  await page.getByRole("button",{name:"Back to Japanese"}).click();
   await expect(page).not.toHaveURL(/diagnostics=1/);
   await expect(page.getByRole("heading",{name:/Continue Japanese|You’re caught up/})).toBeVisible();
 });
