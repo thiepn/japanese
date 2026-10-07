@@ -26,6 +26,7 @@ test("Immerse exposes graded A1→C1 autonomy and long-form missions without cre
 
   await page.locator(".reader-token").first().click();
   await expect(page.getByRole("button",{name:"Mine for review"})).toBeVisible();
+  await page.getByRole("button",{name:"Close word lookup"}).click();
 
   await page.getByRole("button",{name:"Reading check"}).click();
   await expect(page.getByText("What time does the person get up?",{exact:true})).toBeVisible();

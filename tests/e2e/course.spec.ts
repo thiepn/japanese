@@ -27,14 +27,14 @@ test("structured A1→C1 course and canonical grammar/sentence search work on ev
   const search=page.getByRole("textbox",{name:"Search Japanese"});
 
   await search.fill("topic");
-  await expect(page.getByText("は (topic)",{exact:true})).toBeVisible({timeout:15_000});
+  await expect(page.locator(".j7-results").getByText("は (topic)",{exact:true}).first()).toBeVisible({timeout:15_000});
 
   await search.fill("What is your name?");
-  await expect(page.getByText("名前は何ですか。",{exact:true})).toBeVisible({timeout:15_000});
+  await expect(page.locator(".j7-results").getByText("名前は何ですか。",{exact:true}).first()).toBeVisible({timeout:15_000});
 
   await search.fill("causal relationship");
-  await expect(page.getByText("因果関係",{exact:true})).toBeVisible({timeout:15_000});
+  await expect(page.locator(".j7-results").getByText("因果関係",{exact:true}).first()).toBeVisible({timeout:15_000});
 
   await search.fill("taking into account");
-  await expect(page.getByText("〜を踏まえて",{exact:true})).toBeVisible({timeout:15_000});
+  await expect(page.locator(".j7-results").getByText("〜を踏まえて",{exact:true}).first()).toBeVisible({timeout:15_000});
 });

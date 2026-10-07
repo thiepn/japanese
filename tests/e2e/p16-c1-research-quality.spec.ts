@@ -15,6 +15,7 @@ test("P16 exposes research-quality tooling without creating a new mastery layer"
   await expect(lab.getByText(/does not automatically scrape or republish external pages/i)).toBeVisible();
 
   await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
+  await page.getByTestId("j8-c1-vault").locator("summary").click();
   await expect(page.getByText("C1→C2 LONGITUDINAL PORTFOLIO",{exact:true})).toBeVisible();
   await expect(page.getByText("RESEARCH QUALITY",{exact:true})).toBeVisible();
 });

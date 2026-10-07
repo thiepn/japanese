@@ -13,6 +13,7 @@ test("P14 exposes long-form C1 autonomy missions and the longitudinal C1 portfol
   await expect(p14.getByText(/delayed transfer requires 20\+ hours/).first()).toBeVisible();
 
   await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
+  await page.getByTestId("j8-c1-vault").locator("summary").click();
   await expect(page.getByText("C1→C2 LONGITUDINAL PORTFOLIO",{exact:true})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Longitudinal advanced evidence + external calibration + internal qualification"})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Breadth first, then sustained evidence"})).toBeVisible();

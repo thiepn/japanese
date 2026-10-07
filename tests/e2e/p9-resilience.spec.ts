@@ -25,6 +25,7 @@ test("P9 real-world performance, native listening and provider fallbacks survive
 
   await page.getByRole("button",{name:"Back to Japanese"}).click();
   await page.getByRole("button",{name:"Immerse"}).click();
+  await page.locator("#j6-studio-native-listening > summary").click();
   await expect(page.getByRole("heading",{name:"Listen → note → synthesize → recall later"})).toBeVisible();
 
   await page.evaluate(async()=>{if(!("serviceWorker" in navigator))throw new Error("SERVICE_WORKER_UNAVAILABLE");await navigator.serviceWorker.ready;});
@@ -38,6 +39,7 @@ test("P9 real-world performance, native listening and provider fallbacks survive
   await expect(page.getByRole("heading",{name:"Functional chains under time pressure"})).toBeVisible();
   // Compact mobile headless Chromium has the same fixed-nav scrollIntoView drift while offline.
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
+  await page.locator("#j6-studio-native-listening > summary").click();
   await expect(page.getByRole("heading",{name:"Listen → note → synthesize → recall later"})).toBeVisible();
   await context.setOffline(false);
 });
