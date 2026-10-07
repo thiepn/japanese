@@ -49,6 +49,7 @@ export function J6ImmersionHome({
     :0;
 
   return <section className="dashboard immerse-page j6-immerse">
+    <span className="j13-marginal" aria-hidden="true">浸</span>
     <header className="j6-hero">
       <JPattern name="ichimatsu" className="j6-hero__pattern"/>
       <div className="j6-hero__sign" aria-hidden="true">
