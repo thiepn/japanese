@@ -34,7 +34,7 @@ export function C1AutonomyPanel({
 
   return <section className="autonomy-missions p14-autonomy">
     <div className="section-heading">
-      <div><span className="course-kicker">P14 C1 LONG-FORM AUTONOMY</span><h2>Carry one argument across sources, pressure and time</h2></div>
+      <div><span className="course-kicker">C1 LONG-FORM AUTONOMY</span><h2>Carry one argument across sources, pressure and time</h2></div>
       <span className="course-count">{missions.filter((entry)=>entry.completedStages===entry.totalStages).length} / {missions.length} missions complete</span>
     </div>
     <p className="course-note">Each mission crosses canonical C1 reading, audited native listening, multi-source synthesis, hidden-future interaction, production and a 20+ hour delayed transfer. Progress is derived from normal StudyEvents rather than a new mastery database.</p>
@@ -56,7 +56,7 @@ export function C1AutonomyPanel({
     })}</div>
 
     {message?<p role="status" className="import-message">{message}</p>:null}
-    <p className="course-note">A completed P14 mission means the configured internal evidence chain was completed. It is not a CEFR C1 certificate and does not replace external human evaluation.</p>
+    <p className="course-note">A completed mission means the configured internal evidence chain was completed. It is not a CEFR C1 certificate and does not replace external human evaluation.</p>
   </section>;
 }
 
