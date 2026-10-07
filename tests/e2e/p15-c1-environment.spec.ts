@@ -6,7 +6,7 @@ test("P15 exposes the real-source C1 environment, multi-day writing and hidden-p
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
   await page.locator("#j6-studio-p15 > summary").click();
   const lab=page.locator(".p15-environment");
-  await expect(lab.getByText("P15 ACTUAL C1 ENVIRONMENT",{exact:true})).toBeVisible();
+  await expect(lab.getByText("C1 REAL-SOURCE ENVIRONMENT",{exact:true})).toBeVisible();
   await expect(lab.getByRole("heading",{name:"Research real Japanese, cite it, defend it, rewrite it"})).toBeVisible();
 
   await expect(lab.locator(".p15-portal-grid article")).toHaveCount(12);
@@ -24,8 +24,8 @@ test("P15 exposes the real-source C1 environment, multi-day writing and hidden-p
   await expect(lab.getByText("Save a first draft in the Writing studio before opening live defense.")).toBeVisible();
 
   await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
-  await expect(page.getByText("P20 C1→C2 PORTFOLIO",{exact:true})).toBeVisible();
-  await expect(page.getByText("P15 AUTHENTIC ENVIRONMENT",{exact:true})).toBeVisible();
+  await expect(page.getByText("C1→C2 LONGITUDINAL PORTFOLIO",{exact:true})).toBeVisible();
+  await expect(page.getByText("AUTHENTIC ENVIRONMENT",{exact:true})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Real-source research + multi-day production"})).toBeVisible();
 });
 
