@@ -188,6 +188,8 @@ Do not stretch the mobile layout.
 
 ## J14 — Performance, Accessibility & Real-Device Qualification
 
+**Implementation and automated hardening complete. Physical Android/PWA acceptance remains intentionally pending.** J14 now enforces lazy/art budgets, dark-mode compatibility, 320px reflow, keyboard and screen-reader structure, reduced-motion coverage, responsive/offline regression evidence and a machine-readable qualification report.
+
 Define and enforce:
 - bundle/art budgets;
 - route lazy-loading;
