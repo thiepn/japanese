@@ -66,6 +66,50 @@ test("J14 theme preference survives reload and can return cleanly to light mode"
   expect(await page.evaluate(()=>localStorage.getItem("japanese:j-theme"))).toBe("light");
 });
 
+test("J14 keeps core foreground/background contrast strong in both themes",async({page})=>{
+  await page.goto("./");
+
+  for(const target of ["light","dark"] as const){
+    const button=page.getByRole("button",{name:target==="dark"?"Use dark theme":"Use light theme"});
+    if(await button.count())await button.click();
+    await expect(page.locator("html")).toHaveAttribute("data-j-theme",target);
+
+    const pair=await page.locator(".j2-shell").evaluate((node)=>{
+      const style=getComputedStyle(node);
+      return {foreground:style.color,background:style.backgroundColor};
+    });
+    const foreground=parseCssColor(pair.foreground);
+    const background=parseCssColor(pair.background);
+    expect(foreground).not.toBeNull();
+    expect(background).not.toBeNull();
+    expect(contrastRatio(foreground!,background!)).toBeGreaterThanOrEqual(7);
+  }
+});
+
+test("J14 keeps an already-used dark PWA functional through offline reload",async({page,context},testInfo)=>{
+  test.skip(testInfo.project.name!=="desktop-chromium","single-profile offline dark qualification");
+
+  await page.goto("./");
+  await page.evaluate(async()=>{if(!("serviceWorker" in navigator))throw new Error("SERVICE_WORKER_UNAVAILABLE");await navigator.serviceWorker.ready;});
+  await page.reload();
+
+  await page.getByRole("button",{name:"Use dark theme"}).click();
+  await expect(page.locator("html")).toHaveAttribute("data-j-theme","dark");
+  await page.getByRole("button",{name:"Learn",exact:true}).click();
+  const drawer=page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"});
+  await drawer.locator("summary").click();
+  await expectDarkSurface(page,".real-world-performance");
+
+  await context.setOffline(true);
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-j-theme","dark");
+  await expect(page.getByRole("heading",{name:/Continue Japanese|You’re caught up/})).toBeVisible();
+  await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"}).locator("summary").click();
+  await expectDarkSurface(page,".real-world-performance");
+  await context.setOffline(false);
+});
+
 test("J14 supports 320 CSS-pixel reflow across all learner destinations",async({page})=>{
   await page.setViewportSize({width:320,height:860});
   await page.goto("./");
