@@ -134,10 +134,10 @@ export function C1PrecisionLab(){
 
   return <section className="p17-precision" id="p17-c1-c2-precision">
     <div className="section-heading">
-      <div><span className="course-kicker">P17 C1→C2 PRECISION BRIDGE</span><h2>Make advanced Japanese more exact, adaptive and specialist</h2></div>
+      <div><span className="course-kicker">C1→C2 PRECISION BRIDGE</span><h2>Make advanced Japanese more exact, adaptive and specialist</h2></div>
       <span className="course-count">{progress.activeDays} active precision day{progress.activeDays===1?"":"s"}</span>
     </div>
-    <p className="course-note">P17 does not add a C2 badge. It trains the gap between advanced competence and expert-like control: exact lexical choice, controlled register, calibrated certainty, sustained specialist discourse, fresh-source revision and deliberate repair after human feedback.</p>
+    <p className="course-note">This precision workspace does not add a C2 badge. It trains the gap between advanced competence and expert-like control: exact lexical choice, controlled register, calibrated certainty, sustained specialist discourse, fresh-source revision and deliberate repair after human feedback.</p>
 
     <div className="p17-stats">
       <P17Stat value={progress.precisionArtifacts.length} label="precision transformations"/>
@@ -190,7 +190,7 @@ export function C1PrecisionLab(){
         {speechState==="unsupported"?<p className="coach-warning">Japanese speech recognition is unavailable in this browser. Typed responses remain available and are labeled as a speaking proxy.</p>:null}
         {speechState==="error"?<p className="coach-warning">Speech recognition failed. Retry or type the response.</p>:null}
         {discourseProgress?<p className="p17-evidence-note">{discourseProgress.cycleComplete?"One complete five-stage cycle exists.":"Complete all five discourse stages once."} {discourseProgress.sustainedAcrossSessions?"Every stage has also survived a 20+ hour delayed repeat.":"Sustained status requires a 20+ hour delayed repeat of every stage."}</p>:null}
-      </article>:<p className="p17-empty">Create a P16 specialist track first. P17 specialist discourse is deliberately anchored in your real sources, terminology and projects.</p>}
+      </article>:<p className="p17-empty">Create a specialist track in Research quality first. Specialist discourse is deliberately anchored in your real sources, terminology and projects.</p>}
     </div>:null}
 
     {tab==="refresh"?<div className="p17-workspace">
@@ -206,7 +206,7 @@ export function C1PrecisionLab(){
         <label>Impact on the argument<textarea lang="ja" rows={5} value={impact} onChange={(event)=>setImpact(event.target.value)} placeholder="結論、提言、因果解釈などをどう修正するか…"/></label>
         <label>Remaining uncertainty<textarea lang="ja" rows={4} value={uncertainty} onChange={(event)=>setUncertainty(event.target.value)} placeholder="新資料を読んでも残る不確実性は何か…"/></label>
         <button className="primary" type="button" disabled={!baseSourceId||!updateSourceId||baseSourceId===updateSourceId||changedClaim.trim().length<60||continuity.trim().length<50||impact.trim().length<60||uncertainty.trim().length<50} onClick={()=>void saveRefresh()}>Save source refresh</button>
-      </article>:<p className="p17-empty">Register and evaluate at least two real sources in P15 before running a fresh-source refresh.</p>}
+      </article>:<p className="p17-empty">Register and evaluate at least two real sources in the real-source environment before running a fresh-source refresh.</p>}
     </div>:null}
 
     {tab==="repair"?<div className="p17-workspace">
@@ -222,7 +222,7 @@ export function C1PrecisionLab(){
         <label>Repaired Japanese passage<textarea lang="ja" rows={8} value={repairedPassage} onChange={(event)=>setRepairedPassage(event.target.value)} placeholder="フィードバックを踏まえた修正版…"/></label>
         <label>Reasoning<textarea rows={6} value={repairRationale} onChange={(event)=>setRepairRationale(event.target.value)} placeholder="何を採用し、何を採用しなかったか。なぜその判断をしたか…"/></label>
         <button className="primary" type="button" disabled={!reviewId||repairedPassage.trim().length<160||repairRationale.trim().length<100} onClick={()=>void saveRepair()}>Save repair pass</button>
-      </article>:<p className="p17-empty">A P16 human review is required before the repair loop can start.</p>}
+      </article>:<p className="p17-empty">A research-quality human review is required before the repair loop can start.</p>}
     </div>:null}
 
     {message?<p className="p17-message" role="status">{message}</p>:null}
@@ -240,11 +240,11 @@ function errorMessage(error:unknown):string{
     P17_PRECISION_RATIONALE_TOO_SHORT:"Explain the linguistic and rhetorical choices in more detail.",
     P17_COMPRESSION_RATIO_OUT_OF_RANGE:"Compression should reduce the passage to roughly 30–75% of its original length.",
     P17_EXPANSION_NOT_SUBSTANTIAL:"Expansion should increase the passage by at least about 20%.",
-    P17_SPECIALIST_TRACK_REQUIRED:"Choose a P16 specialist track first.",
+    P17_SPECIALIST_TRACK_REQUIRED:"Choose a Research quality specialist track first.",
     P17_SPECIALIST_RESPONSE_TOO_SHORT:"Develop the specialist response further before saving.",
     P17_REFRESH_REQUIRES_TWO_SOURCES:"Choose two different registered sources.",
     P17_REFRESH_ANALYSIS_TOO_SHORT:"Develop each source-refresh section in more detail.",
-    P17_HUMAN_REVIEW_REQUIRED:"Choose an existing P16 human review.",
+    P17_HUMAN_REVIEW_REQUIRED:"Choose an existing research-quality human review.",
     P17_REPAIR_PASSAGE_TOO_SHORT:"The repair passage is too short.",
     P17_REPAIR_RATIONALE_TOO_SHORT:"Explain how you handled the reviewer feedback in more detail."
   };
