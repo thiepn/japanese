@@ -1,0 +1,205 @@
+@media(min-width:761px){
+  :root{--j13-exhibition:1}
+  html{scroll-padding-top:96px}
+  body{overscroll-behavior-x:none}
+  .j2-shell{background:
+    linear-gradient(90deg,color-mix(in srgb,var(--j-season-accent) 2%,transparent),transparent 22% 78%,color-mix(in srgb,var(--j-season-deep) 2%,transparent)),
+    var(--j-bg)}
+  .j2-topbar{padding-inline:clamp(20px,3vw,48px)}
+  .j2-content{
+    width:min(1380px,100%);
+    padding-inline:clamp(30px,5vw,76px);
+  }
+  .j2-content>.dashboard,.j2-content>.library,.j2-content>.hero,.j2-content>.learn-page{max-width:none}
+  .j2-nav button:focus-visible,.j2-topbar button:focus-visible,.j2-content button:focus-visible,.j2-content summary:focus-visible{
+    outline:3px solid var(--j-focus);outline-offset:3px
+  }
+
+  .j3-today,.j4-learn,.j6-immerse,.j7-library,.j8-progress{position:relative;max-width:none}
+  .j3-today::before,.j4-learn::before,.j6-immerse::before,.j7-library::before,.j8-progress::before{
+    position:absolute;right:-32px;top:120px;z-index:-1;
+    writing-mode:vertical-rl;
+    color:color-mix(in srgb,var(--j-season-accent) 7%,transparent);
+    font-family:var(--j-font-editorial);font-size:clamp(56px,7vw,108px);font-weight:850;letter-spacing:.08em;
+    pointer-events:none
+  }
+  .j3-today::before{content:"今日"}
+  .j4-learn::before{content:"学"}
+  .j6-immerse::before{content:"浸"}
+  .j7-library::before{content:"蔵"}
+  .j8-progress::before{content:"道"}
+
+  /* Tablet keeps a strong two-pane exhibition rhythm without desktop-scale whitespace. */
+  .j3-today__hero{grid-template-columns:minmax(0,1.35fr) minmax(220px,.65fr)}
+  .j3-route__line{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .j4-emaki{scroll-padding-inline:24px}
+  .j4-region{scroll-snap-align:start}
+  .j6-reader__layout{grid-template-columns:minmax(200px,240px) minmax(0,1fr)}
+  .j7-catalog{grid-template-columns:minmax(0,1.12fr) minmax(300px,.88fr)}
+  .j7-reference{top:94px}
+  .j8-hero{grid-template-columns:minmax(0,1.08fr) minmax(320px,.92fr)}
+}
+
+@media(min-width:1180px){
+  .j2-topbar{
+    min-height:82px;
+    grid-template-columns:minmax(220px,1fr) auto minmax(220px,1fr);
+    border-bottom-color:color-mix(in srgb,var(--j-line-strong) 70%,transparent);
+  }
+  .j2-workspace{grid-template-columns:238px minmax(0,1fr);min-height:calc(100vh - 82px)}
+  .j2-nav{
+    top:82px;height:calc(100vh - 82px);
+    padding:34px 22px 26px;
+    background:
+      linear-gradient(180deg,color-mix(in srgb,var(--j-bg-elevated) 88%,transparent),color-mix(in srgb,var(--j-bg) 95%,transparent))
+  }
+  .j2-nav__caption{margin-bottom:18px}
+  .j2-nav button{min-height:68px;grid-template-columns:42px 1fr;padding-inline:12px;border-radius:4px 16px 16px 16px}
+  .j2-nav button::before{border-radius:4px 14px 14px 14px}
+  .j2-nav__mon{width:38px;height:38px}
+  .j2-content{
+    width:min(1540px,100%);
+    padding:clamp(50px,5vw,82px) clamp(42px,5.5vw,88px) 150px;
+  }
+
+  /* TODAY — large asymmetric morning composition. */
+  .j3-today{max-width:1440px}
+  .j3-today__hero{
+    grid-template-columns:minmax(0,1.6fr) minmax(280px,.4fr);
+    min-height:560px;border-radius:5px 42px 42px 42px
+  }
+  .j3-today__hero-copy{padding:clamp(48px,5vw,72px)}
+  .j3-today__title-lockup{grid-template-columns:132px minmax(0,1fr);gap:28px;margin-top:54px}
+  .j3-today__glyph{font-size:124px}
+  .j3-today__title-lockup h1{font-size:clamp(58px,5.6vw,86px);max-width:760px;line-height:.92}
+  .j3-today__lead{max-width:620px;font-size:15px;line-height:1.72}
+  .j3-today__action-row{max-width:760px;margin-top:44px}
+  .j3-today__ritual{padding:42px 28px}
+  .j3-today__ritual-copy strong{font-size:58px}
+  .j3-route{padding-top:44px}
+  .j3-route__head{grid-template-columns:minmax(0,1fr) 150px}
+  .j3-route__head h2{font-size:44px}
+  .j3-route__line{gap:0}
+  .j3-route__item{min-height:150px}
+  .j3-today__quiet{margin-top:28px;max-width:72%;margin-left:auto}
+
+  /* LEARN — use the width as an actual emakimono gallery. */
+  .j4-learn{max-width:1480px}
+  .j4-hero{
+    min-height:500px;
+    grid-template-columns:minmax(0,1.45fr) minmax(320px,.55fr);
+    padding:58px 64px;border-radius:5px 42px 42px 42px
+  }
+  .j4-hero h1{font-size:clamp(58px,5.5vw,84px);max-width:780px}
+  .j4-hero__copy>p{max-width:700px}
+  .j4-hero__crest{width:440px;right:-20px}
+  .j4-foundation{grid-template-columns:260px minmax(0,1fr);gap:30px;padding:36px}
+  .j4-scroll-section{margin-top:72px}
+  .j4-scroll-heading{position:sticky;top:98px;z-index:18;padding:12px 0;background:linear-gradient(var(--j-bg),color-mix(in srgb,var(--j-bg) 94%,transparent))}
+  .j4-scroll-heading h2{font-size:42px}
+  .j4-emaki{
+    min-height:640px;
+    border-radius:5px 34px 34px 34px;
+    box-shadow:0 26px 70px rgba(23,19,14,.09);
+    scroll-snap-type:x mandatory;
+    scroll-padding-inline:40px;
+    mask-image:linear-gradient(90deg,transparent 0,black 20px,black calc(100% - 20px),transparent 100%)
+  }
+  .j4-emaki__regions{min-height:640px}
+  .j4-region{width:clamp(620px,48vw,760px);min-height:640px;padding:52px 42px 150px;scroll-snap-align:start}
+  .j4-region__head h3{font-size:54px}
+  .j4-landmarks{margin-top:54px}
+  .j4-landmark{min-height:170px}
+  .j4-practice{margin-top:72px}
+  .j4-practice__quick{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .j4-evidence{grid-template-columns:repeat(6,minmax(0,1fr))}
+
+  /* IMMERSE — editorial wall + generous reader canvas. */
+  .j6-immerse{max-width:1480px}
+  .j6-hero{
+    grid-template-columns:190px minmax(0,1fr) 190px;
+    min-height:520px;padding:54px 58px;border-radius:5px 42px 42px 42px
+  }
+  .j6-hero__sign span{font-size:110px}
+  .j6-hero__copy h1{font-size:clamp(58px,5.7vw,86px)}
+  .j6-ledger{grid-template-columns:repeat(4,minmax(0,1fr)) minmax(250px,1.3fr)}
+  .j6-feature{grid-template-columns:110px minmax(0,1.5fr) minmax(280px,.5fr);gap:32px}
+  .j6-covers{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+  .j6-cover{min-height:410px}
+  .j6-series__grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .j6-missions__grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .j6-reader{max-width:1420px}
+  .j6-reader__head{grid-template-columns:170px minmax(0,1fr) 100px}
+  .j6-reader__layout{grid-template-columns:270px minmax(0,860px);justify-content:center;gap:68px}
+  .j6-reader__tools{top:108px}
+  .j6-reader__paper{padding:62px 72px}
+  .j6-reader-japanese{font-size:25px!important;line-height:2!important}
+  .j6-reader-sentence{grid-template-columns:30px minmax(0,1fr)}
+  .j6-reader-lookup{right:clamp(28px,4vw,72px);top:128px}
+
+  /* LIBRARY — catalog and reference sheet become a genuine research desk. */
+  .j7-library{max-width:1440px}
+  .j7-library__masthead{
+    grid-template-columns:110px minmax(0,1fr) 72px;
+    gap:34px;padding:48px 54px;border-radius:5px 36px 36px 36px
+  }
+  .j7-library__intro h1{font-size:clamp(54px,5vw,78px)}
+  .j7-search{grid-template-columns:78px minmax(0,1fr) 190px;padding:24px 0}
+  .j7-search__field input{min-height:64px;font-size:22px!important}
+  .j7-filter-strip{grid-template-columns:repeat(8,minmax(0,1fr));gap:4px}
+  .j7-filter-strip button{min-height:72px}
+  .j7-catalog{grid-template-columns:minmax(0,1.3fr) minmax(380px,.7fr);gap:42px;margin-top:48px}
+  .j7-reference{top:108px}
+  .j7-reference__sheet{min-height:610px;padding:38px;border-radius:5px 28px 28px 28px}
+  .j7-reference__title h2{font-size:clamp(46px,4.7vw,70px)}
+  .j7-result>button{min-height:94px;grid-template-columns:48px minmax(0,1fr) auto 18px;padding-inline:14px}
+  .j7-result__body strong{font-size:23px}
+
+  /* PROGRESS — byōbu-like two-panel evidence composition. */
+  .j8-progress{
+    max-width:1480px;
+    display:grid;
+    grid-template-columns:minmax(0,1.28fr) minmax(390px,.72fr);
+    gap:0 44px
+  }
+  .j8-hero,.j8-ledger,.j8-evidence-vaults,.j8-boundary{grid-column:1/-1}
+  .j8-hero{
+    grid-template-columns:minmax(0,1.18fr) minmax(430px,.82fr);
+    min-height:560px;padding:58px 62px;border-radius:5px 42px 42px 42px
+  }
+  .j8-hero h1{font-size:clamp(58px,5.6vw,84px);max-width:780px}
+  .j8-world{min-height:430px}
+  .j8-skills{grid-column:1;margin-top:72px}
+  .j8-milestones{grid-column:2;margin-top:72px;padding-left:32px;border-left:1px solid var(--j-line)}
+  .j8-skills .j8-section-head,.j8-milestones .j8-section-head{min-height:150px;align-items:flex-start}
+  .j8-crests{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .j8-milestone-road{grid-template-columns:1fr;gap:0;padding-top:8px}
+  .j8-milestone-road__path{display:block!important;width:2px!important;height:22px;justify-self:center;background:linear-gradient(var(--j-line-strong),var(--j-season-accent),var(--j-line-strong))}
+  .j8-milestone:nth-of-type(n){grid-column:1}
+  .j8-milestone{min-height:136px}
+  .j8-ledger{margin-top:72px}
+  .j8-evidence-vaults{margin-top:72px}
+
+  /* Focused Study becomes a quiet desk in a larger room, not a stretched card. */
+  .j5-stage{width:min(1220px,calc(100% - 48px));grid-template-columns:120px minmax(0,900px);gap:52px;justify-content:center}
+  .j5-mode-rail{min-height:580px}
+  .j5-sheet{min-height:560px;padding:54px 62px!important}
+  .j5-prompt{font-size:clamp(44px,4.5vw,72px)!important}
+  .j5-choices{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .j5-choices button{min-height:72px}
+}
+
+@media(min-width:1500px){
+  .j2-workspace{grid-template-columns:260px minmax(0,1fr)}
+  .j2-nav{padding-inline:26px}
+  .j2-content{width:min(1680px,100%);padding-inline:92px}
+  .j3-today,.j4-learn,.j6-immerse,.j7-library,.j8-progress{max-width:1520px}
+  .j4-region{width:760px}
+  .j6-covers{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .j7-catalog{grid-template-columns:minmax(0,1.42fr) minmax(420px,.58fr)}
+  .j8-progress{grid-template-columns:minmax(0,1.4fr) minmax(420px,.6fr)}
+}
+
+@media(min-width:761px) and (prefers-reduced-motion:reduce){
+  .j4-emaki{scroll-behavior:auto}
+}
