@@ -64,7 +64,9 @@ test("J5 remains a single-column task chamber on mobile",async({page},testInfo)=
 
   const card=await page.locator(".j5-sheet").boundingBox();
   expect(card).not.toBeNull();
-  expect(card!.width).toBeLessThanOrEqual((page.viewportSize()?.width??card!.width)-16);
+  const viewportWidth=page.viewportSize()?.width??card!.width;
+  expect(card!.width).toBeLessThanOrEqual(viewportWidth+1);
+  expect(card!.width).toBeGreaterThanOrEqual(viewportWidth-4);
 
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(1);

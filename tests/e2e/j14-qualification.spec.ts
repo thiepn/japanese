@@ -218,6 +218,8 @@ async function expectVisibleFocus(locator:import("@playwright/test").Locator){
 function parseCssColor(value:string):[number,number,number]|null{
   const rgb=value.match(/rgba?\(\s*([\d.]+)[ ,]+([\d.]+)[ ,]+([\d.]+)/i);
   if(rgb)return [Number(rgb[1]),Number(rgb[2]),Number(rgb[3])];
+  const srgb=value.match(/color\(srgb\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)/i);
+  if(srgb)return [Number(srgb[1])*255,Number(srgb[2])*255,Number(srgb[3])*255];
   const hex=value.trim().match(/^#([0-9a-f]{6})$/i);
   if(hex){
     const n=parseInt(hex[1],16);

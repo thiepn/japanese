@@ -18,6 +18,7 @@ test("P18 exposes hidden live pressure, real-partner evidence and cross-domain t
   await expect(lab.getByText(/Create a specialist track in Research quality before testing expert-domain transfer/)).toBeVisible();
 
   await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
+  await page.getByTestId("j8-c1-vault").locator("summary").click();
   await expect(page.getByText("C1→C2 LONGITUDINAL PORTFOLIO",{exact:true})).toBeVisible();
   await expect(page.getByText("ADVANCED INTERACTION",{exact:true})).toBeVisible();
 });
