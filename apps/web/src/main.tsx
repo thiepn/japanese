@@ -13,6 +13,7 @@ import "./design/j7.css";
 import "./design/j8.css";
 import "./design/j9.css";
 import "./design/j10.css";
+import "./design/j11.css";
 
 if ("serviceWorker" in navigator && import.meta.env.PROD) {
   window.addEventListener("load", () => navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`,{scope:import.meta.env.BASE_URL}));
