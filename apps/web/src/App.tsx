@@ -5,22 +5,19 @@ import { claimGuestWorkspace } from "@thiepn/local-db";
 import type { SearchResult } from "@thiepn/search";
 import { isStudyLesson,type StudyStep } from "@thiepn/study-player";
 import { searchLocalJapanese } from "./content";
-import { foundationSections } from "./study/foundationPrompts";
 import { Immersion } from "./immerse/Immersion";
 import { getImmersionProgress,type ImmersionProgress } from "./immerse/reader";
 import { AUTHENTIC_GUEST_ACCOUNT_ID,setAuthenticAccountId } from "./immerse/authentic";
 import { StudyPlayer,type StudyAnswer } from "./study/StudyPlayer";
-import { AiCoach } from "./ai/AiCoach";
-import { AdaptiveRemediation } from "./study/AdaptiveRemediation";
 import { B2Portfolio } from "./study/B2Portfolio";
 import { C1Portfolio } from "./study/C1Portfolio";
 import { ProviderHealthPanel } from "./study/ProviderHealthPanel";
 import { HumanReviewPanel } from "./study/HumanReviewPanel";
 import { ReleaseOperationsPanel } from "./study/ReleaseOperationsPanel";
 import { ReleaseIdentityPanel } from "./study/ReleaseIdentityPanel";
-import { RealWorldPerformancePanel } from "./study/RealWorldPerformancePanel";
 import { J2AppShell,type J2Surface } from "./design/J2AppShell";
 import { J3Today } from "./design/J3Today";
+import { J4Learn } from "./design/J4Learn";
 import { createJapaneseLanguageDashboardPublisher } from "./languageDashboard";
 import {
   buildA1MilestoneSession,buildB1MilestoneSession,buildB2MilestoneSession,buildC1FoundationPractice,buildC1FoundationSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildP13C1SynthesisSession,buildP9RealWorldChainSession,buildP9RealWorldQualificationSession,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getC1FoundationAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,GUEST_ACCOUNT_ID,setDevelopmentAccountId,
@@ -368,128 +365,13 @@ export function App(){
           ?<Diagnostics/>
           :<>
             {surface==="Today"&&<J3Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
-            {surface==="Learn"&&<Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} onPreferredCoachChainApplied={()=>setPreferredCoachChain(null)} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>}
+            {surface==="Learn"&&<J4Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} onPreferredCoachChainApplied={()=>setPreferredCoachChain(null)} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>}
             {surface==="Immerse"&&<Immersion onStartProductionTask={(taskId)=>void startProductiveTask(taskId)} onStartC1Synthesis={(packId)=>void startC1Synthesis(packId)} onOpenC1Coach={(chainId)=>{setPreferredCoachChain(chainId);setSurface("Learn");}}/>}
             {surface==="Progress"&&<Progress kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} immersion={immersion} summary={summary} course={courseProgress} completedToday={completedToday}/>}
             {surface==="Library"&&<Library query={query} setQuery={setQuery} results={results} status={libraryStatus}/>}
           </>}
       </J2AppShell>}
   </>;
-}
-
-function Learn({summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartAssessment,onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,onC1Practice,onProductive,onLexicalFluency,onRealWorldChain,onRealWorldQualification}:{summary:StudySummary;kana:KanaMasterySummary;vocab:VocabularyMasterySummary;conjugation:ConjugationMasterySummary;grammar:GrammarMasterySummary;sentence:SentenceMasterySummary;lexicalFluency:LexicalFluencySummary;course:CourseUnitProgress[];milestone:A1MilestoneProgress;b1Milestone:B1MilestoneProgress;b2Milestone:B2MilestoneProgress;c1Foundation:C1FoundationProgress;preferredCoachChain:string|null;onPreferredCoachChainApplied:()=>void;status:string;onStart:()=>void;onStartUnit:(id:string)=>void;onStartAssessment:(id:string)=>void;onStartMilestone:()=>void;onStartB1Milestone:()=>void;onStartB2Milestone:()=>void;onStartC1Foundation:()=>void;onC1Practice:()=>void;onProductive:(mode:"writing"|"speaking")=>void;onLexicalFluency:()=>void;onRealWorldChain:(id:string)=>void;onRealWorldQualification:()=>void}){
-  const kanaCoverage=summary.totalKana?Math.round(summary.learnedKana/summary.totalKana*100):0;
-  const vocabCoverage=summary.totalVocabulary?Math.round(summary.learnedVocabulary/summary.totalVocabulary*100):0;
-  return <section className="dashboard learn-page"><p className="eyebrow">LEARN</p><h1>Foundation → C1</h1>
-    <p className="lead">P20 consolidates the full advanced pathway: repeated evidence across time, broad external review, reviewer calibration, persistent weakness detection and a transparent internal qualification gate that remains separate from accredited CEFR certification.</p>
-    <div className="course-stack foundation-stack">
-      <article className="course-card"><div><span className="course-kicker">SCRIPT FOUNDATION</span><h2>Kana</h2><p>{foundationSections.map((section)=>section.label).join(" · ")}</p></div><div className="course-progress"><strong>{kanaCoverage}%</strong><span>{summary.learnedKana} / {summary.totalKana} introduced</span></div></article>
-      <article className="course-card"><div><span className="course-kicker">A1→C1 LEXICON</span><h2>Useful words + kanji in context</h2><p>Meaning · reading · listening · active recall</p></div><div className="course-progress"><strong>{vocabCoverage}%</strong><span>{summary.learnedVocabulary} / {summary.totalVocabulary} words introduced</span></div></article>
-    </div>
-
-    <section className="mastery-section productive-card">
-      <div className="section-heading"><div><span className="course-kicker">B2 LEXICAL FLUENCY</span><h2>Collocations + reusable chunks</h2></div><span className="course-count">{lexicalFluency.totalChunks} chunks</span></div>
-      <p>Knowing individual words is not counted as knowing the combination. P8 adds context/register transfer on top of recognition and active production, so similar phrases must be selected appropriately rather than merely recognized.</p>
-      <div className="mastery-grid"><MasteryBar label="Chunk recognition" value={lexicalFluency.recognition}/><MasteryBar label="Chunk active use" value={lexicalFluency.activeUse}/><MasteryBar label="Register + phrase-family transfer" value={lexicalFluency.registerTransfer}/></div>
-      <button className="unit-action" disabled={status==="loading"} type="button" onClick={onLexicalFluency}>Practice lexical fluency</button>
-    </section>
-
-    <section className="course-section">
-      <div className="section-heading"><div><span className="course-kicker">STRUCTURED A1→C1</span><h2>Capability course</h2></div><span className="course-count">{course.filter((unit)=>unit.status==="mastered").length} / {course.length} mastered</span></div>
-      <div className="unit-list">
-        {course.map((unit)=><article className={"unit-card "+unit.status} key={unit.id}>
-          <div className="unit-index">{String(unit.order).padStart(2,"0")}</div>
-          <div className="unit-copy">
-            <div className="unit-title-row"><h3>{unit.title}</h3><span className={"status-pill "+unit.status}>{statusLabel(unit.status)}</span></div>
-            <p>{unit.canDo}</p>
-            <div className="unit-meter"><span style={{width:Math.round(unit.mastery*100)+"%"}}/></div>
-            <small>{Math.round(unit.mastery*100)}% durable mastery · {unit.evidenceCount} evidence · {assessmentLabel(unit)}</small>
-          </div>
-          <div className="unit-actions">
-            <button className="unit-action" disabled={status==="loading"} type="button" onClick={()=>onStartUnit(unit.id)}>{unit.status==="challenging"?"Study anyway":unit.status==="mastered"?"Review unit":unit.status==="learning"?"Continue unit":"Start unit"}</button>
-            <button className="quiet-button assessment-action" disabled={status==="loading"||!assessmentCanStart(unit)} type="button" onClick={()=>onStartAssessment(unit.id)}>{assessmentActionLabel(unit)}</button>
-          </div>
-        </article>)}
-      </div>
-      <p className="course-note">Unit checks unlock 20 hours after essential first-pass evidence. B1, B2 and C1 units continue the same graph and remain advisory rather than hard-locked.</p>
-    </section>
-
-    <section className="mastery-section milestone-card">
-      <div className="section-heading"><div><span className="course-kicker">A1 MILESTONE</span><h2>Five activity areas</h2></div><strong>{milestone.answered} / {milestone.total}</strong></div>
-      <p>Reading, listening, spoken interaction, spoken production and writing are reported separately. The two spoken sections currently use say-then-type tasks and do not score pronunciation.</p>
-      <div className="mastery-grid">
-        <MasteryBar label="Reading" value={milestone.scores.reading.score}/>
-        <MasteryBar label="Listening" value={milestone.scores.listening.score}/>
-        <MasteryBar label="Spoken interaction" value={milestone.scores.spoken_interaction.score}/>
-        <MasteryBar label="Spoken production" value={milestone.scores.spoken_production.score}/>
-        <MasteryBar label="Writing" value={milestone.scores.writing.score}/>
-      </div>
-      <button className="primary" disabled={status==="loading"} onClick={onStartMilestone} type="button">{milestone.complete?"Retake A1 milestone":"Start A1 milestone"}</button>
-    </section>
-
-    <section className="mastery-section productive-card">
-      <div className="section-heading"><div><span className="course-kicker">PRODUCTIVE B1</span><h2>Write + speak connected Japanese</h2></div><span className="course-count">real responses</span></div>
-      <p>Writing uses multi-sentence text areas and structural target checks. Speaking uses Japanese browser speech recognition when available. Neither mode pretends to replace human semantic correction or acoustic pronunciation scoring.</p>
-      <div className="productive-actions"><button className="unit-action" disabled={status==="loading"} type="button" onClick={()=>onProductive("writing")}>Practice writing</button><button className="unit-action" disabled={status==="loading"} type="button" onClick={()=>onProductive("speaking")}>Practice speaking</button></div>
-    </section>
-    <section className="mastery-section milestone-card">
-      <div className="section-heading"><div><span className="course-kicker">B1 MILESTONE</span><h2>Five activity areas</h2></div><strong>{b1Milestone.answered} / {b1Milestone.total}</strong></div>
-      <p>Reading and listening stay separate from microphone-based interaction/production and connected writing. Speaking recognition checks intelligible target language; pronunciation is practiced separately through listen-record-compare shadowing.</p>
-      <div className="mastery-grid">
-        <MasteryBar label="Reading" value={b1Milestone.scores.reading.score}/>
-        <MasteryBar label="Listening" value={b1Milestone.scores.listening.score}/>
-        <MasteryBar label="Spoken interaction" value={b1Milestone.scores.spoken_interaction.score}/>
-        <MasteryBar label="Spoken production" value={b1Milestone.scores.spoken_production.score}/>
-        <MasteryBar label="Writing" value={b1Milestone.scores.writing.score}/>
-      </div>
-      <button className="primary" disabled={status==="loading"} onClick={onStartB1Milestone} type="button">{b1Milestone.complete?"Retake B1 milestone":"Start B1 milestone"}</button>
-    </section>
-
-    <AdaptiveRemediation onStartUnit={onStartUnit} onStartProduction={onProductive}/>
-    <RealWorldPerformancePanel onStartChain={onRealWorldChain} onStartQualification={onRealWorldQualification}/>
-    <AiCoach preferredChainId={preferredCoachChain} onPreferredChainApplied={onPreferredCoachChainApplied}/>
-    <section className="mastery-section milestone-card">
-      <div className="section-heading"><div><span className="course-kicker">B2 MILESTONE</span><h2>Independent receptive + productive activity areas</h2></div><strong>{b2Milestone.answered} / {b2Milestone.total}</strong></div>
-      <p>B2 reading, connected listening, microphone interaction/production and connected writing are reported separately. Device speech synthesis is labeled as synthesized; AI coach feedback is excluded from milestone scoring.</p>
-      <div className="mastery-grid">
-        <MasteryBar label="Reading" value={b2Milestone.scores.reading.score}/>
-        <MasteryBar label="Listening" value={b2Milestone.scores.listening.score}/>
-        <MasteryBar label="Spoken interaction" value={b2Milestone.scores.spoken_interaction.score}/>
-        <MasteryBar label="Spoken production" value={b2Milestone.scores.spoken_production.score}/>
-        <MasteryBar label="Writing" value={b2Milestone.scores.writing.score}/>
-      </div>
-      <button className="primary" disabled={status==="loading"} onClick={onStartB2Milestone} type="button">{b2Milestone.complete?"Retake B2 milestone":"Start B2 milestone"}</button>
-    </section>
-
-    <section className="mastery-section productive-card">
-      <div className="section-heading"><div><span className="course-kicker">C1 FOUNDATION</span><h2>Advanced discourse control</h2></div><span className="course-count">8 discourse moves · 12 prompts</span></div>
-      <p>Practice separating evidence from inference, calibrating certainty, synthesizing competing views, answering counterarguments precisely and matching register to purpose. This is normal learner evidence, not external CEFR certification.</p>
-      <button className="unit-action" disabled={status==="loading"} type="button" onClick={onC1Practice}>Practice C1 discourse control</button>
-    </section>
-
-    <section className="mastery-section milestone-card">
-      <div className="section-heading"><div><span className="course-kicker">C1 FOUNDATION DIAGNOSTIC</span><h2>Advanced independent activity areas</h2></div><strong>{c1Foundation.answered} / {c1Foundation.total}</strong></div>
-      <p>This internal diagnostic samples C1 reading, synthesized connected listening, microphone interaction/production and advanced writing separately. It is a product learning diagnostic, not an accredited CEFR examination.</p>
-      <div className="mastery-grid">
-        <MasteryBar label="Reading" value={c1Foundation.scores.reading.score}/>
-        <MasteryBar label="Listening" value={c1Foundation.scores.listening.score}/>
-        <MasteryBar label="Spoken interaction" value={c1Foundation.scores.spoken_interaction.score}/>
-        <MasteryBar label="Spoken production" value={c1Foundation.scores.spoken_production.score}/>
-        <MasteryBar label="Writing" value={c1Foundation.scores.writing.score}/>
-      </div>
-      <button className="primary" disabled={status==="loading"} onClick={onStartC1Foundation} type="button">{c1Foundation.complete?"Retake C1 foundation diagnostic":"Start C1 foundation diagnostic"}</button>
-    </section>
-
-    <div className="mastery-grid four-skill">
-      <MasteryBar label="Kana durable mastery" value={kana.overall}/>
-      <MasteryBar label="Vocabulary durable mastery" value={vocab.overall}/>
-      <MasteryBar label="Conjugation pattern mastery" value={conjugation.overall}/>
-      <MasteryBar label="Grammar durable mastery" value={grammar.overall}/>
-      <MasteryBar label="Sentence durable mastery" value={sentence.overall}/>
-      <MasteryBar label="Lexical chunk fluency" value={lexicalFluency.overall}/>
-    </div>
-    <button className="primary" disabled={status==="loading"} onClick={onStart} type="button">Continue adaptive study</button>
-  </section>;
 }
 
 function Progress({kana,vocab,conjugation,grammar,sentence,lexicalFluency,milestone,b1Milestone,b2Milestone,c1Foundation,immersion,summary,course,completedToday}:{kana:KanaMasterySummary;vocab:VocabularyMasterySummary;conjugation:ConjugationMasterySummary;grammar:GrammarMasterySummary;sentence:SentenceMasterySummary;lexicalFluency:LexicalFluencySummary;milestone:A1MilestoneProgress;b1Milestone:B1MilestoneProgress;b2Milestone:B2MilestoneProgress;c1Foundation:C1FoundationProgress;immersion:ImmersionProgress;summary:StudySummary;course:CourseUnitProgress[];completedToday:number}){
