@@ -163,6 +163,8 @@ to a developer/diagnostic route or tooling boundary.
 
 ## J12 — Mobile Japanese Experience
 
+**Implementation complete.** Mobile now uses a lazy-loaded, safe-area-aware Japanese composition layer with thumb-first navigation, full-screen Study, sticky Library search, phone-specific surface layouts, Android/PWA chrome integration and low-cost rendering rules for constrained devices.
+
 Purpose-built mobile UX:
 - thumb-first navigation;
 - full-screen study;
