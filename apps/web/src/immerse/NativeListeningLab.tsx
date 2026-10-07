@@ -97,7 +97,7 @@ export function NativeListeningLab(){
 
   return <section className="native-listening-lab">
     <div className="section-heading">
-      <div><span className="course-kicker">P9 NATIVE LISTENING DEPTH</span><h2>Listen → note → synthesize → recall later</h2></div>
+      <div><span className="course-kicker">NATIVE LISTENING DEPTH</span><h2>Listen → note → synthesize → recall later</h2></div>
       <span className="course-count">{summary?.sourceDocuments??0} native-source documents</span>
     </div>
     <p>Only source-provenanced reusable native recordings enter this lab. Device speech synthesis is not accepted as native qualification evidence. Select two or three documents, listen without a transcript-first workflow, take source notes and synthesize across them.</p>
@@ -113,7 +113,7 @@ export function NativeListeningLab(){
 
     {sources.length<2?<div className="native-depth-empty">
       <strong>Two independently licensed native-source documents are required.</strong>
-      <p>Import reusable source packs or licensed Tatoeba material in Your Japanese. P9 does not fabricate a native inventory when the deployment does not contain one.</p>
+      <p>Import reusable source packs or licensed Tatoeba material in Your Japanese. The learner product does not fabricate a native inventory when the deployment does not contain one.</p>
     </div>:<>
       <div className="native-source-picker">{sources.map((source)=>{
         const checked=selected.includes(source.document.id);
