@@ -52,6 +52,13 @@ test("J14 theme preference survives reload and can return cleanly to light mode"
   await expect(page.locator("html")).toHaveAttribute("data-j-theme","dark");
   await expect(page.getByRole("button",{name:"Use light theme"})).toBeVisible();
 
+  await page.getByRole("button",{name:/Continue today’s study|Review anyway/}).click();
+  await expect(page.locator("html")).toHaveAttribute("data-j-theme","dark");
+  await expect(page.locator(".j5-study")).toHaveAttribute("data-j-theme","dark");
+  await page.getByRole("button",{name:"Exit"}).click();
+  await expect(page.locator("html")).toHaveAttribute("data-j-theme","dark");
+  await expect(page.getByRole("button",{name:"Use light theme"})).toBeVisible();
+
   await page.getByRole("button",{name:"Use light theme"}).click();
   await expect(page.locator("html")).toHaveAttribute("data-j-theme","light");
   await page.reload();
