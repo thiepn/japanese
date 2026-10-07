@@ -24,10 +24,10 @@ export function C2ReadinessPanel(){
 
   return <section className={"p20-readiness "+(summary.qualified?"qualified":"")}>
     <div className="section-heading">
-      <div><span className="course-kicker">P20 LONGITUDINAL C2 READINESS</span><h2>Consolidate advanced evidence before calling the pathway qualified</h2></div>
+      <div><span className="course-kicker">LONGITUDINAL C2 READINESS</span><h2>Consolidate advanced evidence before calling the pathway qualified</h2></div>
       <span className="p20-status">{summary.statusLabel}</span>
     </div>
-    <p className="course-note">P20 is an internal product qualification for the advanced-learning pathway. It requires durable evidence, repeated broad human review and resolved reviewer calibration. It is not an accredited CEFR C2 certificate.</p>
+    <p className="course-note">This is an internal product qualification for the advanced-learning pathway. It requires durable evidence, repeated broad human review and resolved reviewer calibration. It is not an accredited CEFR C2 certificate.</p>
 
     <div className="p20-hero">
       <div className="p20-gauge">
@@ -52,7 +52,7 @@ export function C2ReadinessPanel(){
     {summary.qualified?<div className="p20-qualified-card">
       <span>INTERNAL PRODUCT QUALIFICATION</span>
       <h3>Advanced pathway qualified</h3>
-      <p>The current evidence clears every P20 gate. This means the THIEPN Japanese advanced-learning pathway has enough longitudinal, externally calibrated evidence to mark the learner internally qualified for this pathway. It does not certify CEFR C2.</p>
+      <p>The current evidence clears every internal readiness gate. This means the THIEPN Japanese advanced-learning pathway has enough longitudinal, externally calibrated evidence to mark the learner internally qualified for this pathway. It does not certify CEFR C2.</p>
     </div>:null}
 
     <section className="p20-section">
@@ -101,7 +101,7 @@ export function C2ReadinessPanel(){
       <ol>{summary.nextActions.map((item)=><li key={item}>{item}</li>)}</ol>
     </section>:null}
 
-    <p className="p20-boundary">P20 qualification is deliberately product-scoped: accredited CEFR certification = false · reviewer identity verified = false · reviewer scores change mastery = false · internal evidence becomes semantic score = false · raw local audio included in export = false.</p>
+    <p className="p20-boundary">Internal pathway qualification is deliberately product-scoped: accredited CEFR certification = false · reviewer identity verified = false · reviewer scores change mastery = false · internal evidence becomes semantic score = false · raw local audio included in export = false.</p>
   </section>;
 }
 
