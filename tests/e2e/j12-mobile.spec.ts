@@ -107,3 +107,28 @@ test("J12 removes expensive shell effects on coarse mobile UI",async({page},test
   expect(navShadow).not.toBe("none");
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)).toBeLessThanOrEqual(1);
 });
+
+
+test("J12 keeps Android/PWA chrome synchronized with the active Japanese theme",async({page},testInfo)=>{
+  test.skip(testInfo.project.name==="desktop-chromium","mobile PWA chrome qualification");
+
+  await page.goto("./");
+  const themeMeta=page.locator('meta[name="theme-color"]');
+  await expect(themeMeta).toHaveAttribute("content","#FBF8F1");
+
+  await page.getByRole("button",{name:"Use dark theme"}).click();
+  await expect(themeMeta).toHaveAttribute("content","#0D0D0C");
+
+  await page.getByRole("button",{name:/Continue today’s study|Review anyway/}).click();
+  await expect(themeMeta).toHaveAttribute("content","#0D0D0C");
+  await page.getByRole("button",{name:"Use light theme"}).click();
+  await expect(themeMeta).toHaveAttribute("content","#FBF8F1");
+
+  const manifest=await page.evaluate(async()=>{
+    const response=await fetch("./manifest.webmanifest");
+    return response.json() as Promise<{id?:string;display?:string;display_override?:string[]}>;
+  });
+  expect(manifest.id).toBe("./");
+  expect(manifest.display).toBe("standalone");
+  expect(manifest.display_override).toContain("standalone");
+});
