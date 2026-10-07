@@ -1,4 +1,4 @@
-import { useEffect,useLayoutEffect,useState } from "react";
+import { Suspense,lazy,useEffect,useLayoutEffect,useState } from "react";
 import { createThiepnAccountAuthProvider,type AuthContext } from "@thiepn/auth";
 import { getDefaultAudioProvider } from "@thiepn/audio";
 import { claimGuestWorkspace } from "@thiepn/local-db";
@@ -14,7 +14,6 @@ import { J3Today } from "./design/J3Today";
 import { J4Learn } from "./design/J4Learn";
 import { J7Library } from "./design/J7Library";
 import { J8Progress } from "./design/J8Progress";
-import { J11Diagnostics } from "./design/J11Diagnostics";
 import { createJapaneseLanguageDashboardPublisher } from "./languageDashboard";
 import {
   buildA1MilestoneSession,buildB1MilestoneSession,buildB2MilestoneSession,buildC1FoundationPractice,buildC1FoundationSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildP13C1SynthesisSession,buildP9RealWorldChainSession,buildP9RealWorldQualificationSession,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getC1FoundationAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,GUEST_ACCOUNT_ID,setDevelopmentAccountId,
@@ -67,6 +66,8 @@ const ANONYMOUS_AUTH:AuthContext={
   status:"anonymous",
   permissions:new Set<string>()
 };
+
+const J11Diagnostics=lazy(()=>import("./design/J11Diagnostics").then((module)=>({default:module.J11Diagnostics})));
 
 export function App(){
   const [surface,setSurface]=useState<Surface>("Today");
@@ -363,7 +364,7 @@ export function App(){
         diagnosticsMode={diagnosticsMode}
       >
         {diagnosticsMode
-          ?<J11Diagnostics onExit={()=>navigateSurface(surface)}/>
+          ?<Suspense fallback={<p className="j2-account-status" role="status">Opening technical workspace…</p>}><J11Diagnostics onExit={()=>navigateSurface(surface)}/></Suspense>
           :<>
             {surface==="Today"&&<J3Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
             {surface==="Learn"&&<J4Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} onPreferredCoachChainApplied={()=>setPreferredCoachChain(null)} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>}
