@@ -4,6 +4,7 @@ import {j9SensoryFeedback,readJ9SensoryEnabled,setJ9SensoryEnabled} from "./j9Se
 import {J10SeasonalWorld} from "./J10SeasonalWorld";
 import {j10SeasonLabel,j10SeasonPattern,resolveJ10Season} from "./j10Season";
 import {syncJ12ThemeColor} from "./j12Pwa";
+import {applyJTheme,persistJTheme,readJTheme} from "./j14Theme";
 
 export type J2Surface="Today"|"Learn"|"Immerse"|"Library"|"Progress";
 
@@ -20,14 +21,6 @@ const SURFACES:readonly {
   {id:"Library",japanese:"蔵",english:"Library",glyph:"蔵",hint:"Knowledge archive"},
   {id:"Progress",japanese:"道",english:"Progress",glyph:"道",hint:"Your path"},
 ];
-
-function initialTheme():JTheme{
-  try{
-    const saved=window.localStorage.getItem("japanese:j-theme");
-    if(saved==="light"||saved==="dark")return saved;
-  }catch{/* storage is optional */}
-  return window.matchMedia?.("(prefers-color-scheme: dark)").matches?"dark":"light";
-}
 
 export function J2AppShell({
   surface,
@@ -48,21 +41,15 @@ export function J2AppShell({
   diagnosticsMode?:boolean;
   children:ReactNode;
 }){
-  const [theme,setTheme]=useState<JTheme>(initialTheme);
+  const [theme,setTheme]=useState<JTheme>(readJTheme);
   const [sensory,setSensory]=useState(readJ9SensoryEnabled);
   const season=resolveJ10Season();
 
   useEffect(()=>{
-    try{window.localStorage.setItem("japanese:j-theme",theme);}catch{/* storage is optional */}
-    document.documentElement.style.colorScheme=theme;
-    document.documentElement.dataset.jTheme=theme;
+    persistJTheme(theme);
+    applyJTheme(theme);
     document.documentElement.dataset.jSeason=season;
     syncJ12ThemeColor(theme);
-    return()=>{
-      document.documentElement.style.colorScheme="";
-      delete document.documentElement.dataset.jTheme;
-      delete document.documentElement.dataset.jSeason;
-    };
   },[theme,season]);
 
   useEffect(()=>{
