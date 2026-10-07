@@ -6,6 +6,7 @@ import type {JSeason,JTheme} from "../design";
 import {j9SensoryFeedback} from "../design/j9Sensory";
 import {J10SeasonalWorld} from "../design/J10SeasonalWorld";
 import {resolveJ10Season} from "../design/j10Season";
+import {syncJ12ThemeColor} from "../design/j12Pwa";
 
 export interface StudyAnswer{prompt:StudyPrompt;response:string;grade:GradeResult;responseTimeMs:number;}
 
@@ -39,6 +40,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
     document.documentElement.dataset.jTheme=theme;
     document.documentElement.dataset.jSeason=season;
     document.documentElement.style.colorScheme=theme;
+    syncJ12ThemeColor(theme);
     return()=>{
       delete document.documentElement.dataset.jTheme;
       delete document.documentElement.dataset.jSeason;
