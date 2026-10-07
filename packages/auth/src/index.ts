@@ -54,7 +54,6 @@ export interface ThiepnAccountAuthOptions {
 }
 
 export interface PendingJapaneseLogin {
-  readonly flow: string;
   readonly started: number;
   readonly returnTo: string;
 }
@@ -80,31 +79,16 @@ const EXPIRED_CONTEXT: AuthContext = Object.freeze({
   permissions: new Set<string>(),
 });
 
-export function createFlowNonce(
-  randomValues: Uint8Array = crypto.getRandomValues(new Uint8Array(32)),
-): string {
-  if (!(randomValues instanceof Uint8Array) || randomValues.length !== 32) {
-    throw new Error("INVALID_FLOW_RANDOMNESS");
-  }
-  return Array.from(randomValues, byte =>
-    byte.toString(16).padStart(2, "0"),
-  ).join("");
-}
-
 export function readPendingJapaneseLogin(
   raw: string | null,
-  flow: string | null,
   now = Date.now(),
 ): PendingJapaneseLogin | null {
   try {
-    if (!raw || raw.length > 2048 || !flow || !/^[a-f0-9]{64}$/.test(flow)) {
-      return null;
-    }
+    if (!raw || raw.length > 2048) return null;
     const value: unknown = JSON.parse(raw);
     if (!value || typeof value !== "object" || Array.isArray(value)) return null;
     const row = value as Record<string, unknown>;
     if (
-      row.flow !== flow ||
       typeof row.returnTo !== "string" ||
       !validJapaneseReturnTo(row.returnTo) ||
       typeof row.started !== "number" ||
@@ -115,7 +99,6 @@ export function readPendingJapaneseLogin(
       return null;
     }
     return {
-      flow,
       started: row.started,
       returnTo: row.returnTo,
     };
@@ -127,20 +110,21 @@ export function readPendingJapaneseLogin(
 export function readJapaneseCallback(
   query: URLSearchParams,
   fragment: string,
-): { readonly code: string; readonly flow: string } | null {
-  if (fragment || [...query.keys()].sort().join(",") !== "code,flow") return null;
+): { readonly code: string } | null {
+  if (
+    fragment ||
+    [...query.keys()].join(",") !== "code" ||
+    query.getAll("code").length !== 1
+  ) return null;
   const code = query.get("code");
-  const flow = query.get("flow");
   if (
     !code ||
     code.length > 2048 ||
-    /[\s\x00-\x1f\x7f]/.test(code) ||
-    !flow ||
-    !/^[a-f0-9]{64}$/.test(flow)
+    /[\s\x00-\x1f\x7f]/.test(code)
   ) {
     return null;
   }
-  return { code, flow };
+  return { code };
 }
 
 export function buildJapaneseAccountEntryUrl(
@@ -228,7 +212,6 @@ export function createThiepnAccountAuthProvider(
     try {
       pending = readPendingJapaneseLogin(
         sessionStorage.getItem(JAPANESE_LOGIN_STORAGE_KEY),
-        callback?.flow ?? null,
       );
       sessionStorage.removeItem(JAPANESE_LOGIN_STORAGE_KEY);
     } catch {
@@ -324,14 +307,11 @@ export function createThiepnAccountAuthProvider(
     const safeReturnTo = validJapaneseReturnTo(returnTo)
       ? returnTo
       : JAPANESE_HOME_PATH;
-    const flow = createFlowNonce();
-
     markConnectIntent();
     try {
       sessionStorage.setItem(
         JAPANESE_LOGIN_STORAGE_KEY,
         JSON.stringify({
-          flow,
           started: Date.now(),
           returnTo: safeReturnTo,
         }),
@@ -342,7 +322,11 @@ export function createThiepnAccountAuthProvider(
     }
 
     const callback = new URL(callbackUrl);
-    callback.searchParams.set("flow", flow);
+    if (callback.search || callback.hash) {
+      clearPendingLogin();
+      clearConnectIntent();
+      throw new Error("INVALID_CALLBACK_URL");
+    }
 
     const response = await client.auth.signInWithOAuth({
       provider: "google",

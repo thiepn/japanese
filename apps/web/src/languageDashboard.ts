@@ -4,7 +4,7 @@ import { getJapaneseLanguageReadModel } from "./languageReadModel";
 import { getDevelopmentAccountId } from "./study/runtime";
 import { getAuthenticAccountId } from "./immerse/authentic";
 
-export const THIEPN_CORE_GATEWAY_URL = "https://api.thiepn.dev";
+export const THIEPN_CORE_GATEWAY_URL = "https://thiepn-core-gateway.thiepn.workers.dev";
 
 export function createJapaneseLanguageDashboardPublisher(
   auth: AuthProvider,
