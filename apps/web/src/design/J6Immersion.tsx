@@ -201,6 +201,8 @@ export function J6ImmersionHome({
           onOpenText={(id)=>void openText(id)}
           onOpenNativeSet={(setId)=>{
             onPreferredNativeSet(setId);
+            const studio=document.getElementById("j6-studio-p13");
+            if(studio instanceof HTMLDetailsElement)studio.open=true;
             requestAnimationFrame(()=>document.getElementById("p13-c1-source-depth")?.scrollIntoView({behavior:"smooth",block:"start"}));
           }}
           onStartSynthesis={onStartC1Synthesis}
