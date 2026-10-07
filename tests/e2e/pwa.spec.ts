@@ -6,7 +6,7 @@ test("PWA shell, integrated Study Player and canonical content survive offline r
   await page.evaluate(async()=>{if(!("serviceWorker" in navigator))throw new Error("SERVICE_WORKER_UNAVAILABLE");await navigator.serviceWorker.ready;});
   await page.reload();
 
-  await page.getByRole("button",{name:"Continue study"}).click();
+  await page.getByRole("button",{name:/Continue today’s study|Review anyway/}).click();
   await expect(page.getByRole("heading",{name:"Five vowel sounds"})).toBeVisible();
   await page.getByRole("button",{name:"Continue"}).click();
 
