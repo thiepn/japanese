@@ -1,6 +1,8 @@
 import {useEffect,useState,type ReactNode} from "react";
-import {JPattern,JSeal,type JPatternName,type JSeason,type JTheme} from "./index";
+import {JPattern,JSeal,type JTheme} from "./index";
 import {j9SensoryFeedback,readJ9SensoryEnabled,setJ9SensoryEnabled} from "./j9Sensory";
+import {J10SeasonalWorld} from "./J10SeasonalWorld";
+import {j10SeasonLabel,j10SeasonPattern,resolveJ10Season} from "./j10Season";
 
 export type J2Surface="Today"|"Learn"|"Immerse"|"Library"|"Progress";
 
@@ -26,34 +28,6 @@ function initialTheme():JTheme{
   return window.matchMedia?.("(prefers-color-scheme: dark)").matches?"dark":"light";
 }
 
-function currentSeason(now=new Date()):JSeason{
-  const month=now.getMonth()+1;
-  const day=now.getDate();
-  if(month===1&&day<=7)return "new-year";
-  if(month>=3&&month<=5)return "spring";
-  if(month===6)return "tsuyu";
-  if(month===7||month===8)return "summer";
-  if(month>=9&&month<=11)return "autumn";
-  return "winter";
-}
-
-function seasonLabel(season:JSeason):string{
-  if(season==="spring")return "春";
-  if(season==="tsuyu")return "梅雨";
-  if(season==="summer")return "夏";
-  if(season==="autumn")return "秋";
-  if(season==="new-year")return "正月";
-  return "冬";
-}
-
-function seasonPattern(season:JSeason):JPatternName{
-  if(season==="spring")return "shippo";
-  if(season==="tsuyu"||season==="summer")return "seigaiha";
-  if(season==="autumn")return "asanoha";
-  if(season==="new-year")return "ichimatsu";
-  return "kikko";
-}
-
 export function J2AppShell({
   surface,
   onSurfaceChange,
@@ -75,7 +49,7 @@ export function J2AppShell({
 }){
   const [theme,setTheme]=useState<JTheme>(initialTheme);
   const [sensory,setSensory]=useState(readJ9SensoryEnabled);
-  const season=currentSeason();
+  const season=resolveJ10Season();
 
   useEffect(()=>{
     try{window.localStorage.setItem("japanese:j-theme",theme);}catch{/* storage is optional */}
@@ -116,7 +90,8 @@ export function J2AppShell({
     data-j-sensory={sensory?"on":"off"}
   >
     <div className="j2-ambient" aria-hidden="true">
-      <JPattern name={seasonPattern(season)} className="j2-ambient__pattern"/>
+      <JPattern name={j10SeasonPattern(season)} className="j2-ambient__pattern"/>
+      <J10SeasonalWorld season={season}/>
       <span className="j2-ambient__sun"/>
       <span className="j2-ambient__brush"/>
     </div>
@@ -131,7 +106,7 @@ export function J2AppShell({
       </div>
 
       <div className="j2-topbar__season" aria-hidden="true">
-        <span lang="ja">{seasonLabel(season)}</span>
+        <span lang="ja">{j10SeasonLabel(season)}</span>
         <i/>
         <span>{diagnosticsMode?"診断":"学びの景色"}</span>
       </div>
