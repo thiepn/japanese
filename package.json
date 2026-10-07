@@ -30,7 +30,9 @@
     "status:p22": "node scripts/p22-release-status.mjs",
     "validate:p22:maintenance": "node scripts/p22-maintenance-validate.mjs",
     "verify:bundle": "node scripts/p22-bundle-budget.mjs",
-    "verify:j14": "node scripts/j14-experience-budget.mjs"
+    "verify:j14": "node scripts/j14-experience-budget.mjs",
+    "qualify:j14": "node scripts/j14-qualify.mjs",
+    "qualify:j14:strict": "node scripts/j14-qualify.mjs --strict"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
