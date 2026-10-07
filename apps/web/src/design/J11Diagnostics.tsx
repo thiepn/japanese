@@ -105,8 +105,9 @@ function Overview({onOpen}:{onOpen:(panel:Panel)=>void}){
   </section>;
 }
 
-function overviewCopy(panel:Exclude<Panel,"overview">):string{
+function overviewCopy(panel:Panel):string{
   switch(panel){
+    case "overview":return "Technical workspace overview.";
     case "review":return "Review productive artifacts and export external-review handoffs without rewriting learner mastery.";
     case "release":return "Inspect source curation, static release gates, external evidence and physical-device qualification boundaries.";
     case "deployment":return "Inspect the immutable build/channel metadata actually embedded in the running deployment.";
