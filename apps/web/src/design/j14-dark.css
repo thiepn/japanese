@@ -31,9 +31,18 @@ html[data-j-theme="dark"] :is(
   .j6-studio__body,
   .j8-vault__body,
   .j11-panel
-) :is(article,[class$="-card"],[class*="-card "],[class$="-workspace"],[class*="-workspace "],[class$="-editor"],[class*="-editor "],[class$="-context"],[class*="-context "],[class$="-prompt"],[class*="-prompt "],[class$="-source"],[class*="-source "],[class$="-summary"],[class*="-summary "],[class$="-picker"],[class*="-picker "],[class$="-empty"],[class*="-empty "],[class$="-message"],[class*="-message "],[class$="-note"],[class*="-note "]){
+) :is(article,[class$="-card"],[class*="-card "],[class$="-workspace"],[class*="-workspace "],[class$="-editor"],[class*="-editor "],[class$="-context"],[class*="-context "],[class$="-prompt"],[class*="-prompt "],[class$="-source"],[class*="-source "],[class$="-summary"],[class*="-summary "],[class$="-picker"],[class*="-picker "],[class$="-lab"],[class*="-lab "],[class$="-empty"],[class*="-empty "],[class$="-message"],[class*="-message "],[class$="-note"],[class*="-note "]){
   color:var(--j-fg)!important;
   background:var(--j14-dark-raised)!important;
+  border-color:var(--j-line)!important;
+}
+
+html[data-j-theme="dark"] .j4-practice__drawer>div,
+html[data-j-theme="dark"] .j6-studio__body> :is(section,div),
+html[data-j-theme="dark"] .j8-vault__body> :is(section,div),
+html[data-j-theme="dark"] .j11-panel>section{
+  color:var(--j-fg)!important;
+  background-color:var(--j-bg-elevated)!important;
   border-color:var(--j-line)!important;
 }
 
