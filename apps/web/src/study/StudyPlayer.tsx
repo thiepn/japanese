@@ -7,7 +7,7 @@ import {j9SensoryFeedback} from "../design/j9Sensory";
 import {J10SeasonalWorld} from "../design/J10SeasonalWorld";
 import {resolveJ10Season} from "../design/j10Season";
 import {syncJ12ThemeColor} from "../design/j12Pwa";
-import {applyJTheme,ensureJ14DarkStyles,persistJTheme,readJTheme} from "../design/j14Theme";
+import {applyJTheme,persistJTheme,readJTheme} from "../design/j14Theme";
 
 export interface StudyAnswer{prompt:StudyPrompt;response:string;grade:GradeResult;responseTimeMs:number;}
 
@@ -92,10 +92,8 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
     }
   }
 
-  async function toggleTheme(){
-    const next:JTheme=theme==="light"?"dark":"light";
-    if(next==="dark")await ensureJ14DarkStyles();
-    setTheme(next);
+  function toggleTheme(){
+    setTheme(theme==="light"?"dark":"light");
   }
 
   function startSpeechRecognition(){
@@ -120,7 +118,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   }
 
   if(isStudyLesson(activeStep)){
-    return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={false} onExit={onExit} onTheme={()=>void toggleTheme()}>
+    return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={false} onExit={onExit} onTheme={toggleTheme}>
       <div className="study-card study-lesson j5-sheet j5-sheet--lesson">
         <div className="j5-sheet__cap">
           <span className="eyebrow">LEARN</span>
@@ -177,7 +175,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
     }
   }
 
-  return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={Boolean(feedback)} onExit={onExit} onTheme={()=>void toggleTheme()}>
+  return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={Boolean(feedback)} onExit={onExit} onTheme={toggleTheme}>
     <div className={"study-card j5-sheet j5-sheet--"+mode.mode}>
       <div className="j5-sheet__cap">
         <span className="eyebrow">{currentPrompt.instruction.toUpperCase()}</span>
