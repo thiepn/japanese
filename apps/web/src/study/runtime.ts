@@ -73,7 +73,7 @@ export interface LexicalFluencySummary {
 }
 export type CourseUnitStatus="ready"|"challenging"|"learning"|"mastered";
 export interface CourseUnitProgress {
-  id:string; order:number; title:string; canDo:string; status:CourseUnitStatus; mastery:number; evidenceCount:number;
+  id:string; order:number; title:string; level:string; canDo:string; status:CourseUnitStatus; mastery:number; evidenceCount:number;
   assessment:UnitAssessmentProgress;
 }
 export type A1MilestoneProgress=MilestoneAssessmentProgress;
@@ -328,7 +328,7 @@ export async function getCourseProgress():Promise<CourseUnitProgress[]>{
     const status:CourseUnitStatus=allEstablished?"mastered":hasEvidence?"learning":prereqsReady?"ready":"challenging";
     statuses.set(view.unit.id,status);
     const assessment=getUnitAssessmentProgress(view.unit.id,events);
-    result.push({id:view.unit.id,order:view.unit.order,title:view.unit.title,canDo:view.canDo,status,mastery,evidenceCount:projections.reduce((sum,item)=>sum+item.evidenceCount,0),assessment});
+    result.push({id:view.unit.id,order:view.unit.order,title:view.unit.title,level:view.unit.level,canDo:view.canDo,status,mastery,evidenceCount:projections.reduce((sum,item)=>sum+item.evidenceCount,0),assessment});
   }
   return result;
 }
