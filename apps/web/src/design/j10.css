@@ -348,18 +348,13 @@
 }
 
 [data-j-season] .j3-today__hero,
-[data-j-season] .j4-learn__hero,
+[data-j-season] .j4-hero,
 [data-j-season] .j6-hero,
 [data-j-season] .j7-library__masthead,
 [data-j-season] .j8-hero{
   box-shadow:
     var(--j-shadow-paper),
     inset 0 1px color-mix(in srgb,var(--j10-season-glow) 36%,transparent);
-}
-
-[data-j-season] .j3-today__hero::after,
-[data-j-season] .j4-learn__hero::after{
-  background-color:color-mix(in srgb,var(--j10-season-ink) 8%,transparent);
 }
 
 [data-j-season] .j6-reader__paper{
