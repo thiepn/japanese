@@ -333,7 +333,9 @@ export function App(){
     if(session===null)window.scrollTo({top:0,left:0,behavior:"instant"});
   },[session]);
 
-  const diagnosticsMode=new URLSearchParams(window.location.search).get("diagnostics")==="1";
+  const [diagnosticsMode,setDiagnosticsMode]=useState(
+    ()=>new URLSearchParams(window.location.search).get("diagnostics")==="1",
+  );
   const accountActionLabel=account.status!=="authenticated"
     ?"Sign in with THIEPN Account"
     :accountConnected
@@ -344,6 +346,7 @@ export function App(){
       const url=new URL(window.location.href);
       url.searchParams.delete("diagnostics");
       window.history.replaceState({},"",url.pathname+url.search+url.hash);
+      setDiagnosticsMode(false);
     }
     setSurface(next);
   };
