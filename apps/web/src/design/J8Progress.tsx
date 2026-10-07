@@ -117,6 +117,7 @@ export function J8Progress({
   const gradedAnswers=kana.evidenceCount+vocab.evidenceCount+conjugation.evidenceCount+grammar.evidenceCount+sentence.evidenceCount+lexicalFluency.evidenceCount;
 
   return <section className="j8-progress" aria-labelledby="j8-progress-title">
+    <span className="j13-marginal" aria-hidden="true">道</span>
     <header className="j8-hero">
       <JPattern name="seigaiha" className="j8-hero__pattern"/>
       <div className="j8-hero__copy">
