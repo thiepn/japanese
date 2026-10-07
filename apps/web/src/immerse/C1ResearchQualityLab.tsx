@@ -120,10 +120,10 @@ export function C1ResearchQualityLab(){
 
   return <section className="p16-quality" id="p16-c1-research-quality">
     <div className="section-heading">
-      <div><span className="course-kicker">P16 C1 RESEARCH QUALITY</span><h2>Turn real-source work into research-grade evidence</h2></div>
+      <div><span className="course-kicker">C1 RESEARCH QUALITY</span><h2>Turn real-source work into research-grade evidence</h2></div>
       <span className="course-count">quality · provenance · human review</span>
     </div>
-    <p className="course-note">P16 deepens the P15 environment without adding another mastery layer: structured bibliography, learner-supplied licensed/private excerpts, artifact-bound human review and interest-driven specialist tracks. The app does not automatically scrape or republish external pages.</p>
+    <p className="course-note">This workspace deepens the real-source environment without adding another mastery layer: structured bibliography, learner-supplied licensed/private excerpts, artifact-bound human review and interest-driven specialist tracks. The app does not automatically scrape or republish external pages.</p>
 
     <div className="p16-stats">
       <QualityStat value={quality.bibliographySources} label="sources documented"/>
@@ -143,7 +143,7 @@ export function C1ResearchQualityLab(){
           <label>DOI<input value={doi} onChange={(event)=>setDoi(event.target.value)} placeholder="Optional · 10.xxxx/xxxxx"/></label>
           <button className="unit-action" type="button" disabled={!sourceId} onClick={()=>void saveBibliography()}>Save bibliography metadata</button>
           {bibliography?<div className="p16-citation-preview"><div><strong>Citation preview</strong><select aria-label="Citation style" value={citationStyle} onChange={(event)=>setCitationStyle(event.target.value as C1CitationStyle)}><option value="japanese">Japanese research note</option><option value="apa">APA-like</option><option value="compact">Compact</option></select></div><p>{citationPreview}</p></div>:null}
-        </div>:<p className="p16-empty">Register a real source in the P15 Source desk first.</p>}
+        </div>:<p className="p16-empty">Register a real source in the Source desk first.</p>}
       </article>
 
       <article className="p16-card">
@@ -172,7 +172,7 @@ export function C1ResearchQualityLab(){
           <label>Qualitative feedback<textarea value={feedback} onChange={(event)=>setFeedback(event.target.value)} rows={6} placeholder="What is strong, what remains weak, and what should change next?"/></label>
           <label>Blocking issues<textarea value={blockingIssues} onChange={(event)=>setBlockingIssues(event.target.value)} rows={3} placeholder="Optional · one issue per line"/></label>
           <button className="unit-action" type="button" disabled={!projectId||feedback.trim().length<80} onClick={()=>void saveReview()}>Save human review</button>
-        </div>:<p className="p16-empty">Finish a P15 project through delayed revision + reflection before requesting formal human review.</p>}
+        </div>:<p className="p16-empty">Finish a real-source project through delayed revision + reflection before requesting formal human review.</p>}
       </article>
 
       <article className="p16-card">
@@ -180,7 +180,7 @@ export function C1ResearchQualityLab(){
         <div className="p16-form">
           <div className="p16-two"><label>Track title<input value={trackTitle} onChange={(event)=>setTrackTitle(event.target.value)} placeholder="e.g. Japanese education policy"/></label><label>Domain<input value={trackDomain} onChange={(event)=>setTrackDomain(event.target.value)} placeholder="education / policy"/></label></div>
           <label>Working goal<textarea value={trackGoal} onChange={(event)=>setTrackGoal(event.target.value)} rows={4} placeholder="Define the Japanese-language capability you want to build and the kind of evidence that would count."/></label>
-          <EvidencePicker title="Sources" empty="No P15 sources yet." items={environment.sources.map((item)=>({id:item.id,label:item.publisher+" · "+item.title}))} selected={trackSourceIds} setSelected={setTrackSourceIds}/>
+          <EvidencePicker title="Sources" empty="No registered sources yet." items={environment.sources.map((item)=>({id:item.id,label:item.publisher+" · "+item.title}))} selected={trackSourceIds} setSelected={setTrackSourceIds}/>
           <EvidencePicker title="Specialist terms" empty="No specialist terms yet." items={environment.specialistTermItems.map((item)=>({id:item.id,label:item.canonicalForm+" · "+item.meaning}))} selected={trackTermIds} setSelected={setTrackTermIds}/>
           <EvidencePicker title="Projects" empty="No C1 projects yet." items={environment.projects.filter((item)=>item.sourceMap||item.draft||item.complete).map((item)=>({id:item.project.id,label:item.project.title}))} selected={trackProjectIds} setSelected={setTrackProjectIds}/>
           <button className="unit-action" type="button" disabled={trackGoal.trim().length<40||trackSourceIds.length+trackTermIds.length+trackProjectIds.length<3} onClick={()=>void saveTrack()}>Save specialist track</button>
@@ -203,4 +203,4 @@ function EvidencePicker({title,empty,items,selected,setSelected}:{title:string;e
   return <fieldset className="p16-picker"><legend>{title}</legend>{items.length?items.map((item)=><label key={item.id}><input type="checkbox" checked={selected.includes(item.id)} onChange={()=>toggle(item.id)}/><span>{item.label}</span></label>):<small>{empty}</small>}</fieldset>;
 }
 
-function errorMessage(error:unknown):string{return error instanceof Error?error.message:"P16 action failed.";}
+function errorMessage(error:unknown):string{return error instanceof Error?error.message:"Research action failed.";}
