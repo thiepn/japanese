@@ -51,7 +51,7 @@ export function j5StudyMode(step:StudyStep):J5StudyModeMeta{
       case "grammar":return META.grammar;
       case "sentence":return META.sentence;
       case "production_task":
-        return step.languageActivity==="speaking"||step.languageActivity==="spoken_interaction"||step.languageActivity==="spoken_production"
+        return step.languageActivity==="spoken_interaction"||step.languageActivity==="spoken_production"
           ?META.speaking
           :META.writing;
       default:return META.review;
