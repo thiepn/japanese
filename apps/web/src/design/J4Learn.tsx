@@ -98,6 +98,7 @@ export function J4Learn(props:Props){
   const vocabCoverage=summary.totalVocabulary?summary.learnedVocabulary/summary.totalVocabulary:0;
 
   return <section className="j4-learn" aria-labelledby="j4-title">
+    <span className="j13-marginal" aria-hidden="true">学</span>
     <header className="j4-hero">
       <JPattern name="seigaiha" className="j4-hero__pattern"/>
       <div className="j4-hero__cloud j4-hero__cloud--one" aria-hidden="true"/>
