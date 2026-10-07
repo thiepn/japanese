@@ -9,15 +9,12 @@ import { Immersion } from "./immerse/Immersion";
 import { getImmersionProgress,type ImmersionProgress } from "./immerse/reader";
 import { AUTHENTIC_GUEST_ACCOUNT_ID,setAuthenticAccountId } from "./immerse/authentic";
 import { StudyPlayer,type StudyAnswer } from "./study/StudyPlayer";
-import { ProviderHealthPanel } from "./study/ProviderHealthPanel";
-import { HumanReviewPanel } from "./study/HumanReviewPanel";
-import { ReleaseOperationsPanel } from "./study/ReleaseOperationsPanel";
-import { ReleaseIdentityPanel } from "./study/ReleaseIdentityPanel";
 import { J2AppShell,type J2Surface } from "./design/J2AppShell";
 import { J3Today } from "./design/J3Today";
 import { J4Learn } from "./design/J4Learn";
 import { J7Library } from "./design/J7Library";
 import { J8Progress } from "./design/J8Progress";
+import { J11Diagnostics } from "./design/J11Diagnostics";
 import { createJapaneseLanguageDashboardPublisher } from "./languageDashboard";
 import {
   buildA1MilestoneSession,buildB1MilestoneSession,buildB2MilestoneSession,buildC1FoundationPractice,buildC1FoundationSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildP13C1SynthesisSession,buildP9RealWorldChainSession,buildP9RealWorldQualificationSession,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getC1FoundationAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,GUEST_ACCOUNT_ID,setDevelopmentAccountId,
@@ -375,21 +372,6 @@ export function App(){
           </>}
       </J2AppShell>}
   </>;
-}
-
-function Diagnostics(){
-  return <section className="j2-diagnostics">
-    <header className="j2-diagnostics__head">
-      <span className="j2-diagnostics__flag">Developer / operations</span>
-      <p className="eyebrow" lang="ja">診断</p>
-      <h1>System diagnostics</h1>
-      <p>Operational release identity, provider health, external-review administration and release controls are isolated from the learner Progress surface. Open this workspace explicitly with <code>?diagnostics=1</code>.</p>
-    </header>
-    <HumanReviewPanel/>
-    <ReleaseOperationsPanel/>
-    <ReleaseIdentityPanel/>
-    <ProviderHealthPanel/>
-  </section>;
 }
 
 function MasteryBar({label,value}:{label:string;value:number}){const pct=Math.round(value*100);return <div className="mastery-row"><div><span>{label}</span><strong>{pct}%</strong></div><div className="meter" aria-label={label+" "+pct+"%"}><span style={{width:pct+"%"}}/></div></div>;}
