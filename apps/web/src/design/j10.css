@@ -61,46 +61,11 @@
   --j10-season-line:color-mix(in srgb,#b88a3b 28%,transparent);
 }
 
-[data-j-theme="dark"][data-j-season="spring"],
-[data-j-theme="dark"] [data-j-season="spring"]{
-  --j10-season-wash:color-mix(in srgb,#8a4652 12%,transparent);
-  --j10-season-glow:color-mix(in srgb,#60734f 10%,transparent);
-  --j10-season-paper:color-mix(in srgb,var(--j-bg-elevated) 97%,#5b3138);
-}
-
-[data-j-theme="dark"][data-j-season="tsuyu"],
-[data-j-theme="dark"] [data-j-season="tsuyu"]{
-  --j10-season-wash:color-mix(in srgb,#2c536f 18%,transparent);
-  --j10-season-glow:color-mix(in srgb,#355b70 10%,transparent);
-  --j10-season-paper:color-mix(in srgb,var(--j-bg-elevated) 97%,#284458);
-}
-
-[data-j-theme="dark"][data-j-season="summer"],
-[data-j-theme="dark"] [data-j-season="summer"]{
-  --j10-season-wash:color-mix(in srgb,#15384f 22%,transparent);
-  --j10-season-glow:color-mix(in srgb,#b46d2d 12%,transparent);
-  --j10-season-paper:color-mix(in srgb,var(--j-bg-elevated) 97%,#3a2b1d);
-}
-
-[data-j-theme="dark"][data-j-season="autumn"],
-[data-j-theme="dark"] [data-j-season="autumn"]{
-  --j10-season-wash:color-mix(in srgb,#63311f 17%,transparent);
-  --j10-season-glow:color-mix(in srgb,#8f5f2a 10%,transparent);
-  --j10-season-paper:color-mix(in srgb,var(--j-bg-elevated) 97%,#44271e);
-}
-
-[data-j-theme="dark"][data-j-season="winter"],
-[data-j-theme="dark"] [data-j-season="winter"]{
-  --j10-season-wash:color-mix(in srgb,#2d4759 18%,transparent);
-  --j10-season-glow:color-mix(in srgb,#9baeba 8%,transparent);
-  --j10-season-paper:color-mix(in srgb,var(--j-bg-elevated) 98%,#314352);
-}
-
-[data-j-theme="dark"][data-j-season="new-year"],
-[data-j-theme="dark"] [data-j-season="new-year"]{
-  --j10-season-wash:color-mix(in srgb,#72231e 14%,transparent);
-  --j10-season-glow:color-mix(in srgb,#9f7e3f 11%,transparent);
-  --j10-season-paper:color-mix(in srgb,var(--j-bg-elevated) 97%,#3e291c);
+[data-j-theme="dark"][data-j-season],
+[data-j-theme="dark"] [data-j-season]{
+  --j10-season-wash:color-mix(in srgb,var(--j10-season-ink) 14%,transparent);
+  --j10-season-glow:color-mix(in srgb,var(--j10-season-secondary) 9%,transparent);
+  --j10-season-paper:color-mix(in srgb,var(--j-bg-elevated) 97%,var(--j10-season-secondary));
 }
 
 .j10-seasonal-world{
