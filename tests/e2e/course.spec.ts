@@ -30,7 +30,7 @@ test("structured A1→C1 course and canonical grammar/sentence search work on ev
   await expect(page.getByText("は (topic)",{exact:true})).toBeVisible({timeout:15_000});
 
   await search.fill("What is your name?");
-  await expect(page.getByText("名前は何ですか。",{exact:true})).toBeVisible({timeout:15_000});
+  await expect(page.getByRole("heading",{name:"名前は何ですか。",exact:true})).toBeVisible({timeout:15_000});
 
   await search.fill("causal relationship");
   await expect(page.getByText("因果関係",{exact:true})).toBeVisible({timeout:15_000});
