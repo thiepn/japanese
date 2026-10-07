@@ -92,6 +92,9 @@
   display:block;
 }
 
+.j10-seasonal-world__motif--c,
+.j10-seasonal-world__line--b{display:none}
+
 .j10-seasonal-world__seal{
   right:clamp(24px,6vw,96px);
   bottom:clamp(42px,9vh,110px);
@@ -118,7 +121,6 @@
 
 [data-j10-season="spring"] .j10-seasonal-world__motif--a{right:14%;top:18%;transform:rotate(24deg)}
 [data-j10-season="spring"] .j10-seasonal-world__motif--b{right:9%;top:26%;transform:rotate(78deg) scale(.72)}
-[data-j10-season="spring"] .j10-seasonal-world__motif--c{left:16%;bottom:18%;transform:rotate(-18deg) scale(.58);background:color-mix(in srgb,var(--j10-season-secondary) 24%,transparent)}
 
 [data-j10-season="spring"] .j10-seasonal-world__line--a{
   right:5%;
@@ -129,14 +131,6 @@
   transform:rotate(-22deg);
 }
 
-[data-j10-season="spring"] .j10-seasonal-world__line--b{
-  left:8%;
-  bottom:14%;
-  width:180px;
-  height:1px;
-  background:linear-gradient(90deg,color-mix(in srgb,var(--j10-season-secondary) 14%,transparent),transparent);
-  transform:rotate(13deg);
-}
 
 /* Tsuyu — fine rain and water rings. */
 [data-j10-season="tsuyu"] .j10-seasonal-world__motif{
@@ -148,7 +142,6 @@
 
 [data-j10-season="tsuyu"] .j10-seasonal-world__motif--a{right:9%;bottom:13%}
 [data-j10-season="tsuyu"] .j10-seasonal-world__motif--b{right:22%;bottom:24%;transform:scale(.7)}
-[data-j10-season="tsuyu"] .j10-seasonal-world__motif--c{left:12%;bottom:19%;transform:scale(.48)}
 
 [data-j10-season="tsuyu"] .j10-seasonal-world__line{
   top:-8%;
@@ -159,7 +152,6 @@
 }
 
 [data-j10-season="tsuyu"] .j10-seasonal-world__line--a{right:15%}
-[data-j10-season="tsuyu"] .j10-seasonal-world__line--b{right:31%;height:54%;opacity:.72}
 
 /* Summer — indigo evening + restrained lantern glow. */
 [data-j10-season="summer"] .j10-seasonal-world__motif{
@@ -185,7 +177,6 @@
 
 [data-j10-season="summer"] .j10-seasonal-world__motif--a{right:9%;top:19%}
 [data-j10-season="summer"] .j10-seasonal-world__motif--b{right:18%;top:30%;transform:scale(.7)}
-[data-j10-season="summer"] .j10-seasonal-world__motif--c{left:12%;bottom:15%;transform:scale(.52);opacity:.55}
 
 [data-j10-season="summer"] .j10-seasonal-world__line--a{
   right:0;
@@ -195,14 +186,6 @@
   background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--j10-season-secondary) 22%,transparent));
 }
 
-[data-j10-season="summer"] .j10-seasonal-world__line--b{
-  left:7%;
-  bottom:12%;
-  width:210px;
-  height:34px;
-  border-top:1px solid color-mix(in srgb,var(--j10-season-secondary) 13%,transparent);
-  border-radius:50%;
-}
 
 /* Autumn — abstract momiji geometry and gold air. */
 [data-j10-season="autumn"] .j10-seasonal-world__motif{
@@ -214,7 +197,6 @@
 
 [data-j10-season="autumn"] .j10-seasonal-world__motif--a{right:10%;top:17%;transform:rotate(12deg)}
 [data-j10-season="autumn"] .j10-seasonal-world__motif--b{right:18%;top:28%;transform:rotate(-24deg) scale(.72);background:color-mix(in srgb,var(--j10-season-secondary) 23%,transparent)}
-[data-j10-season="autumn"] .j10-seasonal-world__motif--c{left:11%;bottom:13%;transform:rotate(33deg) scale(.55)}
 
 [data-j10-season="autumn"] .j10-seasonal-world__line--a{
   right:5%;
@@ -225,14 +207,6 @@
   transform:rotate(-18deg);
 }
 
-[data-j10-season="autumn"] .j10-seasonal-world__line--b{
-  left:5%;
-  bottom:10%;
-  width:180px;
-  height:1px;
-  background:linear-gradient(90deg,color-mix(in srgb,var(--j10-season-ink) 13%,transparent),transparent);
-  transform:rotate(9deg);
-}
 
 /* Winter — quiet snow, cold air, one plum-toned branch line. */
 [data-j10-season="winter"] .j10-seasonal-world__motif{
@@ -248,7 +222,6 @@
 
 [data-j10-season="winter"] .j10-seasonal-world__motif--a{right:12%;top:14%}
 [data-j10-season="winter"] .j10-seasonal-world__motif--b{right:28%;top:24%;transform:scale(.72)}
-[data-j10-season="winter"] .j10-seasonal-world__motif--c{left:13%;bottom:18%;transform:scale(.55)}
 
 [data-j10-season="winter"] .j10-seasonal-world__line--a{
   right:1%;
@@ -260,14 +233,6 @@
   transform:rotate(-16deg);
 }
 
-[data-j10-season="winter"] .j10-seasonal-world__line--b{
-  right:14%;
-  bottom:29%;
-  width:110px;
-  height:1px;
-  background:color-mix(in srgb,var(--j10-season-secondary) 15%,transparent);
-  transform:rotate(24deg);
-}
 
 /* New Year — red/white/gold mizuhiki-like loops and formal quiet. */
 [data-j10-season="new-year"] .j10-seasonal-world__motif{
@@ -288,7 +253,6 @@
 
 [data-j10-season="new-year"] .j10-seasonal-world__motif--a{right:8%;top:16%}
 [data-j10-season="new-year"] .j10-seasonal-world__motif--b{right:16%;top:26%;transform:scale(.66)}
-[data-j10-season="new-year"] .j10-seasonal-world__motif--c{left:10%;bottom:14%;transform:scale(.46)}
 
 [data-j10-season="new-year"] .j10-seasonal-world__line{
   right:0;
@@ -301,10 +265,6 @@
   background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--j10-season-ink) 23%,transparent));
 }
 
-[data-j10-season="new-year"] .j10-seasonal-world__line--b{
-  top:24%;
-  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--j10-season-secondary) 25%,transparent));
-}
 
 /* Seasonal art changes ambience/material accents, never layout. */
 [data-j-season] .j2-topbar::after{
@@ -402,11 +362,6 @@
     right:16px;
     bottom:84px;
     transform:scale(.84) rotate(-4deg);
-  }
-
-  .j10-seasonal-world__motif--c,
-  .j10-seasonal-world__line--b{
-    display:none;
   }
 
   .j5-study .j10-seasonal-world--compact{
