@@ -45,6 +45,7 @@ export function J3Today({summary,completedToday,status,onStart}:J3TodayProps){
     :remaining===0?1:0;
 
   return <section className="j3-today" aria-labelledby="j3-today-title">
+    <span className="j13-marginal" aria-hidden="true">今日</span>
     <div className="j3-today__hero">
       <div className="j3-today__shoji" aria-hidden="true"/>
       <JPattern name="asanoha" className="j3-today__pattern"/>
