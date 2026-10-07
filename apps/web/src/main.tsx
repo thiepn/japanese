@@ -18,6 +18,11 @@ if ("serviceWorker" in navigator && import.meta.env.PROD) {
   window.addEventListener("load", () => navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`,{scope:import.meta.env.BASE_URL}));
 }
 
+const mobileQuery=window.matchMedia("(max-width: 760px)");
+const loadMobile=()=>{void import("./design/J12MobileRuntime");};
+if(mobileQuery.matches)loadMobile();
+else mobileQuery.addEventListener("change",(event)=>{if(event.matches)loadMobile();},{once:true});
+
 const visualQa=new URLSearchParams(window.location.search).get("visual-qa")==="j1";
 
 createRoot(document.getElementById("root")!).render(
