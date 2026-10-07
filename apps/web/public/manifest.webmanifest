@@ -13,5 +13,11 @@
       "purpose": "any maskable"
     }
   ],
-  "scope": "./"
+  "scope": "./",
+  "id": "./",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "prefer_related_applications": false
 }
