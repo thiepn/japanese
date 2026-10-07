@@ -1,0 +1,36 @@
+{
+  "schema": "thiepn-japanese-j14-device-acceptance",
+  "schemaVersion": 1,
+  "status": "pending",
+  "generatedAt": null,
+  "devices": [],
+  "requiredChecks": [
+    "installStandalone",
+    "coldLaunch",
+    "lightDarkToggle",
+    "darkModeCoreSurfaces",
+    "darkModeAdvancedStudios",
+    "coreSurfaces",
+    "studyFullScreen",
+    "studyControls",
+    "readerTwoPaneOrMobile",
+    "librarySearch",
+    "offlineReload",
+    "backgroundResume",
+    "rotation",
+    "safeAreaNavigation",
+    "textScale200",
+    "screenReaderSmoke",
+    "speakerAudio",
+    "headphoneAudio",
+    "microphoneRecording",
+    "localAudioDelete"
+  ],
+  "defects": [],
+  "notes": [
+    "This manifest is intentionally pending until a real physical Android/PWA pass is performed.",
+    "Playwright Pixel/compact profiles are regression evidence, not physical-device acceptance.",
+    "Dark mode must be checked after cold launch, theme toggle, Study entry/exit and offline reload.",
+    "Do not mark status pass unless every required check was verified against an identified 40-character build commit."
+  ]
+}
