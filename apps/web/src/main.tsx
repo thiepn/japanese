@@ -9,6 +9,7 @@ import "./design/j3.css";
 import "./design/j4.css";
 import "./design/j5.css";
 import "./design/j6.css";
+import "./design/j7.css";
 
 if ("serviceWorker" in navigator && import.meta.env.PROD) {
   window.addEventListener("load", () => navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`,{scope:import.meta.env.BASE_URL}));
