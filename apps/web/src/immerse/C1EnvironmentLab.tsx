@@ -131,7 +131,7 @@ export function C1EnvironmentLab(){
 
   return <section className="p15-environment" id="p15-c1-environment">
     <div className="section-heading">
-      <div><span className="course-kicker">P15 ACTUAL C1 ENVIRONMENT</span><h2>Research real Japanese, cite it, defend it, rewrite it</h2></div>
+      <div><span className="course-kicker">C1 REAL-SOURCE ENVIRONMENT</span><h2>Research real Japanese, cite it, defend it, rewrite it</h2></div>
       <span className="course-count">{progress.activeDays} active day{progress.activeDays===1?"":"s"}</span>
     </div>
     <p className="course-note">This workspace uses external Japanese sources in their original context instead of copying them into the course. You register the exact page you read, evaluate what it can support, mine specialist vocabulary, build a cited long-form project, defend it under unpredictable pressure and revise it on another day.</p>
@@ -234,7 +234,7 @@ export function C1EnvironmentLab(){
     {tab==="defense"?<DefenseLab progress={progress} activeProjectId={activeProjectId} onProject={setActiveProjectId} onSaved={async()=>{setMessage("Pressure response saved as ungraded interaction evidence.");await refresh();}} setMessage={setMessage}/>:null}
 
     {message?<p className="import-message p15-message" role="status">{message}</p>:null}
-    <p className="course-note">External links remain external references. P15 stores your source identity, notes, citations, drafts and transcript evidence; it does not copy third-party articles into the canonical course or turn source evaluation, typed speaking proxies or internal writing completion into CEFR certification.</p>
+    <p className="course-note">External links remain external references. This workspace stores your source identity, notes, citations, drafts and transcript evidence; it does not copy third-party articles into the canonical course or turn source evaluation, typed speaking proxies or internal writing completion into CEFR certification.</p>
   </section>;
 }
 
