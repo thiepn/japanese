@@ -22,11 +22,24 @@ The root problem was not the J1 dark palette itself. The J1/J2 shell correctly s
 
 As a result, switching the shell to dark mode could leave nested advanced panels, Reader/support controls, portfolio evidence and other legacy components visibly light.
 
-J14 migrates those neutral and semantic legacy styles to the existing J-series token system.
+J14 preserves the light baseline for bundle efficiency and adds a lazy dark-compatibility layer that remaps legacy controls onto the existing J-series token system only when dark mode is actually used.
+
+### Lazy dark compatibility
+
+Dark compatibility is split into:
+
+`J14DarkRuntime.ts`
+`j14-dark.css`
+
+It is loaded before the first React render when a persisted/system dark preference is active, and before a light→dark theme toggle is committed.
+
+This avoids both a broken nested dark UI and a permanent cost to the light-mode entry stylesheet.
+
+The document theme is also primed before React mounts and is no longer torn down during shell→Study→shell transitions, removing the previous light-theme flash/flicker boundary.
 
 ### Neutral surfaces
 
-Legacy surfaces now derive from:
+Dark legacy surfaces now derive from:
 
 - `--j-bg`;
 - `--j-bg-elevated`;
@@ -84,7 +97,8 @@ These chunks must remain lazy and must not be referenced eagerly by `index.html`
 
 - `J11Diagnostics`;
 - `J12MobileRuntime`;
-- `J13ExhibitionRuntime`.
+- `J13ExhibitionRuntime`;
+- `J14DarkRuntime`.
 
 Per lazy chunk:
 - CSS gzip budget: 12 KiB;
@@ -162,11 +176,12 @@ J10 seasonal artwork remains static.
 
 ## Route/runtime separation
 
-The app now has three deliberately separated secondary runtime layers:
+The app now has four deliberately separated secondary runtime layers:
 
 - J11 diagnostics — technical only;
 - J12 mobile composition — ≤760px;
-- J13 exhibition composition — ≥761px.
+- J13 exhibition composition — ≥761px;
+- J14 dark compatibility — only when dark mode is active/selected.
 
 J14 budgets assert that all three remain code-split.
 
