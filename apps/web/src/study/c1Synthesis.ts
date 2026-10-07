@@ -123,7 +123,7 @@ export function buildC1SynthesisSession(packId:string):StudyStep[]{
     kind:"lesson",
     id:"lesson-"+pack.id,
     title:pack.title,
-    body:"This P13 task requires synthesis across several already-linked C1 sources. Re-open the sources if needed, then produce one integrated response. The built-in result only checks transparent length and target-language coverage; it does not claim that the synthesis is semantically correct or CEFR-certified.",
+    body:"This task requires synthesis across several already-linked C1 sources. Re-open the sources if needed, then produce one integrated response. The built-in result only checks transparent length and target-language coverage; it does not claim that the synthesis is semantically correct or CEFR-certified.",
     contextId:pack.id,
     facts:[
       {label:"Mode",value:pack.mode},
@@ -131,7 +131,7 @@ export function buildC1SynthesisSession(packId:string):StudyStep[]{
       {label:"Source set",value:sources.map((source)=>source.title).join(" · ")},
       {label:"Target moves",value:pack.requiredMoves.join(" · ")}
     ],
-    sourceLabel:"THIEPN Japanese P13 multi-source synthesis"
+    sourceLabel:"THIEPN Japanese multi-source synthesis"
   };
   return [intro,makePrompt(pack)];
 }
