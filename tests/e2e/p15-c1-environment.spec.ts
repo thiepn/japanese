@@ -4,6 +4,7 @@ test("P15 exposes the real-source C1 environment, multi-day writing and hidden-p
   await page.goto("./");
 
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
+  await page.locator("#j6-studio-p15 > summary").click();
   const lab=page.locator(".p15-environment");
   await expect(lab.getByText("P15 ACTUAL C1 ENVIRONMENT",{exact:true})).toBeVisible();
   await expect(lab.getByRole("heading",{name:"Research real Japanese, cite it, defend it, rewrite it"})).toBeVisible();
