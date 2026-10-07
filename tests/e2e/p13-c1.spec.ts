@@ -13,6 +13,7 @@ test("P13 exposes C1 native depth, multi-source synthesis and hidden-future spon
   await expect(page.getByLabel("Scenario chain").locator("option:checked")).toHaveText("Defend a policy recommendation under challenge");
 
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
+  await page.locator("#j6-studio-p13 > summary").click();
   await expect(page.getByText("P13 C1 SOURCE DEPTH",{exact:true})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Native sources → multi-source synthesis"})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Policy continuity across two formal addresses"})).toBeVisible();
