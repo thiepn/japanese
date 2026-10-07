@@ -3,6 +3,7 @@ import { expect,test } from "@playwright/test";
 test("P18 exposes hidden live pressure, real-partner evidence and cross-domain transfer",async({page})=>{
   await page.goto("./");
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
+  await page.locator("#j6-studio-p18 > summary").click();
   const lab=page.locator(".p18-interaction");
   await expect(lab.getByText("P18 ADVANCED NATIVE INTERACTION",{exact:true})).toBeVisible();
   await expect(lab.getByRole("heading",{name:"Repair, reformulate and hold the floor under live pressure"})).toBeVisible();
