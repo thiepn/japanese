@@ -435,7 +435,7 @@ export async function buildC2OrientedReviewPacket(now=new Date()):Promise<C2Orie
     },
     reviewerInstructions:[
       "Score only dimensions you directly observed; use not observed rather than inference.",
-      "Treat raw P19 audio as separate local evidence. The packet carries timing metadata and transcript/reflection, not the recording blob.",
+      "Treat raw local audio as separate local evidence. The packet carries timing metadata and transcript/reflection, not the recording blob.",
       "Anchor strengths and priorities in specific learner evidence rather than a global CEFR label.",
       "Do not interpret this packet as an accredited C2 examination or as permission to update learner mastery."
     ],
