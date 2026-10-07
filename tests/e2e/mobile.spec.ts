@@ -17,7 +17,7 @@ test("mobile shell keeps navigation and study controls thumb-safe without horizo
     expect(box?.height??0).toBeGreaterThanOrEqual(44);
   }
 
-  await page.getByRole("button",{name:"Continue study"}).click();
+  await page.getByRole("button",{name:/Continue today’s study|Review anyway/}).click();
   const exit=page.getByRole("button",{name:"Exit"});
   const exitBox=await exit.boundingBox();
   expect(exitBox?.height??0).toBeGreaterThanOrEqual(44);
