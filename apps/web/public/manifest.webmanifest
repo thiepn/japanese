@@ -3,8 +3,8 @@
   "short_name": "Japanese",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#f7f5f0",
-  "theme_color": "#f7f5f0",
+  "background_color": "#FBF8F1",
+  "theme_color": "#FBF8F1",
   "icons": [
     {
       "src": "icon.svg",
