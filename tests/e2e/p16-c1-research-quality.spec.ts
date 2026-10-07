@@ -3,6 +3,7 @@ import { expect,test } from "@playwright/test";
 test("P16 exposes research-quality tooling without creating a new mastery layer",async({page})=>{
   await page.goto("./");
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
+  await page.locator("#j6-studio-p16 > summary").click();
 
   const lab=page.locator(".p16-quality");
   await expect(lab.getByText("P16 C1 RESEARCH QUALITY",{exact:true})).toBeVisible();
