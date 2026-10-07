@@ -139,7 +139,7 @@ export function C1AdvancedInteractionLab(){
 
   return <section className="p18-interaction" id="p18-advanced-interaction">
     <div className="section-heading">
-      <div><span className="course-kicker">P18 ADVANCED NATIVE INTERACTION</span><h2>Repair, reformulate and hold the floor under live pressure</h2></div>
+      <div><span className="course-kicker">ADVANCED NATIVE INTERACTION</span><h2>Repair, reformulate and hold the floor under live pressure</h2></div>
       <span className="course-count">{progress.robustSessions} robust pressure session{progress.robustSessions===1?"":"s"}</span>
     </div>
     <p className="course-note">The live simulator uses native-style Japanese discourse pressure, not a verified native speaker. Actual human interaction is logged separately. Response timing is descriptive only; it is not a fluency score or pronunciation grade.</p>
@@ -227,7 +227,7 @@ export function C1AdvancedInteractionLab(){
         <label>Transfer response<textarea lang="ja" rows={7} value={transferResponse} onChange={(event)=>setTransferResponse(event.target.value)} placeholder="別領域にどう適用し、何をそのまま移さず調整するか…"/></label>
         <label>Boundary condition<textarea lang="ja" rows={5} value={boundaryCondition} onChange={(event)=>setBoundaryCondition(event.target.value)} placeholder="どの条件ではこの原則が成立しない、または追加検証が必要か…"/></label>
         <button className="primary" type="button" disabled={!transferTrackId||targetDomain.trim().length<3||principle.trim().length<70||transferResponse.trim().length<150||boundaryCondition.trim().length<80} onClick={()=>void saveTransfer()}>Save transfer response</button>
-      </>:<p className="p18-empty">Create a P16 specialist track before testing expert-domain transfer.</p>}
+      </>:<p className="p18-empty">Create a specialist track in Research quality before testing expert-domain transfer.</p>}
     </article>:null}
 
     {message?<p className="p18-message" role="status">{message}</p>:null}
@@ -244,7 +244,7 @@ function errorMessage(error:unknown):string{
     P18_HUMAN_DURATION_INVALID:"Use a real interaction duration between 3 and 480 minutes.",
     P18_HUMAN_DOMAIN_REQUIRED:"Name the interaction domain or situation.",
     P18_HUMAN_REFLECTION_TOO_SHORT:"Develop the human-interaction evidence fields in more detail.",
-    P18_SPECIALIST_TRACK_REQUIRED:"Choose an existing P16 specialist track first.",
+    P18_SPECIALIST_TRACK_REQUIRED:"Choose an existing Research quality specialist track first.",
     P18_TARGET_DOMAIN_REQUIRED:"Name an unexpected target domain.",
     P18_TRANSFER_TOO_SHORT:"Develop the principle, transfer and boundary condition in more detail.",
     P18_UNKNOWN_SPECIALIST_TRACK:"The selected specialist track no longer exists."
