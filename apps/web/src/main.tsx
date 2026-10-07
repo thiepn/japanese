@@ -2,6 +2,9 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
 import { J1VisualSandbox } from "./design/J1VisualSandbox";
+import {resolveJ10Season} from "./design/j10Season";
+import {syncJ12ThemeColor} from "./design/j12Pwa";
+import {applyJTheme,readJTheme} from "./design/j14Theme";
 import "./styles.css";
 import "./design/j1.css";
 import "./design/j2.css";
@@ -13,6 +16,11 @@ import "./design/j7.css";
 import "./design/j8.css";
 import "./design/j9.css";
 import "./design/j10.css";
+
+const initialTheme=readJTheme();
+applyJTheme(initialTheme);
+document.documentElement.dataset.jSeason=resolveJ10Season();
+syncJ12ThemeColor(initialTheme);
 
 if ("serviceWorker" in navigator && import.meta.env.PROD) {
   window.addEventListener("load", () => navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`,{scope:import.meta.env.BASE_URL}));
