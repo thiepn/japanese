@@ -6,7 +6,13 @@ test("J3 turns Today into a Japanese daily-study ritual",async({page})=>{
   const today=page.locator(".j3-today");
   await expect(today).toBeVisible();
   await expect(page.getByText("TODAY · 今日",{exact:true})).toBeVisible();
-  await expect(page.getByText("一日一歩",{exact:true})).toBeVisible();
+  const motto=page.getByText("一日一歩",{exact:true});
+  await expect(motto).toHaveCount(1);
+  if((page.viewportSize()?.width??999)>430){
+    await expect(motto).toBeVisible();
+  }else{
+    await expect(motto).toBeHidden();
+  }
   await expect(page.getByRole("heading",{name:/Continue Japanese|You’re caught up/})).toBeVisible();
   await expect(page.getByRole("heading",{name:"One route, four intentions"})).toBeVisible();
   await expect(page.getByText("今日の道",{exact:true}).first()).toBeVisible();
