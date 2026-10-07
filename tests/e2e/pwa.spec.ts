@@ -27,17 +27,18 @@ test("PWA shell, integrated Study Player and canonical content survive offline r
   const search=page.getByRole("textbox",{name:"Search Japanese"});
 
   await search.fill("eat");
-  await expect(page.getByText("食べる")).toBeVisible({timeout:15_000});
+  await expect(page.locator(".j7-result").filter({hasText:"食べる"}).first()).toBeVisible({timeout:15_000});
   await search.fill("person");
   await expect(page.getByRole("article").filter({hasText:"ひと"}).getByText("人",{exact:true})).toBeVisible({timeout:15_000});
   await search.fill("food");
-  await expect(page.getByText("食",{exact:true})).toBeVisible({timeout:15_000});
+  await page.getByLabel("Reference type filters").getByRole("button",{name:/Kanji/}).click();
+  await expect(page.locator(".j7-result.result-kanji").filter({hasText:"食"}).first()).toBeVisible({timeout:15_000});
 
   await context.setOffline(true);
   await page.reload();
   await expect(page.getByRole("heading",{name:/Continue Japanese|You’re caught up/})).toBeVisible();
   await page.getByRole("button",{name:"Library"}).click();
   await page.getByRole("textbox",{name:"Search Japanese"}).fill("train");
-  await expect(page.getByText("電車",{exact:true})).toBeVisible({timeout:15_000});
+  await expect(page.locator(".j7-result").filter({hasText:"電車"}).first()).toBeVisible({timeout:15_000});
   await context.setOffline(false);
 });
