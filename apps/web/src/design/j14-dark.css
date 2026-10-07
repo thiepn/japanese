@@ -1,0 +1,161 @@
+html[data-j-theme="dark"]{
+  --j14-dark-neutral:color-mix(in srgb,var(--j-fg) 7%,var(--j-bg-elevated));
+  --j14-dark-raised:color-mix(in srgb,var(--j-fg) 4%,var(--j-bg-elevated));
+  --j14-dark-selected:color-mix(in srgb,var(--j-season-accent) 14%,var(--j-bg-elevated));
+  --j14-dark-positive:color-mix(in srgb,var(--j-matcha-500) 18%,var(--j-bg-elevated));
+  --j14-dark-warning:color-mix(in srgb,var(--j-action) 15%,var(--j-bg-elevated));
+}
+
+html[data-j-theme="dark"],
+html[data-j-theme="dark"] body,
+html[data-j-theme="dark"] #root{
+  background:var(--j-bg)!important;
+  color:var(--j-fg);
+}
+
+html[data-j-theme="dark"] :is(
+  .j4-practice__drawer>div,
+  .j6-studio__body,
+  .j8-vault__body,
+  .j11-panel,
+  .j5-study
+) :is(input,textarea,select){
+  color:var(--j-fg)!important;
+  background:var(--j-bg-muted)!important;
+  border-color:var(--j-line-strong)!important;
+  caret-color:var(--j-fg);
+}
+
+html[data-j-theme="dark"] :is(
+  .j4-practice__drawer>div,
+  .j6-studio__body,
+  .j8-vault__body,
+  .j11-panel
+) :is(article,[class$="-card"],[class*="-card "],[class$="-workspace"],[class*="-workspace "],[class$="-editor"],[class*="-editor "],[class$="-context"],[class*="-context "],[class$="-prompt"],[class*="-prompt "],[class$="-source"],[class*="-source "],[class$="-summary"],[class*="-summary "],[class$="-picker"],[class*="-picker "],[class$="-empty"],[class*="-empty "],[class$="-message"],[class*="-message "],[class$="-note"],[class*="-note "]){
+  color:var(--j-fg)!important;
+  background:var(--j14-dark-raised)!important;
+  border-color:var(--j-line)!important;
+}
+
+html[data-j-theme="dark"] .j4-practice__drawer>div> :is(section,div),
+html[data-j-theme="dark"] .j6-studio__body> :is(section,div),
+html[data-j-theme="dark"] .j11-panel>section> :is(section,div){
+  color:var(--j-fg);
+  border-color:var(--j-line);
+}
+
+html[data-j-theme="dark"] :is(
+  .j4-practice__drawer>div,
+  .j6-studio__body,
+  .j8-vault__body,
+  .j11-panel
+) :is(button:not(.primary),summary){
+  color:var(--j-fg);
+  border-color:var(--j-line);
+}
+
+html[data-j-theme="dark"] :is(
+  .j4-practice__drawer>div,
+  .j6-studio__body,
+  .j8-vault__body,
+  .j11-panel
+) button:not(.primary):not(.j-brush-button){
+  background-color:var(--j-bg-muted);
+}
+
+html[data-j-theme="dark"] :is(
+  .j4-practice__drawer>div,
+  .j6-studio__body,
+  .j8-vault__body,
+  .j11-panel
+) :is(button.active,button.selected,.active[role="button"],.selected[role="button"]){
+  color:var(--j-fg)!important;
+  background:var(--j14-dark-selected)!important;
+  border-color:color-mix(in srgb,var(--j-season-accent) 48%,var(--j-line))!important;
+}
+
+html[data-j-theme="dark"] :is(
+  .j4-practice__drawer>div,
+  .j6-studio__body,
+  .j8-vault__body,
+  .j11-panel
+) :is(.done,.complete,.completed,.met,.qualified,.correct,.ready,.ok){
+  color:var(--j-fg)!important;
+  background-color:var(--j14-dark-positive)!important;
+  border-color:color-mix(in srgb,var(--j-matcha-500) 50%,var(--j-line))!important;
+}
+
+html[data-j-theme="dark"] :is(
+  .j4-practice__drawer>div,
+  .j6-studio__body,
+  .j8-vault__body,
+  .j11-panel,
+  .j5-study
+) :is(.incorrect,.expired,.blocked,.weak,.degraded,.unreachable,.coach-warning,.curation-blockers){
+  color:var(--j-fg)!important;
+  background-color:var(--j14-dark-warning)!important;
+  border-color:color-mix(in srgb,var(--j-action) 48%,var(--j-line))!important;
+}
+
+html[data-j-theme="dark"] :is(
+  .j4-practice__drawer>div,
+  .j6-studio__body,
+  .j8-vault__body,
+  .j11-panel
+) :is(p,small,label,span):not(.j-seal):not(.j-section-mark__glyph){
+  border-color:var(--j-line);
+}
+
+html[data-j-theme="dark"] :is(
+  .j4-practice__drawer>div,
+  .j6-studio__body,
+  .j8-vault__body,
+  .j11-panel
+) :is(code,kbd){
+  color:var(--j-fg);
+  background:var(--j-bg-muted);
+  border-color:var(--j-line);
+}
+
+html[data-j-theme="dark"] .coach-turn{background:var(--j-bg-muted);color:var(--j-fg)}
+html[data-j-theme="dark"] .coach-turn.learner{background:var(--j-sumi-700);color:var(--j-paper-night)}
+html[data-j-theme="dark"] .reader-toolbar{background:color-mix(in srgb,var(--j-bg) 95%,transparent)}
+html[data-j-theme="dark"] .status-pill{background:var(--j-bg-muted);color:var(--j-fg-muted)}
+html[data-j-theme="dark"] .status-pill.mastered{background:var(--j14-dark-positive);color:var(--j-fg)}
+html[data-j-theme="dark"] .status-pill.challenging{background:var(--j14-dark-warning);color:var(--j-fg)}
+html[data-j-theme="dark"] .status-pill.learning{background:color-mix(in srgb,var(--j-gold) 14%,var(--j-bg-elevated));color:var(--j-fg)}
+
+html[data-j-theme="dark"] .auth-token.known{background:var(--j14-dark-positive);color:var(--j-fg)}
+html[data-j-theme="dark"] .auth-token.unknown{background:var(--j14-dark-warning);color:var(--j-fg)}
+html[data-j-theme="dark"] .authentic-legend i.known{background:color-mix(in srgb,var(--j-matcha-500) 45%,var(--j-bg-muted))}
+html[data-j-theme="dark"] .authentic-legend i.unknown{background:color-mix(in srgb,var(--j-action) 42%,var(--j-bg-muted))}
+
+html[data-j-theme="dark"] .p20-readiness,
+html[data-j-theme="dark"] .p20-matrix,
+html[data-j-theme="dark"] .p20-matrix-head,
+html[data-j-theme="dark"] .p20-matrix-row,
+html[data-j-theme="dark"] .p20-next{
+  color:var(--j-fg)!important;
+  background:var(--j-bg-elevated)!important;
+  border-color:var(--j-line)!important;
+}
+html[data-j-theme="dark"] .p20-readiness.qualified,
+html[data-j-theme="dark"] .p20-matrix-row.strong,
+html[data-j-theme="dark"] .p20-requirements article.met,
+html[data-j-theme="dark"] .p20-qualified-card{
+  background:var(--j14-dark-positive)!important;
+}
+html[data-j-theme="dark"] .p20-matrix-row.weak,
+html[data-j-theme="dark"] .p20-calibration-grid article.divergent{
+  background:var(--j14-dark-warning)!important;
+}
+
+html[data-j-theme="dark"] .j5-study :is(.study-card,.study-choices button,.productive-response textarea,.speech-transcript,.j5-typed-form input){
+  color:var(--j-fg)!important;
+  background:var(--j-bg-elevated)!important;
+  border-color:var(--j-line)!important;
+}
+
+@media(forced-colors:active){
+  html[data-j-theme="dark"] :is(button,input,textarea,select,summary,a){forced-color-adjust:auto}
+}
