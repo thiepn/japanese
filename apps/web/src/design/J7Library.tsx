@@ -59,6 +59,7 @@ export function J7Library({
   }
 
   return <section className="library j7-library" aria-labelledby="j7-library-title">
+    <span className="j13-marginal" aria-hidden="true">蔵</span>
     <header className="j7-library__masthead">
       <JPattern name="sayagata" className="j7-library__pattern"/>
       <div className="j7-library__spine" aria-hidden="true">
