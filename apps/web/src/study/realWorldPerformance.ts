@@ -158,7 +158,7 @@ export async function buildNextRealWorldChainSession(chainId:string):Promise<Stu
         {label:"Mode",value:stage.mode},
         {label:"Time target",value:stage.timeLimitSeconds+" seconds"}
       ],
-      sourceLabel:"THIEPN Japanese P9 real-world performance"
+      sourceLabel:"THIEPN Japanese real-world performance"
     } satisfies StudyLesson,
     makeStagePrompt(chain,stage,unseen)
   ];
@@ -171,7 +171,7 @@ export async function buildP9QualificationSession(limit=10):Promise<StudyStep[]>
     .sort((a,b)=>Number(a.stage.attempts>0)-Number(b.stage.attempts>0)||a.stage.attempts-b.stage.attempts||a.chain.id.localeCompare(b.chain.id)||a.stage.id.localeCompare(b.stage.id))
     .slice(0,Math.max(1,limit));
   const intro:StudyLesson={
-    kind:"lesson",id:"p9-qualification-intro",title:"P9 real-world performance set",
+    kind:"lesson",id:"p9-qualification-intro",title:"Real-world performance set",
     body:"This set samples unseen or least-practiced B2 functional prompts across appointments, workplace incidents, service problems, travel changes and community coordination. Structural target coverage and response time are recorded separately; neither is an accredited CEFR score.",
     contextId:"p9-performance-qualification",
     facts:[
@@ -179,7 +179,7 @@ export async function buildP9QualificationSession(limit=10):Promise<StudyStep[]>
       {label:"Evidence",value:"first attempt · repair · paraphrase · timed follow-up"},
       {label:"Scheduling",value:"qualification-only; excluded from FSRS"}
     ],
-    sourceLabel:"THIEPN Japanese P9 performance qualification"
+    sourceLabel:"THIEPN Japanese performance qualification"
   };
   return [intro,...candidates.map(({chain,stage})=>makeStagePrompt(chain,stage,stage.attempts===0))];
 }
