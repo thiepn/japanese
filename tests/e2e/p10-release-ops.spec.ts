@@ -3,7 +3,7 @@ import { expect,test } from "@playwright/test";
 test("P22 keeps P11/P21 evidence visible inside stable release operations",async({page})=>{
   await page.goto("./");
 
-  await page.getByRole("button",{name:"Progress"}).click();
+  await page.goto("./?diagnostics=1");
   await expect(page.getByRole("heading",{name:"Review productive evidence without rewriting mastery"})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Activation, production evidence and maintenance stay fail-closed"})).toBeVisible();
   await expect(page.getByText("P11 external-review packet readiness")).toBeVisible();
@@ -13,6 +13,7 @@ test("P22 keeps P11/P21 evidence visible inside stable release operations",async
   await expect(page.getByText("P22 stable activation",{exact:true})).toBeVisible();
   await expect(page.getByText("P22 production + maintenance",{exact:true})).toBeVisible();
   await expect(page.getByText(/Playwright Pixel\/compact profiles remain automated regression evidence/)).toBeVisible();
+  await page.getByRole("button",{name:"Progress"}).click();
   await expect(page.getByText("C1 FOUNDATION",{exact:true})).toBeVisible();
 
   await page.getByRole("button",{name:"Immerse"}).click();
