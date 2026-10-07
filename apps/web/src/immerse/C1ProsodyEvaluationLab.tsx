@@ -189,10 +189,10 @@ export function C1ProsodyEvaluationLab(){
 
   return <section className="p19-evidence" id="p19-prosody-overlap-review">
     <div className="section-heading">
-      <div><span className="course-kicker">P19 PROSODY · OVERLAP · EXTERNAL REVIEW</span><h2>Add real audio evidence without inventing acoustic scores</h2></div>
-      <span className="course-count">{progress.activeDays} P19 evidence day{progress.activeDays===1?"":"s"}</span>
+      <div><span className="course-kicker">PROSODY · OVERLAP · EXTERNAL REVIEW</span><h2>Add real audio evidence without inventing acoustic scores</h2></div>
+      <span className="course-count">{progress.activeDays} evidence day{progress.activeDays===1?"":"s"}</span>
     </div>
-    <p className="course-note">P19 analyzes only audio properties the browser actually receives: duration, speech activity, pauses and amplitude dynamics. It does not infer pitch-accent correctness, intonation quality or pronunciation mastery. Overlap tasks use artificial mixes of repository-verified native recordings and are labeled as such.</p>
+    <p className="course-note">This workspace analyzes only audio properties the browser actually receives: duration, speech activity, pauses and amplitude dynamics. It does not infer pitch-accent correctness, intonation quality or pronunciation mastery. Overlap tasks use artificial mixes of repository-verified native recordings and are labeled as such.</p>
 
     <div className="p19-stats">
       <P19Stat value={progress.prosodyCaptures.length} label="prosody captures"/>
@@ -204,7 +204,7 @@ export function C1ProsodyEvaluationLab(){
       <P19Stat value={progress.localCaptureCount} label="local audio files"/>
     </div>
 
-    <div className="p19-tabs" role="tablist" aria-label="P19 evidence workspace">
+    <div className="p19-tabs" role="tablist" aria-label="Audio evidence workspace">
       <button className={tab==="prosody"?"active":""} type="button" onClick={()=>setTab("prosody")}>Prosodic control</button>
       <button className={tab==="overlap"?"active":""} type="button" onClick={()=>setTab("overlap")}>Listening under overlap</button>
       <button className={tab==="review"?"active":""} type="button" onClick={()=>setTab("review")}>External C2-oriented review</button>
