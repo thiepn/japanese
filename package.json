@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "pnpm --filter @thiepn/japanese-web dev",
-    "build": "pnpm -r build && node scripts/p22-bundle-budget.mjs",
+    "build": "pnpm -r build && node scripts/p22-bundle-budget.mjs && node scripts/j14-experience-budget.mjs",
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run",
     "test:e2e": "playwright test",
@@ -29,7 +29,8 @@
     "monitor:p22:strict": "node scripts/p22-production-monitor.mjs --strict",
     "status:p22": "node scripts/p22-release-status.mjs",
     "validate:p22:maintenance": "node scripts/p22-maintenance-validate.mjs",
-    "verify:bundle": "node scripts/p22-bundle-budget.mjs"
+    "verify:bundle": "node scripts/p22-bundle-budget.mjs",
+    "verify:j14": "node scripts/j14-experience-budget.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
