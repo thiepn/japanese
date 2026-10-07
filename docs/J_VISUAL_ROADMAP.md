@@ -110,6 +110,8 @@ Archive/dictionary experience:
 
 ## J8 — Progress / 道
 
+**Implementation complete.** Progress is now a longitudinal Japanese learning path with an evolving procedural landscape, six mastery crests, milestone seals, an explicit evidence ledger and learner-controlled B2/C1 portfolio vaults.
+
 Longitudinal journey:
 - mastery landscape;
 - skill crest/emblem plus accessible numerical detail;
