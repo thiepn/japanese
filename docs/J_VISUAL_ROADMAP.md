@@ -138,6 +138,8 @@ No required ambience.
 
 ## J10 — Seasonal Japan
 
+**Implementation complete.** The J-series now has six controlled calendar-driven Japanese ambient worlds—spring, rainy season, summer, autumn, winter and New Year—using procedural CSS art, stable layouts, dark-mode-specific tints, Study/Reader restraint and deterministic QA overrides.
+
 Dynamic seasonal atmosphere:
 - spring;
 - tsuyu;
