@@ -19,7 +19,7 @@ export function B2Portfolio(){
 
   return <section className="b2-portfolio">
     <div className="section-heading">
-      <div><span className="course-kicker">P10 B2 PORTFOLIO</span><h2>Longitudinal evidence, not a pass/fail badge</h2></div>
+      <div><span className="course-kicker">B2 LONGITUDINAL PORTFOLIO</span><h2>Longitudinal evidence, not a pass/fail badge</h2></div>
       <span className="course-count">{portfolio.activeDays} active days</span>
     </div>
     <p>Portfolio evidence accumulates from normal reading, listening, speaking, writing and advisory revision events. It shows breadth and repeated performance without turning the internal data into an accredited CEFR verdict.</p>
