@@ -2,8 +2,10 @@ import {useEffect,useRef,useState,type ReactNode} from "react";
 import {getDefaultAudioProvider} from "@thiepn/audio";
 import {gradeStudyPrompt,isStudyLesson,type GradeResult,type StudyPrompt,type StudyStep} from "@thiepn/study-player";
 import {j5StudyMode,type J5StudyModeMeta} from "./j5StudyVisual";
-import type {JTheme} from "../design";
+import type {JSeason,JTheme} from "../design";
 import {j9SensoryFeedback} from "../design/j9Sensory";
+import {J10SeasonalWorld} from "../design/J10SeasonalWorld";
+import {resolveJ10Season} from "../design/j10Season";
 
 export interface StudyAnswer{prompt:StudyPrompt;response:string;grade:GradeResult;responseTimeMs:number;}
 
@@ -17,6 +19,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   const [speechState,setSpeechState]=useState<"idle"|"listening"|"unsupported"|"error">("idle");
   const [timerTick,setTimerTick]=useState(0);
   const [theme,setTheme]=useState<JTheme>(readStudyTheme);
+  const season=resolveJ10Season();
   const startedAt=useRef(performance.now());
   const audioProvider=useRef(getDefaultAudioProvider());
   const step=steps[index];
@@ -34,12 +37,14 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   useEffect(()=>{
     try{window.localStorage.setItem("japanese:j-theme",theme);}catch{/* optional storage */}
     document.documentElement.dataset.jTheme=theme;
+    document.documentElement.dataset.jSeason=season;
     document.documentElement.style.colorScheme=theme;
     return()=>{
       delete document.documentElement.dataset.jTheme;
+      delete document.documentElement.dataset.jSeason;
       document.documentElement.style.colorScheme="";
     };
-  },[theme]);
+  },[theme,season]);
 
   useEffect(()=>{
     if(!step||isStudyLesson(step)||!step.timeLimitSeconds||feedback)return;
@@ -112,7 +117,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   }
 
   if(isStudyLesson(activeStep)){
-    return <StudyFrame mode={mode} theme={theme} index={index} total={steps.length} completed={false} onExit={onExit} onTheme={()=>setTheme((value)=>value==="light"?"dark":"light")}>
+    return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={false} onExit={onExit} onTheme={()=>setTheme((value)=>value==="light"?"dark":"light")}>
       <div className="study-card study-lesson j5-sheet j5-sheet--lesson">
         <div className="j5-sheet__cap">
           <span className="eyebrow">LEARN</span>
@@ -169,7 +174,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
     }
   }
 
-  return <StudyFrame mode={mode} theme={theme} index={index} total={steps.length} completed={Boolean(feedback)} onExit={onExit} onTheme={()=>setTheme((value)=>value==="light"?"dark":"light")}>
+  return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={Boolean(feedback)} onExit={onExit} onTheme={()=>setTheme((value)=>value==="light"?"dark":"light")}>
     <div className={"study-card j5-sheet j5-sheet--"+mode.mode}>
       <div className="j5-sheet__cap">
         <span className="eyebrow">{currentPrompt.instruction.toUpperCase()}</span>
@@ -270,10 +275,11 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
 }
 
 function StudyFrame({
-  mode,theme,index,total,completed,onExit,onTheme,children,
+  mode,theme,season,index,total,completed,onExit,onTheme,children,
 }:{
   mode:J5StudyModeMeta;
   theme:JTheme;
+  season:JSeason;
   index:number;
   total:number;
   completed:boolean;
@@ -281,8 +287,9 @@ function StudyFrame({
   onTheme:()=>void;
   children:ReactNode;
 }){
-  return <section className={"study-player j5-study j5-study--"+mode.mode} data-j-theme={theme} data-j-study-mode={mode.mode} aria-live="polite">
+  return <section className={"study-player j5-study j5-study--"+mode.mode} data-j-theme={theme} data-j-season={season} data-j-study-mode={mode.mode} aria-live="polite">
     <div className="j5-study__ambient" aria-hidden="true">
+      <J10SeasonalWorld season={season} compact/>
       <span className="j5-study__enso"/>
       <span className="j5-study__brush j5-study__brush--a"/>
       <span className="j5-study__brush j5-study__brush--b"/>
