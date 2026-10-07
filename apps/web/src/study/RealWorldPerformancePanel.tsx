@@ -8,7 +8,7 @@ export function RealWorldPerformancePanel({onStartChain,onStartQualification}:{o
 
   return <section className="real-world-performance">
     <div className="section-heading">
-      <div><span className="course-kicker">P9 REAL-WORLD PERFORMANCE</span><h2>Functional chains under time pressure</h2></div>
+      <div><span className="course-kicker">REAL-WORLD PERFORMANCE</span><h2>Functional chains under time pressure</h2></div>
       <span className="course-count">{summary.attemptedPrompts}/{summary.totalPrompts} attempted</span>
     </div>
     <p>Appointments, workplace incidents, service failures, travel disruption and community coordination are tested through unseen response, paraphrase, repair and timed follow-up. These are internal performance prompts, not an accredited CEFR examination.</p>
@@ -24,7 +24,7 @@ export function RealWorldPerformancePanel({onStartChain,onStartQualification}:{o
       <small>{entry.correctStages} structurally successful · {entry.withinTimeStages} within time target</small>
       <button className="unit-action" type="button" onClick={()=>onStartChain(entry.chain.id)}>{entry.nextStage?"Next: "+entry.nextStage.title:"Repeat weakest stage"}</button>
     </article>)}</div>
-    <button className="primary performance-qualification-action" type="button" onClick={onStartQualification}>Start mixed P9 performance set</button>
+    <button className="primary performance-qualification-action" type="button" onClick={onStartQualification}>Start mixed performance set</button>
     <p className="course-note">First-attempt status is preserved in StudyEvent metadata. Qualification-only prompts are deliberately excluded from FSRS so testing does not create artificial review obligations.</p>
   </section>;
 }
