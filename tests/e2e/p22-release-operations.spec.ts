@@ -2,9 +2,9 @@ import { expect,test } from "@playwright/test";
 
 test("P22 exposes stable-release operations without claiming production activation",async({page})=>{
   await page.goto("./");
-  await expect(page.locator(".phase")).toContainText("P22 stable release activation");
+  await expect(page.locator(".phase")).toHaveCount(0);
 
-  await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
+  await page.goto("./?diagnostics=1");
 
   await expect(page.getByText("P22 DEPLOYMENT IDENTITY",{exact:true})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Know exactly which build is running"})).toBeVisible();
