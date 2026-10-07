@@ -223,10 +223,10 @@ function readingStage(id:string,title:string,textId:string):C1AutonomyStage{
   readingText(textId);return {id,kind:"reading",title,instruction:"Complete a reading check for "+readingText(textId).title+".",textId};
 }
 function nativeStage(id:string,title:string,nativeSetId:string):C1AutonomyStage{
-  c1NativeSourceSet(nativeSetId);return {id,kind:"native_synthesis",title,instruction:"Complete the P13 native-source set and save a cross-source synthesis.",nativeSetId};
+  c1NativeSourceSet(nativeSetId);return {id,kind:"native_synthesis",title,instruction:"Complete the native-source set and save a cross-source synthesis.",nativeSetId};
 }
 function synthesisStage(id:string,title:string,synthesisPackId:string):C1AutonomyStage{
-  c1SynthesisPack(synthesisPackId);return {id,kind:"multi_source_synthesis",title,instruction:"Complete the P13 multi-source synthesis pack.",synthesisPackId};
+  c1SynthesisPack(synthesisPackId);return {id,kind:"multi_source_synthesis",title,instruction:"Complete the multi-source synthesis pack.",synthesisPackId};
 }
 function interactionStage(id:string,title:string,scenarioChainId:string):C1AutonomyStage{
   const chain=scenarioChain(scenarioChainId);if(chain.level!=="C1")throw new Error("P14_INTERACTION_NOT_C1:"+scenarioChainId);
