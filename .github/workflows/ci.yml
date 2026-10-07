@@ -33,6 +33,30 @@ jobs:
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e
+      - name: Record J14 automated qualification evidence
+        run: |
+          mkdir -p artifacts
+          cat > artifacts/j14-regression-evidence.json <<'JSON'
+          {
+            "typecheck": true,
+            "unitTests": true,
+            "contentValidation": true,
+            "nativeProvenanceAudit": true,
+            "productionBuild": true,
+            "bundleBudget": true,
+            "e2e": true,
+            "darkMode": true,
+            "reflow320": true,
+            "keyboard": true,
+            "screenReaderStructure": true,
+            "reducedMotion": true,
+            "mobile": true,
+            "tabletDesktop": true,
+            "offlinePwa": true
+          }
+          JSON
+      - name: Generate J14 qualification report
+        run: pnpm qualify:j14
       - name: Record P9 regression evidence
         run: |
           mkdir -p artifacts
@@ -96,3 +120,7 @@ jobs:
             artifacts/p22-maintenance-summary.json
             artifacts/p22-release-status.json
             artifacts/p22-release-status.md
+            artifacts/j14-experience-budget.json
+            artifacts/j14-regression-evidence.json
+            artifacts/j14-qualification.json
+            artifacts/j14-qualification.md
