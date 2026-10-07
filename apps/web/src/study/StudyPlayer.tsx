@@ -7,6 +7,7 @@ import {j9SensoryFeedback} from "../design/j9Sensory";
 import {J10SeasonalWorld} from "../design/J10SeasonalWorld";
 import {resolveJ10Season} from "../design/j10Season";
 import {syncJ12ThemeColor} from "../design/j12Pwa";
+import {applyJTheme,persistJTheme,readJTheme} from "../design/j14Theme";
 
 export interface StudyAnswer{prompt:StudyPrompt;response:string;grade:GradeResult;responseTimeMs:number;}
 
@@ -19,7 +20,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   const [audioPlayed,setAudioPlayed]=useState(false);
   const [speechState,setSpeechState]=useState<"idle"|"listening"|"unsupported"|"error">("idle");
   const [timerTick,setTimerTick]=useState(0);
-  const [theme,setTheme]=useState<JTheme>(readStudyTheme);
+  const [theme,setTheme]=useState<JTheme>(readJTheme);
   const season=resolveJ10Season();
   const startedAt=useRef(performance.now());
   const audioProvider=useRef(getDefaultAudioProvider());
@@ -36,16 +37,10 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   },[index]);
 
   useEffect(()=>{
-    try{window.localStorage.setItem("japanese:j-theme",theme);}catch{/* optional storage */}
-    document.documentElement.dataset.jTheme=theme;
+    persistJTheme(theme);
+    applyJTheme(theme);
     document.documentElement.dataset.jSeason=season;
-    document.documentElement.style.colorScheme=theme;
     syncJ12ThemeColor(theme);
-    return()=>{
-      delete document.documentElement.dataset.jTheme;
-      delete document.documentElement.dataset.jSeason;
-      document.documentElement.style.colorScheme="";
-    };
   },[theme,season]);
 
   useEffect(()=>{
@@ -338,14 +333,6 @@ function StudyHeader({
     </header>
     <div className="study-progress j5-study-progress" aria-hidden="true"><span style={{width:pct+"%"}}/></div>
   </>;
-}
-
-function readStudyTheme():JTheme{
-  try{
-    const stored=window.localStorage.getItem("japanese:j-theme");
-    if(stored==="light"||stored==="dark")return stored;
-  }catch{/* optional storage */}
-  return window.matchMedia?.("(prefers-color-scheme: dark)").matches?"dark":"light";
 }
 
 function speakWithDevice(text:string,rate:number,repeats:number,lang:string):Promise<void>{
