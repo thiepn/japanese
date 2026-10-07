@@ -49,10 +49,10 @@ export function C1AdvancedLab({onOpenText,onStartSynthesis,preferredSetId}:{onOp
 
   return <section className="p13-advanced-lab" id="p13-c1-source-depth">
     <div className="section-heading">
-      <div><span className="course-kicker">P13 C1 SOURCE DEPTH</span><h2>Native sources → multi-source synthesis</h2></div>
+      <div><span className="course-kicker">C1 NATIVE SOURCE DEPTH</span><h2>Native sources → multi-source synthesis</h2></div>
       <span className="course-count">verified inventory · no transcript-first shortcut</span>
     </div>
-    <p className="course-note">P13 uses the repository's already-audited native inventory for advanced listening depth. Source identity, licensing, native-speaker status, connected speech, register and source-rate labels come from the P11.2 provenance audit. Listening notes and syntheses remain learner artifacts, not semantic mastery or CEFR certification.</p>
+    <p className="course-note">This workspace uses the repository's already-audited native inventory for advanced listening depth. Source identity, licensing, native-speaker status, connected speech, register and source-rate labels come from the P11.2 provenance audit. Listening notes and syntheses remain learner artifacts, not semantic mastery or CEFR certification.</p>
 
     {nativeProgress?<div className="native-depth-stats">
       <div><strong>{nativeProgress.verifiedSources}/{nativeProgress.sourceCount}</strong><span>verified sources</span></div>
@@ -89,13 +89,13 @@ export function C1AdvancedLab({onOpenText,onStartSynthesis,preferredSetId}:{onOp
       <div className="coach-goals">{sourceSet.targetMoves.map((move)=><span key={move}>{move}</span>)}</div>
       <textarea rows={7} value={synthesis} onChange={(event)=>setSynthesis(event.target.value)} placeholder="複数の音声を統合し、共通点・相違点・留保を日本語でまとめる…"/>
       <button className="primary" type="button" disabled={played.size<sources.length||Object.values(notes).filter((note)=>note.trim()).length<2||!synthesis.trim()} onClick={()=>void saveNativeSynthesis()}>Save native-source synthesis</button>
-      {played.size<sources.length?<p className="course-note">Finish playback of every source in this set before saving. P13 records actual source exposure rather than a source-selection click.</p>:null}
+      {played.size<sources.length?<p className="course-note">Finish playback of every source in this set before saving. The exposure log records actual source exposure rather than a source-selection click.</p>:null}
       {message?<p className="import-message" role="status">{message}</p>:null}
     </section>
 
     <section className="p13-synthesis-packs">
-      <div className="section-heading"><div><span className="course-kicker">P13 MULTI-SOURCE REASONING</span><h2>Synthesize before you generalize</h2></div><span className="course-count">{c1SynthesisPacks.length} C1 packs</span></div>
-      <p className="course-note">These packs reuse the canonical P12 C1 texts but force cross-source reasoning. The Study Player checks only transparent length and requested target language; semantic quality remains ungraded unless reviewed separately.</p>
+      <div className="section-heading"><div><span className="course-kicker">MULTI-SOURCE REASONING</span><h2>Synthesize before you generalize</h2></div><span className="course-count">{c1SynthesisPacks.length} C1 packs</span></div>
+      <p className="course-note">These packs reuse the canonical C1 texts but force cross-source reasoning. The Study Player checks only transparent length and requested target language; semantic quality remains ungraded unless reviewed separately.</p>
       <div className="mission-grid">{c1SynthesisPacks.map((pack)=>{
         const progress=synthesisProgress.find((item)=>item.pack.id===pack.id);
         return <article className="p13-synthesis-card" key={pack.id}>
