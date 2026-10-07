@@ -3,6 +3,7 @@ import { expect,test } from "@playwright/test";
 test("P19 exposes bounded real-audio evidence, overlap listening and external review",async({page})=>{
   await page.goto("./");
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
+  await page.locator("#j6-studio-p19 > summary").click();
   const lab=page.locator(".p19-evidence");
   await expect(lab.getByText("P19 PROSODY · OVERLAP · EXTERNAL REVIEW",{exact:true})).toBeVisible();
   await expect(lab.getByRole("heading",{name:"Add real audio evidence without inventing acoustic scores"})).toBeVisible();
