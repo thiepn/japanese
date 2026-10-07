@@ -45,11 +45,11 @@ test("J8 keeps detailed B2 and C1 portfolios behind evidence drill-down",async({
   await expect(c1).not.toHaveAttribute("open","");
 
   await b2.locator("summary").click();
-  await expect(page.getByText("P10 B2 PORTFOLIO",{exact:true})).toBeVisible();
+  await expect(page.getByText("B2 LONGITUDINAL PORTFOLIO",{exact:true})).toBeVisible();
 
   await c1.locator("summary").click();
-  await expect(page.getByText("P20 C1→C2 PORTFOLIO",{exact:true})).toBeVisible();
-  await expect(page.getByText("P20 LONGITUDINAL C2 READINESS",{exact:true})).toBeVisible();
+  await expect(page.getByText("C1→C2 LONGITUDINAL PORTFOLIO",{exact:true})).toBeVisible();
+  await expect(page.getByText("LONGITUDINAL C2 READINESS",{exact:true})).toBeVisible();
 });
 
 test("J8 evidence ledger remains explicit behind the decorative landscape",async({page})=>{
