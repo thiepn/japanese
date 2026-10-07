@@ -4,6 +4,7 @@ test("P14 exposes long-form C1 autonomy missions and the longitudinal C1 portfol
   await page.goto("./");
 
   await page.getByRole("button",{name:"Immerse"}).click();
+  await page.locator("#j6-studio-p14 > summary").click();
   await expect(page.getByText("P14 C1 LONG-FORM AUTONOMY",{exact:true})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Carry one argument across sources, pressure and time"})).toBeVisible();
   const p14=page.locator(".p14-autonomy");
