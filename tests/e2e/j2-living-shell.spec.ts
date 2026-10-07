@@ -3,8 +3,9 @@ import {expect,test} from "@playwright/test";
 test("J2 replaces learner chrome with the living Japanese shell",async({page})=>{
   await page.goto("./");
 
-  await expect(page.getByLabel("Japanese")).toBeVisible();
-  await expect(page.getByText("日本語",{exact:true})).toBeVisible();
+  const brand=page.locator(".j2-brand");
+  await expect(brand).toHaveAttribute("aria-label","Japanese");
+  await expect(brand.getByText("日本語",{exact:true})).toBeVisible();
 
   const nav=page.getByRole("navigation",{name:"Primary"});
   await expect(nav.getByRole("button")).toHaveCount(5);
