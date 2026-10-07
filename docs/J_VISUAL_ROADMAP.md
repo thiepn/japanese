@@ -87,6 +87,8 @@ Rebuild StudyPlayer around task-specific learning:
 
 ## J6 — Immerse / 浸 + Reader
 
+**Implementation complete.** Immerse is now a contemporary Japanese editorial reading room with genre-led covers, adaptive feature placement, thematic series, missions and progressive-disclosure advanced studios; the Reader is rebuilt as a quiet Mincho-first layered reading surface.
+
 Contemporary Japanese editorial/media identity:
 - poster/book/magazine compositions;
 - richer media taxonomy;
