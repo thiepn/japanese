@@ -122,7 +122,7 @@ html[data-j-theme="dark"] .j5-study-shell{
 .j5-exit{
   width:max-content;
   min-width:76px!important;
-  min-height:42px!important;
+  min-height:44px!important;
   display:flex;
   align-items:center;
   gap:8px;
