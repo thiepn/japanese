@@ -1,6 +1,6 @@
 import { expect,test } from "@playwright/test";
 
-test("PWA shell, integrated Study Player and canonical content survive offline reload",async({page,context})=>{
+test("PWA shell, integrated Study Player and canonical content survive offline reload",async({page,context},testInfo)=>{
   await page.goto("./");
   await expect(page.getByRole("heading",{name:"Continue Japanese"})).toBeVisible();
   await page.evaluate(async()=>{if(!("serviceWorker" in navigator))throw new Error("SERVICE_WORKER_UNAVAILABLE");await navigator.serviceWorker.ready;});
@@ -37,6 +37,9 @@ test("PWA shell, integrated Study Player and canonical content survive offline r
   await context.setOffline(true);
   await page.reload();
   await expect(page.getByRole("heading",{name:/Continue Japanese|You’re caught up/})).toBeVisible();
+  if(testInfo.project.name!=="desktop-chromium"){
+    await expect.poll(()=>page.locator(".j2-shell").evaluate((node)=>getComputedStyle(node).getPropertyValue("--j12-mobile").trim())).toBe("1");
+  }
   await page.getByRole("button",{name:"Library"}).click();
   await page.getByRole("textbox",{name:"Search Japanese"}).fill("train");
   await expect(page.locator(".j7-result").filter({hasText:"電車"}).first()).toBeVisible({timeout:15_000});
