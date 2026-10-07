@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "japanese-shell-";
-const CACHE = `${CACHE_PREFIX}v3`;
+const CACHE = `${CACHE_PREFIX}v4`;
 const BASE = new URL(self.registration.scope).pathname;
 const CORE = [BASE, `${BASE}manifest.webmanifest`, `${BASE}icon.svg`];
 
