@@ -20,6 +20,8 @@ export function applyJTheme(theme:JTheme):void{
 let darkStylesPromise:Promise<void>|null=null;
 
 export function ensureJ14DarkStyles():Promise<void>{
-  darkStylesPromise??=import("./J14DarkRuntime").then(()=>undefined);
+  darkStylesPromise??=import("./J14DarkRuntime")
+    .then(()=>undefined)
+    .catch(()=>{darkStylesPromise=null;});
   return darkStylesPromise;
 }
