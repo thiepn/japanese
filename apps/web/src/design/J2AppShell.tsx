@@ -1,5 +1,6 @@
 import {useEffect,useState,type ReactNode} from "react";
 import {JPattern,JSeal,type JPatternName,type JSeason,type JTheme} from "./index";
+import {j9SensoryFeedback,readJ9SensoryEnabled,setJ9SensoryEnabled} from "./j9Sensory";
 
 export type J2Surface="Today"|"Learn"|"Immerse"|"Library"|"Progress";
 
@@ -73,6 +74,7 @@ export function J2AppShell({
   children:ReactNode;
 }){
   const [theme,setTheme]=useState<JTheme>(initialTheme);
+  const [sensory,setSensory]=useState(readJ9SensoryEnabled);
   const season=currentSeason();
 
   useEffect(()=>{
@@ -87,11 +89,31 @@ export function J2AppShell({
     };
   },[theme,season]);
 
+  useEffect(()=>{
+    document.documentElement.dataset.jSensory=sensory?"on":"off";
+    setJ9SensoryEnabled(sensory);
+    return()=>{delete document.documentElement.dataset.jSensory;};
+  },[sensory]);
+
+  function chooseSurface(next:J2Surface){
+    if(next===surface&&!diagnosticsMode)return;
+    j9SensoryFeedback("navigate");
+    onSurfaceChange(next);
+  }
+
+  function toggleSensory(){
+    const next=!sensory;
+    setSensory(next);
+    setJ9SensoryEnabled(next);
+    if(next)j9SensoryFeedback("enable",true);
+  }
+
   return <div
     className="j1-root j2-shell j-material-washi"
     data-j1=""
     data-j-theme={theme}
     data-j-season={season}
+    data-j-sensory={sensory?"on":"off"}
   >
     <div className="j2-ambient" aria-hidden="true">
       <JPattern name={seasonPattern(season)} className="j2-ambient__pattern"/>
@@ -125,6 +147,16 @@ export function J2AppShell({
           <span aria-hidden="true">{theme==="light"?"墨":"紙"}</span>
         </button>
         <button
+          aria-pressed={sensory}
+          aria-label={sensory?"Disable subtle sound and haptics":"Enable subtle sound and haptics"}
+          className="j9-sensory-toggle"
+          onClick={toggleSensory}
+          title={sensory?"Sensory feedback on":"Sensory feedback off"}
+          type="button"
+        >
+          <span aria-hidden="true">{sensory?"響":"静"}</span>
+        </button>
+        <button
           className="j2-account"
           disabled={accountBusy}
           onClick={onAccountAction}
@@ -147,7 +179,7 @@ export function J2AppShell({
           aria-label={item.english}
           className={!diagnosticsMode&&surface===item.id?"active":""}
           key={item.id}
-          onClick={()=>onSurfaceChange(item.id)}
+          onClick={()=>chooseSurface(item.id)}
           type="button"
         >
           <span className="j2-nav__mon" aria-hidden="true">{item.glyph}</span>
@@ -164,6 +196,7 @@ export function J2AppShell({
       </nav>
 
       <main className={"j2-content"+(diagnosticsMode?" j2-content--diagnostics":"")} id="main-content" tabIndex={-1}>
+        <div className={"j9-fusuma j9-fusuma--"+surface.toLowerCase()} key={(diagnosticsMode?"diagnostics":surface)+"-transition"} aria-hidden="true"/>
         {accountStatus?<p className="j2-account-status" role="status">{accountStatus}</p>:null}
         {children}
       </main>
