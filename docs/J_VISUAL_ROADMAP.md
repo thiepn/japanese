@@ -175,6 +175,8 @@ Purpose-built mobile UX:
 
 ## J13 — Tablet & Desktop Exhibition Layer
 
+**Implementation complete.** Tablet and desktop now use a lazy-loaded exhibition layer with panoramic Learn, asymmetric editorial compositions, persistent contextual rails, large Japanese marginal art, a two-pane Reader/Library desk, multi-panel Progress and bounded large-screen Study.
+
 Use larger canvases intentionally:
 - panoramic learning path;
 - asymmetric editorial layouts;
