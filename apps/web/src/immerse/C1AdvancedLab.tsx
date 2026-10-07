@@ -52,7 +52,7 @@ export function C1AdvancedLab({onOpenText,onStartSynthesis,preferredSetId}:{onOp
       <div><span className="course-kicker">C1 NATIVE SOURCE DEPTH</span><h2>Native sources → multi-source synthesis</h2></div>
       <span className="course-count">verified inventory · no transcript-first shortcut</span>
     </div>
-    <p className="course-note">This workspace uses the repository's already-audited native inventory for advanced listening depth. Source identity, licensing, native-speaker status, connected speech, register and source-rate labels come from the P11.2 provenance audit. Listening notes and syntheses remain learner artifacts, not semantic mastery or CEFR certification.</p>
+    <p className="course-note">This workspace uses the repository's already-audited native inventory for advanced listening depth. Source identity, licensing, native-speaker status, connected speech, register and source-rate labels come from the repository provenance audit. Listening notes and syntheses remain learner artifacts, not semantic mastery or CEFR certification.</p>
 
     {nativeProgress?<div className="native-depth-stats">
       <div><strong>{nativeProgress.verifiedSources}/{nativeProgress.sourceCount}</strong><span>verified sources</span></div>
