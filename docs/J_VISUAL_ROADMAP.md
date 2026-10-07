@@ -99,6 +99,8 @@ Contemporary Japanese editorial/media identity:
 
 ## J7 — Library / 蔵
 
+**Implementation complete.** Library is now a search-first Japanese knowledge archive with semantic entity filters, a dense catalog, keyboard/touch navigation and differentiated canonical reference sheets for words, kanji, grammar, sentences, chunks, texts and productive tasks.
+
 Archive/dictionary experience:
 - search-first layout;
 - high-density results;
