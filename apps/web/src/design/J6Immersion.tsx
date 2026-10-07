@@ -8,7 +8,6 @@ import type {AutonomyMissionProgress} from "../study/autonomyMissions";
 import {AuthenticLibrary} from "../immerse/AuthenticLibrary";
 import {ShadowingLab} from "../immerse/ShadowingLab";
 import {NativeListeningLab} from "../immerse/NativeListeningLab";
-import {NativeCurationPanel} from "../immerse/NativeCurationPanel";
 import {C1AdvancedLab} from "../immerse/C1AdvancedLab";
 import {C1AutonomyPanel} from "../study/C1AutonomyPanel";
 import {C1EnvironmentLab} from "../immerse/C1EnvironmentLab";
@@ -214,7 +213,6 @@ export function J6ImmersionHome({
         <C1AdvancedLab onOpenText={(id)=>void openText(id)} onStartSynthesis={onStartC1Synthesis} preferredSetId={preferredNativeSet}/>
       </Studio>
       <Studio glyph="聴" title="Native listening" subtitle="Verified recordings and connected listening" id="j6-studio-native-listening"><NativeListeningLab/></Studio>
-      <Studio glyph="選" title="Native curation" subtitle="Curated source sets" id="j6-studio-curation"><NativeCurationPanel/></Studio>
       <Studio glyph="影" title="Shadowing" subtitle="Listen · record · compare" id="j6-studio-shadowing"><ShadowingLab/></Studio>
       <Studio glyph="私" title="Your Japanese" subtitle="Private authentic input and imports" id="j6-studio-authentic"><AuthenticLibrary/></Studio>
     </section>
