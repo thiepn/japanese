@@ -83,7 +83,7 @@ export function J2AppShell({
   }
 
   return <div
-    className="j1-root j2-shell j-material-washi"
+    className={"j1-root j2-shell j-material-washi"+(diagnosticsMode?" j2-shell--diagnostics":"")}
     data-j1=""
     data-j-theme={theme}
     data-j-season={season}
@@ -144,7 +144,7 @@ export function J2AppShell({
     </header>
 
     <div className="j2-workspace">
-      <nav className="j2-nav" aria-label="Primary">
+      {!diagnosticsMode?<nav className="j2-nav" aria-label="Primary">
         <div className="j2-nav__caption" aria-hidden="true">
           <span lang="ja">学習</span>
           <i/>
@@ -168,9 +168,7 @@ export function J2AppShell({
           <span>日本語</span>
           <small>study · immerse · grow</small>
         </div>
-      </nav>
-
-      <main className={"j2-content"+(diagnosticsMode?" j2-content--diagnostics":"")} id="main-content" tabIndex={-1}>
+      </nav>:null}      <main className={"j2-content"+(diagnosticsMode?" j2-content--diagnostics":"")} id="main-content" tabIndex={-1}>
         <div className={"j9-fusuma j9-fusuma--"+surface.toLowerCase()} key={(diagnosticsMode?"diagnostics":surface)+"-transition"} aria-hidden="true"/>
         {accountStatus?<p className="j2-account-status" role="status">{accountStatus}</p>:null}
         {children}
