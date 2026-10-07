@@ -513,45 +513,6 @@ html[data-j-theme],html[data-j-theme] body,html[data-j-theme] #root{
   background:var(--j-bg-elevated);
 }
 
-.j2-content--diagnostics{
-  width:min(1280px,100%);
-}
-
-.j2-diagnostics{
-  max-width:1050px;
-}
-
-.j2-diagnostics__head{
-  display:grid;
-  gap:8px;
-  margin-bottom:28px;
-  padding-bottom:18px;
-  border-bottom:1px solid var(--j-line);
-}
-
-.j2-diagnostics__head p{
-  margin:0;
-  color:var(--j-fg-muted);
-  max-width:720px;
-}
-
-.j2-diagnostics__head h1{
-  margin:0;
-  font-size:clamp(34px,5vw,58px);
-}
-
-.j2-diagnostics__flag{
-  width:max-content;
-  padding:5px 8px;
-  border:1px solid var(--j-line);
-  color:var(--j-season-accent);
-  background:var(--j-bg-elevated);
-  font-size:9px;
-  font-weight:800;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-}
-
 @media(max-width:1040px){
   .j2-workspace{grid-template-columns:82px minmax(0,1fr)}
   .j2-nav{padding:22px 10px}
