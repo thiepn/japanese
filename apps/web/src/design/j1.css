@@ -83,6 +83,15 @@
     --j-gold:var(--j-gold-night);
   }
 
+  /* J14 immediate dark root: keep the page dark before the lazy compatibility layer arrives. */
+  html[data-j-theme="dark"],
+  html[data-j-theme="dark"] body,
+  html[data-j-theme="dark"] #root{
+    background:var(--j-bg);
+    color:var(--j-fg);
+    color-scheme:dark;
+  }
+
   [data-j-season="spring"]{--j-season-accent:#c65f68;--j-season-soft:#f0cccf;--j-season-deep:#4f6b4f}
   [data-j-season="tsuyu"]{--j-season-accent:#496c8b;--j-season-soft:#b9c8dd;--j-season-deep:#243e59}
   [data-j-season="summer"]{--j-season-accent:#d85d37;--j-season-soft:#efc06e;--j-season-deep:#17486b}

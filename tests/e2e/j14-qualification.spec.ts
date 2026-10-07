@@ -42,6 +42,32 @@ test("J14 dark mode is coherent across core and legacy learner surfaces",async({
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)).toBeLessThanOrEqual(1);
 });
 
+test("J14 removes legacy light islands and restores muted-text contrast in dark mode",async({page})=>{
+  await page.addInitScript(()=>localStorage.setItem("japanese:j-theme","dark"));
+  await page.goto("./");
+
+  await page.getByRole("button",{name:"Learn",exact:true}).click();
+  const realWorld=page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"});
+  await realWorld.locator("summary").click();
+  await expectDarkSurface(page,".performance-summary>div");
+  await expectReadableTextAgainst(page,".real-world-performance>p",".real-world-performance");
+
+  await page.getByRole("button",{name:"Immerse",exact:true}).click();
+  await page.locator("#j6-studio-native-listening > summary").click();
+  await expectDarkSurface(page,".native-depth-stats>div");
+  await expectDarkSurface(page,".native-listening-workspace textarea");
+
+  await page.getByRole("button",{name:"Progress",exact:true}).click();
+  await page.getByTestId("j8-c1-vault").locator("summary").click();
+  await expectDarkSurface(page,".p20-matrix");
+  await expectDarkSurface(page,".p20-matrix-head");
+  await expectReadableTextAgainst(page,".p20-matrix-row span",".p20-matrix-row");
+
+  const skip=page.locator(".skip-link");
+  await skip.focus();
+  await expectDarkSurface(page,".skip-link");
+});
+
 test("J14 theme preference survives reload and can return cleanly to light mode",async({page})=>{
   await page.goto("./");
   await page.getByRole("button",{name:"Use dark theme"}).click();
@@ -199,6 +225,23 @@ async function expectDarkSurface(page:Page,selector:string){
   const foreground=parseCssColor(data.color);
   expect(background).not.toBeNull();
   expect(foreground).not.toBeNull();
+  expect(relativeLuminance(background!)).toBeLessThan(.18);
+  expect(contrastRatio(foreground!,background!)).toBeGreaterThanOrEqual(4.5);
+}
+
+async function expectReadableTextAgainst(page:Page,textSelector:string,surfaceSelector:string){
+  const pair=await page.locator(textSelector).first().evaluate((node,surfaceSelector)=>{
+    const surface=document.querySelector(surfaceSelector as string);
+    if(!surface)throw new Error("SURFACE_NOT_FOUND:"+surfaceSelector);
+    return {
+      foreground:getComputedStyle(node).color,
+      background:getComputedStyle(surface).backgroundColor,
+    };
+  },surfaceSelector);
+  const foreground=parseCssColor(pair.foreground);
+  const background=parseCssColor(pair.background);
+  expect(foreground).not.toBeNull();
+  expect(background).not.toBeNull();
   expect(relativeLuminance(background!)).toBeLessThan(.18);
   expect(contrastRatio(foreground!,background!)).toBeGreaterThanOrEqual(4.5);
 }
