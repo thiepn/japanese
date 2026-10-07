@@ -16,18 +16,13 @@
   }
 
   .j3-today,.j4-learn,.j6-immerse,.j7-library,.j8-progress{position:relative;max-width:none}
-  .j3-today::before,.j4-learn::before,.j6-immerse::before,.j7-library::before,.j8-progress::before{
+  .j13-marginal{
     position:absolute;right:-32px;top:120px;z-index:-1;
     writing-mode:vertical-rl;
     color:color-mix(in srgb,var(--j-season-accent) 7%,transparent);
     font-family:var(--j-font-editorial);font-size:clamp(56px,7vw,108px);font-weight:850;letter-spacing:.08em;
-    pointer-events:none
+    pointer-events:none;user-select:none
   }
-  .j3-today::before{content:"今日"}
-  .j4-learn::before{content:"学"}
-  .j6-immerse::before{content:"浸"}
-  .j7-library::before{content:"蔵"}
-  .j8-progress::before{content:"道"}
 
   /* Tablet keeps a strong two-pane exhibition rhythm without desktop-scale whitespace. */
   .j3-today__hero{grid-template-columns:minmax(0,1.35fr) minmax(220px,.65fr)}
