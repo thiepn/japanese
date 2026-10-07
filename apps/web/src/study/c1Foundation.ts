@@ -196,14 +196,14 @@ export function c1FoundationPractice(limit=12):StudyStep[]{
     kind:"lesson",
     id:"p12-c1-foundation-intro",
     title:"C1 foundation · discourse control",
-    body:"P12 shifts the target from simply knowing more forms to controlling evidence, qualification, synthesis, counterargument, implication and register across complex discourse. This practice records normal learner evidence but is not an accredited CEFR judgment.",
+    body:"C1 foundation shifts the target from simply knowing more forms to controlling evidence, qualification, synthesis, counterargument, implication and register across complex discourse. This practice records normal learner evidence but is not an accredited CEFR judgment.",
     contextId:"c1-foundation",
     facts:[
       {label:"Discourse moves",value:String(c1DiscourseMoves.length)},
       {label:"Practice prompts",value:String(prompts.length)},
       {label:"Evidence boundary",value:"internal practice · no CEFR certification"}
     ],
-    sourceLabel:"THIEPN Japanese P12 C1 foundation"
+    sourceLabel:"THIEPN Japanese C1 foundation"
   };
   return [intro,...prompts];
 }
