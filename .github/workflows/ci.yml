@@ -31,6 +31,8 @@ jobs:
       - name: Audit P11.2 native provenance and P9 media gate
         run: pnpm native:p11:audit
       - run: pnpm build
+      - name: Audit J15 native visual system
+        run: pnpm verify:j15
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e
       - name: Record J14 automated qualification evidence
@@ -124,3 +126,4 @@ jobs:
             artifacts/j14-regression-evidence.json
             artifacts/j14-qualification.json
             artifacts/j14-qualification.md
+            artifacts/j15-native-theme-audit.json

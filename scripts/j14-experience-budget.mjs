@@ -12,7 +12,7 @@ const MAX_LAZY_CSS_GZIP=12*1024;
 const MAX_LAZY_JS_GZIP=64*1024;
 const MAX_VISUAL_ASSET_BYTES=1536*1024;
 const MAX_VISUAL_TOTAL_BYTES=4*1024*1024;
-const REQUIRED_LAZY=["J11Diagnostics","J12MobileRuntime","J13ExhibitionRuntime","J14DarkRuntime"];
+const REQUIRED_LAZY=["J11Diagnostics","J12MobileRuntime","J13ExhibitionRuntime"];
 
 if(!fs.existsSync(INDEX)||!fs.existsSync(ASSETS))throw new Error("J14_DIST_MISSING");
 
@@ -51,7 +51,7 @@ if(visualTotalBytes>MAX_VISUAL_TOTAL_BYTES){
 
 const report={
   schema:"thiepn-japanese-j14-experience-budget",
-  schemaVersion:1,
+  schemaVersion:2,
   lazyChunkBudgets:{cssGzipBytes:MAX_LAZY_CSS_GZIP,jsGzipBytes:MAX_LAZY_JS_GZIP},
   lazy,
   visualAssetBudgets:{individualBytes:MAX_VISUAL_ASSET_BYTES,totalBytes:MAX_VISUAL_TOTAL_BYTES},
@@ -61,14 +61,14 @@ const report={
     technicalDiagnosticsLazy:true,
     mobileLayerLazy:true,
     exhibitionLayerLazy:true,
-    darkCompatibilityLazy:true,
+    darkThemeNative:true,
     noOversizedVisualAsset:true
   }
 };
 
 fs.mkdirSync(path.join(ROOT,"artifacts"),{recursive:true});
 fs.writeFileSync(path.join(ROOT,"artifacts/j14-experience-budget.json"),JSON.stringify(report,null,2)+"\n");
-process.stdout.write("J14 experience budget PASS — J11/J12/J13/dark compatibility remain lazy; visual assets within budget\n");
+process.stdout.write("J14/J15 experience budget PASS — J11/J12/J13 remain lazy; dark theme is native; visual assets within budget\n");
 
 function walk(dir,visit){
   for(const entry of fs.readdirSync(dir,{withFileTypes:true})){

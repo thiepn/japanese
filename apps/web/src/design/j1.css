@@ -67,6 +67,18 @@
     --j-action-strong:var(--j-shu-700);
     --j-focus:var(--j-ai-500);
     --j-gold:var(--j-kin-500);
+    --j-bg-subtle:#faf9f6;
+    --j-control-strong:#1f2937;
+    --j-on-strong:#fff8ef;
+    --j-positive-bg:#eef2ec;
+    --j-positive-fg:#355b43;
+    --j-positive-line:#a9b6aa;
+    --j-warning-bg:#f7ece8;
+    --j-warning-fg:#8a4d39;
+    --j-warning-line:#d5b8aa;
+    --j-danger-fg:#9a3412;
+    --j-note-bg:#fff8dc;
+    --j-note-fg:#5f563f;
   }
 
   [data-j-theme="dark"]{
@@ -81,9 +93,21 @@
     --j-action-strong:#f06d59;
     --j-focus:#74a7bf;
     --j-gold:var(--j-gold-night);
+    --j-bg-subtle:#191816;
+    --j-control-strong:var(--j-paper-night);
+    --j-on-strong:var(--j-sumi-900);
+    --j-positive-bg:color-mix(in srgb,var(--j-matcha-500) 18%,var(--j-bg-elevated));
+    --j-positive-fg:#c7d7bd;
+    --j-positive-line:color-mix(in srgb,var(--j-matcha-500) 52%,var(--j-line));
+    --j-warning-bg:color-mix(in srgb,var(--j-action) 15%,var(--j-bg-elevated));
+    --j-warning-fg:#f0b19f;
+    --j-warning-line:color-mix(in srgb,var(--j-action) 48%,var(--j-line));
+    --j-danger-fg:#ff9d87;
+    --j-note-bg:color-mix(in srgb,var(--j-gold) 15%,var(--j-bg-elevated));
+    --j-note-fg:#dec898;
   }
 
-  /* J14 immediate dark root: keep the page dark before the lazy compatibility layer arrives. */
+  /* Native theme root: light and dark share the same semantic surface contract. */
   html[data-j-theme="dark"],
   html[data-j-theme="dark"] body,
   html[data-j-theme="dark"] #root{

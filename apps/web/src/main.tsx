@@ -4,7 +4,7 @@ import { App } from "./App";
 import { J1VisualSandbox } from "./design/J1VisualSandbox";
 import {resolveJ10Season} from "./design/j10Season";
 import {syncJ12ThemeColor} from "./design/j12Pwa";
-import {applyJTheme,ensureJ14DarkStyles,readJTheme} from "./design/j14Theme";
+import {applyJTheme,readJTheme} from "./design/j14Theme";
 import "./styles.css";
 import "./design/j1.css";
 import "./design/j2.css";
@@ -38,11 +38,6 @@ else exhibitionQuery.addEventListener("change",(event)=>{if(event.matches)loadEx
 
 const visualQa=new URLSearchParams(window.location.search).get("visual-qa")==="j1";
 
-async function mount(){
-  if(initialTheme==="dark")await ensureJ14DarkStyles();
-  createRoot(document.getElementById("root")!).render(
-    <StrictMode>{visualQa?<J1VisualSandbox/>:<App />}</StrictMode>,
-  );
-}
-
-void mount();
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>{visualQa?<J1VisualSandbox/>:<App />}</StrictMode>,
+);

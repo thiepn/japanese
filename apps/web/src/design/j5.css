@@ -1,11 +1,7 @@
 .j5-study-shell{
   min-height:100vh!important;
   padding:0!important;
-  background:#fbf8f1!important;
-}
-
-html[data-j-theme="dark"] .j5-study-shell{
-  background:#0d0d0c!important;
+  background:var(--j-bg)!important;
 }
 
 .j5-study{
