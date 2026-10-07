@@ -1,4 +1,4 @@
-import {useEffect,useRef,useState} from "react";
+import {useEffect,useRef,useState,type ReactNode} from "react";
 import {getDefaultAudioProvider} from "@thiepn/audio";
 import {gradeStudyPrompt,isStudyLesson,type GradeResult,type StudyPrompt,type StudyStep} from "@thiepn/study-player";
 import {j5StudyMode,type J5StudyModeMeta} from "./j5StudyVisual";
@@ -277,7 +277,7 @@ function StudyFrame({
   completed:boolean;
   onExit:()=>void;
   onTheme:()=>void;
-  children:React.ReactNode;
+  children:ReactNode;
 }){
   return <section className={"study-player j5-study j5-study--"+mode.mode} data-j-theme={theme} data-j-study-mode={mode.mode} aria-live="polite">
     <div className="j5-study__ambient" aria-hidden="true">
