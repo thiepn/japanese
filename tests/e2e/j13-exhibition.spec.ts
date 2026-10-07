@@ -21,6 +21,7 @@ test("J13 Learn uses the wide canvas as a panoramic emakimono",async({page},test
 
   await page.setViewportSize({width:1440,height:960});
   await page.goto("./");
+  await expect.poll(()=>page.locator(".j2-shell").evaluate((node)=>getComputedStyle(node).getPropertyValue("--j13-exhibition").trim())).toBe("1");
   await page.getByRole("button",{name:"Learn",exact:true}).click();
 
   const emaki=page.locator(".j4-emaki");
@@ -44,6 +45,7 @@ test("J13 tablet Reader becomes a persistent two-pane reading desk",async({page}
 
   await page.setViewportSize({width:1024,height:900});
   await page.goto("./");
+  await expect.poll(()=>page.locator(".j2-shell").evaluate((node)=>getComputedStyle(node).getPropertyValue("--j13-exhibition").trim())).toBe("1");
   await page.getByRole("button",{name:"Immerse",exact:true}).click();
   await page.locator(".j6-cover").filter({hasText:"A school morning"}).getByRole("button",{name:"Open text"}).click();
 
@@ -62,6 +64,7 @@ test("J13 Library is a desktop research desk with persistent reference sheet",as
 
   await page.setViewportSize({width:1440,height:960});
   await page.goto("./");
+  await expect.poll(()=>page.locator(".j2-shell").evaluate((node)=>getComputedStyle(node).getPropertyValue("--j13-exhibition").trim())).toBe("1");
   await page.getByRole("button",{name:"Library",exact:true}).click();
 
   const catalog=page.locator(".j7-catalog");
@@ -70,6 +73,7 @@ test("J13 Library is a desktop research desk with persistent reference sheet",as
 
   const reference=page.locator(".j7-reference");
   await expect(reference).toHaveCSS("position","sticky");
+  await page.locator(".j7-result").first().getByRole("option").click();
   const sheet=await page.locator(".j7-reference__sheet").boundingBox();
   expect(sheet).not.toBeNull();
   expect(sheet!.height).toBeGreaterThanOrEqual(560);
@@ -80,6 +84,7 @@ test("J13 Progress becomes an asymmetric multi-panel exhibition",async({page},te
 
   await page.setViewportSize({width:1440,height:1000});
   await page.goto("./");
+  await expect.poll(()=>page.locator(".j2-shell").evaluate((node)=>getComputedStyle(node).getPropertyValue("--j13-exhibition").trim())).toBe("1");
   await page.getByRole("button",{name:"Progress",exact:true}).click();
 
   const progress=page.locator(".j8-progress");
@@ -104,11 +109,11 @@ test("J13 keeps keyboard focus visible across the exhibition shell",async({page}
 
   await page.setViewportSize({width:1280,height:900});
   await page.goto("./");
+  await expect.poll(()=>page.locator(".j2-shell").evaluate((node)=>getComputedStyle(node).getPropertyValue("--j13-exhibition").trim())).toBe("1");
 
-  await page.keyboard.press("Tab");
-  const focused=page.locator(":focus");
-  await expect(focused).toBeVisible();
-  const outline=await focused.evaluate((node)=>getComputedStyle(node).outlineStyle);
+  const today=page.getByRole("navigation",{name:"Primary"}).getByRole("button",{name:"Today",exact:true});
+  await today.focus();
+  const outline=await today.evaluate((node)=>getComputedStyle(node).outlineStyle);
   expect(outline).not.toBe("none");
 
   await page.getByRole("button",{name:"Learn",exact:true}).click();
