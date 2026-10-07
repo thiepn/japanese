@@ -3,6 +3,7 @@ import {getDefaultAudioProvider} from "@thiepn/audio";
 import {gradeStudyPrompt,isStudyLesson,type GradeResult,type StudyPrompt,type StudyStep} from "@thiepn/study-player";
 import {j5StudyMode,type J5StudyModeMeta} from "./j5StudyVisual";
 import type {JTheme} from "../design";
+import {j9SensoryFeedback} from "../design/j9Sensory";
 
 export interface StudyAnswer{prompt:StudyPrompt;response:string;grade:GradeResult;responseTimeMs:number;}
 
@@ -162,6 +163,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
       });
       setResponse(value);
       setFeedback(grade);
+      j9SensoryFeedback(grade.result==="correct"?"success":"correction");
     }finally{
       setSaving(false);
     }
