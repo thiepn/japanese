@@ -4,7 +4,7 @@ import {j9SensoryFeedback,readJ9SensoryEnabled,setJ9SensoryEnabled} from "./j9Se
 import {J10SeasonalWorld} from "./J10SeasonalWorld";
 import {j10SeasonLabel,j10SeasonPattern,resolveJ10Season} from "./j10Season";
 import {syncJ12ThemeColor} from "./j12Pwa";
-import {applyJTheme,persistJTheme,readJTheme} from "./j14Theme";
+import {applyJTheme,ensureJ14DarkStyles,persistJTheme,readJTheme} from "./j14Theme";
 
 export type J2Surface="Today"|"Learn"|"Immerse"|"Library"|"Progress";
 
@@ -71,6 +71,12 @@ export function J2AppShell({
     if(next)j9SensoryFeedback("enable",true);
   }
 
+  async function toggleTheme(){
+    const next:JTheme=theme==="light"?"dark":"light";
+    if(next==="dark")await ensureJ14DarkStyles();
+    setTheme(next);
+  }
+
   return <div
     className={"j1-root j2-shell j-material-washi"+(diagnosticsMode?" j2-shell--diagnostics":"")}
     data-j1=""
@@ -104,7 +110,7 @@ export function J2AppShell({
         <button
           aria-label={theme==="light"?"Use dark theme":"Use light theme"}
           className="j2-theme-toggle"
-          onClick={()=>setTheme((value)=>value==="light"?"dark":"light")}
+          onClick={()=>void toggleTheme()}
           title={theme==="light"?"墨色の夜":"和紙の昼"}
           type="button"
         >
