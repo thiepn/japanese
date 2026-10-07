@@ -342,6 +342,7 @@ export function App(){
     if(diagnosticsMode){
       const url=new URL(window.location.href);
       url.searchParams.delete("diagnostics");
+      url.searchParams.delete("panel");
       window.history.replaceState({},"",url.pathname+url.search+url.hash);
       setDiagnosticsMode(false);
     }
