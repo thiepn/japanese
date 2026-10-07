@@ -297,7 +297,7 @@ export function serializeC2ReadinessMarkdown(report:C2ReadinessReport):string{
     "- Different reviewer labels do not establish independently verified reviewer identities.",
     "- Internal structural evidence is not converted into semantic language scores.",
     "- Reviewer scores do not automatically change FSRS or durable mastery.",
-    "- Raw local P19 audio is not included in this report."
+    "- Raw local audio is not included in this report."
   ].join("\n");
 }
 
