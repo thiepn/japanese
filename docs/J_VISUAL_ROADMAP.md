@@ -60,6 +60,8 @@ J3 becomes the quality bar for subsequent surfaces.
 
 ## J4 — Learn / 学 Emakimono Journey
 
+**Implementation complete.** Learn is now a navigable A1→C1 emakimono-style world with dynamic course regions, canonical unit landmarks, real mastery/evidence projection, milestone gates, specialist training grounds and a dedicated mobile vertical route.
+
 Replace the long stacked page with a navigable A1→C1 illustrated learning world:
 - level regions;
 - chapter landmarks;
