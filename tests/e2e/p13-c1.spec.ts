@@ -4,6 +4,7 @@ test("P13 exposes C1 native depth, multi-source synthesis and hidden-future spon
   await page.goto("./");
 
   await page.getByRole("button",{name:"Learn"}).evaluate((button)=>(button as HTMLButtonElement).click());
+  await page.locator(".j4-practice__drawer").filter({hasText:"AI coach"}).locator("summary").click();
   await expect(page.getByText("P18 ADVANCED LIVE INTERACTION",{exact:true})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Hidden pressure, repair and reformulation"})).toBeVisible();
   await expect(page.getByRole("button",{name:"C1 spontaneous"})).toHaveClass(/active/);
