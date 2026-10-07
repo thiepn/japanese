@@ -1,6 +1,8 @@
-import { useEffect,useRef,useState } from "react";
-import { getDefaultAudioProvider } from "@thiepn/audio";
-import { gradeStudyPrompt, isStudyLesson, type GradeResult, type StudyPrompt, type StudyStep } from "@thiepn/study-player";
+import {useEffect,useRef,useState} from "react";
+import {getDefaultAudioProvider} from "@thiepn/audio";
+import {gradeStudyPrompt,isStudyLesson,type GradeResult,type StudyPrompt,type StudyStep} from "@thiepn/study-player";
+import {j5StudyMode,type J5StudyModeMeta} from "./j5StudyVisual";
+import type {JTheme} from "../design";
 
 export interface StudyAnswer{prompt:StudyPrompt;response:string;grade:GradeResult;responseTimeMs:number;}
 
@@ -13,6 +15,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   const [audioPlayed,setAudioPlayed]=useState(false);
   const [speechState,setSpeechState]=useState<"idle"|"listening"|"unsupported"|"error">("idle");
   const [timerTick,setTimerTick]=useState(0);
+  const [theme,setTheme]=useState<JTheme>(readStudyTheme);
   const startedAt=useRef(performance.now());
   const audioProvider=useRef(getDefaultAudioProvider());
   const step=steps[index];
@@ -27,12 +30,15 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
     return()=>{provider.stop();if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();};
   },[index]);
 
-  if(!step)return null;
-  const activeStep=step;
-  const timeLimitSeconds=!isStudyLesson(activeStep)?activeStep.timeLimitSeconds:undefined;
-  const elapsedSeconds=Math.max(0,Math.floor((performance.now()-startedAt.current)/1000));
-  const remainingSeconds=timeLimitSeconds===undefined?null:Math.max(0,timeLimitSeconds-elapsedSeconds);
-  void timerTick;
+  useEffect(()=>{
+    try{window.localStorage.setItem("japanese:j-theme",theme);}catch{/* optional storage */}
+    document.documentElement.dataset.jTheme=theme;
+    document.documentElement.style.colorScheme=theme;
+    return()=>{
+      delete document.documentElement.dataset.jTheme;
+      document.documentElement.style.colorScheme="";
+    };
+  },[theme]);
 
   useEffect(()=>{
     if(!step||isStudyLesson(step)||!step.timeLimitSeconds||feedback)return;
@@ -40,26 +46,47 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
     return()=>window.clearInterval(id);
   },[step,index,feedback]);
 
+  if(!step)return null;
+
+  const activeStep=step;
+  const mode=j5StudyMode(activeStep);
+  const timeLimitSeconds=!isStudyLesson(activeStep)?activeStep.timeLimitSeconds:undefined;
+  const elapsedSeconds=Math.max(0,Math.floor((performance.now()-startedAt.current)/1000));
+  const remainingSeconds=timeLimitSeconds===undefined?null:Math.max(0,timeLimitSeconds-elapsedSeconds);
+  void timerTick;
+
   function advance(){
     audioProvider.current.stop();
     if(index+1>=steps.length){onComplete();return;}
-    setIndex((value)=>value+1);setResponse("");setFeedback(null);setTimerTick(0);startedAt.current=performance.now();
+    setIndex((value)=>value+1);
+    setResponse("");
+    setFeedback(null);
+    setTimerTick(0);
+    startedAt.current=performance.now();
   }
 
-  async function playAudio(mode:"normal"|"slow"|"shadow"){
+  async function playAudio(playback:"normal"|"slow"|"shadow"){
     const ttsText=!isStudyLesson(activeStep)?activeStep.speechSynthesisText:undefined;
     if((!activeStep.audio&&!ttsText)||audioState==="playing")return;
     setAudioState("playing");
     try{
       if(activeStep.audio){
-        if(mode==="slow")await audioProvider.current.play(activeStep.audio,{rate:.82});
-        else if(mode==="shadow")await audioProvider.current.play(activeStep.audio,{rate:.92,repeats:2,gapMs:1200});
+        if(playback==="slow")await audioProvider.current.play(activeStep.audio,{rate:.82});
+        else if(playback==="shadow")await audioProvider.current.play(activeStep.audio,{rate:.92,repeats:2,gapMs:1200});
         else await audioProvider.current.play(activeStep.audio);
       }else if(ttsText){
-        await speakWithDevice(ttsText,mode==="slow"?.78:.94,mode==="shadow"?2:1,(!isStudyLesson(activeStep)?activeStep.speechSynthesisLanguage:undefined)??"ja-JP");
+        await speakWithDevice(
+          ttsText,
+          playback==="slow"?.78:.94,
+          playback==="shadow"?2:1,
+          (!isStudyLesson(activeStep)?activeStep.speechSynthesisLanguage:undefined)??"ja-JP",
+        );
       }
-      setAudioPlayed(true);setAudioState("idle");
-    }catch{setAudioState("error");}
+      setAudioPlayed(true);
+      setAudioState("idle");
+    }catch{
+      setAudioState("error");
+    }
   }
 
   function startSpeechRecognition(){
@@ -69,8 +96,14 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
     };
     const Recognition=w.SpeechRecognition??w.webkitSpeechRecognition;
     if(!Recognition){setSpeechState("unsupported");return;}
-    const recognition=new Recognition();recognition.lang="ja-JP";recognition.interimResults=false;recognition.continuous=false;
-    recognition.onresult=(event)=>{const transcript=event.results[0]?.[0]?.transcript?.trim()??"";if(transcript)setResponse(transcript);};
+    const recognition=new Recognition();
+    recognition.lang="ja-JP";
+    recognition.interimResults=false;
+    recognition.continuous=false;
+    recognition.onresult=(event)=>{
+      const transcript=event.results[0]?.[0]?.transcript?.trim()??"";
+      if(transcript)setResponse(transcript);
+    };
     recognition.onerror=()=>setSpeechState("error");
     recognition.onend=()=>setSpeechState((value)=>value==="error"?value:"idle");
     setSpeechState("listening");
@@ -78,84 +111,251 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   }
 
   if(isStudyLesson(activeStep)){
-    return <section className="study-player" aria-live="polite">
-      <StudyHeader index={index} total={steps.length} completed={false} onExit={onExit}/>
-      <div className="study-card study-lesson">
-        <p className="eyebrow">LEARN</p>
+    return <StudyFrame mode={mode} theme={theme} index={index} total={steps.length} completed={false} onExit={onExit} onTheme={()=>setTheme((value)=>value==="light"?"dark":"light")}>
+      <div className="study-card study-lesson j5-sheet j5-sheet--lesson">
+        <div className="j5-sheet__cap">
+          <span className="eyebrow">LEARN</span>
+          <span className="j5-sheet__counter">{index+1} / {steps.length}</span>
+        </div>
         <h1>{activeStep.title}</h1>
         <p className="lesson-body">{activeStep.body}</p>
-        {activeStep.audio?<div className="lesson-audio"><button className="audio-inline" type="button" disabled={audioState==="playing"} onClick={()=>void playAudio("normal")}>{audioState==="playing"?"Playing…":audioPlayed?"Replay pronunciation":"Hear pronunciation"}</button><button className="quiet-button audio-inline-slow" type="button" disabled={audioState==="playing"} onClick={()=>void playAudio("slow")}>Slower</button></div>:null}
-        {activeStep.facts?.length?<div className="lesson-facts">{activeStep.facts.map((fact)=><div key={fact.label}><span>{fact.label}</span><strong lang={fact.language}>{fact.value}</strong></div>)}</div>:null}
-        {activeStep.examples?.length?<div className="lesson-examples">{activeStep.examples.map((example)=><div key={`${example.expression}:${example.note}`}><strong lang="ja">{example.expression}</strong><span>{example.note}</span></div>)}</div>:null}
+
+        {activeStep.audio?<div className="lesson-audio j5-lesson-audio">
+          <button className="audio-inline j5-audio-inline" type="button" disabled={audioState==="playing"} onClick={()=>void playAudio("normal")}>
+            <span aria-hidden="true">聴</span>
+            {audioState==="playing"?"Playing…":audioPlayed?"Replay pronunciation":"Hear pronunciation"}
+          </button>
+          <button className="quiet-button audio-inline-slow" type="button" disabled={audioState==="playing"} onClick={()=>void playAudio("slow")}>Slower</button>
+        </div>:null}
+
+        {activeStep.facts?.length?<div className="lesson-facts j5-lesson-facts">{activeStep.facts.map((fact)=><div key={fact.label}>
+          <span>{fact.label}</span>
+          <strong lang={fact.language}>{fact.value}</strong>
+        </div>)}</div>:null}
+
+        {activeStep.examples?.length?<div className="lesson-examples j5-lesson-examples">{activeStep.examples.map((example)=><div key={example.expression+":"+example.note}>
+          <strong lang="ja">{example.expression}</strong>
+          <span>{example.note}</span>
+        </div>)}</div>:null}
+
         {activeStep.sourceLabel?<p className="source-note">Source: {activeStep.sourceLabel}</p>:null}
-        <button className="primary study-next" type="button" onClick={advance}>Continue</button>
+        <button className="primary study-next j5-next" type="button" onClick={advance}><span>Continue</span><i aria-hidden="true">→</i></button>
       </div>
-    </section>;
+    </StudyFrame>;
   }
 
   const currentPrompt=activeStep;
   const hasListeningCue=Boolean(currentPrompt.audio||currentPrompt.speechSynthesisText);
   const answerLocked=hasListeningCue&&!audioPlayed;
   const interactionLocked=answerLocked||audioState==="playing";
+
   async function submit(value=response){
     if(!value.trim()||feedback||saving||interactionLocked)return;
-    const grade=gradeStudyPrompt(currentPrompt,value);setSaving(true);
-    try{await onAnswer({prompt:currentPrompt,response:value,grade,responseTimeMs:Math.max(0,Math.round(performance.now()-startedAt.current))});setResponse(value);setFeedback(grade);}finally{setSaving(false);}
+    const grade=gradeStudyPrompt(currentPrompt,value);
+    setSaving(true);
+    try{
+      await onAnswer({
+        prompt:currentPrompt,
+        response:value,
+        grade,
+        responseTimeMs:Math.max(0,Math.round(performance.now()-startedAt.current)),
+      });
+      setResponse(value);
+      setFeedback(grade);
+    }finally{
+      setSaving(false);
+    }
   }
 
-  return <section className="study-player" aria-live="polite">
-    <StudyHeader index={index} total={steps.length} completed={Boolean(feedback)} onExit={onExit}/>
-    <div className="study-card">
-      <p className="eyebrow">{currentPrompt.instruction.toUpperCase()}</p>
-      {remainingSeconds!==null?<div className={"timed-prompt "+(remainingSeconds===0?"expired":"")}><span>Timed response</span><strong>{remainingSeconds>0?remainingSeconds+"s remaining":"time target elapsed"}</strong><small>Submissions after the target are still accepted but recorded as outside the time limit.</small></div>:null}
-      {hasListeningCue?
-        <div className="audio-question">
+  return <StudyFrame mode={mode} theme={theme} index={index} total={steps.length} completed={Boolean(feedback)} onExit={onExit} onTheme={()=>setTheme((value)=>value==="light"?"dark":"light")}>
+    <div className={"study-card j5-sheet j5-sheet--"+mode.mode}>
+      <div className="j5-sheet__cap">
+        <span className="eyebrow">{currentPrompt.instruction.toUpperCase()}</span>
+        <span className="j5-sheet__counter">{index+1} / {steps.length}</span>
+      </div>
+
+      {remainingSeconds!==null?<div className={"timed-prompt j5-timer "+(remainingSeconds===0?"expired":"")}>
+        <span>Timed response</span>
+        <strong>{remainingSeconds>0?remainingSeconds+"s remaining":"time target elapsed"}</strong>
+        <small>Submissions after the target are still accepted but recorded as outside the time limit.</small>
+      </div>:null}
+
+      {hasListeningCue
+        ?<div className="audio-question j5-listening">
           <p className="audio-question-label">{currentPrompt.prompt}</p>
           {currentPrompt.speechSynthesisText&&!currentPrompt.audio?<p className="audio-source-label">Device Japanese voice · synthesized listening cue</p>:null}
-          <button className="audio-play" type="button" aria-label={audioPlayed?"Replay Japanese audio":"Play Japanese audio"} disabled={audioState==="playing"} onClick={()=>void playAudio("normal")}>{audioState==="playing"?"Playing…":audioPlayed?"Replay":"Play audio"}</button>
-          <div className="audio-tools" aria-label="Audio playback controls">
+          <button
+            className="audio-play j5-audio-orb"
+            type="button"
+            aria-label={audioPlayed?"Replay Japanese audio":"Play Japanese audio"}
+            disabled={audioState==="playing"}
+            onClick={()=>void playAudio("normal")}
+          >
+            <span className="j5-audio-orb__glyph" aria-hidden="true">{audioState==="playing"?"…":"聴"}</span>
+            <span>{audioState==="playing"?"Playing…":audioPlayed?"Replay":"Play audio"}</span>
+          </button>
+          <div className="audio-tools j5-audio-tools" aria-label="Audio playback controls">
             <button type="button" disabled={audioState==="playing"} onClick={()=>void playAudio("slow")}>Slower</button>
             <button type="button" disabled={audioState==="playing"} onClick={()=>void playAudio("shadow")}>Shadow ×2</button>
           </div>
-          {audioState==="error"?<div className="audio-error" role="status"><p>Audio is not available yet. Retry when connected, or skip this listening item without creating mastery evidence.</p><button className="quiet-button audio-skip" type="button" onClick={advance}>Skip for now</button></div>:null}
+          {audioState==="error"?<div className="audio-error j5-audio-error" role="status">
+            <p>Audio is not available yet. Retry when connected, or skip this listening item without creating mastery evidence.</p>
+            <button className="quiet-button audio-skip" type="button" onClick={advance}>Skip for now</button>
+          </div>:null}
         </div>
-        :<div className="study-prompt" lang={currentPrompt.promptLanguage}>{currentPrompt.prompt}</div>}
-      {currentPrompt.promptType==="choice"?
-        <div className="study-choices">{currentPrompt.choices.map((choice)=><button disabled={Boolean(feedback)||saving||interactionLocked} type="button" key={choice} onClick={()=>void submit(choice)}>{choice}</button>)}</div>
-        :currentPrompt.promptType==="textarea"?
-          <form className="productive-response" onSubmit={(event)=>{event.preventDefault();void submit();}}><textarea autoFocus disabled={Boolean(feedback)||saving||interactionLocked} value={response} onChange={(event)=>setResponse(event.target.value)} placeholder={currentPrompt.placeholder??"日本語で書いてください…"} rows={7}/><div className="productive-response-meta"><span>{response.length} characters{currentPrompt.minimumCharacters?" · target "+currentPrompt.minimumCharacters+"+":""}</span><button className="primary" disabled={!response.trim()||Boolean(feedback)||saving||interactionLocked} type="submit">Check structure</button></div></form>
-        :currentPrompt.promptType==="speech"?
-          <div className="speech-response"><button className="primary" disabled={Boolean(feedback)||saving||interactionLocked||speechState==="listening"} type="button" onClick={startSpeechRecognition}>{speechState==="listening"?"Listening…":response?"Speak again":"Start speaking"}</button>{response?<div className="speech-transcript"><span>Recognized transcript</span><strong lang="ja">{response}</strong></div>:null}{speechState==="unsupported"?<p className="audio-error">Japanese speech recognition is not available in this browser. Skip this item; no speaking mastery will be recorded.</p>:null}{speechState==="error"?<p className="audio-error">Speech recognition failed. Try again or skip without recording speaking mastery.</p>:null}<div className="speech-actions">{response?<button className="unit-action" disabled={Boolean(feedback)||saving||interactionLocked} type="button" onClick={()=>void submit(response)}>Check transcript</button>:null}<button className="quiet-button" type="button" onClick={advance}>Skip for now</button></div></div>
-        :<form onSubmit={(event)=>{event.preventDefault();void submit();}}><input autoFocus disabled={Boolean(feedback)||saving||interactionLocked} value={response} onChange={(event)=>setResponse(event.target.value)} placeholder={currentPrompt.placeholder}/><button className="primary" disabled={!response.trim()||Boolean(feedback)||saving||interactionLocked} type="submit">Check</button></form>}
-      {hasListeningCue&&!audioPlayed&&audioState!=="error"?<p className="audio-gate">Play the listening cue before answering.</p>:null}
-      {feedback&&<div className={`study-feedback ${feedback.result}`}>
-        <strong>{feedback.result==="correct"?"Correct":`Answer: ${feedback.expectedAnswer}`}</strong>
-        {currentPrompt.audio?<div className="audio-reveal"><span lang="ja">{currentPrompt.audio.text}</span>{currentPrompt.audio.reading&&<small lang="ja">{currentPrompt.audio.reading}</small>}</div>:null}
-        {currentPrompt.explanation&&<p>{currentPrompt.explanation}</p>}
-        {(currentPrompt.promptType==="textarea"||currentPrompt.promptType==="speech")&&currentPrompt.requiredTerms?.length?<p className="productive-rubric">Structural check: include at least 60% of these targets: {currentPrompt.requiredTerms.join(" · ")}. This is not a full semantic or pronunciation score.</p>:null}
-        <button className="primary study-next" type="button" onClick={advance}>{index+1>=steps.length?"Finish":"Continue"}</button>
-      </div>}
+        :<div className={"study-prompt j5-prompt j5-prompt--"+mode.mode} lang={currentPrompt.promptLanguage}>{currentPrompt.prompt}</div>}
+
+      {currentPrompt.promptType==="choice"
+        ?<div className="study-choices j5-choices">{currentPrompt.choices.map((choice,index)=><button
+          disabled={Boolean(feedback)||saving||interactionLocked}
+          type="button"
+          key={choice}
+          onClick={()=>void submit(choice)}
+        ><span className="j5-choice-index" aria-hidden="true">{index+1}</span><span>{choice}</span></button>)}</div>
+        :currentPrompt.promptType==="textarea"
+          ?<form className="productive-response j5-writing" onSubmit={(event)=>{event.preventDefault();void submit();}}>
+            <div className="j5-writing__paper">
+              <textarea autoFocus disabled={Boolean(feedback)||saving||interactionLocked} value={response} onChange={(event)=>setResponse(event.target.value)} placeholder={currentPrompt.placeholder??"日本語で書いてください…"} rows={7}/>
+            </div>
+            <div className="productive-response-meta">
+              <span>{response.length} characters{currentPrompt.minimumCharacters?" · target "+currentPrompt.minimumCharacters+"+":""}</span>
+              <button className="primary" disabled={!response.trim()||Boolean(feedback)||saving||interactionLocked} type="submit">Check structure</button>
+            </div>
+          </form>
+          :currentPrompt.promptType==="speech"
+            ?<div className="speech-response j5-speaking">
+              <button className="primary j5-speak-button" disabled={Boolean(feedback)||saving||interactionLocked||speechState==="listening"} type="button" onClick={startSpeechRecognition}>
+                <span aria-hidden="true">{speechState==="listening"?"…":"話"}</span>
+                <strong>{speechState==="listening"?"Listening…":response?"Speak again":"Start speaking"}</strong>
+              </button>
+              {response?<div className="speech-transcript j5-speech-transcript"><span>Recognized transcript</span><strong lang="ja">{response}</strong></div>:null}
+              {speechState==="unsupported"?<p className="audio-error">Japanese speech recognition is not available in this browser. Skip this item; no speaking mastery will be recorded.</p>:null}
+              {speechState==="error"?<p className="audio-error">Speech recognition failed. Try again or skip without recording speaking mastery.</p>:null}
+              <div className="speech-actions">
+                {response?<button className="unit-action" disabled={Boolean(feedback)||saving||interactionLocked} type="button" onClick={()=>void submit(response)}>Check transcript</button>:null}
+                <button className="quiet-button" type="button" onClick={advance}>Skip for now</button>
+              </div>
+            </div>
+            :<form className="j5-typed-form" onSubmit={(event)=>{event.preventDefault();void submit();}}>
+              <input autoFocus disabled={Boolean(feedback)||saving||interactionLocked} value={response} onChange={(event)=>setResponse(event.target.value)} placeholder={currentPrompt.placeholder}/>
+              <button className="primary" disabled={!response.trim()||Boolean(feedback)||saving||interactionLocked} type="submit">Check</button>
+            </form>}
+
+      {hasListeningCue&&!audioPlayed&&audioState!=="error"?<p className="audio-gate j5-audio-gate">Play the listening cue before answering.</p>:null}
+
+      {feedback?<div className={"study-feedback j5-feedback "+feedback.result}>
+        <div className="j5-feedback__head">
+          <span className="j5-feedback__seal" aria-hidden="true">{feedback.result==="correct"?"正":"直"}</span>
+          <div>
+            <small>{feedback.result==="correct"?"RETRIEVED":"CORRECTION"}</small>
+            <strong>{feedback.result==="correct"?"Correct":"Answer: "+feedback.expectedAnswer}</strong>
+          </div>
+        </div>
+        {currentPrompt.audio?<div className="audio-reveal j5-audio-reveal">
+          <span lang="ja">{currentPrompt.audio.text}</span>
+          {currentPrompt.audio.reading?<small lang="ja">{currentPrompt.audio.reading}</small>:null}
+        </div>:null}
+        {currentPrompt.explanation?<p>{currentPrompt.explanation}</p>:null}
+        {(currentPrompt.promptType==="textarea"||currentPrompt.promptType==="speech")&&currentPrompt.requiredTerms?.length?<p className="productive-rubric">
+          Structural check: include at least 60% of these targets: {currentPrompt.requiredTerms.join(" · ")}. This is not a full semantic or pronunciation score.
+        </p>:null}
+        <button className="primary study-next j5-next" type="button" onClick={advance}>
+          <span>{index+1>=steps.length?"Finish":"Continue"}</span><i aria-hidden="true">→</i>
+        </button>
+      </div>:null}
+    </div>
+  </StudyFrame>;
+}
+
+function StudyFrame({
+  mode,theme,index,total,completed,onExit,onTheme,children,
+}:{
+  mode:J5StudyModeMeta;
+  theme:JTheme;
+  index:number;
+  total:number;
+  completed:boolean;
+  onExit:()=>void;
+  onTheme:()=>void;
+  children:React.ReactNode;
+}){
+  return <section className={"study-player j5-study j5-study--"+mode.mode} data-j-theme={theme} data-j-study-mode={mode.mode} aria-live="polite">
+    <div className="j5-study__ambient" aria-hidden="true">
+      <span className="j5-study__enso"/>
+      <span className="j5-study__brush j5-study__brush--a"/>
+      <span className="j5-study__brush j5-study__brush--b"/>
+      <span className="j5-study__grid"/>
+    </div>
+    <StudyHeader mode={mode} theme={theme} index={index} total={total} completed={completed} onExit={onExit} onTheme={onTheme}/>
+    <div className="j5-stage">
+      <aside className="j5-mode-rail" aria-label={mode.english+" study mode"}>
+        <span className="j5-mode-rail__glyph" aria-hidden="true" lang="ja">{mode.glyph}</span>
+        <span className="j5-mode-rail__jp" lang="ja">{mode.japanese}</span>
+        <span className="j5-mode-rail__en">{mode.english}</span>
+        <i/>
+        <small>{mode.note}</small>
+      </aside>
+      <div className="j5-stage__content">{children}</div>
     </div>
   </section>;
 }
 
-function StudyHeader({index,total,completed,onExit}:{index:number;total:number;completed:boolean;onExit:()=>void}){
-  return <><header className="study-head"><button className="quiet-button" type="button" onClick={onExit}>Exit</button><span>{index+1} / {total}</span></header><div className="study-progress"><span style={{width:`${((index+(completed?1:0))/total)*100}%`}}/></div></>;
+function StudyHeader({
+  mode,theme,index,total,completed,onExit,onTheme,
+}:{
+  mode:J5StudyModeMeta;
+  theme:JTheme;
+  index:number;
+  total:number;
+  completed:boolean;
+  onExit:()=>void;
+  onTheme:()=>void;
+}){
+  const pct=((index+(completed?1:0))/Math.max(1,total))*100;
+  return <>
+    <header className="study-head j5-study-head">
+      <button className="quiet-button j5-exit" type="button" onClick={onExit}><span aria-hidden="true">←</span><span>Exit</span></button>
+      <div className="j5-study-head__mode">
+        <span lang="ja">{mode.japanese}</span>
+        <i/>
+        <strong>{mode.english}</strong>
+      </div>
+      <div className="j5-study-head__right">
+        <span className="j5-step-count">{index+1} / {total}</span>
+        <button className="j5-study-theme" type="button" aria-label={theme==="light"?"Use dark theme":"Use light theme"} onClick={onTheme}>{theme==="light"?"墨":"紙"}</button>
+      </div>
+    </header>
+    <div className="study-progress j5-study-progress" aria-hidden="true"><span style={{width:pct+"%"}}/></div>
+  </>;
 }
 
+function readStudyTheme():JTheme{
+  try{
+    const stored=window.localStorage.getItem("japanese:j-theme");
+    if(stored==="light"||stored==="dark")return stored;
+  }catch{/* optional storage */}
+  return window.matchMedia?.("(prefers-color-scheme: dark)").matches?"dark":"light";
+}
 
 function speakWithDevice(text:string,rate:number,repeats:number,lang:string):Promise<void>{
   return new Promise((resolve,reject)=>{
     if(typeof speechSynthesis==="undefined"){reject(new Error("SPEECH_SYNTHESIS_UNAVAILABLE"));return;}
     let remaining=Math.max(1,repeats);
     const play=()=>{
-      const utterance=new SpeechSynthesisUtterance(text);utterance.lang=lang;utterance.rate=rate;
+      const utterance=new SpeechSynthesisUtterance(text);
+      utterance.lang=lang;
+      utterance.rate=rate;
       const voice=speechSynthesis.getVoices().find((item)=>item.lang.toLowerCase().startsWith("ja"));
       if(voice)utterance.voice=voice;
       utterance.onerror=()=>reject(new Error("SPEECH_SYNTHESIS_FAILED"));
-      utterance.onend=()=>{remaining-=1;if(remaining>0)setTimeout(play,450);else resolve();};
+      utterance.onend=()=>{
+        remaining-=1;
+        if(remaining>0)setTimeout(play,450);
+        else resolve();
+      };
       speechSynthesis.speak(utterance);
     };
-    speechSynthesis.cancel();play();
+    speechSynthesis.cancel();
+    play();
   });
 }
