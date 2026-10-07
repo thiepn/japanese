@@ -122,6 +122,8 @@ Longitudinal journey:
 
 ## J9 — Japanese Motion & Sensory Layer
 
+**Implementation complete.** The J-series now uses a restrained one-shot motion language for fusuma routing, noren thresholds, emakimono reveal, washi page turns, hanko results, ink progress and byōbu drill-down, plus explicit opt-in local haptics/interface tones.
+
 Polish:
 - fusuma;
 - noren;
