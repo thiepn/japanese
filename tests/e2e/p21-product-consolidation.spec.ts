@@ -11,7 +11,8 @@ test("P21 keeps the complete product shell navigable without horizontal overflow
     expect(overflow).toBeLessThanOrEqual(1);
   }
 
-  await expect(page.getByText("P20 LONGITUDINAL C2 READINESS",{exact:true})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"The path you have actually built"})).toBeVisible();
+  await expect(page.getByTestId("j8-c1-vault")).toBeVisible();
   const finalOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
   expect(finalOverflow).toBeLessThanOrEqual(1);
 });
