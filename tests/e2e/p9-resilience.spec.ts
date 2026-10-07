@@ -7,6 +7,7 @@ test("P9 real-world performance, native listening and provider fallbacks survive
   await page.goto("./");
 
   await page.getByRole("button",{name:"Learn"}).click();
+  await page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"}).locator("summary").click();
   await expect(page.getByRole("heading",{name:"Functional chains under time pressure"})).toBeVisible();
   await expect(page.locator(".performance-chain-grid > article")).toHaveCount(5);
   await page.getByRole("button",{name:"Start mixed P9 performance set"}).click();
@@ -14,11 +15,11 @@ test("P9 real-world performance, native listening and provider fallbacks survive
   await page.getByRole("button",{name:"Continue"}).click();
   await expect(page.getByText("Timed response",{exact:true})).toBeVisible();
   await page.getByRole("button",{name:"Exit"}).click();
-  await expect(page.getByRole("heading",{name:"Foundation → C1"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Your Japanese journey"})).toBeVisible();
 
   // Compact headless Chromium can re-scroll a fixed nav during actionability checks after StudyPlayer teardown.
   // The fixed-nav hit target itself is certified in mobile.spec.ts.
-  await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
+  await page.goto("./?diagnostics=1");
   await expect(page.getByRole("heading",{name:"AI + morphology runtime status"})).toBeVisible();
   await expect(page.locator(".provider-health-card.degraded,.provider-health-card.unreachable").first()).toBeVisible();
 
@@ -32,6 +33,7 @@ test("P9 real-world performance, native listening and provider fallbacks survive
   await page.reload();
   await expect(page.getByRole("heading",{name:/Continue Japanese|You’re caught up/})).toBeVisible();
   await page.getByRole("button",{name:"Learn"}).click();
+  await page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"}).locator("summary").click();
   await expect(page.getByRole("heading",{name:"Functional chains under time pressure"})).toBeVisible();
   // Compact mobile headless Chromium has the same fixed-nav scrollIntoView drift while offline.
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
