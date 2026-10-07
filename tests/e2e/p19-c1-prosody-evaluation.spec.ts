@@ -5,7 +5,7 @@ test("P19 exposes bounded real-audio evidence, overlap listening and external re
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
   await page.locator("#j6-studio-p19 > summary").click();
   const lab=page.locator(".p19-evidence");
-  await expect(lab.getByText("P19 PROSODY · OVERLAP · EXTERNAL REVIEW",{exact:true})).toBeVisible();
+  await expect(lab.getByText("PROSODY · OVERLAP · EXTERNAL REVIEW",{exact:true})).toBeVisible();
   await expect(lab.getByRole("heading",{name:"Add real audio evidence without inventing acoustic scores"})).toBeVisible();
   await expect(lab.locator(".p19-target-grid button")).toHaveCount(4);
   await expect(lab.getByText(/does not infer pitch-accent correctness/i)).toBeVisible();
@@ -21,8 +21,8 @@ test("P19 exposes bounded real-audio evidence, overlap listening and external re
   await expect(lab.getByText(/not a CEFR certification exam/i)).toBeVisible();
 
   await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
-  await expect(page.getByText("P20 C1→C2 PORTFOLIO",{exact:true})).toBeVisible();
-  await expect(page.getByText("P19 AUDIO + EXTERNAL REVIEW",{exact:true})).toBeVisible();
+  await expect(page.getByText("C1→C2 LONGITUDINAL PORTFOLIO",{exact:true})).toBeVisible();
+  await expect(page.getByText("AUDIO + EXTERNAL REVIEW",{exact:true})).toBeVisible();
 });
 
 test("P19 local-audio capture remains visibly local-only before microphone permission",async({page})=>{
