@@ -12,7 +12,7 @@ const MAX_LAZY_CSS_GZIP=12*1024;
 const MAX_LAZY_JS_GZIP=64*1024;
 const MAX_VISUAL_ASSET_BYTES=1536*1024;
 const MAX_VISUAL_TOTAL_BYTES=4*1024*1024;
-const REQUIRED_LAZY=["J11Diagnostics","J12MobileRuntime","J13ExhibitionRuntime"];
+const REQUIRED_LAZY=["J11Diagnostics","J12MobileRuntime","J13ExhibitionRuntime","J14DarkRuntime"];
 
 if(!fs.existsSync(INDEX)||!fs.existsSync(ASSETS))throw new Error("J14_DIST_MISSING");
 
@@ -61,13 +61,14 @@ const report={
     technicalDiagnosticsLazy:true,
     mobileLayerLazy:true,
     exhibitionLayerLazy:true,
+    darkCompatibilityLazy:true,
     noOversizedVisualAsset:true
   }
 };
 
 fs.mkdirSync(path.join(ROOT,"artifacts"),{recursive:true});
 fs.writeFileSync(path.join(ROOT,"artifacts/j14-experience-budget.json"),JSON.stringify(report,null,2)+"\n");
-process.stdout.write("J14 experience budget PASS — J11/J12/J13 remain lazy; visual assets within budget\n");
+process.stdout.write("J14 experience budget PASS — J11/J12/J13/dark compatibility remain lazy; visual assets within budget\n");
 
 function walk(dir,visit){
   for(const entry of fs.readdirSync(dir,{withFileTypes:true})){
