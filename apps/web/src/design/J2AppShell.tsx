@@ -3,6 +3,7 @@ import {JPattern,JSeal,type JTheme} from "./index";
 import {j9SensoryFeedback,readJ9SensoryEnabled,setJ9SensoryEnabled} from "./j9Sensory";
 import {J10SeasonalWorld} from "./J10SeasonalWorld";
 import {j10SeasonLabel,j10SeasonPattern,resolveJ10Season} from "./j10Season";
+import {syncJ12ThemeColor} from "./j12Pwa";
 
 export type J2Surface="Today"|"Learn"|"Immerse"|"Library"|"Progress";
 
@@ -56,6 +57,7 @@ export function J2AppShell({
     document.documentElement.style.colorScheme=theme;
     document.documentElement.dataset.jTheme=theme;
     document.documentElement.dataset.jSeason=season;
+    syncJ12ThemeColor(theme);
     return()=>{
       document.documentElement.style.colorScheme="";
       delete document.documentElement.dataset.jTheme;
