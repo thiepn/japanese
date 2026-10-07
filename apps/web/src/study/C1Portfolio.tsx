@@ -35,10 +35,10 @@ export function C1Portfolio(){
 
   return <section className="b2-portfolio">
     <div className="section-heading">
-      <div><span className="course-kicker">P20 C1→C2 PORTFOLIO</span><h2>Longitudinal advanced evidence + external calibration + internal qualification</h2></div>
+      <div><span className="course-kicker">C1→C2 LONGITUDINAL PORTFOLIO</span><h2>Longitudinal advanced evidence + external calibration + internal qualification</h2></div>
       <span className="course-count">{portfolio.activeDays} active C1 days</span>
     </div>
-    <p>P20 consolidates P14–P19 into a transparent longitudinal readiness matrix: durable advanced performance, repeated broad human review, reviewer calibration and an explicit internal advanced-pathway qualification gate. It remains a product qualification rather than accredited CEFR C2 certification.</p>
+    <p>This portfolio consolidates advanced autonomy, source, research, precision, interaction and audio evidence into a transparent longitudinal readiness matrix: durable advanced performance, repeated broad human review, reviewer calibration and an explicit internal advanced-pathway qualification gate. It remains a product qualification rather than accredited CEFR C2 certification.</p>
     <div className="portfolio-export-actions">
       <button className="unit-action" disabled={exporting} type="button" onClick={()=>void exportPortfolio("json")}>Export C1 JSON</button>
       <button className="quiet-button" disabled={exporting} type="button" onClick={()=>void exportPortfolio("markdown")}>Export C1 Markdown</button>
@@ -58,7 +58,7 @@ export function C1Portfolio(){
     </div>
 
     {environment?<section className="p15-portfolio-environment">
-      <div className="section-heading"><div><span className="course-kicker">P15 AUTHENTIC ENVIRONMENT</span><h3>Real-source research + multi-day production</h3></div><span>{environment.writingProjectsCompleted}/{environment.projects.length} projects complete</span></div>
+      <div className="section-heading"><div><span className="course-kicker">AUTHENTIC ENVIRONMENT</span><h3>Real-source research + multi-day production</h3></div><span>{environment.writingProjectsCompleted}/{environment.projects.length} projects complete</span></div>
       <div className="portfolio-stats">
         <PortfolioStat value={environment.registeredSources} label="External sources"/>
         <PortfolioStat value={environment.evaluatedSources} label="Evaluated sources"/>
@@ -74,11 +74,11 @@ export function C1Portfolio(){
         <div className="meter"><span style={{width:projectPercent(entry.nextStage)+"%"}}/></div>
         <small>{entry.sourceMap?.sourceIds.length??0} sources · {entry.defenses.length} defenses{entry.revision?" · delayed revision":""}{entry.reflection?" · reflection":""}</small>
       </div>)}</div>
-      <p className="course-note">Learner source evaluation is critical-reading evidence, not independent source verification. External pages remain external; P15 stores your traceable notes, source identity and authored work.</p>
+      <p className="course-note">Learner source evaluation is critical-reading evidence, not independent source verification. External pages remain external; The authentic environment stores your traceable notes, source identity and authored work.</p>
     </section>:null}
 
     {quality?<section className="p16-portfolio-quality">
-      <div className="section-heading"><div><span className="course-kicker">P16 RESEARCH QUALITY</span><h3>Provenance + human review + specialist depth</h3></div><span>{quality.reviewedProjects} projects human-reviewed</span></div>
+      <div className="section-heading"><div><span className="course-kicker">RESEARCH QUALITY</span><h3>Provenance + human review + specialist depth</h3></div><span>{quality.reviewedProjects} projects human-reviewed</span></div>
       <div className="portfolio-stats">
         <PortfolioStat value={quality.bibliographySources} label="Sources documented"/>
         <PortfolioStat value={quality.privateExcerpts} label="Private excerpts"/>
@@ -97,7 +97,7 @@ export function C1Portfolio(){
     </section>:null}
 
     {precision?<section className="p17-portfolio">
-      <div className="section-heading"><div><span className="course-kicker">P17 PRECISION BRIDGE</span><h3>Stylistic control + specialist discourse + repair</h3></div><span>{precision.sustainedSpecialistTracks} sustained specialist tracks</span></div>
+      <div className="section-heading"><div><span className="course-kicker">PRECISION BRIDGE</span><h3>Stylistic control + specialist discourse + repair</h3></div><span>{precision.sustainedSpecialistTracks} sustained specialist tracks</span></div>
       <div className="portfolio-stats">
         <PortfolioStat value={precision.precisionArtifacts.length} label="Precision rewrites"/>
         <PortfolioStat value={precision.precisionModes} label="Precision modes"/>
@@ -113,11 +113,11 @@ export function C1Portfolio(){
         <div className="meter"><span style={{width:Math.round(track.stagesCovered/5*100)+"%"}}/></div>
         <small>{track.turns} turns · {track.stagesCovered}/5 stages · {track.repeatedStages}/5 delayed repeats · {track.activeDays} active days · {Math.round(track.spanHours)}h span</small>
       </div>)}</div>:null}
-      <p className="course-note">P17 precision work is structural and reflective evidence. It does not automatically prove semantic quality, expert-level subject knowledge, C2 proficiency or acoustic speaking quality.</p>
+      <p className="course-note">Precision work is structural and reflective evidence. It does not automatically prove semantic quality, expert-level subject knowledge, C2 proficiency or acoustic speaking quality.</p>
     </section>:null}
 
     {interaction?<section className="p18-portfolio">
-      <div className="section-heading"><div><span className="course-kicker">P18 ADVANCED INTERACTION</span><h3>Hidden pressure + real-time repair + real human exchange</h3></div><span>{interaction.robustSessions} robust pressure sessions</span></div>
+      <div className="section-heading"><div><span className="course-kicker">ADVANCED INTERACTION</span><h3>Hidden pressure + real-time repair + real human exchange</h3></div><span>{interaction.robustSessions} robust pressure sessions</span></div>
       <div className="portfolio-stats">
         <PortfolioStat value={interaction.turns.length} label="Pressure turns"/>
         <PortfolioStat value={interaction.pressureTypes} label="Pressure types"/>
@@ -138,7 +138,7 @@ export function C1Portfolio(){
     </section>:null}
 
     {p19?<section className="p19-portfolio">
-      <div className="section-heading"><div><span className="course-kicker">P19 AUDIO + EXTERNAL REVIEW</span><h3>Real signal timing + overlap listening + human qualitative evidence</h3></div><span>{p19.broadlyCoveredReviews} broad external reviews</span></div>
+      <div className="section-heading"><div><span className="course-kicker">AUDIO + EXTERNAL REVIEW</span><h3>Real signal timing + overlap listening + human qualitative evidence</h3></div><span>{p19.broadlyCoveredReviews} broad external reviews</span></div>
       <div className="portfolio-stats">
         <PortfolioStat value={p19.prosodyCaptures.length} label="Prosody captures"/>
         <PortfolioStat value={p19.prosodyTargets} label="Prosody targets"/>
@@ -147,13 +147,13 @@ export function C1Portfolio(){
         <PortfolioStat value={p19.externalReviews.length} label="External reviews"/>
         <PortfolioStat value={p19.broadlyCoveredReviews} label="Broad reviews"/>
         <PortfolioStat value={p19.localCaptureCount} label="Local audio files"/>
-        <PortfolioStat value={p19.activeDays} label="P19 days"/>
+        <PortfolioStat value={p19.activeDays} label="Audio-evidence days"/>
       </div>
       {p19.externalReviews.length?<div className="portfolio-mission-list">{p19.externalReviews.slice().reverse().slice(0,6).map((review)=><div key={review.id}>
         <div><strong>{review.reviewerLabel}</strong><span>{review.broadCoverage?"broad coverage":"partial coverage"}</span></div>
         <small>{review.reviewerRole.replaceAll("_"," ")} · {review.modality.replaceAll("_"," ")} · {review.scoreCoverage}/7 scored dimensions · {new Date(review.reviewedAt).toLocaleDateString()}</small>
       </div>)}</div>:null}
-      <p className="course-note">P19 signal metrics describe timing, activity, pauses and amplitude dynamics only. Local recordings do not sync. Artificial overlap is not naturally occurring multi-speaker audio, and external reviewer identity is not independently verified by the app.</p>
+      <p className="course-note">Audio signal metrics describe timing, activity, pauses and amplitude dynamics only. Local recordings do not sync. Artificial overlap is not naturally occurring multi-speaker audio, and external reviewer identity is not independently verified by the app.</p>
     </section>:null}
 
     <div className="portfolio-columns">
@@ -196,7 +196,7 @@ export function C1Portfolio(){
       </article>)}</div>
     </details>:null}
 
-    <p className="course-note">Repeated internal success, source exposure, precision transformation, simulated pressure, local audio timing, overlap listening, human-partner logs and external human review remain explicitly bounded evidence. P20 can issue an internal advanced-pathway qualification only when its transparent gates are met; it still does not create accredited C2 certification, verify reviewer identity, rewrite mastery, or turn bounded signal evidence into pronunciation scoring.</p>
+    <p className="course-note">Repeated internal success, source exposure, precision transformation, simulated pressure, local audio timing, overlap listening, human-partner logs and external human review remain explicitly bounded evidence. The internal pathway can issue an advanced-pathway qualification only when its transparent gates are met; it still does not create accredited C2 certification, verify reviewer identity, rewrite mastery, or turn bounded signal evidence into pronunciation scoring.</p>
   </section>;
 }
 
