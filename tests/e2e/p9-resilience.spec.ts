@@ -10,8 +10,8 @@ test("P9 real-world performance, native listening and provider fallbacks survive
   await page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"}).locator("summary").click();
   await expect(page.getByRole("heading",{name:"Functional chains under time pressure"})).toBeVisible();
   await expect(page.locator(".performance-chain-grid > article")).toHaveCount(5);
-  await page.getByRole("button",{name:"Start mixed P9 performance set"}).click();
-  await expect(page.getByRole("heading",{name:"P9 real-world performance set"})).toBeVisible();
+  await page.getByRole("button",{name:"Start mixed performance set"}).click();
+  await expect(page.getByRole("heading",{name:"Real-world performance set"})).toBeVisible();
   await page.getByRole("button",{name:"Continue"}).click();
   await expect(page.getByText("Timed response",{exact:true})).toBeVisible();
   await page.getByRole("button",{name:"Exit"}).click();
@@ -19,10 +19,11 @@ test("P9 real-world performance, native listening and provider fallbacks survive
 
   // Compact headless Chromium can re-scroll a fixed nav during actionability checks after StudyPlayer teardown.
   // The fixed-nav hit target itself is certified in mobile.spec.ts.
-  await page.goto("./?diagnostics=1");
+  await page.goto("./?diagnostics=1&panel=runtime");
   await expect(page.getByRole("heading",{name:"AI + morphology runtime status"})).toBeVisible();
   await expect(page.locator(".provider-health-card.degraded,.provider-health-card.unreachable").first()).toBeVisible();
 
+  await page.getByRole("button",{name:"Back to Japanese"}).click();
   await page.getByRole("button",{name:"Immerse"}).click();
   await expect(page.getByRole("heading",{name:"Listen → note → synthesize → recall later"})).toBeVisible();
 
