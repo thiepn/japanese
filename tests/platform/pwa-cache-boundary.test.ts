@@ -17,6 +17,15 @@ describe("Japanese PWA cache boundary",()=>{
     expect(serviceWorker).toContain('!requestUrl.pathname.startsWith(BASE)');
   });
 
+  it("never caches one-time OAuth callback URLs or replays them offline",()=>{
+    expect(serviceWorker).toContain('requestUrl.pathname===callbackPath');
+    expect(serviceWorker).toContain('requestUrl.pathname===`${callbackPath}/`');
+    expect(serviceWorker).toContain('"code","state","access_token","refresh_token","error"');
+    expect(serviceWorker).toContain("if(isAuthCallback || hasOAuthParameters)return;");
+    expect(serviceWorker).toContain("japanese-shell-");
+    expect(serviceWorker).toContain("v6");
+  });
+
   it("reads offline fallbacks only from the Japanese cache",()=>{
     expect(serviceWorker).toContain('const cache = await caches.open(CACHE)');
     expect(serviceWorker).not.toContain('caches.match(event.request)');
