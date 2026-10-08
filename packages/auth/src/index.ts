@@ -254,7 +254,7 @@ export function createThiepnAccountAuthProvider(
     const hasReturnCode = typeof window !== "undefined"
       && new URLSearchParams(window.location.search).has("code");
     const onCallbackPath = pathname === callbackPath
-      || pathname === callbackPath.replace(/\\/$/, "");
+      || pathname === (callbackPath.endsWith("/") ? callbackPath.slice(0, -1) : callbackPath);
     // Some hosting/proxy redirects can land on the app's canonical home path.
     // The PKCE code remains verified by Supabase, never by this route alone.
     if (onCallbackPath || (pathname === JAPANESE_HOME_PATH && hasReturnCode)) {
