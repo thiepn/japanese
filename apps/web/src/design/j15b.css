@@ -36,7 +36,7 @@
   box-shadow:none;
   transform:none;
 }
-.j7-search__field input{border-radius:var(--j-vg-paper-corner)!important}
+.j2-shell .j7-search__field input{border-radius:var(--j-vg-paper-corner)!important}
 .j6-reader-japanese{
   font-family:var(--j-vg-type-japanese);
   line-height:var(--j-vg-reading-leading)!important;
