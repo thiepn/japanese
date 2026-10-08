@@ -218,6 +218,9 @@ Final cutover:
 ### J15B — Japanese Visual Grammar
 **Implemented as a testable visual contract; CI/release validation required.** Freeze material hierarchy, typography, rectangular paper geometry, restrained motifs and motion, accessibility and five destination-specific compositions. See `docs/J15B_VISUAL_GRAMMAR.md`. No new learner capability and no generic dashboard template.
 
+### J15C — Reading and Interface Legibility
+**Implemented on a stacked qualification branch; pending CI.** Increase tiny Library/Progress content typography and responsive navigation labels, with computed-style browser assertions and a source audit. Preserve each destination's distinct identity and keep the P22 CSS budget unchanged. See `docs/J15C_ACCEPTANCE.md`.
+
 ## Non-goal across J0–J15
 
 The J-series does not introduce a new proficiency level or mastery authority. Any future learner-capability change requires its own roadmap decision outside this visual program.

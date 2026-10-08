@@ -27,7 +27,6 @@
   border-radius:5px 34px 34px 34px;
   background:
     linear-gradient(135deg,color-mix(in srgb,var(--j-bg-elevated) 97%,transparent),color-mix(in srgb,var(--j-bg-muted) 88%,transparent));
-  box-shadow:var(--j-shadow-paper);
 }
 
 .j8-hero__pattern{
@@ -487,7 +486,7 @@
 
 .j8-crest__evidence small{
   font-family:var(--j-font-ui);
-  font-size:6px;
+  font-size:10px;
   letter-spacing:.08em;
   text-transform:uppercase;
 }
@@ -681,14 +680,14 @@
 
 .j8-ledger__item small{
   color:var(--j-fg-muted);
-  font-size:7px;
+  font-size:11px;
 }
 
 .j8-ledger>p{
   grid-column:2;
   margin:0;
   color:var(--j-fg-muted);
-  font-size:8px;
+  font-size:12px;
 }
 
 .j8-evidence-vaults{
