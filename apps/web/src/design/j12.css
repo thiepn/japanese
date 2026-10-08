@@ -266,3 +266,130 @@
 @media(max-width:760px) and (prefers-reduced-motion:reduce){
   .j2-nav button,.j2-nav__mon,.j3-today__continue,.j4-primary,.j6-cover,.j7-result>button,.j8-crest>summary,.j5-next{transition:none!important}
 }
+
+/* J15 Japanese editorial mobile — flat washi rail, seal tabs, no floating SaaS chrome. */
+@media(max-width:760px){
+  .j2-topbar{
+    border-bottom:1px solid var(--j-line);
+    background:var(--j-bg);
+  }
+
+  .j2-theme-toggle,
+  .j9-sensory-toggle,
+  .j2-account,
+  .j2-account__mon{
+    border-radius:1px!important;
+    box-shadow:none!important;
+  }
+
+  .j2-nav{
+    gap:0;
+    padding-inline:0;
+    border-top:1px solid var(--j-line-strong);
+    background:var(--j-bg-elevated);
+    box-shadow:none;
+  }
+
+  .j2-nav button{
+    min-height:58px;
+    padding-inline:0;
+    border-radius:0;
+    border-right:1px solid color-mix(in srgb,var(--j-line) 72%,transparent);
+  }
+
+  .j2-nav button:last-of-type{
+    border-right:0;
+  }
+
+  .j2-nav button::before{
+    inset:auto 18% 0;
+    height:2px;
+    border:0;
+    border-radius:0;
+    background:transparent;
+  }
+
+  .j2-nav button.active::before{
+    background:var(--j-season-accent);
+  }
+
+  .j2-nav button.active::after{
+    display:none;
+  }
+
+  .j2-nav__mon{
+    width:28px;
+    height:28px;
+    border-radius:1px;
+    background:transparent;
+    transform:none!important;
+  }
+
+  .j2-nav button.active .j2-nav__mon{
+    color:#fff8ef;
+    border-color:var(--j-season-accent);
+    background:var(--j-season-accent);
+    transform:none!important;
+  }
+
+  .j2-content{
+    padding-top:14px;
+  }
+
+  .j3-today__hero,
+  .j4-hero,
+  .j6-hero,
+  .j7-library__masthead,
+  .j8-hero{
+    border-left:0;
+    border-right:0;
+    border-radius:0;
+    box-shadow:none;
+  }
+
+  .j3-today__title-lockup h1,
+  .j4-hero h1,
+  .j6-hero__copy h1,
+  .j8-hero h1{
+    font-size:clamp(30px,9vw,42px);
+    line-height:1;
+  }
+
+  .j3-today__continue,
+  .j4-primary,
+  .j3-today__visit,
+  .j3-today__quiet>div,
+  .j4-hero__mastery,
+  .j4-foundation__tracks article,
+  .j4-landmark article,
+  .j4-gate,
+  .j4-practice__quick button,
+  .j4-practice__drawer,
+  .j6-feature__story,
+  .j6-cover,
+  .j6-series-card,
+  .j6-mission,
+  .j6-reader-check,
+  .j6-reader-lookup,
+  .j7-search__field input,
+  .j7-reference__sheet,
+  .j8-crest,
+  .j8-milestone{
+    border-radius:1px!important;
+    box-shadow:none!important;
+  }
+
+  .j3-today__continue,
+  .j4-primary{
+    box-shadow:none!important;
+  }
+
+  .j7-result__match,
+  .j7-reference__badges span,
+  .j6-reader-support>button,
+  .j6-reader-support>details>summary,
+  .p20-status{
+    border-radius:1px!important;
+  }
+}
+

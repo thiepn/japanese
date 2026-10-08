@@ -1,5 +1,45 @@
 import {expect,test,type Page} from "@playwright/test";
 
+test("J15 presents Japanese editorial navigation instead of SaaS dashboard chrome",async({page},testInfo)=>{
+  test.skip(testInfo.project.name!=="desktop-chromium","desktop editorial-shell contract");
+  await page.setViewportSize({width:1440,height:1000});
+  await page.goto("./");
+
+  const workspace=page.locator(".j2-workspace");
+  await expect(workspace).toHaveCSS("display","block");
+
+  const nav=page.getByRole("navigation",{name:"Primary"});
+  const navBox=await nav.boundingBox();
+  expect(navBox).not.toBeNull();
+  expect(navBox!.width).toBeGreaterThan(1200);
+  expect(navBox!.height).toBeLessThan(90);
+
+  const today=nav.getByRole("button",{name:"Today",exact:true});
+  await expect(today).toHaveCSS("border-radius","0px");
+
+  for(const [surface,hero] of [
+    ["Today",".j3-today__hero"],
+    ["Learn",".j4-hero"],
+    ["Immerse",".j6-hero"],
+    ["Library",".j7-library__masthead"],
+    ["Progress",".j8-hero"],
+  ] as const){
+    await nav.getByRole("button",{name:surface,exact:true}).click();
+    await expect(page.locator(hero)).toHaveCSS("border-radius","0px");
+    await expect(page.locator(hero)).toHaveCSS("box-shadow","none");
+  }
+});
+
+test("J15 keeps the mobile rail flat and Japanese rather than floating-card navigation",async({page},testInfo)=>{
+  test.skip(testInfo.project.name!=="android-mobile","mobile editorial-shell contract");
+  await page.goto("./");
+
+  const nav=page.getByRole("navigation",{name:"Primary"});
+  await expect(nav).toHaveCSS("box-shadow","none");
+  await expect(nav.getByRole("button",{name:"Today",exact:true})).toHaveCSS("border-radius","0px");
+  await expect(page.locator(".j3-today__hero")).toHaveCSS("border-radius","0px");
+});
+
 test("J14 dark mode is coherent across core and legacy learner surfaces",async({page})=>{
   await page.addInitScript(()=>localStorage.setItem("japanese:j-theme","dark"));
   await page.goto("./");

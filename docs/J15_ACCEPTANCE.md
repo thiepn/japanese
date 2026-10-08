@@ -28,3 +28,14 @@ The audit fails if the legacy palette returns to `styles.css`, literal white sur
 ## Boundary
 
 J15 is a structural visual-system migration, not a new product redesign. J12 mobile behavior and J13 exhibition composition remain authoritative. J14 physical-device acceptance remains a separate real-device gate and must not be inferred from automated J15 qualification.
+
+## Visual direction lock
+
+J15 deliberately moves the product away from generic SaaS/dashboard language.
+
+- Desktop navigation is an editorial horizontal study rail rather than a permanent application sidebar.
+- Primary pages read as washi/editorial spreads: thin ink rules, square paper edges, asymmetry, Japanese type and seal accents.
+- Rounded dashboard cards, floating pills, glass panels and shadow-heavy tiles are not the default visual primitive.
+- Large English marketing-style headings are constrained; Japanese glyphs, section marks, vertical labels and content structure carry more of the identity.
+- Library remains archival, Learn remains emakimono/path-like, Immerse remains magazine/reader-like, Progress remains landscape/ledger-like and Today remains a study entry page. They must not collapse into one reusable dashboard template.
+- Mobile keeps a conventional bottom navigation position for reachability, but its treatment is a flat paper/seal rail rather than a floating pill dock.
