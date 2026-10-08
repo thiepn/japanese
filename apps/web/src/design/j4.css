@@ -26,7 +26,6 @@
   border-radius:7px 36px 36px 36px;
   background:
     linear-gradient(145deg,color-mix(in srgb,var(--j-bg-elevated) 98%,transparent),color-mix(in srgb,var(--j-bg-muted) 90%,transparent));
-  box-shadow:var(--j-shadow-paper);
 }
 
 .j4-hero::before{

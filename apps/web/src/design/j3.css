@@ -16,7 +16,6 @@
   border-radius:8px 34px 34px 34px;
   background:
     linear-gradient(135deg,color-mix(in srgb,var(--j-bg-elevated) 97%,transparent),color-mix(in srgb,var(--j-bg-muted) 90%,transparent));
-  box-shadow:var(--j-shadow-paper);
 }
 
 .j3-today__hero::before{

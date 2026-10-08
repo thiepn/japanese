@@ -39,7 +39,7 @@
   .j2-nav button.active::after{left:28%;right:28%;bottom:1px;height:3px}
   .j2-nav__mon{width:30px;height:30px;border-radius:7px 50% 50% 50%;font-size:13px}
   .j2-nav button.active .j2-nav__mon{transform:translateY(-2px);border-color:var(--j-season-accent);color:var(--j-season-accent)}
-  .j2-nav__label small{font-size:8px;font-weight:800;letter-spacing:.02em}
+  .j2-nav__label small{font-size:10px;font-weight:800;letter-spacing:.02em}
 
   .j2-content{
     width:100%;
@@ -164,7 +164,7 @@
   /* Progress preserves the art but makes evidence the primary mobile reading order. */
   .j8-hero{padding:20px 12px;border-radius:4px 18px 18px 18px}
   .j8-hero h1{font-size:clamp(34px,10vw,46px)}
-  .j8-hero__copy>p:last-of-type{font-size:10px;line-height:1.5}
+  .j8-hero__copy>p:last-of-type{font-size:12px;line-height:1.5}
   .j8-hero__state>div{min-height:76px;padding:9px}
   .j8-world{min-height:210px;margin-top:18px}
   .j8-world p{bottom:12px;left:12px}
@@ -233,14 +233,14 @@
   .j2-nav{padding-inline:2px}
   .j2-nav button{padding-inline:0}
   .j2-nav__mon{width:28px;height:28px}
-  .j2-nav__label small{font-size:7.5px}
+  .j2-nav__label small{font-size:10px}
 
   .j3-today__lead{display:none}
   .j3-today__title-lockup{margin-top:16px}
   .j3-route__head>div>p{display:none}
-  .j3-today__quiet>div p span{font-size:7px}
+  .j3-today__quiet>div p span{font-size:11px}
 
-  .j4-hero__copy>p:not(.j4-hero__kicker){font-size:10px}
+  .j4-hero__copy>p:not(.j4-hero__kicker){font-size:12px}
   .j4-foundation__tracks article{padding-inline:8px}
   .j4-practice__quick button{min-height:88px}
 

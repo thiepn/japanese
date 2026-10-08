@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "pnpm --filter @thiepn/japanese-web dev",
-    "build": "pnpm -r build && node scripts/p22-bundle-budget.mjs && node scripts/j14-experience-budget.mjs && node scripts/j15-theme-audit.mjs && node scripts/j15b-visual-grammar-audit.mjs",
+    "build": "pnpm -r build && node scripts/p22-bundle-budget.mjs && node scripts/j14-experience-budget.mjs && node scripts/j15-theme-audit.mjs && node scripts/j15b-visual-grammar-audit.mjs && node scripts/j15c-legibility-audit.mjs",
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run",
     "test:e2e": "playwright test",
@@ -34,7 +34,8 @@
     "qualify:j14": "node scripts/j14-qualify.mjs",
     "qualify:j14:strict": "node scripts/j14-qualify.mjs --strict",
     "verify:j15": "node scripts/j15-theme-audit.mjs",
-    "verify:j15b": "node scripts/j15b-visual-grammar-audit.mjs"
+    "verify:j15b": "node scripts/j15b-visual-grammar-audit.mjs",
+    "verify:j15c": "node scripts/j15c-legibility-audit.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

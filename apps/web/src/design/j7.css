@@ -27,7 +27,6 @@
   border-radius:5px 30px 30px 30px;
   background:
     linear-gradient(135deg,color-mix(in srgb,var(--j-bg-elevated) 97%,transparent),color-mix(in srgb,var(--j-bg-muted) 90%,transparent));
-  box-shadow:var(--j-shadow-paper);
 }
 
 .j7-library__masthead::after{
@@ -232,7 +231,7 @@
 
 .j7-filter-strip strong{
   align-self:end;
-  font-size:8px;
+  font-size:11px;
   font-weight:850;
   letter-spacing:.05em;
 }
@@ -240,7 +239,7 @@
 .j7-filter-strip small{
   align-self:start;
   color:var(--j-fg-muted);
-  font-size:8px;
+  font-size:10px;
 }
 
 .j7-filter-strip button.active small{
@@ -349,7 +348,7 @@
 
 .j7-result__body small{
   color:var(--j-fg-muted);
-  font-size:7px;
+  font-size:11px;
   font-weight:850;
   letter-spacing:.1em;
   text-transform:uppercase;
@@ -368,7 +367,7 @@
 .j7-result__body>span{
   overflow:hidden;
   color:var(--j-fg-muted);
-  font-size:9px;
+  font-size:12px;
   line-height:1.4;
   text-overflow:ellipsis;
   white-space:nowrap;
@@ -436,7 +435,6 @@
   border-radius:4px 22px 22px 22px;
   background:
     linear-gradient(135deg,var(--j-bg-elevated),color-mix(in srgb,var(--j-bg-muted) 72%,transparent));
-  box-shadow:var(--j-shadow-paper);
 }
 
 .j7-reference__sheet::before{
@@ -558,7 +556,7 @@
   border-radius:999px;
   color:var(--j-fg-muted);
   background:var(--j-bg-elevated);
-  font-size:7px;
+  font-size:11px;
   font-weight:800;
 }
 
@@ -572,7 +570,7 @@
 
 .j7-reference__section>span{
   color:var(--j-season-accent);
-  font-size:7px;
+  font-size:11px;
   font-weight:850;
   letter-spacing:.1em;
   text-transform:uppercase;
@@ -582,7 +580,7 @@
 .j7-reference__section ul{
   margin:0;
   color:var(--j-fg-muted);
-  font-size:10px;
+  font-size:14px;
   line-height:1.6;
 }
 
@@ -602,7 +600,7 @@
 
 .j7-reference__provenance span{
   color:var(--j-fg-muted);
-  font-size:7px;
+  font-size:10px;
   font-weight:850;
   letter-spacing:.1em;
 }
@@ -610,7 +608,7 @@
 .j7-reference__provenance strong,
 .j7-reference__provenance code{
   color:var(--j-fg);
-  font-size:8px;
+  font-size:11px;
 }
 
 .j7-reference__provenance i{
@@ -645,7 +643,7 @@
 .j7-reference__empty p{
   max-width:280px;
   margin:0;
-  font-size:9px;
+  font-size:12px;
   line-height:1.5;
 }
 
@@ -674,7 +672,7 @@
 
 .j7-library__footer p{
   margin:0;
-  font-size:8px;
+  font-size:11px;
   line-height:1.5;
 }
 
