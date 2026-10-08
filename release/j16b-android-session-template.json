@@ -1,0 +1,158 @@
+{
+  "schema": "thiepn-japanese-j16b-android-session",
+  "schemaVersion": 1,
+  "status": "pending",
+  "sessionId": null,
+  "candidateCommit": null,
+  "releaseChannel": null,
+  "startedAt": null,
+  "completedAt": null,
+  "reviewer": null,
+  "device": {
+    "model": null,
+    "androidVersion": null,
+    "browserVersion": null,
+    "installedPwa": null
+  },
+  "checks": {
+    "realAndroidDevice": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "exactCandidateCommit": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "standaloneInstall": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "coldLaunch": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "darkLightAndPersistence": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "todayLearnImmerseLibraryProgress": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "studyFullScreenAndTouch": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "readerNavigationAndSupport": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "librarySearchAndFilters": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "offlineReload": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "backgroundResume": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "rotationPortraitLandscape": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "safeAreaBottomNav": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "textScale200Percent": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "keyboardFocus": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "screenReaderTalkBack": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "speakerHeadphoneAudio": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "microphonePermissionAndCapture": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "localAudioDelete": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "noHorizontalOverflow320": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    },
+    "noBlockingVisualDefects": {
+      "status": "pending",
+      "verifiedAt": null,
+      "evidenceRef": null,
+      "observation": null
+    }
+  },
+  "accountSso": {
+    "status": "pending",
+    "verifiedAt": null,
+    "evidenceRef": null,
+    "observation": null
+  },
+  "defects": [],
+  "notes": [
+    "This is a BLANK human testing template, not evidence of a completed test.",
+    "No passwords, authentication tokens, account identifiers or raw audio in evidence.",
+    "A pass requires actual device activity on the same exact deployed 40-character SHA.",
+    "Do not commit completed human evidence to the tested source branch; keep it in the independent evidence ref."
+  ]
+}
