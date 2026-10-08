@@ -94,6 +94,7 @@ export function App(){
   const [account,setAccount]=useState<AuthContext>(ANONYMOUS_AUTH);
   const [accountConnected,setAccountConnected]=useState(false);
   const [accountBusy,setAccountBusy]=useState(false);
+  const [accountResolving,setAccountResolving]=useState(true);
   const [accountMessage,setAccountMessage]=useState<string|null>(null);
 
   useEffect(()=>{
@@ -168,8 +169,26 @@ export function App(){
     const unsubscribe=JAPANESE_ACCOUNT.subscribe((next)=>{
       void apply(next).catch(authUnavailable);
     });
-    void JAPANESE_ACCOUNT.refresh().catch(authUnavailable);
-    return()=>{active=false;generation+=1;unsubscribe();};
+    // Android can complete Google OAuth in a separate Chrome window and
+    // restore the installed PWA without remounting React. Re-verify the
+    // canonical session when the PWA regains focus.
+    const revalidate=()=>{
+      if(document.visibilityState!=="visible")return;
+      void JAPANESE_ACCOUNT.refresh().catch(authUnavailable);
+    };
+    const onVisibility=()=>{if(document.visibilityState==="visible")revalidate();};
+    window.addEventListener("focus",revalidate);
+    window.addEventListener("pageshow",revalidate);
+    document.addEventListener("visibilitychange",onVisibility);
+    void JAPANESE_ACCOUNT.refresh()
+      .catch(authUnavailable)
+      .finally(()=>{if(active)setAccountResolving(false);});
+    return()=>{
+      active=false;generation+=1;unsubscribe();
+      window.removeEventListener("focus",revalidate);
+      window.removeEventListener("pageshow",revalidate);
+      document.removeEventListener("visibilitychange",onVisibility);
+    };
   },[]);
   useEffect(()=>{
     void refreshDashboard().then(()=>{
@@ -336,7 +355,9 @@ export function App(){
   const [diagnosticsMode,setDiagnosticsMode]=useState(
     ()=>new URLSearchParams(window.location.search).get("diagnostics")==="1",
   );
-  const accountActionLabel=account.status!=="authenticated"
+  const accountActionLabel=accountResolving
+    ?"Checking THIEPN Account…"
+    :account.status!=="authenticated"
     ?"Sign in with THIEPN Account"
     :accountConnected
       ?"Sign out"
@@ -360,7 +381,7 @@ export function App(){
         surface={surface}
         onSurfaceChange={navigateSurface}
         accountActionLabel={accountActionLabel}
-        accountBusy={accountBusy}
+        accountBusy={accountBusy||accountResolving}
         onAccountAction={()=>void toggleAccount()}
         accountStatus={accountMessage}
         diagnosticsMode={diagnosticsMode}
