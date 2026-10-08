@@ -1,5 +1,5 @@
 import {afterEach,describe,expect,it,vi} from "vitest";
-import {createThiepnAccountAuthProvider,getJapaneseHandoffSnapshot,getRecentJapaneseAuthStage,getRecentJapaneseAuthFailure,JAPANESE_AUTH_FAILURE_KEY,JAPANESE_LOGIN_STORAGE_KEY,JAPANESE_CONNECT_INTENT_KEY} from "../../packages/auth/src/index";
+import {createThiepnAccountAuthProvider,isJapaneseCallbackLocation,getJapaneseHandoffSnapshot,getRecentJapaneseAuthStage,getRecentJapaneseAuthFailure,JAPANESE_AUTH_FAILURE_KEY,JAPANESE_LOGIN_STORAGE_KEY,JAPANESE_CONNECT_INTENT_KEY} from "../../packages/auth/src/index";
 
 afterEach(()=>vi.unstubAllGlobals());
 
@@ -151,6 +151,46 @@ describe("J16D actual Google -> Japanese callback behavior",()=>{
     expect(await flow.auth.refresh()).toMatchObject({status:"authenticated"});
     expect(getRecentJapaneseAuthStage()?.stage).toBe("returned-no-code");
     expect(JSON.stringify(getRecentJapaneseAuthStage())).not.toContain("verified-oauth-code");
+  });
+
+  it("preserves the exchanged session after a transient /user verification failure",async()=>{
+    const flow=setupCallback(true);
+    flow.getUser.mockRejectedValueOnce(new Error("Transient network error"));
+    const first=flow.auth.refresh();
+    flow.finish();
+    expect(await first).toMatchObject({status:"anonymous"});
+    expect(getRecentJapaneseAuthStage()?.stage).toBe("exchange-success");
+    expect(getRecentJapaneseAuthFailure()).toBeNull();
+    expect(await flow.auth.refresh()).toMatchObject({status:"authenticated",accountId:"user-from-google"});
+    expect(flow.exchangeCodeForSession).toHaveBeenCalledTimes(1);
+  });
+
+  it("recognizes both slash variants and a home-path code before auth listeners run",()=>{
+    expect(isJapaneseCallbackLocation({pathname:"/japanese/auth/callback/",search:"?code=a"})).toBe(true);
+    expect(isJapaneseCallbackLocation({pathname:"/japanese/auth/callback",search:"?code=a"})).toBe(true);
+    expect(isJapaneseCallbackLocation({pathname:"/japanese/",search:"?code=a"})).toBe(true);
+    expect(isJapaneseCallbackLocation({pathname:"/japanese/",search:""})).toBe(false);
+  });
+
+  it("never publishes an older anonymous /user response after a newer authenticated response",async()=>{
+    vi.stubGlobal("window",{location:{pathname:"/japanese/",search:"",hash:""}});
+    let finishOld:(value:unknown)=>void=()=>{};
+    const getUser=vi.fn()
+      .mockImplementationOnce(()=>new Promise(resolve=>{finishOld=resolve;}))
+      .mockResolvedValueOnce({data:{user:{id:"user-from-google"}},error:null});
+    const client={auth:{
+      getUser,
+      onAuthStateChange:vi.fn().mockReturnValue({data:{subscription:{unsubscribe:vi.fn()}}}),
+    }};
+    const auth=createThiepnAccountAuthProvider({client:client as never});
+    const states:string[]=[];
+    auth.subscribe(value=>states.push(value.status));
+    const stale=auth.refresh();
+    const fresh=auth.refresh();
+    expect(await fresh).toMatchObject({status:"authenticated",accountId:"user-from-google"});
+    finishOld({data:{user:null},error:{name:"AuthSessionMissingError",message:"Auth session missing"}});
+    expect(await stale).toMatchObject({status:"authenticated",accountId:"user-from-google"});
+    expect(states.at(-1)).toBe("authenticated");
   });
 
   it("expires non-secret diagnostics after 30 minutes",()=>{
