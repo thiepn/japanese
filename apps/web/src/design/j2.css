@@ -66,7 +66,7 @@ html[data-j-theme],html[data-j-theme] body,html[data-j-theme] #root{
   padding:10px clamp(18px,3vw,42px);
   border-bottom:1px solid color-mix(in srgb,var(--j-line) 88%,transparent);
   background:color-mix(in srgb,var(--j-bg) 88%,transparent);
-  backdrop-filter:blur(18px) saturate(1.1);
+  
 }
 
 .j2-topbar::after{
@@ -309,7 +309,7 @@ html[data-j-theme],html[data-j-theme] body,html[data-j-theme] #root{
   border-color:color-mix(in srgb,var(--j-season-accent) 33%,var(--j-line));
   background:
     linear-gradient(90deg,color-mix(in srgb,var(--j-season-accent) 8%,var(--j-bg-elevated)),var(--j-bg-elevated));
-  box-shadow:5px 5px 0 color-mix(in srgb,var(--j-season-accent) 8%,transparent);
+  
 }
 
 .j2-nav button.active::after{
@@ -444,7 +444,7 @@ html[data-j-theme],html[data-j-theme] body,html[data-j-theme] #root{
   border-radius:4px 16px 16px 16px;
   background:var(--j-sumi-900);
   color:#fff8ef;
-  box-shadow:6px 6px 0 color-mix(in srgb,var(--j-season-accent) 18%,transparent);
+  
 }
 
 [data-j-theme="dark"] .j2-content .primary{
@@ -453,7 +453,7 @@ html[data-j-theme],html[data-j-theme] body,html[data-j-theme] #root{
 }
 
 .j2-content .primary:hover:not(:disabled){
-  box-shadow:3px 3px 0 color-mix(in srgb,var(--j-season-accent) 26%,transparent);
+  
   transform:translate(2px,2px);
 }
 
@@ -570,8 +570,8 @@ html[data-j-theme],html[data-j-theme] body,html[data-j-theme] #root{
     border-top:1px solid var(--j-line);
     border-right:0;
     background:color-mix(in srgb,var(--j-bg) 94%,transparent);
-    backdrop-filter:blur(18px) saturate(1.1);
-    box-shadow:0 -10px 30px rgba(19,16,12,.08);
+    
+    
   }
 
   .j2-nav::before,.j2-nav__caption,.j2-nav__footer{display:none}

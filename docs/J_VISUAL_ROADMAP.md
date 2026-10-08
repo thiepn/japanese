@@ -212,6 +212,12 @@ Final cutover:
 - run full E2E/regression suite;
 - qualify and promote the new visual major release.
 
+### J15A — Stabilization
+**Verified on J15A candidate.** Reconcile seasonal shadows and mobile navigation with the new flat editorial structure; retain full Playwright and candidate-deploy requirements.
+
+### J15B — Japanese Visual Grammar
+**Implemented as a testable visual contract; CI/release validation required.** Freeze material hierarchy, typography, rectangular paper geometry, restrained motifs and motion, accessibility and five destination-specific compositions. See `docs/J15B_VISUAL_GRAMMAR.md`. No new learner capability and no generic dashboard template.
+
 ## Non-goal across J0–J15
 
 The J-series does not introduce a new proficiency level or mastery authority. Any future learner-capability change requires its own roadmap decision outside this visual program.
