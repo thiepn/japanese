@@ -57,3 +57,7 @@ The freeze and executable acceptance gates for paper, ink, lacquer, indigo, typo
 ## J15D — Native CSS Ownership & Legacy Shell Purge
 
 The first slice removes unused pre-J2 navigation/pre-J5 Study CSS while preserving existing shared components and the lazy J12/J13 layers. See [`J15D_ACCEPTANCE.md`](./J15D_ACCEPTANCE.md) for ownership, staged deletion criteria and browser/bundle gates. J15D is not evidence of physical-device acceptance.
+
+## J15D-D5 — Final Migration & Release Gate
+
+D5 requires exact-commit build, visual diff review, physical Android PWA evidence and independent product, accessibility and release-operations approval. Passing CI does not imply stable promotion. See [J15D_D5_RELEASE.md](./J15D_D5_RELEASE.md).

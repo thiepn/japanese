@@ -222,7 +222,7 @@ Final cutover:
 **Implemented on a stacked qualification branch; pending CI.** Increase tiny Library/Progress content typography and responsive navigation labels, with computed-style browser assertions and a source audit. Preserve each destination's distinct identity and keep the P22 CSS budget unchanged. See `docs/J15C_ACCEPTANCE.md`.
 
 ### J15D — Native CSS Ownership & Legacy Shell Purge
-**D1–D3 CI green; D4 visual and physical-device evidence gates being implemented.** Remove confirmed dead J0 shell/Study CSS, protect currently shared advanced tools and audit native CSS ownership without raising the P22 CSS budget. See `docs/J15D_ACCEPTANCE.md`. Physical-device acceptance remains separate.
+**D1–D4 browser CI passed at a previous candidate; D5 final migration release assessment implemented and pending exact-head checks and physical acceptance.** Remove confirmed dead J0 shell/Study CSS, protect currently shared advanced tools and audit native CSS ownership without raising the P22 CSS budget. See `docs/J15D_ACCEPTANCE.md`. Physical-device acceptance remains separate.
 
 ## Non-goal across J0–J15
 

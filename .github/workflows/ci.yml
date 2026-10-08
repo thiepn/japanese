@@ -61,6 +61,12 @@ jobs:
           JSON
       - name: Generate J14 qualification report
         run: pnpm qualify:j14
+      - name: Record J15D D5 automated evidence and release status
+        env:
+          J15D_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          node scripts/j15d-d5-regression-evidence.mjs
+          pnpm qualify:j15d:d5:ci
       - name: Record P9 regression evidence
         run: |
           mkdir -p artifacts
@@ -133,3 +139,6 @@ jobs:
             artifacts/j15d-css-ownership.json
             artifacts/j15d-d3-css-boundary.json
             artifacts/j15d-d4-qualification.json
+            artifacts/j15d-d5-regression-evidence.json
+            artifacts/j15d-d5-release-qualification.json
+            artifacts/j15d-d5-release-qualification.md

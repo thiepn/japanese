@@ -1,6 +1,6 @@
 # J15D — Native CSS Ownership & Legacy Shell Purge
 
-**State:** D1–D3 CI green; D4 qualification framework staged for CI. J15C is merged; this is the next structural cutover, not another visual redesign.
+**State:** D1–D4 browser regression CI passed on a previous candidate; D5 release-decision gates are implemented and require exact-head CI, visual review and physical Android acceptance. J15C is merged; this is the next structural cutover, not another visual redesign.
 
 ## Baseline and disposition
 
@@ -34,7 +34,7 @@ This is deliberately not a global delete-everything-labeled-old process. The lar
 - **D2 ownership inventory (implemented; CI pending):** scan application, package and service sources for common-CSS class references; classify J-series, phase-specific and shared selectors; report dynamic class construction and unresolved selectors, and require manual review before any further deletion. Produces `artifacts/j15d-css-ownership.json`.
 - **D3 (implemented, CI pending):** move the independently owned P10 human-review / media-curation / release-operations CSS to the already lazy J11 diagnostics route; verify entry/lazy bundle boundaries and the actual Vite CSS sizes without inferring browser paint timing. Further C1/C2 modularization remains out of scope pending owner evidence.
 - **D4 (implementation staged; CI pending):** compare J15C and J15D screenshot evidence at desktop/tablet/mobile in light/dark, and separately collect physical Android PWA checks against the exact deployed commit. See J15D_D4_ACCEPTANCE.md.
-- **D5:** final native visual-system migration release assessment, including accessibility, contrast, input controls, PWA and bundle budgets.
+- **D5 (implemented; CI pending):** evidence-based final visual migration decision for semantic tokens, CSS ownership, accessibility, input controls, offline PWA, lazy bundles, the 42-case visual comparison, physical Android validation and formal release signoffs. See J15D_D5_RELEASE.md.
 
 **Release boundary:** automated CI does not constitute **physical Android** PWA acceptance, independent Japanese proficiency validation, or stable channel promotion. J15D must not be merged until its own CI passes.
 
@@ -49,3 +49,7 @@ The P10 administrative CSS block is isolated into `apps/web/src/design/j11-opera
 The initial source stylesheet was 92,129 bytes after D1. D3 removes the exact P10 source block without modifying its rules. Source and built-artifact audits check that P10 selectors disappear from initial CSS, appear in exactly one lazy J11 CSS chunk, preserve J11's original rules, and remain functional at desktop, Android and compact-mobile widths. `pnpm verify:j15d:d3` checks the **built** CSS and produces `artifacts/j15d-d3-css-boundary.json` with actual gzip byte counts; the regular `pnpm verify:j15d` runs the source boundary audit too. Gzip entry size is a reproducible CSS transfer proxy, **not** a claim of measured FCP or LCP. Capturing actual first-paint timing would require separate calibrated browser/performance data; no such timing is invented here.
 
 Physical Android PWA approval, screen-reader sessions and stable promotion remain separate from green CI.
+
+## D5 — Final release assessment
+
+`pnpm qualify:j15d:d5:ci` checks automated artifacts after complete CI and emits a blocked release report until separately reviewed screenshots, physical Android testing and three human signoffs are complete. `pnpm qualify:j15d:d5:strict` fails closed unless ALL gates pass at the same exact candidate SHA. Automated green CI is neither Android device acceptance nor stable channel approval.
