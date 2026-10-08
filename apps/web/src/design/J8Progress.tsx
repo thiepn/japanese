@@ -222,7 +222,7 @@ export function J8Progress({
         <Ledger value={summary.due} label="Due now" glyph="復"/>
         <Ledger value={immersion.texts.length} label="Connected texts" glyph="読"/>
         <Ledger value={immersion.minedWords} label="Mined words" glyph="採"/>
-        <Ledger value={completedToday} label="Answers this visit" glyph="今"/>
+        <Ledger value={completedToday} label="Answers today" glyph="今"/>
       </div>
       <p>{immersion.lookups} reader lookups · {immersion.readingChecks} reading checks · {immersion.listeningChecks} listening checks</p>
     </section>

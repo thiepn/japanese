@@ -16,6 +16,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   const [response,setResponse]=useState("");
   const [feedback,setFeedback]=useState<GradeResult|null>(null);
   const [saving,setSaving]=useState(false);
+  const [saveError,setSaveError]=useState(false);
   const [audioState,setAudioState]=useState<"idle"|"playing"|"error">("idle");
   const [audioPlayed,setAudioPlayed]=useState(false);
   const [speechState,setSpeechState]=useState<"idle"|"listening"|"unsupported"|"error">("idle");
@@ -64,6 +65,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
     setIndex((value)=>value+1);
     setResponse("");
     setFeedback(null);
+    setSaveError(false);
     setTimerTick(0);
     startedAt.current=performance.now();
   }
@@ -160,6 +162,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
     if(!value.trim()||feedback||saving||interactionLocked)return;
     const grade=gradeStudyPrompt(currentPrompt,value);
     setSaving(true);
+    setSaveError(false);
     try{
       await onAnswer({
         prompt:currentPrompt,
@@ -170,6 +173,8 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
       setResponse(value);
       setFeedback(grade);
       j9SensoryFeedback(grade.result==="correct"?"success":"correction");
+    }catch{
+      setSaveError(true);
     }finally{
       setSaving(false);
     }
@@ -249,6 +254,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
               <button className="primary" disabled={!response.trim()||Boolean(feedback)||saving||interactionLocked} type="submit">Check</button>
             </form>}
 
+      {saveError?<p className="audio-error" role="alert">This answer was not saved on your device. Check browser storage and retry.</p>:null}
       {hasListeningCue&&!audioPlayed&&audioState!=="error"?<p className="audio-gate j5-audio-gate">Play the listening cue before answering.</p>:null}
 
       {feedback?<div className={"j5-feedback "+feedback.result}>

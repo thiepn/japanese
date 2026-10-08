@@ -16,7 +16,7 @@ import { J7Library } from "./design/J7Library";
 import { J8Progress } from "./design/J8Progress";
 import { createJapaneseLanguageDashboardPublisher } from "./languageDashboard";
 import {
-  buildA1MilestoneSession,buildB1MilestoneSession,buildB2MilestoneSession,buildC1FoundationPractice,buildC1FoundationSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildP13C1SynthesisSession,buildP9RealWorldChainSession,buildP9RealWorldQualificationSession,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getC1FoundationAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,GUEST_ACCOUNT_ID,setDevelopmentAccountId,
+  buildA1MilestoneSession,buildB1MilestoneSession,buildB2MilestoneSession,buildC1FoundationPractice,buildC1FoundationSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildP13C1SynthesisSession,buildP9RealWorldChainSession,buildP9RealWorldQualificationSession,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getC1FoundationAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getCompletedTodayCount,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,GUEST_ACCOUNT_ID,getDevelopmentAccountId,setDevelopmentAccountId,
   type A1MilestoneProgress,type B1MilestoneProgress,type B2MilestoneProgress,type C1FoundationProgress,type ConjugationMasterySummary,type CourseUnitProgress,type GrammarMasterySummary,type KanaMasterySummary,type LexicalFluencySummary,type SentenceMasterySummary,type StudySummary,type VocabularyMasterySummary
 } from "./study/runtime";
 
@@ -94,6 +94,7 @@ export function App(){
   const [account,setAccount]=useState<AuthContext>(ANONYMOUS_AUTH);
   const [accountConnected,setAccountConnected]=useState(false);
   const [accountBusy,setAccountBusy]=useState(false);
+  const [accountResolving,setAccountResolving]=useState(true);
   const [accountMessage,setAccountMessage]=useState<string|null>(null);
 
   useEffect(()=>{
@@ -168,8 +169,26 @@ export function App(){
     const unsubscribe=JAPANESE_ACCOUNT.subscribe((next)=>{
       void apply(next).catch(authUnavailable);
     });
-    void JAPANESE_ACCOUNT.refresh().catch(authUnavailable);
-    return()=>{active=false;generation+=1;unsubscribe();};
+    // Android can complete Google OAuth in a separate Chrome window and
+    // restore the installed PWA without remounting React. Re-verify the
+    // canonical session when the PWA regains focus.
+    const revalidate=()=>{
+      if(document.visibilityState!=="visible")return;
+      void JAPANESE_ACCOUNT.refresh().catch(authUnavailable);
+    };
+    const onVisibility=()=>{if(document.visibilityState==="visible")revalidate();};
+    window.addEventListener("focus",revalidate);
+    window.addEventListener("pageshow",revalidate);
+    document.addEventListener("visibilitychange",onVisibility);
+    void JAPANESE_ACCOUNT.refresh()
+      .catch(authUnavailable)
+      .finally(()=>{if(active)setAccountResolving(false);});
+    return()=>{
+      active=false;generation+=1;unsubscribe();
+      window.removeEventListener("focus",revalidate);
+      window.removeEventListener("pageshow",revalidate);
+      document.removeEventListener("visibilitychange",onVisibility);
+    };
   },[]);
   useEffect(()=>{
     void refreshDashboard().then(()=>{
@@ -196,11 +215,13 @@ export function App(){
   },[query,surface]);
 
   async function refreshDashboard(){
+    const workspaceId=getDevelopmentAccountId();
     try{
-      const [nextSummary,nextKana,nextVocab,nextConjugation,nextGrammar,nextSentence,nextLexicalFluency,nextCourse,nextMilestone,nextB1Milestone,nextB2Milestone,nextC1Foundation,nextImmersion]=await Promise.all([
-        getStudySummary(),getKanaMasterySummary(),getVocabularyMasterySummary(),getConjugationMasterySummary(),getGrammarMasterySummary(),getSentenceMasterySummary(),getLexicalFluencySummary(),getCourseProgress(),getA1MilestoneAssessmentProgress(),getB1MilestoneAssessmentProgress(),getB2MilestoneAssessmentProgress(),getC1FoundationAssessmentProgress(),getImmersionProgress()
+      const [nextSummary,nextKana,nextVocab,nextConjugation,nextGrammar,nextSentence,nextLexicalFluency,nextCourse,nextMilestone,nextB1Milestone,nextB2Milestone,nextC1Foundation,nextImmersion,nextCompletedToday]=await Promise.all([
+        getStudySummary(),getKanaMasterySummary(),getVocabularyMasterySummary(),getConjugationMasterySummary(),getGrammarMasterySummary(),getSentenceMasterySummary(),getLexicalFluencySummary(),getCourseProgress(),getA1MilestoneAssessmentProgress(),getB1MilestoneAssessmentProgress(),getB2MilestoneAssessmentProgress(),getC1FoundationAssessmentProgress(),getImmersionProgress(),getCompletedTodayCount()
       ]);
-      setSummary(nextSummary);setKanaMastery(nextKana);setVocabMastery(nextVocab);setConjugationMastery(nextConjugation);setGrammarMastery(nextGrammar);setSentenceMastery(nextSentence);setLexicalFluency(nextLexicalFluency);setCourseProgress(nextCourse);setMilestone(nextMilestone);setB1Milestone(nextB1Milestone);setB2Milestone(nextB2Milestone);setC1Foundation(nextC1Foundation);setImmersion(nextImmersion);
+      if(getDevelopmentAccountId()!==workspaceId)return;
+      setSummary(nextSummary);setKanaMastery(nextKana);setVocabMastery(nextVocab);setConjugationMastery(nextConjugation);setGrammarMastery(nextGrammar);setSentenceMastery(nextSentence);setLexicalFluency(nextLexicalFluency);setCourseProgress(nextCourse);setMilestone(nextMilestone);setB1Milestone(nextB1Milestone);setB2Milestone(nextB2Milestone);setC1Foundation(nextC1Foundation);setImmersion(nextImmersion);setCompletedToday(nextCompletedToday);
     }catch{/* local storage can be unavailable in hardened browsers */}
   }
 
@@ -334,7 +355,9 @@ export function App(){
   const [diagnosticsMode,setDiagnosticsMode]=useState(
     ()=>new URLSearchParams(window.location.search).get("diagnostics")==="1",
   );
-  const accountActionLabel=account.status!=="authenticated"
+  const accountActionLabel=accountResolving
+    ?"Checking THIEPN Account…"
+    :account.status!=="authenticated"
     ?"Sign in with THIEPN Account"
     :accountConnected
       ?"Sign out"
@@ -358,7 +381,7 @@ export function App(){
         surface={surface}
         onSurfaceChange={navigateSurface}
         accountActionLabel={accountActionLabel}
-        accountBusy={accountBusy}
+        accountBusy={accountBusy||accountResolving}
         onAccountAction={()=>void toggleAccount()}
         accountStatus={accountMessage}
         diagnosticsMode={diagnosticsMode}

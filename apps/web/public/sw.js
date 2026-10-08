@@ -1,7 +1,7 @@
 const CACHE_PREFIX = "japanese-shell-";
-const CACHE = `${CACHE_PREFIX}v4`;
+const CACHE = `${CACHE_PREFIX}v5`;
 const BASE = new URL(self.registration.scope).pathname;
-const CORE = [BASE, `${BASE}manifest.webmanifest`, `${BASE}icon.svg`];
+const CORE = [BASE, `${BASE}manifest.webmanifest`, `${BASE}icon.svg`, `${BASE}icon-192.png`, `${BASE}icon-512.png`];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(CORE)));

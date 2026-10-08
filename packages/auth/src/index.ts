@@ -180,6 +180,7 @@ export function createThiepnAccountAuthProvider(
   const listeners = new Set<(context: AuthContext) => void>();
   let current = ANONYMOUS_CONTEXT;
   let busy = false;
+  let callbackInFlight: Promise<AuthContext> | null = null;
 
   function publish(context: AuthContext): AuthContext {
     current = context;
@@ -210,10 +211,8 @@ export function createThiepnAccountAuthProvider(
 
     let pending: PendingJapaneseLogin | null = null;
     try {
-      pending = readPendingJapaneseLogin(
-        sessionStorage.getItem(JAPANESE_LOGIN_STORAGE_KEY),
-      );
-      sessionStorage.removeItem(JAPANESE_LOGIN_STORAGE_KEY);
+      pending = readStoredPendingLogin();
+      clearPendingLogin();
     } catch {
       clearConnectIntent();
       return publish(EXPIRED_CONTEXT);
@@ -222,10 +221,15 @@ export function createThiepnAccountAuthProvider(
     const returnTo = pending?.returnTo ?? JAPANESE_HOME_PATH;
     window.history.replaceState(null, "", returnTo);
 
-    if (!pending || !callback) {
+    if (!callback) {
       clearConnectIntent();
       return publish(EXPIRED_CONTEXT);
     }
+
+    // A PWA can return from the browser with the PKCE verifier still available
+    // but without its per-tab intent marker. Supabase authenticates the
+    // one-use code against the locally stored verifier; the marker alone is
+    // not the security authority.
 
     busy = true;
     try {
@@ -241,11 +245,26 @@ export function createThiepnAccountAuthProvider(
   }
 
   async function refresh(): Promise<AuthContext> {
-    if (
-      typeof window !== "undefined" &&
-      window.location.pathname === new URL(callbackUrl).pathname
-    ) {
-      return completeCallback();
+    // A callback may be requested twice while a previous exchange is
+    // pending (app mount, visibility restoration, or multiple consumers).
+    // Its authorization code is single-use, so join the first exchange.
+    if (callbackInFlight) return callbackInFlight;
+    const callbackPath = new URL(callbackUrl).pathname;
+    const pathname = typeof window === "undefined" ? "" : window.location.pathname;
+    const hasReturnCode = typeof window !== "undefined"
+      && new URLSearchParams(window.location.search).has("code");
+    const onCallbackPath = pathname === callbackPath
+      || pathname === (callbackPath.endsWith("/") ? callbackPath.slice(0, -1) : callbackPath);
+    // Some hosting/proxy redirects can land on the app's canonical home path.
+    // The PKCE code remains verified by Supabase, never by this route alone.
+    if (onCallbackPath || (pathname === JAPANESE_HOME_PATH && hasReturnCode)) {
+      const attempt = completeCallback();
+      callbackInFlight = attempt;
+      try {
+        return await attempt;
+      } finally {
+        if (callbackInFlight === attempt) callbackInFlight = null;
+      }
     }
     return verify();
   }
@@ -309,13 +328,10 @@ export function createThiepnAccountAuthProvider(
       : JAPANESE_HOME_PATH;
     markConnectIntent();
     try {
-      sessionStorage.setItem(
-        JAPANESE_LOGIN_STORAGE_KEY,
-        JSON.stringify({
-          started: Date.now(),
-          returnTo: safeReturnTo,
-        }),
-      );
+      storePendingLogin({
+        started: Date.now(),
+        returnTo: safeReturnTo,
+      });
     } catch {
       clearConnectIntent();
       throw new Error("LOGIN_STORAGE_UNAVAILABLE");
@@ -424,26 +440,57 @@ function isMissingSession(error: unknown): boolean {
   return /AuthSessionMissing|session missing|no session/i.test(value);
 }
 
+// A standalone Android PWA can complete its OAuth redirect in a new Chrome
+// browsing context. Keep the short-lived pending marker in origin-scoped
+// localStorage as well as tab sessionStorage; PKCE itself remains managed by
+// Supabase on the same Japanese origin and no tokens cross the Account origin.
+function availableLoginStores(): Storage[] {
+  const stores: Storage[] = [];
+  for(const name of ["localStorage","sessionStorage"] as const) {
+    try {
+      const candidate=globalThis[name];
+      if(candidate)stores.push(candidate);
+    } catch { /* storage can be disabled */ }
+  }
+  return stores;
+}
+function storePendingLogin(marker:PendingJapaneseLogin):void {
+  const raw=JSON.stringify(marker);
+  let stored=false;
+  for(const storage of availableLoginStores()){
+    try{storage.setItem(JAPANESE_LOGIN_STORAGE_KEY,raw);stored=true;}catch{}
+  }
+  if(!stored)throw new Error("LOGIN_STORAGE_UNAVAILABLE");
+}
+function readStoredPendingLogin():PendingJapaneseLogin|null {
+  for(const storage of availableLoginStores()){
+    try{
+      const pending=readPendingJapaneseLogin(storage.getItem(JAPANESE_LOGIN_STORAGE_KEY));
+      if(pending)return pending;
+    }catch{}
+  }
+  return null;
+}
+
 function markConnectIntent(): void {
-  if (typeof sessionStorage === "undefined") return;
-  sessionStorage.setItem(JAPANESE_CONNECT_INTENT_KEY, "1");
+  for(const storage of availableLoginStores()){
+    try{storage.setItem(JAPANESE_CONNECT_INTENT_KEY,"1");}catch{}
+  }
 }
-
 function hasConnectIntent(): boolean {
-  return (
-    typeof sessionStorage !== "undefined" &&
-    sessionStorage.getItem(JAPANESE_CONNECT_INTENT_KEY) === "1"
-  );
+  return availableLoginStores().some(storage=>{
+    try{return storage.getItem(JAPANESE_CONNECT_INTENT_KEY)==="1";}catch{return false;}
+  });
 }
-
 function clearConnectIntent(): void {
-  if (typeof sessionStorage === "undefined") return;
-  sessionStorage.removeItem(JAPANESE_CONNECT_INTENT_KEY);
+  for(const storage of availableLoginStores()){
+    try{storage.removeItem(JAPANESE_CONNECT_INTENT_KEY);}catch{}
+  }
 }
-
 function clearPendingLogin(): void {
-  if (typeof sessionStorage === "undefined") return;
-  sessionStorage.removeItem(JAPANESE_LOGIN_STORAGE_KEY);
+  for(const storage of availableLoginStores()){
+    try{storage.removeItem(JAPANESE_LOGIN_STORAGE_KEY);}catch{}
+  }
 }
 
 // Japanese is a consumer of the canonical THIEPN Account identity.

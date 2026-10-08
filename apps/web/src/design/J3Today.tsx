@@ -87,7 +87,7 @@ export function J3Today({summary,completedToday,status,onStart}:J3TodayProps){
 
           <div className="j3-today__visit">
             <strong>{completedToday}</strong>
-            <span>answers this visit</span>
+            <span>answers today</span>
           </div>
         </div>
 
@@ -104,7 +104,7 @@ export function J3Today({summary,completedToday,status,onStart}:J3TodayProps){
           <strong>{remaining?remaining:"済"}</strong>
           <small>{remaining?"steps remain":"path complete"}</small>
         </div>
-        <JInkProgress value={completedFraction} label="This visit progress through the current queue"/>
+        <JInkProgress value={completedFraction} label="Today's progress through the current queue"/>
         <p>{routeKinds} active study modes · {introduced} new items queued</p>
       </aside>
     </div>

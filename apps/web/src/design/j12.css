@@ -393,3 +393,9 @@
   }
 }
 
+
+/* Prevent browser focus zoom caused by sub-16px form controls. Pinch and
+   accessibility zoom remain enabled. */
+@media (max-width: 760px){
+  input,textarea,select{font-size:max(16px,1rem)!important}
+}

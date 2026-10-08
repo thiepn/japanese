@@ -173,6 +173,18 @@ export async function getC1FoundationAssessmentProgress():Promise<MilestoneAsses
   return getC1FoundationProgress(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));
 }
 
+// Derive the daily counter from durable, account-scoped events. React component
+// state must never be the authority for progress displayed after a reload.
+export async function getCompletedTodayCount(now=new Date()):Promise<number>{
+  const today=now.toDateString();
+  const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
+  return events.filter((event)=>{
+    if(event.result!=="correct"&&event.result!=="incorrect")return false;
+    const occurredAt=new Date(event.occurredAt);
+    return !Number.isNaN(occurredAt.getTime())&&occurredAt.toDateString()===today;
+  }).length;
+}
+
 export async function getStudySummary(now=new Date()):Promise<StudySummary>{
   const [traces,privateSet,privateSentences]=await Promise.all([listMemoryTraces(DEVELOPMENT_ACCOUNT_ID),buildPrivateVocabularyPrompts(),buildPrivateSentencePrompts()]);
   const byId=new Map(traces.map((trace)=>[trace.id,trace]));
