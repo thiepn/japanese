@@ -193,6 +193,26 @@ describe("J16D actual Google -> Japanese callback behavior",()=>{
     expect(states.at(-1)).toBe("authenticated");
   });
 
+  it("ignores an older rejected verification after a newer authenticated response",async()=>{
+    vi.stubGlobal("window",{location:{pathname:"/japanese/",search:"",hash:""}});
+    let rejectOld:(error:Error)=>void=()=>{};
+    const getUser=vi.fn()
+      .mockImplementationOnce(()=>new Promise((_resolve,reject)=>{rejectOld=reject;}))
+      .mockResolvedValueOnce({data:{user:{id:"user-from-google"}},error:null});
+    const client={auth:{
+      getUser,
+      onAuthStateChange:vi.fn().mockReturnValue({data:{subscription:{unsubscribe:vi.fn()}}}),
+    }};
+    const auth=createThiepnAccountAuthProvider({client:client as never});
+    const statuses:string[]=[];
+    auth.subscribe(context=>statuses.push(context.status));
+    const old=auth.refresh();
+    expect(await auth.refresh()).toMatchObject({status:"authenticated"});
+    rejectOld(new Error("Offline /user response"));
+    expect(await old).toMatchObject({status:"authenticated"});
+    expect(statuses.at(-1)).toBe("authenticated");
+  });
+
   it("expires non-secret diagnostics after 30 minutes",()=>{
     const flow=setupCallback(false);
     const at=Date.now()-31*60*1000;
