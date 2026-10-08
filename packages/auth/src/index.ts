@@ -180,6 +180,7 @@ export function createThiepnAccountAuthProvider(
   const listeners = new Set<(context: AuthContext) => void>();
   let current = ANONYMOUS_CONTEXT;
   let busy = false;
+  let callbackInFlight: Promise<AuthContext> | null = null;
 
   function publish(context: AuthContext): AuthContext {
     current = context;
@@ -220,10 +221,15 @@ export function createThiepnAccountAuthProvider(
     const returnTo = pending?.returnTo ?? JAPANESE_HOME_PATH;
     window.history.replaceState(null, "", returnTo);
 
-    if (!pending || !callback) {
+    if (!callback) {
       clearConnectIntent();
       return publish(EXPIRED_CONTEXT);
     }
+
+    // A PWA can return from the browser with the PKCE verifier still available
+    // but without its per-tab intent marker. Supabase authenticates the
+    // one-use code against the locally stored verifier; the marker alone is
+    // not the security authority.
 
     busy = true;
     try {
@@ -239,11 +245,21 @@ export function createThiepnAccountAuthProvider(
   }
 
   async function refresh(): Promise<AuthContext> {
+    // A callback may be requested twice while a previous exchange is
+    // pending (app mount, visibility restoration, or multiple consumers).
+    // Its authorization code is single-use, so join the first exchange.
+    if (callbackInFlight) return callbackInFlight;
     if (
       typeof window !== "undefined" &&
       window.location.pathname === new URL(callbackUrl).pathname
     ) {
-      return completeCallback();
+      const attempt = completeCallback();
+      callbackInFlight = attempt;
+      try {
+        return await attempt;
+      } finally {
+        if (callbackInFlight === attempt) callbackInFlight = null;
+      }
     }
     return verify();
   }
