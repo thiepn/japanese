@@ -49,3 +49,7 @@ J15A closes contradictions introduced by the anti-SaaS visual shift before furth
 - J15A is complete only when the full cross-viewport Playwright suite is green and the exact candidate commit deploys successfully.
 
 J15A also updates inherited qualification contracts: J14 qualification accepts the J15 native dark-theme assertion in place of the removed lazy dark-compatibility runtime, and mobile advanced-studio dark-mode checks explicitly reveal content before asserting visibility so `content-visibility:auto` cannot create a false negative.
+
+## J15B — Japanese Visual Grammar
+
+The freeze and executable acceptance gates for paper, ink, lacquer, indigo, typography, square paper geometry, lines, spacing, seasonal pattern restraint and meaningful motion are in [`J15B_VISUAL_GRAMMAR.md`](./J15B_VISUAL_GRAMMAR.md). Run `pnpm verify:j15b` and the dedicated Playwright suite; no account, learning engine or evidence contracts change.

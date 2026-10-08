@@ -1,0 +1,120 @@
+/*
+ * J15B — Japanese Visual Grammar.
+ * An intentionally small, terminal layer: preserve each page's separate art direction.
+ * This file freezes editorial structure; it is not a universal page/card template.
+ */
+:root{
+  /* Paper, ink, indigo, lacquer, vermilion and gold are semantic roles. */
+  --j-vg-paper:var(--j-bg);
+  --j-vg-sheet:var(--j-bg-elevated);
+  --j-vg-ink:var(--j-fg);
+  --j-vg-ink-soft:var(--j-fg-muted);
+  --j-vg-indigo:var(--j-ai-700);
+  --j-vg-lacquer:var(--j-lacquer-900);
+  --j-vg-seal:var(--j-action);
+  --j-vg-ceremonial-gold:var(--j-gold);
+  --j-vg-rule:var(--j-line);
+  --j-vg-rule-strong:var(--j-line-strong);
+
+  /* Expressive editorial typography, restrained utility typography. */
+  --j-vg-type-japanese:var(--j-font-editorial);
+  --j-vg-type-interface:var(--j-font-ui);
+  --j-vg-reading-leading:1.95;
+  --j-vg-caption-tracking:.12em;
+
+  /* Rectangular paper; circles remain reserved for meaningful ink/audio/seals. */
+  --j-vg-paper-corner:0px;
+  --j-vg-seal-corner:2px;
+  --j-vg-ink-stroke:1px;
+
+  /* Spatial/motion grammar; not a replacement for page-specific layout. */
+  --j-vg-page-gutter:clamp(16px,3.5vw,64px);
+  --j-vg-section-gap:clamp(32px,4vw,64px);
+  --j-vg-reading-measure:72ch;
+  --j-vg-touch-min:44px;
+  --j-vg-motion:var(--j-motion-base);
+  --j-vg-shell-pattern-opacity:.13;
+}
+[data-j-theme="dark"]{
+  --j-vg-indigo:var(--j-indigo-night);
+  --j-vg-shell-pattern-opacity:.09;
+}
+
+/* Neither the desktop rail nor the mobile rail is a floating glass dock. */
+.j2-shell .j2-topbar,
+.j2-shell .j2-nav{
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+}
+.j2-shell .j2-nav button,
+.j2-shell .j2-nav button::before{
+  border-radius:var(--j-vg-paper-corner)!important;
+}
+.j2-shell .j2-nav__mon{
+  border-radius:var(--j-vg-seal-corner)!important;
+}
+.j2-shell .j2-ambient__pattern{
+  opacity:var(--j-vg-shell-pattern-opacity);
+}
+
+/* Each surface retains its own layout; only shared editorial paper rules are frozen. */
+.j2-content :is(
+  .j3-today__hero,
+  .j4-hero,
+  .j6-hero,
+  .j7-library__masthead,
+  .j8-hero
+){
+  border-radius:var(--j-vg-paper-corner)!important;
+  box-shadow:none!important;
+}
+.j2-content :is(
+  .stat,
+  .course-card,
+  .mastery-row,
+  .unit-card,
+  .milestone-card,
+  .result-card
+){
+  border-radius:var(--j-vg-paper-corner);
+  box-shadow:none;
+}
+.j2-content .primary{
+  border-radius:var(--j-vg-paper-corner);
+  box-shadow:none;
+}
+.j2-content .primary:hover:not(:disabled){
+  box-shadow:none;
+  transform:none;
+}
+
+/* Archival retrieval is a rectangular input, not a pill / app-store search chip. */
+.j7-search__field input{
+  border-radius:var(--j-vg-paper-corner)!important;
+}
+
+/* Reading text is a protected clarity zone, with no imposed texture or new artwork. */
+.j6-reader-japanese{
+  font-family:var(--j-vg-type-japanese);
+  line-height:var(--j-vg-reading-leading)!important;
+}
+
+/* Never trade keyboard visibility for a decorative outline. */
+.j2-shell .j2-nav button:focus-visible,
+.j2-shell .j2-content :is(button,a,input,textarea,select,summary):focus-visible{
+  outline:3px solid var(--j-focus);
+  outline-offset:3px;
+}
+
+@media(max-width:760px){
+  .j2-shell .j2-nav{
+    box-shadow:none!important;
+    backdrop-filter:none!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .j2-shell .j2-content .primary{
+    transition:none!important;
+    transform:none!important;
+  }
+}
