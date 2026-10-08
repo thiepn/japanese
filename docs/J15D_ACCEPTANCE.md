@@ -6,7 +6,7 @@
 
 The initial `apps/web/src/styles.css` was 96,172 source bytes and still included the J0-era `app-shell`, `nav`, `topbar`, `content`, and pre-J5 `study-*` page structures. The active application uses J2 shell (`j2-shell` / `j2-nav`), J5 Study (`j5-study`) and five independently designed J pages.
 
-The initial static scan missed compatibility class names still carried by the live J5 Study markup. CI exposed the mismatch. **D1 removes 60 shared-CSS selectors across 13 obsolete roots and removes the corresponding retired Study class names from the active React markup**, preserving the four mixed CSS rules' still-active selectors. Native J5 class names replace inherited test selectors. No learning, database, content, authentication, or routing behavior is changed.
+The initial static scan missed compatibility class names still carried by the live J5 Study markup. CI exposed the mismatch. **D1 removes 60 selectors from shared CSS across 13 obsolete roots and removes the corresponding retired Study class names from active React markup**, preserving the four mixed CSS rules' still-active selectors. Native J5 class names replace inherited test selectors. No learning, database, content, authentication, or routing behavior is changed.
 
 This is deliberately not a global delete-everything-labeled-old process. The large common stylesheet also supports active C1 native listening, research, portfolios, human review, and offline evidence workflows.
 
