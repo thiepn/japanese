@@ -14,7 +14,7 @@ test("J15D D3 loads administrative CSS only after entering diagnostics",async({p
   await page.goto("./?diagnostics=1&panel=review");
   await expect(page.locator(".human-review-panel")).toBeVisible();
   await expect.poll(()=>hasReviewCss(page)).toBe(true);
-  await expect(page.locator(".human-review-panel")).toHaveCSS("background-color",/rgba?\\(/);
+  await expect(page.locator(".human-review-panel")).toHaveCSS("background-color",/rgba?\(/);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
 });
 
