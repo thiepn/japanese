@@ -35,6 +35,8 @@ jobs:
         run: pnpm verify:j15
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e
+      - name: Record J15D D4 evidence boundary (physical checks stay pending)
+        run: pnpm qualify:j15d:d4
       - name: Record J14 automated qualification evidence
         run: |
           mkdir -p artifacts
@@ -127,3 +129,7 @@ jobs:
             artifacts/j14-qualification.json
             artifacts/j14-qualification.md
             artifacts/j15-native-theme-audit.json
+            artifacts/j15d-native-css-purge.json
+            artifacts/j15d-css-ownership.json
+            artifacts/j15d-d3-css-boundary.json
+            artifacts/j15d-d4-qualification.json
