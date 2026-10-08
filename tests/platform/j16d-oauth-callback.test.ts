@@ -1,5 +1,5 @@
 import {afterEach,describe,expect,it,vi} from "vitest";
-import {createThiepnAccountAuthProvider,JAPANESE_LOGIN_STORAGE_KEY,JAPANESE_CONNECT_INTENT_KEY} from "../../packages/auth/src/index";
+import {createThiepnAccountAuthProvider,getRecentJapaneseAuthFailure,JAPANESE_AUTH_FAILURE_KEY,JAPANESE_LOGIN_STORAGE_KEY,JAPANESE_CONNECT_INTENT_KEY} from "../../packages/auth/src/index";
 
 afterEach(()=>vi.unstubAllGlobals());
 
@@ -27,8 +27,9 @@ function setupCallback(withMarker:boolean){
   });
   vi.stubGlobal("window",{location,history:{replaceState}});
   let finishExchange:((value:{data:{session:{user:{id:string}}};error:null})=>void)|undefined;
+  let failExchange:((reason:Error)=>void)|undefined;
   const exchangeCodeForSession=vi.fn(()=>new Promise<{data:{session:{user:{id:string}}};error:null}>(
-    resolve=>{finishExchange=resolve;},
+    (resolve,reject)=>{finishExchange=resolve;failExchange=reject;},
   ));
   const getUser=vi.fn().mockResolvedValue({data:{user:{id:"user-from-google"}},error:null});
   const client={auth:{
@@ -39,6 +40,7 @@ function setupCallback(withMarker:boolean){
   return {
     auth,local,session,location,replaceState,getUser,exchangeCodeForSession,
     finish:()=>finishExchange?.({data:{session:{user:{id:"user-from-google"}}},error:null}),
+    fail:(message:string)=>failExchange?.(new Error(message)),
   };
 }
 
@@ -92,5 +94,43 @@ describe("J16D actual Google -> Japanese callback behavior",()=>{
     const result=await flow.auth.refresh();
     expect(result).toMatchObject({status:"expired",accountId:null});
     expect(flow.exchangeCodeForSession).not.toHaveBeenCalled();
+    expect(getRecentJapaneseAuthFailure()?.code).toBe("AUTH-01");
   });
+  it("records only redacted PKCE verifier failures",async()=>{
+    const flow=setupCallback(true);
+    const attempt=flow.auth.refresh();
+    flow.fail("AuthPKCECodeVerifierMissingError: Code verifier not found");
+    expect(await attempt).toMatchObject({status:"expired"});
+    expect(getRecentJapaneseAuthFailure()?.code).toBe("AUTH-03");
+    const raw=flow.local.get(JAPANESE_AUTH_FAILURE_KEY)??"";
+    expect(raw).not.toContain("verified-oauth-code");
+    expect(raw).not.toContain("Code verifier");
+  });
+
+  it("records exchange failures without exposing provider error details",async()=>{
+    const flow=setupCallback(true);
+    const attempt=flow.auth.refresh();
+    flow.fail("Provider error with sensitive detail example");
+    expect(await attempt).toMatchObject({status:"expired"});
+    expect(getRecentJapaneseAuthFailure()?.code).toBe("AUTH-02");
+    expect(flow.local.get(JAPANESE_AUTH_FAILURE_KEY)).not.toContain("sensitive detail");
+  });
+
+  it("clears historical login failure on confirmed session restoration",async()=>{
+    const flow=setupCallback(true);
+    flow.local.set(JAPANESE_AUTH_FAILURE_KEY,JSON.stringify({code:"AUTH-02",at:Date.now()}));
+    const attempt=flow.auth.refresh();
+    flow.finish();
+    expect(await attempt).toMatchObject({status:"authenticated"});
+    expect(getRecentJapaneseAuthFailure()).toBeNull();
+    expect(flow.local.has(JAPANESE_AUTH_FAILURE_KEY)).toBe(false);
+  });
+
+  it("expires non-secret diagnostics after 30 minutes",()=>{
+    const flow=setupCallback(false);
+    const at=Date.now()-31*60*1000;
+    flow.local.set(JAPANESE_AUTH_FAILURE_KEY,JSON.stringify({code:"AUTH-02",at}));
+    expect(getRecentJapaneseAuthFailure()).toBeNull();
+  });
+
 });
