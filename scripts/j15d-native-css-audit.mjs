@@ -29,7 +29,7 @@ for(const essential of [".primary",".course-kicker",".result-card",".reader-toke
 if(!shell.includes("j2-nav")||!study.includes("j5-study"))failures.push("current shell or Study chamber missing");
 const app=read("apps/web/src/App.tsx");
 const mobileCss=read("apps/web/src/design/j12.css");
-const obsoleteMarkup=/(?:["'\\s])study-(?:shell|player|head|progress|card|prompt|choices|feedback|next)(?=[\\s"'])/;
+const obsoleteMarkup=/(?:["'\s])study-(?:shell|player|head|progress|card|prompt|choices|feedback|next)(?=[\s"'])/;
 for(const [filename,source] of [["App.tsx",app],["StudyPlayer.tsx",study]]){
   if(obsoleteMarkup.test(source))failures.push("retired Study markup class remains in "+filename);
 }

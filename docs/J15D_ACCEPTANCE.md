@@ -31,9 +31,13 @@ This is deliberately not a global delete-everything-labeled-old process. The lar
 
 ## Remaining J15D phases
 
-- **D2:** independently inventory currently used legacy advanced-tool and shared component selectors, classify dynamic class names, and document deletion evidence before removing more CSS.
+- **D2 ownership inventory (implemented; CI pending):** scan application, package and service sources for common-CSS class references; classify J-series, phase-specific and shared selectors; report dynamic class construction and unresolved selectors, and require manual review before any further deletion. Produces `artifacts/j15d-css-ownership.json`.
 - **D3:** modularize only proven-independent common styles by owning route; lazy-import advanced support where safe and benchmark first paint.
 - **D4:** browser visual diffs and physical device evidence; qualify exact candidate commit and desktop/tablet/Android layouts.
 - **D5:** final native visual-system migration release assessment, including accessibility, contrast, input controls, PWA and bundle budgets.
 
 **Release boundary:** automated CI does not constitute **physical Android** PWA acceptance, independent Japanese proficiency validation, or stable channel promotion. J15D must not be merged until its own CI passes.
+
+## D2 ownership inventory safeguards
+
+`pnpm verify:j15d` runs both native-shell purge and **D2 ownership inventory**. The inventory scans the complete source tree (including lazy submodules) for CSS class references and distinguishes observed source references from unresolved selectors; unresolved does **not** equal safe to delete because `className` may be composed dynamically or rendered externally. This phase does not automatically delete a second tranche of shared CSS. The protected classes include `primary`, `reader-token`, `p20-readiness`, `course-kicker`, `result-card`, and `skip-link`. Review the JSON artifact and current browser UI before proposing future removals.
