@@ -45,7 +45,7 @@ const report={
 if(process.argv.includes("--dist")){
   const dist=path.join(root,"apps/web/dist");
   const html=fs.readFileSync(path.join(dist,"index.html"),"utf8");
-  const entryLinks=[...html.matchAll(/<link[^>]*href=["']([^"']+\\.css)["'][^>]*>/g)].map(m=>m[1]);
+  const entryLinks=[...html.matchAll(/<link[^>]*href=["']([^"']+\.css)["'][^>]*>/g)].map(m=>m[1]);
   let entryGzip=0,entryFiles=[];
   for(const link of entryLinks){
     const name=link.split("/").pop(),file=fs.readFileSync(path.join(dist,"assets",name));
