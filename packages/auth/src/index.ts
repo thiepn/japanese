@@ -249,10 +249,15 @@ export function createThiepnAccountAuthProvider(
     // pending (app mount, visibility restoration, or multiple consumers).
     // Its authorization code is single-use, so join the first exchange.
     if (callbackInFlight) return callbackInFlight;
-    if (
-      typeof window !== "undefined" &&
-      window.location.pathname === new URL(callbackUrl).pathname
-    ) {
+    const callbackPath = new URL(callbackUrl).pathname;
+    const pathname = typeof window === "undefined" ? "" : window.location.pathname;
+    const hasReturnCode = typeof window !== "undefined"
+      && new URLSearchParams(window.location.search).has("code");
+    const onCallbackPath = pathname === callbackPath
+      || pathname === callbackPath.replace(/\\/$/, "");
+    // Some hosting/proxy redirects can land on the app's canonical home path.
+    // The PKCE code remains verified by Supabase, never by this route alone.
+    if (onCallbackPath || (pathname === JAPANESE_HOME_PATH && hasReturnCode)) {
       const attempt = completeCallback();
       callbackInFlight = attempt;
       try {
