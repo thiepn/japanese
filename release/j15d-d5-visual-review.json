@@ -1,0 +1,17 @@
+{
+  "schema": "thiepn-japanese-j15d-d5-visual-review",
+  "schemaVersion": 1,
+  "status": "pending",
+  "baselineCommit": "d962c352aab9cd7ad2d9183fb40a3c5671ab7b4a",
+  "candidateCommit": null,
+  "reviewer": null,
+  "reviewedAt": null,
+  "evidenceRef": null,
+  "reviewedCases": [],
+  "defects": [],
+  "notes": [
+    "Review all 42 exact-commit screenshot pairs and diffs; a low pixel-change ratio does not prove semantic parity.",
+    "Use this as human visual acceptance, not physical Android/PWA acceptance.",
+    "Enter an exact tested 40-character candidate SHA and an auditable, non-sensitive evidence reference."
+  ]
+}

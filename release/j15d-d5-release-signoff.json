@@ -1,0 +1,33 @@
+{
+  "schema": "thiepn-japanese-j15d-d5-release-signoff",
+  "schemaVersion": 1,
+  "status": "pending",
+  "candidateCommit": null,
+  "approvedAt": null,
+  "signoffs": {
+    "product": {
+      "status": "pending",
+      "reviewer": null,
+      "reviewedAt": null,
+      "evidenceRef": null
+    },
+    "accessibility": {
+      "status": "pending",
+      "reviewer": null,
+      "reviewedAt": null,
+      "evidenceRef": null
+    },
+    "releaseOperations": {
+      "status": "pending",
+      "reviewer": null,
+      "reviewedAt": null,
+      "evidenceRef": null
+    }
+  },
+  "defects": [],
+  "notes": [
+    "Approve only against the same exact SHA as D4 visual comparison and real Android validation.",
+    "Human product, accessibility and release-operation reviews must be evidence-backed.",
+    "This file is not a deployment trigger; stable channel promotion is an independent operation."
+  ]
+}
