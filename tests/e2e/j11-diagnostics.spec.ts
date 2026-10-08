@@ -9,7 +9,7 @@ test("J11 diagnostics is an explicit technical workspace with no learner primary
 
   const technical=page.getByRole("navigation",{name:"Technical diagnostics"});
   await expect(technical).toBeVisible();
-  await expect(technical.getByRole("button")).toHaveCount(5);
+  await expect(technical.getByRole("button")).toHaveCount(6);
   await expect(page.getByText(/Nothing in this workspace is learner mastery/i)).toBeVisible();
 });
 
@@ -26,6 +26,10 @@ test("J11 direct panel URLs resolve to the requested technical concern",async({p
 
   await page.goto("./?diagnostics=1&panel=runtime");
   await expect(page.getByRole("heading",{name:"AI + morphology runtime status"})).toBeVisible();
+
+  await page.goto("./?diagnostics=1&panel=account");
+  await expect(page.getByRole("heading",{name:"Sign-in diagnostics"})).toBeVisible();
+  await expect(page.getByText("Last OAuth failure")).toBeVisible();
 });
 
 test("J11 back action returns to the learner shell and removes diagnostics from the URL",async({page})=>{
