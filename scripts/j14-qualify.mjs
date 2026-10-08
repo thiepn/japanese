@@ -34,10 +34,12 @@ const requiredAutomated=[
   "offlinePwa"
 ];
 const missing=requiredAutomated.filter(key=>evidence[key]!==true);
+const darkThemePass=budget?.assertions?.darkThemeNative===true
+  ||budget?.assertions?.darkCompatibilityLazy===true;
 const budgetPass=budget?.assertions?.technicalDiagnosticsLazy===true
   &&budget?.assertions?.mobileLayerLazy===true
   &&budget?.assertions?.exhibitionLayerLazy===true
-  &&budget?.assertions?.darkCompatibilityLazy===true
+  &&darkThemePass
   &&budget?.assertions?.noOversizedVisualAsset===true;
 
 let status="pass";

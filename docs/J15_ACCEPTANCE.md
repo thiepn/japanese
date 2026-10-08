@@ -47,3 +47,5 @@ J15A closes contradictions introduced by the anti-SaaS visual shift before furth
 - Seasonal styling must not reintroduce elevation shadows on the five primary page compositions.
 - The mobile navigation is intentionally a flat paper/seal rail; regression tests must not require a floating shadow.
 - J15A is complete only when the full cross-viewport Playwright suite is green and the exact candidate commit deploys successfully.
+
+J15A also updates inherited qualification contracts: J14 qualification accepts the J15 native dark-theme assertion in place of the removed lazy dark-compatibility runtime, and mobile advanced-studio dark-mode checks explicitly reveal content before asserting visibility so `content-visibility:auto` cannot create a false negative.

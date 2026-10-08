@@ -67,8 +67,7 @@ test("J14 dark mode is coherent across core and legacy learner surfaces",async({
   await expectDarkSurface(page,".real-world-performance");
 
   await page.getByRole("button",{name:"Immerse",exact:true}).click();
-  await page.locator("#j6-studio-native-listening > summary").click();
-  await expect(page.locator(".native-listening-lab")).toBeVisible();
+  await openDetailsAndReveal(page,"#j6-studio-native-listening",".native-listening-lab");
   await expectDarkSurface(page,".native-listening-lab");
 
   await page.getByRole("button",{name:"Library",exact:true}).click();
@@ -93,7 +92,7 @@ test("J14 removes legacy light islands and restores muted-text contrast in dark 
   await expectReadableTextAgainst(page,".real-world-performance>p",".real-world-performance");
 
   await page.getByRole("button",{name:"Immerse",exact:true}).click();
-  await page.locator("#j6-studio-native-listening > summary").click();
+  await openDetailsAndReveal(page,"#j6-studio-native-listening",".native-listening-lab");
   await expectDarkSurface(page,".native-depth-stats>div");
   await expectDarkSurface(page,".native-listening-workspace textarea");
 
@@ -255,6 +254,18 @@ test("J14 exposes visible keyboard focus without pointer-only navigation",async(
   await practice.press("Enter");
   await expect(page.locator(".j4-practice__drawer").first()).toHaveAttribute("open","");
 });
+
+async function openDetailsAndReveal(page:Page,detailsSelector:string,contentSelector:string){
+  const details=page.locator(detailsSelector);
+  await expect(details).toBeVisible();
+  if(await details.getAttribute("open")===null){
+    await details.locator(":scope > summary").click();
+  }
+  await expect(details).toHaveAttribute("open","");
+  const content=page.locator(contentSelector);
+  await content.scrollIntoViewIfNeeded();
+  await expect(content).toBeVisible();
+}
 
 async function expectDarkSurface(page:Page,selector:string){
   const data=await page.locator(selector).first().evaluate((node)=>{
