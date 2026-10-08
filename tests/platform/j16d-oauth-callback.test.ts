@@ -1,5 +1,5 @@
 import {afterEach,describe,expect,it,vi} from "vitest";
-import {createThiepnAccountAuthProvider,getRecentJapaneseAuthFailure,JAPANESE_AUTH_FAILURE_KEY,JAPANESE_LOGIN_STORAGE_KEY,JAPANESE_CONNECT_INTENT_KEY} from "../../packages/auth/src/index";
+import {createThiepnAccountAuthProvider,getJapaneseHandoffSnapshot,getRecentJapaneseAuthFailure,JAPANESE_AUTH_FAILURE_KEY,JAPANESE_LOGIN_STORAGE_KEY,JAPANESE_CONNECT_INTENT_KEY} from "../../packages/auth/src/index";
 
 afterEach(()=>vi.unstubAllGlobals());
 
@@ -124,6 +124,18 @@ describe("J16D actual Google -> Japanese callback behavior",()=>{
     expect(await attempt).toMatchObject({status:"authenticated"});
     expect(getRecentJapaneseAuthFailure()).toBeNull();
     expect(flow.local.has(JAPANESE_AUTH_FAILURE_KEY)).toBe(false);
+  });
+
+  it("reports only presence flags for PWA-browser handoff diagnosis",()=>{
+    const flow=setupCallback(true);
+    const snapshot=getJapaneseHandoffSnapshot();
+    expect(snapshot.pendingInThisContext).toBe(true);
+    expect(snapshot.callbackCodePresent).toBe(true);
+    expect(snapshot.verifierInThisContext).toBe(false);
+    flow.local.set("thiepn-account-japanese-auth-v1-code-verifier","secret-never-exposed");
+    const after=getJapaneseHandoffSnapshot();
+    expect(after.verifierInThisContext).toBe(true);
+    expect(JSON.stringify(after)).not.toContain("secret-never-exposed");
   });
 
   it("expires non-secret diagnostics after 30 minutes",()=>{
