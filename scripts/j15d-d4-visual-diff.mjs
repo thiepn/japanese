@@ -40,10 +40,18 @@ const report={
 const stdout=[];
 function server(cwd,port){
   const child=spawn("pnpm",["--filter","@thiepn/japanese-web","preview","--host","127.0.0.1","--port",String(port),"--strictPort"],{
-    cwd,env:{...process.env,VITE_PUBLIC_BASE:"/japanese/"},stdio:["ignore","pipe","pipe"]
+    cwd,env:{...process.env,VITE_PUBLIC_BASE:"/japanese/"},stdio:["ignore","pipe","pipe"],detached:true
   });
   for(const stream of [child.stdout,child.stderr])stream.on("data",chunk=>stdout.push(String(chunk)));
   return child;
+}
+function stopPreview(child){
+  if(!child?.pid)return;
+  // pnpm launches Vite as a descendant process. SIGTERM for pnpm alone leaves
+  // inherited stdio pipes alive, so Node never exits even after 42 PASS cases.
+  // Each preview is isolated in its own process group on the Ubuntu CI runner.
+  try{process.kill(-child.pid,"SIGTERM");}
+  catch{try{child.kill("SIGTERM");}catch{}}
 }
 async function ready(port){
   const url="http://127.0.0.1:"+port+"/japanese/";
@@ -126,8 +134,8 @@ try{
   }
 }finally{
   if(browser)await browser.close();
-  if(left)left.kill("SIGTERM");
-  if(right)right.kill("SIGTERM");
+  if(left)stopPreview(left);
+  if(right)stopPreview(right);
   report.passed=report.cases.length===cases.length&&report.cases.every(x=>x.passed);
   fs.mkdirSync(path.join(root,"artifacts"),{recursive:true});
   fs.writeFileSync(path.join(root,"artifacts/j15d-d4-visual-comparison.json"),JSON.stringify(report,null,2)+"\n");
