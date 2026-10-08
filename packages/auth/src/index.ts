@@ -210,10 +210,8 @@ export function createThiepnAccountAuthProvider(
 
     let pending: PendingJapaneseLogin | null = null;
     try {
-      pending = readPendingJapaneseLogin(
-        sessionStorage.getItem(JAPANESE_LOGIN_STORAGE_KEY),
-      );
-      sessionStorage.removeItem(JAPANESE_LOGIN_STORAGE_KEY);
+      pending = readStoredPendingLogin();
+      clearPendingLogin();
     } catch {
       clearConnectIntent();
       return publish(EXPIRED_CONTEXT);
@@ -309,13 +307,10 @@ export function createThiepnAccountAuthProvider(
       : JAPANESE_HOME_PATH;
     markConnectIntent();
     try {
-      sessionStorage.setItem(
-        JAPANESE_LOGIN_STORAGE_KEY,
-        JSON.stringify({
-          started: Date.now(),
-          returnTo: safeReturnTo,
-        }),
-      );
+      storePendingLogin({
+        started: Date.now(),
+        returnTo: safeReturnTo,
+      });
     } catch {
       clearConnectIntent();
       throw new Error("LOGIN_STORAGE_UNAVAILABLE");
@@ -424,26 +419,57 @@ function isMissingSession(error: unknown): boolean {
   return /AuthSessionMissing|session missing|no session/i.test(value);
 }
 
+// A standalone Android PWA can complete its OAuth redirect in a new Chrome
+// browsing context. Keep the short-lived pending marker in origin-scoped
+// localStorage as well as tab sessionStorage; PKCE itself remains managed by
+// Supabase on the same Japanese origin and no tokens cross the Account origin.
+function availableLoginStores(): Storage[] {
+  const stores: Storage[] = [];
+  for(const name of ["localStorage","sessionStorage"] as const) {
+    try {
+      const candidate=globalThis[name];
+      if(candidate)stores.push(candidate);
+    } catch { /* storage can be disabled */ }
+  }
+  return stores;
+}
+function storePendingLogin(marker:PendingJapaneseLogin):void {
+  const raw=JSON.stringify(marker);
+  let stored=false;
+  for(const storage of availableLoginStores()){
+    try{storage.setItem(JAPANESE_LOGIN_STORAGE_KEY,raw);stored=true;}catch{}
+  }
+  if(!stored)throw new Error("LOGIN_STORAGE_UNAVAILABLE");
+}
+function readStoredPendingLogin():PendingJapaneseLogin|null {
+  for(const storage of availableLoginStores()){
+    try{
+      const pending=readPendingJapaneseLogin(storage.getItem(JAPANESE_LOGIN_STORAGE_KEY));
+      if(pending)return pending;
+    }catch{}
+  }
+  return null;
+}
+
 function markConnectIntent(): void {
-  if (typeof sessionStorage === "undefined") return;
-  sessionStorage.setItem(JAPANESE_CONNECT_INTENT_KEY, "1");
+  for(const storage of availableLoginStores()){
+    try{storage.setItem(JAPANESE_CONNECT_INTENT_KEY,"1");}catch{}
+  }
 }
-
 function hasConnectIntent(): boolean {
-  return (
-    typeof sessionStorage !== "undefined" &&
-    sessionStorage.getItem(JAPANESE_CONNECT_INTENT_KEY) === "1"
-  );
+  return availableLoginStores().some(storage=>{
+    try{return storage.getItem(JAPANESE_CONNECT_INTENT_KEY)==="1";}catch{return false;}
+  });
 }
-
 function clearConnectIntent(): void {
-  if (typeof sessionStorage === "undefined") return;
-  sessionStorage.removeItem(JAPANESE_CONNECT_INTENT_KEY);
+  for(const storage of availableLoginStores()){
+    try{storage.removeItem(JAPANESE_CONNECT_INTENT_KEY);}catch{}
+  }
 }
-
 function clearPendingLogin(): void {
-  if (typeof sessionStorage === "undefined") return;
-  sessionStorage.removeItem(JAPANESE_LOGIN_STORAGE_KEY);
+  for(const storage of availableLoginStores()){
+    try{storage.removeItem(JAPANESE_LOGIN_STORAGE_KEY);}catch{}
+  }
 }
 
 // Japanese is a consumer of the canonical THIEPN Account identity.

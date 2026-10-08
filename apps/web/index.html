@@ -2,13 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
   <meta name="theme-color" content="#FBF8F1" />
   <script>
     (()=>{try{const saved=localStorage.getItem("japanese:j-theme");const theme=saved==="dark"||saved==="light"?saved:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.jTheme=theme;document.documentElement.style.colorScheme=theme;const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute("content",theme==="dark"?"#0D0D0C":"#FBF8F1");}catch{}})();
   </script>
   <link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
   <link rel="icon" href="%BASE_URL%icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="%BASE_URL%icon-192.png" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Japanese" />
   <title>Japanese</title>
 </head>
 <body>
