@@ -27,6 +27,14 @@ for(const essential of [".primary",".course-kicker",".result-card",".reader-toke
   if(!css.includes(essential+"{")&&!css.includes(essential+","))failures.push("shared active stylesheet selector lost: "+essential);
 }
 if(!shell.includes("j2-nav")||!study.includes("j5-study"))failures.push("current shell or Study chamber missing");
+const app=read("apps/web/src/App.tsx");
+const mobileCss=read("apps/web/src/design/j12.css");
+const obsoleteMarkup=/(?:["'\\s])study-(?:shell|player|head|progress|card|prompt|choices|feedback|next)(?=[\\s"'])/;
+for(const [filename,source] of [["App.tsx",app],["StudyPlayer.tsx",study]]){
+  if(obsoleteMarkup.test(source))failures.push("retired Study markup class remains in "+filename);
+}
+if(mobileCss.includes(".study-shell"))failures.push("J12 still owns retired Study shell selector");
+
 if(!main.includes('import "./styles.css";')||!main.includes('import "./design/j15b.css";'))failures.push("native style import boundary lost");
 if(!roadmap.includes("60 selectors")||!roadmap.includes("physical Android"))failures.push("D qualification scope/boundary not documented");
 if(!browser.includes("j5-study")||!browser.includes("box-shadow")||!browser.includes("Search Japanese"))failures.push("cross-surface browser gate missing");

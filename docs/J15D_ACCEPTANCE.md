@@ -6,7 +6,7 @@
 
 The initial `apps/web/src/styles.css` was 96,172 source bytes and still included the J0-era `app-shell`, `nav`, `topbar`, `content`, and pre-J5 `study-*` page structures. The active application uses J2 shell (`j2-shell` / `j2-nav`), J5 Study (`j5-study`) and five independently designed J pages.
 
-A source review of all 35 application TSX files found no exact assignments of those retired class names. **The first slice removes 60 selectors across 13 obsolete roots**, and preserves the four mixed declarations' still-active selectors rather than dropping whole rules. No learning, database, content, auth, or routes are changed.
+The initial static scan missed compatibility class names still carried by the live J5 Study markup. CI exposed the mismatch. **D1 removes 60 shared-CSS selectors across 13 obsolete roots and removes the corresponding retired Study class names from the active React markup**, preserving the four mixed CSS rules' still-active selectors. Native J5 class names replace inherited test selectors. No learning, database, content, authentication, or routing behavior is changed.
 
 This is deliberately not a global delete-everything-labeled-old process. The large common stylesheet also supports active C1 native listening, research, portfolios, human review, and offline evidence workflows.
 
@@ -22,7 +22,7 @@ This is deliberately not a global delete-everything-labeled-old process. The lar
 
 ## Acceptance criteria
 
-1. No bare old shell styles return, including `app-shell`, `topbar`, `nav`, `content`, `study-shell`, `study-card` and obsolete Study derivatives. Current `j2-nav` / `j5-study` remain.
+1. No obsolete shell classes remain in active Study markup or bare old shell styles, including `app-shell`, `topbar`, `nav`, `content`, `study-shell`, `study-card` and obsolete Study derivatives. Current `j2-nav` / `j5-study` remain.
 2. Mixed selectors continue applying to the still-active declarations.
 3. `primary`, `course-kicker`, `result-card`, `reader-token`, `p20-readiness`, and `skip-link` remain in common CSS.
 4. No new CSS layer, markup refactor, global `!important`, shadow system, or changed bundle budget.

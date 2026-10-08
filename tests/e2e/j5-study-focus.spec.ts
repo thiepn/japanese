@@ -15,7 +15,7 @@ test("J5 turns Study Player into a focused task chamber",async({page})=>{
 
   await expect(page.locator(".j5-sheet")).toBeVisible();
   await page.getByRole("button",{name:"Continue"}).click();
-  await expect(page.locator(".study-choices.j5-choices")).toBeVisible();
+  await expect(page.locator(".j5-choices")).toBeVisible();
 
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(1);

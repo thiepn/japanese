@@ -55,7 +55,7 @@ test("J3 Continue still opens the existing Study Player",async({page})=>{
   await expect(action).toBeVisible();
   await action.click();
 
-  await expect(page.locator("main.study-shell#main-content")).toBeVisible();
-  await expect(page.locator(".study-player")).toBeVisible();
+  await expect(page.locator("main.j5-study-shell#main-content")).toBeVisible();
+  await expect(page.locator(".j5-study")).toBeVisible();
   await expect(page.getByRole("navigation",{name:"Primary"})).toHaveCount(0);
 });
