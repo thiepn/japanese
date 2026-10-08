@@ -244,6 +244,9 @@ export function createThiepnAccountAuthProvider(
   let current = ANONYMOUS_CONTEXT;
   let busy = false;
   let callbackInFlight: Promise<AuthContext> | null = null;
+  // The latest verification wins; older /user responses must not revert
+  // a newly established or explicitly signed-out Account session.
+  let verificationGeneration = 0;
 
   function publish(context: AuthContext): AuthContext {
     current = context;
@@ -261,7 +264,9 @@ export function createThiepnAccountAuthProvider(
   }
 
   async function verify(): Promise<AuthContext> {
+    const epoch=++verificationGeneration;
     const context=await readContext();
+    if(epoch!==verificationGeneration)return current;
     if(context.status==="authenticated")clearAuthFailure();
     return publish(context);
   }
@@ -269,6 +274,7 @@ export function createThiepnAccountAuthProvider(
   async function completeCallback(): Promise<AuthContext> {
     if (typeof window === "undefined") return verify();
 
+    ++verificationGeneration;
     const callback = readJapaneseCallback(
       new URLSearchParams(window.location.search),
       window.location.hash,
@@ -302,10 +308,17 @@ export function createThiepnAccountAuthProvider(
     try {
       const response = await client.auth.exchangeCodeForSession(callback.code);
       if (response.error) throw response.error;
-      const result=await verify();
-      if(result.status==="authenticated")recordAuthStage("exchange-success");
-      return result;
+      // Supabase has now persisted the session. A subsequent /user network
+      // error must not be mistaken for a failed PKCE exchange. Keep the
+      // session intact and allow the next verified refresh to recover.
+      recordAuthStage("exchange-success");
+      try {
+        return await verify();
+      } catch {
+        return current;
+      }
     } catch (error) {
+      ++verificationGeneration;
       clearConnectIntent();
       const detail = error instanceof Error ? `${error.name} ${error.message}` : "";
       recordAuthFailure(/verifier|pkce/i.test(detail) ? "AUTH-03" : "AUTH-02");
@@ -321,15 +334,10 @@ export function createThiepnAccountAuthProvider(
     // pending (app mount, visibility restoration, or multiple consumers).
     // Its authorization code is single-use, so join the first exchange.
     if (callbackInFlight) return callbackInFlight;
-    const callbackPath = new URL(callbackUrl).pathname;
     const pathname = typeof window === "undefined" ? "" : window.location.pathname;
     const hasReturnCode = typeof window !== "undefined"
       && new URLSearchParams(window.location.search).has("code");
-    const onCallbackPath = pathname === callbackPath
-      || pathname === (callbackPath.endsWith("/") ? callbackPath.slice(0, -1) : callbackPath);
-    // Some hosting/proxy redirects can land on the app's canonical home path.
-    // The PKCE code remains verified by Supabase, never by this route alone.
-    if (onCallbackPath || (pathname === JAPANESE_HOME_PATH && hasReturnCode)) {
+    if (typeof window!=="undefined"&&isJapaneseCallbackLocation(window.location,callbackUrl)) {
       const attempt = completeCallback();
       callbackInFlight = attempt;
       try {
@@ -350,13 +358,17 @@ export function createThiepnAccountAuthProvider(
 
   client.auth.onAuthStateChange((event) => {
     if (event === "INITIAL_SESSION" || busy) return;
+    // A callback's single-use code is handled exclusively by refresh().
+    // Auth SDK events are signals to verify, never authorities by themselves.
     queueMicrotask(() => {
       if (
-        !busy &&
+        !busy && !callbackInFlight &&
         (typeof window === "undefined" ||
-          window.location.pathname !== new URL(callbackUrl).pathname)
+          !isJapaneseCallbackLocation(window.location,callbackUrl))
       ) {
-        void verify().catch(() => publish(ANONYMOUS_CONTEXT));
+        // A transient /user failure should not erase a previously verified
+        // identity or suggest that persisted browser tokens disappeared.
+        void verify().catch(()=>{});
       }
     });
   });
@@ -468,6 +480,7 @@ export function createThiepnAccountAuthProvider(
     completePendingConnection,
     signIn: beginSignIn,
     async signOut() {
+      ++verificationGeneration;
       clearPendingLogin();
       clearConnectIntent();
       const response = await client.auth.signOut({ scope: "local" });
@@ -483,6 +496,14 @@ export function createThiepnAccountAuthProvider(
       };
     },
   });
+}
+
+export function isJapaneseCallbackLocation(location:Pick<Location,"pathname"|"search">,callbackUrl=JAPANESE_CALLBACK_URL):boolean {
+  const pathname=location.pathname;
+  const callbackPath=new URL(callbackUrl).pathname;
+  return pathname===callbackPath ||
+    pathname===(callbackPath.endsWith("/")?callbackPath.slice(0,-1):callbackPath) ||
+    (pathname===JAPANESE_HOME_PATH&&new URLSearchParams(location.search).has("code"));
 }
 
 function validJapaneseReturnTo(value: unknown): value is string {
