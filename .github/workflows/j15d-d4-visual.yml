@@ -1,0 +1,82 @@
+name: J15D D4 Visual Regression
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps/web/src/**'
+      - 'scripts/j15d-*'
+      - 'tests/e2e/j15d-*'
+      - 'docs/J15D*'
+      - 'package.json'
+      - '.github/workflows/j15d-d4-visual.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: j15d-d4-visual-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compare:
+    if: github.event_name == 'workflow_dispatch' || github.head_ref == 'codex/j15d-css-purge'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout fixed J15C reference
+        uses: actions/checkout@v4
+        with:
+          ref: d962c352aab9cd7ad2d9183fb40a3c5671ab7b4a
+          path: baseline
+          persist-credentials: false
+      - name: Checkout exact J15D head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          path: candidate
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - name: Install reference dependencies
+        working-directory: baseline
+        run: pnpm install --no-frozen-lockfile
+      - name: Install candidate dependencies
+        working-directory: candidate
+        run: pnpm install --no-frozen-lockfile
+      - name: Build exact reference
+        working-directory: baseline
+        env:
+          VITE_PUBLIC_BASE: /japanese/
+        run: pnpm build
+      - name: Build exact candidate
+        working-directory: candidate
+        env:
+          VITE_PUBLIC_BASE: /japanese/
+        run: pnpm build
+      - name: Install Chromium
+        working-directory: candidate
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Capture and compare identical browser environments
+        working-directory: candidate
+        run: node scripts/j15d-d4-visual-diff.mjs
+      - name: Verify visual evidence boundary (not physical approval)
+        working-directory: candidate
+        if: always()
+        run: pnpm qualify:j15d:d4 --visual artifacts/j15d-d4-visual-comparison.json
+      - name: Upload reference, candidate, diff, and acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: j15d-d4-visual-comparison
+          path: |
+            candidate/artifacts/j15d-d4-visual-comparison.json
+            candidate/artifacts/j15d-d4-screenshots/
+            candidate/artifacts/j15d-d4-qualification.json
+          if-no-files-found: warn
+          retention-days: 14
