@@ -1,13 +1,14 @@
 import "./j11-operations.css";
 import "./j11.css";
 import {useEffect,useState} from "react";
+import {getRecentJapaneseAuthFailure} from "@thiepn/auth";
 import {HumanReviewPanel} from "../study/HumanReviewPanel";
 import {ReleaseOperationsPanel} from "../study/ReleaseOperationsPanel";
 import {ReleaseIdentityPanel} from "../study/ReleaseIdentityPanel";
 import {ProviderHealthPanel} from "../study/ProviderHealthPanel";
 import {NativeCurationPanel} from "../immerse/NativeCurationPanel";
 
-type Panel="overview"|"review"|"release"|"deployment"|"runtime";
+type Panel="overview"|"review"|"release"|"deployment"|"runtime"|"account";
 
 const PANELS:readonly {id:Panel;glyph:string;label:string;note:string}[]=[
   {id:"overview",glyph:"総",label:"Overview",note:"Technical boundary"},
@@ -15,6 +16,7 @@ const PANELS:readonly {id:Panel;glyph:string;label:string;note:string}[]=[
   {id:"release",glyph:"門",label:"Release gates",note:"Curation + qualification"},
   {id:"deployment",glyph:"版",label:"Deployment",note:"Build identity"},
   {id:"runtime",glyph:"脈",label:"Runtime",note:"Provider health"},
+  {id:"account",glyph:"認",label:"Account",note:"Sign-in diagnostics"},
 ];
 
 function initialPanel():Panel{
@@ -24,7 +26,7 @@ function initialPanel():Panel{
   }catch{return "overview";}
 }
 
-export function J11Diagnostics({onExit}:{onExit:()=>void}){
+export function J11Diagnostics({onExit,accountStatus,accountConnected}:{onExit:()=>void;accountStatus:string;accountConnected:boolean}){
   const [panel,setPanel]=useState<Panel>(initialPanel);
 
   useEffect(()=>{
@@ -77,6 +79,7 @@ export function J11Diagnostics({onExit}:{onExit:()=>void}){
       {panel==="release"?<section aria-label="Release qualification and source curation"><NativeCurationPanel/><ReleaseOperationsPanel/></section>:null}
       {panel==="deployment"?<section aria-label="Deployment identity"><ReleaseIdentityPanel/></section>:null}
       {panel==="runtime"?<section aria-label="Runtime provider health"><ProviderHealthPanel/></section>:null}
+      {panel==="account"?<AccountDiagnostics status={accountStatus} connected={accountConnected}/>:null}
     </div>
   </section>;
 }
@@ -103,6 +106,7 @@ function Overview({onOpen}:{onOpen:(panel:Panel)=>void}){
       <code>?diagnostics=1&amp;panel=release</code>
       <code>?diagnostics=1&amp;panel=deployment</code>
       <code>?diagnostics=1&amp;panel=runtime</code>
+      <code>?diagnostics=1&amp;panel=account</code>
     </div>
   </section>;
 }
@@ -114,5 +118,51 @@ function overviewCopy(panel:Panel):string{
     case "release":return "Inspect source curation, static release gates, external evidence and physical-device qualification boundaries.";
     case "deployment":return "Inspect the immutable build/channel metadata actually embedded in the running deployment.";
     case "runtime":return "Inspect speech/audio/provider availability and operational degradation without exposing it as learner progress.";
+    case "account":return "See the last redacted Google callback failure and installed-PWA environment without revealing tokens or your account ID.";
   }
+}
+
+
+function AccountDiagnostics({status,connected}:{status:string;connected:boolean}){
+  const [copyStatus,setCopyStatus]=useState("");
+  const recent=getRecentJapaneseAuthFailure();
+  const displayMode=window.matchMedia?.("(display-mode: standalone)").matches?"standalone":"browser";
+  const failure=recent?.code??"none";
+  const summary=[
+    "Japanese Account diagnostics",
+    "Auth status: "+status,
+    "App connection: "+(connected?"connected":"not connected"),
+    "Display mode: "+displayMode,
+    "Recent OAuth failure: "+failure,
+    "Logged at: "+(recent?new Date(recent.at).toISOString():"none"),
+  ].join("\n");
+  const help:Record<string,string>={
+    "AUTH-01":"Google returned without a usable authorization code.",
+    "AUTH-02":"Japanese could not exchange the returned authorization code for an Account session.",
+    "AUTH-03":"The PKCE verification data was unavailable or rejected in this browser context.",
+  };
+  async function copy(){
+    try{
+      await navigator.clipboard.writeText(summary);
+      setCopyStatus("Diagnostics copied. No passwords, tokens, or account ID were included.");
+    }catch{setCopyStatus("Clipboard unavailable. You can report the failure code displayed above.");}
+  }
+  return <section className="j11-account-diagnostics" aria-labelledby="j11-account-title">
+    <header>
+      <p className="j11-kicker">ACCOUNT · 認証</p>
+      <h2 id="j11-account-title">Sign-in diagnostics</h2>
+      <p>Local, non-secret troubleshooting details for Google → THIEPN Account → Japanese handoff. These checks do not prove that the OAuth provider is configured correctly.</p>
+    </header>
+    <dl>
+      <div><dt>Account session</dt><dd>{status}</dd></div>
+      <div><dt>Japanese connection</dt><dd>{connected?"Connected":"Not connected"}</dd></div>
+      <div><dt>App display mode</dt><dd>{displayMode}</dd></div>
+      <div><dt>Last OAuth failure</dt><dd>{failure}</dd></div>
+      {recent?<div><dt>Failure explanation</dt><dd>{help[recent.code]}</dd></div>:null}
+      {recent?<div><dt>Recorded locally</dt><dd>{new Date(recent.at).toLocaleString()}</dd></div>:null}
+    </dl>
+    <p>OAuth failure records expire after 30 minutes and store only a failure category and timestamp. Never share a callback URL containing an authorization code.</p>
+    <button type="button" onClick={()=>void copy()}>Copy safe diagnostic summary</button>
+    {copyStatus?<p role="status">{copyStatus}</p>:null}
+  </section>;
 }
