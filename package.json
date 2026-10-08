@@ -42,7 +42,8 @@
     "qualify:j15d:d4:strict": "node scripts/j15d-d4-qualify.mjs --strict",
     "qualify:j15d:d5": "node scripts/j15d-d5-release-qualify.mjs",
     "qualify:j15d:d5:ci": "node scripts/j15d-d5-release-qualify.mjs --require-automated",
-    "qualify:j15d:d5:strict": "node scripts/j15d-d5-release-qualify.mjs --strict"
+    "qualify:j15d:d5:strict": "node scripts/j15d-d5-release-qualify.mjs --strict",
+    "verify:j16a": "node scripts/j16-candidate-verify.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

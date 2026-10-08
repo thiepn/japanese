@@ -1,6 +1,6 @@
 # J16 — Release Readiness & Field Acceptance
 
-**Status:** J16 planning and evidence templates staged after J15D source candidate. This is an operational phase, **not** P23 learner-capability development, new AI features, a new dashboard, or another J-series visual redesign.
+**Status:** J16A synthetic live-candidate verification implemented; physical/human acceptance still pending. This is an operational phase, **not** P23 learner-capability development, new AI features, a new dashboard, or another J-series visual redesign.
 
 ## Product and release boundary
 
@@ -49,3 +49,7 @@ Continue for a bounded review window after any authorized activation: review mea
 ## Important rule
 
 **Never manufacture a passing manifest or silently switch a pending gate to passed.** Code CI and visual-diff automation can be finished without declaring that user-operated Android hardware checks, professional reviewer qualifications or stable production activation already occurred.
+
+### J16A automated verifier
+
+`pnpm verify:j16a --commit <exact-live-main-sha> --strict` checks the **actual public Pages candidate** against the immutable expected SHA. It probes the homepage, release metadata (`channel: candidate`), Account entry URL, app callback route, standalone PWA manifest and icon, and JS service-worker response. Results are written to `artifacts/j16a-live-candidate.json` and `.md`. The independent `J16A Live Candidate Verification` workflow checks that public candidate on PR review or explicit on-demand dispatch. When main changes, compare against the new **deployed** commit rather than treating a stale cache as success. This is only synthetic HTTP route verification: live sign-in/SSO, installed Android operation and offline behavior remain separate human/test gates. The checked-in pending field manifest is not automatically rewritten.
