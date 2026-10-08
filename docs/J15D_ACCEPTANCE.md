@@ -53,3 +53,7 @@ Physical Android PWA approval, screen-reader sessions and stable promotion remai
 ## D5 — Final release assessment
 
 `pnpm qualify:j15d:d5:ci` checks automated artifacts after complete CI and emits a blocked release report until separately reviewed screenshots, physical Android testing and three human signoffs are complete. `pnpm qualify:j15d:d5:strict` fails closed unless ALL gates pass at the same exact candidate SHA. Automated green CI is neither Android device acceptance nor stable channel approval.
+
+### Immutable evidence workflow
+
+Approvals are stored on a **separate evidence ref**, not appended to the tested application commit. The on-demand `j15d-d5-final.yml` workflow rechecks exact upstream CI/visual run SHAs and reads completed reviewer and physical-device manifests from that evidence ref. This prevents an evidence-only commit from silently changing the tested candidate. See `docs/J15D_D5_RELEASE.md`.

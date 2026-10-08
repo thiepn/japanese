@@ -126,6 +126,9 @@ jobs:
             artifacts/p21-regression-evidence.json
             artifacts/p21-release-candidate.json
             artifacts/p21-release-candidate.md
+            artifacts/p22-bundle-budget.json
+            artifacts/j15b-visual-grammar-audit.json
+            artifacts/j15c-legibility-audit.json
             artifacts/p22-production-smoke.json
             artifacts/p22-maintenance-summary.json
             artifacts/p22-release-status.json
