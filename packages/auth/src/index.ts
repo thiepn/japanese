@@ -24,6 +24,29 @@ export const JAPANESE_LOGIN_STORAGE_KEY =
 export const JAPANESE_CONNECT_INTENT_KEY =
   "thiepn-account-japanese-connect-intent-v1";
 export const JAPANESE_AUTH_FAILURE_KEY = "thiepn:japanese-auth-failure:v1";
+export interface JapaneseHandoffSnapshot {
+  readonly pendingInThisContext:boolean;
+  readonly verifierInThisContext:boolean;
+  readonly callbackCodePresent:boolean;
+}
+/** Presence flags only. Never expose, copy, or persist the PKCE secret. */
+export function getJapaneseHandoffSnapshot():JapaneseHandoffSnapshot {
+  let pendingInThisContext=false;
+  let verifierInThisContext=false;
+  try{
+    pendingInThisContext=readStoredPendingLogin()!==null;
+    verifierInThisContext=availableLoginStores().some(storage=>
+      Boolean(storage.getItem(`${JAPANESE_ACCOUNT_STORAGE_KEY}-code-verifier`))
+    );
+  }catch{/* Hardened browsers may deny storage. */}
+  let callbackCodePresent=false;
+  try{
+    callbackCodePresent=typeof window!=="undefined"&&
+      new URLSearchParams(window.location.search).has("code");
+  }catch{/* No URL. */}
+  return {pendingInThisContext,verifierInThisContext,callbackCodePresent};
+}
+
 export type JapaneseAuthFailureCode = "AUTH-01" | "AUTH-02" | "AUTH-03";
 
 /** Non-secret diagnostic metadata only: never write a code, token, or user ID. */
