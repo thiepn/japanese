@@ -3,25 +3,17 @@
   --j-vg-paper:var(--j-bg);
   --j-vg-sheet:var(--j-bg-elevated);
   --j-vg-ink:var(--j-fg);
-  --j-vg-ink-soft:var(--j-fg-muted);
-  --j-vg-indigo:var(--j-ai-700);
+  --j-vg-indigo:var(--j-focus);
   --j-vg-lacquer:var(--j-lacquer-900);
   --j-vg-seal:var(--j-action);
   --j-vg-ceremonial-gold:var(--j-gold);
   --j-vg-rule:var(--j-line);
-  --j-vg-rule-strong:var(--j-line-strong);
   --j-vg-type-japanese:var(--j-font-editorial);
   --j-vg-type-interface:var(--j-font-ui);
   --j-vg-paper-corner:0px;
-  --j-vg-seal-corner:2px;
   --j-vg-reading-leading:1.95;
   --j-vg-touch-min:44px;
   --j-vg-section-gap:clamp(32px,4vw,64px);
-  --j-vg-shell-pattern-opacity:.13;
-}
-[data-j-theme="dark"]{
-  --j-vg-indigo:var(--j-indigo-night);
-  --j-vg-shell-pattern-opacity:.09;
 }
 .j2-shell .j2-topbar,.j2-shell .j2-nav{
   box-shadow:none!important;
@@ -30,8 +22,7 @@
 .j2-shell .j2-nav button,.j2-shell .j2-nav button::before{
   border-radius:var(--j-vg-paper-corner)!important;
 }
-.j2-shell .j2-nav__mon{border-radius:var(--j-vg-seal-corner)!important}
-.j2-shell .j2-ambient__pattern{opacity:var(--j-vg-shell-pattern-opacity)}
+.j2-shell .j2-nav__mon{border-radius:2px!important}
 .j2-content :is(.j3-today__hero,.j4-hero,.j6-hero,.j7-library__masthead,.j8-hero){
   border-radius:var(--j-vg-paper-corner)!important;
   box-shadow:none!important;
