@@ -24,6 +24,23 @@ export const JAPANESE_LOGIN_STORAGE_KEY =
 export const JAPANESE_CONNECT_INTENT_KEY =
   "thiepn-account-japanese-connect-intent-v1";
 export const JAPANESE_AUTH_FAILURE_KEY = "thiepn:japanese-auth-failure:v1";
+export const JAPANESE_AUTH_STAGE_KEY = "thiepn:japanese-auth-stage:v1";
+export type JapaneseAuthStage = "started"|"callback-code"|"callback-invalid"|"exchange-failed"|"exchange-success"|"returned-no-code";
+export function getRecentJapaneseAuthStage(now=Date.now()): {stage:JapaneseAuthStage;at:number}|null {
+  try {
+    const raw=globalThis.localStorage?.getItem(JAPANESE_AUTH_STAGE_KEY);
+    if(!raw||raw.length>256)return null;
+    const data:unknown=JSON.parse(raw);
+    if(!data||typeof data!=="object"||Array.isArray(data))return null;
+    const row=data as Record<string,unknown>;
+    if(!["started","callback-code","callback-invalid","exchange-failed","exchange-success","returned-no-code"].includes(String(row.stage)))return null;
+    if(typeof row.at!=="number"||!Number.isFinite(row.at)||now<row.at||now-row.at>30*60*1000)return null;
+    return {stage:row.stage as JapaneseAuthStage,at:row.at};
+  }catch{return null;}
+}
+function recordAuthStage(stage:JapaneseAuthStage):void {
+  try{globalThis.localStorage?.setItem(JAPANESE_AUTH_STAGE_KEY,JSON.stringify({stage,at:Date.now()}));}catch{/* Browser storage can be unavailable. */}
+}
 export interface JapaneseHandoffSnapshot {
   readonly pendingInThisContext:boolean;
   readonly verifierInThisContext:boolean;
@@ -256,6 +273,7 @@ export function createThiepnAccountAuthProvider(
       new URLSearchParams(window.location.search),
       window.location.hash,
     );
+    recordAuthStage(callback?"callback-code":"callback-invalid");
 
     let pending: PendingJapaneseLogin | null = null;
     try {
@@ -284,11 +302,14 @@ export function createThiepnAccountAuthProvider(
     try {
       const response = await client.auth.exchangeCodeForSession(callback.code);
       if (response.error) throw response.error;
-      return await verify();
+      const result=await verify();
+      if(result.status==="authenticated")recordAuthStage("exchange-success");
+      return result;
     } catch (error) {
       clearConnectIntent();
       const detail = error instanceof Error ? `${error.name} ${error.message}` : "";
       recordAuthFailure(/verifier|pkce/i.test(detail) ? "AUTH-03" : "AUTH-02");
+      recordAuthStage("exchange-failed");
       return publish(EXPIRED_CONTEXT);
     } finally {
       busy = false;
@@ -316,6 +337,13 @@ export function createThiepnAccountAuthProvider(
       } finally {
         if (callbackInFlight === attempt) callbackInFlight = null;
       }
+    }
+    // Returning to Japanese without any code cannot create a new session.
+    // Record this only when a recent sign-in marker still exists; the marker
+    // is not security authority and no OAuth code or token is written.
+    if(pathname===JAPANESE_HOME_PATH&&!hasReturnCode){
+      const pending=readStoredPendingLogin();
+      if(pending&&Date.now()-pending.started>2000)recordAuthStage("returned-no-code");
     }
     return verify();
   }
@@ -410,6 +438,7 @@ export function createThiepnAccountAuthProvider(
       throw response.error ?? new Error("LOGIN_START_FAILED");
     }
 
+    recordAuthStage("started");
     window.location.assign(
       buildJapaneseAccountEntryUrl(response.data.url, accountEntryUrl),
     );
