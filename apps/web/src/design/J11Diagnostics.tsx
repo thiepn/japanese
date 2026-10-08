@@ -1,3 +1,4 @@
+import "./j11-operations.css";
 import "./j11.css";
 import {useEffect,useState} from "react";
 import {HumanReviewPanel} from "../study/HumanReviewPanel";

@@ -32,7 +32,7 @@ This is deliberately not a global delete-everything-labeled-old process. The lar
 ## Remaining J15D phases
 
 - **D2 ownership inventory (implemented; CI pending):** scan application, package and service sources for common-CSS class references; classify J-series, phase-specific and shared selectors; report dynamic class construction and unresolved selectors, and require manual review before any further deletion. Produces `artifacts/j15d-css-ownership.json`.
-- **D3:** modularize only proven-independent common styles by owning route; lazy-import advanced support where safe and benchmark first paint.
+- **D3 (implemented, CI pending):** move the independently owned P10 human-review / media-curation / release-operations CSS to the already lazy J11 diagnostics route; verify entry/lazy bundle boundaries and the actual Vite CSS sizes without inferring browser paint timing. Further C1/C2 modularization remains out of scope pending owner evidence.
 - **D4:** browser visual diffs and physical device evidence; qualify exact candidate commit and desktop/tablet/Android layouts.
 - **D5:** final native visual-system migration release assessment, including accessibility, contrast, input controls, PWA and bundle budgets.
 
@@ -41,3 +41,11 @@ This is deliberately not a global delete-everything-labeled-old process. The lar
 ## D2 ownership inventory safeguards
 
 `pnpm verify:j15d` runs both native-shell purge and **D2 ownership inventory**. The inventory scans the complete source tree (including lazy submodules) for CSS class references and distinguishes observed source references from unresolved selectors; unresolved does **not** equal safe to delete because `className` may be composed dynamically or rendered externally. This phase does not automatically delete a second tranche of shared CSS. The protected classes include `primary`, `reader-token`, `p20-readiness`, `course-kicker`, `result-card`, and `skip-link`. Review the JSON artifact and current browser UI before proposing future removals.
+
+## D3 — Diagnostics CSS extraction
+
+The P10 administrative CSS block is isolated into `apps/web/src/design/j11-operations.css`, imported **only** in `J11Diagnostics.tsx` before its existing `j11.css`. This route is already lazy via `React.lazy` in `App.tsx`. The three owning components (`HumanReviewPanel`, `NativeCurationPanel`, `ReleaseOperationsPanel`) render exclusively from that route; no learner-owned or C1 study component requires this block. This is a controlled split, not a new global cascade layer. P13–P20 learner/advanced work stays in `styles.css` because it is shared across Learn, Immerse and Progress.
+
+The initial source stylesheet was 92,129 bytes after D1. D3 removes the exact P10 source block without modifying its rules. Source and built-artifact audits check that P10 selectors disappear from initial CSS, appear in exactly one lazy J11 CSS chunk, preserve J11's original rules, and remain functional at desktop, Android and compact-mobile widths. `pnpm verify:j15d:d3` checks the **built** CSS and produces `artifacts/j15d-d3-css-boundary.json` with actual gzip byte counts; the regular `pnpm verify:j15d` runs the source boundary audit too. Gzip entry size is a reproducible CSS transfer proxy, **not** a claim of measured FCP or LCP. Capturing actual first-paint timing would require separate calibrated browser/performance data; no such timing is invented here.
+
+Physical Android PWA approval, screen-reader sessions and stable promotion remain separate from green CI.
