@@ -254,7 +254,7 @@ export function J6ReaderView({
       <div className="j6-reader__identity">
         <span className="j6-reader__level">{view.text.level}</span>
         <span className="j6-reader__kind">{view.text.kind}</span>
-        <h1>{view.text.title}</h1>
+        <h1 tabIndex={-1}>{view.text.title}</h1>
       </div>
       <div className="j6-reader__edition" aria-hidden="true"><span>読む</span><small>READER</small></div>
     </header>
