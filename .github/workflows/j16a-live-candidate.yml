@@ -1,0 +1,48 @@
+name: J16A Live Candidate Verification
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/j16-candidate-verify.mjs'
+      - 'tests/release/j16-candidate-verification.test.ts'
+      - 'docs/J16_RELEASE_READINESS.md'
+      - '.github/workflows/j16a-live-candidate.yml'
+  workflow_dispatch:
+    inputs:
+      expected_commit:
+        description: Exact already-deployed Pages candidate SHA
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - run: pnpm install --no-frozen-lockfile
+      - name: Validate synthetic candidate-verification logic
+        run: pnpm exec vitest run tests/release/j16-candidate-verification.test.ts
+      - name: Verify exact published candidate and entry/PWA endpoints
+        env:
+          EXPECTED_COMMIT: ${{ github.event_name == 'workflow_dispatch' && inputs.expected_commit || github.event.pull_request.base.sha }}
+        run: pnpm verify:j16a --commit "$EXPECTED_COMMIT" --strict
+      - name: Upload J16A observations
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: j16a-live-candidate
+          path: |
+            artifacts/j16a-live-candidate.json
+            artifacts/j16a-live-candidate.md
+          if-no-files-found: warn
+          retention-days: 30

@@ -1,0 +1,34 @@
+{
+  "schema": "thiepn-japanese-j16-field-acceptance",
+  "schemaVersion": 1,
+  "status": "pending",
+  "deployedCandidateCommit": null,
+  "verifiedAt": null,
+  "verifiedBy": null,
+  "entryUrl": "https://thiepn.dev/japanese/",
+  "routeVerification": {
+    "entry": "pending",
+    "accountEntry": "pending",
+    "accountCallback": "pending",
+    "pwaManifest": "pending",
+    "offlineWarmReload": "pending"
+  },
+  "physicalAndroid": "pending",
+  "visualReview": "pending",
+  "releaseOperations": "pending",
+  "stablePromotion": "not_authorized",
+  "rollback": {
+    "lastKnownGoodCommit": null,
+    "procedureRef": null,
+    "tested": false
+  },
+  "blockers": [
+    "Exact J15D merge/deploy identity not verified",
+    "Real Android installed-PWA checks not completed",
+    "Human visual review and release signoff not completed"
+  ],
+  "notes": [
+    "This manifest is a J16 staging template only, not an automated physical-device or stable-release approval.",
+    "A visible public Pages candidate is not by itself an authorized stable release."
+  ]
+}
