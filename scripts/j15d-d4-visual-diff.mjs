@@ -70,6 +70,8 @@ async function capture(browser,port,spec){
   });
   try{
     const page=await ctx.newPage();
+    page.setDefaultTimeout(15_000);
+    page.setDefaultNavigationTimeout(30_000);
     await page.addInitScript(theme=>{
       localStorage.setItem("japanese:j-theme",theme);
       localStorage.setItem("japanese:j9-sensory","off");
@@ -103,6 +105,7 @@ try{
   browser=await chromium.launch({headless:true});
   for(let i=0;i<cases.length;i++){
     const spec=cases[i],label=[spec.viewport.id,spec.theme,spec.surface.toLowerCase().replaceAll(" ","-")].join("_");
+    process.stdout.write("J15D D4 START "+label+" ("+(i+1)+"/"+cases.length+")\n");
     const result={name:label,viewport:spec.viewport.id,theme:spec.theme,surface:spec.surface,changedPixelRatio:null,passed:false,error:null};
     try{
       const [baseline,candidate]=await Promise.all([capture(browser,4173,spec),capture(browser,4174,spec)]);
