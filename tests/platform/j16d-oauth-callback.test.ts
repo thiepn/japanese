@@ -1,5 +1,5 @@
 import {afterEach,describe,expect,it,vi} from "vitest";
-import {createThiepnAccountAuthProvider,getJapaneseHandoffSnapshot,getRecentJapaneseAuthFailure,JAPANESE_AUTH_FAILURE_KEY,JAPANESE_LOGIN_STORAGE_KEY,JAPANESE_CONNECT_INTENT_KEY} from "../../packages/auth/src/index";
+import {createThiepnAccountAuthProvider,getJapaneseHandoffSnapshot,getRecentJapaneseAuthStage,getRecentJapaneseAuthFailure,JAPANESE_AUTH_FAILURE_KEY,JAPANESE_LOGIN_STORAGE_KEY,JAPANESE_CONNECT_INTENT_KEY} from "../../packages/auth/src/index";
 
 afterEach(()=>vi.unstubAllGlobals());
 
@@ -57,6 +57,7 @@ describe("J16D actual Google -> Japanese callback behavior",()=>{
     expect(one).toMatchObject({status:"authenticated",accountId:"user-from-google"});
     expect(two).toMatchObject({status:"authenticated",accountId:"user-from-google"});
     expect(flow.getUser).toHaveBeenCalledTimes(1);
+    expect(getRecentJapaneseAuthStage()?.stage).toBe("exchange-success");
     expect(flow.local.has(JAPANESE_LOGIN_STORAGE_KEY)).toBe(false);
     expect(flow.replaceState).toHaveBeenCalledWith(null,"","/japanese/");
     // Reloading the home page can recover the verified session.
@@ -95,6 +96,7 @@ describe("J16D actual Google -> Japanese callback behavior",()=>{
     expect(result).toMatchObject({status:"expired",accountId:null});
     expect(flow.exchangeCodeForSession).not.toHaveBeenCalled();
     expect(getRecentJapaneseAuthFailure()?.code).toBe("AUTH-01");
+    expect(getRecentJapaneseAuthStage()?.stage).toBe("callback-invalid");
   });
   it("records only redacted PKCE verifier failures",async()=>{
     const flow=setupCallback(true);
@@ -102,6 +104,7 @@ describe("J16D actual Google -> Japanese callback behavior",()=>{
     flow.fail("AuthPKCECodeVerifierMissingError: Code verifier not found");
     expect(await attempt).toMatchObject({status:"expired"});
     expect(getRecentJapaneseAuthFailure()?.code).toBe("AUTH-03");
+    expect(getRecentJapaneseAuthStage()?.stage).toBe("exchange-failed");
     const raw=flow.local.get(JAPANESE_AUTH_FAILURE_KEY)??"";
     expect(raw).not.toContain("verified-oauth-code");
     expect(raw).not.toContain("Code verifier");
@@ -136,6 +139,18 @@ describe("J16D actual Google -> Japanese callback behavior",()=>{
     const after=getJapaneseHandoffSnapshot();
     expect(after.verifierInThisContext).toBe(true);
     expect(JSON.stringify(after)).not.toContain("secret-never-exposed");
+  });
+
+  it("reports returning home without an OAuth code when pending marker survives",async()=>{
+    const flow=setupCallback(true);
+    flow.location.pathname="/japanese/";
+    flow.location.search="";
+    flow.local.set(JAPANESE_LOGIN_STORAGE_KEY,JSON.stringify({
+      started:Date.now()-5000,returnTo:"/japanese/",
+    }));
+    expect(await flow.auth.refresh()).toMatchObject({status:"authenticated"});
+    expect(getRecentJapaneseAuthStage()?.stage).toBe("returned-no-code");
+    expect(JSON.stringify(getRecentJapaneseAuthStage())).not.toContain("verified-oauth-code");
   });
 
   it("expires non-secret diagnostics after 30 minutes",()=>{
