@@ -1,0 +1,62 @@
+name: J16C Visual Review Gallery
+
+on:
+  workflow_dispatch:
+    inputs:
+      visual_run_id:
+        description: Successful exact-commit J15D D4 visual run ID
+        required: true
+        type: string
+      candidate_sha:
+        description: Exact SHA compared in that visual run
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  package-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VISUAL_RUN: ${{ inputs.visual_run_id }}
+      EXPECTED_SHA: ${{ inputs.candidate_sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - run: pnpm install --no-frozen-lockfile
+      - name: Verify upstream run is a successful visual comparison on exact commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$EXPECTED_SHA" =~ ^[a-f0-9]{40}$ ]] || { echo "Invalid candidate SHA"; exit 1; }
+          [[ "$VISUAL_RUN" =~ ^[0-9]+$ ]] || { echo "Invalid workflow run ID"; exit 1; }
+          read -r SHA STATUS NAME < <(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$VISUAL_RUN" --jq '[.head_sha,.conclusion,.name] | @tsv')
+          [[ "$SHA" == "$EXPECTED_SHA" && "$STATUS" == "success" && "$NAME" == "J15D D4 Visual Regression" ]] || {
+            echo "Upstream screenshot comparison is not successful on exact SHA"; exit 1;
+          }
+      - name: Retrieve exact screenshot archive
+        run: |
+          mkdir -p artifacts
+          gh run download "$VISUAL_RUN" --repo "$GITHUB_REPOSITORY" --name j15d-d4-visual-comparison --dir artifacts
+      - name: Audit all 42 cases and create offline human-review gallery
+        run: pnpm review:j16c --commit "$EXPECTED_SHA"
+      - name: Upload gallery, screenshots and integrity report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: j16c-offline-human-review
+          path: |
+            artifacts/j16c-review/
+            artifacts/j15d-d4-screenshots/
+            artifacts/j15d-d4-visual-comparison.json
+          if-no-files-found: warn
+          retention-days: 30
