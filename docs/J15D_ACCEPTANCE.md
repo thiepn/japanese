@@ -1,6 +1,6 @@
 # J15D — Native CSS Ownership & Legacy Shell Purge
 
-**State:** First implementation slice staged for CI. J15C is merged; this is the next structural cutover, not another visual redesign.
+**State:** D1–D3 CI green; D4 qualification framework staged for CI. J15C is merged; this is the next structural cutover, not another visual redesign.
 
 ## Baseline and disposition
 
@@ -33,7 +33,7 @@ This is deliberately not a global delete-everything-labeled-old process. The lar
 
 - **D2 ownership inventory (implemented; CI pending):** scan application, package and service sources for common-CSS class references; classify J-series, phase-specific and shared selectors; report dynamic class construction and unresolved selectors, and require manual review before any further deletion. Produces `artifacts/j15d-css-ownership.json`.
 - **D3 (implemented, CI pending):** move the independently owned P10 human-review / media-curation / release-operations CSS to the already lazy J11 diagnostics route; verify entry/lazy bundle boundaries and the actual Vite CSS sizes without inferring browser paint timing. Further C1/C2 modularization remains out of scope pending owner evidence.
-- **D4:** browser visual diffs and physical device evidence; qualify exact candidate commit and desktop/tablet/Android layouts.
+- **D4 (implementation staged; CI pending):** compare J15C and J15D screenshot evidence at desktop/tablet/mobile in light/dark, and separately collect physical Android PWA checks against the exact deployed commit. See J15D_D4_ACCEPTANCE.md.
 - **D5:** final native visual-system migration release assessment, including accessibility, contrast, input controls, PWA and bundle budgets.
 
 **Release boundary:** automated CI does not constitute **physical Android** PWA acceptance, independent Japanese proficiency validation, or stable channel promotion. J15D must not be merged until its own CI passes.
