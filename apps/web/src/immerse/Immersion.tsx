@@ -1,4 +1,4 @@
-import { useEffect,useMemo,useRef,useState } from "react";
+import { useEffect,useLayoutEffect,useMemo,useRef,useState } from "react";
 import { getDefaultAudioProvider } from "@thiepn/audio";
 import { J6ImmersionHome,J6ReaderView } from "../design/J6Immersion";
 import { buildExtensiveTracks } from "./extensive";
@@ -33,6 +33,8 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
   const view=useMemo(()=>activeId?buildReaderText(activeId):null,[activeId]);
   const extensiveTracks=useMemo(()=>progress?buildExtensiveTracks(progress):[],[progress]);
   const audioProvider=useRef(getDefaultAudioProvider());
+  const catalogScrollY=useRef<number|null>(null);
+  const readerWasOpen=useRef(false);
 
   async function refresh(){
     try{
@@ -41,8 +43,23 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
     }catch{setProgress(null);setRecommendation(null);setMissions([]);}
   }
   useEffect(()=>{void refresh();return()=>{audioProvider.current.stop();if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();};},[]);
+  // Reader mounts in place of a scrolled catalogue; reset before paint.
+  useLayoutEffect(()=>{
+    if(view){
+      readerWasOpen.current=true;
+      window.scrollTo({top:0,left:0,behavior:"instant"});
+      document.querySelector<HTMLElement>(".j6-reader__identity h1")?.focus({preventScroll:true});
+    }else if(readerWasOpen.current){
+      readerWasOpen.current=false;
+      const previous=catalogScrollY.current;
+      catalogScrollY.current=null;
+      if(previous!==null)window.scrollTo({top:previous,left:0,behavior:"instant"});
+    }
+  },[view?.text.id]);
+
 
   async function openText(id:string){
+    if(activeId===null)catalogScrollY.current=window.scrollY;
     setActiveId(id);setTranslations(new Set());setSelected(null);setListeningPlayed(false);setCheckMode(null);setQuestionIndex(0);setFeedback(null);
     await recordReadingExposure(id);void refresh();
   }
