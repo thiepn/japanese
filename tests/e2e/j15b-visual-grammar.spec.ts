@@ -30,7 +30,7 @@ test("J15B semantic roles and archive input hold in dark mode",async({page})=>{
   expect(tokens.every(Boolean)).toBe(true);
   await page.getByRole("navigation",{name:"Primary"}).getByRole("button",{name:"Library",exact:true}).click();
   await expect(page.locator('.j7-search__field input')).toHaveCSS("border-radius","0px");
-  await page.getByRole("button",{name:"Use light theme"}).focus();
-  const outline=await page.getByRole("button",{name:"Use light theme"}).evaluate(el=>getComputedStyle(el).outlineStyle);
+  await page.locator('.j7-search__field input').focus();
+  const outline=await page.locator('.j7-search__field input').evaluate(el=>getComputedStyle(el).outlineStyle);
   expect(outline).not.toBe("none");
 });
