@@ -23,6 +23,29 @@ export const JAPANESE_LOGIN_STORAGE_KEY =
   "thiepn:japanese-login:v1";
 export const JAPANESE_CONNECT_INTENT_KEY =
   "thiepn-account-japanese-connect-intent-v1";
+export const JAPANESE_AUTH_FAILURE_KEY = "thiepn:japanese-auth-failure:v1";
+export type JapaneseAuthFailureCode = "AUTH-01" | "AUTH-02" | "AUTH-03";
+
+/** Non-secret diagnostic metadata only: never write a code, token, or user ID. */
+export function getRecentJapaneseAuthFailure(now = Date.now()): {code:JapaneseAuthFailureCode;at:number}|null {
+  try {
+    const raw=globalThis.localStorage?.getItem(JAPANESE_AUTH_FAILURE_KEY);
+    if(!raw||raw.length>256)return null;
+    const data:unknown=JSON.parse(raw);
+    if(!data||typeof data!=="object"||Array.isArray(data))return null;
+    const row=data as Record<string,unknown>;
+    if(row.code!=="AUTH-01"&&row.code!=="AUTH-02"&&row.code!=="AUTH-03")return null;
+    if(typeof row.at!=="number"||!Number.isFinite(row.at)||now<row.at||now-row.at>30*60*1000)return null;
+    return {code:row.code,at:row.at};
+  }catch{return null;}
+}
+
+function recordAuthFailure(code:JapaneseAuthFailureCode):void {
+  try{globalThis.localStorage?.setItem(JAPANESE_AUTH_FAILURE_KEY,JSON.stringify({code,at:Date.now()}));}catch{/* Storage can be disabled. */}
+}
+function clearAuthFailure():void {
+  try{globalThis.localStorage?.removeItem(JAPANESE_AUTH_FAILURE_KEY);}catch{/* No storage. */}
+}
 
 export type AuthStatus = "authenticated" | "anonymous" | "expired";
 
@@ -198,7 +221,9 @@ export function createThiepnAccountAuthProvider(
   }
 
   async function verify(): Promise<AuthContext> {
-    return publish(await readContext());
+    const context=await readContext();
+    if(context.status==="authenticated")clearAuthFailure();
+    return publish(context);
   }
 
   async function completeCallback(): Promise<AuthContext> {
@@ -223,6 +248,7 @@ export function createThiepnAccountAuthProvider(
 
     if (!callback) {
       clearConnectIntent();
+      recordAuthFailure("AUTH-01");
       return publish(EXPIRED_CONTEXT);
     }
 
@@ -236,8 +262,10 @@ export function createThiepnAccountAuthProvider(
       const response = await client.auth.exchangeCodeForSession(callback.code);
       if (response.error) throw response.error;
       return await verify();
-    } catch {
+    } catch (error) {
       clearConnectIntent();
+      const detail = error instanceof Error ? `${error.name} ${error.message}` : "";
+      recordAuthFailure(/verifier|pkce/i.test(detail) ? "AUTH-03" : "AUTH-02");
       return publish(EXPIRED_CONTEXT);
     } finally {
       busy = false;
