@@ -1,5 +1,5 @@
 import { Suspense,lazy,useEffect,useLayoutEffect,useState } from "react";
-import { createThiepnAccountAuthProvider,type AuthContext } from "@thiepn/auth";
+import { createThiepnAccountAuthProvider,getRecentJapaneseAuthFailure,type AuthContext } from "@thiepn/auth";
 import { getDefaultAudioProvider } from "@thiepn/audio";
 import { claimGuestWorkspace } from "@thiepn/local-db";
 import type { SearchResult } from "@thiepn/search";
@@ -114,8 +114,9 @@ export function App(){
         if(!active||epoch!==generation)return;
         useGuestWorkspace();
         setAccount(next);
-        setAccountMessage(next.status==="expired"
-          ?"THIEPN Account sign-in could not be completed. Try signing in again; your local Japanese data is unchanged."
+        const diagnostic=getRecentJapaneseAuthFailure();
+        setAccountMessage(next.status==="expired"||diagnostic
+          ?`THIEPN Account sign-in did not complete${diagnostic?` (${diagnostic.code})`:""}. Open Japanese in Chrome and try again. Local study data is unchanged.`
           :null);
         return;
       }
@@ -387,7 +388,7 @@ export function App(){
         diagnosticsMode={diagnosticsMode}
       >
         {diagnosticsMode
-          ?<Suspense fallback={<p className="j2-account-status" role="status">Opening technical workspace…</p>}><J11Diagnostics onExit={()=>navigateSurface(surface)}/></Suspense>
+          ?<Suspense fallback={<p className="j2-account-status" role="status">Opening technical workspace…</p>}><J11Diagnostics onExit={()=>navigateSurface(surface)} accountStatus={account.status} accountConnected={accountConnected}/></Suspense>
           :<>
             {surface==="Today"&&<J3Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
             {surface==="Learn"&&<J4Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} onPreferredCoachChainApplied={()=>setPreferredCoachChain(null)} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>}
