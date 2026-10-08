@@ -265,7 +265,15 @@ export function createThiepnAccountAuthProvider(
 
   async function verify(): Promise<AuthContext> {
     const epoch=++verificationGeneration;
-    const context=await readContext();
+    let context:AuthContext;
+    try{
+      context=await readContext();
+    }catch(error){
+      // A stale rejection is not evidence that the newer verified session
+      // failed. Avoid making its caller reset the UI to guest.
+      if(epoch!==verificationGeneration)return current;
+      throw error;
+    }
     if(epoch!==verificationGeneration)return current;
     if(context.status==="authenticated")clearAuthFailure();
     return publish(context);
