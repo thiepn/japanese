@@ -1,7 +1,7 @@
 import "./j11-operations.css";
 import "./j11.css";
 import {useEffect,useState} from "react";
-import {getRecentJapaneseAuthFailure} from "@thiepn/auth";
+import {getRecentJapaneseAuthFailure,getJapaneseHandoffSnapshot} from "@thiepn/auth";
 import {HumanReviewPanel} from "../study/HumanReviewPanel";
 import {ReleaseOperationsPanel} from "../study/ReleaseOperationsPanel";
 import {ReleaseIdentityPanel} from "../study/ReleaseIdentityPanel";
@@ -126,6 +126,7 @@ function overviewCopy(panel:Panel):string{
 function AccountDiagnostics({status,connected}:{status:string;connected:boolean}){
   const [copyStatus,setCopyStatus]=useState("");
   const recent=getRecentJapaneseAuthFailure();
+  const handoff=getJapaneseHandoffSnapshot();
   const displayMode=window.matchMedia?.("(display-mode: standalone)").matches?"standalone":"browser";
   const failure=recent?.code??"none";
   const summary=[
@@ -134,6 +135,9 @@ function AccountDiagnostics({status,connected}:{status:string;connected:boolean}
     "App connection: "+(connected?"connected":"not connected"),
     "Display mode: "+displayMode,
     "Recent OAuth failure: "+failure,
+    "Pending login here: "+(handoff.pendingInThisContext?"yes":"no"),
+    "PKCE verifier here: "+(handoff.verifierInThisContext?"yes":"no"),
+    "Callback code at diagnostics route: "+(handoff.callbackCodePresent?"yes":"no"),
     "Logged at: "+(recent?new Date(recent.at).toISOString():"none"),
   ].join("\n");
   const help:Record<string,string>={
@@ -158,10 +162,13 @@ function AccountDiagnostics({status,connected}:{status:string;connected:boolean}
       <div><dt>Japanese connection</dt><dd>{connected?"Connected":"Not connected"}</dd></div>
       <div><dt>App display mode</dt><dd>{displayMode}</dd></div>
       <div><dt>Last OAuth failure</dt><dd>{failure}</dd></div>
+      <div><dt>Pending sign-in started here</dt><dd>{handoff.pendingInThisContext?"Yes":"No"}</dd></div>
+      <div><dt>PKCE verifier available here</dt><dd>{handoff.verifierInThisContext?"Yes":"No"}</dd></div>
+      <div><dt>Callback received on this page</dt><dd>{handoff.callbackCodePresent?"Yes":"No"}</dd></div>
       {recent?<div><dt>Failure explanation</dt><dd>{help[recent.code]}</dd></div>:null}
       {recent?<div><dt>Recorded locally</dt><dd>{new Date(recent.at).toLocaleString()}</dd></div>:null}
     </dl>
-    <p>OAuth failure records expire after 30 minutes and store only a failure category and timestamp. Never share a callback URL containing an authorization code.</p>
+    <p>If the PWA shows a pending sign-in and verifier but the Chrome tab does not, Google may have returned to a different browser context. These fields disclose presence only, never the secret. OAuth failure records expire after 30 minutes. Never share a callback URL containing an authorization code.</p>
     <button type="button" onClick={()=>void copy()}>Copy safe diagnostic summary</button>
     {copyStatus?<p role="status">{copyStatus}</p>:null}
   </section>;
