@@ -124,7 +124,6 @@
   border-radius:5px 18px 18px 18px;
   color:#fff8ef;
   background:var(--j-sumi-900);
-  box-shadow:7px 7px 0 color-mix(in srgb,var(--j-season-accent) 18%,transparent);
   text-align:left;
   cursor:pointer;
 }

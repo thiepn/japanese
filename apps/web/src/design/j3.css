@@ -160,9 +160,6 @@
   color:#fff8ef;
   background:
     linear-gradient(135deg,var(--j-sumi-900),color-mix(in srgb,var(--j-sumi-700) 84%,black));
-  box-shadow:
-    7px 7px 0 color-mix(in srgb,var(--j-season-accent) 20%,transparent),
-    0 14px 30px rgba(15,14,12,.13);
   text-align:left;
   cursor:pointer;
   transition:transform var(--j-motion-base) var(--j-ease-panel),box-shadow var(--j-motion-base) var(--j-ease-panel);
@@ -175,9 +172,6 @@
 
 .j3-today__continue:hover:not(:disabled){
   transform:translate(3px,3px);
-  box-shadow:
-    3px 3px 0 color-mix(in srgb,var(--j-season-accent) 30%,transparent),
-    0 9px 22px rgba(15,14,12,.12);
 }
 
 .j3-today__continue:disabled{opacity:.55;cursor:default}
