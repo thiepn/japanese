@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "japanese-shell-";
-const CACHE = `${CACHE_PREFIX}v5`;
+const CACHE = `${CACHE_PREFIX}v6`;
 const BASE = new URL(self.registration.scope).pathname;
 const CORE = [BASE, `${BASE}manifest.webmanifest`, `${BASE}icon.svg`, `${BASE}icon-192.png`, `${BASE}icon-512.png`];
 
@@ -29,6 +29,16 @@ self.addEventListener("fetch", (event) => {
     requestUrl.origin !== self.location.origin ||
     !requestUrl.pathname.startsWith(BASE)
   ) return;
+
+  // OAuth authorization codes are single-use secrets. Neither their
+  // callback response nor the URL that contains them belongs in Cache API.
+  // Never offline-replay an authorization callback.
+  const callbackPath = `${BASE}auth/callback`;
+  const isAuthCallback = requestUrl.pathname===callbackPath ||
+    requestUrl.pathname===`${callbackPath}/`;
+  const hasOAuthParameters = ["code","state","access_token","refresh_token","error"]
+    .some(key=>requestUrl.searchParams.has(key));
+  if(isAuthCallback || hasOAuthParameters)return;
 
   event.respondWith(
     fetch(event.request)
