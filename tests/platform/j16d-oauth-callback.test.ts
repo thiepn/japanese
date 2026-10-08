@@ -69,6 +69,23 @@ describe("J16D actual Google -> Japanese callback behavior",()=>{
     expect(flow.exchangeCodeForSession).toHaveBeenCalledOnce();
   });
 
+  it("completes a PKCE callback if hosting returns directly to /japanese/",async()=>{
+    const flow=setupCallback(true);
+    flow.location.pathname="/japanese/";
+    const login=flow.auth.refresh();
+    expect(flow.exchangeCodeForSession).toHaveBeenCalledTimes(1);
+    flow.finish();
+    expect(await login).toMatchObject({status:"authenticated",accountId:"user-from-google"});
+  });
+
+  it("accepts callback routes with or without a final slash",async()=>{
+    const flow=setupCallback(true);
+    flow.location.pathname="/japanese/auth/callback";
+    const login=flow.auth.refresh();
+    flow.finish();
+    expect(await login).toMatchObject({status:"authenticated",accountId:"user-from-google"});
+  });
+
   it("rejects an unrecognized callback without attempting an exchange",async()=>{
     const flow=setupCallback(false);
     flow.location.search="?error=access_denied";
