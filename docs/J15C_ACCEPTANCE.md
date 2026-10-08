@@ -1,6 +1,6 @@
 # J15C — Reading and Interface Legibility
 
-**Status:** implementation staged on top of J15B; requires CI, merged base and exact candidate deployment checks before release.
+**Status:** implementation rebased onto merged J15B; awaiting J15C CI and exact candidate deployment checks before release.
 
 ## Problem
 
@@ -31,4 +31,4 @@ J7 Library and J8 Progress currently contain real content in 6–10px labels, pr
 
 ## Release boundary
 
-J15C cannot merge safely before J15B passes; its PR is stacked on J15B. Full CI + exact public candidate deployment must be green before promotion. **Physical Android** PWA acceptance and independent language-performance validation remain separate real-world gates.
+J15B passed CI and merged as `a7612f2`. J15C is now based directly on that merged commit. J15C must pass its own full CI before merge; then the exact public candidate deployment must be verified. The P22 initial CSS limit remains unchanged (40 KiB gzipped); redundant shadows were removed rather than increasing the limit. **Physical Android** PWA acceptance and independent language-performance validation remain separate real-world gates.
