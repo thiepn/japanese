@@ -39,3 +39,11 @@ J15 deliberately moves the product away from generic SaaS/dashboard language.
 - Large English marketing-style headings are constrained; Japanese glyphs, section marks, vertical labels and content structure carry more of the identity.
 - Library remains archival, Learn remains emakimono/path-like, Immerse remains magazine/reader-like, Progress remains landscape/ledger-like and Today remains a study entry page. They must not collapse into one reusable dashboard template.
 - Mobile keeps a conventional bottom navigation position for reachability, but its treatment is a flat paper/seal rail rather than a floating pill dock.
+
+## J15A stabilization
+
+J15A closes contradictions introduced by the anti-SaaS visual shift before further visual expansion.
+
+- Seasonal styling must not reintroduce elevation shadows on the five primary page compositions.
+- The mobile navigation is intentionally a flat paper/seal rail; regression tests must not require a floating shadow.
+- J15A is complete only when the full cross-viewport Playwright suite is green and the exact candidate commit deploys successfully.

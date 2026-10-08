@@ -277,9 +277,8 @@
 [data-j-season] .j6-hero,
 [data-j-season] .j7-library__masthead,
 [data-j-season] .j8-hero{
-  box-shadow:
-    var(--j-shadow-paper),
-    inset 0 1px color-mix(in srgb,var(--j10-season-glow) 36%,transparent);
+  /* J15A: seasonal identity belongs in ink, paper and scenery — not floating SaaS panels. */
+  box-shadow:none;
 }
 
 [data-j-season] .j6-reader__paper{

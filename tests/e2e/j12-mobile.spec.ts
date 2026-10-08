@@ -91,7 +91,7 @@ test("J12 preserves all five learner surfaces without document overflow",async({
   }
 });
 
-test("J12 removes expensive shell effects on coarse mobile UI",async({page},testInfo)=>{
+test("J12 keeps coarse mobile UI flat and free of expensive shell effects",async({page},testInfo)=>{
   test.skip(testInfo.project.name==="desktop-chromium","mobile low-end design qualification");
 
   await page.goto("./");
@@ -104,7 +104,7 @@ test("J12 removes expensive shell effects on coarse mobile UI",async({page},test
   expect(contentVisibility).toBe("auto");
 
   const navShadow=await page.getByRole("navigation",{name:"Primary"}).evaluate((node)=>getComputedStyle(node).boxShadow);
-  expect(navShadow).not.toBe("none");
+  expect(navShadow).toBe("none");
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)).toBeLessThanOrEqual(1);
 });
 
