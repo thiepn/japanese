@@ -37,7 +37,7 @@ test("J4 preserves course entry and milestone truth",async({page})=>{
   const first=page.locator(".j4-landmark").first();
   await first.getByRole("button",{name:/Enter landmark|Continue landmark|Review landmark|Study anyway/}).click();
 
-  await expect(page.locator("main.study-shell#main-content")).toBeVisible();
+  await expect(page.locator("main.j5-study-shell#main-content")).toBeVisible();
   await expect(page.getByRole("heading",{name:"Identify people"})).toBeVisible();
   await page.getByRole("button",{name:"Exit"}).click();
 

@@ -22,7 +22,7 @@ test("mobile shell keeps navigation and study controls thumb-safe without horizo
   const exitBox=await exit.boundingBox();
   expect(exitBox?.height??0).toBeGreaterThanOrEqual(44);
   await page.getByRole("button",{name:"Continue"}).click();
-  const choices=page.locator(".study-choices button");
+  const choices=page.locator(".j5-choices button");
   await expect(choices.first()).toBeVisible();
   const firstChoice=await choices.first().boundingBox();
   expect(firstChoice?.height??0).toBeGreaterThanOrEqual(48);

@@ -175,7 +175,7 @@
   .j8-vault>summary{min-height:54px}
 
   /* Focused Study is a true full-screen mobile chamber. */
-  .study-shell.j5-study-shell{min-height:100dvh}
+  .j5-study-shell{min-height:100dvh}
   .j5-study{
     min-height:100dvh;
     padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);

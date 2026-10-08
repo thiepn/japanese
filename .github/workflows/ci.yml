@@ -35,6 +35,8 @@ jobs:
         run: pnpm verify:j15
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e
+      - name: Record J15D D4 evidence boundary (physical checks stay pending)
+        run: pnpm qualify:j15d:d4
       - name: Record J14 automated qualification evidence
         run: |
           mkdir -p artifacts
@@ -59,6 +61,12 @@ jobs:
           JSON
       - name: Generate J14 qualification report
         run: pnpm qualify:j14
+      - name: Record J15D D5 automated evidence and release status
+        env:
+          J15D_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          node scripts/j15d-d5-regression-evidence.mjs
+          pnpm qualify:j15d:d5:ci
       - name: Record P9 regression evidence
         run: |
           mkdir -p artifacts
@@ -118,6 +126,9 @@ jobs:
             artifacts/p21-regression-evidence.json
             artifacts/p21-release-candidate.json
             artifacts/p21-release-candidate.md
+            artifacts/p22-bundle-budget.json
+            artifacts/j15b-visual-grammar-audit.json
+            artifacts/j15c-legibility-audit.json
             artifacts/p22-production-smoke.json
             artifacts/p22-maintenance-summary.json
             artifacts/p22-release-status.json
@@ -127,3 +138,10 @@ jobs:
             artifacts/j14-qualification.json
             artifacts/j14-qualification.md
             artifacts/j15-native-theme-audit.json
+            artifacts/j15d-native-css-purge.json
+            artifacts/j15d-css-ownership.json
+            artifacts/j15d-d3-css-boundary.json
+            artifacts/j15d-d4-qualification.json
+            artifacts/j15d-d5-regression-evidence.json
+            artifacts/j15d-d5-release-qualification.json
+            artifacts/j15d-d5-release-qualification.md

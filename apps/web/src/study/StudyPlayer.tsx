@@ -119,7 +119,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
 
   if(isStudyLesson(activeStep)){
     return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={false} onExit={onExit} onTheme={toggleTheme}>
-      <div className="study-card study-lesson j5-sheet j5-sheet--lesson">
+      <div className="study-lesson j5-sheet j5-sheet--lesson">
         <div className="j5-sheet__cap">
           <span className="eyebrow">LEARN</span>
           <span className="j5-sheet__counter">{index+1} / {steps.length}</span>
@@ -146,7 +146,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
         </div>)}</div>:null}
 
         {activeStep.sourceLabel?<p className="source-note">Source: {activeStep.sourceLabel}</p>:null}
-        <button className="primary study-next j5-next" type="button" onClick={advance}><span>Continue</span><i aria-hidden="true">→</i></button>
+        <button className="primary j5-next" type="button" onClick={advance}><span>Continue</span><i aria-hidden="true">→</i></button>
       </div>
     </StudyFrame>;
   }
@@ -176,7 +176,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   }
 
   return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={Boolean(feedback)} onExit={onExit} onTheme={toggleTheme}>
-    <div className={"study-card j5-sheet j5-sheet--"+mode.mode}>
+    <div className={"j5-sheet j5-sheet--"+mode.mode}>
       <div className="j5-sheet__cap">
         <span className="eyebrow">{currentPrompt.instruction.toUpperCase()}</span>
         <span className="j5-sheet__counter">{index+1} / {steps.length}</span>
@@ -211,10 +211,10 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
             <button className="quiet-button audio-skip" type="button" onClick={advance}>Skip for now</button>
           </div>:null}
         </div>
-        :<div className={"study-prompt j5-prompt j5-prompt--"+mode.mode} lang={currentPrompt.promptLanguage}>{currentPrompt.prompt}</div>}
+        :<div className={"j5-prompt j5-prompt--"+mode.mode} lang={currentPrompt.promptLanguage}>{currentPrompt.prompt}</div>}
 
       {currentPrompt.promptType==="choice"
-        ?<div className="study-choices j5-choices">{currentPrompt.choices.map((choice,index)=><button
+        ?<div className="j5-choices">{currentPrompt.choices.map((choice,index)=><button
           disabled={Boolean(feedback)||saving||interactionLocked}
           type="button"
           key={choice}
@@ -251,7 +251,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
 
       {hasListeningCue&&!audioPlayed&&audioState!=="error"?<p className="audio-gate j5-audio-gate">Play the listening cue before answering.</p>:null}
 
-      {feedback?<div className={"study-feedback j5-feedback "+feedback.result}>
+      {feedback?<div className={"j5-feedback "+feedback.result}>
         <div className="j5-feedback__head">
           <span className="j5-feedback__seal" aria-hidden="true">{feedback.result==="correct"?"正":"直"}</span>
           <div>
@@ -267,7 +267,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
         {(currentPrompt.promptType==="textarea"||currentPrompt.promptType==="speech")&&currentPrompt.requiredTerms?.length?<p className="productive-rubric">
           Structural check: include at least 60% of these targets: {currentPrompt.requiredTerms.join(" · ")}. This is not a full semantic or pronunciation score.
         </p>:null}
-        <button className="primary study-next j5-next" type="button" onClick={advance}>
+        <button className="primary j5-next" type="button" onClick={advance}>
           <span>{index+1>=steps.length?"Finish":"Continue"}</span><i aria-hidden="true">→</i>
         </button>
       </div>:null}
@@ -288,7 +288,7 @@ function StudyFrame({
   onTheme:()=>void;
   children:ReactNode;
 }){
-  return <section className={"study-player j5-study j5-study--"+mode.mode} data-j-theme={theme} data-j-season={season} data-j-study-mode={mode.mode} aria-live="polite">
+  return <section className={"j5-study j5-study--"+mode.mode} data-j-theme={theme} data-j-season={season} data-j-study-mode={mode.mode} aria-live="polite">
     <div className="j5-study__ambient" aria-hidden="true">
       <J10SeasonalWorld season={season} compact/>
       <span className="j5-study__enso"/>
@@ -323,7 +323,7 @@ function StudyHeader({
 }){
   const pct=((index+(completed?1:0))/Math.max(1,total))*100;
   return <>
-    <header className="study-head j5-study-head">
+    <header className="j5-study-head">
       <button className="quiet-button j5-exit" type="button" onClick={onExit}><span aria-hidden="true">←</span><span>Exit</span></button>
       <div className="j5-study-head__mode">
         <span lang="ja">{mode.japanese}</span>
@@ -335,7 +335,7 @@ function StudyHeader({
         <button className="j5-study-theme" type="button" aria-label={theme==="light"?"Use dark theme":"Use light theme"} onClick={onTheme}>{theme==="light"?"墨":"紙"}</button>
       </div>
     </header>
-    <div className="study-progress j5-study-progress" aria-hidden="true"><span style={{width:pct+"%"}}/></div>
+    <div className="j5-study-progress" aria-hidden="true"><span style={{width:pct+"%"}}/></div>
   </>;
 }
 

@@ -353,7 +353,7 @@ export function App(){
   return <>
     <a className="skip-link" href="#main-content">Skip to main content</a>
     {session
-      ?<main className="study-shell j5-study-shell" id="main-content" tabIndex={-1}><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></main>
+      ?<main className="j5-study-shell" id="main-content" tabIndex={-1}><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></main>
       :<J2AppShell
         surface={surface}
         onSurfaceChange={navigateSurface}

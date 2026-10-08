@@ -53,3 +53,11 @@ J15A also updates inherited qualification contracts: J14 qualification accepts t
 ## J15B — Japanese Visual Grammar
 
 The freeze and executable acceptance gates for paper, ink, lacquer, indigo, typography, square paper geometry, lines, spacing, seasonal pattern restraint and meaningful motion are in [`J15B_VISUAL_GRAMMAR.md`](./J15B_VISUAL_GRAMMAR.md). Run `pnpm verify:j15b` and the dedicated Playwright suite; no account, learning engine or evidence contracts change.
+
+## J15D — Native CSS Ownership & Legacy Shell Purge
+
+The first slice removes unused pre-J2 navigation/pre-J5 Study CSS while preserving existing shared components and the lazy J12/J13 layers. See [`J15D_ACCEPTANCE.md`](./J15D_ACCEPTANCE.md) for ownership, staged deletion criteria and browser/bundle gates. J15D is not evidence of physical-device acceptance.
+
+## J15D-D5 — Final Migration & Release Gate
+
+D5 requires exact-commit build, visual diff review, physical Android PWA evidence and independent product, accessibility and release-operations approval. Passing CI does not imply stable promotion. See [J15D_D5_RELEASE.md](./J15D_D5_RELEASE.md).

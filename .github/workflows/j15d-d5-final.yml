@@ -1,0 +1,107 @@
+name: J15D D5 Final Release Qualification
+
+on:
+  workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: Exact 40-character candidate/build commit
+        required: true
+        type: string
+      ci_run_id:
+        description: Successful complete CI run for that SHA
+        required: true
+        type: string
+      visual_run_id:
+        description: Successful 42-case J15D D4 visual run for that SHA
+        required: true
+        type: string
+      evidence_ref:
+        description: Independent reviewer-evidence branch (not the candidate commit)
+        required: true
+        default: release-evidence/j15d
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  release-decision:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      VITE_PUBLIC_BASE: /japanese/
+      GH_TOKEN: ${{ github.token }}
+      CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+      CI_RUN: ${{ inputs.ci_run_id }}
+      VISUAL_RUN: ${{ inputs.visual_run_id }}
+    steps:
+      - name: Validate exact candidate and upstream run identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$CANDIDATE_SHA" =~ ^[a-f0-9]{40}$ ]] || { echo "Invalid exact candidate SHA"; exit 1; }
+          [[ "$CI_RUN" =~ ^[0-9]+$ && "$VISUAL_RUN" =~ ^[0-9]+$ ]] || { echo "Invalid upstream run identifiers"; exit 1; }
+          for RUN in "$CI_RUN" "$VISUAL_RUN"; do
+            RUN_SHA="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN" --jq '.head_sha')"
+            RUN_STATUS="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN" --jq '.conclusion')"
+            [[ "$RUN_SHA" == "$CANDIDATE_SHA" && "$RUN_STATUS" == "success" ]] || {
+              echo "Unqualified run $RUN: $RUN_SHA $RUN_STATUS"; exit 1;
+            }
+          done
+      - name: Checkout immutable candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.candidate_sha }}
+          path: candidate
+          persist-credentials: false
+      - name: Checkout independent manual review evidence
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.evidence_ref }}
+          path: review-evidence
+          sparse-checkout: release
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - name: Build the identical source candidate
+        working-directory: candidate
+        run: |
+          pnpm install --no-frozen-lockfile
+          pnpm build
+      - name: Retrieve exact-head CI and visual artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh run download "$CI_RUN" --repo "$GITHUB_REPOSITORY" --name b2-release-qualification --dir "$RUNNER_TEMP/j15d-ci"
+          gh run download "$VISUAL_RUN" --repo "$GITHUB_REPOSITORY" --name j15d-d4-visual-comparison --dir "$RUNNER_TEMP/j15d-visual"
+          CI_FILE="$(find "$RUNNER_TEMP/j15d-ci" -type f -name 'j15d-d5-regression-evidence.json' -print -quit)"
+          VISUAL_FILE="$(find "$RUNNER_TEMP/j15d-visual" -type f -name 'j15d-d4-visual-comparison.json' -print -quit)"
+          test -n "$CI_FILE" && test -n "$VISUAL_FILE" || { echo "Required upstream proof missing"; exit 1; }
+          cp "$CI_FILE" candidate/artifacts/j15d-d5-regression-evidence.json
+          cp "$VISUAL_FILE" candidate/artifacts/j15d-d4-visual-comparison.json
+          for FILE in j15d-d4-device-acceptance.json j15d-d5-visual-review.json j15d-d5-release-signoff.json; do
+            test -f "review-evidence/release/$FILE" || { echo "Reviewer file missing: $FILE"; exit 1; }
+            cp "review-evidence/release/$FILE" "candidate/release/$FILE"
+          done
+      - name: Verify reviewer evidence independently of application SHA
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$CANDIDATE_SHA"
+          pnpm qualify:j15d:d5:strict --candidate "$CANDIDATE_SHA" --visual artifacts/j15d-d4-visual-comparison.json
+      - name: Upload immutable release decision
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: j15d-d5-final-release-decision
+          path: |
+            candidate/artifacts/j15d-d5-release-qualification.json
+            candidate/artifacts/j15d-d5-release-qualification.md
+          if-no-files-found: warn
+          retention-days: 30

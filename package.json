@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "pnpm --filter @thiepn/japanese-web dev",
-    "build": "pnpm -r build && node scripts/p22-bundle-budget.mjs && node scripts/j14-experience-budget.mjs && node scripts/j15-theme-audit.mjs && node scripts/j15b-visual-grammar-audit.mjs && node scripts/j15c-legibility-audit.mjs",
+    "build": "pnpm -r build && node scripts/p22-bundle-budget.mjs && node scripts/j14-experience-budget.mjs && node scripts/j15-theme-audit.mjs && node scripts/j15b-visual-grammar-audit.mjs && node scripts/j15c-legibility-audit.mjs && node scripts/j15d-native-css-audit.mjs && node scripts/j15d-css-ownership-inventory.mjs && node scripts/j15d-d3-css-boundary.mjs --dist",
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run",
     "test:e2e": "playwright test",
@@ -35,14 +35,23 @@
     "qualify:j14:strict": "node scripts/j14-qualify.mjs --strict",
     "verify:j15": "node scripts/j15-theme-audit.mjs",
     "verify:j15b": "node scripts/j15b-visual-grammar-audit.mjs",
-    "verify:j15c": "node scripts/j15c-legibility-audit.mjs"
+    "verify:j15c": "node scripts/j15c-legibility-audit.mjs",
+    "verify:j15d": "node scripts/j15d-native-css-audit.mjs && node scripts/j15d-css-ownership-inventory.mjs && node scripts/j15d-d3-css-boundary.mjs",
+    "verify:j15d:d3": "node scripts/j15d-d3-css-boundary.mjs --dist",
+    "qualify:j15d:d4": "node scripts/j15d-d4-qualify.mjs",
+    "qualify:j15d:d4:strict": "node scripts/j15d-d4-qualify.mjs --strict",
+    "qualify:j15d:d5": "node scripts/j15d-d5-release-qualify.mjs",
+    "qualify:j15d:d5:ci": "node scripts/j15d-d5-release-qualify.mjs --require-automated",
+    "qualify:j15d:d5:strict": "node scripts/j15d-d5-release-qualify.mjs --strict"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
     "@types/node": "^24.0.0",
     "fake-indexeddb": "^6.0.0",
     "typescript": "7.0.2",
-    "vitest": "5.0.2"
+    "vitest": "5.0.2",
+    "pixelmatch": "7.1.0",
+    "pngjs": "7.0.0"
   },
   "type": "module"
 }

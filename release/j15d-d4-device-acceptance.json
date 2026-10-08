@@ -1,0 +1,37 @@
+{
+  "schema": "thiepn-japanese-j15d-d4-physical-acceptance",
+  "schemaVersion": 1,
+  "status": "pending",
+  "targetCommit": null,
+  "verifiedAt": null,
+  "deviceEvidence": [],
+  "requiredChecks": [
+    "realAndroidDevice",
+    "exactCandidateCommit",
+    "standaloneInstall",
+    "coldLaunch",
+    "darkLightAndPersistence",
+    "todayLearnImmerseLibraryProgress",
+    "studyFullScreenAndTouch",
+    "readerNavigationAndSupport",
+    "librarySearchAndFilters",
+    "offlineReload",
+    "backgroundResume",
+    "rotationPortraitLandscape",
+    "safeAreaBottomNav",
+    "textScale200Percent",
+    "keyboardFocus",
+    "screenReaderTalkBack",
+    "speakerHeadphoneAudio",
+    "microphonePermissionAndCapture",
+    "localAudioDelete",
+    "noHorizontalOverflow320",
+    "noBlockingVisualDefects"
+  ],
+  "defects": [],
+  "notes": [
+    "Pending until physical Android PWA tests against an exact deployed candidate build. Emulated Playwright viewports cannot pass physical checks.",
+    "A pass requires device model, OS and browser versions, standalone installation, 40-hex build commit and dated evidence for each required check.",
+    "Visual diffs and a build gate are independent of physical acceptance."
+  ]
+}
