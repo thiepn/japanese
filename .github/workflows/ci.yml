@@ -34,7 +34,13 @@ jobs:
       - name: Audit J15 native visual system
         run: pnpm verify:j15
       - run: pnpm exec playwright install --with-deps chromium
+      - name: J20 focused PWA and mobile regressions (fail fast)
+        run: pnpm exec playwright test tests/e2e/j20-device-recovery.spec.ts
       - run: pnpm test:e2e
+      - name: Record J20 automated browser and PWA evidence (human checks remain pending)
+        env:
+          J20_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j20-automated-acceptance.mjs
       - name: Record J15D D4 evidence boundary (physical checks stay pending)
         run: pnpm qualify:j15d:d4
       - name: Record J14 automated qualification evidence
@@ -145,3 +151,4 @@ jobs:
             artifacts/j15d-d5-regression-evidence.json
             artifacts/j15d-d5-release-qualification.json
             artifacts/j15d-d5-release-qualification.md
+            artifacts/j20-automated-qualification.json
