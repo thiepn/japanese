@@ -100,9 +100,16 @@ export function App(){
   useEffect(()=>{
     let active=true;
     let generation=0;
+    const switchWorkspace=(accountId:string)=>{
+      if(getDevelopmentAccountId()!==accountId){
+        setSession(null);
+        setCompletedToday(0);
+      }
+      setDevelopmentAccountId(accountId);
+      setAuthenticAccountId(accountId);
+    };
     const useGuestWorkspace=()=>{
-      setDevelopmentAccountId(GUEST_ACCOUNT_ID);
-      setAuthenticAccountId(AUTHENTIC_GUEST_ACCOUNT_ID);
+      switchWorkspace(GUEST_ACCOUNT_ID);
       setAccountConnected(false);
     };
     const apply=async(next:AuthContext)=>{
@@ -126,6 +133,11 @@ export function App(){
         connected=await JAPANESE_ACCOUNT.completePendingConnection();
       }catch{
         if(!active||epoch!==generation)return;
+        // Keep the already attached workspace on a temporary connection outage.
+        if(getDevelopmentAccountId()===authenticatedId){
+          setAccountMessage("THIEPN Account connection is temporarily unavailable. Your attached local workspace remains available.");
+          return;
+        }
         useGuestWorkspace();
         setAccount(next);
         setAccountMessage("Signed in to THIEPN Account, but the Japanese connection is temporarily unavailable. Local study remains available.");
@@ -147,8 +159,7 @@ export function App(){
 
       if(!active||epoch!==generation)return;
       const accountId=connected?authenticatedId:GUEST_ACCOUNT_ID;
-      setDevelopmentAccountId(accountId);
-      setAuthenticAccountId(accountId);
+      switchWorkspace(accountId);
       setAccountConnected(connected);
       setAccount(next);
       setAccountMessage(
@@ -163,9 +174,8 @@ export function App(){
     };
     const authUnavailable=()=>{
       if(!active)return;
-      useGuestWorkspace();
-      setAccount(ANONYMOUS_AUTH);
-      setAccountMessage("THIEPN Account could not be verified. Japanese is staying local on this device.");
+      generation+=1;
+      setAccountMessage("THIEPN Account could not be reached. Your current local workspace remains available.");
     };
     const unsubscribe=JAPANESE_ACCOUNT.subscribe((next)=>{
       void apply(next).catch(authUnavailable);
@@ -334,8 +344,9 @@ export function App(){
   }
 
   async function handleAnswer(answer:StudyAnswer){
+    const workspaceId=getDevelopmentAccountId();
     await recordStudyAnswer({prompt:answer.prompt,response:answer.response,result:answer.grade.result,responseTimeMs:answer.responseTimeMs});
-    setCompletedToday((value)=>value+1);
+    if(getDevelopmentAccountId()===workspaceId)setCompletedToday((value)=>value+1);
   }
   function finishSession(){
     const active=document.activeElement;
@@ -388,11 +399,11 @@ export function App(){
         diagnosticsMode={diagnosticsMode}
       >
         {diagnosticsMode
-          ?<Suspense fallback={<p className="j2-account-status" role="status">Opening technical workspace…</p>}><J11Diagnostics onExit={()=>navigateSurface(surface)} accountStatus={account.status} accountConnected={accountConnected}/></Suspense>
+          ?<Suspense fallback={<p className="j2-account-status" role="status">Opening technical workspace…</p>}><J11Diagnostics key={getDevelopmentAccountId()} onExit={()=>navigateSurface(surface)} accountStatus={account.status} accountConnected={accountConnected}/></Suspense>
           :<>
             {surface==="Today"&&<J3Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
             {surface==="Learn"&&<J4Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} onPreferredCoachChainApplied={()=>setPreferredCoachChain(null)} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>}
-            {surface==="Immerse"&&<Immersion onStartProductionTask={(taskId)=>void startProductiveTask(taskId)} onStartC1Synthesis={(packId)=>void startC1Synthesis(packId)} onOpenC1Coach={(chainId)=>{setPreferredCoachChain(chainId);setSurface("Learn");}}/>}
+            {surface==="Immerse"&&<Immersion key={getDevelopmentAccountId()} onStartProductionTask={(taskId)=>void startProductiveTask(taskId)} onStartC1Synthesis={(packId)=>void startC1Synthesis(packId)} onOpenC1Coach={(chainId)=>{setPreferredCoachChain(chainId);setSurface("Learn");}}/>}
             {surface==="Progress"&&<J8Progress kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} immersion={immersion} summary={summary} course={courseProgress} completedToday={completedToday}/>}
             {surface==="Library"&&<J7Library query={query} setQuery={setQuery} results={results} status={libraryStatus}/>}
           </>}

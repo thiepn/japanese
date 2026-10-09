@@ -244,6 +244,8 @@ export function createThiepnAccountAuthProvider(
   let current = ANONYMOUS_CONTEXT;
   let busy = false;
   let callbackInFlight: Promise<AuthContext> | null = null;
+  let verificationInFlight: Promise<AuthContext> | null = null;
+  let authRevision = 0;
 
   function publish(context: AuthContext): AuthContext {
     current = context;
@@ -260,13 +262,24 @@ export function createThiepnAccountAuthProvider(
     return contextForUser(response.data.user);
   }
 
-  async function verify(): Promise<AuthContext> {
-    const context=await readContext();
-    if(context.status==="authenticated")clearAuthFailure();
-    return publish(context);
+  function verify(): Promise<AuthContext> {
+    if (verificationInFlight) return verificationInFlight;
+    const revision = authRevision;
+    const attempt = readContext().then((context) => {
+      // A read begun before sign-out must never restore the old identity.
+      if (revision !== authRevision) return current;
+      if(context.status==="authenticated")clearAuthFailure();
+      return publish(context);
+    });
+    verificationInFlight = attempt;
+    void attempt.finally(() => {
+      if (verificationInFlight === attempt) verificationInFlight = null;
+    }).catch(() => {});
+    return attempt;
   }
 
   async function completeCallback(): Promise<AuthContext> {
+    const revision = authRevision;
     if (typeof window === "undefined") return verify();
 
     const callback = readJapaneseCallback(
@@ -302,10 +315,12 @@ export function createThiepnAccountAuthProvider(
     try {
       const response = await client.auth.exchangeCodeForSession(callback.code);
       if (response.error) throw response.error;
+      if (revision !== authRevision) return current;
       const result=await verify();
       if(result.status==="authenticated")recordAuthStage("exchange-success");
       return result;
     } catch (error) {
+      if (revision !== authRevision) return current;
       clearConnectIntent();
       const detail = error instanceof Error ? `${error.name} ${error.message}` : "";
       recordAuthFailure(/verifier|pkce/i.test(detail) ? "AUTH-03" : "AUTH-02");
@@ -349,6 +364,12 @@ export function createThiepnAccountAuthProvider(
   }
 
   client.auth.onAuthStateChange((event) => {
+    if (event === "SIGNED_OUT") {
+      authRevision += 1;
+      verificationInFlight = null;
+      publish(ANONYMOUS_CONTEXT);
+      return;
+    }
     if (event === "INITIAL_SESSION" || busy) return;
     queueMicrotask(() => {
       if (
@@ -423,25 +444,31 @@ export function createThiepnAccountAuthProvider(
       throw new Error("INVALID_CALLBACK_URL");
     }
 
-    const response = await client.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: callback.href,
-        skipBrowserRedirect: true,
-        queryParams: { prompt: "select_account" },
-      },
-    });
+    try {
+      const response = await client.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: callback.href,
+          skipBrowserRedirect: true,
+          queryParams: { prompt: "select_account" },
+        },
+      });
 
-    if (response.error || !response.data.url) {
+      if (response.error || !response.data.url) {
+        clearPendingLogin();
+        clearConnectIntent();
+        throw response.error ?? new Error("LOGIN_START_FAILED");
+      }
+
+      recordAuthStage("started");
+      window.location.assign(
+        buildJapaneseAccountEntryUrl(response.data.url, accountEntryUrl),
+      );
+    } catch (error) {
       clearPendingLogin();
       clearConnectIntent();
-      throw response.error ?? new Error("LOGIN_START_FAILED");
+      throw error;
     }
-
-    recordAuthStage("started");
-    window.location.assign(
-      buildJapaneseAccountEntryUrl(response.data.url, accountEntryUrl),
-    );
   }
 
   return Object.freeze({
@@ -468,6 +495,8 @@ export function createThiepnAccountAuthProvider(
     completePendingConnection,
     signIn: beginSignIn,
     async signOut() {
+      authRevision += 1;
+      verificationInFlight = null;
       clearPendingLogin();
       clearConnectIntent();
       const response = await client.auth.signOut({ scope: "local" });
@@ -492,7 +521,10 @@ function validJapaneseReturnTo(value: unknown): value is string {
     return (
       url.origin === JAPANESE_PUBLIC_ORIGIN &&
       url.pathname.startsWith(JAPANESE_HOME_PATH) &&
+      url.pathname !== JAPANESE_CALLBACK_PATH.slice(0, -1) &&
       !url.pathname.startsWith(JAPANESE_CALLBACK_PATH) &&
+      !["code", "access_token", "refresh_token"].some((key) => url.searchParams.has(key)) &&
+      !/access_token|refresh_token/.test(url.hash) &&
       !url.username &&
       !url.password
     );

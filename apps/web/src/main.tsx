@@ -24,7 +24,10 @@ document.documentElement.dataset.jSeason=resolveJ10Season();
 syncJ12ThemeColor(initialTheme);
 
 if ("serviceWorker" in navigator && import.meta.env.PROD) {
-  window.addEventListener("load", () => navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`,{scope:import.meta.env.BASE_URL}));
+  window.addEventListener("load", () => {
+    void navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`,{scope:import.meta.env.BASE_URL})
+      .catch(()=>{/* Study remains usable when the browser blocks PWA registration. */});
+  });
 }
 
 const mobileQuery=window.matchMedia("(max-width: 760px)");

@@ -1,7 +1,7 @@
 import { entityKey } from "@thiepn/domain";
 import { getJapaneseDeviceId } from "../deviceIdentity";
 import { replayStudyEvents, type LearnerState } from "@thiepn/learner-engine";
-import { getMemoryTrace, listMemoryTraces, listStudyEvents, saveMemoryTrace, saveStudyEvent } from "@thiepn/local-db";
+import { getMemoryTrace, listMemoryTraces, listStudyEvents, saveStudyReview } from "@thiepn/local-db";
 import { createFsrsScheduler, type ReviewGrade } from "@thiepn/scheduler";
 import { createStudyEvent, type StudyPrompt, type StudyStep } from "@thiepn/study-player";
 import { pronunciationLessons, pronunciationPerceptionPrompts } from "./audioPrompts";
@@ -345,16 +345,23 @@ export async function getCourseProgress():Promise<CourseUnitProgress[]>{
   return result;
 }
 
-export async function recordStudyAnswer(input:{prompt:StudyPrompt;response:string;result:"correct"|"incorrect";responseTimeMs:number}):Promise<void>{
+const pendingReviews=new Map<string,Promise<void>>();
+export function recordStudyAnswer(input:{prompt:StudyPrompt;response:string;result:"correct"|"incorrect";responseTimeMs:number}):Promise<void>{
+  const accountId=DEVELOPMENT_ACCOUNT_ID;
   const traceId=traceIdFor(input.prompt);
-  const existing=await getMemoryTrace(DEVELOPMENT_ACCOUNT_ID,traceId);
-  const now=new Date().toISOString();
-  const base=existing??scheduler.create({id:traceId,userId:DEVELOPMENT_ACCOUNT_ID,entity:input.prompt.primaryTarget,skillDimension:input.prompt.skill,cueFamily:input.prompt.cueFamily},now);
-  const event=createStudyEvent({id:crypto.randomUUID(),userId:DEVELOPMENT_ACCOUNT_ID,deviceId:DEVELOPMENT_DEVICE_ID,prompt:input.prompt,response:input.response,occurredAt:now,responseTimeMs:input.responseTimeMs,baseRevision:base.revision});
-  await saveStudyEvent(event);
-  if(input.prompt.eventMetadata?.schedulerExcluded!==true){
-    await saveMemoryTrace(DEVELOPMENT_ACCOUNT_ID,scheduler.review(base,{grade:gradeFor(input.result),reviewedAt:now}));
-  }
+  const key=accountId+":"+traceId;
+  const previous=pendingReviews.get(key)??Promise.resolve();
+  const attempt=previous.catch(()=>{}).then(async()=>{
+    const existing=await getMemoryTrace(accountId,traceId);
+    const now=new Date().toISOString();
+    const base=existing??scheduler.create({id:traceId,userId:accountId,entity:input.prompt.primaryTarget,skillDimension:input.prompt.skill,cueFamily:input.prompt.cueFamily},now);
+    const event=createStudyEvent({id:crypto.randomUUID(),userId:accountId,deviceId:DEVELOPMENT_DEVICE_ID,prompt:input.prompt,response:input.response,occurredAt:now,responseTimeMs:input.responseTimeMs,baseRevision:base.revision});
+    const trace=input.prompt.eventMetadata?.schedulerExcluded===true?undefined:scheduler.review(base,{grade:gradeFor(input.result),reviewedAt:now});
+    await saveStudyReview(event,trace);
+  });
+  pendingReviews.set(key,attempt);
+  void attempt.finally(()=>{if(pendingReviews.get(key)===attempt)pendingReviews.delete(key);}).catch(()=>{});
+  return attempt;
 }
 
 function insertFirstExposureLessons(queue:StudyPrompt[],byId:Map<string,Awaited<ReturnType<typeof listMemoryTraces>>[number]>,extraPrompts:StudyPrompt[]=[]):StudyStep[]{

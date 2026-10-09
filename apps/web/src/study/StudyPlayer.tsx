@@ -10,6 +10,11 @@ import {syncJ12ThemeColor} from "../design/j12Pwa";
 import {applyJTheme,persistJTheme,readJTheme} from "../design/j14Theme";
 
 export interface StudyAnswer{prompt:StudyPrompt;response:string;grade:GradeResult;responseTimeMs:number;}
+interface StudyRecognition {
+  lang:string;interimResults:boolean;continuous:boolean;start():void;abort():void;
+  onresult:((event:{results:ArrayLike<{0?:{transcript?:string}}>})=>void)|null;
+  onerror:(()=>void)|null;onend:(()=>void)|null;
+}
 
 export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[];onAnswer:(answer:StudyAnswer)=>Promise<void>|void;onComplete:()=>void;onExit:()=>void;}){
   const [index,setIndex]=useState(0);
@@ -25,16 +30,29 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   const season=resolveJ10Season();
   const startedAt=useRef(performance.now());
   const audioProvider=useRef(getDefaultAudioProvider());
+  const recognitionRef=useRef<StudyRecognition|null>(null);
+  const cueGeneration=useRef(0);
+  const savingRef=useRef(false);
   const step=steps[index];
 
+  function stopRecognition(){
+    const recognition=recognitionRef.current;
+    recognitionRef.current=null;
+    if(!recognition)return;
+    recognition.onresult=null;recognition.onerror=null;recognition.onend=null;
+    try{recognition.abort();}catch{/* Already stopped. */}
+  }
+
   useEffect(()=>{
+    cueGeneration.current+=1;
+    stopRecognition();
     const provider=audioProvider.current;
     provider.stop();
     if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();
     setAudioState("idle");
     setAudioPlayed(false);
     setSpeechState("idle");
-    return()=>{provider.stop();if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();};
+    return()=>{cueGeneration.current+=1;stopRecognition();provider.stop();if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();};
   },[index]);
 
   useEffect(()=>{
@@ -74,6 +92,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
     const ttsText=!isStudyLesson(activeStep)?activeStep.speechSynthesisText:undefined;
     if((!activeStep.audio&&!ttsText)||audioState==="playing")return;
     setAudioState("playing");
+    const generation=cueGeneration.current;
     try{
       if(activeStep.audio){
         if(playback==="slow")await audioProvider.current.play(activeStep.audio,{rate:.82});
@@ -87,10 +106,11 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
           (!isStudyLesson(activeStep)?activeStep.speechSynthesisLanguage:undefined)??"ja-JP",
         );
       }
+      if(generation!==cueGeneration.current)return;
       setAudioPlayed(true);
       setAudioState("idle");
     }catch{
-      setAudioState("error");
+      if(generation===cueGeneration.current)setAudioState("error");
     }
   }
 
@@ -100,12 +120,14 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
 
   function startSpeechRecognition(){
     const w=window as unknown as {
-      SpeechRecognition?:new()=>{lang:string;interimResults:boolean;continuous:boolean;start():void;abort():void;onresult:((event:{results:ArrayLike<{0?:{transcript?:string}}>} )=>void)|null;onerror:(()=>void)|null;onend:(()=>void)|null};
-      webkitSpeechRecognition?:new()=>{lang:string;interimResults:boolean;continuous:boolean;start():void;abort():void;onresult:((event:{results:ArrayLike<{0?:{transcript?:string}}>} )=>void)|null;onerror:(()=>void)|null;onend:(()=>void)|null};
+      SpeechRecognition?:new()=>StudyRecognition;
+      webkitSpeechRecognition?:new()=>StudyRecognition;
     };
     const Recognition=w.SpeechRecognition??w.webkitSpeechRecognition;
     if(!Recognition){setSpeechState("unsupported");return;}
+    stopRecognition();
     const recognition=new Recognition();
+    recognitionRef.current=recognition;
     recognition.lang="ja-JP";
     recognition.interimResults=false;
     recognition.continuous=false;
@@ -116,7 +138,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
     recognition.onerror=()=>setSpeechState("error");
     recognition.onend=()=>setSpeechState((value)=>value==="error"?value:"idle");
     setSpeechState("listening");
-    try{recognition.start();}catch{setSpeechState("error");}
+    try{recognition.start();}catch{stopRecognition();setSpeechState("error");}
   }
 
   if(isStudyLesson(activeStep)){
@@ -159,9 +181,10 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   const interactionLocked=answerLocked||audioState==="playing";
 
   async function submit(value=response){
-    if(!value.trim()||feedback||saving||interactionLocked)return;
+    if(!value.trim()||feedback||savingRef.current||interactionLocked)return;
     const grade=gradeStudyPrompt(currentPrompt,value);
     setSaving(true);
+    savingRef.current=true;
     setSaveError(false);
     try{
       await onAnswer({
@@ -176,11 +199,12 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
     }catch{
       setSaveError(true);
     }finally{
+      savingRef.current=false;
       setSaving(false);
     }
   }
 
-  return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={Boolean(feedback)} onExit={onExit} onTheme={toggleTheme}>
+  return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={Boolean(feedback)} onExit={()=>{if(!savingRef.current)onExit();}} onTheme={toggleTheme}>
     <div className={"j5-sheet j5-sheet--"+mode.mode}>
       <div className="j5-sheet__cap">
         <span className="eyebrow">{currentPrompt.instruction.toUpperCase()}</span>

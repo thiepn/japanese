@@ -104,23 +104,41 @@ export async function openLocalDb(accountId: string): Promise<IDBDatabase> {
       if (!db.objectStoreNames.contains(PRIVATE_MEDIA_REVIEWS)) db.createObjectStore(PRIVATE_MEDIA_REVIEWS, { keyPath: "id" });
       if (!db.objectStoreNames.contains(PRIVATE_PROSODY_CAPTURES)) db.createObjectStore(PRIVATE_PROSODY_CAPTURES, { keyPath: "id" });
     };
-    request.onsuccess = () => resolve(request.result);
+    request.onsuccess = () => {
+      const db = request.result;
+      db.onversionchange = () => db.close();
+      resolve(db);
+    };
     request.onerror = () => reject(request.error);
   });
 }
 
 export async function saveStudyEvent(event: StudyEvent): Promise<CoreSyncMutation<StudyEventEnvelope>> {
+  return saveStudyReview(event);
+}
+
+/** Evidence, its outbox entry and scheduler state commit together or not at all. */
+export async function saveStudyReview(event: StudyEvent, trace?: MemoryTrace): Promise<CoreSyncMutation<StudyEventEnvelope>> {
+  if (trace && trace.userId !== event.userId) throw new Error("MEMORY_TRACE_ACCOUNT_MISMATCH");
   const db = await openLocalDb(event.userId);
   const mutation = studyEventToMutation(event);
-  await new Promise<void>((resolve, reject) => {
-    const transaction = db.transaction([STUDY_EVENTS, OUTBOX], "readwrite");
-    transaction.objectStore(STUDY_EVENTS).put(event);
-    transaction.objectStore(OUTBOX).put(mutation);
-    transaction.oncomplete = () => resolve();
-    transaction.onerror = () => reject(transaction.error);
-    transaction.onabort = () => reject(transaction.error);
-  });
-  db.close();
+  try {
+    await new Promise<void>((resolve, reject) => {
+      const transaction = db.transaction([STUDY_EVENTS, OUTBOX, MEMORY_TRACES], "readwrite");
+      try {
+        transaction.objectStore(STUDY_EVENTS).put(event);
+        transaction.objectStore(OUTBOX).put(mutation);
+        if (trace) transaction.objectStore(MEMORY_TRACES).put(trace);
+      } catch (error) {
+        transaction.abort();
+        reject(error);
+        return;
+      }
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = () => reject(transaction.error);
+      transaction.onabort = () => reject(transaction.error);
+    });
+  } finally { db.close(); }
   return mutation;
 }
 
@@ -246,7 +264,28 @@ export type GuestWorkspaceClaimResult =
   | "target-populated"
   | "migrated";
 
-export async function claimGuestWorkspace(
+const pendingClaims = new Map<string, Promise<GuestWorkspaceClaimResult>>();
+export function claimGuestWorkspace(
+  guestAccountId: string,
+  targetAccountId: string,
+): Promise<GuestWorkspaceClaimResult> {
+  const previous = pendingClaims.get(guestAccountId) ?? Promise.resolve();
+  const attempt = previous.catch(() => {}).then(() => {
+    const migrate = () => claimGuestWorkspaceUnlocked(guestAccountId, targetAccountId);
+    // Serialize separate PWA/tab contexts as well as simultaneous auth refreshes.
+    if (globalThis.navigator?.locks) {
+      return navigator.locks.request(`japanese-workspace-claim:${guestAccountId}`, migrate);
+    }
+    return migrate();
+  });
+  pendingClaims.set(guestAccountId, attempt);
+  void attempt.finally(() => {
+    if (pendingClaims.get(guestAccountId) === attempt) pendingClaims.delete(guestAccountId);
+  }).catch(() => {});
+  return attempt;
+}
+
+async function claimGuestWorkspaceUnlocked(
   guestAccountId: string,
   targetAccountId: string,
 ): Promise<GuestWorkspaceClaimResult> {
@@ -345,7 +384,28 @@ export async function claimGuestWorkspace(
     destination.close();
   }
 
-  await deleteAccountDatabase(guestAccountId);
+  // Remove only the rows actually copied. A late study save or import can
+  // arrive during attachment; deleting the whole database would lose it.
+  const source = await openLocalDb(guestAccountId);
+  try {
+    await new Promise<void>((resolve, reject) => {
+      const transaction = source.transaction([...stores, SYNC_META], "readwrite");
+      for (const name of stores) {
+        const store = transaction.objectStore(name);
+        for (const value of snapshot[name] as Record<string, unknown>[]) {
+          const key = value[name === OUTBOX ? "mutation_id" : "id"] as IDBValidKey;
+          const request = store.get(key);
+          request.onsuccess = () => {
+            if (JSON.stringify(request.result) === JSON.stringify(value)) store.delete(key);
+          };
+        }
+      }
+      transaction.objectStore(SYNC_META).clear();
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = () => reject(transaction.error);
+      transaction.onabort = () => reject(transaction.error);
+    });
+  } finally { source.close(); }
   return "migrated";
 }
 
@@ -357,15 +417,6 @@ async function getAllFromOpenStore<T>(
     const request = db.transaction(storeName, "readonly").objectStore(storeName).getAll();
     request.onsuccess = () => resolve(request.result as T[]);
     request.onerror = () => reject(request.error);
-  });
-}
-
-async function deleteAccountDatabase(accountId: string): Promise<void> {
-  await new Promise<void>((resolve, reject) => {
-    const request = indexedDB.deleteDatabase(databaseNameForAccount(accountId));
-    request.onsuccess = () => resolve();
-    request.onerror = () => reject(request.error);
-    request.onblocked = () => reject(new Error("ACCOUNT_DATABASE_DELETE_BLOCKED"));
   });
 }
 
