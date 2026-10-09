@@ -182,7 +182,9 @@ export function evaluateAdmission({
   return {
     schema:"thiepn-japanese-j25-independent-admission-receipt",
     candidateCommit,checkedKinds:ROLES.length,operatorAttestationsChecked:2,
-    ...auditBody,
+    admissionDigest:hash(Buffer.from(JSON.stringify(auditBody))),
+    pinnedRosterDigest:trust.rosterDigest,pinnedRevocationsDigest:trust.revocationDigest,
+    inspectedAt:trust.asOf,
     pinsVerified:true,revocationsCurrent:true,evidenceReceiptConsistent:true,
     operatorSignaturesValidAgainstPinnedRoster:true,
     independentHumanIdentityVerified:false,
@@ -226,7 +228,7 @@ export function runCli(args=process.argv.slice(2)){
     console.log("J25 exact-head automated readiness recorded: BLOCKED; independent acceptance and release authorization missing");
     return readiness;
   }
-  if(args.length!==5||args[0]!=="--inspect-bundle"||args[2]!=="--roster"||args[4]!=="--revocations"){
+  if(args.length!==6||args[0]!=="--inspect-bundle"||args[2]!=="--roster"||args[4]!=="--revocations"){
     reject("OFFLINE_CLI_USAGE");
   }
   const rootDir=path.resolve(args[1]),rosterBytes=fs.readFileSync(path.resolve(args[3])),
