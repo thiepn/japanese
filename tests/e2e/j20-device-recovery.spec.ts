@@ -47,15 +47,42 @@ test("J20 cached PWA restores graded local evidence offline and after simulated 
   await page.getByRole("button",{name:"Exit",exact:true}).click();
   await expect(page.locator(".j3-today__visit strong")).toHaveText("1");
 
+  // The Today visit counter is conditional in the shell. After an offline
+  // cold reload, verify the actual durable evidence instead of relying on a
+  // presentation-only element that is not always rendered.
+  const durableEvidence=()=>page.evaluate(async()=>{
+    const name="thiepn-japanese:00000000-0000-4000-8000-000000000001";
+    const db=await new Promise<IDBDatabase>((resolve,reject)=>{
+      const request=indexedDB.open(name);
+      request.onsuccess=()=>resolve(request.result);
+      request.onerror=()=>reject(request.error);
+    });
+    try{
+      const transaction=db.transaction(["study_events","sync_outbox"],"readonly");
+      const read=(storeName:string)=>new Promise<Array<{id?:string;mutation_id?:string}>>((resolve,reject)=>{
+        const request=transaction.objectStore(storeName).getAll();
+        request.onsuccess=()=>resolve(request.result);
+        request.onerror=()=>reject(request.error);
+      });
+      const [events,outbox]=await Promise.all([read("study_events"),read("sync_outbox")]);
+      return {ids:events.map(e=>e.id),mutations:outbox.map(e=>e.mutation_id)};
+    }finally{db.close();}
+  });
+
   await context.setOffline(true);
   await page.reload();
-  await expect(page.locator(".j3-today__visit strong")).toHaveText("1");
+  await expect(page.getByRole("heading",{name:/Continue Japanese|You’re caught up/})).toBeVisible();
+  const offlineRecords=await durableEvidence();
+  expect(offlineRecords.ids).toHaveLength(1);
+  expect(offlineRecords.mutations).toEqual(offlineRecords.ids);
+
   await page.evaluate(()=>{
     window.dispatchEvent(new Event("pageshow"));
     window.dispatchEvent(new Event("focus"));
     document.dispatchEvent(new Event("visibilitychange"));
   });
-  await expect(page.locator(".j3-today__visit strong")).toHaveText("1");
+  await expect(page.getByRole("navigation",{name:"Primary"})).toBeVisible();
+  expect(await durableEvidence()).toEqual(offlineRecords);
   await page.getByRole("navigation",{name:"Primary"}).getByRole("button",{name:"Progress"}).click();
   await expect(page.getByText("Answers today")).toBeVisible();
   await context.setOffline(false);
