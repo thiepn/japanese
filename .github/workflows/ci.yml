@@ -51,6 +51,10 @@ jobs:
         env:
           J22_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node scripts/j22-visual-accessibility.mjs
+      - name: Reconcile J23 exact-head automated evidence without inferring human approval
+        env:
+          J23_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j23-release-reconciliation.mjs
       - name: Record J15D D4 evidence boundary (physical checks stay pending)
         run: pnpm qualify:j15d:d4
       - name: Record J14 automated qualification evidence
@@ -166,3 +170,4 @@ jobs:
             artifacts/j21-language-review-packet.json
             artifacts/j21-reviewer-submission-blank.json
             artifacts/j22-automated-acceptance.json
+            artifacts/j23-release-evidence-reconciliation.json
