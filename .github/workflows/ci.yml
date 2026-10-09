@@ -59,6 +59,10 @@ jobs:
         env:
           J24_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node scripts/j24-operator-evidence-qualification.mjs
+      - name: Record J25 independently blocked controlled-release decision
+        env:
+          J25_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j25-independent-acceptance.mjs
       - name: Record J15D D4 evidence boundary (physical checks stay pending)
         run: pnpm qualify:j15d:d4
       - name: Record J14 automated qualification evidence
@@ -176,3 +180,4 @@ jobs:
             artifacts/j22-automated-acceptance.json
             artifacts/j23-release-evidence-reconciliation.json
             artifacts/j24-operator-readiness.json
+            artifacts/j25-controlled-release-decision.json
