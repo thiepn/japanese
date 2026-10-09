@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "japanese-shell-";
-const CACHE = `${CACHE_PREFIX}v5`;
+const CACHE = `${CACHE_PREFIX}v6`;
 const BASE = new URL(self.registration.scope).pathname;
 const CORE = [BASE, `${BASE}manifest.webmanifest`, `${BASE}icon.svg`, `${BASE}icon-192.png`, `${BASE}icon-512.png`];
 
@@ -16,9 +16,8 @@ self.addEventListener("activate", (event) => {
           .filter((key) => key.startsWith(CACHE_PREFIX) && key !== CACHE)
           .map((key) => caches.delete(key)),
       ),
-    ),
+    ).then(() => self.clients.claim()),
   );
-  self.clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {
@@ -29,13 +28,18 @@ self.addEventListener("fetch", (event) => {
     requestUrl.origin !== self.location.origin ||
     !requestUrl.pathname.startsWith(BASE)
   ) return;
+  // Never persist an OAuth code/token in a CacheStorage request key. These
+  // routes require a network round trip and cannot use an offline login page.
+  if (requestUrl.pathname.startsWith(`${BASE}auth/`) ||
+      requestUrl.search || requestUrl.hash) return;
 
   event.respondWith(
     fetch(event.request)
       .then((response) => {
         if (response.ok) {
           const copy = response.clone();
-          void caches.open(CACHE).then((cache) => cache.put(event.request, copy));
+          event.waitUntil(caches.open(CACHE)
+            .then((cache) => cache.put(event.request, copy)).catch(() => {}));
         }
         return response;
       })
