@@ -29,7 +29,9 @@ test("PWA shell, integrated Study Player and canonical content survive offline r
   await search.fill("eat");
   await expect(page.locator(".j7-result").filter({hasText:"食べる"}).first()).toBeVisible({timeout:15_000});
   await search.fill("person");
-  await expect(page.getByRole("article").filter({hasText:"ひと"}).getByText("人",{exact:true})).toBeVisible({timeout:15_000});
+  const personResult=page.getByRole("listbox",{name:"Japanese reference results"})
+    .getByRole("option",{name:/^語彙 · Word 人 ひと/});
+  await expect(personResult).toBeVisible({timeout:15_000});
   await search.fill("food");
   await page.getByLabel("Reference type filters").getByRole("button",{name:/Kanji/}).click();
   await expect(page.locator(".j7-result.result-kanji").filter({hasText:"食"}).first()).toBeVisible({timeout:15_000});
