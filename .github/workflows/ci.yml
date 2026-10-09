@@ -55,6 +55,10 @@ jobs:
         env:
           J23_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node scripts/j23-release-reconciliation.mjs
+      - name: Record J24 pending independent operator-evidence readiness (never auto approve)
+        env:
+          J24_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j24-operator-evidence-qualification.mjs
       - name: Record J15D D4 evidence boundary (physical checks stay pending)
         run: pnpm qualify:j15d:d4
       - name: Record J14 automated qualification evidence
@@ -171,3 +175,4 @@ jobs:
             artifacts/j21-reviewer-submission-blank.json
             artifacts/j22-automated-acceptance.json
             artifacts/j23-release-evidence-reconciliation.json
+            artifacts/j24-operator-readiness.json
