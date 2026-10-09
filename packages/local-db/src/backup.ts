@@ -66,7 +66,15 @@ function validateOwner(accountId:string,name:Store,rows:readonly Row[]):void{
       throw new Error("JAPANESE_BACKUP_OWNER_MISMATCH");
     }
     if(name==="sync_outbox"){
-      if(row.app_id!=="japanese"||row.operation!=="append"||row.resource_type!=="study_event"){
+      // CoreSyncMutation is the outer envelope. app_id lives inside its
+      // StudyEventEnvelope payload, never at mutation top level.
+      const envelope=row.data;
+      if(row.primitive!=="event"||row.operation!=="append"||
+        row.resource_type!=="study_event"||row.resource_id!==id||
+        !isRow(envelope)||envelope.app_id!=="japanese"||
+        envelope.event_type!=="study.event"||envelope.event_id!==id||
+        !isRow(envelope.data)||envelope.data.id!==id||
+        "userId" in envelope.data||"receivedAt" in envelope.data){
         throw new Error("JAPANESE_BACKUP_OUTBOX_INVALID");
       }
     }
