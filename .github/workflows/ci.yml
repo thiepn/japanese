@@ -41,6 +41,10 @@ jobs:
         env:
           J20_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node scripts/j20-automated-acceptance.mjs
+      - name: Audit J21 Japanese sources and create unsigned independent reviewer packet
+        env:
+          J21_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j21-language-audit.mjs
       - name: Record J15D D4 evidence boundary (physical checks stay pending)
         run: pnpm qualify:j15d:d4
       - name: Record J14 automated qualification evidence
@@ -152,3 +156,6 @@ jobs:
             artifacts/j15d-d5-release-qualification.json
             artifacts/j15d-d5-release-qualification.md
             artifacts/j20-automated-qualification.json
+            artifacts/j21-content-audit.json
+            artifacts/j21-language-review-packet.json
+            artifacts/j21-reviewer-submission-blank.json
