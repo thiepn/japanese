@@ -1,4 +1,4 @@
-import {useEffect,useState,type ReactNode} from "react";
+import {useEffect,useRef,useState,type ReactNode} from "react";
 import {JPattern,JSeal,type JTheme} from "./index";
 import {j9SensoryFeedback,readJ9SensoryEnabled,setJ9SensoryEnabled} from "./j9Sensory";
 import {J10SeasonalWorld} from "./J10SeasonalWorld";
@@ -25,7 +25,8 @@ const SURFACES:readonly {
 export function J2AppShell({
   surface,
   onSurfaceChange,
-  accountActionLabel,
+  accountState,
+  accountConnected,
   accountBusy,
   onAccountAction,
   accountStatus,
@@ -34,16 +35,32 @@ export function J2AppShell({
 }:{
   surface:J2Surface;
   onSurfaceChange:(surface:J2Surface)=>void;
-  accountActionLabel:string;
+  accountState:"authenticated"|"anonymous"|"expired"|"loading";
+  accountConnected:boolean;
   accountBusy:boolean;
-  onAccountAction:()=>void;
+  onAccountAction:(action:"signIn"|"connect"|"signOut")=>void;
   accountStatus?:string|null;
   diagnosticsMode?:boolean;
   children:ReactNode;
 }){
   const [theme,setTheme]=useState<JTheme>(readJTheme);
   const [sensory,setSensory]=useState(readJ9SensoryEnabled);
+  const [accountOpen,setAccountOpen]=useState(false);
+  const accountAreaRef=useRef<HTMLDivElement>(null);
   const season=resolveJ10Season();
+
+  useEffect(()=>{
+    if(!accountOpen)return;
+    const dismiss=(event:PointerEvent)=>{
+      if(event.target instanceof Node&&!accountAreaRef.current?.contains(event.target))setAccountOpen(false);
+    };
+    const onKey=(event:KeyboardEvent)=>{
+      if(event.key==="Escape"){setAccountOpen(false);accountAreaRef.current?.querySelector<HTMLButtonElement>(".j2-account")?.focus();}
+    };
+    document.addEventListener("pointerdown",dismiss);
+    document.addEventListener("keydown",onKey);
+    return()=>{document.removeEventListener("pointerdown",dismiss);document.removeEventListener("keydown",onKey);};
+  },[accountOpen]);
 
   useEffect(()=>{
     persistJTheme(theme);
@@ -124,15 +141,57 @@ export function J2AppShell({
         >
           <span aria-hidden="true">{sensory?"響":"静"}</span>
         </button>
-        <button
-          className="j2-account"
-          disabled={accountBusy}
-          onClick={onAccountAction}
-          type="button"
-        >
-          <span className="j2-account__mon" aria-hidden="true">人</span>
-          <span>{accountBusy?"Account…":accountActionLabel}</span>
-        </button>
+        <div className="j2-account-area" ref={accountAreaRef}>
+          <button
+            aria-controls="japanese-account-panel"
+            aria-expanded={accountOpen}
+            aria-haspopup="dialog"
+            aria-label="Open THIEPN Account"
+            className="j2-account"
+            onClick={()=>setAccountOpen(open=>!open)}
+            type="button"
+          >
+            <span className="j2-account__mon" aria-hidden="true">人</span>
+            <span>Account</span>
+            <span className="j2-account__chevron" aria-hidden="true">{accountOpen?"−":"⌄"}</span>
+          </button>
+          {accountOpen?<section
+            aria-label="THIEPN Account"
+            className="j2-account-panel"
+            id="japanese-account-panel"
+            role="dialog"
+          >
+            <header className="j2-account-panel__header">
+              <div>
+                <p className="j2-account-panel__eyebrow">THIEPN · IDENTITY</p>
+                <h2>Account</h2>
+              </div>
+              <button aria-label="Close Account panel" className="j2-account-panel__close" onClick={()=>setAccountOpen(false)} type="button">×</button>
+            </header>
+            <div className="j2-account-panel__session" role="status">
+              <span className={"j2-account-panel__indicator"+(accountState==="authenticated"?" is-connected":"")} aria-hidden="true"/>
+              <div>
+                <strong>{accountState==="loading"?"Checking your session":accountState==="authenticated"?"Signed in to THIEPN Account":"Not signed in"}</strong>
+                <p>{accountState==="authenticated"
+                  ?accountConnected?"Japanese is connected on this device.":"Your identity is verified. Japanese is not yet connected."
+                  :accountState==="loading"?"Reading your saved THIEPN Account session.":"You can continue studying locally without signing in."}</p>
+              </div>
+            </div>
+            <div className="j2-account-panel__actions">
+              {accountState==="anonymous"||accountState==="expired"
+                ?<button className="j2-account-panel__primary" disabled={accountBusy} onClick={()=>{setAccountOpen(false);onAccountAction("signIn");}} type="button">Sign in with THIEPN Account</button>
+                :null}
+              {accountState==="authenticated"&&!accountConnected
+                ?<button className="j2-account-panel__primary" disabled={accountBusy} onClick={()=>{setAccountOpen(false);onAccountAction("connect");}} type="button">Connect Japanese to Account</button>
+                :null}
+              {accountState==="authenticated"
+                ?<button className="j2-account-panel__secondary" disabled={accountBusy} onClick={()=>{setAccountOpen(false);onAccountAction("signOut");}} type="button">Sign out of Japanese</button>
+                :null}
+              <a className="j2-account-panel__diagnostics" href={`${import.meta.env.BASE_URL}?diagnostics=1&panel=account`}>View sign-in diagnostics <span aria-hidden="true">↗</span></a>
+            </div>
+            <p className="j2-account-panel__footnote">Your study progress remains stored locally on this device. Signing in does not erase it.</p>
+          </section>:null}
+        </div>
       </div>
     </header>
 

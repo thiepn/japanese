@@ -236,16 +236,19 @@ export function App(){
     }catch{/* local storage can be unavailable in hardened browsers */}
   }
 
-  async function toggleAccount(){
+  async function performAccountAction(action:"signIn"|"connect"|"signOut"){
     if(accountBusy)return;
     setAccountBusy(true);
     setAccountMessage(null);
     try{
-      if(account.status!=="authenticated"){
+      if(action==="signIn"){
+        if(account.status==="authenticated")return;
         await JAPANESE_ACCOUNT.signIn();
         return;
       }
-      if(!accountConnected){
+      if(account.status!=="authenticated")return;
+      if(action==="connect"){
+        if(accountConnected)return;
         await JAPANESE_ACCOUNT.connectApp();
         const accountId=account.accountId;
         if(accountId){
@@ -267,6 +270,7 @@ export function App(){
         }
         return;
       }
+      if(action!=="signOut")return;
       await JAPANESE_ACCOUNT.signOut();
       setDevelopmentAccountId(GUEST_ACCOUNT_ID);
       setAuthenticAccountId(AUTHENTIC_GUEST_ACCOUNT_ID);
@@ -367,13 +371,6 @@ export function App(){
   const [diagnosticsMode,setDiagnosticsMode]=useState(
     ()=>new URLSearchParams(window.location.search).get("diagnostics")==="1",
   );
-  const accountActionLabel=accountResolving
-    ?"Checking THIEPN Account…"
-    :account.status!=="authenticated"
-    ?"Sign in with THIEPN Account"
-    :accountConnected
-      ?"Sign out"
-      :"Connect THIEPN Account";
   const navigateSurface=(next:Surface)=>{
     if(diagnosticsMode){
       const url=new URL(window.location.href);
@@ -392,9 +389,10 @@ export function App(){
       :<J2AppShell
         surface={surface}
         onSurfaceChange={navigateSurface}
-        accountActionLabel={accountActionLabel}
+        accountState={accountResolving?"loading":account.status}
+        accountConnected={accountConnected}
         accountBusy={accountBusy||accountResolving}
-        onAccountAction={()=>void toggleAccount()}
+        onAccountAction={(action)=>void performAccountAction(action)}
         accountStatus={accountMessage}
         diagnosticsMode={diagnosticsMode}
       >
