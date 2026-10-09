@@ -200,7 +200,16 @@ export function buildJapaneseAccountEntryUrl(
     authorization.pathname !== "/auth/v1/authorize" ||
     authorization.username ||
     authorization.password ||
-    authorization.hash
+    authorization.hash ||
+    authorization.searchParams.get("provider") !== "google" ||
+    authorization.searchParams.get("redirect_to") !== JAPANESE_CALLBACK_URL ||
+    authorization.searchParams.get("code_challenge_method")?.toLowerCase() !== "s256" ||
+    !/^[A-Za-z0-9_-]{43}$/.test(authorization.searchParams.get("code_challenge") ?? "") ||
+    authorization.searchParams.get("prompt") !== "select_account" ||
+    [...authorization.searchParams.keys()].some(key =>
+      !["provider","redirect_to","code_challenge","code_challenge_method","prompt"].includes(key) ||
+      authorization.searchParams.getAll(key).length !== 1
+    )
   ) {
     throw new Error("INVALID_AUTHORIZATION_URL");
   }
@@ -312,15 +321,22 @@ export function createThiepnAccountAuthProvider(
     // not the security authority.
 
     busy = true;
+    let exchanged = false;
     try {
       const response = await client.auth.exchangeCodeForSession(callback.code);
       if (response.error) throw response.error;
       if (revision !== authRevision) return current;
-      const result=await verify();
-      if(result.status==="authenticated")recordAuthStage("exchange-success");
-      return result;
+      // A successful code exchange has already created an app-local session.
+      // A later /user network failure is NOT a PKCE failure: retain the
+      // session and retry canonical user verification on the next refresh.
+      exchanged = true;
+      recordAuthStage("exchange-success");
+      return await verify();
     } catch (error) {
       if (revision !== authRevision) return current;
+      // Do not erase a successfully exchanged session or the pending
+      // connection intent when trusted /user verification is temporarily down.
+      if (exchanged) throw error;
       clearConnectIntent();
       const detail = error instanceof Error ? `${error.name} ${error.message}` : "";
       recordAuthFailure(/verifier|pkce/i.test(detail) ? "AUTH-03" : "AUTH-02");
@@ -377,7 +393,10 @@ export function createThiepnAccountAuthProvider(
         (typeof window === "undefined" ||
           window.location.pathname !== new URL(callbackUrl).pathname)
       ) {
-        void verify().catch(() => publish(ANONYMOUS_CONTEXT));
+        // A transient /user outage does not prove that a previously
+        // verified user signed out. Preserve the last trusted identity until
+        // a real signed-out event or a successful anonymous verification.
+        void verify().catch(() => {});
       }
     });
   });
