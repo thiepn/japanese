@@ -156,7 +156,11 @@ export async function restoreLocalWorkspaceBackup(accountId:string,raw:string):P
     if(bytes.length!==row.sizeBytes||bytes.length===0||bytes.length>20_000_000){
       throw new Error("JAPANESE_BACKUP_AUDIO_INVALID");
     }
-    captures.push({...row,audioBlob:new Blob([bytes],{type:audio.type})});
+    // The decoded bytes must be backed by ArrayBuffer (not SharedArrayBuffer)
+    // to satisfy modern DOM BlobPart types and preserve exact audio bytes.
+    const buffer=new ArrayBuffer(bytes.byteLength);
+    new Uint8Array(buffer).set(bytes);
+    captures.push({...row,audioBlob:new Blob([buffer],{type:audio.type})});
   }
   const restored:BackupRows={...rows,private_prosody_captures:captures};
   // Do not trust parsed contents merely because their SHA-256 is correct.
