@@ -319,14 +319,17 @@ async function claimGuestWorkspaceUnlocked(
   const guest = await openLocalDb(guestAccountId);
   let snapshot: Record<string, unknown[]>;
   try {
-    snapshot = Object.fromEntries(
-      await Promise.all(
-        stores.map(async (store) => [
-          store,
-          await getAllFromOpenStore<unknown>(guest, store),
-        ]),
-      ),
-    );
+    snapshot = await new Promise<Record<string, unknown[]>>((resolve, reject) => {
+      const transaction = guest.transaction([...stores], "readonly");
+      const rows: Record<string, unknown[]> = {};
+      for (const name of stores) {
+        const request = transaction.objectStore(name).getAll();
+        request.onsuccess = () => { rows[name] = request.result as unknown[]; };
+      }
+      transaction.oncomplete = () => resolve(rows);
+      transaction.onerror = () => reject(transaction.error);
+      transaction.onabort = () => reject(transaction.error);
+    });
   } finally {
     guest.close();
   }
@@ -335,54 +338,47 @@ async function claimGuestWorkspaceUnlocked(
     return "guest-empty";
 
   const destination = await openLocalDb(targetAccountId);
+  let copied = false;
   try {
-    await new Promise<void>((resolve, reject) => {
-      const transaction = destination.transaction([...stores], "readwrite");
-      for (const event of snapshot[STUDY_EVENTS] as StudyEvent[]) {
-        transaction
-          .objectStore(STUDY_EVENTS)
-          .put({ ...event, userId: targetAccountId });
+    copied = await new Promise<boolean>((resolve, reject) => {
+      const names = [...stores, SYNC_META];
+      const transaction = destination.transaction(names, "readwrite");
+      let remaining = names.length;
+      let empty = true;
+      let committedCopy = false;
+      // The empty check and copy must share a transaction. Other tabs cannot
+      // write into the destination between this check and these puts.
+      for (const name of names) {
+        const request = transaction.objectStore(name).count();
+        request.onsuccess = () => {
+          if (request.result > 0) empty = false;
+          remaining -= 1;
+          if (remaining > 0 || !empty) return;
+          try {
+            for (const store of stores) {
+              for (const record of snapshot[store] as Record<string, unknown>[]) {
+                const value = store === OUTBOX ? record
+                  : store === STUDY_EVENTS || store === MEMORY_TRACES
+                    ? { ...record, userId: targetAccountId }
+                    : { ...record, accountId: targetAccountId };
+                transaction.objectStore(store).put(value);
+              }
+            }
+            committedCopy = true;
+          } catch (error) {
+            transaction.abort();
+            reject(error);
+          }
+        };
       }
-      for (const trace of snapshot[MEMORY_TRACES] as MemoryTrace[]) {
-        transaction
-          .objectStore(MEMORY_TRACES)
-          .put({ ...trace, userId: targetAccountId });
-      }
-      for (const mutation of snapshot[OUTBOX] as CoreSyncMutation[]) {
-        transaction.objectStore(OUTBOX).put(mutation);
-      }
-      for (const document of snapshot[PRIVATE_DOCUMENTS] as PrivateDocumentRecord[]) {
-        transaction
-          .objectStore(PRIVATE_DOCUMENTS)
-          .put({ ...document, accountId: targetAccountId });
-      }
-      for (const record of snapshot[PRIVATE_VOCABULARY] as PrivateVocabularyRecord[]) {
-        transaction
-          .objectStore(PRIVATE_VOCABULARY)
-          .put({ ...record, accountId: targetAccountId });
-      }
-      for (const record of snapshot[PRIVATE_SENTENCES] as PrivateSentenceRecord[]) {
-        transaction
-          .objectStore(PRIVATE_SENTENCES)
-          .put({ ...record, accountId: targetAccountId });
-      }
-      for (const review of snapshot[PRIVATE_MEDIA_REVIEWS] as PrivateMediaReviewRecord[]) {
-        transaction
-          .objectStore(PRIVATE_MEDIA_REVIEWS)
-          .put({ ...review, accountId: targetAccountId });
-      }
-      for (const capture of snapshot[PRIVATE_PROSODY_CAPTURES] as PrivateProsodyCaptureRecord[]) {
-        transaction
-          .objectStore(PRIVATE_PROSODY_CAPTURES)
-          .put({ ...capture, accountId: targetAccountId });
-      }
-      transaction.oncomplete = () => resolve();
+      transaction.oncomplete = () => resolve(committedCopy);
       transaction.onerror = () => reject(transaction.error);
       transaction.onabort = () => reject(transaction.error);
     });
   } finally {
     destination.close();
   }
+  if (!copied) return "target-populated";
 
   // Remove only the rows actually copied. A late study save or import can
   // arrive during attachment; deleting the whole database would lose it.

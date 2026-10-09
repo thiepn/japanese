@@ -27,3 +27,7 @@ This change repairs existing behavior without changing the Japanese design or ad
 `tests/e2e/j16f-speech-cleanup.spec.ts` exercises the Learn -> Speaking -> Exit journey and verifies microphone abort and callback disconnection in all three browser profiles.
 
 The existing unit, content, build/budget and browser suites remain required. Local browser verification uses Chromium 134 because the configured Chromium 153 download was unavailable in the workspace; CI must independently exercise its configured browser on the exact PR head. Physical Android, actual Google login and the existing independent release signoffs remain separate evidence; this patch does not mark them passed or promote the candidate to stable.
+
+## J16G follow-up: preserve late destination writes
+
+A regression reproduced an account write arriving after the initial emptiness check but before attachment: the old claim returned `migrated` and replaced the account's colliding event. The guest snapshot now uses one readonly transaction across all copied stores, and the final destination emptiness check and copy share one readwrite transaction, including sync metadata. If the destination became populated, attachment returns `target-populated` and leaves both workspaces intact. The regression checks preservation of the destination's correct answer and the guest's separate incorrect answer.
