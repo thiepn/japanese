@@ -34,6 +34,8 @@ jobs:
       - name: Audit J15 native visual system
         run: pnpm verify:j15
       - run: pnpm exec playwright install --with-deps chromium
+      - name: J20 focused PWA and mobile regressions (fail fast)
+        run: pnpm exec playwright test tests/e2e/j20-device-recovery.spec.ts
       - run: pnpm test:e2e
       - name: Record J20 automated browser and PWA evidence (human checks remain pending)
         env:
