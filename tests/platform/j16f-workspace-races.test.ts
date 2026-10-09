@@ -98,4 +98,22 @@ describe("J16F auth and durable workspace races",()=>{
     expect((await localDb.listStudyEvents(guest)).map(row=>row.id)).toEqual(["late-guest-event"]);
     expect((await localDb.listStudyEvents(target)).map(row=>row.id)).toEqual(["snapshot-event"]);
   });
+
+  it("preserves account data written between the empty check and attachment",async()=>{
+    const guest="late-target-guest",target="late-target-account";
+    const event={id:"colliding-event",userId:guest,deviceId:"browser",occurredAt:new Date().toISOString(),activity:"review" as const,result:"incorrect" as const};
+    await localDb.saveStudyEvent(event);
+    const getAll=IDBObjectStore.prototype.getAll;
+    let lateSave:Promise<unknown>|undefined;
+    vi.spyOn(IDBObjectStore.prototype,"getAll").mockImplementation(function(this:IDBObjectStore,...args:Parameters<typeof getAll>){
+      if(this.transaction.db.name===localDb.databaseNameForAccount(guest)&&!lateSave){
+        lateSave=localDb.saveStudyEvent({...event,userId:target,result:"correct"});
+      }
+      return getAll.apply(this,args);
+    });
+    expect(await localDb.claimGuestWorkspace(guest,target)).toBe("target-populated");
+    await lateSave;
+    expect((await localDb.listStudyEvents(target))[0]?.result).toBe("correct");
+    expect((await localDb.listStudyEvents(guest))[0]?.result).toBe("incorrect");
+  });
 });
