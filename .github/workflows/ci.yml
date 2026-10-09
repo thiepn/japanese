@@ -36,6 +36,8 @@ jobs:
       - run: pnpm exec playwright install --with-deps chromium
       - name: J20 focused PWA and mobile regressions (fail fast)
         run: pnpm exec playwright test tests/e2e/j20-device-recovery.spec.ts
+      - name: J22 focused keyboard, reflow and semantic accessibility (fail fast)
+        run: pnpm exec playwright test tests/e2e/j22-accessibility.spec.ts
       - run: pnpm test:e2e
       - name: Record J20 automated browser and PWA evidence (human checks remain pending)
         env:
@@ -45,6 +47,10 @@ jobs:
         env:
           J21_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node scripts/j21-language-audit.mjs
+      - name: Record J22 semantic-accessibility and pending exact-head visual evidence
+        env:
+          J22_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j22-visual-accessibility.mjs
       - name: Record J15D D4 evidence boundary (physical checks stay pending)
         run: pnpm qualify:j15d:d4
       - name: Record J14 automated qualification evidence
@@ -159,3 +165,4 @@ jobs:
             artifacts/j21-content-audit.json
             artifacts/j21-language-review-packet.json
             artifacts/j21-reviewer-submission-blank.json
+            artifacts/j22-automated-acceptance.json
