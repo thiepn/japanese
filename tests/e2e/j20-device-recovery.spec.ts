@@ -38,6 +38,11 @@ test("J20 cached PWA restores graded local evidence offline and after simulated 
     if(!("serviceWorker" in navigator))throw new Error("J20_SERVICE_WORKER_UNAVAILABLE");
     await navigator.serviceWorker.ready;
   });
+  // A ready worker may not control the initial (uncontrolled) navigation.
+  // Warm an online reload, then require its controller before the offline drill.
+  await page.reload();
+  await expect.poll(()=>page.evaluate(()=>Boolean(navigator.serviceWorker.controller))).toBe(true);
+  await expect(page.getByRole("heading",{name:"Continue Japanese"})).toBeVisible();
   await page.getByRole("button",{name:/Continue today’s study|Review anyway/}).click();
   await expect(page.getByRole("heading",{name:"Five vowel sounds"})).toBeVisible();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
