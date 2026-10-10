@@ -24,6 +24,8 @@ test("J7 search preserves canonical local search and opens a word reference shee
   const search=page.getByRole("textbox",{name:"Search Japanese"});
   await search.fill("eat");
 
+  // Do not click a stale Starter shelf entry before the query completes.
+  await expect(page.locator(".j7-search__status")).toHaveText(/\d+ matches/,{timeout:15_000});
   const word=page.locator(".j7-result").filter({hasText:"食べる"}).first();
   await expect(word).toBeVisible({timeout:15_000});
   await word.getByRole("option").click();

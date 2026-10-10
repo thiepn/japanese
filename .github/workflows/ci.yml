@@ -67,6 +67,12 @@ jobs:
         env:
           J26_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node scripts/j26-independent-release-authority.mjs
+      - name: Seal J27 exact-head evidence chain and block independent human release
+        env:
+          J27_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          node scripts/j27-release-evidence-chain.mjs
+          node scripts/j27-release-evidence-chain.mjs --verify-chain artifacts/j27-evidence-chain.json
       - name: Record J15D D4 evidence boundary (physical checks stay pending)
         run: pnpm qualify:j15d:d4
       - name: Record J14 automated qualification evidence
@@ -186,3 +192,4 @@ jobs:
             artifacts/j24-operator-readiness.json
             artifacts/j25-controlled-release-decision.json
             artifacts/j26-protected-release-decision.json
+            artifacts/j27-evidence-chain.json
