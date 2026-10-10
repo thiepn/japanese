@@ -71,16 +71,38 @@ export function makeReproductionReport({candidateCommit,j33,j34,observation=null
   releaseAuthorized:false,decision:"BLOCKED_REAL_WORLD_EVIDENCE_NOT_INDEPENDENTLY_ACCEPTED"
  };
 }
+function pngCrc32(bytes){
+ let crc=0xffffffff;
+ for(const byte of bytes){crc^=byte;for(let i=0;i<8;i++)crc=crc&1?(crc>>>1)^0xedb88320:crc>>>1}
+ return (crc^0xffffffff)>>>0;
+}
 function safeRawPng(bytes,label){
  if(bytes.length<45||bytes.length>20_000_000||
  !bytes.subarray(0,8).equals(PNG_SIGNATURE)||
  bytes.toString("ascii",12,16)!=="IHDR"||
  bytes.readUInt32BE(16)<1||bytes.readUInt32BE(16)>32768||
- bytes.readUInt32BE(20)<1||bytes.readUInt32BE(20)>32768||
- bytes.toString("ascii",bytes.length-8,bytes.length-4)!=="IEND")error("PNG_STRUCTURE:"+label);
+ bytes.readUInt32BE(20)<1||bytes.readUInt32BE(20)>32768)error("PNG_STRUCTURE:"+label);
+ let pos=8,seenIhdr=false,seenIdat=false,seenIend=false;
+ while(pos<bytes.length){
+  if(pos+12>bytes.length)error("PNG_TRUNCATED:"+label);
+  const size=bytes.readUInt32BE(pos),next=pos+12+size;
+  if(size>20_000_000||next>bytes.length)error("PNG_CHUNK_LENGTH:"+label);
+  const tag=bytes.toString("ascii",pos+4,pos+8);
+  if(!/^[A-Za-z]{4}$/.test(tag))error("PNG_CHUNK_TYPE:"+label);
+  if(pngCrc32(bytes.subarray(pos+4,pos+8+size))!==bytes.readUInt32BE(pos+8+size))error("PNG_CRC:"+label);
+  if(!seenIhdr){if(tag!=="IHDR"||size!==13)error("PNG_IHDR:"+label);seenIhdr=true}
+  else if(tag==="IHDR")error("PNG_DUPLICATE_IHDR:"+label);
+  if(tag==="IDAT")seenIdat=true;
+  if(tag==="IEND"){if(size!==0||next!==bytes.length)error("PNG_IEND:"+label);seenIend=true}
+  pos=next;
+ }
+ if(!seenIend||!seenIdat)error("PNG_INCOMPLETE:"+label);
 }
 /** Optional local-only original inventory inspection; hashes and counts do not prove originality. */
 export function inspectOriginalFiles({manifest,manifestBytes,sourceRoot,candidateCommit}){
+ if(!Buffer.isBuffer(manifestBytes)||digest(manifestBytes)===undefined)error("MANIFEST_BYTES_REQUIRED");
+ let parsed;try{parsed=JSON.parse(manifestBytes.toString("utf8"))}catch{error("ORIGINAL_MANIFEST_BYTES_INVALID")}
+ if(JSON.stringify(parsed)!==JSON.stringify(manifest))error("ORIGINAL_MANIFEST_BYTES_DIFFER");
  if(!SHA.test(candidateCommit)||manifest?.schema!=="thiepn-japanese-j35-original-files"||
  manifest.version!==1||manifest.candidateCommit!==candidateCommit||
  manifest.humanApprovedCases!==0||manifest.humanApprovedPngs!==0||
