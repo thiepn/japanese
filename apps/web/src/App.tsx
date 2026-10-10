@@ -76,7 +76,7 @@ export function App(){
   const [results,setResults]=useState<SearchResult[]>([]);
   const [libraryStatus,setLibraryStatus]=useState<"idle"|"loading"|"ready"|"error">("idle");
   const [session,setSession]=useState<StudyStep[]|null>(null);
-  const [sessionStatus,setSessionStatus]=useState<"idle"|"loading"|"error">("idle");
+  const [sessionStatus,setSessionStatus]=useState<"idle"|"loading"|"error"|"empty">("idle");
   const [summary,setSummary]=useState<StudySummary>(EMPTY_SUMMARY);
   const [kanaMastery,setKanaMastery]=useState<KanaMasterySummary>(EMPTY_KANA);
   const [vocabMastery,setVocabMastery]=useState<VocabularyMasterySummary>(EMPTY_VOCAB);
