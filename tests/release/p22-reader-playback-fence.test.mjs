@@ -4,8 +4,8 @@ import {ReaderPlaybackFence} from "../../apps/web/src/immerse/playbackFence";
 describe("Reader recorded-audio evidence cancellation",()=>{
   it("does not award listening completion after closing a reader",async()=>{
     const fence=new ReaderPlaybackFence();
-    let resolvePlayback!:()=>void;
-    const provider={play:()=>new Promise<void>(resolve=>{resolvePlayback=resolve}),stop:()=>resolvePlayback()};
+    let resolvePlayback=()=>{};
+    const provider={play:()=>new Promise(resolve=>{resolvePlayback=resolve}),stop:()=>resolvePlayback()};
     let completed=0;
     const epoch=fence.begin();
     const task=provider.play().then(()=>{if(fence.accepts(epoch))completed++});
