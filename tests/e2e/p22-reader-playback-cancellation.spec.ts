@@ -53,7 +53,7 @@ test("failed sentence speech does not award listening evidence and offers a retr
     const last=(window as any).__readerSpeech.utterances.at(-1);
     last?.onerror?.();
   });
-  await expect(page.getByRole("status")).toContainText("Sentence playback failed");
+  await expect(page.locator(".j6-reader__tools .audio-error")).toContainText("Sentence playback failed");
   await expect(page.getByRole("button",{name:"Replay sentence"}).first()).toBeEnabled();
   await page.locator(".j6-reader__back").click();
   const card=page.locator(".j6-cover").filter({hasText:"A school morning"});
