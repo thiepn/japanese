@@ -46,7 +46,9 @@ test("J7 differentiates kanji from word results and filters without changing sea
   await kanjiFilter.click();
 
   const results=page.locator(".j7-result");
-  expect(await results.count()).toBeGreaterThan(0);
+  // Local search runs asynchronously: require a rendered match rather than
+  // sampling an intermediate empty result set immediately after filtering.
+  await expect(results.first()).toBeVisible({timeout:15_000});
   await expect(results.first()).toHaveClass(/result-kanji/);
 
   const first=results.first();
