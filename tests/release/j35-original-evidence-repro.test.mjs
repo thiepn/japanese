@@ -25,7 +25,7 @@ function exportOf(kit){
  independentlyWitnessed:false,humanAcceptanceGranted:false,mergeAuthorized:false,deploymentAuthorized:false,
  releaseAuthorized:false,finalDecision:"UNVERIFIED_OPERATOR_NOTES_NOT_RELEASE_AUTHORITY"};
 }
-const png=Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/wHYAAAAASUVORK5CYII=","base64");
+const png=Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR4nGP4DwQACfsD/fteaysAAAAASUVORK5CYII=","base64");
 function makeInventory(){
  const folder=fs.mkdtempSync(path.join(os.tmpdir(),"j35-synthetic-"));
  fs.mkdirSync(path.join(folder,"original"));
@@ -102,16 +102,29 @@ describe("J35 real-world defect and original-file operator utility",()=>{
    expect(()=>inspectOriginalFiles({...d,sourceRoot:d.folder,candidateCommit:sha})).toThrow(/J35_ORIGINAL_NONFILE_OR_SYMLINK/);
   }finally{fs.rmSync(d.folder,{recursive:true,force:true})}
  });
+ it("rejects PNG payloads with invalid embedded CRC even when manifest SHA matches",()=>{
+  const d=makeInventory();
+  try{
+   const bad=Buffer.from(png);bad[45]^=1;
+   fs.writeFileSync(path.join(d.folder,"original","example-0.png"),bad);
+   d.manifest.pngs[0].sha256=hash(bad);
+   d.manifestBytes=Buffer.from(JSON.stringify(d.manifest));
+   expect(()=>inspectOriginalFiles({...d,sourceRoot:d.folder,candidateCommit:sha})).toThrow(/J35_PNG_CRC/);
+  }finally{fs.rmSync(d.folder,{recursive:true,force:true})}
+ });
  it("rejects missing case coverage, duplicated filenames, forged approvals",()=>{
   const d=makeInventory();
   try{
-   d.manifest.pngs[0].caseId=d.manifest.pngs[1].caseId;
+   for(const i of [0,42,84])d.manifest.pngs[i].caseId=d.manifest.pngs[1].caseId;
+   d.manifestBytes=Buffer.from(JSON.stringify(d.manifest));
    expect(()=>inspectOriginalFiles({...d,sourceRoot:d.folder,candidateCommit:sha})).toThrow(/J35_UNMAPPED_CASE/);
-   d.manifest.pngs[0].caseId=d.manifest.cases[0].id;
+   for(const i of [0,42,84])d.manifest.pngs[i].caseId=d.manifest.cases[0].id;
    d.manifest.pngs[0].originalFilename=d.manifest.pngs[1].originalFilename;
+   d.manifestBytes=Buffer.from(JSON.stringify(d.manifest));
    expect(()=>inspectOriginalFiles({...d,sourceRoot:d.folder,candidateCommit:sha})).toThrow(/J35_ORIGINAL_PNG_INVENTORY/);
    d.manifest.pngs[0].originalFilename="example-0.png";
    d.manifest.humanApprovedCases=1;
+   d.manifestBytes=Buffer.from(JSON.stringify(d.manifest));
    expect(()=>inspectOriginalFiles({...d,sourceRoot:d.folder,candidateCommit:sha})).toThrow(/J35_ORIGINAL_MANIFEST_INVALID/);
   }finally{fs.rmSync(d.folder,{recursive:true,force:true})}
  });
@@ -119,9 +132,11 @@ describe("J35 real-world defect and original-file operator utility",()=>{
   const d=makeInventory();
   try{
    d.manifest.pngs[0].relativePath="../escape.png";
+   d.manifestBytes=Buffer.from(JSON.stringify(d.manifest));
    expect(()=>inspectOriginalFiles({...d,sourceRoot:d.folder,candidateCommit:sha})).toThrow(/J35_ORIGINAL_PNG_INVENTORY/);
    d.manifest.pngs[0].relativePath="original/example-0.png";
    d.manifest.candidateCommit="b".repeat(40);
+   d.manifestBytes=Buffer.from(JSON.stringify(d.manifest));
    expect(()=>inspectOriginalFiles({...d,sourceRoot:d.folder,candidateCommit:sha})).toThrow(/J35_ORIGINAL_MANIFEST_INVALID/);
   }finally{fs.rmSync(d.folder,{recursive:true,force:true})}
  });
