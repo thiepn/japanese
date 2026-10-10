@@ -121,7 +121,7 @@ export function renderJ34FieldKit(kit){
  '<p>Target exact commit: <code id="target"></code></p><label for="observed">Observed deployment commit (40 lowercase hexadecimal characters)</label><input id="observed" autocomplete="off" spellcheck="false" maxlength="40" placeholder="Read from the deployed release-meta.json">'+
  '<label for="operator">Non-identifying operator alias</label><input id="operator" autocomplete="off" maxlength="64" placeholder="e.g. device-tester-A">'+
  '<div id="groups"></div><p>Observed PASS/FAIL is an operator note, not a certified release result. Wrong or absent deployed commit prevents exporting passes.</p>'+
- '<button id="export" type="button">Export unverified session JSON</button><p id="export-info" aria-live="polite"></p>'+
+ '<label for="resume">Resume previously exported unverified JSON (local only)</label><input id="resume" type="file" accept=".json,application/json"><p id="resume-info" role="status" aria-live="polite">No prior session loaded; acceptance remains OPEN.</p>'+\n '<button id="export" type="button">Export unverified session JSON</button><p id="export-info" aria-live="polite"></p>'+
  '<script id="j34-seed" type="application/json">'+seed+'</script>'+
  '<script>(function(){"use strict";'+
  'const kit=JSON.parse(document.getElementById("j34-seed").textContent);'+
@@ -138,6 +138,29 @@ export function renderJ34FieldKit(kit){
  'const banner=document.getElementById("status");function refresh(){const n=selects.filter(x=>x.value!=="NOT_TESTED").length;'+
  'const match=observed.value===kit.candidateCommit;banner.textContent=(match?"Exact SHA entered; ":"STOP — exact deployed SHA not confirmed; ")+n+" / "+selects.length+" observations entered. All independent acceptance remains OPEN; release BLOCKED."}'+
  'observed.addEventListener("input",refresh);selects.forEach(x=>x.addEventListener("change",refresh));refresh();'+
+ 'document.getElementById("resume").addEventListener("change",async function(){'+
+ 'const output=document.getElementById("resume-info");const file=this.files&&this.files[0];'+
+ 'if(!file){output.textContent="No session selected; acceptance remains OPEN.";return}'+
+ 'try{if(file.size<2||file.size>131072)throw Error("size");'+
+ 'const raw=JSON.parse(await file.text());const same=raw.candidateCommit===kit.candidateCommit&&raw.j33ReportSha256===kit.j33ReportSha256;'+
+ 'const safe=raw.schema==="thiepn-japanese-j34-operator-observation-export"&&raw.version===1&&same&&'+
+ 'raw.observedCommit===kit.candidateCommit&&raw.buildIdentityMatched===true&&raw.independentlyWitnessed===false&&'+
+ 'raw.humanAcceptanceGranted===false&&raw.mergeAuthorized===false&&raw.deploymentAuthorized===false&&'+
+ 'raw.releaseAuthorized===false&&raw.finalDecision==="UNVERIFIED_OPERATOR_NOTES_NOT_RELEASE_AUTHORITY"&&'+
+ 'typeof raw.operatorAlias==="string"&&raw.operatorAlias.length<=64&&Array.isArray(raw.observations)&&'+
+ 'raw.observations.length===selects.length;'+
+ 'if(!safe)throw Error("source");'+
+ 'for(let i=0;i<selects.length;i++){const v=raw.observations[i];const e=selects[i];'+
+ 'if(!v||v.group!==e.dataset.group||v.check!==e.dataset.check||'+
+ '!["NOT_TESTED","OBSERVED_PASS","OBSERVED_FAIL"].includes(v.status)||'+
+ 'typeof v.note!=="string"||v.note.length>1200||typeof v.evidenceRef!=="string"||v.evidenceRef.length>250)throw Error("item")}'+
+ 'document.getElementById("observed").value=kit.candidateCommit;'+
+ 'document.getElementById("operator").value=raw.operatorAlias;'+
+ 'raw.observations.forEach((v,i)=>{const e=selects[i],box=e.closest(".check");e.value=v.status;box.querySelector("textarea").value=v.note;box.querySelector("input").value=v.evidenceRef});'+
+ 'refresh();output.textContent="Prior unverified notes restored locally; all independent acceptance stays OPEN."'+
+ '}catch{output.textContent="Import rejected: missing, altered or mismatched exact-head unverified session. No fields changed."}'+
+ 'this.value=""});'+
+ 
  'document.getElementById("export").addEventListener("click",function(){const match=observed.value===kit.candidateCommit;'+
  'const observations=selects.map(s=>{const container=s.closest(".check");return {group:s.dataset.group,check:s.dataset.check,status:match?s.value:"NOT_TESTED",'+
  'note:container.querySelector("textarea").value,evidenceRef:container.querySelector("input").value}});'+
