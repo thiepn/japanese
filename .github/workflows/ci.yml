@@ -77,6 +77,10 @@ jobs:
         env:
           J28_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node scripts/j28-independent-custody.mjs
+      - name: Generate J29 default-denied witnessed acceptance reconciliation
+        env:
+          J29_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j29-witness-reconciliation.mjs
       - name: Record J15D D4 evidence boundary (physical checks stay pending)
         run: pnpm qualify:j15d:d4
       - name: Record J14 automated qualification evidence
@@ -199,3 +203,5 @@ jobs:
             artifacts/j27-evidence-chain.json
             artifacts/j28-operator-workbench.json
             artifacts/j28-operator-workbench.html
+            artifacts/j29-operator-reconciliation.json
+            artifacts/j29-operator-reconciliation.html
