@@ -120,8 +120,8 @@ export function App(){
     setC1Foundation(EMPTY_C1_FOUNDATION);
     setImmersion(EMPTY_IMMERSION);
     setCompletedToday(0);
-    setResults([]);
-    setLibraryStatus("idle");
+    // The local core Library index is public and not owner-scoped; keep its
+    // current search results so switching accounts cannot strand its UI.
     setPreferredCoachChain(null);
   }
 
