@@ -113,6 +113,8 @@ export function J4Learn(props:Props){
           Move through one continuous path from script foundations to advanced discourse.
           Each landmark reflects the same course order, evidence, mastery and delayed checks already used by the learning engine.
         </p>
+        {status==="empty"?<p role="status">No steps are available for that activity yet. Try another lesson.</p>:null}
+        {status==="error"?<p role="alert">This activity could not be loaded. Try again.</p>:null}
         <div className="j4-hero__actions">
           <button className="j4-primary" disabled={status==="loading"} onClick={onStart} type="button">
             <span aria-hidden="true">進</span>
