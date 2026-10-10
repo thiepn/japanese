@@ -189,7 +189,7 @@ export function renderOperatorHtml(r){
  '<meta name="viewport" content="width=device-width,initial-scale=1">'+
  '<title>Japanese J28 — operator acceptance</title><style>'+
  ':root{color-scheme:light dark;font-family:system-ui,sans-serif;background:#f4f2ed;color:#232727}'+
- '*{box-sizing:border-box}body{max-width:1100px;margin:auto;padding:clamp(16px,4vw,48px);line-height:1.5}'+
+ '*{box-sizing:border-box}html,body,main,section,header,table{max-width:100%;min-width:0;overflow-wrap:anywhere}body{width:100%;max-width:1100px;margin:auto;padding:clamp(16px,4vw,48px);line-height:1.5}table{table-layout:fixed}caption{display:block;max-width:100%;text-align:left;overflow-wrap:anywhere}'+
  'h1{font-size:clamp(1.7rem,3vw,2.5rem)}header{border-bottom:3px solid currentColor}'+
  '.decision{padding:14px;border-left:5px solid #795d3c;background:#e8e0d1;font-weight:700}'+
  'code{overflow-wrap:anywhere}table{width:100%;border-collapse:collapse}'+
