@@ -145,7 +145,7 @@ describe("J30 independent primary archive audit and human signoff boundary",()=>
   const {f}=fixture();
   expect(()=>inspectPrimaryEvidenceAudit({...f,auditManifestPin:null})).toThrow(/J30_SHA256_REQUIRED/);
   expect(()=>inspectPrimaryEvidenceAudit({...f,auditorRosterPin:"0".repeat(64)})).toThrow(/J30_INDEPENDENT_PIN_MISMATCH/);
-  expect(()=>inspectPrimaryEvidenceAudit({...f,candidateCommit:WRONG})).toThrow(/J29_/);
+  expect(()=>inspectPrimaryEvidenceAudit({...f,candidateCommit:WRONG})).toThrow(/J28_J27_NOT_QUALIFIED_OR_WRONG_SHA/);
   expect(()=>buildBlockedAudit({...f,j29:{...f.j29,releaseAuthorized:true}})).toThrow(/J30_J29_NOT_CANONICAL_BLOCKED/)
  });
  it("rejects source bytes altered after signature and independently mismatched witness primary digest",()=>{
