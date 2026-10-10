@@ -37,7 +37,7 @@ test("J32 semantic operator procedures survive dark mode, reduced motion and key
  await page.emulateMedia({colorScheme:"dark",reducedMotion:"reduce"});
  await page.setContent(renderOperatorHtml(report));
  await expect(page.getByRole("table")).toBeVisible();
- expect(await page.getByRole("cell",{name:"OPEN"}).count()).toBe(9);
+ expect(await page.getByRole("cell",{name:"OPEN",exact:true}).count()).toBe(9);
  await expect(page.getByRole("rowheader")).toHaveCount(9);
  await page.keyboard.press("Tab");
  expect(await page.getByRole("button").count()).toBe(0);
