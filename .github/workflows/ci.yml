@@ -93,6 +93,10 @@ jobs:
         env:
           J32_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node scripts/j32-signoff-intake.mjs
+      - name: Generate J33 read-only real-world discrepancy triage (human acceptance stays open)
+        env:
+          J33_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j33-evidence-triage.mjs
       - name: Record J15D D4 evidence boundary (physical checks stay pending)
         run: pnpm qualify:j15d:d4
       - name: Record J14 automated qualification evidence
@@ -224,3 +228,5 @@ jobs:
             artifacts/j32-signoff-intake.json
             artifacts/j32-signoff-intake.html
             artifacts/j32-unsigned-intake-template.json
+            artifacts/j33-evidence-triage.json
+            artifacts/j33-evidence-triage.html
