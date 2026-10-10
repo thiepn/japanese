@@ -121,7 +121,7 @@ export function renderJ34FieldKit(kit){
  '<p>Target exact commit: <code id="target"></code></p><label for="observed">Observed deployment commit (40 lowercase hexadecimal characters)</label><input id="observed" autocomplete="off" spellcheck="false" maxlength="40" placeholder="Read from the deployed release-meta.json">'+
  '<label for="operator">Non-identifying operator alias</label><input id="operator" autocomplete="off" maxlength="64" placeholder="e.g. device-tester-A">'+
  '<div id="groups"></div><p>Observed PASS/FAIL is an operator note, not a certified release result. Wrong or absent deployed commit prevents exporting passes.</p>'+
- '<label for="resume">Resume previously exported unverified JSON (local only)</label><input id="resume" type="file" accept=".json,application/json"><p id="resume-info" role="status" aria-live="polite">No prior session loaded; acceptance remains OPEN.</p>'+
+ '<label for="resume">Resume previously exported unverified JSON (local only)</label><input id="resume" type="file" accept=".json,application/json"><p id="resume-info" aria-live="polite">No prior session loaded; acceptance remains OPEN.</p>'+
  '<button id="export" type="button">Export unverified session JSON</button><p id="export-info" aria-live="polite"></p>'+
  '<script id="j34-seed" type="application/json">'+seed+'</script>'+
  '<script>(function(){"use strict";'+
