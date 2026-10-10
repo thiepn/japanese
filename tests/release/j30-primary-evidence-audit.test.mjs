@@ -136,6 +136,8 @@ describe("J30 independent primary archive audit and human signoff boundary",()=>
   expect(r.auditedSourceRows.every(row=>row.sourceHashMatchesWitnessClaim&&row.independentAuditSignature)).toBe(true);
   expect(r.domains.every(row=>row.status==="OPEN")).toBe(true);
   expect(r.signoffReadiness).toBe("NOT_READY");
+  expect(r.unresolvedDiscrepancies.some(x=>x.startsWith("Nine independent primary evidence files"))).toBe(false);
+  expect(r.unresolvedDiscrepancies.some(x=>x.includes("real-world source authenticity"))).toBe(true);
   expect(r.humanAcceptanceGranted).toBe(false);
   expect(r.mergeAuthorized).toBe(false);expect(r.deploymentAuthorized).toBe(false);
   expect(r.releaseAuthorized).toBe(false);
