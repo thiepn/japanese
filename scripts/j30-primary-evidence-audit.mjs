@@ -195,7 +195,7 @@ export function inspectPrimaryEvidenceAudit({candidateCommit,j27,j28,j29,witness
  if(seenDomains.size!==9)reject("INCOMPLETE_PRIMARY_AUDIT");
  const proposedLedger={...ledger,consumedBatches:[...ledger.consumedBatches,manifest.batchId],
  receiptDigests:[...ledger.receiptDigests,auditManifestPin]};
- return {...base,independentPrimaryArchive:"NINE_PINNED_SOURCE_HASHES_MATCH_SIGNED_CLAIMS_ONLY",
+ return {...base,unresolvedDiscrepancies:[...base.unresolvedDiscrepancies.filter(x=>!x.startsWith("Nine independent primary evidence files")),"Nine primary source hashes matched witness claims; independent real-world source authenticity and human approval remain unverified"],independentPrimaryArchive:"NINE_PINNED_SOURCE_HASHES_MATCH_SIGNED_CLAIMS_ONLY",
   verifiedPrimaryEvidenceFiles:9,externalAuditorRoster:"EXTERNALLY_PINNED_SIGNATURES_VALID",
   externalWitnesses:"SIGNED_STATEMENTS_NOT_REAL_WORLD_AUTHENTICATION",
   revocationAndContinuity:"SUPPLIED_PINNED_RECORDS_STRUCTURALLY_CURRENT",
