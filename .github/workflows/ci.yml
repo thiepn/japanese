@@ -85,6 +85,10 @@ jobs:
         env:
           J30_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node scripts/j30-primary-evidence-audit.mjs
+      - name: Generate J31 exact-head default-denied independent operator handoff
+        env:
+          J31_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j31-operator-handoff.mjs
       - name: Record J15D D4 evidence boundary (physical checks stay pending)
         run: pnpm qualify:j15d:d4
       - name: Record J14 automated qualification evidence
@@ -211,3 +215,5 @@ jobs:
             artifacts/j29-operator-reconciliation.html
             artifacts/j30-signoff-readiness.json
             artifacts/j30-signoff-readiness.html
+            artifacts/j31-operator-handoff.json
+            artifacts/j31-operator-handoff.html
