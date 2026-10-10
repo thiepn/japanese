@@ -137,12 +137,12 @@ export function verifyApprovalRoster({rosterBytes,externalSha256,inspectedAt}){
  */
 export function approvalPayload({candidateCommit,admissionReceiptSha256,
   decisionContextSha256,stagingCommit,rollbackCommit,visualPacketSha256,
-  reviewSha256,requestedAt,expiresAt,role,signerId}){
+  reviewSha256,requestedAt,expiresAt,role,signerId,signedAt}){
   return JSON.stringify({
     schema:"thiepn-japanese-j26-detached-human-approval",version:1,
     candidateCommit,admissionReceiptSha256,decisionContextSha256,
     stagingCommit,rollbackCommit,visualPacketSha256,reviewSha256,
-    requestedAt,expiresAt,role,signerId,
+    requestedAt,expiresAt,role,signerId,signedAt,
     disposition:"ACKNOWLEDGE_EVIDENCE_ONLY_NO_AUTOMATIC_CUTOVER"
   });
 }
@@ -152,7 +152,7 @@ export function approvalPayload({candidateCommit,admissionReceiptSha256,
  */
 export function inspectIndependentApprovals({
   candidateCommit,j25Admission,approvalPackage,rosterBytes,rosterPin,
-  inspectedAt,j24EvidenceSignerIds=[]
+  inspectedAt,j24EvidenceSignerIds
 }){
   assertCandidate(candidateCommit);
   const roster=verifyApprovalRoster({rosterBytes,externalSha256:rosterPin,inspectedAt});
@@ -190,9 +190,9 @@ export function inspectIndependentApprovals({
   if(!Array.isArray(pkg.approvals)||pkg.approvals.length!==APPROVAL_ROLES.length){
     reject("HUMAN_APPROVAL_QUORUM_INCOMPLETE");
   }
-  if(!Array.isArray(j24EvidenceSignerIds)||j24EvidenceSignerIds.some(x=>typeof x!=="string")||
-    new Set(j24EvidenceSignerIds).size!==j24EvidenceSignerIds.length){
-    reject("INVALID_EVIDENCE_SIGNER_CONTEXT");
+  if(!Array.isArray(j24EvidenceSignerIds)||j24EvidenceSignerIds.length!==9||
+    j24EvidenceSignerIds.some(x=>typeof x!=="string"||!x.trim())){
+    reject("EVIDENCE_SIGNER_CONTEXT_REQUIRED");
   }
   const usedRoles=new Set(),usedIds=new Set();
   for(const approval of pkg.approvals){
@@ -205,16 +205,18 @@ export function inspectIndependentApprovals({
     const signer=roster.ids.get(signerId);
     if(!signer||signer.role!==role)reject("APPROVER_ROLE_UNTRUSTED:"+role);
     const signed=instant(approval.signedAt,"signature");
-    if(signed<requested||signed>checked+5*60_000||signed>expiry){
+    if(signed<requested||signed>checked+5*60_000||signed>expiry||
+       signed<instant(signer.validFrom,"approver-key-start")||
+       signed>instant(signer.validUntil,"approver-key-expiry")){
       reject("STALE_OR_FUTURE_APPROVER_SIGNATURE");
     }
-    const body=approvalPayload({...pkg,role,signerId});
-    let sig;
-    try{sig=Buffer.from(approval.signature,"base64");}
-    catch{reject("APPROVAL_SIGNATURE_NOT_BASE64");}
     if(typeof approval.signature!=="string"||
-      !/^[A-Za-z0-9+/]+={0,2}$/.test(approval.signature)||
-      sig.length!==64||!crypto.verify(null,Buffer.from(body),signer.key,sig)){
+      !/^[A-Za-z0-9+/]+={0,2}$/.test(approval.signature)){
+      reject("APPROVAL_SIGNATURE_NOT_BASE64");
+    }
+    const body=approvalPayload({...pkg,role,signerId,signedAt:approval.signedAt});
+    const sig=Buffer.from(approval.signature,"base64");
+    if(sig.length!==64||!crypto.verify(null,Buffer.from(body),signer.key,sig)){
       reject("APPROVAL_SIGNATURE_MISMATCH:"+role);
     }
     usedRoles.add(role);usedIds.add(signerId);
@@ -267,17 +269,27 @@ export function runCli(args=process.argv.slice(2)){
     process.stdout.write("J26 exact-head protected release BLOCKED: missing authentic independent operator acceptance\n");
     return decision;
   }
-  if(args.length!==6||args[0]!=="--inspect-approval"||args[2]!=="--admission"||args[4]!=="--roster"){
+  if(args.length!==8||args[0]!=="--inspect-approval"||args[2]!=="--admission"||args[4]!=="--roster"||args[6]!=="--evidence-receipt"){
     reject("OFFLINE_INSPECTION_USAGE");
   }
   if(!isDigest(process.env.J26_APPROVAL_ROSTER_SHA256))reject("INDEPENDENT_ROSTER_PIN_REQUIRED");
   const j25Admission=JSON.parse(fs.readFileSync(path.resolve(args[3]),"utf8"));
   const approvalPackage=JSON.parse(fs.readFileSync(path.resolve(args[1]),"utf8"));
   const rosterBytes=fs.readFileSync(path.resolve(args[5]));
+  const j24Receipt=JSON.parse(fs.readFileSync(path.resolve(args[7]),"utf8"));
+  if(j24Receipt?.schema!=="thiepn-japanese-j24-cryptographic-provenance-receipt"||
+     j24Receipt.candidateCommit!==candidateCommit||
+     j24Receipt.locallyHashedEvidenceCount!==9||
+     j24Receipt.signaturesValidAgainstSuppliedRoster!==true||
+     j24Receipt.releaseAuthorized!==false||
+     !Array.isArray(j24Receipt.evidence)||j24Receipt.evidence.length!==9||
+     j24Receipt.evidence.some(row=>!row||typeof row.signerId!=="string"||!row.signerId.trim())){
+    reject("J24_EVIDENCE_RECEIPT_INVALID");
+  }
   const receipt=inspectIndependentApprovals({
     candidateCommit,j25Admission,approvalPackage,rosterBytes,
     rosterPin:process.env.J26_APPROVAL_ROSTER_SHA256,inspectedAt:new Date().toISOString(),
-    j24EvidenceSignerIds:JSON.parse(process.env.J26_EXISTING_EVIDENCE_SIGNERS_JSON||"[]")
+    j24EvidenceSignerIds:j24Receipt.evidence.map(row=>row.signerId)
   });
   process.stdout.write(JSON.stringify(receipt,null,2)+"\n");
   return receipt;

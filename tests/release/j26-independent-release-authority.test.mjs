@@ -59,12 +59,13 @@ function setup(){
           candidateCommit:SHA,admissionReceiptSha256:sha256(Buffer.from(JSON.stringify(admission))),
           decisionContextSha256:dig("decision-context"),visualPacketSha256:dig("42x126 original archive"),
           reviewSha256:dig("language-review"),stagingCommit:SHA,rollbackCommit:OLD,
-          requestedAt:"2026-10-10T11:30:00.000Z",expiresAt:"2026-10-11T11:30:00.000Z",role,signerId
+          requestedAt:"2026-10-10T11:30:00.000Z",expiresAt:"2026-10-11T11:30:00.000Z",role,signerId,
+          signedAt:"2026-10-10T11:45:00.000Z"
         })),keys[signerId]).toString("base64")};
     })
   };
   return {candidateCommit:SHA,j25Admission:admission,approvalPackage:pkg,rosterBytes,
-    rosterPin:sha256(rosterBytes),inspectedAt:DATE,j24EvidenceSignerIds:["upstream-operator"],keys};
+    rosterPin:sha256(rosterBytes),inspectedAt:DATE,j24EvidenceSignerIds:Array.from({length:9},(_,i)=>"upstream-"+i),keys};
 }
 describe("J26 protected release and genuine approval boundaries",()=>{
   it("writes only a blocked decision from the exact-head machine evidence",()=>{
@@ -120,10 +121,16 @@ describe("J26 protected release and genuine approval boundaries",()=>{
     const f=setup();
     const bad=structuredClone(f.approvalPackage);bad.approvals[0].signature=Buffer.alloc(64).toString("base64");
     expect(()=>inspectIndependentApprovals({...f,approvalPackage:bad})).toThrow(/J26_APPROVAL_SIGNATURE_MISMATCH/);
+    const moved=structuredClone(f.approvalPackage);
+    moved.approvals[0].signedAt="2026-10-10T11:50:00.000Z";
+    expect(()=>inspectIndependentApprovals({...f,approvalPackage:moved}))
+      .toThrow(/J26_APPROVAL_SIGNATURE_MISMATCH/);
     const swapped=structuredClone(f.approvalPackage);swapped.approvals[0].role="accessibility";
     expect(()=>inspectIndependentApprovals({...f,approvalPackage:swapped})).toThrow(/J26_APPROVER_ROLE_UNTRUSTED|J26_APPROVER_SEPARATION/);
-    expect(()=>inspectIndependentApprovals({...f,j24EvidenceSignerIds:["product-fixture"]}))
+    expect(()=>inspectIndependentApprovals({...f,j24EvidenceSignerIds:["product-fixture",...f.j24EvidenceSignerIds.slice(1)]}))
       .toThrow(/J26_APPROVER_SEPARATION_OR_ROLE_INVALID/);
+    expect(()=>inspectIndependentApprovals({...f,j24EvidenceSignerIds:[]}))
+      .toThrow(/J26_EVIDENCE_SIGNER_CONTEXT_REQUIRED/);
     const short=structuredClone(f.approvalPackage);short.approvals.pop();
     expect(()=>inspectIndependentApprovals({...f,approvalPackage:short})).toThrow(/J26_HUMAN_APPROVAL_QUORUM_INCOMPLETE/);
   });
