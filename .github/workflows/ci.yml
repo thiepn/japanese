@@ -97,6 +97,10 @@ jobs:
         env:
           J33_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node scripts/j33-evidence-triage.mjs
+      - name: Generate J34 offline real-world field kit (operator notes never equal acceptance)
+        env:
+          J34_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j34-real-world-field-kit.mjs
       - name: Record J15D D4 evidence boundary (physical checks stay pending)
         run: pnpm qualify:j15d:d4
       - name: Record J14 automated qualification evidence
@@ -147,7 +151,7 @@ jobs:
       - name: Generate P9 release qualification report
         run: pnpm certify:p9 --regression artifacts/p9-regression-evidence.json
       - name: Generate P11 release-candidate decision
-        run: pnpm qualify:p11 --regression artifacts/p9-regression-evidence.json
+        run: pnpm qualify:p11 --regression artifacts/p9-regression-evidence.json --commit ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Record P21 consolidation evidence
         run: |
           cat > artifacts/p21-regression-evidence.json <<'JSON'
@@ -167,7 +171,7 @@ jobs:
           }
           JSON
       - name: Generate P21 final release-candidate decision
-        run: pnpm certify:p21 --regression artifacts/p21-regression-evidence.json --device release/p21-device-acceptance.json --p11 artifacts/p11-release-candidate-qualification.json
+        run: pnpm certify:p21 --regression artifacts/p21-regression-evidence.json --device release/p21-device-acceptance.json --p11 artifacts/p11-release-candidate-qualification.json --commit ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Validate P22 production manifest without claiming activation
         run: pnpm monitor:p22
       - name: Validate P22 defect-only maintenance ledger
@@ -230,3 +234,5 @@ jobs:
             artifacts/j32-unsigned-intake-template.json
             artifacts/j33-evidence-triage.json
             artifacts/j33-evidence-triage.html
+            artifacts/j34-field-kit.json
+            artifacts/j34-field-kit.html
