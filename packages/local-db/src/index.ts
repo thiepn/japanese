@@ -126,7 +126,9 @@ export async function saveStudyReview(event: StudyEvent, trace?: MemoryTrace): P
     await new Promise<void>((resolve, reject) => {
       const transaction = db.transaction([STUDY_EVENTS, OUTBOX, MEMORY_TRACES], "readwrite");
       try {
-        transaction.objectStore(STUDY_EVENTS).put(event);
+        // StudyEvents are immutable: a duplicate ID aborts the entire review,
+        // including its outbox mutation and scheduler projection.
+        transaction.objectStore(STUDY_EVENTS).add(event);
         transaction.objectStore(OUTBOX).put(mutation);
         if (trace) transaction.objectStore(MEMORY_TRACES).put(trace);
       } catch (error) {

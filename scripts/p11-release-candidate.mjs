@@ -224,7 +224,7 @@ function p9RegressionActual(report){
 function requireString(value,label){if(typeof value!=="string"||!value.trim())throw new Error("P11_FIELD_REQUIRED:"+label);}
 function requireIsoDate(value,errorCode){if(typeof value!=="string"||!Number.isFinite(Date.parse(value)))throw new Error(errorCode);}
 function parseArgs(args){
-  const out={inventory:DEFAULT_INVENTORY,external:DEFAULT_EXTERNAL,providers:DEFAULT_PROVIDERS,regression:null,outDir:"artifacts",strict:false};
+  const out={inventory:DEFAULT_INVENTORY,external:DEFAULT_EXTERNAL,providers:DEFAULT_PROVIDERS,regression:null,outDir:"artifacts",strict:false,commit:null};
   for(let i=0;i<args.length;i+=1){
     const arg=args[i];
     if(arg==="--strict"){out.strict=true;continue;}
@@ -233,6 +233,7 @@ function parseArgs(args){
     if(arg==="--providers"){out.providers=args[++i];continue;}
     if(arg==="--regression"){out.regression=args[++i];continue;}
     if(arg==="--out-dir"){out.outDir=args[++i];continue;}
+    if(arg==="--commit"){out.commit=args[++i];continue;}
     throw new Error("UNKNOWN_ARGUMENT:"+arg);
   }
   return out;
@@ -240,13 +241,14 @@ function parseArgs(args){
 
 export function runCli(args=process.argv.slice(2)){
   const options=parseArgs(args);
+  if(options.commit!==null&&!/^[a-f0-9]{40}$/.test(options.commit))throw new Error("P11_EXACT_COMMIT_REQUIRED");
   const staticMetrics=getStaticProductMetrics(ROOT);
   const native=summarizeNativeInventory(readP9Json(path.resolve(ROOT,options.inventory)));
   const regression=normalizeRegressionEvidence(options.regression?readJson(path.resolve(ROOT,options.regression)):{});
   const p9Report=buildQualificationReport({staticMetrics,native,regression});
   const external=summarizeExternalValidation(readJson(path.resolve(ROOT,options.external)));
   const providers=summarizeProviderBenchmarks(readJson(path.resolve(ROOT,options.providers)));
-  const report=buildP11QualificationReport({p9Report,external,providers});
+  const report=buildP11QualificationReport({p9Report,external,providers,commit:options.commit??process.env.GITHUB_SHA??null});
 
   const outDir=path.resolve(ROOT,options.outDir);
   fs.mkdirSync(outDir,{recursive:true});

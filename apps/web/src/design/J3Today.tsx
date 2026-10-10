@@ -92,6 +92,7 @@ export function J3Today({summary,completedToday,status,onStart}:J3TodayProps){
         </div>
 
         {status==="error"?<p className="j3-today__error" role="status">Could not open local study data. Reload and try again.</p>:null}
+        {status==="empty"?<p className="j3-today__error" role="status">No study items are due right now. Open Learn to choose a lesson.</p>:null}
       </div>
 
       <aside className="j3-today__ritual" aria-label="Today overview">

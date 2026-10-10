@@ -24,6 +24,8 @@ test("J7 search preserves canonical local search and opens a word reference shee
   const search=page.getByRole("textbox",{name:"Search Japanese"});
   await search.fill("eat");
 
+  // Do not click a stale Starter shelf entry before the query completes.
+  await expect(page.locator(".j7-search__status")).toHaveText(/\d+ matches/,{timeout:15_000});
   const word=page.locator(".j7-result").filter({hasText:"食べる"}).first();
   await expect(word).toBeVisible({timeout:15_000});
   await word.getByRole("option").click();
@@ -46,7 +48,9 @@ test("J7 differentiates kanji from word results and filters without changing sea
   await kanjiFilter.click();
 
   const results=page.locator(".j7-result");
-  expect(await results.count()).toBeGreaterThan(0);
+  // Local search runs asynchronously: require a rendered match rather than
+  // sampling an intermediate empty result set immediately after filtering.
+  await expect(results.first()).toBeVisible({timeout:15_000});
   await expect(results.first()).toHaveClass(/result-kanji/);
 
   const first=results.first();

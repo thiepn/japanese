@@ -34,7 +34,77 @@ jobs:
       - name: Audit J15 native visual system
         run: pnpm verify:j15
       - run: pnpm exec playwright install --with-deps chromium
+      - name: J20 focused PWA and mobile regressions (fail fast)
+        run: pnpm exec playwright test tests/e2e/j20-device-recovery.spec.ts
+      - name: J22 focused keyboard, reflow and semantic accessibility (fail fast)
+        run: pnpm exec playwright test tests/e2e/j22-accessibility.spec.ts
       - run: pnpm test:e2e
+      - name: Record J20 automated browser and PWA evidence (human checks remain pending)
+        env:
+          J20_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j20-automated-acceptance.mjs
+      - name: Audit J21 Japanese sources and create unsigned independent reviewer packet
+        env:
+          J21_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j21-language-audit.mjs
+      - name: Record J22 semantic-accessibility and pending exact-head visual evidence
+        env:
+          J22_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j22-visual-accessibility.mjs
+      - name: Reconcile J23 exact-head automated evidence without inferring human approval
+        env:
+          J23_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j23-release-reconciliation.mjs
+      - name: Record J24 pending independent operator-evidence readiness (never auto approve)
+        env:
+          J24_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j24-operator-evidence-qualification.mjs
+      - name: Record J25 independently blocked controlled-release decision
+        env:
+          J25_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j25-independent-acceptance.mjs
+      - name: Record J26 protected release decision (missing human authority remains blocked)
+        env:
+          J26_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j26-independent-release-authority.mjs
+      - name: Seal J27 exact-head evidence chain and block independent human release
+        env:
+          J27_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          node scripts/j27-release-evidence-chain.mjs
+          node scripts/j27-release-evidence-chain.mjs --verify-chain artifacts/j27-evidence-chain.json
+      - name: Generate J28 default-denied independent operator workbench
+        env:
+          J28_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j28-independent-custody.mjs
+      - name: Generate J29 default-denied witnessed acceptance reconciliation
+        env:
+          J29_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j29-witness-reconciliation.mjs
+      - name: Generate J30 default-denied independent primary audit and signoff workbench
+        env:
+          J30_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j30-primary-evidence-audit.mjs
+      - name: Generate J31 exact-head default-denied independent operator handoff
+        env:
+          J31_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j31-operator-handoff.mjs
+      - name: Generate J32 original source intake and unsigned operator template
+        env:
+          J32_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j32-signoff-intake.mjs
+      - name: Generate J33 read-only real-world discrepancy triage (human acceptance stays open)
+        env:
+          J33_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j33-evidence-triage.mjs
+      - name: Generate J34 offline real-world field kit (operator notes never equal acceptance)
+        env:
+          J34_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j34-real-world-field-kit.mjs
+      - name: Generate J35 truthful original-evidence and reproducible-defect worklist
+        env:
+          J35_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j35-original-evidence-repro.mjs
       - name: Record J15D D4 evidence boundary (physical checks stay pending)
         run: pnpm qualify:j15d:d4
       - name: Record J14 automated qualification evidence
@@ -85,7 +155,7 @@ jobs:
       - name: Generate P9 release qualification report
         run: pnpm certify:p9 --regression artifacts/p9-regression-evidence.json
       - name: Generate P11 release-candidate decision
-        run: pnpm qualify:p11 --regression artifacts/p9-regression-evidence.json
+        run: pnpm qualify:p11 --regression artifacts/p9-regression-evidence.json --commit ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Record P21 consolidation evidence
         run: |
           cat > artifacts/p21-regression-evidence.json <<'JSON'
@@ -105,7 +175,7 @@ jobs:
           }
           JSON
       - name: Generate P21 final release-candidate decision
-        run: pnpm certify:p21 --regression artifacts/p21-regression-evidence.json --device release/p21-device-acceptance.json --p11 artifacts/p11-release-candidate-qualification.json
+        run: pnpm certify:p21 --regression artifacts/p21-regression-evidence.json --device release/p21-device-acceptance.json --p11 artifacts/p11-release-candidate-qualification.json --commit ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Validate P22 production manifest without claiming activation
         run: pnpm monitor:p22
       - name: Validate P22 defect-only maintenance ledger
@@ -145,3 +215,30 @@ jobs:
             artifacts/j15d-d5-regression-evidence.json
             artifacts/j15d-d5-release-qualification.json
             artifacts/j15d-d5-release-qualification.md
+            artifacts/j20-automated-qualification.json
+            artifacts/j21-content-audit.json
+            artifacts/j21-language-review-packet.json
+            artifacts/j21-reviewer-submission-blank.json
+            artifacts/j22-automated-acceptance.json
+            artifacts/j23-release-evidence-reconciliation.json
+            artifacts/j24-operator-readiness.json
+            artifacts/j25-controlled-release-decision.json
+            artifacts/j26-protected-release-decision.json
+            artifacts/j27-evidence-chain.json
+            artifacts/j28-operator-workbench.json
+            artifacts/j28-operator-workbench.html
+            artifacts/j29-operator-reconciliation.json
+            artifacts/j29-operator-reconciliation.html
+            artifacts/j30-signoff-readiness.json
+            artifacts/j30-signoff-readiness.html
+            artifacts/j31-operator-handoff.json
+            artifacts/j31-operator-handoff.html
+            artifacts/j32-signoff-intake.json
+            artifacts/j32-signoff-intake.html
+            artifacts/j32-unsigned-intake-template.json
+            artifacts/j33-evidence-triage.json
+            artifacts/j33-evidence-triage.html
+            artifacts/j34-field-kit.json
+            artifacts/j34-field-kit.html
+            artifacts/j35-evidence-reproduction.json
+            artifacts/j35-evidence-reproduction.md

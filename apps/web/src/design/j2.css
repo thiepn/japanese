@@ -652,3 +652,45 @@ html[data-j-theme],html[data-j-theme] body,html[data-j-theme] #root{
     transform:none;
   }
 }
+
+
+/* Account is a navigation surface: opening it must never launch OAuth or sign out. */
+.j2-account-area{position:relative;flex:none}
+.j2-account[aria-expanded="true"]{border-color:var(--j-line-strong);background:var(--j-bg-elevated)}
+.j2-account__chevron{font-size:15px;line-height:1;color:var(--j-fg-muted)}
+.j2-account-panel{
+  position:absolute;
+  z-index:90;
+  top:calc(100% + 10px);
+  right:0;
+  width:min(345px,calc(100vw - 24px));
+  padding:18px;
+  border:1px solid var(--j-line-strong);
+  border-radius:3px 13px 13px 13px;
+  color:var(--j-fg);
+  background:var(--j-bg-elevated);
+  box-shadow:0 16px 48px rgba(16,18,20,.18);
+  white-space:normal;
+}
+.j2-account-panel__header{display:flex;justify-content:space-between;align-items:start;gap:10px;margin-bottom:16px}
+.j2-account-panel__eyebrow{margin:0 0 4px;color:var(--j-fg-muted);font-size:9px;font-weight:750;letter-spacing:.11em}
+.j2-account-panel__header h2{margin:0;font-family:var(--j-font-editorial);font-size:27px;line-height:1.1}
+.j2-account-panel__close{width:34px;height:34px;flex:none;border:1px solid var(--j-line);border-radius:3px;color:var(--j-fg);background:var(--j-bg);font-size:23px;cursor:pointer}
+.j2-account-panel__session{display:flex;align-items:flex-start;gap:10px;padding:13px 0;border-top:1px solid var(--j-line);border-bottom:1px solid var(--j-line)}
+.j2-account-panel__indicator{width:8px;height:8px;margin-top:6px;border-radius:50%;flex:none;background:var(--j-fg-muted)}
+.j2-account-panel__indicator.is-connected{background:#43846e}
+.j2-account-panel__session strong{font-size:14px}
+.j2-account-panel__session p{margin:5px 0 0;color:var(--j-fg-muted);font-size:12px;line-height:1.5}
+.j2-account-panel__actions{display:grid;gap:9px;margin-top:15px}
+.j2-account-panel__actions button,.j2-account-panel__diagnostics{min-height:44px;display:flex;align-items:center;justify-content:center;padding:10px 12px;border-radius:3px 8px 8px 8px;text-align:center;font-size:12px;font-weight:750;cursor:pointer}
+.j2-account-panel__primary{border:1px solid var(--j-fg);color:var(--j-bg);background:var(--j-fg)}
+.j2-account-panel__secondary{border:1px solid var(--j-line-strong);color:var(--j-fg);background:var(--j-bg)}
+.j2-account-panel__actions button:disabled{opacity:.5;cursor:default}
+.j2-account-panel__diagnostics{gap:6px;text-decoration:none;border:1px solid var(--j-line);color:var(--j-fg);background:transparent}
+.j2-account-panel__diagnostics:hover{border-color:var(--j-line-strong)}
+.j2-account-panel__footnote{margin:13px 0 0;font-size:11px;color:var(--j-fg-muted);line-height:1.45}
+@media(max-width:760px){
+  .j2-account{display:grid;place-items:center;padding:4px}
+  .j2-account>span:not(.j2-account__mon){display:none}
+  .j2-account-panel{max-height:calc(100dvh - 94px - env(safe-area-inset-top));overflow-y:auto}
+}
