@@ -10,6 +10,7 @@ import { getImmersionProgress,type ImmersionProgress } from "./immerse/reader";
 import { AUTHENTIC_GUEST_ACCOUNT_ID,setAuthenticAccountId } from "./immerse/authentic";
 import { StudyPlayer,type StudyAnswer } from "./study/StudyPlayer";
 import { StudySessionFence } from "./study/sessionFence";
+import { DashboardRefreshGuard } from "./study/dashboardRefreshGuard";
 import { J2AppShell,type J2Surface } from "./design/J2AppShell";
 import { J3Today } from "./design/J3Today";
 import { J4Learn } from "./design/J4Learn";
@@ -98,11 +99,13 @@ export function App(){
   const [accountResolving,setAccountResolving]=useState(true);
   const [accountMessage,setAccountMessage]=useState<string|null>(null);
   const sessionFence=useRef(new StudySessionFence());
+  const dashboardRefreshGuard=useRef(new DashboardRefreshGuard());
   const sessionOwner=useRef<string|null>(null);
 
   // Never leave the previous owner's learner state visible after switching.
   function clearLearnerView(){
     sessionFence.current.invalidate();
+    dashboardRefreshGuard.current.invalidate();
     sessionOwner.current=null;
     setSession(null);
     setSessionStatus("idle");
@@ -227,8 +230,9 @@ export function App(){
     };
   },[]);
   useEffect(()=>{
-    void refreshDashboard().then(()=>{
-      if(account.status==="authenticated"&&accountConnected){
+    void refreshDashboard().then((applied)=>{
+      // Do not publish an earlier owner's dashboard after an auth transition.
+      if(applied&&account.status==="authenticated"&&accountConnected&&getDevelopmentAccountId()===account.accountId){
         void JAPANESE_LANGUAGE_DASHBOARD.publish().catch(()=>{/* Core dashboard is non-blocking */});
       }
     });
@@ -250,15 +254,18 @@ export function App(){
     return()=>{cancelled=true;globalThis.clearTimeout(timeout);};
   },[query,surface]);
 
-  async function refreshDashboard(){
+  function refreshDashboard():Promise<boolean>{
     const workspaceId=getDevelopmentAccountId();
-    try{
-      const [nextSummary,nextKana,nextVocab,nextConjugation,nextGrammar,nextSentence,nextLexicalFluency,nextCourse,nextMilestone,nextB1Milestone,nextB2Milestone,nextC1Foundation,nextImmersion,nextCompletedToday]=await Promise.all([
+    return dashboardRefreshGuard.current.run(
+      workspaceId,
+      getDevelopmentAccountId,
+      ()=>Promise.all([
         getStudySummary(),getKanaMasterySummary(),getVocabularyMasterySummary(),getConjugationMasterySummary(),getGrammarMasterySummary(),getSentenceMasterySummary(),getLexicalFluencySummary(),getCourseProgress(),getA1MilestoneAssessmentProgress(),getB1MilestoneAssessmentProgress(),getB2MilestoneAssessmentProgress(),getC1FoundationAssessmentProgress(),getImmersionProgress(),getCompletedTodayCount()
-      ]);
-      if(getDevelopmentAccountId()!==workspaceId)return;
-      setSummary(nextSummary);setKanaMastery(nextKana);setVocabMastery(nextVocab);setConjugationMastery(nextConjugation);setGrammarMastery(nextGrammar);setSentenceMastery(nextSentence);setLexicalFluency(nextLexicalFluency);setCourseProgress(nextCourse);setMilestone(nextMilestone);setB1Milestone(nextB1Milestone);setB2Milestone(nextB2Milestone);setC1Foundation(nextC1Foundation);setImmersion(nextImmersion);setCompletedToday(nextCompletedToday);
-    }catch{/* local storage can be unavailable in hardened browsers */}
+      ]),
+      ([nextSummary,nextKana,nextVocab,nextConjugation,nextGrammar,nextSentence,nextLexicalFluency,nextCourse,nextMilestone,nextB1Milestone,nextB2Milestone,nextC1Foundation,nextImmersion,nextCompletedToday])=>{
+        setSummary(nextSummary);setKanaMastery(nextKana);setVocabMastery(nextVocab);setConjugationMastery(nextConjugation);setGrammarMastery(nextGrammar);setSentenceMastery(nextSentence);setLexicalFluency(nextLexicalFluency);setCourseProgress(nextCourse);setMilestone(nextMilestone);setB1Milestone(nextB1Milestone);setB2Milestone(nextB2Milestone);setC1Foundation(nextC1Foundation);setImmersion(nextImmersion);setCompletedToday(nextCompletedToday);
+      },
+    );
   }
 
   async function performAccountAction(action:"signIn"|"connect"|"signOut"){
@@ -289,8 +296,8 @@ export function App(){
                 ?"Local guest progress was attached to your THIEPN Account on this device."
                 :null,
           );
-          await refreshDashboard();
-          void JAPANESE_LANGUAGE_DASHBOARD.publish().catch(()=>{
+          const dashboardApplied=await refreshDashboard();
+          if(dashboardApplied&&getDevelopmentAccountId()===accountId)void JAPANESE_LANGUAGE_DASHBOARD.publish().catch(()=>{
             setAccountMessage("Japanese is connected to THIEPN Account, but the shared language dashboard could not be refreshed yet.");
           });
         }
@@ -359,8 +366,8 @@ export function App(){
     if(active instanceof HTMLElement)active.blur();
     setSession(null);
     requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:"auto"})));
-    void refreshDashboard().then(()=>{
-      if(account.status==="authenticated"&&accountConnected){
+    void refreshDashboard().then((applied)=>{
+      if(applied&&account.status==="authenticated"&&accountConnected&&getDevelopmentAccountId()===account.accountId){
         void JAPANESE_LANGUAGE_DASHBOARD.publish().catch(()=>{/* Core dashboard is non-blocking */});
       }
     });
