@@ -1,4 +1,4 @@
-import { Suspense,lazy,useEffect,useLayoutEffect,useState } from "react";
+import { Suspense,lazy,useEffect,useLayoutEffect,useRef,useState } from "react";
 import { createThiepnAccountAuthProvider,getRecentJapaneseAuthFailure,type AuthContext } from "@thiepn/auth";
 import { getDefaultAudioProvider } from "@thiepn/audio";
 import { claimGuestWorkspace } from "@thiepn/local-db";
@@ -9,6 +9,7 @@ import { Immersion } from "./immerse/Immersion";
 import { getImmersionProgress,type ImmersionProgress } from "./immerse/reader";
 import { AUTHENTIC_GUEST_ACCOUNT_ID,setAuthenticAccountId } from "./immerse/authentic";
 import { StudyPlayer,type StudyAnswer } from "./study/StudyPlayer";
+import { StudySessionFence } from "./study/sessionFence";
 import { J2AppShell,type J2Surface } from "./design/J2AppShell";
 import { J3Today } from "./design/J3Today";
 import { J4Learn } from "./design/J4Learn";
@@ -96,15 +97,39 @@ export function App(){
   const [accountBusy,setAccountBusy]=useState(false);
   const [accountResolving,setAccountResolving]=useState(true);
   const [accountMessage,setAccountMessage]=useState<string|null>(null);
+  const sessionFence=useRef(new StudySessionFence());
+  const sessionOwner=useRef<string|null>(null);
+
+  // Never leave the previous owner's learner state visible after switching.
+  function clearLearnerView(){
+    sessionFence.current.invalidate();
+    sessionOwner.current=null;
+    setSession(null);
+    setSessionStatus("idle");
+    setSummary(EMPTY_SUMMARY);
+    setKanaMastery(EMPTY_KANA);
+    setVocabMastery(EMPTY_VOCAB);
+    setConjugationMastery(EMPTY_CONJUGATION);
+    setGrammarMastery(EMPTY_GRAMMAR);
+    setSentenceMastery(EMPTY_SENTENCE);
+    setLexicalFluency(EMPTY_LEXICAL_FLUENCY);
+    setCourseProgress([]);
+    setMilestone(EMPTY_MILESTONE);
+    setB1Milestone(EMPTY_B1_MILESTONE);
+    setB2Milestone(EMPTY_B2_MILESTONE);
+    setC1Foundation(EMPTY_C1_FOUNDATION);
+    setImmersion(EMPTY_IMMERSION);
+    setCompletedToday(0);
+    setResults([]);
+    setLibraryStatus("idle");
+    setPreferredCoachChain(null);
+  }
 
   useEffect(()=>{
     let active=true;
     let generation=0;
     const switchWorkspace=(accountId:string)=>{
-      if(getDevelopmentAccountId()!==accountId){
-        setSession(null);
-        setCompletedToday(0);
-      }
+      if(getDevelopmentAccountId()!==accountId)clearLearnerView();
       setDevelopmentAccountId(accountId);
       setAuthenticAccountId(accountId);
     };
@@ -253,6 +278,7 @@ export function App(){
         const accountId=account.accountId;
         if(accountId){
           const claimResult=await claimGuestWorkspace(GUEST_ACCOUNT_ID,accountId);
+          if(getDevelopmentAccountId()!==accountId)clearLearnerView();
           setDevelopmentAccountId(accountId);
           setAuthenticAccountId(accountId);
           setAccountConnected(true);
@@ -272,6 +298,7 @@ export function App(){
       }
       if(action!=="signOut")return;
       await JAPANESE_ACCOUNT.signOut();
+      if(getDevelopmentAccountId()!==GUEST_ACCOUNT_ID)clearLearnerView();
       setDevelopmentAccountId(GUEST_ACCOUNT_ID);
       setAuthenticAccountId(AUTHENTIC_GUEST_ACCOUNT_ID);
       setAccountConnected(false);
@@ -286,73 +313,48 @@ export function App(){
 
   function openSession(queue:StudyStep[]){
     const audio=queue.filter((step)=>Boolean(step.audio)).flatMap((step)=>step.audio?[step.audio]:[]);
-    if(audio.length)void getDefaultAudioProvider().prefetch(audio);
+    if(audio.length)void getDefaultAudioProvider().prefetch(audio).catch(()=>{/* Audio prefetch failure is nonfatal. */});
+    sessionOwner.current=queue.length?getDevelopmentAccountId():null;
     setSession(queue.length?queue:null);
   }
 
-  async function startStudy(){
+  async function loadStudySession(build:()=>Promise<StudyStep[]>){
+    const ticket=sessionFence.current.begin(getDevelopmentAccountId());
     setSessionStatus("loading");
-    try{openSession(await buildTodayQueue());setSessionStatus("idle");}catch{setSessionStatus("error");}
+    try{
+      const queue=await build();
+      if(!sessionFence.current.accepts(ticket,getDevelopmentAccountId()))return;
+      openSession(queue);
+      setSessionStatus(queue.length?"idle":"empty");
+    }catch{
+      if(sessionFence.current.accepts(ticket,getDevelopmentAccountId()))setSessionStatus("error");
+    }
   }
-  async function startCourseUnit(unitId:string){
-    setSessionStatus("loading");
-    try{openSession(await buildCourseUnitSession(unitId));setSessionStatus("idle");}catch{setSessionStatus("error");}
-  }
-  async function startUnitAssessment(unitId:string){
-    setSessionStatus("loading");
-    try{openSession(await buildUnitAssessmentSession(unitId));setSessionStatus("idle");}catch{setSessionStatus("error");}
-  }
-  async function startMilestoneAssessment(){
-    setSessionStatus("loading");
-    try{openSession(await buildA1MilestoneSession());setSessionStatus("idle");}catch{setSessionStatus("error");}
-  }
-  async function startB1MilestoneAssessment(){
-    setSessionStatus("loading");
-    try{openSession(await buildB1MilestoneSession());setSessionStatus("idle");}catch{setSessionStatus("error");}
-  }
-  async function startB2MilestoneAssessment(){
-    setSessionStatus("loading");
-    try{openSession(await buildB2MilestoneSession());setSessionStatus("idle");}catch{setSessionStatus("error");}
-  }
-  async function startC1FoundationAssessment(){
-    setSessionStatus("loading");
-    try{openSession(await buildC1FoundationSession());setSessionStatus("idle");}catch{setSessionStatus("error");}
-  }
-  async function startC1FoundationPractice(){
-    setSessionStatus("loading");
-    try{openSession(await buildC1FoundationPractice());setSessionStatus("idle");}catch{setSessionStatus("error");}
-  }
-  async function startProductive(mode:"writing"|"speaking"){
-    setSessionStatus("loading");
-    try{openSession(await buildProductivePractice(mode));setSessionStatus("idle");}catch{setSessionStatus("error");}
-  }
-  async function startLexicalFluency(){
-    setSessionStatus("loading");
-    try{openSession(await buildLexicalFluencyPractice(12));setSessionStatus("idle");}catch{setSessionStatus("error");}
-  }
-  async function startProductiveTask(taskId:string){
-    setSessionStatus("loading");
-    try{openSession(await buildProductiveTaskPractice(taskId));setSessionStatus("idle");}catch{setSessionStatus("error");}
-  }
-  async function startC1Synthesis(packId:string){
-    setSessionStatus("loading");
-    try{openSession(await buildP13C1SynthesisSession(packId));setSessionStatus("idle");}catch{setSessionStatus("error");}
-  }
-  async function startRealWorldChain(chainId:string){
-    setSessionStatus("loading");
-    try{openSession(await buildP9RealWorldChainSession(chainId));setSessionStatus("idle");}catch{setSessionStatus("error");}
-  }
-  async function startRealWorldQualification(){
-    setSessionStatus("loading");
-    try{openSession(await buildP9RealWorldQualificationSession(10));setSessionStatus("idle");}catch{setSessionStatus("error");}
-  }
+
+  const startStudy=()=>loadStudySession(()=>buildTodayQueue());
+  const startCourseUnit=(unitId:string)=>loadStudySession(()=>buildCourseUnitSession(unitId));
+  const startUnitAssessment=(unitId:string)=>loadStudySession(()=>buildUnitAssessmentSession(unitId));
+  const startMilestoneAssessment=()=>loadStudySession(()=>buildA1MilestoneSession());
+  const startB1MilestoneAssessment=()=>loadStudySession(()=>buildB1MilestoneSession());
+  const startB2MilestoneAssessment=()=>loadStudySession(()=>buildB2MilestoneSession());
+  const startC1FoundationAssessment=()=>loadStudySession(()=>buildC1FoundationSession());
+  const startC1FoundationPractice=()=>loadStudySession(()=>buildC1FoundationPractice());
+  const startProductive=(mode:"writing"|"speaking")=>loadStudySession(()=>buildProductivePractice(mode));
+  const startLexicalFluency=()=>loadStudySession(()=>buildLexicalFluencyPractice(12));
+  const startProductiveTask=(taskId:string)=>loadStudySession(()=>buildProductiveTaskPractice(taskId));
+  const startC1Synthesis=(packId:string)=>loadStudySession(()=>buildP13C1SynthesisSession(packId));
+  const startRealWorldChain=(chainId:string)=>loadStudySession(()=>buildP9RealWorldChainSession(chainId));
+  const startRealWorldQualification=()=>loadStudySession(()=>buildP9RealWorldQualificationSession(10));
 
   async function handleAnswer(answer:StudyAnswer){
     const workspaceId=getDevelopmentAccountId();
+    if(sessionOwner.current!==workspaceId)throw new Error("Study session belongs to a different workspace.");
     await recordStudyAnswer({prompt:answer.prompt,response:answer.response,result:answer.grade.result,responseTimeMs:answer.responseTimeMs});
     if(getDevelopmentAccountId()===workspaceId)setCompletedToday((value)=>value+1);
   }
   function finishSession(){
+    sessionFence.current.invalidate();
+    sessionOwner.current=null;
     const active=document.activeElement;
     if(active instanceof HTMLElement)active.blur();
     setSession(null);
