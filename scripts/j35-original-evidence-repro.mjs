@@ -12,6 +12,8 @@ const digest=value=>crypto.createHash("sha256").update(value).digest("hex");
 const error=id=>{throw Error("J35_"+id)};
 const VIS=Array.from({length:42},(_,i)=>"VIS-"+String(i+1).padStart(3,"0"));
 const PNG=Array.from({length:126},(_,i)=>"PNG-"+String(i+1).padStart(3,"0"));
+// In-process provenance: summary objects supplied by callers are NOT proof that files were read.
+const inspectedOriginalInventories=new WeakSet();
 
 function jsonFromFile(p,label,max=3_000_000){
  const bytes=fs.readFileSync(p);
@@ -47,7 +49,7 @@ export function makeReproductionReport({candidateCommit,j33,j34,observation=null
     "REQUEST_REAL_OPERATOR_OBSERVATION";
   }
  }
- if(visual!==null&&(visual.schema!=="thiepn-japanese-j35-original-bytes-inventory"||
+ if(visual!==null&&(!inspectedOriginalInventories.has(visual)||visual.schema!=="thiepn-japanese-j35-original-bytes-inventory"||
     visual.candidateCommit!==candidateCommit||visual.checkedPngs!==126||
     visual.mappedCases!==42||visual.humanApprovedCases!==0||visual.humanApprovedPngs!==0))error("VISUAL_SUMMARY_INVALID");
  const outcomes={
@@ -143,12 +145,14 @@ export function inspectOriginalFiles({manifest,manifestBytes,sourceRoot,candidat
   sourceDigests.push(p.sha256);
  }
  if([...perCase.values()].some(x=>x<1))error("UNMAPPED_CASE");
- return {schema:"thiepn-japanese-j35-original-bytes-inventory",version:1,
+ const inspection={schema:"thiepn-japanese-j35-original-bytes-inventory",version:1,
   candidateCommit,checkedPngs:126,mappedCases:42,
   manifestSha256:digest(manifestBytes),
   digestInventorySha256:digest(sourceDigests.join("\n")),
   bytesValidatedOnly:true,sourceAuthenticityVerified:false,
   humanApprovedCases:0,humanApprovedPngs:0,releaseAuthorized:false};
+ inspectedOriginalInventories.add(inspection);
+ return inspection;
 }
 export function reportMarkdown(report){
  if(report?.schema!=="thiepn-japanese-j35-reproduction-and-original-custody"||
