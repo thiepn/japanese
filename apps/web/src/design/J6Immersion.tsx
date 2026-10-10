@@ -221,7 +221,7 @@ export function J6ImmersionHome({
 }
 
 export function J6ReaderView({
-  view,furigana,setFurigana,translations,toggleTranslation,selected,chooseToken,mineSelected,closeLookup,closeText,listeningPlayed,speaking,speak,checkMode,startCheck,questionIndex,feedback,answerQuestion,nextQuestion,speakingSegment,speakSegment,
+  view,furigana,setFurigana,translations,toggleTranslation,selected,chooseToken,mineSelected,closeLookup,closeText,listeningPlayed,speaking,speak,audioError,checkMode,startCheck,questionIndex,feedback,answerQuestion,nextQuestion,speakingSegment,speakSegment,
 }:{
   view:ReaderTextView;
   furigana:boolean;
@@ -235,6 +235,7 @@ export function J6ReaderView({
   closeText:()=>void;
   listeningPlayed:boolean;
   speaking:boolean;
+  audioError:string|null;
   speak:(rate:number)=>Promise<void>;
   checkMode:CheckMode|null;
   startCheck:(mode:CheckMode)=>void;
@@ -280,11 +281,12 @@ export function J6ReaderView({
             <label className="j6-toggle"><input type="checkbox" checked={furigana} onChange={(event)=>setFurigana(event.target.checked)}/><span>Reading hints</span></label>
             <div className="reader-audio j6-reader-audio">
               <button className={listeningFirst?"active":""} type="button" onClick={()=>setListeningFirst((value)=>!value)}>{listeningFirst?"Listening-first on":"Listening-first"}</button>
-              <button type="button" disabled={speaking||(!view.audio&&typeof speechSynthesis==="undefined")} onClick={()=>void speak(.95)}>{speaking?"Playing…":view.audio?"Play native recording":"Listen to full text"}</button>
-              <button type="button" disabled={speaking||(!view.audio&&typeof speechSynthesis==="undefined")} onClick={()=>void speak(.78)}>Slower</button>
+              <button type="button" disabled={speaking||speakingSegment!==null||(!view.audio&&typeof speechSynthesis==="undefined")} onClick={()=>void speak(.95)}>{speaking?"Playing…":view.audio?"Play native recording":"Listen to full text"}</button>
+              <button type="button" disabled={speaking||speakingSegment!==null||(!view.audio&&typeof speechSynthesis==="undefined")} onClick={()=>void speak(.78)}>Slower</button>
             </div>
           </div>
           <p className="reader-intro j6-reader__intro">{view.text.description}</p>
+          {audioError?<p className="audio-error" role="status">{audioError}</p>:null}
           {view.audio?<p className="source-note j6-reader__source">Recording: {view.audio.credit}{view.audio.licenseName?" · "+view.audio.licenseName:""}</p>:<p className="source-note j6-reader__source">Audio: device Japanese speech synthesis when listening is used.</p>}
           <div className="j6-reader__guide">
             <span>01</span><p>Tap linked words for reading and meaning.</p>
@@ -309,8 +311,8 @@ export function J6ReaderView({
               </button>:<span key={sentence.id+":"+index}>{token.surface}</span>)}</div>
               <div className="reader-support j6-reader-support">
                 <button className="quiet-button" type="button" onClick={()=>toggleTranslation(sentence.id)}>{translations.has(sentence.id)?"Hide translation":"Show translation"}</button>
-                <button className="quiet-button" type="button" disabled={speakingSegment===sentence.id} onClick={()=>void speakSegment(sentence.id,.92,1)}>{speakingSegment===sentence.id?"Playing…":"Replay sentence"}</button>
-                <button className="quiet-button" type="button" disabled={speakingSegment===sentence.id} onClick={()=>void speakSegment(sentence.id,.82,2)}>Slow ×2</button>
+                <button className="quiet-button" type="button" disabled={speaking||speakingSegment!==null} onClick={()=>void speakSegment(sentence.id,.92,1)}>{speakingSegment===sentence.id?"Playing…":"Replay sentence"}</button>
+                <button className="quiet-button" type="button" disabled={speaking||speakingSegment!==null} onClick={()=>void speakSegment(sentence.id,.82,2)}>Slow ×2</button>
                 {grammar.length?<details><summary>{grammar.length} grammar links</summary>{grammar.map((item)=><div className="reader-grammar" key={item.id}><strong>{item.label}</strong><span>{item.summary}</span></div>)}</details>:null}
               </div>
               {translations.has(sentence.id)?<p className="reader-translation j6-reader-translation">{sentence.translation}</p>:null}

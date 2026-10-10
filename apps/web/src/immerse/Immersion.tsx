@@ -2,6 +2,7 @@ import { useEffect,useLayoutEffect,useMemo,useRef,useState } from "react";
 import { getDefaultAudioProvider } from "@thiepn/audio";
 import { J6ImmersionHome,J6ReaderView } from "../design/J6Immersion";
 import { buildExtensiveTracks } from "./extensive";
+import { ReaderPlaybackFence } from "./playbackFence";
 import { getAdaptiveImmersionRecommendation,type AdaptiveImmersionRecommendation } from "./adaptive";
 import { getAutonomyMissionProgress,type AutonomyMissionProgress } from "../study/autonomyMissions";
 import type { ReadingQuestion } from "@thiepn/content-schema";
@@ -29,10 +30,13 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
   const [questionIndex,setQuestionIndex]=useState(0);
   const [feedback,setFeedback]=useState<{correct:boolean;answer:string;explanation:string}|null>(null);
   const [preferredNativeSet,setPreferredNativeSet]=useState<string|null>(null);
+  const [audioError,setAudioError]=useState<string|null>(null);
   const [checkStartedAt,setCheckStartedAt]=useState(0);
   const view=useMemo(()=>activeId?buildReaderText(activeId):null,[activeId]);
   const extensiveTracks=useMemo(()=>progress?buildExtensiveTracks(progress):[],[progress]);
   const audioProvider=useRef(getDefaultAudioProvider());
+  const playbackFence=useRef(new ReaderPlaybackFence());
+  const cancelSpeechWait=useRef<(()=>void)|null>(null);
   const catalogScrollY=useRef<number|null>(null);
   const readerWasOpen=useRef(false);
 
@@ -42,7 +46,24 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
       setProgress(nextProgress);setRecommendation(nextRecommendation);setMissions(nextMissions);
     }catch{setProgress(null);setRecommendation(null);setMissions([]);}
   }
-  useEffect(()=>{void refresh();return()=>{audioProvider.current.stop();if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();};},[]);
+  useEffect(()=>{
+    void refresh();
+    return()=>{
+      playbackFence.current.invalidate();
+      cancelSpeechWait.current?.();
+      cancelSpeechWait.current=null;
+      audioProvider.current.stop();
+      if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();
+    };
+  },[]);
+  function stopPlayback(){
+    playbackFence.current.invalidate();
+    cancelSpeechWait.current?.();
+    cancelSpeechWait.current=null;
+    audioProvider.current.stop();
+    if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();
+    setSpeaking(false);setSpeakingSegment(null);
+  }
   // Reader mounts in place of a scrolled catalogue; reset before paint.
   useLayoutEffect(()=>{
     if(view){
@@ -59,11 +80,13 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
 
 
   async function openText(id:string){
+    stopPlayback();
+    setAudioError(null);
     if(activeId===null)catalogScrollY.current=window.scrollY;
     setActiveId(id);setTranslations(new Set());setSelected(null);setListeningPlayed(false);setCheckMode(null);setQuestionIndex(0);setFeedback(null);
     await recordReadingExposure(id);void refresh();
   }
-  function closeText(){if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();setSpeaking(false);setActiveId(null);setCheckMode(null);setSelected(null);}
+  function closeText(){stopPlayback();setAudioError(null);setActiveId(null);setCheckMode(null);setSelected(null);}
   function toggleTranslation(id:string){setTranslations((current)=>{const next=new Set(current);next.has(id)?next.delete(id):next.add(id);return next;});}
 
   async function chooseToken(token:ReaderToken,sentenceId:string){
@@ -79,45 +102,93 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
   }
 
   async function speak(rate:number){
-    if(!view)return;
-    if(view.audio){
-      setSpeaking(true);
-      try{await audioProvider.current.play(view.audio,{rate});setListeningPlayed(true);await recordListeningExposure(view.text.id,rate,"recorded");void refresh();}finally{setSpeaking(false);}
+    if(!view||speaking||speakingSegment!==null)return;
+    const epoch=playbackFence.current.begin();
+    const sourceView=view;
+    setAudioError(null);
+    setSpeaking(true);
+    if(sourceView.audio){
+      try{
+        await audioProvider.current.play(sourceView.audio,{rate});
+        // stop() resolves the provider's pending Promise. It does NOT prove a listen.
+        if(!playbackFence.current.accepts(epoch))return;
+        setListeningPlayed(true);
+        await recordListeningExposure(sourceView.text.id,rate,"recorded");
+        if(playbackFence.current.accepts(epoch))void refresh();
+      }catch{
+        if(playbackFence.current.accepts(epoch))setAudioError("Recording failed. Retry or read without a listening check.");
+      }finally{
+        if(playbackFence.current.accepts(epoch))setSpeaking(false);
+      }
       return;
     }
-    if(typeof speechSynthesis==="undefined")return;
-    speechSynthesis.cancel();
-    const utterance=new SpeechSynthesisUtterance(view.joinedJapanese);
-    utterance.lang="ja-JP";utterance.rate=rate;
-    const japanese=speechSynthesis.getVoices().find((voice)=>voice.lang.toLowerCase().startsWith("ja"));
-    if(japanese)utterance.voice=japanese;
-    setSpeaking(true);
-    utterance.onend=()=>{setSpeaking(false);setListeningPlayed(true);void recordListeningExposure(view.text.id,rate,"speech_synthesis").then(refresh);};
-    utterance.onerror=()=>setSpeaking(false);
-    speechSynthesis.speak(utterance);
+    if(typeof speechSynthesis==="undefined"){
+      if(playbackFence.current.accepts(epoch)){setAudioError("Japanese speech synthesis is unavailable in this browser.");setSpeaking(false);}
+      return;
+    }
+    try{
+      speechSynthesis.cancel();
+      const utterance=new SpeechSynthesisUtterance(sourceView.joinedJapanese);
+      utterance.lang="ja-JP";utterance.rate=rate;
+      const japanese=speechSynthesis.getVoices().find((voice)=>voice.lang.toLowerCase().startsWith("ja"));
+      if(japanese)utterance.voice=japanese;
+      utterance.onend=()=>{
+        if(!playbackFence.current.accepts(epoch))return;
+        setSpeaking(false);setListeningPlayed(true);
+        void recordListeningExposure(sourceView.text.id,rate,"speech_synthesis")
+          .then(()=>{if(playbackFence.current.accepts(epoch))void refresh();})
+          .catch(()=>{if(playbackFence.current.accepts(epoch))setAudioError("Listening progress could not be saved.");});
+      };
+      utterance.onerror=()=>{
+        if(playbackFence.current.accepts(epoch)){setAudioError("Japanese speech synthesis failed. Retry or read instead.");setSpeaking(false);}
+      };
+      speechSynthesis.speak(utterance);
+    }catch{
+      if(playbackFence.current.accepts(epoch)){setAudioError("Japanese speech synthesis failed. Retry or read instead.");setSpeaking(false);}
+    }
   }
 
   async function speakSegment(sentenceId:string,rate=.92,repeats=1){
-    if(!view)return;
-    const item=view.sentences.find((entry)=>entry.sentence.id===sentenceId);if(!item)return;
-    const segment=view.text.listeningSegments?.find((entry)=>entry.sentenceId===sentenceId);
+    if(!view||speaking||speakingSegment!==null)return;
+    const sourceView=view;
+    const item=sourceView.sentences.find((entry)=>entry.sentence.id===sentenceId);if(!item)return;
+    const segment=sourceView.text.listeningSegments?.find((entry)=>entry.sentenceId===sentenceId);
+    const epoch=playbackFence.current.begin();
+    setAudioError(null);
     setSpeakingSegment(sentenceId);
     try{
-      if(view.audio&&segment?.startMs!==undefined&&segment.endMs!==undefined){
-        await audioProvider.current.play(view.audio,{rate,repeats,startMs:segment.startMs,endMs:segment.endMs});
-        await recordListeningSegmentReplay(view.text.id,sentenceId,rate,repeats,"recorded");
-        return;
+      if(sourceView.audio&&segment?.startMs!==undefined&&segment.endMs!==undefined){
+        await audioProvider.current.play(sourceView.audio,{rate,repeats,startMs:segment.startMs,endMs:segment.endMs});
+        if(!playbackFence.current.accepts(epoch))return;
+        await recordListeningSegmentReplay(sourceView.text.id,sentenceId,rate,repeats,"recorded");
+      }else{
+        if(typeof speechSynthesis==="undefined"){
+          throw Error("SPEECH_SYNTHESIS_UNAVAILABLE");
+        }
+        for(let index=0;index<Math.max(1,Math.min(3,repeats));index++){
+          if(!playbackFence.current.accepts(epoch))return;
+          await new Promise<void>((resolve,reject)=>{
+            const utterance=new SpeechSynthesisUtterance(item.sentence.text);utterance.lang="ja-JP";utterance.rate=rate;
+            const japanese=speechSynthesis.getVoices().find((voice)=>voice.lang.toLowerCase().startsWith("ja"));if(japanese)utterance.voice=japanese;
+            let settled=false;
+            const done=(error=false)=>{
+              if(settled)return;settled=true;
+              cancelSpeechWait.current=null;
+              if(error)reject(Error("SPEECH_SYNTHESIS_FAILED"));else resolve();
+            };
+            cancelSpeechWait.current=()=>done();
+            utterance.onend=()=>done();utterance.onerror=()=>done(true);
+            try{speechSynthesis.speak(utterance);}catch{done(true);}
+          });
+        }
+        if(!playbackFence.current.accepts(epoch))return;
+        await recordListeningSegmentReplay(sourceView.text.id,sentenceId,rate,repeats,"speech_synthesis");
       }
-      if(typeof speechSynthesis==="undefined")return;
-      for(let index=0;index<Math.max(1,Math.min(3,repeats));index++){
-        await new Promise<void>((resolve)=>{
-          const utterance=new SpeechSynthesisUtterance(item.sentence.text);utterance.lang="ja-JP";utterance.rate=rate;
-          const japanese=speechSynthesis.getVoices().find((voice)=>voice.lang.toLowerCase().startsWith("ja"));if(japanese)utterance.voice=japanese;
-          utterance.onend=()=>resolve();utterance.onerror=()=>resolve();speechSynthesis.speak(utterance);
-        });
-      }
-      await recordListeningSegmentReplay(view.text.id,sentenceId,rate,repeats,"speech_synthesis");
-    }finally{setSpeakingSegment(null);void refresh();}
+    }catch{
+      if(playbackFence.current.accepts(epoch))setAudioError("Sentence playback failed. Retry or continue reading.");
+    }finally{
+      if(playbackFence.current.accepts(epoch)){setSpeakingSegment(null);void refresh();}
+    }
   }
 
   function startCheck(mode:CheckMode){
@@ -138,7 +209,7 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
 
   if(view)return <J6ReaderView view={view} furigana={furigana} setFurigana={setFurigana} translations={translations} toggleTranslation={toggleTranslation}
     selected={selected} chooseToken={chooseToken} mineSelected={mineSelected} closeLookup={()=>setSelected(null)} closeText={closeText}
-    listeningPlayed={listeningPlayed} speaking={speaking} speak={speak} checkMode={checkMode} startCheck={startCheck}
+    listeningPlayed={listeningPlayed} speaking={speaking} speak={speak} audioError={audioError} checkMode={checkMode} startCheck={startCheck}
     questionIndex={questionIndex} feedback={feedback} answerQuestion={answerQuestion} nextQuestion={nextQuestion} speakingSegment={speakingSegment} speakSegment={speakSegment}/>;
 
   return <J6ImmersionHome
