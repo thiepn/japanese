@@ -73,6 +73,10 @@ jobs:
         run: |
           node scripts/j27-release-evidence-chain.mjs
           node scripts/j27-release-evidence-chain.mjs --verify-chain artifacts/j27-evidence-chain.json
+      - name: Generate J28 default-denied independent operator workbench
+        env:
+          J28_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j28-independent-custody.mjs
       - name: Record J15D D4 evidence boundary (physical checks stay pending)
         run: pnpm qualify:j15d:d4
       - name: Record J14 automated qualification evidence
@@ -193,3 +197,5 @@ jobs:
             artifacts/j25-controlled-release-decision.json
             artifacts/j26-protected-release-decision.json
             artifacts/j27-evidence-chain.json
+            artifacts/j28-operator-workbench.json
+            artifacts/j28-operator-workbench.html
