@@ -81,6 +81,10 @@ jobs:
         env:
           J29_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node scripts/j29-witness-reconciliation.mjs
+      - name: Generate J30 default-denied independent primary audit and signoff workbench
+        env:
+          J30_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j30-primary-evidence-audit.mjs
       - name: Record J15D D4 evidence boundary (physical checks stay pending)
         run: pnpm qualify:j15d:d4
       - name: Record J14 automated qualification evidence
@@ -205,3 +209,5 @@ jobs:
             artifacts/j28-operator-workbench.html
             artifacts/j29-operator-reconciliation.json
             artifacts/j29-operator-reconciliation.html
+            artifacts/j30-signoff-readiness.json
+            artifacts/j30-signoff-readiness.html
