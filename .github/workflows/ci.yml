@@ -101,6 +101,10 @@ jobs:
         env:
           J34_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node scripts/j34-real-world-field-kit.mjs
+      - name: Generate J35 truthful original-evidence and reproducible-defect worklist
+        env:
+          J35_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/j35-original-evidence-repro.mjs
       - name: Record J15D D4 evidence boundary (physical checks stay pending)
         run: pnpm qualify:j15d:d4
       - name: Record J14 automated qualification evidence
@@ -236,3 +240,5 @@ jobs:
             artifacts/j33-evidence-triage.html
             artifacts/j34-field-kit.json
             artifacts/j34-field-kit.html
+            artifacts/j35-evidence-reproduction.json
+            artifacts/j35-evidence-reproduction.md
