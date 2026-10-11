@@ -166,6 +166,24 @@ describe("P22 account-connect and workspace claim recovery",()=>{
     expect((await db.listStudyEvents(target)).map(x=>x.id)).toEqual(["e1"]);
   });
 
+  it("aborts source cleanup when auth changes on the final guest deletion",async()=>{
+    const guest="p22-delete-"+crypto.randomUUID(),target="p22-delete-target-"+crypto.randomUUID();
+    await db.saveStudyEvent(event(guest,"delete-event"));
+    let valid=true;let deleted=false;
+    const original=IDBObjectStore.prototype.delete;
+    vi.spyOn(IDBObjectStore.prototype,"delete").mockImplementation(function(this:IDBObjectStore,key:IDBValidKey){
+      if(this.transaction.db.name===db.databaseNameForAccount(guest)&&this.name==="sync_outbox"){
+        deleted=true;valid=false;
+      }
+      return original.call(this,key);
+    });
+    await expect(db.claimGuestWorkspace(guest,target,()=>valid)).rejects.toThrow("WORKSPACE_CLAIM_CANCELLED");
+    expect(deleted).toBe(true);
+    expect((await db.listStudyEvents(guest)).map(x=>x.id)).toEqual(["delete-event"]);
+    expect(await db.listOutbox(guest)).toHaveLength(1);
+    expect((await db.listStudyEvents(target)).map(x=>x.id)).toEqual(["delete-event"]);
+  });
+
   it("retries a canceled pre-copy claim without data loss and preserves existing target data",async()=>{
     const guest="p22-retry-"+crypto.randomUUID(),target="p22-retry-target-"+crypto.randomUUID();
     await db.saveStudyEvent(event(guest,"retry-event"));
