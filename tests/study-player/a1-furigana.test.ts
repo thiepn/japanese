@@ -112,4 +112,21 @@ describe("F1 A1 furigana — display-only",()=>{
     expect(sentenceReadingFallback({...ambiguous,reading:undefined})).toBeNull();
   });
 
+  it("prefers full authored contextual reading over incorrect dictionary token hints",()=>{
+    const cases=[
+      ["sentence-a1-030","何","なん"],
+      ["sentence-a1-038","七時","しちじ"],
+      ["sentence-a1-041","九時","くじ"],
+      ["sentence-a1-054","四人","よにん"],
+      ["sentence-a1-067","三百円","さんびゃくえん"]
+    ] as const;
+    for(const [id,surface,reading] of cases){
+      const s=coreContent.sentences.find((item)=>item.id===id)!;
+      const parts=sentenceFuriganaParts(s);
+      expect(parts).toContainEqual({surface,reading});
+      expect(parts.map((part)=>part.surface).join("")).toBe(s.text);
+      expect(parts.map((part)=>part.reading??part.surface).join("")).toBe(s.reading);
+    }
+  });
+
 });
