@@ -106,6 +106,7 @@ export function App(){
   function clearLearnerView(){
     sessionFence.current.invalidate();
     dashboardRefreshGuard.current.invalidate();
+    JAPANESE_LANGUAGE_DASHBOARD.invalidate();
     sessionOwner.current=null;
     setSession(null);
     setSessionStatus("idle");
