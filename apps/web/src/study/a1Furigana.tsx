@@ -102,10 +102,14 @@ export function sentenceFuriganaParts(sentence:Sentence):FuriganaPart[]{
   }
   const remaining=sentence.text.slice(cursor);
   if(remaining)parts.push({surface:remaining});
-  // The A1 author provided a complete kana reading even for sentences whose
-  // sparse lexeme list contains no annotated kanji. Prefer that source over
-  // fabricating a reading from unlinked dictionary matches.
-  if(!parts.some((part)=>part.reading))return sentenceReadingFallback(sentence)??parts;
+  // Lexical source tokens sometimes disagree with the author's full contextual
+  // reading (e.g. 七=なな in 七時=しちじ, 百=ひゃく in 三百=さんびゃく).
+  // Use only a uniquely aligned full authored kana string; do not guess a
+  // correction when the text/readings cannot be aligned unambiguously.
+  const authored=sentenceReadingFallback(sentence);
+  if(authored&&parts.map((part)=>part.reading??part.surface).join("")!==sentence.reading){
+    return authored;
+  }
   return parts;
 }
 
