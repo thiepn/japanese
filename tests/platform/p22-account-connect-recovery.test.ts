@@ -131,6 +131,25 @@ describe("P22 account-connect and workspace claim recovery",()=>{
     expect(await db.listStudyEvents(guest)).toHaveLength(2);
   });
 
+  it("aborts if the final outbox write revokes the claim lease",async()=>{
+    const guest="p22-final-"+crypto.randomUUID(),target="p22-final-target-"+crypto.randomUUID();
+    await db.saveStudyEvent(event(guest,"only-event"));
+    let valid=true;let intercepted=false;
+    const put=IDBObjectStore.prototype.put;
+    vi.spyOn(IDBObjectStore.prototype,"put").mockImplementation(function(this:IDBObjectStore,value:unknown,key?:IDBValidKey){
+      if(this.transaction.db.name===db.databaseNameForAccount(target)&&this.name==="sync_outbox"){
+        valid=false;intercepted=true;
+      }
+      return key===undefined?put.call(this,value):put.call(this,value,key);
+    });
+    await expect(db.claimGuestWorkspace(guest,target,()=>valid)).rejects.toThrow("WORKSPACE_CLAIM_CANCELLED");
+    expect(intercepted).toBe(true);
+    expect(await db.listStudyEvents(guest)).toHaveLength(1);
+    expect(await db.listOutbox(guest)).toHaveLength(1);
+    expect(await db.listStudyEvents(target)).toHaveLength(0);
+    expect(await db.listOutbox(target)).toHaveLength(0);
+  });
+
   it("retains original guest records if auth is revoked after destination commit",async()=>{
     const guest="p22-clean-"+crypto.randomUUID(),target="p22-clean-target-"+crypto.randomUUID();
     await db.saveStudyEvent(event(guest,"e1"));
