@@ -1189,3 +1189,23 @@
 .j5-furigana-toggle:focus-visible{outline:2px solid var(--j5-accent);outline-offset:3px}
 .j5-sheet ruby{ruby-position:over;ruby-align:center;white-space:nowrap}
 .j5-sheet ruby rt{font-size:clamp(11px,.34em,20px);line-height:1.3;color:var(--j-fg-muted);font-weight:600;letter-spacing:0}
+
+/* F3: ruby belongs to the lesson's Japanese line without clipping at 320px / zoom. */
+.j5-sheet h1,
+.j5-lesson-examples strong,
+.j5-lesson-facts strong{
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+.j5-sheet ruby{
+  white-space:normal;
+  overflow-wrap:anywhere;
+}
+.j5-sheet rt{
+  text-align:center;
+}
+@media (forced-colors:active){
+  .j5-furigana-toggle{border:1px solid ButtonText;color:ButtonText;background:ButtonFace}
+  .j5-furigana-toggle:focus-visible{outline:2px solid Highlight}
+  .j5-sheet ruby rt{color:CanvasText}
+}

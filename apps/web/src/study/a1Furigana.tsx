@@ -60,16 +60,14 @@ export function sentenceFuriganaParts(sentence:Sentence):FuriganaPart[]{
     const position=sentence.text.indexOf(token.surface,cursor);
     if(position<0)return [{surface:sentence.text}];
     const gap=sentence.text.slice(cursor,position);
-    // The source may omit punctuation between lexical tokens. Never skip
-    // unannotated Japanese characters to force a misleading alignment.
-    if(/[\u3040-\u30ff\u3400-\u9fff々]/u.test(gap))return [{surface:sentence.text}];
+    // Canonical A1 token lists are often *sparse* lexical annotations.
+    // Keep omitted particles and words literally, but do not invent readings.
     if(gap)parts.push({surface:gap});
     const reading=tokenReading(token);
     parts.push({surface:token.surface,...(reading&&hasKanji(token.surface)&&reading!==token.surface?{reading}:{})});
     cursor=position+token.surface.length;
   }
   const remaining=sentence.text.slice(cursor);
-  if(/[\u3040-\u30ff\u3400-\u9fff々]/u.test(remaining))return [{surface:sentence.text}];
   if(remaining)parts.push({surface:remaining});
   return parts;
 }
