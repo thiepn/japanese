@@ -1,6 +1,7 @@
 import {useEffect,useRef,useState,type ReactNode} from "react";
 import {getDefaultAudioProvider} from "@thiepn/audio";
 import {A1FuriganaText,hasA1Furigana,isA1FuriganaStep} from "./a1Furigana";
+import {A2FuriganaText,hasA2Furigana,isA2FuriganaStep} from "./a2Furigana";
 import {gradeStudyPrompt,isStudyLesson,type GradeResult,type StudyPrompt,type StudyStep} from "@thiepn/study-player";
 import {j5StudyMode,type J5StudyModeMeta} from "./j5StudyVisual";
 import type {JSeason,JTheme} from "../design";
@@ -144,10 +145,15 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   }
 
   const a1FuriganaStep=isA1FuriganaStep(activeStep);
-  const renderReading=(value:string)=>a1FuriganaStep?<A1FuriganaText text={value} visible={showFurigana}/>:value;
-  const furiganaAvailable=a1FuriganaStep&&(isStudyLesson(activeStep)
-    ?[activeStep.title,...(activeStep.facts??[]).filter((fact)=>fact.language==="ja").map((fact)=>fact.value),...(activeStep.examples??[]).map((example)=>example.expression)].some(hasA1Furigana)
-    :hasA1Furigana(activeStep.prompt));
+  const a2FuriganaStep=!a1FuriganaStep&&isA2FuriganaStep(activeStep);
+  const renderReading=(value:string)=>a1FuriganaStep
+    ?<A1FuriganaText text={value} visible={showFurigana}/>
+    :a2FuriganaStep?<A2FuriganaText text={value} visible={showFurigana}/>:value;
+  const readingCandidates=isStudyLesson(activeStep)
+    ?[activeStep.title,...(activeStep.facts??[]).filter((fact)=>fact.language==="ja").map((fact)=>fact.value),...(activeStep.examples??[]).map((example)=>example.expression)]
+    :[activeStep.prompt];
+  const furiganaAvailable=(a1FuriganaStep&&readingCandidates.some(hasA1Furigana))||
+    (a2FuriganaStep&&readingCandidates.some(hasA2Furigana));
   const furiganaToggle=furiganaAvailable?<button className="j5-furigana-toggle" type="button" aria-pressed={showFurigana} onClick={()=>setShowFurigana((value)=>!value)}>{showFurigana?"Hide furigana":"Show furigana"}</button>:null;
 
   if(isStudyLesson(activeStep)){
