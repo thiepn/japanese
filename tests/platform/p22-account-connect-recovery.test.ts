@@ -134,11 +134,11 @@ describe("P22 account-connect and workspace claim recovery",()=>{
   it("retains original guest records if auth is revoked after destination commit",async()=>{
     const guest="p22-clean-"+crypto.randomUUID(),target="p22-clean-target-"+crypto.randomUUID();
     await db.saveStudyEvent(event(guest,"e1"));
-    let valid=true;let copied=false;
+    let valid=true;let copied=false;let targetOpens=0;
     const original=IDBFactory.prototype.open;
     vi.spyOn(IDBFactory.prototype,"open").mockImplementation(function(this:IDBFactory,name:string,version?:number){
       if(name===db.databaseNameForAccount(guest)&&copied)valid=false;
-      if(name===db.databaseNameForAccount(target))copied=true;
+      if(name===db.databaseNameForAccount(target)&&++targetOpens===2)copied=true;
       return version===undefined?original.call(this,name):original.call(this,name,version);
     });
     await expect(db.claimGuestWorkspace(guest,target,()=>valid)).rejects.toThrow("WORKSPACE_CLAIM_CANCELLED");
