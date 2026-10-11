@@ -11,6 +11,7 @@ import { AUTHENTIC_GUEST_ACCOUNT_ID,setAuthenticAccountId } from "./immerse/auth
 import { StudyPlayer,type StudyAnswer } from "./study/StudyPlayer";
 import { StudySessionFence } from "./study/sessionFence";
 import { DashboardRefreshGuard } from "./study/dashboardRefreshGuard";
+import { AccountWorkspaceLease,attachWorkspaceWithLease,type WorkspaceLease } from "./study/accountWorkspaceLease";
 import { J2AppShell,type J2Surface } from "./design/J2AppShell";
 import { J3Today } from "./design/J3Today";
 import { J4Learn } from "./design/J4Learn";
@@ -100,6 +101,7 @@ export function App(){
   const [accountMessage,setAccountMessage]=useState<string|null>(null);
   const sessionFence=useRef(new StudySessionFence());
   const dashboardRefreshGuard=useRef(new DashboardRefreshGuard());
+  const workspaceLease=useRef(new AccountWorkspaceLease());
   const sessionOwner=useRef<string|null>(null);
 
   // Never leave the previous owner's learner state visible after switching.
@@ -131,7 +133,7 @@ export function App(){
 
   useEffect(()=>{
     let active=true;
-    let generation=0;
+    const lease=workspaceLease.current;
     const switchWorkspace=(accountId:string)=>{
       if(getDevelopmentAccountId()!==accountId)clearLearnerView();
       setDevelopmentAccountId(accountId);
@@ -141,13 +143,13 @@ export function App(){
       switchWorkspace(GUEST_ACCOUNT_ID);
       setAccountConnected(false);
     };
-    const apply=async(next:AuthContext)=>{
-      const epoch=++generation;
+    const apply=async(next:AuthContext,ticket:WorkspaceLease)=>{
+      const valid=()=>active&&lease.isCurrent(ticket);
       const authenticatedId=next.status==="authenticated"&&next.accountId
         ?next.accountId
         :null;
       if(!authenticatedId){
-        if(!active||epoch!==generation)return;
+        if(!valid())return;
         useGuestWorkspace();
         setAccount(next);
         const diagnostic=getRecentJapaneseAuthFailure();
@@ -157,45 +159,35 @@ export function App(){
         return;
       }
 
-      let connected=false;
+      let attachment;
       try{
-        connected=await JAPANESE_ACCOUNT.completePendingConnection();
+        attachment=await attachWorkspaceWithLease(lease,ticket,{
+          connect:()=>JAPANESE_ACCOUNT.completePendingConnection(),
+          readAuth:()=>JAPANESE_ACCOUNT.getCurrentContext(),
+          claim:(allowed)=>claimGuestWorkspace(GUEST_ACCOUNT_ID,authenticatedId,allowed),
+        });
       }catch{
-        if(!active||epoch!==generation)return;
-        // Keep the already attached workspace on a temporary connection outage.
+        if(!valid())return;
         if(getDevelopmentAccountId()===authenticatedId){
-          setAccountMessage("THIEPN Account connection is temporarily unavailable. Your attached local workspace remains available.");
+          setAccountMessage("THIEPN Account connection or workspace attachment is temporarily unavailable. Your current local workspace remains available.");
           return;
         }
         useGuestWorkspace();
         setAccount(next);
-        setAccountMessage("Signed in to THIEPN Account, but the Japanese connection is temporarily unavailable. Local study remains available.");
+        setAccountMessage("THIEPN Account is signed in, but Japanese could not safely attach this device. Guest progress remains available and no other workspace was overwritten.");
         return;
       }
 
-      let claimResult:"same-account"|"guest-empty"|"target-populated"|"migrated"="guest-empty";
-      if(connected){
-        try{
-          claimResult=await claimGuestWorkspace(GUEST_ACCOUNT_ID,authenticatedId);
-        }catch{
-          if(!active||epoch!==generation)return;
-          useGuestWorkspace();
-          setAccount(next);
-          setAccountMessage("THIEPN Account is signed in, but this device workspace could not be attached safely. No local data was overwritten.");
-          return;
-        }
-      }
-
-      if(!active||epoch!==generation)return;
-      const accountId=connected?authenticatedId:GUEST_ACCOUNT_ID;
+      if(!valid()||!attachment)return;
+      const accountId=attachment.connected?authenticatedId:GUEST_ACCOUNT_ID;
       switchWorkspace(accountId);
-      setAccountConnected(connected);
+      setAccountConnected(attachment.connected);
       setAccount(next);
       setAccountMessage(
-        connected
-          ?claimResult==="target-populated"
+        attachment.connected
+          ?attachment.claimResult==="target-populated"
             ?"THIEPN Account already has Japanese data on this device. Guest progress was kept separate rather than merged or overwritten; sign out to access the guest workspace."
-            :claimResult==="migrated"
+            :attachment.claimResult==="migrated"
               ?"Local guest progress was attached to your THIEPN Account on this device."
               :null
           :"Signed in to THIEPN Account. Connect Japanese to attach this device.",
@@ -203,15 +195,16 @@ export function App(){
     };
     const authUnavailable=()=>{
       if(!active)return;
-      generation+=1;
+      lease.invalidate();
       setAccountMessage("THIEPN Account could not be reached. Your current local workspace remains available.");
     };
     const unsubscribe=JAPANESE_ACCOUNT.subscribe((next)=>{
-      void apply(next).catch(authUnavailable);
+      const ticket=lease.observe(next);
+      void apply(next,ticket).catch(()=>{
+        if(active&&lease.isCurrent(ticket))authUnavailable();
+      });
     });
-    // Android can complete Google OAuth in a separate Chrome window and
-    // restore the installed PWA without remounting React. Re-verify the
-    // canonical session when the PWA regains focus.
+    // A restored Android PWA may complete OAuth in another Chrome window.
     const revalidate=()=>{
       if(document.visibilityState!=="visible")return;
       void JAPANESE_ACCOUNT.refresh().catch(authUnavailable);
@@ -224,7 +217,7 @@ export function App(){
       .catch(authUnavailable)
       .finally(()=>{if(active)setAccountResolving(false);});
     return()=>{
-      active=false;generation+=1;unsubscribe();
+      active=false;lease.invalidate();unsubscribe();
       window.removeEventListener("focus",revalidate);
       window.removeEventListener("pageshow",revalidate);
       document.removeEventListener("visibilitychange",onVisibility);
@@ -273,6 +266,8 @@ export function App(){
     if(accountBusy)return;
     setAccountBusy(true);
     setAccountMessage(null);
+    const lease=workspaceLease.current;
+    const ticket=lease.capture(account);
     try{
       if(action==="signIn"){
         if(account.status==="authenticated")return;
@@ -281,31 +276,39 @@ export function App(){
       }
       if(account.status!=="authenticated")return;
       if(action==="connect"){
-        if(accountConnected)return;
-        await JAPANESE_ACCOUNT.connectApp();
-        const accountId=account.accountId;
-        if(accountId){
-          const claimResult=await claimGuestWorkspace(GUEST_ACCOUNT_ID,accountId);
-          if(getDevelopmentAccountId()!==accountId)clearLearnerView();
-          setDevelopmentAccountId(accountId);
-          setAuthenticAccountId(accountId);
-          setAccountConnected(true);
-          setAccountMessage(
-            claimResult==="target-populated"
-              ?"THIEPN Account already has Japanese data on this device. Guest progress was kept separate rather than merged or overwritten; sign out to access the guest workspace."
-              :claimResult==="migrated"
-                ?"Local guest progress was attached to your THIEPN Account on this device."
-                :null,
-          );
-          const dashboardApplied=await refreshDashboard();
-          if(dashboardApplied&&getDevelopmentAccountId()===accountId)void JAPANESE_LANGUAGE_DASHBOARD.publish().catch(()=>{
-            setAccountMessage("Japanese is connected to THIEPN Account, but the shared language dashboard could not be refreshed yet.");
+        if(accountConnected||!ticket||!ticket.accountId)return;
+        const accountId=ticket.accountId;
+        const attachment=await attachWorkspaceWithLease(lease,ticket,{
+          connect:async()=>{await JAPANESE_ACCOUNT.connectApp();return true;},
+          readAuth:()=>JAPANESE_ACCOUNT.getCurrentContext(),
+          claim:(allowed)=>claimGuestWorkspace(GUEST_ACCOUNT_ID,accountId,allowed),
+        });
+        if(!attachment?.connected||!lease.isCurrent(ticket))return;
+        if(getDevelopmentAccountId()!==accountId)clearLearnerView();
+        setDevelopmentAccountId(accountId);
+        setAuthenticAccountId(accountId);
+        setAccountConnected(true);
+        setAccountMessage(
+          attachment.claimResult==="target-populated"
+            ?"THIEPN Account already has Japanese data on this device. Guest progress was kept separate rather than merged or overwritten; sign out to access the guest workspace."
+            :attachment.claimResult==="migrated"
+              ?"Local guest progress was attached to your THIEPN Account on this device."
+              :null,
+        );
+        const dashboardApplied=await refreshDashboard();
+        if(dashboardApplied&&lease.isCurrent(ticket)&&getDevelopmentAccountId()===accountId)
+          void JAPANESE_LANGUAGE_DASHBOARD.publish().catch(()=>{
+            if(lease.isCurrent(ticket))
+              setAccountMessage("Japanese is connected to THIEPN Account, but the shared language dashboard could not be refreshed yet.");
           });
-        }
         return;
       }
       if(action!=="signOut")return;
+      // Invalidate pending automatic and explicit claims before auth sign-out.
+      lease.invalidate();
       await JAPANESE_ACCOUNT.signOut();
+      // A different account might have signed in while sign-out was pending.
+      if(!lease.isAnonymous())return;
       if(getDevelopmentAccountId()!==GUEST_ACCOUNT_ID)clearLearnerView();
       setDevelopmentAccountId(GUEST_ACCOUNT_ID);
       setAuthenticAccountId(AUTHENTIC_GUEST_ACCOUNT_ID);
@@ -313,6 +316,8 @@ export function App(){
       setAccount(ANONYMOUS_AUTH);
       setAccountMessage(null);
     }catch{
+      if(action==="connect"&&(!ticket||!lease.isCurrent(ticket)))return;
+      if(action==="signOut"&&!lease.isAnonymous())return;
       setAccountMessage("THIEPN Account is temporarily unavailable. Your local Japanese data has not been changed.");
     }finally{
       setAccountBusy(false);
