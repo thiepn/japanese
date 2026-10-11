@@ -270,10 +270,11 @@ const pendingClaims = new Map<string, Promise<GuestWorkspaceClaimResult>>();
 export function claimGuestWorkspace(
   guestAccountId: string,
   targetAccountId: string,
+  shouldContinue: () => boolean = () => true,
 ): Promise<GuestWorkspaceClaimResult> {
   const previous = pendingClaims.get(guestAccountId) ?? Promise.resolve();
   const attempt = previous.catch(() => {}).then(() => {
-    const migrate = () => claimGuestWorkspaceUnlocked(guestAccountId, targetAccountId);
+    const migrate = () => claimGuestWorkspaceUnlocked(guestAccountId, targetAccountId, shouldContinue);
     // Serialize separate PWA/tab contexts as well as simultaneous auth refreshes.
     if (globalThis.navigator?.locks) {
       return navigator.locks.request(`japanese-workspace-claim:${guestAccountId}`, migrate);
@@ -290,7 +291,12 @@ export function claimGuestWorkspace(
 async function claimGuestWorkspaceUnlocked(
   guestAccountId: string,
   targetAccountId: string,
+  shouldContinue: () => boolean,
 ): Promise<GuestWorkspaceClaimResult> {
+  const checkLease = () => {
+    if (!shouldContinue()) throw new Error("WORKSPACE_CLAIM_CANCELLED");
+  };
+  checkLease();
   if (!guestAccountId.trim() || !targetAccountId.trim())
     throw new Error("ACCOUNT_ID_REQUIRED");
   if (guestAccountId === targetAccountId) return "same-account";
@@ -309,15 +315,18 @@ async function claimGuestWorkspaceUnlocked(
   const target = await openLocalDb(targetAccountId);
   try {
     for (const store of stores) {
+      checkLease();
       if ((await getAllFromOpenStore<unknown>(target, store)).length > 0)
         return "target-populated";
     }
+    checkLease();
     if ((await getAllFromOpenStore<unknown>(target, SYNC_META)).length > 0)
       return "target-populated";
   } finally {
     target.close();
   }
 
+  checkLease();
   const guest = await openLocalDb(guestAccountId);
   let snapshot: Record<string, unknown[]>;
   try {
@@ -336,9 +345,11 @@ async function claimGuestWorkspaceUnlocked(
     guest.close();
   }
 
+  checkLease();
   if (stores.every((store) => snapshot[store]!.length === 0))
     return "guest-empty";
 
+  checkLease();
   const destination = await openLocalDb(targetAccountId);
   let copied = false;
   try {
@@ -353,12 +364,14 @@ async function claimGuestWorkspaceUnlocked(
       for (const name of names) {
         const request = transaction.objectStore(name).count();
         request.onsuccess = () => {
-          if (request.result > 0) empty = false;
-          remaining -= 1;
-          if (remaining > 0 || !empty) return;
           try {
+            checkLease();
+            if (request.result > 0) empty = false;
+            remaining -= 1;
+            if (remaining > 0 || !empty) return;
             for (const store of stores) {
               for (const record of snapshot[store] as Record<string, unknown>[]) {
+                checkLease();
                 const value = store === OUTBOX ? record
                   : store === STUDY_EVENTS || store === MEMORY_TRACES
                     ? { ...record, userId: targetAccountId }
@@ -366,6 +379,8 @@ async function claimGuestWorkspaceUnlocked(
                 transaction.objectStore(store).put(value);
               }
             }
+            // Even revocation triggered by the final destination put aborts.
+            checkLease();
             committedCopy = true;
           } catch (error) {
             transaction.abort();
@@ -380,12 +395,17 @@ async function claimGuestWorkspaceUnlocked(
   } finally {
     destination.close();
   }
+  checkLease();
   if (!copied) return "target-populated";
 
   // Remove only the rows actually copied. A late study save or import can
   // arrive during attachment; deleting the whole database would lose it.
+  // A revoked lease after the destination committed leaves guest records in
+  // place, rather than risking deletion across two IndexedDB databases.
+  checkLease();
   const source = await openLocalDb(guestAccountId);
   try {
+    checkLease();
     await new Promise<void>((resolve, reject) => {
       const transaction = source.transaction([...stores, SYNC_META], "readwrite");
       for (const name of stores) {
@@ -394,16 +414,37 @@ async function claimGuestWorkspaceUnlocked(
           const key = value[name === OUTBOX ? "mutation_id" : "id"] as IDBValidKey;
           const request = store.get(key);
           request.onsuccess = () => {
-            if (JSON.stringify(request.result) === JSON.stringify(value)) store.delete(key);
+            try {
+              checkLease();
+              if (JSON.stringify(request.result) === JSON.stringify(value)) {
+                const deletion = store.delete(key);
+                deletion.onsuccess = () => {
+                  try { checkLease(); }
+                  catch(error) { transaction.abort(); reject(error); }
+                };
+              }
+            } catch(error) {
+              transaction.abort();
+              reject(error);
+            }
           };
         }
       }
-      transaction.objectStore(SYNC_META).clear();
+      // No deletion may start if the lease was revoked before cleanup.
+      try {
+        checkLease();
+        const clear = transaction.objectStore(SYNC_META).clear();
+        clear.onsuccess = () => {
+          try { checkLease(); }
+          catch(error) { transaction.abort(); reject(error); }
+        };
+      } catch(error){transaction.abort();reject(error);return;}
       transaction.oncomplete = () => resolve();
       transaction.onerror = () => reject(transaction.error);
       transaction.onabort = () => reject(transaction.error);
     });
   } finally { source.close(); }
+  checkLease();
   return "migrated";
 }
 
