@@ -379,6 +379,8 @@ async function claimGuestWorkspaceUnlocked(
                 transaction.objectStore(store).put(value);
               }
             }
+            // Even revocation triggered by the final destination put aborts.
+            checkLease();
             committedCopy = true;
           } catch (error) {
             transaction.abort();
