@@ -21,6 +21,15 @@ describe("F4 independent furigana review snapshot, fail-closed",()=>{
   expect(new Set(packet.cases.map((c:{id:string})=>c.id)).size).toBe(packet.cases.length);
   expect(packet.caseCounts).toEqual({sentences:161,grammar:66,readers:9,ambiguousLexemes:4,total:240});
   for(const id of actual)expect(caseMap.has(id)).toBe(true);
+  expect(packet.audit.sourceTokenDivergenceCount).toBe(33);
+  expect(packet.audit.manualResolutionCaseIds).toEqual([
+    "sentence/sentence-a1-040",
+    "sentence/sentence-a1-043",
+    "sentence/sentence-a1-072"
+  ]);
+  for(const id of packet.audit.manualResolutionCaseIds){
+    expect((caseMap.get(id) as {risks:string[]}).risks).toContain("FULL_READING_ALIGNMENT_AMBIGUOUS_REQUIRES_HUMAN_CONTEXT");
+  }
   for(const s of coreContent.sentences.filter((x)=>x.level==="A1"||x.level==="A2")){
     const item=caseMap.get("sentence/"+s.id) as {displayText:string;sourceReading:string|null;sourceTokens:{surface:string;reading:string|null}[]};
     expect(item.displayText).toBe(s.text);

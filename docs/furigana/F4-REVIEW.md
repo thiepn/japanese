@@ -9,6 +9,10 @@
 - `f4-device-witness.template.json`: a blank 15-check physical-device, keyboard, TalkBack and visual witness ledger. Every check begins `NOT_TESTED`.
 - Source content `content/seed/jp-core.json` is pinned by Git blob `e15c8ae44e3aac08750e8fa7e34ec0ad7d333927` and SHA-256 `e0d8c314728bad983c84fde7b3cbfb69d95af54ac8dbf43c3b56eee1388ded91` at F3 `1aca20a88a4b12a4634f1d7dad150362927e597e`. Confirm the same seed and the **actual qualified F4 head** before reviewing. No stable-deployment claim follows from the source commit.
 
+## Audited contextual discrepancies (source-derived, not independently reviewed)
+
+The A1 seed contains **33** sentences in which concatenating source token readings and unannotated gaps does not reproduce the *same seed's* full-kana sentence reading. F4 gives precedence to a uniquely aligned author-supplied full reading; no phonetic conversion is performed. Source alignment remains unresolved for **sentence-a1-040, sentence-a1-043, sentence-a1-072** (repeated anchors). These cases are explicitly flagged in the review ledger and remain NOT_TESTED. This number is a mechanical source-integrity count, not a human judgment about correct Japanese. Verify other reviewed examples such as 七時 (しちじ), 九時 (くじ), 三百円 (さんびゃくえん), and 四人 (よにん).
+
 ## Independent Japanese reviewer: exact procedure
 
 1. Confirm reviewer is fluent, independent of implementation, authorized to record observations; fill name/role, time, candidate commit, and independence field. Do **not** claim authorship or sign another person's record.

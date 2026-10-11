@@ -1471,7 +1471,9 @@
         "a1-unit-10"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -1661,7 +1663,9 @@
         "a1-unit-11"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -1703,7 +1707,9 @@
         "a1-unit-11"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -1835,7 +1841,8 @@
       ],
       "readerIds": [],
       "risks": [
-        "CONTEXTUAL_NUMBER_READING"
+        "CONTEXTUAL_NUMBER_READING",
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
       ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
@@ -1883,7 +1890,8 @@
       ],
       "readerIds": [],
       "risks": [
-        "CONTEXTUAL_NUMBER_READING"
+        "CONTEXTUAL_NUMBER_READING",
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
       ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
@@ -1933,7 +1941,10 @@
         "a1-unit-12"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING",
+        "FULL_READING_ALIGNMENT_AMBIGUOUS_REQUIRES_HUMAN_CONTEXT"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -1982,7 +1993,8 @@
       ],
       "readerIds": [],
       "risks": [
-        "CONTEXTUAL_NUMBER_READING"
+        "CONTEXTUAL_NUMBER_READING",
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
       ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
@@ -2032,7 +2044,9 @@
         "a1-unit-12"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -2081,7 +2095,9 @@
       ],
       "readerIds": [],
       "risks": [
-        "CONTEXTUAL_NUMBER_READING"
+        "CONTEXTUAL_NUMBER_READING",
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING",
+        "FULL_READING_ALIGNMENT_AMBIGUOUS_REQUIRES_HUMAN_CONTEXT"
       ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
@@ -2117,7 +2133,9 @@
         "a1-unit-13"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -2159,7 +2177,9 @@
         "a1-unit-13"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -2207,7 +2227,9 @@
         "a1-unit-13"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -2242,7 +2264,9 @@
         "a1-unit-13"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -2371,7 +2395,9 @@
         "a1-unit-14"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -2406,7 +2432,9 @@
         "a1-unit-14"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -2537,7 +2565,8 @@
       ],
       "readerIds": [],
       "risks": [
-        "CONTEXTUAL_NUMBER_READING"
+        "CONTEXTUAL_NUMBER_READING",
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
       ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
@@ -2782,7 +2811,9 @@
         "a1-unit-16"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -2822,7 +2853,9 @@
         "a1-unit-16"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -2939,7 +2972,9 @@
         "a1-unit-16"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -3068,7 +3103,9 @@
         "a1-unit-17"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -3202,7 +3239,9 @@
         "a1-unit-17"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -3240,7 +3279,8 @@
       ],
       "readerIds": [],
       "risks": [
-        "NO_EXPLICIT_TOKEN_RUBY"
+        "NO_EXPLICIT_TOKEN_RUBY",
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
       ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
@@ -3283,7 +3323,10 @@
         "a1-unit-18"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING",
+        "FULL_READING_ALIGNMENT_AMBIGUOUS_REQUIRES_HUMAN_CONTEXT"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -3325,7 +3368,9 @@
         "a1-unit-18"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -3367,7 +3412,9 @@
         "a1-unit-18"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -3444,7 +3491,9 @@
         "a1-unit-18"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -3479,7 +3528,9 @@
         "a1-unit-18"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -3516,7 +3567,8 @@
       ],
       "readerIds": [],
       "risks": [
-        "NO_EXPLICIT_TOKEN_RUBY"
+        "NO_EXPLICIT_TOKEN_RUBY",
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
       ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
@@ -3552,7 +3604,9 @@
         "a1-unit-19"
       ],
       "readerIds": [],
-      "risks": [],
+      "risks": [
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
+      ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
         "Are okurigana, particles and punctuation preserved?",
@@ -3588,7 +3642,8 @@
       ],
       "readerIds": [],
       "risks": [
-        "NO_EXPLICIT_TOKEN_RUBY"
+        "NO_EXPLICIT_TOKEN_RUBY",
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
       ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
@@ -3668,7 +3723,8 @@
       "readerIds": [],
       "risks": [
         "NO_EXPLICIT_TOKEN_RUBY",
-        "CONTEXTUAL_NUMBER_READING"
+        "CONTEXTUAL_NUMBER_READING",
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
       ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
@@ -3915,7 +3971,8 @@
       ],
       "readerIds": [],
       "risks": [
-        "CONTEXTUAL_NUMBER_READING"
+        "CONTEXTUAL_NUMBER_READING",
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
       ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
@@ -3952,7 +4009,8 @@
       "readerIds": [],
       "risks": [
         "NO_EXPLICIT_TOKEN_RUBY",
-        "CONTEXTUAL_NUMBER_READING"
+        "CONTEXTUAL_NUMBER_READING",
+        "AUTHORED_SENTENCE_READING_CONFLICTS_WITH_TOKEN_RENDERING"
       ],
       "reviewQuestions": [
         "Is every displayed ruby reading correct in the full sentence?",
@@ -9021,5 +9079,16 @@
         "Document any required source correction separately; do not silently substitute."
       ]
     }
-  ]
+  ],
+  "audit": {
+    "method": "strict comparison of A1 source full-kana reading vs lexical tokens with unannotated gaps left unchanged",
+    "sourceTokenDivergenceCount": 33,
+    "fullReadingAlignmentUnavailableCount": 3,
+    "manualResolutionCaseIds": [
+      "sentence/sentence-a1-040",
+      "sentence/sentence-a1-043",
+      "sentence/sentence-a1-072"
+    ],
+    "status": "SOURCE_COMPARISON_ONLY_NOT_INDEPENDENT_LINGUISTIC_APPROVAL"
+  }
 }
