@@ -1,0 +1,2188 @@
+{
+  "schema": "thiepn-japanese-f4-furigana-review-submission",
+  "schemaVersion": 1,
+  "source": {
+    "baseF3Commit": "1aca20a88a4b12a4634f1d7dad150362927e597e",
+    "sourcePath": "content/seed/jp-core.json",
+    "sourceGitBlobSHA": "e15c8ae44e3aac08750e8fa7e34ec0ad7d333927",
+    "sourceSHA256": "e0d8c314728bad983c84fde7b3cbfb69d95af54ac8dbf43c3b56eee1388ded91"
+  },
+  "candidateCommit": null,
+  "reviewer": {
+    "label": null,
+    "role": null,
+    "independentFromImplementation": null,
+    "reviewedAt": null,
+    "consentToShareEvidence": null
+  },
+  "status": "NOT_TESTED",
+  "caseReviews": [
+    {
+      "id": "sentence/sentence-a1-001",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-002",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-003",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-004",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-005",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-006",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-007",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-008",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-009",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-010",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-011",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-012",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-013",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-014",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-015",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-016",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-017",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-018",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-019",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-020",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-021",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-022",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-023",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-024",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-025",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-026",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-027",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-028",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-029",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-030",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-031",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-032",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-033",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-034",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-035",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-036",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-037",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-038",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-039",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-040",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-041",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-042",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-043",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-044",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-045",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-046",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-047",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-048",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-049",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-050",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-051",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-052",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-053",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-054",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-055",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-056",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-057",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-058",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-059",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-060",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-061",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-062",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-063",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-064",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-065",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-066",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-067",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-068",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-069",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-070",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-071",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-072",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-073",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-074",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-075",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-076",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-077",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-078",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-079",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-080",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-081",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-082",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-083",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-084",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-085",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-086",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-087",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-088",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a1-089",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-090",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-091",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-092",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-093",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-094",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-095",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-096",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-097",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-098",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-099",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-100",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-101",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-102",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-103",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-104",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-105",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-106",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-107",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-108",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-109",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-110",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-111",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-112",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-113",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-114",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-115",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-116",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-117",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-118",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-119",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-120",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-121",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-122",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-123",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-124",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-125",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-126",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-127",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-128",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-129",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-130",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-131",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-132",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-133",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-134",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-135",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-136",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-137",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-138",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-139",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-140",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-141",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-142",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-143",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-144",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-145",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-146",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-147",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-148",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-149",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-150",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-151",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-152",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-153",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-154",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-155",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-156",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-157",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-158",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-159",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-160",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "sentence/sentence-a2-161",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-desu",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-wa-topic",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-ka-question",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-masu",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-o-object",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-de-action-place",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-ni-destination",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-to-with",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-mo-also",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-ga-subject",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-aru-iru",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-suki-ga",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-i-adj-polite",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-masen",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-mashita",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-no-attribute",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-demonstrative-pronouns",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-demonstrative-determiners",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-location-words",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-question-words",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-time-ni",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-kara-made",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-de-means",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-to-list",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-counter-tsu",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-counter-nin",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-time-counters",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-masen-deshita",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-i-adj-negative",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-i-adj-past",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-na-noun-negative",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-na-noun-past",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-te-form",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-te-kudasai",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-o-kudasai",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-ne",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-yo",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-te-iru",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-tai",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-hoshii",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-koto-ga-aru",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-koto-ga-dekiru",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-tsumori",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-yotei",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-to-omou",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-kara-reason",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-node-reason",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-kedo-contrast",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-yori-hou",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-ichiban",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-temo-ii",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-tewa-ikenai",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-nakereba-naranai",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-nakutemo-ii",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-te-kara",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-tari-tari",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-mae-ni-ato-de",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-nagara",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-ku-ni-naru",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-ni-suru",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-sugiru",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-yasui-nikui",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-masen-ka-invitation",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-tara",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-toki",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "grammar/grammar-mou-mada",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "reader/text-a2-bridge-home",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "reader/text-a2-weekend-plan",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "reader/text-a2-work-weather",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "reader/text-a2-travel-rules",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "reader/text-a2-health-routine",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "reader/text-a2-comparisons",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "reader/text-a2-learning",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "reader/text-a2-travel-problem",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "reader/text-a2-sequence",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "ambiguity/lex-yon",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "ambiguity/lex-nana",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "ambiguity/lex-kyuu",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    },
+    {
+      "id": "ambiguity/lex-fun",
+      "verdict": "NOT_TESTED",
+      "observedReading": null,
+      "expectedCorrection": null,
+      "reason": null,
+      "evidenceRefs": [],
+      "reproduction": null
+    }
+  ],
+  "reconciliation": {
+    "reviewerSignatureOrAttestation": null,
+    "ownerReconciledAt": null,
+    "unresolvedCaseIds": [],
+    "ownerApproval": null,
+    "releaseAuthorized": false
+  }
+}
