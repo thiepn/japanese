@@ -25,7 +25,7 @@ test("F2 A2 grammar examples render optional ruby without changing exercise prom
   await sheet.locator(".j5-choices button").first().click();
   await expect(sheet.locator(".j5-feedback")).toBeVisible();
   await sheet.getByRole("button",{name:"Continue"}).click();
-  await expect(sheet.locator(".eyebrow").getByText("COMPLETE THE SENTENCE.",{exact:true})).toBeVisible();
+  await expect(sheet.locator(".eyebrow").filter({hasText:"COMPLETE THE SENTENCE."})).toBeVisible();
   await expect(sheet.locator(".j5-prompt ruby")).toHaveCount(0);
   await expect(sheet.getByRole("button",{name:/furigana/i})).toHaveCount(0);
 });

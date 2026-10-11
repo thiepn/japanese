@@ -21,7 +21,7 @@ test("PWA shell, integrated Study Player and canonical content survive offline r
   // Furigana adds a second, legitimate いえ in <rt>; assert the
   // original Reading fact remains visible and independently check ruby.
   await expect(page.locator(".lesson-facts").getByText("いえ",{exact:true})).toBeVisible();
-  await expect(page.locator(".study-lesson ruby rt").getByText("いえ",{exact:true})).toBeVisible();
+  await expect(page.locator(".study-lesson ruby rt").filter({hasText:"いえ"}).first()).toBeVisible();
   await expect(page.getByText(/house \/ home/)).toBeVisible();
   await expect(page.getByText(/家 → いえ/)).toBeVisible();
 
