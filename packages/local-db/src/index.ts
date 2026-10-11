@@ -416,7 +416,13 @@ async function claimGuestWorkspaceUnlocked(
           request.onsuccess = () => {
             try {
               checkLease();
-              if (JSON.stringify(request.result) === JSON.stringify(value)) store.delete(key);
+              if (JSON.stringify(request.result) === JSON.stringify(value)) {
+                const deletion = store.delete(key);
+                deletion.onsuccess = () => {
+                  try { checkLease(); }
+                  catch(error) { transaction.abort(); reject(error); }
+                };
+              }
             } catch(error) {
               transaction.abort();
               reject(error);
@@ -425,8 +431,14 @@ async function claimGuestWorkspaceUnlocked(
         }
       }
       // No deletion may start if the lease was revoked before cleanup.
-      try {checkLease();transaction.objectStore(SYNC_META).clear();}
-      catch(error){transaction.abort();reject(error);return;}
+      try {
+        checkLease();
+        const clear = transaction.objectStore(SYNC_META).clear();
+        clear.onsuccess = () => {
+          try { checkLease(); }
+          catch(error) { transaction.abort(); reject(error); }
+        };
+      } catch(error){transaction.abort();reject(error);return;}
       transaction.oncomplete = () => resolve();
       transaction.onerror = () => reject(transaction.error);
       transaction.onabort = () => reject(transaction.error);
