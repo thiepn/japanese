@@ -51,8 +51,41 @@ function tokenReading(token:SentenceToken):string|undefined{
   return undefined;
 }
 
+
+/**
+ * Apply a sentence's author-provided full kana reading only when all literal
+ * kana/punctuation anchors align uniquely. This is not a dictionary guess:
+ * unmatched, repeated or non-kana reading spans fail closed.
+ */
+export function sentenceReadingFallback(sentence:Sentence):FuriganaPart[]|null{
+  if(!sentence.reading||!hasKanji(sentence.text))return null;
+  const pieces=sentence.text.match(/[\u3400-\u9fff々]+|[^\u3400-\u9fff々]+/gu);
+  if(!pieces)return null;
+  const result:FuriganaPart[]=[];
+  let cursor=0;
+  for(let i=0;i<pieces.length;i++){
+    const surface=pieces[i]!;
+    if(!hasKanji(surface)){
+      if(!sentence.reading.startsWith(surface,cursor))return null;
+      result.push({surface});
+      cursor+=surface.length;
+      continue;
+    }
+    const anchor=pieces[i+1];
+    const end=anchor===undefined?sentence.reading.length:sentence.reading.indexOf(anchor,cursor);
+    if(end<=cursor||end<0)return null;
+    // Repeated literal anchors do not reliably locate an earlier kanji span.
+    if(anchor!==undefined&&sentence.reading.indexOf(anchor,end+anchor.length)>=0)return null;
+    const reading=sentence.reading.slice(cursor,end);
+    if(!isKana(reading))return null;
+    result.push({surface,reading});
+    cursor=end;
+  }
+  return cursor===sentence.reading.length?result:null;
+}
+
 export function sentenceFuriganaParts(sentence:Sentence):FuriganaPart[]{
-  if(!sentence.tokens.length)return [{surface:sentence.text}];
+  if(!sentence.tokens.length)return sentenceReadingFallback(sentence)??[{surface:sentence.text}];
   const parts:FuriganaPart[]=[];
   let cursor=0;
   for(const token of sentence.tokens){
@@ -69,6 +102,10 @@ export function sentenceFuriganaParts(sentence:Sentence):FuriganaPart[]{
   }
   const remaining=sentence.text.slice(cursor);
   if(remaining)parts.push({surface:remaining});
+  // The A1 author provided a complete kana reading even for sentences whose
+  // sparse lexeme list contains no annotated kanji. Prefer that source over
+  // fabricating a reading from unlinked dictionary matches.
+  if(!parts.some((part)=>part.reading))return sentenceReadingFallback(sentence)??parts;
   return parts;
 }
 
