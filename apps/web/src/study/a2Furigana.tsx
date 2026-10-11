@@ -71,7 +71,16 @@ function segment(text:string,candidates:readonly Candidate[]):FuriganaPart[]{
   const parts:FuriganaPart[]=[];
   let cursor=0;
   while(cursor<text.length){
-    const candidate=candidates.find((item)=>text.startsWith(item.surface,cursor));
+    const candidate=candidates.find((item)=>{
+      if(!text.startsWith(item.surface,cursor))return false;
+      const after=cursor+item.surface.length;
+      // A dictionary substring is not proof of a reading inside another kanji
+      // compound: 人 in 人気 is not ひと. Require a word boundary on both
+      // kanji edges or a complete known compound matched longest-first.
+      if(cursor>0&&hasKanji(text[cursor-1]!)&&hasKanji(item.surface[0]!))return false;
+      if(after<text.length&&hasKanji(text[after]!)&&hasKanji(item.surface[item.surface.length-1]!))return false;
+      return true;
+    });
     if(candidate){
       parts.push({surface:candidate.surface,reading:candidate.reading});
       cursor+=candidate.surface.length;

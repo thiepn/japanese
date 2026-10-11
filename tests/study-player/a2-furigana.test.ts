@@ -51,4 +51,14 @@ describe("F2 A2 canonical furigana",()=>{
     const fakeAssessment={...sentenceComprehensionPrompts.find((item)=>item.primaryTarget.id==="sentence-a2-090")!,id:"a2-milestone-sentence",skill:"comprehension" as const};
     expect(isA2FuriganaStep(fakeAssessment)).toBe(false);
   });
+  it("does not misread unlinked kanji compounds using embedded known words",()=>{
+    const compounds=["人気","人間","日本人","今年"];
+    for(const compound of compounds){
+      const parts=a2FuriganaParts(compound);
+      expect(parts.map((part)=>part.surface).join("")).toBe(compound);
+      expect(parts.filter((part)=>part.reading)).toHaveLength(0);
+    }
+    expect(a2FuriganaParts("東京に住んでいます。")).toContainEqual({surface:"東京",reading:"とうきょう"});
+  });
+
 });

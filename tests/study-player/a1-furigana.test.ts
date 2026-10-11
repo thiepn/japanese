@@ -1,5 +1,5 @@
 import {describe,expect,it} from "vitest";
-import {a1FuriganaParts,hasA1Furigana,isA1FuriganaStep,sentenceFuriganaParts} from "../../apps/web/src/study/a1Furigana";
+import {a1FuriganaParts,hasA1Furigana,isA1FuriganaStep,sentenceFuriganaParts,sentenceReadingFallback} from "../../apps/web/src/study/a1Furigana";
 import {coreContent} from "../../apps/web/src/coreContent";
 import {vocabularyMeaningPrompts,vocabularyApplicationPrompts} from "../../apps/web/src/study/vocabulary";
 import {sentenceComprehensionPrompts,sentenceProductionPrompts,grammarCourseLessons} from "../../apps/web/src/study/grammarCourse";
@@ -24,7 +24,9 @@ describe("F1 A1 furigana — display-only",()=>{
       {surface:"学生",reading:"がくせい"},{surface:"です"},{surface:"。"}
     ]);
     expect(hasA1Furigana(authentic.text)).toBe(true);
-    expect(sentenceFuriganaParts({...sentence,tokens:[{surface:"学校",reading:"がっこう"}]})).toEqual([{surface:"学校へ行きます。"}]);
+    expect(sentenceFuriganaParts({...sentence,tokens:[{surface:"学校",reading:"がっこう"}]})).toEqual([
+      {surface:"学校",reading:"がっこう"},{surface:"へ行きます。"}
+    ]);
   });
 
   it("never guesses a reading for unannotated or kana-only tokens",()=>{
@@ -55,4 +57,59 @@ describe("F1 A1 furigana — display-only",()=>{
     expect(lesson).toBeDefined();
     expect(isA1FuriganaStep(lesson)).toBe(true);
   });
+  it("retains sparse A1 annotations and all omitted particles verbatim",()=>{
+    const example=coreContent.sentences.find((item)=>item.id==="sentence-a1-023")!;
+    const parts=sentenceFuriganaParts(example);
+    expect(parts).toEqual([
+      {surface:"これ"},{surface:"は"},{surface:"本",reading:"ほん"},{surface:"です。"}
+    ]);
+    expect(parts.map((part)=>part.surface).join("")).toBe(example.text);
+    expect(hasA1Furigana(example.text)).toBe(true);
+  });
+
+  it("audits A1 source coverage rather than assuming full tokenization",()=>{
+    const sentences=coreContent.sentences.filter((item)=>item.level==="A1");
+    expect(sentences).toHaveLength(89);
+    const covered=sentences.filter((item)=>hasA1Furigana(item.text));
+    // Pure-kana sentences are not expected to generate ruby.
+    expect(covered.length).toBeGreaterThanOrEqual(84);
+    for(const sentence of sentences){
+      const parts=a1FuriganaParts(sentence.text);
+      expect(parts.map((item)=>item.surface).join("")).toBe(sentence.text);
+      for(const part of parts){
+        if(part.reading){
+          expect(part.surface).toMatch(/[\u3400-\u9fff々]/u);
+          expect(part.reading).toMatch(/^[\u3040-\u30ffー]+$/u);
+        }
+      }
+    }
+  });
+
+  it("does not attach readings when a sparse token is not found in the sentence",()=>{
+    const corrupt={
+      text:"学校に行きます。",
+      tokens:[{surface:"外国",reading:"がいこく"},{surface:"学校",reading:"がっこう"}]
+    } as Sentence;
+    expect(sentenceFuriganaParts(corrupt)).toEqual([{surface:corrupt.text}]);
+  });
+
+  it("uses only full, unambiguous author-provided kana reading when A1 tokens omit the kanji",()=>{
+    const samples:[string,string,string][]=[
+      ["sentence-a1-071","買","か"],
+      ["sentence-a1-078","書","か"],
+      ["sentence-a1-080","話","はな"],
+      ["sentence-a1-082","分","わ"],
+      ["sentence-a1-089","分","わ"]
+    ];
+    for(const [id,surface,reading] of samples){
+      const sentence=coreContent.sentences.find((item)=>item.id===id)!;
+      const parts=a1FuriganaParts(sentence.text);
+      expect(parts).toContainEqual({surface,reading});
+      expect(parts.map((part)=>part.surface).join("")).toBe(sentence.text);
+    }
+    const ambiguous={text:"学校が学校。",reading:"がっこうががっこう。",tokens:[]} as Sentence;
+    expect(sentenceReadingFallback(ambiguous)).toBeNull();
+    expect(sentenceReadingFallback({...ambiguous,reading:undefined})).toBeNull();
+  });
+
 });
