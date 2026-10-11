@@ -17,6 +17,13 @@ describe("F1 A1 furigana — display-only",()=>{
       {surface:"行きます",reading:"いきます"},
       {surface:"。"}
     ]);
+    // Actual A1 source tokens omit sentence-final punctuation.
+    const authentic=coreContent.sentences.find((item)=>item.id==="sentence-a1-001")!;
+    expect(authentic.tokens.map((item)=>item.surface).join("")).toBe("学生です");
+    expect(sentenceFuriganaParts(authentic)).toEqual([
+      {surface:"学生",reading:"がくせい"},{surface:"です"},{surface:"。"}
+    ]);
+    expect(hasA1Furigana(authentic.text)).toBe(true);
     expect(sentenceFuriganaParts({...sentence,tokens:[{surface:"学校",reading:"がっこう"}]})).toEqual([{surface:"学校へ行きます。"}]);
   });
 

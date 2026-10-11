@@ -17,14 +17,17 @@ const a1SentencesById=new Map(coreContent.sentences.filter((item)=>item.level===
 const a1SentencesByText=new Map([...a1SentencesById.values()].map((item)=>[item.text,item]));
 const lexemesById=new Map(coreContent.lexemes.map((item)=>[item.id,item]));
 const a1Forms=new Map<string,Lexeme>();
+const ambiguousA1Forms=new Set<string>();
 
 for(const lexemeId of a1LexemeIds){
   const item=lexemesById.get(lexemeId);
   if(!item)continue;
   for(const form of [item.canonicalForm,...item.forms.map((form)=>form.text)]){
+    if(ambiguousA1Forms.has(form))continue;
     const prior=a1Forms.get(form);
-    // Ambiguous homographs must not receive a guessed reading.
-    if(prior&&prior.readings[0]?.text!==item.readings[0]?.text){
+    // Once ambiguous, a homograph stays excluded regardless of insertion order.
+    if(prior&&knownReading(prior,form)!==knownReading(item,form)){
+      ambiguousA1Forms.add(form);
       a1Forms.delete(form);
       continue;
     }
@@ -49,15 +52,26 @@ function tokenReading(token:SentenceToken):string|undefined{
 }
 
 export function sentenceFuriganaParts(sentence:Sentence):FuriganaPart[]{
-  if(sentence.tokens.length&&sentence.tokens.map((item)=>item.surface).join("")===sentence.text){
-    return sentence.tokens.map((token)=>{
-      const reading=tokenReading(token);
-      return {surface:token.surface,...(reading&&hasKanji(token.surface)&&reading!==token.surface?{reading}:{})};
-    });
+  if(!sentence.tokens.length)return [{surface:sentence.text}];
+  const parts:FuriganaPart[]=[];
+  let cursor=0;
+  for(const token of sentence.tokens){
+    if(!token.surface)return [{surface:sentence.text}];
+    const position=sentence.text.indexOf(token.surface,cursor);
+    if(position<0)return [{surface:sentence.text}];
+    const gap=sentence.text.slice(cursor,position);
+    // The source may omit punctuation between lexical tokens. Never skip
+    // unannotated Japanese characters to force a misleading alignment.
+    if(/[\u3040-\u30ff\u3400-\u9fff々]/u.test(gap))return [{surface:sentence.text}];
+    if(gap)parts.push({surface:gap});
+    const reading=tokenReading(token);
+    parts.push({surface:token.surface,...(reading&&hasKanji(token.surface)&&reading!==token.surface?{reading}:{})});
+    cursor=position+token.surface.length;
   }
-  // If canonical token alignment is absent, display the original text unchanged.
-  // Unverified automatic segmentation can assign the wrong reading to a homograph.
-  return [{surface:sentence.text}];
+  const remaining=sentence.text.slice(cursor);
+  if(/[\u3040-\u30ff\u3400-\u9fff々]/u.test(remaining))return [{surface:sentence.text}];
+  if(remaining)parts.push({surface:remaining});
+  return parts;
 }
 
 export function a1FuriganaParts(text:string):FuriganaPart[]{
