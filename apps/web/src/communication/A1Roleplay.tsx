@@ -25,26 +25,42 @@ const scenarios:readonly Scenario[]=[
  {japanese:"おちゃをください。",german:"Noch einen Tee bitte.",correct:true,reply:"はい、どうぞ。",replyGerman:"Ja, bitte schön.",next:null},
  {japanese:"おやすみなさい。",german:"Gute Nacht.",correct:false,reply:"え？",replyGerman:"Wie bitte?"}]}
  ]},
- {id:"station",title:"Am Bahnhof",intro:"Du suchst den Bahnhof und möchtest nach Tokio fahren.",turns:[
-  {speaker:"通行人",prompt:"こんにちは。",choices:[
-   {japanese:"すみません。えきはどこですか。",german:"Entschuldigung. Wo ist der Bahnhof?",correct:true,reply:"えきはみぎです。",replyGerman:"Der Bahnhof ist rechts."},
-   {japanese:"コーヒーをください。",german:"Kaffee bitte.",correct:false,reply:"ここにはありません。",replyGerman:"Das gibt es hier nicht."},
-   {japanese:"おやすみなさい。",german:"Gute Nacht.",correct:false,reply:"こんにちは。",replyGerman:"Guten Tag."}]},
-  {speaker:"通行人",prompt:"どこへいきますか。",choices:[
-   {japanese:"とうきょうへいきます。",german:"Ich fahre nach Tokio.",correct:true,reply:"そうですか。",replyGerman:"Ach so."},
-   {japanese:"おんがくがすきです。",german:"Ich mag Musik.",correct:false,reply:"そうですか。",replyGerman:"Ach so."},
-   {japanese:"いちじです。",german:"Es ist ein Uhr.",correct:false,reply:"そうですか。",replyGerman:"Ach so."}]}
+ {id:"station",title:"Am Bahnhof",intro:"Frage nach dem Bahnhof und entscheide, wie du weiterreist.",turns:[
+ {speaker:"通行人",prompt:"こんにちは。どうしましたか。",choices:[
+ {japanese:"えきはどこですか。",german:"Wo ist der Bahnhof?",correct:true,reply:"えきはみぎです。",replyGerman:"Der Bahnhof ist rechts.",next:1},
+ {japanese:"バスはどこですか。",german:"Wo ist der Bus?",correct:true,reply:"バスはひだりです。",replyGerman:"Der Bus ist links.",next:2},
+ {japanese:"おちゃをください。",german:"Tee bitte.",correct:false,reply:"ここはカフェではありません。",replyGerman:"Hier ist kein Café."}]},
+ {speaker:"駅員",prompt:"どこへいきますか。",choices:[
+ {japanese:"とうきょうへいきます。",german:"Ich fahre nach Tokio.",correct:true,reply:"でんしゃですね。",replyGerman:"Also mit dem Zug.",next:3},
+ {japanese:"ありがとうございます。",german:"Vielen Dank, das ist alles.",correct:true,reply:"どういたしまして。",replyGerman:"Gern geschehen.",next:null},
+ {japanese:"さんじです。",german:"Es ist drei Uhr.",correct:false,reply:"どこへ？",replyGerman:"Wohin?"}]},
+ {speaker:"通行人",prompt:"バスでいきますか。",choices:[
+ {japanese:"はい、バスでいきます。",german:"Ja, ich fahre mit dem Bus.",correct:true,reply:"わかりました。",replyGerman:"Verstanden.",next:null},
+ {japanese:"いいえ、でんしゃでいきます。",german:"Nein, ich fahre mit dem Zug.",correct:true,reply:"えきはみぎです。",replyGerman:"Der Bahnhof ist rechts.",next:1},
+ {japanese:"わたしはアンナです。",german:"Ich bin Anna.",correct:false,reply:"え？",replyGerman:"Wie bitte?"}]},
+ {speaker:"駅員",prompt:"でんしゃですね。",choices:[
+ {japanese:"ありがとうございます。",german:"Vielen Dank.",correct:true,reply:"どういたしまして。",replyGerman:"Gern geschehen.",next:null},
+ {japanese:"えきはどこですか。",german:"Wo ist der Bahnhof?",correct:false,reply:"ここはえきです。",replyGerman:"Das hier ist der Bahnhof."}]}
  ]},
- {id:"meeting",title:"Neue Bekanntschaft",intro:"Du lernst eine Person kennen.",turns:[
-  {speaker:"相手",prompt:"はじめまして。",choices:[
-   {japanese:"はじめまして。",german:"Schön, Sie kennenzulernen.",correct:true,reply:"おなまえは？",replyGerman:"Wie heißen Sie?"},
-   {japanese:"これをください。",german:"Das hier bitte.",correct:false,reply:"え？",replyGerman:"Wie bitte?"},
-   {japanese:"みぎです。",german:"Es ist rechts.",correct:false,reply:"え？",replyGerman:"Wie bitte?"}]},
-  {speaker:"相手",prompt:"おなまえは？",choices:[
-   {japanese:"わたしはアンナです。",german:"Ich bin Anna.",correct:true,reply:"よろしくおねがいします。",replyGerman:"Ich freue mich auf den Kontakt."},
-   {japanese:"さんじです。",german:"Es ist drei Uhr.",correct:false,reply:"え？",replyGerman:"Wie bitte?"},
-   {japanese:"いくらですか。",german:"Wie viel kostet es?",correct:false,reply:"え？",replyGerman:"Wie bitte?"}]}
+ {id:"meeting",title:"Neue Bekanntschaft",intro:"Begrüße eine neue Person und sprich über Namen oder Interessen.",turns:[
+ {speaker:"相手",prompt:"はじめまして。",choices:[
+ {japanese:"はじめまして。",german:"Schön, Sie kennenzulernen.",correct:true,reply:"おなまえは？",replyGerman:"Wie heißen Sie?",next:1},
+ {japanese:"こんにちは。",german:"Guten Tag.",correct:true,reply:"おんがくがすきですか。",replyGerman:"Mögen Sie Musik?",next:2},
+ {japanese:"これをください。",german:"Das bitte.",correct:false,reply:"え？",replyGerman:"Wie bitte?"}]},
+ {speaker:"相手",prompt:"おなまえは？",choices:[
+ {japanese:"わたしはアンナです。",german:"Ich bin Anna.",correct:true,reply:"よろしくおねがいします。",replyGerman:"Freut mich.",next:3},
+ {japanese:"わたしはたなかです。",german:"Ich bin Tanaka.",correct:true,reply:"よろしくおねがいします。",replyGerman:"Freut mich.",next:3},
+ {japanese:"いくらですか。",german:"Wie viel kostet es?",correct:false,reply:"おなまえは？",replyGerman:"Wie heißen Sie?"}]},
+ {speaker:"相手",prompt:"おんがくがすきですか。",choices:[
+ {japanese:"はい、おんがくがすきです。",german:"Ja, ich mag Musik.",correct:true,reply:"わたしもです。",replyGerman:"Ich auch.",next:3},
+ {japanese:"ほんがすきです。",german:"Ich mag Bücher.",correct:true,reply:"そうですか。",replyGerman:"Ach so.",next:3},
+ {japanese:"えきはみぎです。",german:"Der Bahnhof ist rechts.",correct:false,reply:"え？",replyGerman:"Wie bitte?"}]},
+ {speaker:"相手",prompt:"よろしくおねがいします。",choices:[
+ {japanese:"こちらこそ、よろしくおねがいします。",german:"Ganz meinerseits.",correct:true,reply:"ありがとうございます。",replyGerman:"Vielen Dank.",next:null},
+ {japanese:"さようなら。",german:"Auf Wiedersehen.",correct:true,reply:"さようなら。",replyGerman:"Auf Wiedersehen.",next:null},
+ {japanese:"おちゃをください。",german:"Tee bitte.",correct:false,reply:"え？",replyGerman:"Wie bitte?"}]}
  ]}
+
 ];
 function speak(text:string){if(typeof window==="undefined"||!("speechSynthesis" in window))return;window.speechSynthesis.cancel();const voice=new SpeechSynthesisUtterance(text);voice.lang="ja-JP";voice.rate=.82;window.speechSynthesis.speak(voice);}
 export function A1Roleplay(){
@@ -101,7 +117,7 @@ export function A1Roleplay(){
    <p>{!choice.correct?"Versuche beim nächsten Durchgang eine passendere Antwort.":""}</p>
    {!choice.correct?<button type="button" onClick={()=>{setChoiceIndex(null);}}>Missverständnis klären und erneut antworten</button>:null}
    {done?<div><p>{score} passende Antworten auf {visited.length} besuchten Gesprächsschritten.</p><button type="button" onClick={()=>start(scenarioIndex)}>Gespräch wiederholen</button></div>
-    :<button type="button" disabled={!choice.correct} onClick={()=>{setTurnIndex(choice.next??Math.min(turnIndex+1,scenario.turns.length-1));setChoiceIndex(null);setRepair(false);setPreviousMismatch(false);}}>Gespräch fortsetzen</button>}
+    :<button type="button" disabled={!choice.correct} onClick={()=>{setTurnIndex(choice.next??Math.min(turnIndex+1,scenario.turns.length-1));setChoiceIndex(null);setPreviousMismatch(false);}}>Gespräch fortsetzen</button>}
   </div>:null}
   {error?<p role="alert">{error}</p>:null}
  </section>;
