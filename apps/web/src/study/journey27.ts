@@ -11,7 +11,7 @@ import {p26Missions,p26Prompts,p26Lessons,missionTurnPrompt,normalizeP26} from "
  */
 export type JourneySource="p23"|"p25"|"p26";
 export type JourneyStage="learn"|"build"|"conversation"|"write"|"practice";
-export type JourneyPractice="review"|"transfer"|"register"|"grammar"|"production";
+export type JourneyPractice="review"|"retry"|"transfer"|"register"|"grammar"|"production";
 export interface JourneyWord{form:string;reading:string;meaning:string;example:string;}
 export interface JourneyOption{
   japanese:string;meaning:string;valid:boolean;explanation:string;next?:string|null;
@@ -201,7 +201,7 @@ export function deriveJourneyProgress(
   const lastEvent=new Map<string,StudyEvent>();
   for(const event of events){
     const id=event.metadata?.promptId;
-    if(typeof id!=="string"||(event.result!=="correct"&&event.result!=="incorrect"))continue;
+    if(typeof id!=="string"||(event.result!=="correct"&&event.result!=="incorrect")||event.metadata?.schedulerExcluded===true)continue;
     const prior=lastEvent.get(id);
     if(!prior||prior.occurredAt<event.occurredAt)lastEvent.set(id,event);
   }
@@ -256,7 +256,7 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     :promptsForUnit(unitId,extras);
   const latest=new Map<string,StudyEvent>();
   for(const e of events){
-    if(typeof e.metadata?.promptId!=="string"||(e.result!=="correct"&&e.result!=="incorrect"))continue;
+    if(typeof e.metadata?.promptId!=="string"||(e.result!=="correct"&&e.result!=="incorrect")||e.metadata?.schedulerExcluded===true)continue;
     const id=e.metadata.promptId,prev=latest.get(id);
     if(!prev||prev.occurredAt<e.occurredAt)latest.set(id,e);
   }
@@ -268,9 +268,16 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     return 0;
   };
   const list=(relevant.length?relevant:promptsForUnit(unitId,extras)).slice().sort((a,b)=>priority(b)-priority(a));
-  const selected=focus==="review"?list.filter(p=>priority(p)>1):list;
-  // An empty review queue must not silently turn never-seen material into "due" work.
-  // First-exposure practice remains reachable through its own dedicated actions.
-  const final=focus==="review"?selected:list;
+  // Only FSRS-issued due timestamps establish that a card is due.
+  // A last-incorrect event may warrant optional remediation but does not
+  // override a future FSRS due date or silently turn new prompts into "due".
+  const scheduledDue=(p:StudyPrompt)=>{
+    const trace=known.get(traceIdJourney(p));
+    return Boolean(trace&&Number.isFinite(Date.parse(trace.card.due))&&Date.parse(trace.card.due)<=now);
+  };
+  const selected=focus==="review"?list.filter(scheduledDue)
+    :focus==="retry"?list.filter(p=>latest.get(p.id)?.result==="incorrect")
+    :list;
+  const final=selected;
   return [journeyLessons["p27:unit:"+unit.id]!,...final.slice(0,14)];
 }

@@ -570,7 +570,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
             <p>Aus dem vorhandenen lokalen Lernverlauf abgeleitet, ohne neue Beherrschungsnote.</p>
             {nextActions.map(action=><button key={action.id} type="button"
               disabled={disabled} onClick={()=>{
-                if(action.focus==="review"){onJourneyPractice(action.unitId,"review");return;}
+                if(action.focus==="review"){
+                  const target=progress.find(p=>p.id===action.unitId);
+                  onJourneyPractice(action.unitId,(target?.due??0)>0?"review":"retry");
+                  return;
+                }
                 if(action.focus==="transfer"){onJourneyPractice(action.unitId,"transfer");return;}
                 if(action.unitId!==unitId)selectUnit(action.unitId);
                 setStage(action.focus==="sentence"?"build":"conversation");
@@ -588,7 +592,10 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
               onClick={()=>onJourneyPractice(unitId,"transfer")}>Verknüpften Wortschatz im StudyPlayer abrufen</button>
           </div>:null}
           <div className="p27-journey__actions">
-            <button type="button" disabled={disabled||!(profile?.due||profile?.retry)} onClick={()=>onJourneyPractice(unitId,"review")}>Fällige und fehlerhafte Karten wiederholen</button>
+            <button type="button" disabled={disabled||!(profile?.due)}
+              onClick={()=>onJourneyPractice(unitId,"review")}>FSRS-fällige Karten wiederholen</button>
+            <button type="button" disabled={disabled||!(profile?.retry)}
+              onClick={()=>onJourneyPractice(unitId,"retry")}>Zuletzt fehlerhafte Karten gezielt üben</button>
             <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"transfer")}>Transfer in neue Situationen</button>
             <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"register")}>Höflichkeit & Register</button>
             <button type="button" disabled={disabled} onClick={()=>onSourcePractice(unit.source,unit.sourceId,"context")}>Weitere Übungen zu diesem Thema</button>
