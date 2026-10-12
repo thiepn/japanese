@@ -10,6 +10,7 @@ import {p33RolesForUnit,p33RolePrompts} from "../study/role33";
 import {p33RepairForScenario} from "../study/repair33";
 import {p34AlternativesForTurn} from "../study/alternatives34";
 import {p34RepairContinuationFor} from "../study/repair34";
+import {p34RoleFeedback} from "../study/feedback34";
 import {normalizeP26} from "../study/pedagogy26";
 import "./p33-role.css";
 
@@ -103,6 +104,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
       setAssisted(true);
       setFeedback({correctModel:matched,independent,notes:[
         turn.gloss,...grammarReflection(journeyUnit(unitId),draft),
+        ...p34RoleFeedback(scenario!.id,draft),
         ...(p32ContrastForUnit(unitId)?[p32ContrastForUnit(unitId)!.explanation]:[]),
         "Weitere natürlich richtige Formulierungen sind möglich und werden hier nicht automatisch bewertet."
       ]});
