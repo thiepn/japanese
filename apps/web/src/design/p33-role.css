@@ -58,3 +58,12 @@
 .p33-role__exact-due small{font-size:.8rem;opacity:.8}
 .p33-role__exact-due button{justify-self:start}
 @media(max-width:580px){.p33-role__exact-due button{width:100%}}
+
+.p33-role__correction{border-top:1px solid currentColor;padding-top:.85rem;margin-top:.85rem}
+.p33-role__correction h5{font-size:1rem;margin:.25rem 0}
+.p33-role__correction>p{font-size:.88rem}
+.p33-role__correction label{display:block;font-weight:600;margin:.6rem 0}
+.p33-role__correction [lang=ja]{font-size:1.15rem}
+.p33-role__correction [role=status]{border-left:3px solid currentColor;padding:.55rem .75rem;margin:.7rem 0}
+.p33-role__correction textarea{min-height:5rem}
+@media(max-width:580px){.p33-role__correction button{min-height:44px}}

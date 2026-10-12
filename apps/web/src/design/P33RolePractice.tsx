@@ -13,6 +13,7 @@ import {p35AlternativesForTurn} from "../study/alternatives35";
 import {p34RepairContinuationFor} from "../study/repair34";
 import {p34RoleFeedback} from "../study/feedback34";
 import {p36IntentsForRole} from "../study/intent36";
+import {p36CorrectionsForScenario,p36CorrectionRecognized} from "../study/correction36";
 import {normalizeP26} from "../study/pedagogy26";
 import type {MemoryTrace} from "@thiepn/scheduler";
 import {dueP36RolePrompts} from "../study/roleDue36";
@@ -46,6 +47,9 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
   const [intentStage,setIntentStage]=useState<"idle"|"first"|"second"|"complete">("idle");
   const [intentFirst,setIntentFirst]=useState("");
   const [intentSecond,setIntentSecond]=useState("");
+  const [correctionId,setCorrectionId]=useState("");
+  const [correctionDraft,setCorrectionDraft]=useState("");
+  const [correctionMatch,setCorrectionMatch]=useState<boolean|null>(null);
   const exposed=useRef(new Set<string>());
   const startTime=useRef(0);
   const ownerRef=useRef(owner);ownerRef.current=owner;
@@ -57,6 +61,8 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
   const repairFollowup=p34RepairContinuationFor(scenario?.id??"");
   const intentPaths=p36IntentsForRole(scenario?.id??"",perspective);
   const intentPath=intentPaths.find(p=>p.id===intentPathId);
+  const corrections=p36CorrectionsForScenario(scenario?.id??"");
+  const correction=corrections.find(c=>c.id===correctionId);
   const alternatives=[
     ...p34AlternativesForTurn(scenario?.id??"",perspective,turnIndex),
     ...p35AlternativesForTurn(scenario?.id??"",perspective,turnIndex)
@@ -68,6 +74,9 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
   function resetIntents(){
     setIntentPathId("");setIntentStage("idle");setIntentFirst("");setIntentSecond("");
   }
+  function resetCorrection(){
+    setCorrectionId("");setCorrectionDraft("");setCorrectionMatch(null);
+  }
   useEffect(()=>{
     setScenarioId(p33RolesForUnit(unitId)[0]?.id??"");
     setPerspective("guest");setTurnIndex(0);setDraft("");setFirstDraft("");
@@ -75,7 +84,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
     setRepairOpen(false);setRepairDraft("");setRepairDone(false);
     setFollowupDraft("");setFollowupDone(false);
     setShowPartner(true);setShowMeaning(false);exposed.current.clear();
-    setCompletedRoles(new Set());resetIntents();
+    setCompletedRoles(new Set());resetIntents();resetCorrection();
     startTime.current=performance.now();
   },[unitId,owner]);
   function switchPath(id:string,p:"guest"|"host"){
@@ -83,7 +92,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
     setScenarioId(id);setPerspective(p);setTurnIndex(0);setDraft("");setFirstDraft("");
     setFeedback(null);setAssisted(false);setError("");setShowPartner(true);setShowMeaning(false);
     setRepairOpen(false);setRepairDraft("");setRepairDone(false);
-    setFollowupDraft("");setFollowupDone(false);resetIntents();
+    setFollowupDraft("");setFollowupDone(false);resetIntents();resetCorrection();
     startTime.current=performance.now();
   }
   function playPartner(){
@@ -212,6 +221,33 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
       if(ownerRef.current===account)setError("Die freie Anschlussantwort konnte nicht protokolliert werden. Erneut versuchen.");
     }finally{if(ownerRef.current===account)setBusy(false);}
   }
+  async function submitCorrection(){
+    if(!correction||!correctionDraft.trim()||correctionMatch!==null||busy||disabled||!feedback)return;
+    const account=ownerRef.current;
+    if(account!==getDevelopmentAccountId())return;
+    setBusy(true);setError("");
+    try{
+      const event:StudyEvent={
+        id:crypto.randomUUID(),userId:account,deviceId:DEVELOPMENT_DEVICE_ID,
+        occurredAt:new Date().toISOString(),activity:"writing",
+        primaryTarget:{kind:"production_task",id:"p36:reformulation:"+correction.id},
+        skillDimension:"production",promptFamily:"p36-assisted-role-correction",
+        responseMode:"typed",result:"skipped",attempts:1,
+        contextId:"p33:role:"+scenario!.id,sourceId:"thiepn-original",contentVersion:"p36-1",
+        metadata:{p36:true,kind:"assisted-correction",unitId,scenarioId:scenario!.id,
+          role:perspective,turnIndex,taskId:correction.id,
+          schedulerExcluded:true,assisted:true,rawTextStored:false,
+          length:[...normalizeP26(correctionDraft)].length}
+      };
+      await saveStudyEvent(event);
+      if(ownerRef.current!==account)return;
+      setCorrectionMatch(p36CorrectionRecognized(correction,correctionDraft));
+      exposed.current.add(identity);
+      setAssisted(true);onReviewed();
+    }catch{
+      if(ownerRef.current===account)setError("Korrektur konnte nicht protokolliert werden. Erneut versuchen.");
+    }finally{if(ownerRef.current===account)setBusy(false);}
+  }
   function next(){
     if(!role)return;
     if(turnIndex+1<role.turns.length)setTurnIndex(t=>t+1);
@@ -222,7 +258,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
     }
     setDraft("");setFirstDraft("");setAssisted(false);setFeedback(null);setError("");
     setRepairOpen(false);setRepairDraft("");setRepairDone(false);
-    setFollowupDraft("");setFollowupDone(false);resetIntents();
+    setFollowupDraft("");setFollowupDone(false);resetIntents();resetCorrection();
     setShowMeaning(false);startTime.current=performance.now();
   }
   if(!scenario||!role||!turn)return null;
@@ -350,6 +386,36 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
         <p>Neue Fassung: <span lang="ja">{draft}</span></p>
       </div>:null}
       <ul>{feedback.notes.map((note,i)=><li key={i}>{note}</li>)}</ul>
+      {corrections.length>0?<section className="p33-role__correction" aria-label="Partikeln und Register verbessern">
+        <h5>Einen ähnlichen Satz selbst verbessern</h5>
+        <p>Hier wird erst nach deiner Antwort eine Zielform gezeigt. Der Vergleich im
+          Gespräch bleibt unbewertet; die unabhängige Übung ist im StudyPlayer verfügbar.</p>
+        <div className="p33-role__choices" role="group" aria-label="Korrekturschwerpunkt">
+          {corrections.map(item=><button type="button" key={item.id}
+            disabled={busy} aria-pressed={correctionId===item.id}
+            onClick={()=>{setCorrectionId(item.id);setCorrectionDraft("");setCorrectionMatch(null);}}>
+            {item.focus==="particle"?"Partikeln":item.focus==="register"?"Höflichkeit":
+              item.focus==="time"?"Vergangenheit":"Sprechabsicht"}</button>)}
+        </div>
+        {correction?<div>
+          <p><strong>Situation:</strong> {correction.situation}</p>
+          <p>Zu überarbeiten: <span lang="ja">{correction.startingSentence}</span></p>
+          <label htmlFor="p36-role-correction">Dein korrigierter japanischer Satz</label>
+          <textarea id="p36-role-correction" lang="ja" rows={2} value={correctionDraft}
+            disabled={busy||correctionMatch!==null} onChange={e=>setCorrectionDraft(e.target.value)}
+            onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
+              e.preventDefault();void submitCorrection();
+            }}}/>
+          <button type="button" disabled={busy||disabled||correctionMatch!==null||!correctionDraft.trim()}
+            onClick={()=>void submitCorrection()}>Mit Zielform vergleichen</button>
+          {correctionMatch!==null?<div role="status">
+            <strong>{correctionMatch?"Hinterlegte Zielform getroffen":"Deine Form unterscheidet sich vom hinterlegten Modell"}</strong>
+            <p>Ein Beispiel: <span lang="ja">{correction.model}</span></p>
+            <p>{correction.explanation}</p>
+            <p>Andere korrekte Lösungen sind möglich. Das ist kein unabhängiger FSRS-Abruf.</p>
+          </div>:null}
+        </div>:null}
+      </section>:null}
       {turnIndex===role.turns.length-1&&intentPaths.length>0?<section
         className="p33-role__intents" aria-label="Situationsbezogenes Gespräch fortsetzen">
         <h5>Das Gespräch selbstständig weiterführen</h5>
@@ -404,7 +470,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
         <button type="button" disabled={disabled} onClick={onGrammar}>
           Partikeln und Höflichkeit im StudyPlayer vertiefen</button>
         <button type="button" disabled={busy} onClick={()=>{
-          setFeedback(null);setAssisted(true);resetIntents();startTime.current=performance.now();
+          setFeedback(null);setAssisted(true);resetIntents();resetCorrection();startTime.current=performance.now();
         }}>Antwort überarbeiten (unbewertet)</button>
         <button type="button" disabled={busy} onClick={next}>Nächste Antwort / Rolle wechseln</button>
       </div>
