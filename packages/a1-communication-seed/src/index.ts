@@ -81,6 +81,36 @@ export const a1CommunicationLessons: readonly A1CommunicationLesson[] = [
       { id: "origin-order", kind: "order", prompt: "Ordne: Ich komme aus Japan.", tokens: ["きました", "にほん", "から"], answer: ["にほん", "から", "きました"], explanation: "Herkunftsland + から + きました." }
     ]
   }
+  ,
+  {
+    id:"a1-asking-names",level:"A1",title:"Nach Namen fragen",canDo:"Ich kann höflich nach dem Namen fragen und antworten.",
+    grammar:["おなまえは？ ist eine verkürzte höfliche Frage nach dem Namen.","～です antwortet höflich mit einem Namen."],
+    vocabulary:[{japanese:"おなまえ",romaji:"onamae",german:"Name (höflich)"},{japanese:"なん",romaji:"nan",german:"was"},{japanese:"ですか",romaji:"desu ka",german:"höfliche Frageendung"},{japanese:"たなか",romaji:"Tanaka",german:"Familienname Tanaka"}],
+    dialogue:[{speaker:"A",japanese:"おなまえは？",romaji:"Onamae wa?",german:"Wie heißen Sie?"},{speaker:"B",japanese:"たなかです。",romaji:"Tanaka desu.",german:"Ich heiße Tanaka."}],
+    exercises:[{id:"name-choice",kind:"choice",prompt:"Was fragt おなまえは？",options:["Wie heißen Sie?","Woher kommen Sie?","Wie spät ist es?"],answer:"Wie heißen Sie?",explanation:"おなまえ bedeutet Name."},{id:"name-fill",kind:"fill",prompt:"Ergänze: たなか___。",answer:"です",explanation:"です bildet die höfliche Antwort."},{id:"name-order",kind:"order",prompt:"Ordne: Ich heiße Tanaka.",tokens:["です","たなか"],answer:["たなか","です"],explanation:"Name + です ist eine höfliche Antwort."}]
+  },
+  {
+    id:"a1-thanks",level:"A1",title:"Danken und sich entschuldigen",canDo:"Ich kann danken und mich höflich entschuldigen.",
+    grammar:["ありがとうございます ist eine höfliche Dankesformel.","すみません kann Entschuldigung oder eine höfliche Anrede sein."],
+    vocabulary:[{japanese:"ありがとうございます",romaji:"arigatou gozaimasu",german:"Vielen Dank"},{japanese:"どういたしまして",romaji:"dou itashimashite",german:"Gern geschehen"},{japanese:"すみません",romaji:"sumimasen",german:"Entschuldigung"},{japanese:"はい",romaji:"hai",german:"ja"}],
+    dialogue:[{speaker:"A",japanese:"すみません。",romaji:"Sumimasen.",german:"Entschuldigung."},{speaker:"B",japanese:"はい。",romaji:"Hai.",german:"Ja?"},{speaker:"A",japanese:"ありがとうございます。",romaji:"Arigatou gozaimasu.",german:"Vielen Dank."}],
+    exercises:[{id:"thanks-choice",kind:"choice",prompt:"Wie bedankt man sich höflich?",options:["ありがとうございます","こんばんは","どこ"],answer:"ありがとうございます",explanation:"ありがとうございます ist höflicher Dank."},{id:"thanks-fill",kind:"fill",prompt:"Ergänze: ___ (Entschuldigung)",answer:"すみません",explanation:"すみません ist eine höfliche Entschuldigung."}]
+  },
+  {
+    id:"a1-shopping",level:"A1",title:"Im Geschäft einkaufen",canDo:"Ich kann nach einem Preis fragen und einen Gegenstand auswählen.",
+    grammar:["これは bedeutet dieses hier.","いくらですか fragt nach dem Preis.","～をください ist eine höfliche Bitte um einen Gegenstand."],
+    vocabulary:[{japanese:"これ",romaji:"kore",german:"dieses hier"},{japanese:"いくら",romaji:"ikura",german:"wie viel"},{japanese:"えん",romaji:"en",german:"Yen"},{japanese:"ください",romaji:"kudasai",german:"bitte geben Sie mir"}],
+    dialogue:[{speaker:"A",japanese:"これはいくらですか。",romaji:"Kore wa ikura desu ka.",german:"Wie viel kostet das hier?"},{speaker:"B",japanese:"ごひゃくえんです。",romaji:"Gohyaku en desu.",german:"Das kostet 500 Yen."},{speaker:"A",japanese:"これをください。",romaji:"Kore o kudasai.",german:"Das hier bitte."}],
+    exercises:[{id:"shop-price",kind:"choice",prompt:"Was bedeutet いくらですか？",options:["Wie viel kostet es?","Wo ist es?","Wer ist das?"],answer:"Wie viel kostet es?",explanation:"いくら fragt nach einem Preis."},{id:"shop-order",kind:"order",prompt:"Ordne: Das hier bitte.",tokens:["ください","これを"],answer:["これを","ください"],explanation:"これをください ist eine höfliche Bitte."},{id:"shop-fill",kind:"fill",prompt:"Ergänze: これは___ですか。 (Wie viel kostet das?)",answer:"いくら",explanation:"いくら bedeutet wie viel."}]
+  },
+  {
+    id:"a1-cafe",level:"A1",title:"Im Café bestellen",canDo:"Ich kann ein einfaches Getränk bestellen.",
+    grammar:["～をください bedeutet: bitte geben Sie mir …","お願いします ist eine weitere höfliche Bitte."],
+    vocabulary:[{japanese:"みず",romaji:"mizu",german:"Wasser"},{japanese:"おちゃ",romaji:"ocha",german:"Tee"},{japanese:"コーヒー",romaji:"koohii",german:"Kaffee"},{japanese:"おねがいします",romaji:"onegai shimasu",german:"bitte (höflich)"}],
+    dialogue:[{speaker:"A",japanese:"おちゃをください。",romaji:"Ocha o kudasai.",german:"Einen Tee bitte."},{speaker:"B",japanese:"はい。",romaji:"Hai.",german:"Ja."},{speaker:"A",japanese:"ありがとうございます。",romaji:"Arigatou gozaimasu.",german:"Vielen Dank."}],
+    exercises:[{id:"cafe-choice",kind:"choice",prompt:"Was bestellt A?",options:["Tee","Wasser","Kaffee"],answer:"Tee",explanation:"おちゃ bedeutet Tee."},{id:"cafe-order",kind:"order",prompt:"Ordne: Wasser bitte.",tokens:["ください","みずを"],answer:["みずを","ください"],explanation:"みずをください bedeutet Wasser bitte."},{id:"cafe-fill",kind:"fill",prompt:"Ergänze: おちゃを___。",answer:"ください",explanation:"ください drückt die höfliche Bitte aus."}]
+  }
+
 ];
 
 export function evaluateA1Exercise(exercise: A1Exercise, response: string | readonly string[]): boolean {
