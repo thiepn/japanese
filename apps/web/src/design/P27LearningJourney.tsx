@@ -53,6 +53,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
   const [stepsTaken,setStepsTaken]=useState(0);
   const [inputMode,setInputMode]=useState<InputMode>("compose");
   const [answer,setAnswer]=useState("");
+  const [firstConversationDraft,setFirstConversationDraft]=useState("");
   const [feedback,setFeedback]=useState<Feedback|null>(null);
   const [hintUsed,setHintUsed]=useState(false);
   const [speechUsed,setSpeechUsed]=useState(false);
@@ -97,7 +98,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
   },[owner,reload]);
   useEffect(()=>{
     microphone.current?.stop();microphone.current=null;
-    setNodeId(unit.turns[0]!.id);setStepsTaken(0);setAnswer("");setFeedback(null);
+    setNodeId(unit.turns[0]!.id);setStepsTaken(0);setAnswer("");setFirstConversationDraft("");setFeedback(null);
     setHintUsed(false);setSpeechUsed(false);setShowTranslation(false);setInputMode("compose");
     setError("");setDraft("");setRewrite("");
     setRewriteStage("draft");setReport(null);setSaved(false);setVoiceStatus("");
@@ -106,7 +107,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
   useEffect(()=>()=>microphone.current?.stop(),[]);
   function selectUnit(id:string){setUnitId(id);setStage("learn");}
   function resetDialogue(){
-    setNodeId(unit.turns[0]!.id);setStepsTaken(0);setAnswer("");setFeedback(null);
+    setNodeId(unit.turns[0]!.id);setStepsTaken(0);setAnswer("");setFirstConversationDraft("");setFeedback(null);
     setHintUsed(false);setSpeechUsed(false);setError("");started.current=performance.now();
   }
   function speak(text:string){
@@ -165,6 +166,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
         responseTimeMs:Math.max(0,Math.round(performance.now()-started.current))});
       else await ungraded("response",answer,hintUsed||speechUsed);
       if(currentOwner.current!==account)return;
+      if(!firstConversationDraft)setFirstConversationDraft(answer);
+      setHintUsed(true); // The displayed model makes any subsequent retry ungraded.
       setFeedback({kind:independent?"graded":"ungraded",model:turn.reference,
         message:independent?"Geübte Zielform unabhängig getroffen. FSRS-Übung gespeichert."
           :exact?"Zielform getroffen, aber mit Hilfe oder Spracherkennung: unbewerteter Versuch."
@@ -198,7 +201,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
     if(!feedback||busy)return;
     setStepsTaken(n=>n+1);
     setNodeId(feedback.next??"__finished__");
-    setFeedback(null);setAnswer("");setHintUsed(false);setSpeechUsed(false);
+    setFeedback(null);setAnswer("");setFirstConversationDraft("");setHintUsed(false);setSpeechUsed(false);
     started.current=performance.now();
   }
   async function saveRevision(){
@@ -306,9 +309,17 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
             {feedback?<div className="p27-journey__note" role="status">
               <strong>{feedback.message}</strong>
               <p><span lang="ja">{feedback.model}</span> · mögliche Musterantwort</p>
+              {firstConversationDraft&&answer&&firstConversationDraft!==answer?<div className="p27-journey__revision">
+                <strong>Deine überarbeitete Antwort</strong>
+                <p>Erste Fassung: <span lang="ja">{firstConversationDraft}</span></p>
+                <p>Neue Fassung: <span lang="ja">{answer}</span></p>
+                <ul>{describeP29Revision(firstConversationDraft,answer,unit).suggestions.map((tip,i)=>
+                  <li key={i}>{tip}</li>)}</ul>
+                <small>Nach dem Vergleich mit einer Musterantwort wird diese Revision nicht als unabhängiger FSRS-Abruf gewertet.</small>
+              </div>:null}
               <ul>{feedback.notes.map((n,i)=><li key={i}>{n}</li>)}</ul>
               <div className="p27-journey__actions">
-                <button type="button" onClick={()=>{setFeedback(null);setAnswer("");setSpeechUsed(false);started.current=performance.now();}}>Anders antworten</button>
+                <button type="button" onClick={()=>{setFeedback(null);setHintUsed(true);setSpeechUsed(false);started.current=performance.now();}}>Antwort überarbeiten (Text beibehalten)</button>
                 <button type="button" onClick={continueDialogue}>Fortfahren</button>
               </div>
             </div>:null}

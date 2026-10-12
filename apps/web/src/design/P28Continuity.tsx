@@ -8,7 +8,7 @@ import {journeyUnit} from "../study/journey27";
 import {normalizeP26} from "../study/pedagogy26";
 import {describeP29Revision,p29RegisterExampleForUnit} from "../study/revision29";
 import {
-  continuityForUnit,continuityPrompt,chooseContinuityNext,
+  continuityForUnit,continuityPrompt,
   type ContinuityReply
 } from "../study/continuity28";
 import "./p28-continuity.css";
