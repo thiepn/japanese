@@ -82,7 +82,8 @@ export function P28Continuity({
       !revealedTurnIds.current.has(scenario!.id+":"+node!.id);
     const choice=node!.choices.find(c=>normalizeP26(c.japanese)===normalizeP26(response));
     const intended=node!.choices.find(c=>c.appropriate&&c.japanese===intendedReply);
-    const next=choice?.next??intended?.next??node!.id;
+    // An explicit null is a terminal story branch, not an unresolved choice.
+    const next=choice?choice.next:intended?intended.next:node!.id;
     setBusy(true);setError("");
     try{
       if(independentChoice||independentlyProduced){
