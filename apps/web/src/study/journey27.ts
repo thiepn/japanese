@@ -237,8 +237,13 @@ export function recommendedJourneyUnit(progress:readonly JourneyUnitProgress[]):
 export function journeySession(unitId:string,focus:JourneyPractice,traces:readonly MemoryTrace[],events:readonly StudyEvent[],now=Date.now(),extras:readonly StudyPrompt[]=[]):StudyStep[]{
   const unit=journeyUnit(unitId);
   const known=new Map(traces.map(t=>[t.id,t]));
-  const relevant=focus==="transfer"||focus==="register"
-    ?transferForUnit(unitId).filter(p=>focus!=="register"||/register|polite|tone|Höflich|Einladungston/.test(p.id+" "+p.instruction))
+  const pragmatic=extras.filter(p=>{
+    const ids=p.eventMetadata?.unitIds;
+    return p.eventMetadata?.kind==="register-contrast"&&Array.isArray(ids)&&ids.includes(unitId);
+  });
+  const relatedRegister=transferForUnit(unitId).filter(p=>/register|polite|tone|Höflich|Einladungston/.test(p.id+" "+p.instruction));
+  const relevant=focus==="register"?[...pragmatic,...relatedRegister]
+    :focus==="transfer"?transferForUnit(unitId)
     :promptsForUnit(unitId,extras);
   const latest=new Map<string,StudyEvent>();
   for(const e of events){

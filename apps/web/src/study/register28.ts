@@ -177,6 +177,17 @@ export const register28Cases:readonly RegisterCase[]=[
     ],
     "reason": "Die höfliche Dankformel passt zur abgeschlossenen Hilfeleistung. Unter Freunden sind lockere Formen normal."
   }
+  ,{
+    id:"habit-report",units:["p23:routine"],
+    context:"Eine neue Tandempartnerin fragt nach deiner Lernroutine. Wähle eine höfliche Antwort.",
+    best:"毎日日本語を勉強します。",alternatives:["毎日勉強しろ。","昨日勉強したぞ。"],
+    reason:"Die ます-Form berichtet höflich über die Gewohnheit; die Alternativen sind ein Befehl beziehungsweise ein rückblickender Satz in grobem Ton."
+  },{
+    id:"weekend-report",units:["p23:past"],
+    context:"Die Lehrkraft fragt, was du am Wochenende gemacht hast. Welche Antwort ist höflich und zeitlich passend?",
+    best:"映画を見ました。",alternatives:["映画を見ます。","映画を見ろ。"],
+    reason:"Die höfliche Vergangenheitsform ました passt zum Bericht; die Gegenwartsform und der Imperativ haben andere Funktionen."
+  }
 ];
 export const register28Prompts:StudyPrompt[]=register28Cases.map(c=>({
   id:"p28-register-"+c.id,
