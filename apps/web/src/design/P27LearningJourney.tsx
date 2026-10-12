@@ -2,12 +2,15 @@ import {useEffect,useMemo,useRef,useState} from "react";
 import {listMemoryTraces,listStudyEvents,saveStudyEvent} from "@thiepn/local-db";
 import {gradeStudyPrompt} from "@thiepn/study-player";
 import type {StudyEvent} from "@thiepn/domain";
+import type {MemoryTrace} from "@thiepn/scheduler";
 import {DEVELOPMENT_DEVICE_ID,getDevelopmentAccountId,recordStudyAnswer} from "../study/runtime";
 import {normalizeP26} from "../study/pedagogy26";
 import {grammarReflection} from "../study/feedback27";
 import {P28SentenceBuilder} from "./P28SentenceBuilder";
 import {P28Continuity} from "./P28Continuity";
 import {p28NewSentencePrompts} from "../study/sentence28";
+import {p29AdditionalPrompts,p29LexicalPrompts,lexicalLinksForUnit,recommendP29Actions,type JourneyNextAction} from "../study/depth29";
+import {describeP29Revision,p29RegisterExampleForUnit} from "../study/revision29";
 import {
   deriveJourneyProgress,journeyTypedPrompt,journeyUnits,journeyUnit,nextTurn,recommendedJourneyUnit,
   type JourneyPractice,type JourneySource,type JourneyStage,type JourneyOption,type JourneyUnitProgress
@@ -42,6 +45,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
   const [query,setQuery]=useState("");
   const [stage,setStage]=useState<JourneyStage>("learn");
   const [progress,setProgress]=useState<JourneyUnitProgress[]>([]);
+  const [evidence,setEvidence]=useState<{events:StudyEvent[];traces:MemoryTrace[]}|null>(null);
   const [loading,setLoading]=useState(true);
   const [loadError,setLoadError]=useState("");
   const [reload,setReload]=useState(0);
@@ -68,15 +72,25 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
   const profile=progress.find(p=>p.id===unitId);
   const recommended=recommendedJourneyUnit(progress);
   const recommendedUnit=journeyUnit(recommended);
+  const learningLinks=lexicalLinksForUnit(unitId);
+  const pragmatics=p29RegisterExampleForUnit(unitId);
+  const nextActions=useMemo(()=>evidence?
+    recommendP29Actions(unitId,progress,evidence.events,evidence.traces):[],
+    [unitId,progress,evidence]);
   const filtered=useMemo(()=>journeyUnits.filter(u=>
     (level==="all"||u.level===level)&&(!query.trim()||
       (u.title+" "+u.goal+" "+u.words.map(w=>w.form+" "+w.meaning).join(" ")).toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()))
   ),[level,query]);
   useEffect(()=>{
-    let active=true;setLoading(true);setLoadError("");
+    let active=true;setLoading(true);setLoadError("");setEvidence(null);
     void Promise.all([listStudyEvents(owner),listMemoryTraces(owner)]).then(([events,traces])=>{
-      if(active&&currentOwner.current===owner)
-        setProgress(deriveJourneyProgress(traces.filter(t=>t.userId===owner),events.filter(e=>e.userId===owner),Date.now(),p28NewSentencePrompts));
+      if(active&&currentOwner.current===owner){
+        const personalTraces=traces.filter(t=>t.userId===owner);
+        const personalEvents=events.filter(e=>e.userId===owner);
+        setEvidence({events:personalEvents,traces:personalTraces});
+        setProgress(deriveJourneyProgress(personalTraces,personalEvents,Date.now(),
+          [...p28NewSentencePrompts,...p29AdditionalPrompts,...p29LexicalPrompts]));
+      }
     }).catch(()=>{if(active)setLoadError("Lernverlauf nicht verfügbar; die Übungen können trotzdem verwendet werden.");})
       .finally(()=>{if(active)setLoading(false);});
     return()=>{active=false;};
@@ -200,7 +214,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
   return <section className="p27-journey" aria-labelledby="p27-title">
     <header><p className="j4-kicker">JAPANESE · EIN LERNWEG</p>
       <h2 id="p27-title">Japanisch im Zusammenhang lernen</h2>
-      <p>18 Originaleinheiten mit fünf verbundenen Lernschritten: verstehen, Sätze bauen, antworten, schreiben und gezielt wiederholen.</p>
+      <p>18 Originaleinheiten mit fünf verbundenen Lernschritten; jetzt mit vertieftem Satzbau, neuen Themenübergängen und angeleiteten Wiederholungen.</p>
     </header>
     <div className="p27-journey__next">
       <div><strong>Empfohlene nächste Einheit</strong><p>{loading?"Lernverlauf laden …":recommendedUnit.title}</p></div>
@@ -346,6 +360,15 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
             <p>Erkannte Zielzeichenfolgen: {report.found.join(" · ")||"keine"}</p>
             <p>Nicht erkannt: {report.missing.join(" · ")||"keine"}</p>
             <ul>{grammarReflection(unit,rewrite).map((note,i)=><li key={i}>{note}</li>)}</ul>
+            <div className="p27-journey__revision">
+              <strong>Überarbeitete Partikeln und Formen</strong>
+              <p>Neue Partikeln: {describeP29Revision(draft,rewrite,unit).addedParticles.join(" · ")||"keine"}</p>
+              <p>Entfernte Partikeln: {describeP29Revision(draft,rewrite,unit).removedParticles.join(" · ")||"keine"}</p>
+              <p>Geänderte Höflichkeits-/Zeitformen: {describeP29Revision(draft,rewrite,unit).formChanges.join(" · ")||"keine"}</p>
+              {pragmatics?<details><summary>Höflicher und lockerer Stil im Vergleich</summary>
+                <p lang="ja">{pragmatics.polite} / {pragmatics.casual}</p>
+                <p>{pragmatics.explanation}</p></details>:null}
+            </div>
             <button type="button" disabled={disabled||busy||saved} onClick={()=>void saveRevision()}>
               Unbewertete Überarbeitung protokollieren</button>
             {saved?<p>Ohne Rohtext oder Audiodatei gespeichert; kein FSRS-Erfolg.</p>:null}
@@ -360,6 +383,28 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
             <div><strong>{profile?.retry??0}</strong><span>zuletzt falsch</span></div>
             <div><strong>{profile?.unseen??0}</strong><span>noch nicht geübt</span></div>
           </div>
+          {nextActions.length?<div className="p27-journey__adaptive">
+            <h5>Deine nächsten Lernschritte</h5>
+            <p>Aus dem vorhandenen lokalen Lernverlauf abgeleitet, ohne neue Beherrschungsnote.</p>
+            {nextActions.map(action=><button key={action.id} type="button"
+              disabled={disabled} onClick={()=>{
+                if(action.focus==="review"){onJourneyPractice(action.unitId,"review");return;}
+                if(action.focus==="transfer"){onJourneyPractice(action.unitId,"transfer");return;}
+                if(action.unitId!==unitId)selectUnit(action.unitId);
+                setStage(action.focus==="sentence"?"build":"conversation");
+              }}>
+              <strong>{action.label}</strong><small>{action.reason}</small>
+            </button>)}
+          </div>:null}
+          {learningLinks.length?<div className="p27-journey__linked">
+            <h5>Wörter zwischen Themen verbinden</h5>
+            {learningLinks.map(link=><article key={link.id}>
+              <p lang="ja">{link.example}</p><p>{link.translation}</p>
+              <small>{link.first} ({link.firstMeaning}) · {link.second} ({link.secondMeaning})</small>
+            </article>)}
+            <button type="button" disabled={disabled}
+              onClick={()=>onJourneyPractice(unitId,"transfer")}>Verknüpften Wortschatz im StudyPlayer abrufen</button>
+          </div>:null}
           <div className="p27-journey__actions">
             <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"review")}>Fehler und FSRS-Karten wiederholen</button>
             <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"transfer")}>Transfer in neue Situationen</button>
