@@ -24,6 +24,7 @@ import {pedagogyPrompts,pedagogyLessons,pedagogySession,type PedagogyMode} from 
 import {p24Lessons,p24ReviewPrompts,p24PracticeSession,type PracticeMode} from "./pedagogy24";
 import {p25Lessons,p25Prompts,p25Session,type P25Mode} from "./pedagogy25";
 import {p26Lessons,p26Prompts,p26Session,type P26Mode} from "./pedagogy26";
+import {journeyPrompts,journeyLessons,journeySession,type JourneyPractice} from "./journey27";
 import { buildC1SynthesisSession } from "./c1Synthesis";
 
 export const GUEST_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
@@ -89,7 +90,7 @@ function foundationApplicationPool():StudyPrompt[]{
   return [...pronunciationPerceptionPrompts,...foundationApplicationPrompts,...vocabularyApplicationPrompts,...conjugationPrompts,...lexicalChunkPrompts,...productivePrompts,...c1DiscoursePrompts];
 }
 function allPrompts():StudyPrompt[]{
-  return [...foundationPrompts,...vocabularyMeaningPrompts,...foundationApplicationPool(),...allGrammarCoursePrompts,...pedagogyPrompts,...p24ReviewPrompts,...p25Prompts,...p26Prompts];
+  return [...foundationPrompts,...vocabularyMeaningPrompts,...foundationApplicationPool(),...allGrammarCoursePrompts,...pedagogyPrompts,...p24ReviewPrompts,...p25Prompts,...p26Prompts,...journeyPrompts];
 }
 
 export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
@@ -116,6 +117,13 @@ export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
   addUnique(queue,unseenVocabulary.slice(0,Math.min(NEW_VOCAB_PER_SESSION,slots(queue))));
   if(queue.length<MAX_QUEUE_SIZE)addUnique(queue,due.slice(0,MAX_QUEUE_SIZE));
   return insertFirstExposureLessons(queue,byId,privatePrompts);
+}
+
+export async function buildP27JourneySession(unitId:string,focus:JourneyPractice="review"):Promise<StudyStep[]>{
+  const accountId=DEVELOPMENT_ACCOUNT_ID;
+  const [traces,events]=await Promise.all([listMemoryTraces(accountId),listStudyEvents(accountId)]);
+  if(DEVELOPMENT_ACCOUNT_ID!==accountId)throw new Error("P27_WORKSPACE_CHANGED");
+  return journeySession(unitId,focus,traces,events);
 }
 
 export async function buildP26PrecisionSession(missionId:string,mode:P26Mode="course"):Promise<StudyStep[]>{
@@ -397,7 +405,7 @@ export function recordStudyAnswer(input:{prompt:StudyPrompt;response:string;resu
 }
 
 function insertFirstExposureLessons(queue:StudyPrompt[],byId:Map<string,Awaited<ReturnType<typeof listMemoryTraces>>[number]>,extraPrompts:StudyPrompt[]=[]):StudyStep[]{
-  const lessons={...foundationLessons,...vocabularyLessons,...pronunciationLessons,...grammarCourseLessons,...conjugationLessons,...lexicalChunkLessons,...pedagogyLessons,...p24Lessons,...p25Lessons,...p26Lessons};
+  const lessons={...foundationLessons,...vocabularyLessons,...pronunciationLessons,...grammarCourseLessons,...conjugationLessons,...lexicalChunkLessons,...pedagogyLessons,...p24Lessons,...p25Lessons,...p26Lessons,...journeyLessons};
   const promptByTrace=new Map([...allPrompts(),...extraPrompts].map((prompt)=>[traceIdFor(prompt),prompt]));
   const seenContexts=new Set<string>();
   for(const trace of byId.values()){const prompt=promptByTrace.get(trace.id);if(prompt?.contextId)seenContexts.add(prompt.contextId);}
