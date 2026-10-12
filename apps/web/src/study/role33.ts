@@ -1,5 +1,6 @@
 import type {StudyPrompt} from "@thiepn/study-player";
 import {p34AcceptedRoleAnswers} from "./alternatives34";
+import {p35RoleContinuation} from "./turns35";
 export interface P33RoleTurn{partner:string;meaning:string;model:string;gloss:string;}
 export interface P33Role{ id:"guest"|"host";label:string;turns:readonly P33RoleTurn[]; }
 export interface P33RoleScenario{id:string;unitId:string;title:string;roles:readonly P33Role[];}
@@ -350,7 +351,20 @@ export const p33RoleScenarios:readonly P33RoleScenario[]=[
     ]
   }
 ];
-export const p33RolePrompts:StudyPrompt[]=p33RoleScenarios.flatMap(s=>s.roles.flatMap(role=>
+/**
+ * Extend the inherited authored paths without modifying the original role data.
+ * Existing turn indices 0–1 and their cue families are unchanged.
+ */
+export const p35ExtendedRoleScenarios:P33RoleScenario[]=p33RoleScenarios.map(s=>({
+  ...s,
+  roles:s.roles.map(role=>{
+    const extra=p35RoleContinuation(s.id,role.id);
+    return {...role,turns:extra?[...role.turns,{
+      partner:extra.partner,meaning:extra.meaning,model:extra.model,gloss:extra.gloss
+    }]:role.turns};
+  })
+}));
+export const p33RolePrompts:StudyPrompt[]=p35ExtendedRoleScenarios.flatMap(s=>s.roles.flatMap(role=>
   role.turns.map((turn,index)=>({
     id:"p33-role-"+s.id+"-"+role.id+"-"+index,
     primaryTarget:{kind:"can_do" as const,id:"p33:role:"+s.id},
@@ -365,5 +379,5 @@ export const p33RolePrompts:StudyPrompt[]=p33RoleScenarios.flatMap(s=>s.roles.fl
   }))
 ));
 export function p33RolesForUnit(unitId:string):P33RoleScenario[]{
-  return p33RoleScenarios.filter(s=>s.unitId===unitId);
+  return p35ExtendedRoleScenarios.filter(s=>s.unitId===unitId);
 }
