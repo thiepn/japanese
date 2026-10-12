@@ -12,3 +12,17 @@
 .a1-recall-shell{max-width:55rem;margin-inline:auto}
 .a1-recall-shell fieldset{min-width:0}
 @media(max-width:600px){.a1-lesson-shell,.a1-recall-shell{padding-inline:.75rem}.a1-lesson-shell nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.a1-lesson-shell nav button{min-width:0;overflow-wrap:anywhere}.a1-recall-shell fieldset label{display:flex;align-items:center;gap:.5rem;margin:.35rem 0}.a1-choice-grid{grid-template-columns:1fr}.a1-lesson-shell h3[lang="ja"],.a1-recall-shell h3[lang="ja"]{font-size:clamp(1.6rem,9vw,3rem);overflow-wrap:anywhere}}
+
+.a1-dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:.85rem;margin:1rem 0}
+.a1-dashboard-grid article{display:flex;flex-direction:column;gap:.4rem;border:1px solid currentColor;padding:1rem;border-radius:.35rem;min-width:0}
+.a1-dashboard-grid article strong{font-size:1.35rem;font-variant-numeric:tabular-nums}
+.a1-dashboard-grid progress{width:100%}
+.a1-dashboard-links{display:flex;flex-wrap:wrap;gap:.7rem;margin:1rem 0}
+.a1-dashboard-links a{display:inline-flex;align-items:center;min-height:2.75rem;padding:.55rem .8rem;border:1px solid currentColor;border-radius:.3rem}
+.a1-roleplay-shell{max-width:55rem;margin-inline:auto}
+.a1-roleplay-shell select{min-height:2.75rem;max-width:100%}
+.a1-roleplay-shell button{min-height:2.75rem}
+.a1-roleplay-shell .a1-choice-grid button{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:.3rem;padding:.8rem;white-space:normal;overflow-wrap:anywhere}
+.a1-roleplay-shell progress{display:block;width:100%}
+@media(max-width:600px){.a1-dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.a1-dashboard-grid article strong{font-size:1.05rem}.a1-dashboard-links{display:grid;grid-template-columns:1fr}.a1-roleplay-shell{padding-inline:.75rem}}
+@media(max-width:350px){.a1-dashboard-grid{grid-template-columns:1fr}}
