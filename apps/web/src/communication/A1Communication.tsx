@@ -12,6 +12,7 @@ export function A1Communication(){
   const [exerciseIndex,setExerciseIndex]=useState(0);
   const [response,setResponse]=useState("");
   const [ordered,setOrdered]=useState<string[]>([]);
+  const [orderedIndices,setOrderedIndices]=useState<number[]>([]);
   const [feedback,setFeedback]=useState<"correct"|"incorrect"|null>(null);
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
@@ -45,7 +46,7 @@ export function A1Communication(){
   useEffect(()=>{const handle=(event:Event)=>{const request=(event as CustomEvent<A1Navigation>).detail;if(request.destination!=="lesson"||!request.lessonId)return;const index=a1CommunicationLessons.findIndex(l=>l.id===request.lessonId);if(index>=0)select(index);};window.addEventListener(A1_NAV_EVENT,handle);return()=>window.removeEventListener(A1_NAV_EVENT,handle);},[]);
   const lesson=lessonIndex===null?null:a1CommunicationLessons[lessonIndex];
   const exercise=lesson?.exercises[exerciseIndex];
-  function select(index:number){setAudioRevealed(false);setSpeakingText("");setSpeakingNote("");setStage("learn");setDialogueStep(0);setLessonIndex(index);setExerciseIndex(0);setResponse("");setOrdered([]);setFeedback(null);setError("");}
+  function select(index:number){setAudioRevealed(false);setSpeakingText("");setSpeakingNote("");setStage("learn");setDialogueStep(0);setLessonIndex(index);setExerciseIndex(0);setResponse("");setOrdered([]);setOrderedIndices([]);setFeedback(null);setError("");}
   function next(){
     if(!lesson)return;
     if(exerciseIndex+1>=lesson.exercises.length){setStage("finish");return;}
@@ -123,7 +124,7 @@ export function A1Communication(){
         {speakingNote?<p role="status">{speakingNote}</p>:null}
         <button type="button" disabled={dialogueStep===0} onClick={()=>{setSpeakingText("");setSpeakingNote("");setAudioRevealed(false);setDialogueStep(v=>Math.max(0,v-1));}}>Vorherige Zeile</button>
         <button type="button" disabled={dialogueStep===lesson.dialogue.length-1} onClick={()=>{setSpeakingText("");setSpeakingNote("");setAudioRevealed(false);setDialogueStep(v=>Math.min(lesson.dialogue.length-1,v+1));}}>Nächste Zeile</button>
-        <button type="button" onClick={()=>{setAudioRevealed(false);setDialogueStep(0);}}>Dialog neu beginnen</button>
+        <button type="button" onClick={()=>{setSpeakingText("");setSpeakingNote("");setAudioRevealed(false);setDialogueStep(0);}}>Dialog neu beginnen</button>
         <p><small>Sprachausgabe verwendet die japanische Stimme des Geräts, sofern verfügbar; keine Aussprachebewertung.</small></p>
       </section>
       <button type="button" onClick={()=>setStage("practice")}>Weiter zu den Übungen</button></div>:null}
@@ -134,8 +135,8 @@ export function A1Communication(){
         {exercise.kind==="fill"?<label>Deine Antwort <input disabled={busy||feedback!==null} value={response} onChange={event=>setResponse(event.target.value)}/></label>:null}
         {exercise.kind==="order"?<div><p>Tippe die Wörter in der richtigen Reihenfolge an.</p>
           <p aria-live="polite">{ordered.join("　")||"Noch keine Wörter gewählt"}</p>
-          {exercise.tokens.map((token,index)=><button type="button" key={index} disabled={busy||feedback!==null||ordered.includes(token)} onClick={()=>setOrdered(items=>[...items,token])}>{token}</button>)}
-          <button type="button" disabled={busy||feedback!==null} onClick={()=>setOrdered([])}>Zurücksetzen</button>
+          {exercise.tokens.map((token,index)=><button type="button" key={index} disabled={busy||feedback!==null||orderedIndices.includes(index)} onClick={()=>{setOrdered(items=>[...items,token]);setOrderedIndices(items=>[...items,index]);}}>{token}</button>)}
+          <button type="button" disabled={busy||feedback!==null} onClick={()=>{setOrdered([]);setOrderedIndices([]);}}>Zurücksetzen</button>
         </div>:null}
         {feedback===null?<button type="button" disabled={busy||(exercise.kind==="order"?ordered.length!==exercise.tokens.length:!response.trim())} onClick={()=>void submit()}>{busy?"Speichere…":"Antwort prüfen"}</button>:<div role="status" aria-live="polite"><strong>{feedback==="correct"?"Richtig":"Noch nicht richtig"}</strong><p>{exercise.explanation}</p><button type="button" onClick={next}>{exerciseIndex+1===lesson.exercises.length?"Lektion abschließen":"Weiter"}</button></div>}
       </div>:null}
