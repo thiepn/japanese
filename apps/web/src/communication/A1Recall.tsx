@@ -57,13 +57,14 @@ export function A1Recall(){
  const now=Date.now();
  const schedule=recallSchedule(attempts,now);
  const reviewDue=(card:Item)=>isRecallDue(schedule[card.id],now);
- const dueTotal=items.filter(card=>reviewDue(card)).length;
+ const dueTotal=items.filter(card=>schedule[card.id]&&reviewDue(card)).length;
+ const newTotal=items.filter(card=>!schedule[card.id]).length;
  const pool=items.filter(item=>item.kind===mode&&(lessonFilter==="all"||item.id.includes(":"+lessonFilter+":"))&&(!dailyOnly||!history[item.id]?.last||new Date(history[item.id]!.last).toLocaleDateString("sv-SE")!==today)&&(!mistakesOnly||(schedule[item.id]?.streak===0&&schedule[item.id]?.incorrect>0))&&(!reviewMode||reviewDue(item))).sort((a,b)=>{
  const x=history[a.id],y=history[b.id];
  const priority=(h:typeof x)=>h?(h.wrong>h.correct?0:h.correct===0?1:h.wrong>0?2:3):-1;
  return priority(x)-priority(y)||a.id.localeCompare(b.id);
  });
- const item=items.find(card=>card.id===activeId)??nextRecallCard(pool,queue,seen);
+ const item=(revealed?items.find(card=>card.id===activeId):undefined)??nextRecallCard(pool,queue,seen);
  const alternatives=item?items.filter(card=>card.kind===item.kind&&card.id!==item.id&&card.answer!==item.answer&&card.front!==item.front).slice(0,3):[];
  const choices=item?[item,...alternatives].sort((a,b)=>a.answer.localeCompare(b.answer,"ja")).map(card=>card.answer):[];
  function reset(){setActiveId(null);setAnswer("");setRevealed(false);setHint(false);setMessage("");}
@@ -94,7 +95,7 @@ setSession(value=>value+1);reset();}
  <label><input type="checkbox" checked={dailyOnly} onChange={event=>{setDailyOnly(event.target.checked);setQueue([]);setSeen([]);reset();}}/> Heute noch nicht geübt</label>
  {(mode==="vocabulary"||mode==="reverse"||mode==="context")?<label> Lektion <select value={lessonFilter} onChange={event=>{setLessonFilter(event.target.value);setQueue([]);setSeen([]);reset();}}><option value="all">Alle Lektionen</option>{a1CommunicationLessons.map(lesson=><option key={lesson.id} value={lesson.id}>{lesson.title}</option>)}</select></label>:null}
  <div className="a1-mobile-actions"><label><input type="checkbox" checked={choiceMode} onChange={event=>{setChoiceMode(event.target.checked);reset();}}/> Auswahl statt Tippen</label><label><input type="checkbox" checked={listeningMode} onChange={event=>{setListeningMode(event.target.checked);reset();}}/> Hörmodus</label></div>
- <p>{dueTotal} von {items.length} Karten aktuell zur Wiederholung fällig (einfache Intervall-Heuristik).</p>
+ <p>{dueTotal} bereits geübte Karten fällig · {newTotal} neue Karten · {items.length} Karten insgesamt.</p>
  <p>{session} Karten in dieser Sitzung bearbeitet · {pool.length} Karten · {pool.filter(card=>(history[card.id]?.correct??0)>0).length} mindestens einmal richtig</p>
  {!item?<p role="status">Keine Karten in dieser Auswahl. Deaktiviere einen Filter oder wähle eine andere Lektion.</p>:null}
  {item?<div><p>{item.context}</p>{!listeningMode||mode==="reverse"?<h3 lang={mode==="reverse"?"de":"ja"}>{item.front}</h3>:<h3>Höre zu und beantworte die Frage</h3>}
