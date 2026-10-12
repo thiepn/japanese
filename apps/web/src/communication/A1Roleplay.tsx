@@ -7,15 +7,23 @@ import {getDevelopmentAccountId} from "../study/runtime";
 type Turn={speaker:string;prompt:string;choices:readonly {japanese:string;german:string;correct:boolean;reply:string;replyGerman:string;next?:number|null}[]};
 type Scenario={id:string;title:string;intro:string;turns:readonly Turn[]};
 const scenarios:readonly Scenario[]=[
- {id:"cafe",title:"Im Café",intro:"Du möchtest etwas zu trinken bestellen.",turns:[
-  {speaker:"店員",prompt:"いらっしゃいませ。",choices:[
-   {japanese:"おちゃをください。",german:"Einen Tee bitte.",correct:true,reply:"はい、どうぞ。",replyGerman:"Ja, bitte schön.",next:1},
-   {japanese:"えきはどこですか。",german:"Wo ist der Bahnhof?",correct:false,reply:"ここはカフェです。",replyGerman:"Hier ist ein Café."},
-   {japanese:"さようなら。",german:"Auf Wiedersehen.",correct:false,reply:"ありがとうございました。",replyGerman:"Vielen Dank."}]},
-  {speaker:"店員",prompt:"ほかに何か？",choices:[
-   {japanese:"みずをください。",german:"Wasser bitte.",correct:true,reply:"はい、どうぞ。",replyGerman:"Ja, bitte schön.",next:null},
-   {japanese:"わたしはアンナです。",german:"Ich bin Anna.",correct:false,reply:"そうですか。",replyGerman:"Ach so."},
-   {japanese:"さんじです。",german:"Es ist drei Uhr.",correct:false,reply:"そうですか。",replyGerman:"Ach so."}]}
+ {id:"cafe",title:"Im Café",intro:"Bestelle ein Getränk und entscheide, ob du noch etwas möchtest.",turns:[
+ {speaker:"店員",prompt:"いらっしゃいませ。ごちゅうもんは？",choices:[
+ {japanese:"おちゃをください。",german:"Einen Tee bitte.",correct:true,reply:"はい、おちゃですね。",replyGerman:"Ja, einen Tee.",next:1},
+ {japanese:"コーヒーをください。",german:"Einen Kaffee bitte.",correct:true,reply:"はい、コーヒーですね。",replyGerman:"Ja, einen Kaffee.",next:2},
+ {japanese:"えきはどこですか。",german:"Wo ist der Bahnhof?",correct:false,reply:"ここはカフェです。",replyGerman:"Hier ist ein Café."}]},
+ {speaker:"店員",prompt:"おちゃです。ほかに何か？",choices:[
+ {japanese:"みずをください。",german:"Wasser bitte.",correct:true,reply:"はい、どうぞ。",replyGerman:"Ja, bitte schön.",next:3},
+ {japanese:"いいえ、けっこうです。",german:"Nein, danke.",correct:true,reply:"ありがとうございます。",replyGerman:"Vielen Dank.",next:null},
+ {japanese:"さんじです。",german:"Es ist drei Uhr.",correct:false,reply:"え？",replyGerman:"Wie bitte?"}]},
+ {speaker:"店員",prompt:"コーヒーです。ほかに何か？",choices:[
+ {japanese:"みずをください。",german:"Wasser bitte.",correct:true,reply:"はい、どうぞ。",replyGerman:"Ja, bitte schön.",next:3},
+ {japanese:"いいえ、けっこうです。",german:"Nein, danke.",correct:true,reply:"ありがとうございます。",replyGerman:"Vielen Dank.",next:null},
+ {japanese:"わたしはアンナです。",german:"Ich bin Anna.",correct:false,reply:"え？",replyGerman:"Wie bitte?"}]},
+ {speaker:"店員",prompt:"ほかに何か？",choices:[
+ {japanese:"いいえ、けっこうです。",german:"Nein, danke.",correct:true,reply:"ありがとうございました。",replyGerman:"Vielen Dank.",next:null},
+ {japanese:"おちゃをください。",german:"Noch einen Tee bitte.",correct:true,reply:"はい、どうぞ。",replyGerman:"Ja, bitte schön.",next:null},
+ {japanese:"おやすみなさい。",german:"Gute Nacht.",correct:false,reply:"え？",replyGerman:"Wie bitte?"}]}
  ]},
  {id:"station",title:"Am Bahnhof",intro:"Du suchst den Bahnhof und möchtest nach Tokio fahren.",turns:[
   {speaker:"通行人",prompt:"こんにちは。",choices:[
