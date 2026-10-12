@@ -41,6 +41,7 @@ export function A1Recall(){
  const [queue,setQueue]=useState<string[]>([]);
  const [reviewMode,setReviewMode]=useState(false);
  const [seen,setSeen]=useState<string[]>([]);
+ const [lastAnswered,setLastAnswered]=useState<string|undefined>(undefined);
  const owner=getDevelopmentAccountId();
  useEffect(()=>{let live=true;setHistory({});setAttempts([]);setActiveId(null);setAnswer("");setRevealed(false);
  void listStudyEvents(owner).then(events=>{if(!live)return;const next:typeof history={};const loaded:RecallAttempt[]=[];
@@ -52,7 +53,7 @@ export function A1Recall(){
  current.last=event.occurredAt;next[id]=current;
  }setHistory(next);setAttempts(loaded);}).catch(()=>{if(live)setMessage("Lernverlauf konnte nicht geladen werden.");});
  return()=>{live=false};},[owner]);
- useEffect(()=>{const handle=(event:Event)=>{const request=(event as CustomEvent<A1Navigation>).detail;if(request.destination!=="recall")return;setMode(request.mode??"vocabulary");setLessonFilter(request.lessonId??"all");setQueue([]);setSeen([]);reset();};window.addEventListener(A1_NAV_EVENT,handle);return()=>window.removeEventListener(A1_NAV_EVENT,handle);},[]);
+ useEffect(()=>{const handle=(event:Event)=>{const request=(event as CustomEvent<A1Navigation>).detail;if(request.destination!=="recall")return;setMode(request.mode??"vocabulary");setLessonFilter(request.lessonId??"all");setQueue([]);setSeen([]);setLastAnswered(undefined);reset();};window.addEventListener(A1_NAV_EVENT,handle);return()=>window.removeEventListener(A1_NAV_EVENT,handle);},[]);
  const today=new Date().toLocaleDateString("sv-SE");
  const now=Date.now();
  const schedule=recallSchedule(attempts,now);
@@ -64,7 +65,7 @@ export function A1Recall(){
  const priority=(h:typeof x)=>h?(h.wrong>h.correct?0:h.correct===0?1:h.wrong>0?2:3):-1;
  return priority(x)-priority(y)||a.id.localeCompare(b.id);
  });
- const item=(revealed?items.find(card=>card.id===activeId):undefined)??nextRecallCard(pool,queue,seen);
+ const item=(revealed?items.find(card=>card.id===activeId):undefined)??nextRecallCard(pool,queue,seen,lastAnswered);
  const alternatives=item?items.filter(card=>card.kind===item.kind&&card.id!==item.id&&card.answer!==item.answer&&card.front!==item.front).slice(0,3):[];
  const choices=item?[item,...alternatives].sort((a,b)=>a.answer.localeCompare(b.answer,"ja")).map(card=>card.answer):[];
  function reset(){setActiveId(null);setAnswer("");setRevealed(false);setHint(false);setMessage("");}
@@ -82,7 +83,7 @@ export function A1Recall(){
  }
  function next(){if(!item)return;
  const advanced=advanceRecallQueue(queue,seen,item.id,normalize(answer)===normalize(item.answer),pool.map(card=>card.id));
- setQueue(advanced.retries);setSeen(advanced.seen.length>=pool.length?[]:advanced.seen);
+ setQueue(advanced.retries);setSeen(advanced.seen.length>=pool.length?[]:advanced.seen);setLastAnswered(item.id);
 setSession(value=>value+1);reset();}
  return <section aria-labelledby="a1-recall-title" className="j4-practice a1-recall-shell">
  <h2 id="a1-recall-title">A1 · Aktives Wiederholen</h2>
