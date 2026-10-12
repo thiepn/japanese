@@ -135,6 +135,11 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
       <strong>{feedback.independent?"Geübte Antwort unabhängig getroffen":
         feedback.correctModel?"Geübte Form mit Hilfe getroffen":"Eigene Alternative · unbewertet"}</strong>
       <p>Mögliche Antwort: <span lang="ja">{turn.model}</span></p>
+      {firstDraft&&draft!==firstDraft?<div className="p33-role__revision">
+        <strong>Überarbeitung – nicht bewertet</strong>
+        <p>Erste Fassung: <span lang="ja">{firstDraft}</span></p>
+        <p>Neue Fassung: <span lang="ja">{draft}</span></p>
+      </div>:null}
       <ul>{feedback.notes.map((note,i)=><li key={i}>{note}</li>)}</ul>
       <div className="p33-role__actions">
         <button type="button" onClick={()=>{
