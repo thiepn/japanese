@@ -350,7 +350,7 @@ export function App(){
   const startP24=(scenarioId:string,mode:"full"|"repair")=>loadStudySession(()=>buildP24PracticeSession(scenarioId,mode));
   const startP25=(scenarioId:string,mode:"lesson"|"repair"|"transfer")=>loadStudySession(()=>buildP25FluencySession(scenarioId,mode));
   const startP26=(missionId:string,mode:"course"|"precision"|"repair"|"transfer")=>loadStudySession(()=>buildP26PrecisionSession(missionId,mode));
-  const startP27Journey=(unitId:string,focus:"review"|"transfer"|"register")=>loadStudySession(()=>buildP27JourneySession(unitId,focus));
+  const startP27Journey=(unitId:string,focus:"review"|"transfer"|"register"|"grammar"|"production")=>loadStudySession(()=>buildP27JourneySession(unitId,focus));
   function startP27Source(source:"p23"|"p25"|"p26",id:string,mode:"core"|"context"|"repair"){
     if(source==="p23")return mode==="context"?startP24(id,"full"):startPedagogy(id,mode==="repair"?"repair":"lesson");
     if(source==="p25")return startP25(id,mode==="core"?"lesson":mode==="repair"?"repair":"transfer");

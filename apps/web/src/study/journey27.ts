@@ -11,7 +11,7 @@ import {p26Missions,p26Prompts,p26Lessons,missionTurnPrompt,normalizeP26} from "
  */
 export type JourneySource="p23"|"p25"|"p26";
 export type JourneyStage="learn"|"build"|"conversation"|"write"|"practice";
-export type JourneyPractice="review"|"transfer"|"register";
+export type JourneyPractice="review"|"transfer"|"register"|"grammar"|"production";
 export interface JourneyWord{form:string;reading:string;meaning:string;example:string;}
 export interface JourneyOption{
   japanese:string;meaning:string;valid:boolean;explanation:string;next?:string|null;
@@ -249,6 +249,10 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
       ...extras.filter(p=>p.eventMetadata?.kind==="linked-lexicon"&&
         Array.isArray(p.eventMetadata?.unitIds)&&p.eventMetadata.unitIds.includes(unitId))
     ]
+    :focus==="grammar"?promptsForUnit(unitId,extras).filter(p=>
+      p.skill==="form_selection"||p.eventMetadata?.kind==="register-contrast")
+    :focus==="production"?promptsForUnit(unitId,extras).filter(p=>
+      p.promptType==="typed"&&p.skill==="production")
     :promptsForUnit(unitId,extras);
   const latest=new Map<string,StudyEvent>();
   for(const e of events){
@@ -263,7 +267,7 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     if(!trace)return 1;
     return 0;
   };
-  const list=(relevant.length?relevant:transferForUnit(unitId)).slice().sort((a,b)=>priority(b)-priority(a));
+  const list=(relevant.length?relevant:promptsForUnit(unitId,extras)).slice().sort((a,b)=>priority(b)-priority(a));
   const selected=focus==="review"?list.filter(p=>priority(p)>1):list;
   const final=selected.length?selected:list;
   return [journeyLessons["p27:unit:"+unit.id]!,...final.slice(0,14)];
