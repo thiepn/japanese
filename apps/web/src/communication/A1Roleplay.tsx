@@ -1,3 +1,4 @@
+import {A1_NAV_EVENT,type A1Navigation} from "./a1-navigation";
 import {useEffect,useState} from "react";
 import {listStudyEvents,saveStudyEvent} from "@thiepn/local-db";
 import type {StudyEvent} from "@thiepn/domain";
@@ -80,6 +81,7 @@ export function A1Roleplay(){
  const old=next[key]??{correct:0,incorrect:0};if(event.result==="correct")old.correct++;else old.incorrect++;next[key]=old;
  }setHistory(next);}).catch(()=>{if(active)setHistoryError("Gesprächsfortschritt konnte nicht geladen werden.");});
  return()=>{active=false};},[owner]);
+ useEffect(()=>{const handle=(event:Event)=>{const request=(event as CustomEvent<A1Navigation>).detail;if(request.destination!=="roleplay")return;const index=scenarios.findIndex(s=>s.id===request.scenarioId);if(index>=0)start(index);};window.addEventListener(A1_NAV_EVENT,handle);return()=>window.removeEventListener(A1_NAV_EVENT,handle);},[]);
  const scenario=scenarios[scenarioIndex],turn=scenario.turns[turnIndex],choice=choiceIndex===null?null:turn.choices[choiceIndex];
  const done=choice!==null&&choice.correct&&(choice.next===null||(choice.next===undefined&&turnIndex===scenario.turns.length-1));
  function start(index:number){setScenarioIndex(index);setTurnIndex(0);setChoiceIndex(null);setScore(0);setVisited([]);setPreviousMismatch(false);setError("");}
