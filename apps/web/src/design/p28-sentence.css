@@ -1,0 +1,11 @@
+.p28-builder{min-width:0}.p28-builder h4{margin:.7rem 0}
+.p28-builder__selector,.p28-builder__available,.p28-builder__assembly,.p28-builder__actions{display:flex;gap:.45rem;flex-wrap:wrap;align-items:center;margin:.8rem 0}
+.p28-builder__selector button[aria-pressed=true]{font-weight:700;box-shadow:inset 0 -3px currentColor}
+.p28-builder__cue{padding:.8rem;border-left:3px solid currentColor;background:rgba(120,120,120,.09);margin:.7rem 0}
+.p28-builder__cue small{opacity:.7}.p28-builder__cue p{margin:.3rem 0}
+.p28-builder__assembly{min-height:5rem;padding:.8rem;border:1px dashed currentColor}
+.p28-builder__assembly button,.p28-builder__available button{font-size:1.22rem}
+.p28-builder__assembly span,.p28-builder__available span{opacity:.7;font-size:.9rem}
+.p28-builder__help,.p28-builder__result{padding:.85rem;border-left:3px solid currentColor;background:rgba(120,120,120,.07);margin:.8rem 0}
+.p28-builder__result ul{padding-left:1.3rem}.p28-builder__result li{margin:.3rem 0}
+@media(max-width:520px){.p28-builder__actions{display:grid}.p28-builder__actions button{width:100%}}
