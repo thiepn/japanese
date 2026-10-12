@@ -9,3 +9,7 @@
 .p28-builder__help,.p28-builder__result{padding:.85rem;border-left:3px solid currentColor;background:rgba(120,120,120,.07);margin:.8rem 0}
 .p28-builder__result ul{padding-left:1.3rem}.p28-builder__result li{margin:.3rem 0}
 @media(max-width:520px){.p28-builder__actions{display:grid}.p28-builder__actions button{width:100%}}
+
+.p28-builder__result details{margin:.75rem 0}
+.p28-builder__result details summary{cursor:pointer;font-weight:600}
+.p28-builder__result details span[lang=ja]{font-size:1.07rem}

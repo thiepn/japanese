@@ -1,17 +1,18 @@
 import {useEffect,useMemo,useRef,useState} from "react";
 import {listMemoryTraces,listStudyEvents,saveStudyEvent} from "@thiepn/local-db";
-import {gradeStudyPrompt} from "@thiepn/study-player";
 import type {StudyEvent} from "@thiepn/domain";
 import {DEVELOPMENT_DEVICE_ID,getDevelopmentAccountId,recordStudyAnswer} from "../study/runtime";
 import {
-  builtAnswer,journeySentencePuzzles,sentencePuzzlesForUnit,sentenceQueue,shuffledTiles,
-  wordOrderFeedback,type JourneySentencePuzzle
+  builtAnswer,shuffledTiles,type JourneySentencePuzzle
 } from "../study/sentence28";
 import {grammarReflection} from "../study/feedback27";
+import {
+  p29AllSentencePuzzles,sentence29Queue,acceptedSentenceOrder,sentenceVariants,orderFeedback29
+} from "../study/depth29";
 import {journeyUnit} from "../study/journey27";
 import "./p28-sentence.css";
 
-type Submission={status:"correct"|"incorrect"|"assisted";feedback:string[]};
+type Submission={status:"correct"|"unrecognized"|"assisted";feedback:string[]};
 export function P28SentenceBuilder({
   unitId,owner,disabled,onReviewed,onContinue
 }:{
@@ -19,7 +20,7 @@ export function P28SentenceBuilder({
   onReviewed:()=>void;onContinue:()=>void;
 }){
   const accountRef=useRef(owner);accountRef.current=owner;
-  const [ordered,setOrdered]=useState<JourneySentencePuzzle[]>(()=>sentencePuzzlesForUnit(unitId));
+  const [ordered,setOrdered]=useState<JourneySentencePuzzle[]>(()=>p29AllSentencePuzzles.filter(p=>p.unitId===unitId));
   const [choice,setChoice]=useState<string|undefined>(undefined);
   const [selection,setSelection]=useState<number[]>([]);
   const [assisted,setAssisted]=useState(false);
@@ -30,7 +31,7 @@ export function P28SentenceBuilder({
   const [error,setError]=useState("");
   const [sequence,setSequence]=useState(0);
   const started=useRef(0);
-  const current=ordered.find(p=>p.id===choice)??ordered[0]??journeySentencePuzzles[0]!;
+  const current=ordered.find(p=>p.id===choice)??ordered[0]??p29AllSentencePuzzles[0]!;
   const original=useMemo(()=>shuffledTiles(current),[current.id]);
   const remaining=original.filter(i=>!selection.includes(i));
   const answer=builtAnswer(current,selection);
@@ -38,7 +39,7 @@ export function P28SentenceBuilder({
     let mounted=true;setLoading(true);setHistoryError("");
     void Promise.all([listMemoryTraces(owner),listStudyEvents(owner)]).then(([traces,events])=>{
       if(!mounted||accountRef.current!==owner)return;
-      const queue=sentenceQueue(unitId,traces.filter(t=>t.userId===owner),events.filter(e=>e.userId===owner));
+      const queue=sentence29Queue(unitId,traces.filter(t=>t.userId===owner),events.filter(e=>e.userId===owner));
       setOrdered(queue);
       if(!choice||!queue.some(p=>p.id===choice))setChoice(queue[0]?.id);
     }).catch(()=>{if(mounted)setHistoryError("Lernverlauf nicht verfügbar. Satzbau bleibt möglich.");})
@@ -58,7 +59,7 @@ export function P28SentenceBuilder({
     if(submission||busy)return;
     setSelection(list=>list.filter((_,index)=>index!==position));
   }
-  async function saveAssisted(text:string){
+  async function saveUngraded(text:string,reason:"hint"|"unrecognized"){
     if(getDevelopmentAccountId()!==owner)throw new Error("P28_WORKSPACE_CHANGED");
     const event:StudyEvent={
       id:crypto.randomUUID(),userId:owner,deviceId:DEVELOPMENT_DEVICE_ID,
@@ -68,7 +69,7 @@ export function P28SentenceBuilder({
       responseMode:"typed",result:"skipped",attempts:1,
       contextId:"p28:unit:"+unitId,sourceId:"thiepn-original",contentVersion:"p28-1",
       metadata:{
-        p28:true,kind:"guided-sentence",puzzleId:current.id,unitId,assisted:true,
+        p28:true,kind:"guided-sentence",puzzleId:current.id,unitId,assisted:reason==="hint",reason,
         schedulerExcluded:true,textStored:false,length:[...text].length
       }
     };
@@ -78,31 +79,32 @@ export function P28SentenceBuilder({
     if(disabled||busy||submission||selection.length!==current.tiles.length)return;
     const account=accountRef.current;
     if(getDevelopmentAccountId()!==account)return;
-    const grade=gradeStudyPrompt(current.prompt,answer);
+    const recognized=acceptedSentenceOrder(current,answer);
     setBusy(true);setError("");
     try{
-      if(assisted)await saveAssisted(answer);
+      if(assisted||!recognized)await saveUngraded(answer,assisted?"hint":"unrecognized");
       else await recordStudyAnswer({
         prompt:current.prompt,response:answer,result:grade.result,
         responseTimeMs:Math.max(0,Math.round(performance.now()-started.current))
       });
       if(accountRef.current!==account)return;
       setSubmission({
-        status:assisted?"assisted":grade.result,
-        feedback:wordOrderFeedback(current,selection)
+        status:assisted?"assisted":recognized?"correct":"unrecognized",
+        feedback:orderFeedback29(current,answer)
       });
       setSequence(n=>n+1);onReviewed();
     }catch{
       if(accountRef.current===account)setError("Satzversuch konnte nicht gespeichert werden. Bitte erneut versuchen.");
     }finally{if(accountRef.current===account)setBusy(false);}
   }
+  function undo(){if(!submission&&!busy)setSelection(list=>list.slice(0,-1));}
   function next(){
     const i=ordered.findIndex(p=>p.id===current.id);
     selectPuzzle(ordered[(i+1)%ordered.length]?.id??current.id);
   }
   return <section className="p28-builder" aria-labelledby="p28-builder-heading">
     <h4 id="p28-builder-heading">Japanische Sätze selbst zusammensetzen</h4>
-    <p>Wähle die passenden Satzteile in der geübten Reihenfolge. Mit jedem Klick baust du einen vollständigen Satz.</p>
+    <p>Baue einen vollständigen Satz. Mehrere natürlich passende Wortstellungen werden bei ausgewählten Aufgaben ausdrücklich akzeptiert.</p>
     <div className="p28-builder__selector" role="group" aria-label="Satzaufgabe auswählen">
       {ordered.map((p,i)=><button key={p.id} type="button" aria-pressed={p.id===current.id}
         disabled={busy} onClick={()=>selectPuzzle(p.id)}>Satz {i+1}</button>)}
@@ -129,6 +131,7 @@ export function P28SentenceBuilder({
       {!remaining.length?<span>Alle Teile verwendet.</span>:null}
     </div>
     <div className="p28-builder__actions">
+      <button type="button" disabled={busy||Boolean(submission)||!selection.length} onClick={undo}>Letzten Schritt zurück</button>
       <button type="button" disabled={busy||Boolean(submission)||!selection.length} onClick={()=>setSelection([])}>Zurücksetzen</button>
       <button type="button" disabled={busy||Boolean(submission)} onClick={()=>setAssisted(true)}>
         {assisted?"Mit Hilfe (unbewerteter Versuch)":"Grammatiktipp anzeigen"}
@@ -141,11 +144,16 @@ export function P28SentenceBuilder({
       <p>Mit aufgerufener Hilfe zählt der Satz als unbewertete Übung, nicht als FSRS-Leistungsnachweis.</p>
     </div>:null}
     {submission?<div className="p28-builder__result" role="status">
-      <strong>{submission.status==="correct"?"Zielreihenfolge erkannt":
-        submission.status==="incorrect"?"Zielreihenfolge weicht ab":"Mit Hilfe bearbeitet · unbewertet"}</strong>
+      <strong>{submission.status==="correct"?"Zulässige Zielreihenfolge erkannt":
+        submission.status==="unrecognized"?"Weitere Wortstellung · unbewertet":"Mit Hinweis bearbeitet · unbewertet"}</strong>
       <p lang="ja">Ziel: {current.answer}</p>
+      {sentenceVariants(current).length>1?<details>
+        <summary>Weitere ausdrücklich akzeptierte Formulierungen</summary>
+        <ul>{sentenceVariants(current).slice(1).map((variant,i)=><li key={i}>
+          <span lang="ja">{variant.answer}</span> — {variant.note}</li>)}</ul>
+      </details>:null}
       <ul>{submission.feedback.concat(grammarReflection(journeyUnit(unitId),answer)).map((note,i)=><li key={i}>{note}</li>)}</ul>
-      <p>Die Prüfung vergleicht die authored Zielreihenfolge; alternative korrekte Satzstellungen werden nicht vollständig erkannt.</p>
+      <p>Nur ausdrücklich hinterlegte Alternativen zählen als Treffer. Andere Wortstellungen können dennoch korrekt sein und werden deshalb unbewertet statt automatisch als Fehler gespeichert.</p>
       <div className="p28-builder__actions">
         <button type="button" onClick={()=>selectPuzzle(current.id)}>Erneut bauen</button>
         <button type="button" onClick={next}>Nächster Satz</button>
