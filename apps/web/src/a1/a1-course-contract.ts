@@ -5,7 +5,7 @@
  */
 export const A1_CONTRACT_VERSION="a1-original-contract-v1" as const;
 export type A1Module={id:string;order:number;title:string;description:string};
-export type A1Lesson={id:string;moduleId:string;order:number;title:string;canDo:string;legacyUnitIds:readonly string[];communicationLessonIds:readonly string[];roleplayIds:readonly string[]};
+export type A1Lesson={id:string;moduleId:string;order:number;title:string;canDo:string;legacyUnitIds:readonly string[];communicationLessonIds:readonly string[];roleplayIds:readonly string[];foundationIds?:readonly string[];readingTextIds?:readonly string[];assessmentIds?:readonly string[]};
 export const A1_MODULES:readonly A1Module[]=[
   {
     "id": "a1:module:01",
@@ -53,7 +53,10 @@ export const A1_LESSONS:readonly A1Lesson[]=[
     "canDo": "Ich kann japanische Grundlaute, Vokallänge und Moren unterscheiden.",
     "legacyUnitIds": [],
     "communicationLessonIds": [],
-    "roleplayIds": []
+    "roleplayIds": [],
+    "foundationIds": [
+      "hiragana-vowels"
+    ]
   },
   {
     "id": "a1:lesson:02",
@@ -63,7 +66,11 @@ export const A1_LESSONS:readonly A1Lesson[]=[
     "canDo": "Ich kann einfache Wörter in Hiragana erkennen und lesen.",
     "legacyUnitIds": [],
     "communicationLessonIds": [],
-    "roleplayIds": []
+    "roleplayIds": [],
+    "foundationIds": [
+      "hiragana-basic",
+      "hiragana-advanced"
+    ]
   },
   {
     "id": "a1:lesson:03",
@@ -73,7 +80,11 @@ export const A1_LESSONS:readonly A1Lesson[]=[
     "canDo": "Ich kann häufige Lehnwörter in Katakana erkennen und lesen.",
     "legacyUnitIds": [],
     "communicationLessonIds": [],
-    "roleplayIds": []
+    "roleplayIds": [],
+    "foundationIds": [
+      "katakana-basic",
+      "katakana-advanced"
+    ]
   },
   {
     "id": "a1:lesson:04",
@@ -138,7 +149,10 @@ export const A1_LESSONS:readonly A1Lesson[]=[
       "a1-unit-15"
     ],
     "communicationLessonIds": [],
-    "roleplayIds": []
+    "roleplayIds": [],
+    "readingTextIds": [
+      "text-a1-family"
+    ]
   },
   {
     "id": "a1:lesson:09",
@@ -222,7 +236,10 @@ export const A1_LESSONS:readonly A1Lesson[]=[
       "a1-unit-13"
     ],
     "communicationLessonIds": [],
-    "roleplayIds": []
+    "roleplayIds": [],
+    "readingTextIds": [
+      "text-a1-morning"
+    ]
   },
   {
     "id": "a1:lesson:16",
@@ -277,7 +294,10 @@ export const A1_LESSONS:readonly A1Lesson[]=[
     "communicationLessonIds": [
       "a1-shopping"
     ],
-    "roleplayIds": []
+    "roleplayIds": [],
+    "readingTextIds": [
+      "text-a1-shopping"
+    ]
   },
   {
     "id": "a1:lesson:20",
@@ -301,6 +321,9 @@ export const A1_LESSONS:readonly A1Lesson[]=[
     "communicationLessonIds": [],
     "roleplayIds": [
       "station"
+    ],
+    "readingTextIds": [
+      "text-a1-transport"
     ]
   },
   {
@@ -337,12 +360,18 @@ export const A1_LESSONS:readonly A1Lesson[]=[
     "communicationLessonIds": [],
     "roleplayIds": [
       "meeting"
+    ],
+    "assessmentIds": [
+      "assessment-a1-milestone"
     ]
   }
 ];
 export const A1_LEGACY_UNIT_IDS=Array.from({length:20},(_,i)=>"a1-unit-"+String(i+1).padStart(2,"0"));
 export const A1_COMMUNICATION_IDS=["a1-greetings","a1-introductions","a1-origin","a1-asking-names","a1-thanks","a1-shopping","a1-cafe"] as const;
 export const A1_ROLEPLAY_IDS=["cafe","station","meeting"] as const;
+export const A1_FOUNDATION_IDS=["hiragana-vowels","hiragana-basic","hiragana-advanced","katakana-basic","katakana-advanced"] as const;
+export const A1_READING_IDS=["text-a1-family","text-a1-morning","text-a1-shopping","text-a1-transport"] as const;
+export const A1_ASSESSMENT_IDS=["assessment-a1-milestone"] as const;
 export function a1Lesson(id:string):A1Lesson|undefined{return A1_LESSONS.find(x=>x.id===id);}
 export function a1ManifestErrors():string[]{
  const errors:string[]=[];
@@ -366,6 +395,15 @@ export function a1ManifestErrors():string[]{
    if(count!==1)errors.push(type+" "+id+" has "+count+" mappings");
   }
   for(const id of occurrences)if(!(expected as readonly string[]).includes(id))errors.push("unknown "+type+" "+id);
+ }
+ for(const [kind,expected,key] of [
+  ["foundation",A1_FOUNDATION_IDS,"foundationIds"],
+  ["reading",A1_READING_IDS,"readingTextIds"],
+  ["assessment",A1_ASSESSMENT_IDS,"assessmentIds"]
+ ] as const){
+  const refs=A1_LESSONS.flatMap(lesson=>lesson[key]??[]);
+  for(const id of expected)if(refs.filter(ref=>ref===id).length!==1)errors.push(kind+" "+id+" should map exactly once");
+  for(const id of refs)if(!(expected as readonly string[]).includes(id))errors.push("unknown "+kind+" "+id);
  }
  return errors;
 }
