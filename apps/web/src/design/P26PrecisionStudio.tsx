@@ -67,6 +67,8 @@ export function P26PrecisionStudio({
   const [draft,setDraft]=useState("");
   const [feedback,setFeedback]=useState<P26Feedback|null>(null);
   const [recorded,setRecorded]=useState(false);
+  const [modelRevealed,setModelRevealed]=useState(false);
+  const [recognitionUsed,setRecognitionUsed]=useState(false);
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
   const [showGerman,setShowGerman]=useState(false);
@@ -98,6 +100,7 @@ export function P26PrecisionStudio({
     recognizer.current?.stop();
     recognizer.current=null;
     setPane("conversation");setTurn(0);setDraft("");setFeedback(null);setRecorded(false);
+    setModelRevealed(false);setRecognitionUsed(false);
     setBusy(false);setError("");setSpeechStatus("");setRevisionDraft("");setRevisionText("");
     setDraftReport(null);setPracticeSaved(false);setComposeStep("write");
     started.current=performance.now();
@@ -105,6 +108,7 @@ export function P26PrecisionStudio({
   useEffect(()=>()=>recognizer.current?.stop(),[]);
   function resetConversation(){
     setTurn(0);setDraft("");setFeedback(null);setRecorded(false);
+    setModelRevealed(false);setRecognitionUsed(false);
     setError("");started.current=performance.now();
   }
   async function submitReply(){
@@ -112,9 +116,10 @@ export function P26PrecisionStudio({
     const account=ownerRef.current;
     if(getDevelopmentAccountId()!==account)return;
     const candidate=inspectP26Reply(mission,turn,draft);
+    const eligible=candidate.matched&&!modelRevealed&&!recognitionUsed;
     setError("");setBusy(true);
     try{
-      if(candidate.matched){
+      if(eligible){
         const prompt=missionTurnPrompt(mission,turn);
         await recordStudyAnswer({
           prompt,response:normalizeP26(draft),result:"correct",
@@ -122,8 +127,8 @@ export function P26PrecisionStudio({
         });
       }
       if(ownerRef.current!==account)return;
-      setFeedback(candidate);setRecorded(candidate.matched);
-      if(candidate.matched)setHistoryRevision(n=>n+1);
+      setFeedback(candidate);setRecorded(eligible);
+      if(eligible)setHistoryRevision(n=>n+1);
     }catch{
       if(ownerRef.current===account)setError("Deine Antwort konnte nicht gespeichert werden. Erneut versuchen.");
     }finally{if(ownerRef.current===account)setBusy(false);}
@@ -161,6 +166,7 @@ export function P26PrecisionStudio({
       }finally{if(ownerRef.current===account)setBusy(false);}
     }
     setTurn(current=>current+1);setFeedback(null);setRecorded(false);setDraft("");
+    setModelRevealed(false);setRecognitionUsed(false);
     setHistoryRevision(x=>x+1);started.current=performance.now();
   }
   async function saveComposition(){
@@ -187,7 +193,7 @@ export function P26PrecisionStudio({
     speech.onresult=e=>{
       const transcript=e.results[0]?.[0]?.transcript?.trim()??"";
       if(!transcript)return;
-      if(target==="dialogue"){setDraft(transcript);setFeedback(null);}
+      if(target==="dialogue"){setDraft(transcript);setFeedback(null);setRecognitionUsed(true);}
       else if(target==="composition"){setRevisionDraft(transcript);setComposeStep("write");}
       else{setRevisionText(transcript);setComposeStep("revise");setDraftReport(null);}
     };
@@ -246,7 +252,7 @@ export function P26PrecisionStudio({
           </li>)}
         </ul>
         <div className="p26-studio__actions">
-          <button type="button" disabled={disabled} onClick={()=>onStart(missionId,"course")}>Vollständiges Training</button>
+          <button type="button" disabled={disabled} onClick={()=>onStart(missionId,"course")}>Lernrunde (bis 20 Aufgaben)</button>
           <button type="button" disabled={disabled} onClick={()=>onStart(missionId,"transfer")}>Wörter im neuen Kontext</button>
           <button type="button" disabled={disabled} onClick={()=>onStart(missionId,"repair")}>Schwächen wiederholen {stats?.due?"("+stats.due+" fällig)":""}</button>
         </div>
@@ -268,16 +274,16 @@ export function P26PrecisionStudio({
             <label htmlFor="p26-reply"><strong>Deine Antwort auf Japanisch</strong></label>
             <textarea id="p26-reply" lang="ja" rows={3} value={draft} disabled={Boolean(feedback)||busy}
               placeholder="日本語で答えてください…"
-              onChange={e=>setDraft(e.target.value)}/>
+              onChange={e=>{setDraft(e.target.value);setRecognitionUsed(false);}}/>
             <div className="p26-studio__actions">
               <button type="button" disabled={busy||disabled||!draft.trim()||Boolean(feedback)} onClick={()=>void submitReply()}>Antwort prüfen</button>
               <button type="button" disabled={busy||Boolean(feedback)} onClick={()=>beginSpeech("dialogue")}>Japanisch diktieren</button>
-              <button type="button" onClick={()=>hear(active.accepted[0]!)}>Muster anhören</button>
+              <button type="button" onClick={()=>{setModelRevealed(true);hear(active.accepted[0]!);}}>Musterhilfe anhören (danach unbewertet)</button>
             </div>
             {speechStatus?<p role="status">{speechStatus} Browsererkennung kann einen externen Spracherkennungsdienst nutzen.</p>:null}
             {feedback?<div className="p26-studio__feedback" role="status">
-              <strong>{feedback.matched?"Eine der geübten Antworten getroffen":"Eigene Antwort – nicht automatisch bewertbar"}</strong>
-              <p>{feedback.matched?"Die Wortfolge stimmt mit einem hinterlegten Zielmuster überein.":"Deine Antwort ist möglicherweise sinnvoll; der Vergleich mit den geübten Mustern ist keine freie Sprachbewertung."}</p>
+              <strong>{recorded?"Unabhängig geübte Zielform getroffen":feedback.matched?"Zielmuster erkannt – mit Hilfe oder Transkript, unbewertet":"Eigene Antwort – nicht automatisch bewertbar"}</strong>
+              <p>{feedback.matched?(recorded?"Die Wortfolge stimmt mit einem hinterlegten Zielmuster überein und wurde als FSRS-Übung gespeichert.":"Das Zielmuster wurde erkannt, aber nach Musterhilfe oder mit Browsertranskript wird keine FSRS-Meisterschaft behauptet."):"Deine Antwort ist möglicherweise sinnvoll; der Vergleich mit den geübten Mustern ist keine freie Sprachbewertung."}</p>
               <p><strong>Muster:</strong> <span lang="ja">{feedback.model}</span> — {feedback.modelMeaning}</p>
               <p><strong>Grammatik:</strong> {feedback.contrast}</p>
               <ul>{feedback.notes.map(note=><li key={note}>{note}</li>)}</ul>
@@ -339,6 +345,6 @@ export function P26PrecisionStudio({
         {error?<p role="alert" className="p26-studio__error">{error}</p>:null}
       </div>
     </div>
-    <p className="p26-studio__caveat">Nur Übereinstimmungen mit original erstellten Antwortmustern werden als reguläre FSRS-Lernnachweise gespeichert. Freie andere Sätze sind unbewertet. Spracheingabe ist optional, browserabhängig und keine Ausspracheprüfung.</p>
+    <p className="p26-studio__caveat">Nur unabhängige, selbst getippte Übereinstimmungen mit original erstellten Antwortmustern werden als reguläre FSRS-Lernnachweise gespeichert. Freie andere Sätze sind unbewertet. Spracheingabe ist optional, browserabhängig und keine Ausspracheprüfung.</p>
   </section>;
 }

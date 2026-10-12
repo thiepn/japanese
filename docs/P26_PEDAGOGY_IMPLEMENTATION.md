@@ -15,7 +15,7 @@
 - FSRS card identity, owner-scoped local StudyEvents and the existing review engine are reused. No schema, auth, sync, or migration modifications.
 
 ## Truth and privacy
-- Authored-target response matches are graded; novel learner-created sentences are **not** automatically marked incorrect merely because they differ from our examples.
+- Independently typed authored-target response matches are graded. Revealed model answers and browser transcription are ungraded, even on an exact match. Novel learner-created sentences are **not** automatically marked incorrect merely because they differ from our examples.
 - Ungraded practice events record only metadata such as scenario, turn, length and revision flag; no submitted Japanese text or audio is included in these events.
 - Browser speech recognition availability depends on the browser and may invoke external recognition services. Device TTS is explicitly synthetic.
 - Literal particle/feature hints are advisory, not a Japanese parser or language quality certification.
