@@ -247,7 +247,8 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     :focus==="transfer"?[
       ...transferForUnit(unitId),
       ...extras.filter(p=>(p.eventMetadata?.kind==="linked-lexicon"||
-          p.eventMetadata?.kind==="cross-context-transfer")&&
+          p.eventMetadata?.kind==="cross-context-transfer"||
+          p.eventMetadata?.kind==="cross-context-reformulation")&&
         Array.isArray(p.eventMetadata?.unitIds)&&p.eventMetadata.unitIds.includes(unitId))
     ]
     :focus==="grammar"?promptsForUnit(unitId,extras).filter(p=>

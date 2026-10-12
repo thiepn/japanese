@@ -15,6 +15,7 @@ import {p34SentencePrompts} from "../study/sentence34";
 import {p35PragmaticPrompts} from "../study/pragmatics35";
 import {p36CorrectionPrompts} from "../study/correction36";
 import {p38CrossUnitPrompts,p38CrossUnitForUnit} from "../study/transfer38";
+import {p38ProductionPrompts,p38ProductionForUnit} from "../study/production38";
 import {p28NewSentencePrompts} from "../study/sentence28";
 import {p29AdditionalPrompts,p29LexicalPrompts,lexicalLinksForUnit,recommendP29Actions} from "../study/depth29";
 import {describeP29Revision,p29RegisterExampleForUnit} from "../study/revision29";
@@ -46,7 +47,7 @@ interface SpeechCapture {
 interface Feedback { kind:"graded"|"ungraded"|"choice";message:string;model:string;notes:string[];next:string|null; }
 interface RewriteReport {changed:boolean;oldLength:number;newLength:number;found:string[];missing:string[];}
 const extraJourneyPrompts=[...p28NewSentencePrompts,...p29AdditionalPrompts,
-  ...p29LexicalPrompts,...p30TransformationPrompts,...continuityPrompts,...register28Prompts,...p31ContrastPrompts,...p31SentencePrompts,...p32ContrastPrompts,...p32SentencePrompts,...p33RolePrompts,...p33SentencePrompts,...p34SentencePrompts,...p35PragmaticPrompts,...p36CorrectionPrompts,...p38CrossUnitPrompts];
+  ...p29LexicalPrompts,...p30TransformationPrompts,...continuityPrompts,...register28Prompts,...p31ContrastPrompts,...p31SentencePrompts,...p32ContrastPrompts,...p32SentencePrompts,...p33RolePrompts,...p33SentencePrompts,...p34SentencePrompts,...p35PragmaticPrompts,...p36CorrectionPrompts,...p38CrossUnitPrompts,...p38ProductionPrompts];
 const steps:[JourneyStage,string][]=[["learn","1 · Verstehen"],["build","2 · Satzbau"],["conversation","3 · Antworten"],["write","4 · Schreiben"],["practice","5 · Festigen"]];
 function compareWriting(before:string,after:string,features:readonly string[]):RewriteReport{
   const oldText=normalizeP26(before),newText=normalizeP26(after);
@@ -110,6 +111,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const p32Contrast=p32ContrastForUnit(unitId);
   const p32Question=p32ContrastPrompts.find(p=>p.eventMetadata?.unitId===unitId);
   const p38TransferCases=p38CrossUnitForUnit(unitId);
+  const p38WritingCases=p38ProductionForUnit(unitId);
   const globalRecall=useMemo(()=>evidence?
     p31GlobalDue(evidence.traces,evidence.events,extraJourneyPrompts):[],
     [evidence]);
@@ -519,6 +521,20 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
         </section>:null}
         {stage==="write"?<section className="p27-journey__panel">
           <h4>Eigene Sätze schreiben oder sprechen und überarbeiten</h4>
+          {p38WritingCases.length>0?<section className="p27-journey__p38-writing" aria-label="Neue Situationen schriftlich übertragen">
+            <h5>Aus anderen Themen in den Alltag übertragen</h5>
+            <p>Übertrage gelernte Partikel, Zeitformen und höfliche Bitten. Die
+              Musterlösungen werden erst im bestehenden StudyPlayer nach einem Versuch
+              gezeigt. Freies Schreiben hier bleibt unabhängig von FSRS-Bewertungen.</p>
+            {p38WritingCases.slice(0,3).map(item=><div key={item.id}>
+              <strong>{item.title}</strong><p>{item.task}</p>
+              <small>Im StudyPlayer sind zwei sinnvolle japanische Formulierungen hinterlegt.</small>
+            </div>)}
+            <button type="button" disabled={disabled}
+              onClick={()=>onJourneyPractice(unitId,"transfer")}>
+              Situationswechsel selbstständig üben
+            </button>
+          </section>:null}
           <p>{unit.writing.task}</p>
           <label htmlFor="p27-draft">Erste Fassung</label>
           <textarea id="p27-draft" rows={4} lang="ja" value={draft} onChange={e=>{
