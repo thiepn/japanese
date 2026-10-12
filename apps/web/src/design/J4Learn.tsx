@@ -1,4 +1,5 @@
-import {useMemo} from "react";
+import {useMemo,useState} from "react";
+import {A1CoursePath} from "../a1/A1CoursePath";
 import {A1Communication} from "../communication/A1Communication";
 import {A1Recall} from "../communication/A1Recall";
 import {A1Roleplay} from "../communication/A1Roleplay";
@@ -78,9 +79,11 @@ export function J4Learn(props:Props){
     onC1Practice,onProductive,onLexicalFluency,onRealWorldChain,onRealWorldQualification,
   }=props;
 
+  const [showAllLevels,setShowAllLevels]=useState(false);
+  const courseForView=showAllLevels?course:course.filter(unit=>unit.level==="A1");
   const groups=useMemo(()=>{
     const byLevel=new Map<string,CourseUnitProgress[]>();
-    for(const unit of course){
+    for(const unit of courseForView){
       const key=unit.level||"Course";
       const list=byLevel.get(key)??[];
       list.push(unit);
@@ -93,11 +96,11 @@ export function J4Learn(props:Props){
         return (ai<0?999:ai)-(bi<0?999:bi);
       })
       .map(([level,units])=>({level,units:units.sort((a,b)=>a.order-b.order)}));
-  },[course]);
+  },[courseForView]);
 
-  const current=course.find((unit)=>unit.status!=="mastered")??course.at(-1)??null;
-  const mastered=course.filter((unit)=>unit.status==="mastered").length;
-  const overall=course.length?course.reduce((sum,unit)=>sum+unit.mastery,0)/course.length:0;
+  const current=courseForView.find((unit)=>unit.status!=="mastered")??courseForView.at(-1)??null;
+  const mastered=courseForView.filter((unit)=>unit.status==="mastered").length;
+  const overall=courseForView.length?courseForView.reduce((sum,unit)=>sum+unit.mastery,0)/courseForView.length:0;
   const kanaCoverage=summary.totalKana?summary.learnedKana/summary.totalKana:0;
   const vocabCoverage=summary.totalVocabulary?summary.learnedVocabulary/summary.totalVocabulary:0;
 
@@ -111,22 +114,22 @@ export function J4Learn(props:Props){
 
       <div className="j4-hero__copy">
         <JCartouche japanese="学" subtitle="Learn"/>
-        <p className="j4-hero__kicker">A1 → C1 · 学びの絵巻</p>
-        <h1 id="j4-title">Your Japanese journey</h1>
+        <p className="j4-hero__kicker">A1 · はじまり</p>
+        <h1 id="j4-title">Dein Japanischkurs A1</h1>
         <p>
-          Move through one continuous path from script foundations to advanced discourse.
-          Each landmark reflects the same course order, evidence, mastery and delayed checks already used by the learning engine.
+          Lerne Japanisch von den Lauten und Schriftzeichen bis zu einfachen Alltagsgesprächen.
+          Vorhandene Kerneinheiten bleiben erhalten. Die 24-Lektionen-Struktur zeigt auch, welche Inhalte noch fehlen.
         </p>
         {status==="empty"?<p role="status">No steps are available for that activity yet. Try another lesson.</p>:null}
         {status==="error"?<p role="alert">This activity could not be loaded. Try again.</p>:null}
         <div className="j4-hero__actions">
-          <button className="j4-primary" disabled={status==="loading"} onClick={onStart} type="button">
+          <button className="j4-primary" disabled={status==="loading"} onClick={()=>current?onStartUnit(current.id):onStart()} type="button">
             <span aria-hidden="true">進</span>
-            <span><strong>{current?"Continue the path":"Review the path"}</strong><small>{current?current.title:"Adaptive review"}</small></span>
+            <span><strong>{current?"A1-Kerneinheit fortsetzen":"A1 wiederholen"}</strong><small>{current?current.title:"A1-Lernweg"}</small></span>
           </button>
           <div className="j4-hero__mastery">
             <strong>{Math.round(overall*100)}%</strong>
-            <span>{mastered} / {course.length} landmarks mastered</span>
+            <span>{mastered} / {courseForView.length} vorhandene Kerneinheiten gemeistert</span>
           </div>
         </div>
       </div>
@@ -134,10 +137,13 @@ export function J4Learn(props:Props){
       <div className="j4-hero__crest" aria-label="Course progress">
         <span className="j4-hero__crest-ring"/>
         <span className="j4-hero__crest-kanji" aria-hidden="true">道</span>
-        <strong>{current?.level??"C1"}</strong>
-        <small>{current?"current region":"journey reviewed"}</small>
+        <strong>{current?.level??"A1"}</strong>
+        <small>{current?"aktuelles Niveau":"A1-Kerneinheiten wiederholen"}</small>
       </div>
     </header>
+
+    <div className="j4-level-scope"><button type="button" onClick={()=>setShowAllLevels(value=>!value)} aria-expanded={showAllLevels}>{showAllLevels?"Nur A1 anzeigen":"Archivierte höhere Niveaus anzeigen"}</button><small> A2–C1 sind nicht Teil des aktiven A1-Kurses.</small></div>
+    <A1CoursePath onStartUnit={onStartUnit} disabled={status==="loading"}/>
 
     <section className="j4-foundation" aria-labelledby="j4-foundation-title">
       <header>
@@ -160,7 +166,7 @@ export function J4Learn(props:Props){
           </div>
           <strong>{Math.round(kana.overall*100)}%</strong>
         </article>
-        <article>
+        {showAllLevels?<article>
           <span className="j4-foundation__glyph" aria-hidden="true">語</span>
           <div>
             <small>Lexicon</small>
@@ -169,7 +175,7 @@ export function J4Learn(props:Props){
             <JInkProgress value={vocabCoverage} label="Vocabulary introduction coverage"/>
           </div>
           <strong>{Math.round(vocab.overall*100)}%</strong>
-        </article>
+        </article>:null}
       </div>
     </section>
 
@@ -183,7 +189,7 @@ export function J4Learn(props:Props){
         <JSeal size="large" label="Learning path">学</JSeal>
       </div>
 
-      <div className="j4-emaki" role="region" aria-label="A1 to C1 learning journey" tabIndex={0}>
+      <div className="j4-emaki" role="region" aria-label={showAllLevels?"A1 to C1 learning journey":"A1 learning journey"} tabIndex={0}>
         <div className="j4-emaki__sky" aria-hidden="true"/>
         <div className="j4-emaki__mountains" aria-hidden="true"/>
         <div className="j4-emaki__water" aria-hidden="true"/>
@@ -271,7 +277,7 @@ export function J4Learn(props:Props){
       <p className="j4-scroll-hint">Desktop/tablet: scroll sideways through the illustrated road. Mobile: the same journey becomes a vertical route.</p>
     </section>
 
-    <section className="j4-practice" aria-labelledby="j4-practice-title">
+    {showAllLevels?<section className="j4-practice" aria-labelledby="j4-practice-title">
       <header className="j4-practice__head">
         <div>
           <p className="j4-kicker">TRAINING GROUNDS · 稽古場</p>
@@ -318,7 +324,7 @@ export function J4Learn(props:Props){
         <summary><span aria-hidden="true">対</span><strong>AI coach</strong><small>Advisory practice only</small></summary>
         <div><AiCoach preferredChainId={preferredCoachChain} onPreferredChainApplied={onPreferredCoachChainApplied}/></div>
       </details>
-    </section>
+    </section>:null}
 
     <A1Dashboard/>
     <A1Communication/>
