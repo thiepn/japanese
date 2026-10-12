@@ -10,3 +10,8 @@
 .p28-continuity__check{display:flex!important;gap:.5rem;align-items:center}
 .p28-continuity__caveat{font-size:.82rem;opacity:.8}
 @media(max-width:520px){.p28-continuity__actions{display:grid}.p28-continuity__actions button{width:100%}}
+
+.p28-continuity__revision{margin:.8rem 0;padding:.75rem;border:1px solid currentColor}
+.p28-continuity__revision p{margin:.35rem 0}
+.p28-continuity__feedback details{margin:.75rem 0}
+.p28-continuity__feedback details summary{cursor:pointer;font-weight:600}
