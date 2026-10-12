@@ -4,13 +4,14 @@ import {getDevelopmentAccountId} from "../study/runtime";
 import {navigateA1} from "../communication/a1-navigation";
 import {subscribeA1Progress} from "../communication/a1-events";
 import {A1_CONTRACT_VERSION,A1_MODULES,A1_LESSONS,reconcileA1Evidence,type A1CrosswalkReport} from "./a1-course-contract";
-import {a1CommunicationExerciseCrosswalk,a1SourceInventory,auditA1SourceLinks} from "./a1-source-audit";
+import {a1CommunicationExerciseCrosswalk,a1PrimaryTargetCrosswalk,a1SourceInventory,auditA1SourceLinks} from "./a1-source-audit";
 import "./a1-course-path.css";
 
 type Props={onStartUnit:(unitId:string)=>void;disabled:boolean};
 const sourceIssues=auditA1SourceLinks();
 const inventory=a1SourceInventory();
 const exerciseMap=a1CommunicationExerciseCrosswalk();
+const targetMap=a1PrimaryTargetCrosswalk();
 
 export function A1CoursePath({onStartUnit,disabled}:Props){
  const owner=getDevelopmentAccountId();
@@ -21,7 +22,7 @@ export function A1CoursePath({onStartUnit,disabled}:Props){
  useEffect(()=>{
   let active=true;setReport(null);setError("");
   void listStudyEvents(owner).then(events=>{
-   if(active)setReport(reconcileA1Evidence(events,owner,exerciseMap));
+   if(active)setReport(reconcileA1Evidence(events,owner,exerciseMap,targetMap));
   }).catch(()=>{if(active)setError("Bisherige Lernbelege konnten nicht geladen werden. Es wurde nichts verändert.");});
   return()=>{active=false;};
  },[owner,revision]);
