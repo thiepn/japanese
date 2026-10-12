@@ -109,7 +109,7 @@ export function P28SentenceBuilder({
   }
   function undo(){if(!submission&&!busy)setSelection(list=>list.slice(0,-1));}
   function onTilesKeyboard(event:KeyboardEvent<HTMLElement>){
-    if(disabled||busy||submission||event.altKey||event.ctrlKey||event.metaKey)return;
+    if(disabled||busy||submission||event.nativeEvent.isComposing||event.key==="Process"||event.altKey||event.ctrlKey||event.metaKey)return;
     const target=event.target as HTMLElement;
     if(target.tagName==="INPUT"||target.tagName==="TEXTAREA"||target.isContentEditable)return;
     if(/^[1-9]$/.test(event.key)){

@@ -229,11 +229,14 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
         <p><strong>Verständnisproblem:</strong> <span lang="ja">{repair.partner}</span></p>
         <p>{repair.meaning}</p>
         <label htmlFor="p33-repair-draft">Bitte auf Japanisch um Wiederholung oder Erklärung</label>
+        <p className="p33-role__shortcut">Strg / ⌘ + Enter zum Vergleichen · Escape zum Gespräch</p>
         <textarea id="p33-repair-draft" lang="ja" rows={2} value={repairDraft}
-          onKeyDown={e=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){
+          aria-keyshortcuts="Control+Enter Meta+Enter"
+          onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
             e.preventDefault();if(!busy&&!repairDone&&!disabled)void submitRepair();
           }}}
-          disabled={busy||repairDone} onChange={e=>setRepairDraft(e.target.value)}/>
+          disabled={busy||repairDone} onChange={e=>setRepairDraft(e.target.value)}
+          onKeyUp={e=>{if(e.key==="Escape")setRepairOpen(false);}}/>
         <button type="button" disabled={disabled||busy||repairDone||!repairDraft.trim()}
           onClick={()=>void submitRepair()}>Rückfrage vergleichen (unbewertet)</button>
         {repairDone?<div role="status">
@@ -249,7 +252,8 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
               <span lang="ja"> {repairFollowup.partnerFollowup}</span> — {repairFollowup.partnerMeaning}</p>
             <label htmlFor="p34-repair-followup">Formuliere selbst eine Anschlussantwort</label>
             <textarea id="p34-repair-followup" lang="ja" rows={2} value={followupDraft}
-              onKeyDown={e=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){
+              aria-keyshortcuts="Control+Enter Meta+Enter"
+              onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
                 e.preventDefault();if(!busy&&!followupDone&&!disabled)void submitRepairFollowup();
               }}}
               disabled={busy||followupDone} onChange={e=>setFollowupDraft(e.target.value)}/>
@@ -268,7 +272,8 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
     </div>:null}
     <label htmlFor="p33-role-draft">Deine japanische Antwort</label>
     <textarea id="p33-role-draft" value={draft} onChange={e=>setDraft(e.target.value)}
-      onKeyDown={e=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){
+      aria-keyshortcuts="Control+Enter Meta+Enter"
+      onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
         e.preventDefault();if(!busy&&!repairOpen&&!feedback&&!disabled)void submit();
       }}}
       disabled={busy||repairOpen||Boolean(feedback)} rows={3} lang="ja"/>
@@ -280,7 +285,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
         onClick={()=>void submit()}>Antwort vergleichen</button>
     </div>
     {assisted&&!feedback?<p role="status">Aufgabe: {turn.gloss}. Die nächste Eingabe zählt nicht als unabhängiger FSRS-Abruf.</p>:null}
-    {feedback?<div className="p33-role__feedback" role="status">
+    {feedback?<div className="p33-role__feedback" role="status" aria-label="Antwortfeedback und nächster Dialogschritt">
       <strong>{feedback.independent?"Geübte Antwort unabhängig getroffen":
         feedback.correctModel?"Geübte Form mit Hilfe getroffen":"Eigene Alternative · unbewertet"}</strong>
       <p>Mögliche Antwort: <span lang="ja">{turn.model}</span></p>
