@@ -70,11 +70,12 @@ export function P28Continuity({
     const grade=gradeStudyPrompt(prompt,response);
     const accepted=grade.result==="correct";
     const independentlyProduced=kind==="typed"&&accepted&&!modelRevealed&&revisions===0;
+    const independentChoice=kind==="choice"&&!modelRevealed&&revisions===0;
     const choice=node!.choices.find(c=>normalizeP26(c.japanese)===normalizeP26(response));
     const next=choice?.next??node!.id;
     setBusy(true);setError("");
     try{
-      if(kind==="choice"||independentlyProduced){
+      if(independentChoice||independentlyProduced){
         await recordStudyAnswer({
           prompt,response,result:grade.result,
           responseTimeMs:Math.max(0,Math.round(performance.now()-startedAt.current))
@@ -84,7 +85,9 @@ export function P28Continuity({
       if(kind==="typed"&&!firstDraft)setFirstDraft(response);
       setModelRevealed(true);
       setFeedback({
-        message:kind==="choice"?(accepted?"Passende situationsbezogene Wahl.":"Diese Antwort führt zu einer Reparatur.")
+        message:kind==="choice"?(independentChoice
+          ?accepted?"Passende situationsbezogene Auswahl.":"Diese Auswahl führt zu einer Reparatur."
+          :"Auswahl nach angezeigtem Beispiel – unbewertete Übung.")
           :independentlyProduced?"Eine der geübten Zielformen unabhängig produziert; FSRS-Ereignis gespeichert."
             :accepted?"Geübte Zielform bei einer Überarbeitung getroffen; wegen zuvor gezeigter Hilfe unbewertet."
             :"Freie andere Formulierung: nicht automatisch beurteilbar und nicht als Fehler eingestuft.",
@@ -162,8 +165,15 @@ export function P28Continuity({
         <div className="p28-continuity__actions">
           <button type="button" onClick={()=>{setFeedback(null);setRevisions(n=>n+1);setModelRevealed(true);startedAt.current=performance.now();}}>Antwort überarbeiten (erste Fassung bleibt erhalten)</button>
           <button type="button" onClick={()=>advance(feedback.next)}>Gespräch fortsetzen</button>
-          {feedback.next===node.id?<button type="button" onClick={()=>advance(node.choices.find(c=>c.appropriate)?.next??null)}>
-            Ohne Bewertung einen möglichen Weg wählen</button>:null}
+          {feedback.next===node.id?<div className="p28-continuity__intents">
+            <strong>Eine kommunikative Absicht für den weiteren Weg wählen</strong>
+            <p>Deine freie Antwort wurde nicht als falsch bewertet. Wähle ohne FSRS-Wertung,
+              worauf du hinauswolltest. Der Gesprächspartner reagiert entsprechend.</p>
+            {node.choices.filter(c=>c.appropriate).map((intent,i)=><button type="button" key={i}
+              onClick={()=>advance(intent.next)}>
+              <span lang="ja">{intent.japanese}</span> — {intent.meaning}
+            </button>)}
+          </div>:null}
         </div>
       </div>:null}
       {error?<p role="alert">{error}</p>:null}

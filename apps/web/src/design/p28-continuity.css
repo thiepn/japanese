@@ -15,3 +15,7 @@
 .p28-continuity__revision p{margin:.35rem 0}
 .p28-continuity__feedback details{margin:.75rem 0}
 .p28-continuity__feedback details summary{cursor:pointer;font-weight:600}
+
+.p28-continuity__intents{width:100%;padding:.65rem 0;border-top:1px solid currentColor}
+.p28-continuity__intents>button{display:block;width:100%;margin:.35rem 0}
+.p28-continuity__intents p{margin:.4rem 0}
