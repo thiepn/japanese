@@ -84,6 +84,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const [speechUsed,setSpeechUsed]=useState(false);
   const [showTranslation,setShowTranslation]=useState(false);
   const [inlineContrastAnswer,setInlineContrastAnswer]=useState<string|null>(null);
+  const [p38Choice,setP38Choice]=useState<{id:string;answer:string}|null>(null);
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
   const [voiceStatus,setVoiceStatus]=useState("");
@@ -148,7 +149,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     microphone.current?.stop();microphone.current=null;revealedTurnIds.current.clear();
     setNodeId(unit.turns[0]!.id);setStepsTaken(0);setAnswer("");setFirstConversationDraft("");setFeedback(null);
     setChoiceExampleSeen(false);
-    setHintUsed(false);setSpeechUsed(false);setShowTranslation(false);setInputMode("compose");setInlineContrastAnswer(null);
+    setHintUsed(false);setSpeechUsed(false);setShowTranslation(false);setInputMode("compose");setInlineContrastAnswer(null);setP38Choice(null);
     setError("");setDraft("");setRewrite("");
     setRewriteStage("draft");setReport(null);setSaved(false);setVoiceStatus("");
     started.current=performance.now();
@@ -377,6 +378,42 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <p>Unbewertete Erklärung im Unterricht. Ein unabhängiger Abruf erfolgt separat im StudyPlayer.</p>
             </div>:null}
           </div>:null}
+          {p38TransferCases.length?<section className="p27-journey__p38-cross" aria-label="Grammatik über Themen hinweg anwenden">
+            <h4>Eine Funktion in zwei Alltagssituationen</h4>
+            <p>Übertrage Partikel und Sprechabsichten in ein anderes Thema. Diese
+              Erklärung ist <strong>unbewertet</strong>; unabhängige Wiederholung
+              läuft getrennt im StudyPlayer.</p>
+            {p38TransferCases.slice(0,3).map(item=>{
+              const selected=p38Choice?.id===item.id?p38Choice.answer:null;
+              const other=item.units.find(id=>id!==unitId);
+              return <article key={item.id}>
+                <h5>{item.title}</h5>
+                <p>{item.question}</p>
+                <div className="p27-journey__p38-options" role="group"
+                  aria-label={"Ausdruck im Kontext: "+item.title}>
+                  {[item.preferred,item.contrast].map((answer,i)=><button
+                    key={i} type="button" lang="ja"
+                    aria-pressed={selected===answer}
+                    onClick={()=>setP38Choice({id:item.id,answer})}>{answer}</button>)}
+                </div>
+                {selected?<div role="status" className="p27-journey__p38-result">
+                  <strong>{selected===item.preferred?
+                    "Passt zur gefragten Bedeutung":
+                    "Diese Form erfüllt eine andere Funktion oder ist in diesem Satz unpassend"}</strong>
+                  <p>{item.explanation}</p>
+                  <p>Eine einzelne Auswahl ist kein bewerteter Lernnachweis.</p>
+                </div>:null}
+                {other?<button type="button" className="p27-journey__p38-related"
+                  onClick={()=>selectUnit(other)}>
+                  Verwandtes Thema öffnen: {journeyUnit(other).title}
+                </button>:null}
+              </article>;
+            })}
+            <button type="button" disabled={disabled}
+              onClick={()=>onJourneyPractice(unitId,"transfer")}>
+              Themenübergreifende Aufgaben selbst abrufen
+            </button>
+          </section>:null}
           <h4>Wörter in Sätzen</h4>
           <div className="p27-journey__words">{unit.words.map(w=><div key={w.form+"-"+w.reading}>
             <strong lang="ja">{w.form}</strong><small lang="ja">{w.reading}</small>

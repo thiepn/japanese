@@ -246,7 +246,8 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
   const relevant=focus==="register"?[...pragmatic,...relatedRegister]
     :focus==="transfer"?[
       ...transferForUnit(unitId),
-      ...extras.filter(p=>p.eventMetadata?.kind==="linked-lexicon"&&
+      ...extras.filter(p=>(p.eventMetadata?.kind==="linked-lexicon"||
+          p.eventMetadata?.kind==="cross-context-transfer")&&
         Array.isArray(p.eventMetadata?.unitIds)&&p.eventMetadata.unitIds.includes(unitId))
     ]
     :focus==="grammar"?promptsForUnit(unitId,extras).filter(p=>

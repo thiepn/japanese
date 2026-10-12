@@ -94,3 +94,14 @@
 
 .p27-journey__mistake small strong{font-weight:700}
 .p27-journey__mistake details:focus-within{outline:1px solid currentColor;outline-offset:1px}
+
+.p27-journey__p38-cross{margin:1.1rem 0;padding:1rem;border-top:1px solid currentColor;border-bottom:1px solid currentColor}
+.p27-journey__p38-cross h4{font-size:1.04rem}
+.p27-journey__p38-cross h5{font-size:.98rem;margin:.2rem 0}
+.p27-journey__p38-cross article{padding:.8rem 0;border-bottom:1px solid currentColor}
+.p27-journey__p38-options{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0}
+.p27-journey__p38-options button{font-size:1.1rem;min-height:44px;white-space:normal;text-align:left}
+.p27-journey__p38-options button[aria-pressed=true]{font-weight:700;box-shadow:inset 0 -3px currentColor}
+.p27-journey__p38-result{padding:.5rem .7rem;border-left:3px solid currentColor}
+.p27-journey__p38-related{margin:.6rem 0;min-height:44px}
+@media(max-width:580px){.p27-journey__p38-cross{padding:.65rem}.p27-journey__p38-options{display:grid}.p27-journey__p38-options button{width:100%}.p27-journey__p38-related{width:100%}}
