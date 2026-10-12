@@ -17,6 +17,7 @@ export function A1CoursePath({onStartUnit,onStartMilestone,disabled}:Props){
  const owner=getDevelopmentAccountId();
  const [report,setReport]=useState<A1CrosswalkReport|null>(null);
  const [error,setError]=useState("");
+ const [expandedModules,setExpandedModules]=useState<string[]>([A1_MODULES[0]?.id??"a1:module:01"]);
  const [revision,setRevision]=useState(0);
  useEffect(()=>subscribeA1Progress(()=>setRevision(n=>n+1)),[]);
  useEffect(()=>{
@@ -40,7 +41,7 @@ export function A1CoursePath({onStartUnit,onStartMilestone,disabled}:Props){
   {A1_MODULES.map((module,index)=>{
    const lessons=A1_LESSONS.filter(l=>l.moduleId===module.id);
    const mapped=lessons.filter(l=>l.legacyUnitIds.length+l.communicationLessonIds.length+l.roleplayIds.length+(l.foundationIds?.length??0)+(l.readingTextIds?.length??0)>0).length;
-   return <details key={module.id} defaultOpen={index===0} className="a1-course-path__module">
+   return <details key={module.id} open={expandedModules.includes(module.id)} onToggle={event=>{const opened=event.currentTarget.open;setExpandedModules(previous=>opened?(previous.includes(module.id)?previous:[...previous,module.id]):previous.filter(id=>id!==module.id));}} className="a1-course-path__module">
     <summary><span>Modul {module.order}: {module.title}</span><small>{mapped}/{lessons.length} mit verlinktem Altmaterial</small></summary>
     <p>{module.description}</p>
     <ol className="a1-course-path__list" start={(module.order-1)*4+1}>
