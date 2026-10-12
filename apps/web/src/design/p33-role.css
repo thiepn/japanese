@@ -30,3 +30,10 @@
 .p33-role__repair-next h5{margin:.4rem 0;font-size:.98rem}
 .p33-role__repair-next label{display:block;margin:.5rem 0}
 .p33-role__repair-next p{margin:.45rem 0}
+
+.p33-role__due{padding:.75rem;margin:1rem 0;border:1px solid currentColor}
+.p33-role__due p{margin:.3rem 0 .65rem}
+.p33-role__due-note{opacity:.75;font-size:.85rem}
+.p33-role__shortcut{display:block;margin:.3rem 0;opacity:.8}
+.p33-role textarea:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+@media(max-width:580px){.p33-role__due button{width:100%}.p33-role__repair button{width:100%}}

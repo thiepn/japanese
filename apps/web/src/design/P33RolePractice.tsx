@@ -15,8 +15,9 @@ import {normalizeP26} from "../study/pedagogy26";
 import "./p33-role.css";
 
 interface AnswerFeedback{correctModel:boolean;independent:boolean;notes:string[];}
-export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
+export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onReview}:{
   unitId:string;owner:string;disabled:boolean;onReviewed:()=>void;
+  dueCount:number;onReview:()=>void;
 }){
   const scenarios=p33RolesForUnit(unitId);
   const [scenarioId,setScenarioId]=useState(scenarios[0]?.id??"");
@@ -174,6 +175,15 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
   return <section className="p33-role" aria-labelledby="p33-role-title">
     <h4 id="p33-role-title">Rollenwechsel: selbst antworten</h4>
     <p>In zwei aufeinanderfolgenden Runden reagieren. Danach kannst du die Perspektive tauschen. Freie Alternativen bleiben unbewertet.</p>
+    {dueCount>0?<div className="p33-role__due">
+      <p><strong>{dueCount} FSRS-Karten dieser Einheit jetzt fällig.</strong>
+        Du kannst den Dialog weiterüben oder die gespeicherte Wiederholungsrunde direkt öffnen.</p>
+      <button type="button" disabled={disabled||busy} onClick={onReview}>
+        {dueCount} fällige Karten im StudyPlayer wiederholen
+      </button>
+    </div>:<p className="p33-role__due-note">
+      Keine bekannten fälligen Karten dieser Einheit. Neue Dialoge sind freiwillige Übung, keine überfällige Wiederholung.
+    </p>}
     <div role="group" aria-label="Situationsauswahl" className="p33-role__choices">
       {scenarios.map(s=><button type="button" key={s.id} disabled={busy}
         aria-pressed={scenario.id===s.id} onClick={()=>switchPath(s.id,perspective)}>{s.title}</button>)}
@@ -202,6 +212,9 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
         <p>{repair.meaning}</p>
         <label htmlFor="p33-repair-draft">Bitte auf Japanisch um Wiederholung oder Erklärung</label>
         <textarea id="p33-repair-draft" lang="ja" rows={2} value={repairDraft}
+          onKeyDown={e=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){
+            e.preventDefault();if(!busy&&!repairDone&&!disabled)void submitRepair();
+          }}}
           disabled={busy||repairDone} onChange={e=>setRepairDraft(e.target.value)}/>
         <button type="button" disabled={disabled||busy||repairDone||!repairDraft.trim()}
           onClick={()=>void submitRepair()}>Rückfrage vergleichen (unbewertet)</button>
@@ -218,6 +231,9 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
               <span lang="ja"> {repairFollowup.partnerFollowup}</span> — {repairFollowup.partnerMeaning}</p>
             <label htmlFor="p34-repair-followup">Formuliere selbst eine Anschlussantwort</label>
             <textarea id="p34-repair-followup" lang="ja" rows={2} value={followupDraft}
+              onKeyDown={e=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){
+                e.preventDefault();if(!busy&&!followupDone&&!disabled)void submitRepairFollowup();
+              }}}
               disabled={busy||followupDone} onChange={e=>setFollowupDraft(e.target.value)}/>
             <button type="button" disabled={disabled||busy||followupDone||!followupDraft.trim()}
               onClick={()=>void submitRepairFollowup()}>Anschlussantwort vergleichen (unbewertet)</button>
@@ -234,7 +250,11 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
     </div>:null}
     <label htmlFor="p33-role-draft">Deine japanische Antwort</label>
     <textarea id="p33-role-draft" value={draft} onChange={e=>setDraft(e.target.value)}
+      onKeyDown={e=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){
+        e.preventDefault();if(!busy&&!repairOpen&&!feedback&&!disabled)void submit();
+      }}}
       disabled={busy||repairOpen||Boolean(feedback)} rows={3} lang="ja"/>
+    <small className="p33-role__shortcut">Strg + Enter (Mac: ⌘ + Enter): Antwort vergleichen</small>
     <div className="p33-role__actions">
       <button type="button" disabled={busy||Boolean(feedback)} onClick={()=>setAssisted(true)}>
         {assisted?"Mit Hilfe · unbewertet":"Hinweis zum Gesprächsziel"}</button>

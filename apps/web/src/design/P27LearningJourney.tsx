@@ -437,7 +437,9 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
           {roleScenarios.length?<details className="p27-journey__role">
             <summary>Rollen wechseln & ohne Vorlage antworten · {roleScenarios.length} Situation{roleScenarios.length===1?"":"en"}</summary>
             <P33RolePractice key={unit.id+":"+owner} unitId={unit.id} owner={owner}
-              disabled={disabled} onReviewed={()=>setReload(n=>n+1)}/>
+              disabled={disabled} onReviewed={()=>setReload(n=>n+1)}
+              dueCount={recallPlan?.dueNow.length??0}
+              onReview={()=>onJourneyPractice(unitId,"review")}/>
           </details>:null}
           {(nodeId==="__finished__"||stepsTaken>=14)?<P28Continuity key={unit.id+":"+owner}
             unitId={unit.id} owner={owner} disabled={disabled} onReviewed={()=>setReload(n=>n+1)}
