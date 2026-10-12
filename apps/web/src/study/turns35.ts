@@ -23,34 +23,34 @@ export const p35RoleContinuations:readonly P35RoleContinuation[]=[
   {
     "scenarioId": "library-study",
     "role": "guest",
-    "partner": "その本はいつまで借りられますか。",
-    "meaning": "Bis wann darf ich das Buch ausleihen?",
-    "model": "来週まで借りられます。",
-    "gloss": "Bis nächste Woche."
+    "partner": "来週までに返せますか。",
+    "meaning": "Können Sie es bis nächste Woche zurückgeben?",
+    "model": "はい、来週までに返します。",
+    "gloss": "Ja, ich gebe es bis nächste Woche zurück."
   },
   {
     "scenarioId": "library-study",
     "role": "host",
-    "partner": "返却日はわかりましたか。",
-    "meaning": "Ist das Rückgabedatum verständlich?",
-    "model": "はい、来週までですね。",
-    "gloss": "Ja, bis nächste Woche."
+    "partner": "返す日は来週ですね。",
+    "meaning": "Das Rückgabedatum ist nächste Woche, richtig?",
+    "model": "はい、来週までに返してください。",
+    "gloss": "Ja, bitte geben Sie es bis nächste Woche zurück."
   },
   {
     "scenarioId": "cafe-fix",
     "role": "guest",
-    "partner": "お会計をお願いします。",
-    "meaning": "Die Rechnung bitte.",
-    "model": "はい、お願いします。",
-    "gloss": "Ja, bitte."
+    "partner": "お支払いはどうなさいますか。",
+    "meaning": "Wie möchten Sie bezahlen?",
+    "model": "カードでお願いします。",
+    "gloss": "Mit Karte, bitte."
   },
   {
     "scenarioId": "cafe-fix",
     "role": "host",
-    "partner": "ほかにご注文はありますか。",
-    "meaning": "Möchten Sie noch etwas bestellen?",
-    "model": "いいえ、以上です。",
-    "gloss": "Nein, das ist alles."
+    "partner": "ありがとうございました。",
+    "meaning": "Vielen Dank.",
+    "model": "またお越しください。",
+    "gloss": "Kommen Sie gerne wieder."
   },
   {
     "scenarioId": "appointment-shift",
@@ -79,26 +79,26 @@ export const p35RoleContinuations:readonly P35RoleContinuation[]=[
   {
     "scenarioId": "umbrella-owner",
     "role": "host",
-    "partner": "見つかったら連絡します。",
-    "meaning": "Ich melde mich, wenn er gefunden wird.",
-    "model": "ありがとうございます。",
-    "gloss": "Vielen Dank."
+    "partner": "見つかったら連絡してください。",
+    "meaning": "Bitte melden Sie sich, wenn er gefunden wird.",
+    "model": "はい、見つかったら連絡します。",
+    "gloss": "Ja, ich melde mich, falls er gefunden wird."
   },
   {
     "scenarioId": "shop-colors",
     "role": "guest",
-    "partner": "もう少し小さいかばんはありますか。",
-    "meaning": "Gibt es eine etwas kleinere Tasche?",
-    "model": "はい、小さいのもあります。",
-    "gloss": "Ja, es gibt auch eine kleinere."
+    "partner": "こちらのサイズはいかがですか。",
+    "meaning": "Wie wäre es mit dieser Größe?",
+    "model": "もう少し小さいのはありますか。",
+    "gloss": "Gibt es eine etwas kleinere?"
   },
   {
     "scenarioId": "shop-colors",
     "role": "host",
-    "partner": "こちらもご覧になりますか。",
-    "meaning": "Möchten Sie diese auch ansehen?",
-    "model": "はい、見せてください。",
-    "gloss": "Ja, bitte zeigen Sie sie mir."
+    "partner": "ほかの色はありますか。",
+    "meaning": "Gibt es andere Farben?",
+    "model": "はい、青いのもあります。",
+    "gloss": "Ja, es gibt auch eine blaue."
   },
   {
     "scenarioId": "campus-greeting",
