@@ -1,6 +1,6 @@
 import {describe,it,expect} from "vitest";
 import {A1_LESSONS,A1_MODULES,a1ManifestErrors,reconcileA1Evidence,a1Lesson} from "../apps/web/src/a1/a1-course-contract";
-import {a1SourceInventory,auditA1SourceLinks,a1CommunicationExerciseCrosswalk} from "../apps/web/src/a1/a1-source-audit";
+import {a1SourceInventory,auditA1SourceLinks,a1CommunicationExerciseCrosswalk,a1PrimaryTargetCrosswalk} from "../apps/web/src/a1/a1-source-audit";
 
 describe("A1-0 immutable curriculum and source custody",()=>{
  it("contains 24 ordered lessons in six modules and retains every original source once",()=>{
@@ -16,6 +16,7 @@ describe("A1-0 immutable curriculum and source custody",()=>{
   expect(inventory).toMatchObject({sourceUnits:20,communicationLessons:7,referencedVocabulary:131,referencedGrammar:37,referencedSentences:89,a1ReadingTexts:4,proposedLessons:24});
   expect(inventory.vocabularyWithLinkedAudio).toBeLessThan(inventory.referencedVocabulary);
   expect(Object.keys(a1CommunicationExerciseCrosswalk())).toHaveLength(22);
+  expect(a1PrimaryTargetCrosswalk()["sentence:sentence-a1-001"]).toContain("a1-unit-01");
  });
 });
 describe("A1-1 provenance crosswalk never manufactures mastery",()=>{
@@ -34,6 +35,15 @@ describe("A1-1 provenance crosswalk never manufactures mastery",()=>{
   expect(JSON.stringify(events)).toBe(unchanged);
   expect(report.rows[0]).not.toHaveProperty("mastery");
   expect(report.rows[0]).not.toHaveProperty("completed");
+ });
+ it("reads existing typed study targets and excludes explicitly advanced contexts",()=>{
+  const report=reconcileA1Evidence([
+   {id:"sentence",userId:owner,sourceId:"thiepn-original",primaryTarget:{kind:"sentence",id:"sentence-a1-001"}},
+   {id:"advanced-context",userId:owner,sourceId:"thiepn-original",contextId:"a2-unit-01",primaryTarget:{kind:"sentence",id:"sentence-a1-001"}}
+  ],owner,map,a1PrimaryTargetCrosswalk());
+  expect(report.aligned).toBe(1);
+  expect(report.outOfScope).toBe(1);
+  expect(report.rows[0]?.candidateLessonIds).toEqual(["a1:lesson:05"]);
  });
  it("reports conflicting links and unrecognized A1 records without dropping them",()=>{
   const report=reconcileA1Evidence([
