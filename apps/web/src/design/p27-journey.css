@@ -112,3 +112,7 @@
 .p27-journey__practice-paths p{font-size:.86rem;margin:.55rem 0 1rem;flex:1}
 .p27-journey__practice-paths button{min-height:44px;width:100%}
 @media(max-width:760px){.p27-journey__practice-paths{grid-template-columns:1fr}.p27-journey__practice-paths section{padding:.65rem}.p27-journey__practice-paths p{margin:.35rem 0 .65rem}}
+
+.p27-journey__keyhint{font-size:.83rem;opacity:.78}
+#p27-reply:focus-visible,#p27-draft:focus-visible,#p27-rewrite:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+@media(max-width:580px){#p27-reply,#p27-draft,#p27-rewrite{min-height:7rem;font-size:1rem}}

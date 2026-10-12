@@ -452,7 +452,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               }}/> Deutsche Hilfe anzeigen</label>
             {inputMode==="compose"?<>
               <label htmlFor="p27-reply">Deine japanische Antwort</label>
-              <textarea rows={3} id="p27-reply" lang="ja" value={answer} disabled={Boolean(feedback)||busy}
+              <textarea rows={3} id="p27-reply" lang="ja" value={answer} disabled={disabled||Boolean(feedback)||busy}
+                aria-keyshortcuts="Control+Enter Meta+Enter"
+                onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
+                  e.preventDefault();if(answer.trim()&&!disabled&&!busy&&!feedback)void submitText();
+                }}}
                 onChange={e=>setAnswer(e.target.value)}/>
               <div className="p27-journey__actions">
                 <button type="button" disabled={disabled||busy||Boolean(feedback)||!answer.trim()}
@@ -536,8 +540,16 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             </button>
           </section>:null}
           <p>{unit.writing.task}</p>
+          <p className="p27-journey__keyhint">Tastatur: Strg + Enter (Mac: ⌘ + Enter) vergleicht Antworten oder öffnet den nächsten Schreibschritt. Japanische IME-Eingabe bleibt ungestört.</p>
           <label htmlFor="p27-draft">Erste Fassung</label>
-          <textarea id="p27-draft" rows={4} lang="ja" value={draft} onChange={e=>{
+          <textarea id="p27-draft" rows={4} lang="ja" value={draft}
+            aria-keyshortcuts="Control+Enter Meta+Enter"
+            onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
+              e.preventDefault();if(draft.trim()&&!busy){
+                setRewrite(draft);setRewriteStage("revise");setReport(null);setSaved(false);
+              }
+            }}}
+            onChange={e=>{
             setDraft(e.target.value);setRewriteStage("draft");setReport(null);setSaved(false);
           }}/>
           <div className="p27-journey__actions">
@@ -553,7 +565,14 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <details><summary>Originales Beispiel vergleichen</summary><p lang="ja">{unit.writing.reference}</p></details>
             </div>
             <label htmlFor="p27-rewrite">Überarbeitete Version</label>
-            <textarea id="p27-rewrite" rows={4} lang="ja" value={rewrite} onChange={e=>{
+            <textarea id="p27-rewrite" rows={4} lang="ja" value={rewrite}
+              aria-keyshortcuts="Control+Enter Meta+Enter"
+              onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
+                e.preventDefault();if(rewrite.trim()&&!busy){
+                  setReport(compareWriting(draft,rewrite,unit.writing.features));setRewriteStage("compare");
+                }
+              }}}
+              onChange={e=>{
               setRewrite(e.target.value);setRewriteStage("revise");setReport(null);setSaved(false);
             }}/>
             <div className="p27-journey__actions">

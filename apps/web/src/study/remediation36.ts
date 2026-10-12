@@ -4,6 +4,7 @@ export interface P36RemediationHint{
   title:string;promptSpecificGoal:string;lessonStage:JourneyStage;action:string;
 }
 const focusHints:Record<string,string>={
+ topic:"Unterscheide bekanntes Thema は vom fokussierten Subjekt が. Die Antwort hängt von der Gesprächsfrage ab.",
  particle:"Bestimme die Funktion der jeweiligen Phrase: Ziel に／へ, Tätigkeitsort oder Mittel で, Objekt を, Thema は.",
  register:"Prüfe Gesprächspartner und Situation: höfliche Formen wie です／ます／お願いします oder bewusst lockerer Stil.",
  time:"Stimmen Zeitangabe und Vergangenheitsform ました zur beschriebenen Handlung?",
@@ -18,6 +19,14 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const kind=prompt?.eventMetadata?.kind;
   const focus=prompt?.eventMetadata?.focus;
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
+  if(kind==="cross-context-reformulation")
+    return {title:"Gelerntes in einem anderen Thema selbst formulieren",
+      promptSpecificGoal:generic??"Prüfe, welche neue Situation angesprochen wird und wie die Partikeln, Höflichkeit und Zeitform diese Absicht ausdrücken.",
+      lessonStage:"write",action:"Schreibaufgabe im neuen Kontext ansehen"};
+  if(kind==="cross-context-transfer")
+    return {title:"Form und Bedeutung zwischen Themen vergleichen",
+      promptSpecificGoal:generic??"Bestimme die Gesprächsabsicht. Thema は, Subjekt が, Bewegungsziel に, Handlungsort で und Objekt を sind nicht beliebig austauschbar.",
+      lessonStage:"learn",action:"Kontrast im Unterricht ansehen"};
   if(kind==="role-response"||typeof kind==="string"&&kind.startsWith("continuity"))
     return {title:"Gesprächsabsicht im Kontext",
       promptSpecificGoal:generic??"Lies zuerst die Frage des Partners. Antworte auf deren Absicht, nicht bloß mit einem passenden Satz aus einem anderen Kontext.",
