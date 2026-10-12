@@ -2,7 +2,7 @@ import type {StudyPrompt} from "@thiepn/study-player";
 import type {StudyEvent} from "@thiepn/domain";
 import type {MemoryTrace} from "@thiepn/scheduler";
 import {sentencePuzzles,sentencePuzzlePrompt} from "./pedagogy24";
-import {journeyUnit,journeyUnits,traceIdJourney} from "./journey27";
+import {journeyUnit,traceIdJourney} from "./journey27";
 
 export interface JourneySentencePuzzle {
   id:string;unitId:string;context:string;meaning:string;tiles:readonly string[];
