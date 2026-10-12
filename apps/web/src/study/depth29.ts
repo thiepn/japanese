@@ -5,6 +5,7 @@ import {journeySentencePuzzles,puzzleEvidence,type JourneySentencePuzzle} from "
 import {p31SentencePuzzles} from "./sentence31";
 import {p32SentencePuzzles} from "./sentence32";
 import {p33SentencePuzzles} from "./sentence33";
+import {p34SentencePuzzles} from "./sentence34";
 import {normalizeP26} from "./pedagogy26";
 import {type JourneyUnitProgress,journeyUnits} from "./journey27";
 
@@ -421,7 +422,7 @@ export const p29AllSentencePuzzles:JourneySentencePuzzle[]=[...journeySentencePu
   if(!extra||extra.orders.length===0)return p;
   const answers=[p.answer,...extra.orders.map(indices=>indices.map(i=>p.tiles[i]).join(""))];
   return {...p,prompt:{...p.prompt,acceptedAnswers:answers,explanation:p.explanation+" "+extra.note}};
-}),...p29SentencePuzzles,...p31SentencePuzzles,...p32SentencePuzzles,...p33SentencePuzzles];
+}),...p29SentencePuzzles,...p31SentencePuzzles,...p32SentencePuzzles,...p33SentencePuzzles,...p34SentencePuzzles];
 export const p29AdditionalPrompts:StudyPrompt[]=p29SentencePuzzles.map(p=>p.prompt);
 export function sentenceVariants(p:JourneySentencePuzzle):{answer:string;note:string}[]{
   const info=reordered[p.id];
