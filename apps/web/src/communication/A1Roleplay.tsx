@@ -1,3 +1,4 @@
+import {validateRoleplayGraph} from "./a1-roleplay-graph";
 import {notifyA1Progress} from "./a1-events";
 import {A1_NAV_EVENT,type A1Navigation} from "./a1-navigation";
 import {useEffect,useState} from "react";
@@ -84,6 +85,7 @@ export function A1Roleplay(){
  return()=>{active=false};},[owner]);
  useEffect(()=>{const handle=(event:Event)=>{const request=(event as CustomEvent<A1Navigation>).detail;if(request.destination!=="roleplay")return;const index=scenarios.findIndex(s=>s.id===request.scenarioId);if(index>=0)start(index);};window.addEventListener(A1_NAV_EVENT,handle);return()=>window.removeEventListener(A1_NAV_EVENT,handle);},[]);
  const scenario=scenarios[scenarioIndex],turn=scenario.turns[turnIndex],choice=choiceIndex===null?null:turn.choices[choiceIndex];
+ const graphErrors=validateRoleplayGraph(scenario.turns);
  const done=choice!==null&&choice.correct&&(choice.next===null||(choice.next===undefined&&turnIndex===scenario.turns.length-1));
  function start(index:number){setScenarioIndex(index);setTurnIndex(0);setChoiceIndex(null);setScore(0);setVisited([]);setPreviousMismatch(false);setError("");}
  async function choose(index:number){
@@ -104,12 +106,13 @@ export function A1Roleplay(){
   <p>Wähle passende Antworten. Dein Gegenüber reagiert auf deine Entscheidung. Die Auswahl wird lokal als Übung gespeichert.</p>
   <label>Situation <select value={scenarioIndex} onChange={e=>start(Number(e.target.value))}>{scenarios.map((s,i)=><option key={s.id} value={i}>{s.title}</option>)}</select></label>
   <p>{scenario.intro}</p>
+ {graphErrors.length?<p role="alert">Dieser Gesprächspfad ist fehlerhaft und wurde zur Sicherheit deaktiviert.</p>:null}
  <p>{history[scenario.id]?history[scenario.id].correct+" passende · "+history[scenario.id].incorrect+" unpassende Antworten bisher":"Noch kein gespeicherter Verlauf in dieser Situation."}</p>
  {historyError?<p role="alert">{historyError}</p>:null}
  <p>Empfohlene Wiederholung: {scenarios.find(s=>s.id===Object.entries(history).sort((a,b)=>b[1].incorrect-a[1].incorrect)[0]?.[0])?.title??"Noch keine Fehler erfasst"}</p><progress value={turnIndex+(choice===null?0:1)} max={scenario.turns.length} aria-label="Gesprächsfortschritt"/>
   <p>Gesprächsknoten {turnIndex+1} von {scenario.turns.length} · Dein Weg kann sich je nach Antwort verzweigen.</p>{previousMismatch&&choiceIndex===null?<p role="status">Dein Gegenüber war irritiert. Wähle jetzt eine Antwort, die zur Situation passt.</p>:null}
   <article><strong>{turn.speaker}</strong><p lang="ja">{turn.prompt}</p><button type="button" onClick={()=>speak(turn.prompt)}>Anhören</button></article>
-  <fieldset disabled={choice!==null||busy}><legend>Was antwortest du?</legend><div className="a1-choice-grid">
+  <fieldset disabled={choice!==null||busy||graphErrors.length>0}><legend>Was antwortest du?</legend><div className="a1-choice-grid">
   {turn.choices.map((option,index)=><button type="button" key={option.japanese} onClick={()=>void choose(index)} aria-pressed={choiceIndex===index}>
     <span lang="ja">{option.japanese}</span>{showGerman?<small> — {option.german}</small>:null}
   </button>)}</div></fieldset>
