@@ -20,7 +20,7 @@ const items:Item[]=[
  ...a1CommunicationLessons.flatMap(lesson=>lesson.dialogue.map((line,index)=>({id:"context:"+lesson.id+":"+index,front:line.japanese,answer:line.german,context:lesson.title+" · "+line.speaker,kind:"context" as const})))
 ];
 const SOURCE="original-a1-recall-v1";
-function normalize(value:string){return value.normalize("NFKC").trim().replace(/\\s+/g," ").toLocaleLowerCase("de");}
+function normalize(value:string){return value.normalize("NFKC").trim().replace(/\s+/g," ").toLocaleLowerCase("de");}
 export function A1Recall(){
  const [mode,setMode]=useState<Item["kind"]>("kana");
  const [dailyOnly,setDailyOnly]=useState(false);
@@ -52,7 +52,7 @@ export function A1Recall(){
  current.last=event.occurredAt;next[id]=current;
  }setHistory(next);setAttempts(loaded);}).catch(()=>{if(live)setMessage("Lernverlauf konnte nicht geladen werden.");});
  return()=>{live=false};},[owner]);
- useEffect(()=>{const handle=(event:Event)=>{const request=(event as CustomEvent<A1Navigation>).detail;if(request.destination!=="recall")return;setMode(request.mode??"vocabulary");setLessonFilter(request.lessonId??"all");setIndex(0);setQueue([]);setSeen([]);reset();};window.addEventListener(A1_NAV_EVENT,handle);return()=>window.removeEventListener(A1_NAV_EVENT,handle);},[]);
+ useEffect(()=>{const handle=(event:Event)=>{const request=(event as CustomEvent<A1Navigation>).detail;if(request.destination!=="recall")return;setMode(request.mode??"vocabulary");setLessonFilter(request.lessonId??"all");setQueue([]);setSeen([]);reset();};window.addEventListener(A1_NAV_EVENT,handle);return()=>window.removeEventListener(A1_NAV_EVENT,handle);},[]);
  const today=new Date().toLocaleDateString("sv-SE");
  const now=Date.now();
  const schedule=recallSchedule(attempts,now);
@@ -67,7 +67,7 @@ export function A1Recall(){
  const alternatives=item?items.filter(card=>card.kind===item.kind&&card.id!==item.id&&card.answer!==item.answer&&card.front!==item.front).slice(0,3):[];
  const choices=item?[item,...alternatives].sort((a,b)=>a.answer.localeCompare(b.answer,"ja")).map(card=>card.answer):[];
  function reset(){setActiveId(null);setAnswer("");setRevealed(false);setHint(false);setMessage("");}
- function changeMode(next:Item["kind"]){setMode(next);setIndex(0);setQueue([]);setSeen([]);reset();}
+ function changeMode(next:Item["kind"]){setMode(next);setQueue([]);setSeen([]);reset();}
  async function check(){
  if(!item||busy||revealed)return;
  const correct=normalize(answer)===normalize(item.answer);
@@ -89,10 +89,10 @@ setSession(value=>value+1);reset();}
  <fieldset><legend>Übungsmodus</legend>
  {(["kana","katakana","vocabulary","reverse","context"] as const).map(value=><label key={value} style={{marginRight:"1rem"}}><input type="radio" name="a1-recall-mode" checked={mode===value} onChange={()=>changeMode(value)}/>{value==="kana"?"Hiragana":value==="katakana"?"Katakana":value==="vocabulary"?"Wortschatz":value==="reverse"?"Deutsch → Japanisch":"Sätze verstehen"}</label>)}
  </fieldset>
- <label><input type="checkbox" checked={reviewMode} onChange={event=>{setReviewMode(event.target.checked);setIndex(0);setQueue([]);setSeen([]);reset();}}/> Fällige Wiederholungen</label>
- <label><input type="checkbox" checked={mistakesOnly} onChange={event=>{setMistakesOnly(event.target.checked);setIndex(0);setQueue([]);setSeen([]);reset();}}/> Fehler gezielt wiederholen</label>
- <label><input type="checkbox" checked={dailyOnly} onChange={event=>{setDailyOnly(event.target.checked);setIndex(0);setQueue([]);setSeen([]);reset();}}/> Heute noch nicht geübt</label>
- {(mode==="vocabulary"||mode==="reverse"||mode==="context")?<label> Lektion <select value={lessonFilter} onChange={event=>{setLessonFilter(event.target.value);setIndex(0);setQueue([]);setSeen([]);reset();}}><option value="all">Alle Lektionen</option>{a1CommunicationLessons.map(lesson=><option key={lesson.id} value={lesson.id}>{lesson.title}</option>)}</select></label>:null}
+ <label><input type="checkbox" checked={reviewMode} onChange={event=>{setReviewMode(event.target.checked);setQueue([]);setSeen([]);reset();}}/> Fällige Wiederholungen</label>
+ <label><input type="checkbox" checked={mistakesOnly} onChange={event=>{setMistakesOnly(event.target.checked);setQueue([]);setSeen([]);reset();}}/> Fehler gezielt wiederholen</label>
+ <label><input type="checkbox" checked={dailyOnly} onChange={event=>{setDailyOnly(event.target.checked);setQueue([]);setSeen([]);reset();}}/> Heute noch nicht geübt</label>
+ {(mode==="vocabulary"||mode==="reverse"||mode==="context")?<label> Lektion <select value={lessonFilter} onChange={event=>{setLessonFilter(event.target.value);setQueue([]);setSeen([]);reset();}}><option value="all">Alle Lektionen</option>{a1CommunicationLessons.map(lesson=><option key={lesson.id} value={lesson.id}>{lesson.title}</option>)}</select></label>:null}
  <div className="a1-mobile-actions"><label><input type="checkbox" checked={choiceMode} onChange={event=>{setChoiceMode(event.target.checked);reset();}}/> Auswahl statt Tippen</label><label><input type="checkbox" checked={listeningMode} onChange={event=>{setListeningMode(event.target.checked);reset();}}/> Hörmodus</label></div>
  <p>{dueTotal} von {items.length} Karten aktuell zur Wiederholung fällig (einfache Intervall-Heuristik).</p>
  <p>{session} Karten in dieser Sitzung bearbeitet · {pool.length} Karten · {pool.filter(card=>(history[card.id]?.correct??0)>0).length} mindestens einmal richtig</p>
