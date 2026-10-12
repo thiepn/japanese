@@ -213,7 +213,9 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
       contextId:"p27:unit:"+unit.id,sourceId:"thiepn-original",contentVersion:"p27-1",
       metadata:{p27:true,unitId:unit.id,kind,ungraded:true,schedulerExcluded:true,
         rawTextStored:false,length:[...normalizeP26(text)].length,helpUsed:help,
-        ...(kind==="response"?{turnId:turn.id}:{})}
+        ...(kind==="response"?{turnId:turn.id}:{}),
+        ...(kind==="rewrite"&&p39Chosen?{p39:true,authoredCaseId:p39Chosen.id,
+          sourceContextId:"p39:repair:"+p39Chosen.id}:{})}
     };
     await saveStudyEvent(event);
   }
@@ -644,7 +646,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <p>Nicht erkannt: {report.missing.join(" · ")||"keine"}</p>
               <ul>{grammarReflection(unit,rewrite).map((note,i)=><li key={i}>{note}</li>)}</ul>
             </>}
-            <div className="p27-journey__revision">
+            {!p39Chosen?<div className="p27-journey__revision">
               <strong>Überarbeitete Partikeln und Formen</strong>
               <p>Neue Partikeln: {describeP29Revision(draft,rewrite,unit).addedParticles.join(" · ")||"keine"}</p>
               <p>Entfernte Partikeln: {describeP29Revision(draft,rewrite,unit).removedParticles.join(" · ")||"keine"}</p>
@@ -652,7 +654,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               {pragmatics?<details><summary>Höflicher und lockerer Stil im Vergleich</summary>
                 <p lang="ja">{pragmatics.polite} / {pragmatics.casual}</p>
                 <p>{pragmatics.explanation}</p></details>:null}
-            </div>
+            </div>:null}
             <button type="button" disabled={disabled||busy||saved} onClick={()=>void saveRevision()}>
               Unbewertete Überarbeitung protokollieren</button>
             {saved?<p>Ohne Rohtext oder Audiodatei gespeichert; kein FSRS-Erfolg.</p>:null}
