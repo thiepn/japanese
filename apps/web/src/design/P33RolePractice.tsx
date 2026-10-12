@@ -56,6 +56,8 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
   const [correctionId,setCorrectionId]=useState("");
   const [correctionDraft,setCorrectionDraft]=useState("");
   const [correctionMatch,setCorrectionMatch]=useState<boolean|null>(null);
+  const firstIntentInput=useRef<HTMLTextAreaElement|null>(null);
+  const secondIntentInput=useRef<HTMLTextAreaElement|null>(null);
   const exposed=useRef(new Set<string>());
   const startTime=useRef(0);
   const ownerRef=useRef(owner);ownerRef.current=owner;
@@ -97,6 +99,11 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
     setCompletedRoles(new Set());resetIntents();resetCorrection();
     startTime.current=performance.now();
   },[unitId,owner]);
+  useEffect(()=>{
+    if(!feedback)return;
+    if(intentStage==="first")firstIntentInput.current?.focus();
+    if(intentStage==="second")secondIntentInput.current?.focus();
+  },[intentStage,feedback]);
   function switchPath(id:string,p:"guest"|"host"){
     if(busy)return;
     setScenarioId(id);setPerspective(p);setTurnIndex(0);setDraft("");setFirstDraft("");
@@ -468,7 +475,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
         {intentPath?<div>
           {intentStage==="first"?<>
             <label htmlFor="p36-intent-first">1 · Drücke dein Anliegen auf Japanisch aus</label>
-            <textarea id="p36-intent-first" lang="ja" rows={2}
+            <textarea id="p36-intent-first" ref={firstIntentInput} lang="ja" rows={2}
               aria-keyshortcuts="Control+Enter Meta+Enter"
               value={intentFirst} disabled={busy}
               onChange={e=>setIntentFirst(e.target.value)}
@@ -489,7 +496,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
           </div>:null}
           {intentStage==="second"?<>
             <label htmlFor="p36-intent-second">2 · Reagiere auf die Rückfrage</label>
-            <textarea id="p36-intent-second" lang="ja" rows={2} value={intentSecond}
+            <textarea id="p36-intent-second" ref={secondIntentInput} lang="ja" rows={2} value={intentSecond}
               aria-keyshortcuts="Control+Enter Meta+Enter"
               disabled={busy} onChange={e=>setIntentSecond(e.target.value)}
               onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
