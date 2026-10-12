@@ -26,7 +26,8 @@ export function planP31Recall(unitId:string,traces:readonly MemoryTrace[],
     if(event.metadata?.schedulerExcluded)continue;
     const promptId=event.metadata?.promptId;
     if(typeof promptId!=="string")continue;
-    if(!latest.has(promptId)||latest.get(promptId)!<event.occurredAt)latest.set(promptId,event.occurredAt);
+    const previous=latest.get(promptId);
+    if(!previous||previous<event.occurredAt)latest.set(promptId,event.occurredAt);
   }
   const unitPrompts=promptsForUnit(unitId,[...extras,...p31ContrastPrompts]);
   const found:P31DueCard[]=[];

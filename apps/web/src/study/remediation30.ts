@@ -28,7 +28,7 @@ function areaFor(prompt:StudyPrompt):PracticeArea{
   if(kind==="independent-dialogue"||typeof kind==="string"&&kind.startsWith("continuity")||
     kind==="guided-response"||prompt.id.startsWith("p24-dialogue-")||
     prompt.id.startsWith("p27-typed-")||prompt.id.startsWith("p25-dialogue-"))return "dialogue";
-  if(kind==="register-contrast"||kind==="contrast"||prompt.skill==="form_selection")return "grammar";
+  if(kind==="register-contrast"||kind==="contextual-contrast"||kind==="contrast"||prompt.skill==="form_selection")return "grammar";
   return prompt.skill==="production"?"sentence":"lexicon";
 }
 export function deriveWeakAreas(

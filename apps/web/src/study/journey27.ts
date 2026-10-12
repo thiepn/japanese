@@ -269,6 +269,8 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
   };
   const list=(relevant.length?relevant:promptsForUnit(unitId,extras)).slice().sort((a,b)=>priority(b)-priority(a));
   const selected=focus==="review"?list.filter(p=>priority(p)>1):list;
-  const final=selected.length?selected:list;
+  // An empty review queue must not silently turn never-seen material into "due" work.
+  // First-exposure practice remains reachable through its own dedicated actions.
+  const final=focus==="review"?selected:list;
   return [journeyLessons["p27:unit:"+unit.id]!,...final.slice(0,14)];
 }
