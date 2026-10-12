@@ -6,7 +6,7 @@
 - Structured original core: **20 A1 units**, **131 distinct referenced vocabulary lexemes**, **37 distinct grammar concepts**, **89 distinct sentence records**.
 - Of the 131 core-unit vocabulary lexemes, **27** have linked audio IDs that resolve to existing media records; **104** do not. This is a metadata-link check, **not** independent verification of playable audio or rights.
 - **4** original A1 graded reading texts, with source IDs in lesson refs.
-- **7** separately authored communication lessons, **22** exercises (choice/order/fill), **3** branching role-play scenarios.
+- **14** separately authored communication lessons, **33** exercises (choice/order/fill), **3** branching role-play scenarios.
 - An existing A1 milestone has 15 prompts (3 each for reading, listening, interaction, production, writing). Text-backed speaking items **do not** establish pronunciation competence.
 - The old `a1CourseUnits` view contains advanced units despite its name; `starterLexemes` likewise includes levels beyond A1. Neither existing source collection was deleted or rewritten.
 
@@ -22,23 +22,23 @@ An aligned source is **not** a complete lesson. The table lists **provenance can
 | 05 | Sich vorstellen | a1-unit-01, a1-unit-02, a1-introductions, a1-asking-names | Partial existing sources |
 | 06 | Herkunft und Sprache | a1-unit-05, a1-origin | Partial existing sources |
 | 07 | Beruf und Studium | NEW CONTENT REQUIRED | Unbuilt |
-| 08 | Familie | a1-unit-15, text-a1-family | Partial existing sources |
+| 08 | Familie | a1-unit-15, a1-family, text-a1-family | Partial existing sources |
 | 09 | Gegenstände und Zeigwörter | a1-unit-09 | Partial existing sources |
 | 10 | Besitz und Zuordnung | a1-unit-11 | Partial existing sources |
 | 11 | Personen und Dinge lokalisieren | a1-unit-06 | Partial existing sources |
 | 12 | Orte und Positionen | a1-unit-10 | Partial existing sources |
 | 13 | Zahlen und Mengen | NEW CONTENT REQUIRED | Unbuilt |
-| 14 | Uhrzeit und Termine | a1-unit-12 | Partial existing sources |
+| 14 | Uhrzeit und Termine | a1-unit-12, a1-time | Partial existing sources |
 | 15 | Alltag und Gewohnheiten | a1-unit-03, a1-unit-08, a1-unit-13, text-a1-morning | Partial existing sources |
 | 16 | Wege und Vergangenes | a1-unit-04 | Partial existing sources |
-| 17 | Vorlieben und Beschreibungen | a1-unit-07, a1-unit-14 | Partial existing sources |
-| 18 | Essen und Bestellen | a1-unit-16, a1-cafe, cafe | Partial existing sources |
+| 17 | Vorlieben und Beschreibungen | a1-unit-07, a1-unit-14, a1-hobbies | Partial existing sources |
+| 18 | Essen und Bestellen | a1-unit-16, a1-cafe, a1-restaurant, cafe | Partial existing sources |
 | 19 | Einkaufen und Preise | a1-unit-17, a1-shopping, text-a1-shopping | Partial existing sources |
 | 20 | Einladen und Vorschlagen | NEW CONTENT REQUIRED | Unbuilt |
-| 21 | Unterwegs und Verkehr | a1-unit-18, station, text-a1-transport | Partial existing sources |
+| 21 | Unterwegs und Verkehr | a1-unit-18, a1-directions, a1-transport, station, text-a1-transport | Partial existing sources |
 | 22 | Um Hilfe bitten | a1-unit-19 | Partial existing sources |
 | 23 | Wetter und Wochenendpläne | NEW CONTENT REQUIRED | Unbuilt |
-| 24 | Kurze Gespräche verbinden | a1-unit-20, meeting, assessment-a1-milestone | Partial existing sources |
+| 24 | Kurze Gespräche verbinden | a1-unit-20, a1-hotel, meeting, assessment-a1-milestone | Partial existing sources |
 
 ## Evidence handling and loss disclosure
 - Never rewrite or delete historical `StudyEvent` objects, original content IDs, account ownership, or local scheduler traces.
@@ -50,7 +50,7 @@ An aligned source is **not** a complete lesson. The table lists **provenance can
 
 ## A1-only learner routing
 - A1 is the default route. The existing A2–C1 path is preserved behind a deliberate archived-level control; legacy content and its existing progress remain unchanged.
-- Users can open existing A1 core units, communication lessons, kana recall, and three role-plays from the new module path.
+- Users can open existing A1 core units, all 14 communication lessons, kana recall, the short milestone, and three role-plays from the new module path.
 - The four linked readings are presently provenance references: a direct target reader route remains **not implemented**.
 - The existing short A1 milestone remains accessible and is **not** represented as full A1 certification.
 - All lessons that have source links may still lack complete teaching material; unbuilt slots require original authored content.
