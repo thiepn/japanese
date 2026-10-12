@@ -1,3 +1,4 @@
+import {A1_NAV_EVENT,type A1Navigation} from "./a1-navigation";
 import {recallSchedule,isRecallDue,type RecallAttempt} from "./a1-review-schedule";
 import "./a1-mobile.css";
 import {useEffect,useState} from "react";
@@ -49,6 +50,7 @@ export function A1Recall(){
  current.last=event.occurredAt;next[id]=current;
  }setHistory(next);setAttempts(loaded);}).catch(()=>{if(live)setMessage("Lernverlauf konnte nicht geladen werden.");});
  return()=>{live=false};},[owner]);
+ useEffect(()=>{const handle=(event:Event)=>{const request=(event as CustomEvent<A1Navigation>).detail;if(request.destination!=="recall")return;setMode(request.mode??"vocabulary");setLessonFilter(request.lessonId??"all");setIndex(0);setQueue([]);setSeen([]);reset();};window.addEventListener(A1_NAV_EVENT,handle);return()=>window.removeEventListener(A1_NAV_EVENT,handle);},[]);
  const today=new Date().toLocaleDateString("sv-SE");
  const now=Date.now();
  const schedule=recallSchedule(attempts,now);
