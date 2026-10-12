@@ -1,0 +1,148 @@
+import {useEffect,useRef,useState} from "react";
+import {saveStudyEvent} from "@thiepn/local-db";
+import type {StudyEvent} from "@thiepn/domain";
+import {gradeStudyPrompt} from "@thiepn/study-player";
+import {DEVELOPMENT_DEVICE_ID,getDevelopmentAccountId,recordStudyAnswer} from "../study/runtime";
+import {grammarReflection} from "../study/feedback27";
+import {journeyUnit} from "../study/journey27";
+import {p33RolesForUnit,p33RolePrompts,type P33RoleScenario} from "../study/role33";
+import {normalizeP26} from "../study/pedagogy26";
+import "./p33-role.css";
+
+interface AnswerFeedback{correctModel:boolean;independent:boolean;notes:string[];}
+export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
+  unitId:string;owner:string;disabled:boolean;onReviewed:()=>void;
+}){
+  const scenarios=p33RolesForUnit(unitId);
+  const [scenarioId,setScenarioId]=useState(scenarios[0]?.id??"");
+  const [perspective,setPerspective]=useState<"guest"|"host">("guest");
+  const [turnIndex,setTurnIndex]=useState(0);
+  const [draft,setDraft]=useState("");
+  const [firstDraft,setFirstDraft]=useState("");
+  const [assisted,setAssisted]=useState(false);
+  const [showPartner,setShowPartner]=useState(true);
+  const [showMeaning,setShowMeaning]=useState(false);
+  const [feedback,setFeedback]=useState<AnswerFeedback|null>(null);
+  const [busy,setBusy]=useState(false);
+  const [error,setError]=useState("");
+  const exposed=useRef(new Set<string>());
+  const startTime=useRef(0);
+  const ownerRef=useRef(owner);ownerRef.current=owner;
+  const scenario=scenarios.find(s=>s.id===scenarioId)??scenarios[0];
+  const role=scenario?.roles.find(r=>r.id===perspective)??scenario?.roles[0];
+  const turn=role?.turns[turnIndex];
+  const identity=scenario?.id+":"+perspective+":"+turnIndex;
+  const prompt=p33RolePrompts.find(p=>p.eventMetadata?.scenarioId===scenario?.id&&
+    p.eventMetadata?.role===perspective&&p.eventMetadata?.turnIndex===turnIndex);
+  useEffect(()=>{
+    setScenarioId(p33RolesForUnit(unitId)[0]?.id??"");
+    setPerspective("guest");setTurnIndex(0);setDraft("");setFirstDraft("");
+    setAssisted(false);setFeedback(null);setBusy(false);setError("");
+    setShowPartner(true);setShowMeaning(false);exposed.current.clear();
+    startTime.current=performance.now();
+  },[unitId,owner]);
+  function switchPath(id:string,p:"guest"|"host"){
+    if(busy)return;
+    setScenarioId(id);setPerspective(p);setTurnIndex(0);setDraft("");setFirstDraft("");
+    setFeedback(null);setAssisted(false);setError("");setShowPartner(true);setShowMeaning(false);
+    startTime.current=performance.now();
+  }
+  function playPartner(){
+    if(!turn||!("speechSynthesis" in window))return;
+    window.speechSynthesis.cancel();
+    const utterance=new SpeechSynthesisUtterance(turn.partner);
+    utterance.lang="ja-JP";utterance.rate=.83;
+    window.speechSynthesis.speak(utterance);
+  }
+  async function ungraded(response:string){
+    if(ownerRef.current!==getDevelopmentAccountId())throw new Error("P33_WORKSPACE_CHANGED");
+    const event:StudyEvent={
+      id:crypto.randomUUID(),userId:ownerRef.current,deviceId:DEVELOPMENT_DEVICE_ID,
+      occurredAt:new Date().toISOString(),activity:"writing",
+      primaryTarget:{kind:"production_task",id:"p33:role:"+scenario!.id},
+      skillDimension:"production",promptFamily:"p33-free-role-response",
+      responseMode:"typed",result:"skipped",attempts:1,
+      contextId:"p33:role:"+scenario!.id,sourceId:"thiepn-original",contentVersion:"p33-1",
+      metadata:{p33:true,kind:"role-ungraded",unitId,scenarioId:scenario!.id,
+        role:perspective,turnIndex,assisted:assisted||exposed.current.has(identity),
+        schedulerExcluded:true,rawTextStored:false,length:[...normalizeP26(response)].length}
+    };
+    await saveStudyEvent(event);
+  }
+  async function submit(){
+    if(!prompt||!turn||!draft.trim()||busy||feedback||disabled)return;
+    const account=ownerRef.current;
+    if(account!==getDevelopmentAccountId())return;
+    const matched=gradeStudyPrompt(prompt,normalizeP26(draft)).result==="correct";
+    const independent=matched&&!assisted&&!exposed.current.has(identity);
+    setBusy(true);setError("");
+    try{
+      if(independent){
+        await recordStudyAnswer({prompt,response:normalizeP26(draft),result:"correct",
+          responseTimeMs:Math.max(0,Math.round(performance.now()-startTime.current))});
+      }else await ungraded(draft);
+      if(account!==ownerRef.current)return;
+      if(!firstDraft)setFirstDraft(draft);
+      exposed.current.add(identity);
+      setAssisted(true);
+      setFeedback({correctModel:matched,independent,notes:[
+        turn.gloss,...grammarReflection(journeyUnit(unitId),draft),
+        "Weitere natürlich richtige Formulierungen sind möglich und werden hier nicht automatisch bewertet."
+      ]});
+      onReviewed();
+    }catch{if(account===ownerRef.current)setError("Antwort konnte nicht gespeichert werden. Erneut versuchen.");}
+    finally{if(account===ownerRef.current)setBusy(false);}
+  }
+  function next(){
+    if(!role)return;
+    if(turnIndex+1<role.turns.length)setTurnIndex(t=>t+1);
+    else{setTurnIndex(0);setPerspective(p=>p==="guest"?"host":"guest");}
+    setDraft("");setFirstDraft("");setAssisted(false);setFeedback(null);setError("");
+    setShowMeaning(false);startTime.current=performance.now();
+  }
+  if(!scenario||!role||!turn)return null;
+  return <section className="p33-role" aria-labelledby="p33-role-title">
+    <h4 id="p33-role-title">Rollenwechsel: selbst antworten</h4>
+    <p>In zwei aufeinanderfolgenden Runden reagieren. Danach kannst du die Perspektive tauschen. Freie Alternativen bleiben unbewertet.</p>
+    <div role="group" aria-label="Situationsauswahl" className="p33-role__choices">
+      {scenarios.map(s=><button type="button" key={s.id} disabled={busy}
+        aria-pressed={scenario.id===s.id} onClick={()=>switchPath(s.id,perspective)}>{s.title}</button>)}
+    </div>
+    <div role="group" aria-label="Deine Rolle" className="p33-role__choices">
+      {scenario.roles.map(r=><button type="button" key={r.id} disabled={busy}
+        aria-pressed={perspective===r.id} onClick={()=>switchPath(scenario.id,r.id)}>
+        Als {r.label} antworten</button>)}
+    </div>
+    <p><strong>{role.label}</strong> · Antwort {turnIndex+1} von {role.turns.length}</p>
+    <div className="p33-role__partner">
+      <button type="button" onClick={playPartner} disabled={busy}>Gesprächspartner synthetisch anhören</button>
+      <label><input type="checkbox" checked={showPartner} onChange={e=>setShowPartner(e.target.checked)}/> Japanischen Gesprächspartner zeigen</label>
+      {showPartner?<p lang="ja">{turn.partner}</p>:<p>Nur hören und selbst antworten. Synthetische Stimme; keine Aussprachebewertung.</p>}
+      <label><input type="checkbox" checked={showMeaning} onChange={e=>setShowMeaning(e.target.checked)}/> Deutsche Verständnisstütze</label>
+      {showMeaning?<p>{turn.meaning}</p>:null}
+    </div>
+    <label htmlFor="p33-role-draft">Deine japanische Antwort</label>
+    <textarea id="p33-role-draft" value={draft} onChange={e=>setDraft(e.target.value)}
+      disabled={busy||Boolean(feedback)} rows={3} lang="ja"/>
+    <div className="p33-role__actions">
+      <button type="button" disabled={busy||Boolean(feedback)} onClick={()=>setAssisted(true)}>
+        {assisted?"Mit Hilfe · unbewertet":"Hinweis zum Gesprächsziel"}</button>
+      <button type="button" disabled={disabled||busy||Boolean(feedback)||!draft.trim()}
+        onClick={()=>void submit()}>Antwort vergleichen</button>
+    </div>
+    {assisted&&!feedback?<p role="status">Aufgabe: {turn.gloss}. Die nächste Eingabe zählt nicht als unabhängiger FSRS-Abruf.</p>:null}
+    {feedback?<div className="p33-role__feedback" role="status">
+      <strong>{feedback.independent?"Geübte Antwort unabhängig getroffen":
+        feedback.correctModel?"Geübte Form mit Hilfe getroffen":"Eigene Alternative · unbewertet"}</strong>
+      <p>Mögliche Antwort: <span lang="ja">{turn.model}</span></p>
+      <ul>{feedback.notes.map((note,i)=><li key={i}>{note}</li>)}</ul>
+      <div className="p33-role__actions">
+        <button type="button" onClick={()=>{
+          setFeedback(null);setAssisted(true);startTime.current=performance.now();
+        }}>Antwort überarbeiten (unbewertet)</button>
+        <button type="button" onClick={next}>Nächste Antwort / Rolle wechseln</button>
+      </div>
+    </div>:null}
+    {error?<p role="alert">{error}</p>:null}
+  </section>;
+}
