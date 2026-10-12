@@ -438,7 +438,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <strong>{p39AuthoredFeedback(p39Priority,p39Choice.answer).kind==="model"
                 ?"Diese Ausdrucksweise erfüllt die Gesprächsabsicht":"Hier passt eine andere Ausdrucksweise"}</strong>
               <p>{p39AuthoredFeedback(p39Priority,p39Choice.answer).message}</p>
-              <small>Nur ein authorierter Vergleich, kein FSRS-Nachweis.</small>
+              <small>Unbewerteter Vergleich mit Originalbeispielen, kein FSRS-Nachweis.</small>
             </div>:null}
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"grammar")}>
