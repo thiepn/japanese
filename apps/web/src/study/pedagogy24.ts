@@ -377,7 +377,11 @@ export function recommendPractice(
       const trace=byTrace.get(traceKey(p));return trace&&Date.parse(trace.card.due)<=now;
     }).length;
     const incorrect=prompts.filter(p=>recentResult(events,p.id)==="incorrect").length;
-    const unseen=prompts.filter(p=>!byTrace.has(traceKey(p))).length;
+    // Branch-only repair turns are optional, not prerequisites for progression.
+    const essential=track==="dialogue"
+      ?prompts.filter(p=>["start","followup","closing"].some(id=>p.id.endsWith("-"+id)))
+      :prompts;
+    const unseen=essential.filter(p=>!byTrace.has(traceKey(p))).length;
     return {track,due,incorrect,unseen};
   });
   assessed.sort((a,b)=>b.due-a.due||b.incorrect-a.incorrect||b.unseen-a.unseen);

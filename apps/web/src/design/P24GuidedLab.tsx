@@ -41,6 +41,7 @@ export function P24GuidedLab({
   const [turnId,setTurnId]=useState("start");
   const [visited,setVisited]=useState(0);
   const [dialogueDone,setDialogueDone]=useState(false);
+  const [dialogueCapped,setDialogueCapped]=useState(false);
   const [answer,setAnswer]=useState<GuidedChoice|null>(null);
   const [saving,setSaving]=useState(false);
   const [error,setError]=useState("");
@@ -69,7 +70,7 @@ export function P24GuidedLab({
   useEffect(()=>{
     recognizerRef.current?.stop();
     recognizerRef.current=null;
-    setTurnId("start");setVisited(0);setDialogueDone(false);setAnswer(null);
+    setTurnId("start");setVisited(0);setDialogueDone(false);setDialogueCapped(false);setAnswer(null);
     elapsedRef.current=performance.now();
     setSaving(false);setError("");setPuzzleIndex(0);setSelectedTiles([]);
     setPuzzleFeedback(null);setDraft("");setChecklist(null);setProductionSaved(false);
@@ -88,7 +89,7 @@ export function P24GuidedLab({
     return()=>{active=false;};
   },[owner,scenarioId,revision]);
   function resetConversation(){
-    setTurnId("start");setVisited(0);setDialogueDone(false);setAnswer(null);setError("");
+    setTurnId("start");setVisited(0);setDialogueDone(false);setDialogueCapped(false);setAnswer(null);setError("");
     elapsedRef.current=performance.now();
   }
   async function chooseReply(choice:GuidedChoice){
@@ -113,7 +114,7 @@ export function P24GuidedLab({
     const next=answer.next;
     const turnsTaken=visited+1;
     setVisited(turnsTaken);setAnswer(null);setError("");
-    if(next===null||turnsTaken>=14){setDialogueDone(true);return;}
+    if(next===null||turnsTaken>=14){setDialogueCapped(next!==null);setDialogueDone(true);return;}
     setTurnId(next);elapsedRef.current=performance.now();
   }
   function newPuzzle(index:number){
@@ -215,8 +216,8 @@ export function P24GuidedLab({
     {view==="conversation"?<div className="p24-lab__content">
       <h4>{conversation.title}</h4><p>{conversation.intro}</p>
       {dialogueDone?<div role="status">
-        <strong>Gespräch beendet</strong>
-        <p>{visited} beantwortete Gesprächsschritte. Richtige Auswahl bedeutet nicht automatisch freies Sprechen.</p>
+        <strong>{dialogueCapped?"Gespräch unterbrochen":"Gespräch beendet"}</strong>
+        <p>{visited} beantwortete Gesprächsschritte. {dialogueCapped?"Nach zu vielen Reparaturversuchen wurde die Schleife beendet. Wiederhole die Situation gezielt.":"Richtige Auswahl bedeutet nicht automatisch freies Sprechen."}</p>
         <button type="button" onClick={resetConversation}>Erneut sprechen</button>
       </div>:<>
         <p className="p24-lab__step">Gesprächsschritt {visited+1} · {turn.situation}</p>
