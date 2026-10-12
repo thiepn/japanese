@@ -56,3 +56,15 @@
 .p27-journey__recall-stats strong{font-size:1.2rem}
 .p27-journey__quality-example details{margin:.6rem 0}
 @media(max-width:520px){.p27-journey__position{display:grid}.p27-journey__position>div{display:grid;grid-template-columns:1fr 1fr}.p27-journey__step-navigation button{flex:1}.p27-journey__steps{gap:.25rem}.p27-journey__steps button{padding:.5rem .35rem;font-size:.88rem}.p27-journey__position button{width:100%}}
+
+.p27-journey__p32-explorer{border:1px solid currentColor;padding:.9rem;margin:1rem 0}
+.p27-journey__p32-explorer h5{font-size:1rem;margin:.15rem 0}
+.p27-journey__p32-explorer>div[role=group]{display:flex;flex-wrap:wrap;gap:.5rem;margin:.65rem 0}
+.p27-journey__p32-explorer>div[role=group] button{min-height:44px;font-size:1.1rem}
+.p27-journey__p32-explorer button[aria-pressed=true]{font-weight:700;box-shadow:inset 0 -3px currentColor}
+.p27-journey__p32-explanation{border-left:3px solid currentColor;padding:.5rem .75rem;background:rgba(100,100,100,.08)}
+.p27-journey__return-navigation{border:1px solid currentColor;padding:.9rem;margin:1rem 0}
+.p27-journey__return-navigation p{margin:.5rem 0}
+@media(max-width:620px){.p27-journey__steps{display:flex;gap:.45rem;flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:.45rem}
+.p27-journey__steps button{white-space:nowrap;flex:0 0 auto;scroll-snap-align:start;min-width:9.5rem}
+.p27-journey__p32-explorer>div[role=group]{display:grid}.p27-journey__p32-explorer>div[role=group] button{width:100%}}

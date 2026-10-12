@@ -16,7 +16,7 @@ import {continuityPrompts} from "../study/continuity28";
 import {register28Prompts} from "../study/register28";
 import {deriveWeakAreas,areaLabels} from "../study/remediation30";
 import {p31ContrastPrompts,p31ContrastForUnit} from "../study/contrast31";
-import {planP31Recall} from "../study/recall31";
+import {planP31Recall,p31GlobalDue} from "../study/recall31";
 import {p31SentencePrompts} from "../study/sentence31";
 import {p32SentencePrompts} from "../study/sentence32";
 import {p32ContrastPrompts,p32ContrastForUnit} from "../study/contrast32";
@@ -70,6 +70,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
   const [hintUsed,setHintUsed]=useState(false);
   const [speechUsed,setSpeechUsed]=useState(false);
   const [showTranslation,setShowTranslation]=useState(false);
+  const [inlineContrastAnswer,setInlineContrastAnswer]=useState<string|null>(null);
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
   const [voiceStatus,setVoiceStatus]=useState("");
@@ -91,6 +92,14 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
   const pragmatics=p29RegisterExampleForUnit(unitId);
   const transformation=transformationForUnit(unitId);
   const contrast=p31ContrastForUnit(unitId);
+  const p32Contrast=p32ContrastForUnit(unitId);
+  const p32Question=p32ContrastPrompts.find(p=>p.eventMetadata?.unitId===unitId);
+  const globalRecall=useMemo(()=>evidence?
+    p31GlobalDue(evidence.traces,evidence.events,extraJourneyPrompts):[],
+    [evidence]);
+  const otherDue=globalRecall.find(item=>item.unitId!==unitId&&item.due>0);
+  const nearestReturn=globalRecall.filter(item=>item.nextDueAt)
+    .sort((a,b)=>Date.parse(a.nextDueAt!)-Date.parse(b.nextDueAt!))[0];
   const recallPlan=useMemo(()=>evidence?
     planP31Recall(unitId,evidence.traces,evidence.events,extraJourneyPrompts):null,
     [unitId,evidence]);
@@ -120,7 +129,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
     microphone.current?.stop();microphone.current=null;revealedTurnIds.current.clear();
     setNodeId(unit.turns[0]!.id);setStepsTaken(0);setAnswer("");setFirstConversationDraft("");setFeedback(null);
     setChoiceExampleSeen(false);
-    setHintUsed(false);setSpeechUsed(false);setShowTranslation(false);setInputMode("compose");
+    setHintUsed(false);setSpeechUsed(false);setShowTranslation(false);setInputMode("compose");setInlineContrastAnswer(null);
     setError("");setDraft("");setRewrite("");
     setRewriteStage("draft");setReport(null);setSaved(false);setVoiceStatus("");
     started.current=performance.now();
@@ -287,7 +296,15 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
               disabled={journeyUnits.indexOf(unit)===journeyUnits.length-1}>Nächste Einheit</button>
           </div>
         </div>
-        <nav className="p27-journey__steps" aria-label="Lernschritte">
+        <nav className="p27-journey__steps" aria-label="Lernschritte" onKeyDown={event=>{
+          if(event.key!=="ArrowLeft"&&event.key!=="ArrowRight")return;
+          event.preventDefault();
+          const direction=event.key==="ArrowRight"?1:-1;
+          const index=Math.max(0,Math.min(steps.length-1,steps.findIndex(([name])=>name===stage)+direction));
+          setStage(steps[index]![0]);
+          const target=event.currentTarget.querySelectorAll("button")[index];
+          target?.focus();
+        }}>
           {steps.map(([id,label])=><button type="button" key={id} aria-current={stage===id?"step":undefined}
             onClick={()=>{setStage(id);setError("");}}>{label}</button>)}
         </nav>
@@ -316,6 +333,23 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
             <details><summary>Warum die Formen sich unterscheiden</summary><p>{contrast.why}</p></details>
             <button type="button" disabled={disabled}
               onClick={()=>onJourneyPractice(unitId,"grammar")}>Grammatik und Register aktiv entscheiden</button>
+          </div>:null}
+          {p32Contrast&&p32Question?<div className="p27-journey__p32-explorer">
+            <h5>Partikel, Bedeutung und Register aktiv unterscheiden</h5>
+            <p>{p32Question.prompt}</p>
+            <div role="group" aria-label="Grammatische Funktion vergleichen">
+              {p32Question.promptType==="choice"?p32Question.choices.map((form,i)=>
+                <button key={i} type="button"
+                  aria-pressed={inlineContrastAnswer===form}
+                  onClick={()=>setInlineContrastAnswer(form)}
+                  lang="ja">{form}</button>):null}
+            </div>
+            {inlineContrastAnswer?<div role="status" className="p27-journey__p32-explanation">
+              <strong>{inlineContrastAnswer===p32Contrast.first?
+                "Die gefragte Funktion erkannt":"Das ist eine andere Funktion – beide Formen können gültig sein"}</strong>
+              <p>{p32Contrast.explanation}</p>
+              <p>Unbewertete Erklärung im Unterricht. Ein unabhängiger Abruf erfolgt separat im StudyPlayer.</p>
+            </div>:null}
           </div>:null}
           <h4>Wörter in Sätzen</h4>
           <div className="p27-journey__words">{unit.words.map(w=><div key={w.form+"-"+w.reading}>
@@ -456,6 +490,21 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
         </section>:null}
         {stage==="practice"?<section className="p27-journey__panel">
           <h4>Kontextualisierte Wiederholung</h4>
+          {otherDue?<div className="p27-journey__return-navigation">
+            <strong>Auch anderswo sind Karten fällig</strong>
+            <p>{otherDue.due} bekannte fällige FSRS-Abrufe in der Einheit
+              „{journeyUnit(otherDue.unitId).title}“.</p>
+            <button type="button" disabled={disabled} onClick={()=>{
+              setUnitId(otherDue.unitId);setStage("practice");
+            }}>Zu fälliger Einheit wechseln</button>
+          </div>:nearestReturn?<div className="p27-journey__return-navigation">
+            <strong>Nächste bereits geplante Wiederholung</strong>
+            <p>{journeyUnit(nearestReturn.unitId).title} ·
+              {new Date(nearestReturn.nextDueAt!).toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"})}</p>
+            <button type="button" disabled={disabled} onClick={()=>{
+              setUnitId(nearestReturn.unitId);setStage("practice");
+            }}>Einheit für später ansehen</button>
+          </div>:null}
           {recallPlan?<section className="p27-journey__recall" aria-label="Geplante FSRS-Wiederholung">
             <h5>Später wieder abrufen · tatsächliche FSRS-Termine</h5>
             <p>{recallPlan.explanation}</p>
