@@ -1,3 +1,4 @@
+import {recallSchedule,isRecallDue,type RecallAttempt} from "./a1-review-schedule";
 import "./a1-mobile.css";
 import {useEffect,useState} from "react";
 import {listStudyEvents,saveStudyEvent} from "@thiepn/local-db";
@@ -27,6 +28,8 @@ export function A1Recall(){
  const [busy,setBusy]=useState(false);
  const [message,setMessage]=useState("");
  const [history,setHistory]=useState<Record<string,{correct:number;wrong:number;last:string}>>({});
+ const [attempts,setAttempts]=useState<RecallAttempt[]>([]);
+ const [activeId,setActiveId]=useState<string|null>(null);
  const [mistakesOnly,setMistakesOnly]=useState(false);
  const [hint,setHint]=useState(false);
  const [session,setSession]=useState(0);
@@ -36,33 +39,30 @@ export function A1Recall(){
  const [reviewMode,setReviewMode]=useState(false);
  const [seen,setSeen]=useState<string[]>([]);
  const owner=getDevelopmentAccountId();
- useEffect(()=>{let live=true;setHistory({});setIndex(0);setAnswer("");setRevealed(false);
- void listStudyEvents(owner).then(events=>{if(!live)return;const next:typeof history={};
+ useEffect(()=>{let live=true;setHistory({});setAttempts([]);setActiveId(null);setIndex(0);setAnswer("");setRevealed(false);
+ void listStudyEvents(owner).then(events=>{if(!live)return;const next:typeof history={};const loaded:RecallAttempt[]=[];
  for(const event of events){if(event.userId!==owner||event.sourceId!==SOURCE)continue;
  const id=event.metadata?.recallId;if(typeof id!=="string")continue;
+ loaded.push({id,at:event.occurredAt,correct:event.result==="correct"});
  const current=next[id]??{correct:0,wrong:0,last:""};
  if(event.result==="correct")current.correct++;else current.wrong++;
  current.last=event.occurredAt;next[id]=current;
- }setHistory(next);}).catch(()=>{if(live)setMessage("Lernverlauf konnte nicht geladen werden.");});
+ }setHistory(next);setAttempts(loaded);}).catch(()=>{if(live)setMessage("Lernverlauf konnte nicht geladen werden.");});
  return()=>{live=false};},[owner]);
  const today=new Date().toLocaleDateString("sv-SE");
  const now=Date.now();
- const reviewDue=(card:Item)=>{
-  const record=history[card.id];if(!record)return true;
-  const correct=record.correct,wrong=record.wrong;
-  const days=correct===0?0:wrong>=correct?1:correct===1?1:correct===2?3:correct===3?7:14;
-  const last=Date.parse(record.last);return !Number.isFinite(last)||last+days*86400000<=now;
- };
- const dueTotal=items.filter(reviewDue).length;
- const pool=items.filter(item=>item.kind===mode&&(lessonFilter==="all"||item.id.includes(":"+lessonFilter+":"))&&(!dailyOnly||!history[item.id]?.last||new Date(history[item.id].last).toLocaleDateString("sv-SE")!==today)&&(!mistakesOnly||(history[item.id]?.wrong??0)>0)&&(!reviewMode||reviewDue(item))).sort((a,b)=>{
+ const schedule=recallSchedule(attempts,now);
+ const reviewDue=(card:Item)=>isRecallDue(schedule[card.id],now);
+ const dueTotal=items.filter(card=>reviewDue(card)).length;
+ const pool=items.filter(item=>item.kind===mode&&(lessonFilter==="all"||item.id.includes(":"+lessonFilter+":"))&&(!dailyOnly||!history[item.id]?.last||new Date(history[item.id].last).toLocaleDateString("sv-SE")!==today)&&(!mistakesOnly||(schedule[item.id]?.streak===0&&schedule[item.id]?.incorrect>0))&&(!reviewMode||reviewDue(item))).sort((a,b)=>{
  const x=history[a.id],y=history[b.id];
  const priority=(h:typeof x)=>h?(h.wrong>h.correct?0:h.correct===0?1:h.wrong>0?2:3):-1;
  return priority(x)-priority(y)||a.id.localeCompare(b.id);
  });
- const item=pool.find(card=>card.id===queue[0])??pool.find(card=>!seen.includes(card.id))??pool[index%pool.length];
+ const item=items.find(card=>card.id===activeId)??pool.find(card=>card.id===queue[0])??pool.find(card=>!seen.includes(card.id))??pool[index%pool.length];
  const alternatives=item?items.filter(card=>card.kind===item.kind&&card.id!==item.id&&card.answer!==item.answer).slice(0,3):[];
  const choices=item?[item,...alternatives].sort((a,b)=>a.answer.localeCompare(b.answer,"ja")).map(card=>card.answer):[];
- function reset(){setAnswer("");setRevealed(false);setHint(false);setMessage("");}
+ function reset(){setActiveId(null);setAnswer("");setRevealed(false);setHint(false);setMessage("");}
  function changeMode(next:Item["kind"]){setMode(next);setIndex(0);setQueue([]);setSeen([]);reset();}
  async function check(){
  if(!item||busy||revealed)return;
@@ -72,7 +72,7 @@ export function A1Recall(){
  promptFamily:"a1-recall-"+mode,responseMode:"typed",result:correct?"correct":"incorrect",attempts:1,
  sourceId:SOURCE,contentVersion:"1",contextId:item.context,metadata:{recallId:item.id,schedulerExcluded:true}};
  setBusy(true);setMessage("");
- try{await saveStudyEvent(event);setHistory(previous=>{const old=previous[item.id]??{correct:0,wrong:0,last:""};return {...previous,[item.id]:{correct:old.correct+(correct?1:0),wrong:old.wrong+(correct?0:1),last:event.occurredAt}}});setRevealed(true);if(!correct)setQueue(previous=>previous.includes(item.id)?previous:[...previous,item.id]);}
+ try{await saveStudyEvent(event);setActiveId(item.id);setAttempts(previous=>[...previous,{id:item.id,at:event.occurredAt,correct}]);setHistory(previous=>{const old=previous[item.id]??{correct:0,wrong:0,last:""};return {...previous,[item.id]:{correct:old.correct+(correct?1:0),wrong:old.wrong+(correct?0:1),last:event.occurredAt}}});setRevealed(true);if(!correct)setQueue(previous=>previous.includes(item.id)?previous:[...previous,item.id]);}
  catch{setMessage("Antwort konnte nicht gespeichert werden.");}finally{setBusy(false);}
  }
  function next(){if(!item)return;if(queue[0]===item.id)setQueue(previous=>previous.slice(1));setSeen(previous=>previous.length>=pool.length?[]:[...previous,item.id]);setIndex(value=>value+1);setSession(value=>value+1);reset();}
