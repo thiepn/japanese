@@ -12,6 +12,7 @@ import {p34AlternativesForTurn} from "../study/alternatives34";
 import {p35AlternativesForTurn} from "../study/alternatives35";
 import {p34RepairContinuationFor} from "../study/repair34";
 import {p34RoleFeedback} from "../study/feedback34";
+import {p36IntentsForRole} from "../study/intent36";
 import {normalizeP26} from "../study/pedagogy26";
 import "./p33-role.css";
 
@@ -38,6 +39,10 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
   const [followupDraft,setFollowupDraft]=useState("");
   const [followupDone,setFollowupDone]=useState(false);
   const [completedRoles,setCompletedRoles]=useState<Set<string>>(()=>new Set());
+  const [intentPathId,setIntentPathId]=useState("");
+  const [intentStage,setIntentStage]=useState<"idle"|"first"|"second"|"complete">("idle");
+  const [intentFirst,setIntentFirst]=useState("");
+  const [intentSecond,setIntentSecond]=useState("");
   const exposed=useRef(new Set<string>());
   const startTime=useRef(0);
   const ownerRef=useRef(owner);ownerRef.current=owner;
@@ -46,6 +51,8 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
   const turn=role?.turns[turnIndex];
   const repair=p33RepairForScenario(scenario?.id??"");
   const repairFollowup=p34RepairContinuationFor(scenario?.id??"");
+  const intentPaths=p36IntentsForRole(scenario?.id??"",perspective);
+  const intentPath=intentPaths.find(p=>p.id===intentPathId);
   const alternatives=[
     ...p34AlternativesForTurn(scenario?.id??"",perspective,turnIndex),
     ...p35AlternativesForTurn(scenario?.id??"",perspective,turnIndex)
@@ -54,6 +61,9 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
   const completedInScenario=(scenario?.roles??[]).filter(r=>completedRoles.has(scenario!.id+":"+r.id)).length;
   const prompt=p33RolePrompts.find(p=>p.eventMetadata?.scenarioId===scenario?.id&&
     p.eventMetadata?.role===perspective&&p.eventMetadata?.turnIndex===turnIndex);
+  function resetIntents(){
+    setIntentPathId("");setIntentStage("idle");setIntentFirst("");setIntentSecond("");
+  }
   useEffect(()=>{
     setScenarioId(p33RolesForUnit(unitId)[0]?.id??"");
     setPerspective("guest");setTurnIndex(0);setDraft("");setFirstDraft("");
@@ -61,7 +71,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
     setRepairOpen(false);setRepairDraft("");setRepairDone(false);
     setFollowupDraft("");setFollowupDone(false);
     setShowPartner(true);setShowMeaning(false);exposed.current.clear();
-    setCompletedRoles(new Set());
+    setCompletedRoles(new Set());resetIntents();
     startTime.current=performance.now();
   },[unitId,owner]);
   function switchPath(id:string,p:"guest"|"host"){
@@ -69,7 +79,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
     setScenarioId(id);setPerspective(p);setTurnIndex(0);setDraft("");setFirstDraft("");
     setFeedback(null);setAssisted(false);setError("");setShowPartner(true);setShowMeaning(false);
     setRepairOpen(false);setRepairDraft("");setRepairDone(false);
-    setFollowupDraft("");setFollowupDone(false);
+    setFollowupDraft("");setFollowupDone(false);resetIntents();
     startTime.current=performance.now();
   }
   function playPartner(){
@@ -169,6 +179,35 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
     }catch{if(ownerRef.current===account)setError("Anschlussantwort konnte nicht gespeichert werden.");}
     finally{if(ownerRef.current===account)setBusy(false);}
   }
+  async function submitIntentStep(stage:"first"|"second"){
+    const active=intentPath;
+    const text=stage==="first"?intentFirst:intentSecond;
+    if(!active||!text.trim()||busy||disabled||!feedback||
+      intentStage!==stage||ownerRef.current!==getDevelopmentAccountId())return;
+    const account=ownerRef.current;
+    setBusy(true);setError("");
+    try{
+      const event:StudyEvent={
+        id:crypto.randomUUID(),userId:account,deviceId:DEVELOPMENT_DEVICE_ID,
+        occurredAt:new Date().toISOString(),activity:"writing",
+        primaryTarget:{kind:"production_task",id:"p36:intent:"+scenario!.id},
+        skillDimension:"production",promptFamily:"p36-contextual-intent-response",
+        responseMode:"typed",result:"skipped",attempts:1,
+        contextId:"p33:role:"+scenario!.id,sourceId:"thiepn-original",contentVersion:"p36-1",
+        metadata:{p36:true,kind:"intent-scaffold",scenarioId:scenario!.id,
+          unitId,role:perspective,turnIndex,stage,intentId:active.id,
+          assisted:true,schedulerExcluded:true,rawTextStored:false,
+          length:[...normalizeP26(text)].length}
+      };
+      await saveStudyEvent(event);
+      if(ownerRef.current!==account)return;
+      exposed.current.add(identity);
+      setIntentStage(stage==="first"?"second":"complete");
+      onReviewed();
+    }catch{
+      if(ownerRef.current===account)setError("Die freie Anschlussantwort konnte nicht protokolliert werden. Erneut versuchen.");
+    }finally{if(ownerRef.current===account)setBusy(false);}
+  }
   function next(){
     if(!role)return;
     if(turnIndex+1<role.turns.length)setTurnIndex(t=>t+1);
@@ -179,7 +218,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
     }
     setDraft("");setFirstDraft("");setAssisted(false);setFeedback(null);setError("");
     setRepairOpen(false);setRepairDraft("");setRepairDone(false);
-    setFollowupDraft("");setFollowupDone(false);
+    setFollowupDraft("");setFollowupDone(false);resetIntents();
     setShowMeaning(false);startTime.current=performance.now();
   }
   if(!scenario||!role||!turn)return null;
@@ -300,13 +339,63 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
         <p>Neue Fassung: <span lang="ja">{draft}</span></p>
       </div>:null}
       <ul>{feedback.notes.map((note,i)=><li key={i}>{note}</li>)}</ul>
+      {turnIndex===role.turns.length-1&&intentPaths.length>0?<section
+        className="p33-role__intents" aria-label="Situationsbezogenes Gespräch fortsetzen">
+        <h5>Das Gespräch selbstständig weiterführen</h5>
+        <p>Wähle deine kommunikative Absicht auf Deutsch. Formuliere anschließend zwei
+          japanische Antworten. Weil das Gespräch hier bereits Hilfen enthält, werden
+          beide Versuche unbewertet protokolliert und nicht als FSRS-Abruf gezählt.</p>
+        <div className="p33-role__choices" role="group" aria-label="Gesprächsabsicht">
+          {intentPaths.map(path=><button type="button" key={path.id}
+            aria-pressed={intentPathId===path.id} disabled={busy}
+            onClick={()=>{setIntentPathId(path.id);setIntentStage("first");
+              setIntentFirst("");setIntentSecond("");}}>{path.goal}</button>)}
+        </div>
+        {intentPath?<div>
+          {intentStage==="first"?<>
+            <label htmlFor="p36-intent-first">1 · Drücke dein Anliegen auf Japanisch aus</label>
+            <textarea id="p36-intent-first" lang="ja" rows={2}
+              value={intentFirst} disabled={busy}
+              onChange={e=>setIntentFirst(e.target.value)}
+              onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
+                e.preventDefault();void submitIntentStep("first");
+              }}}/>
+            <button type="button" disabled={busy||disabled||!intentFirst.trim()}
+              onClick={()=>void submitIntentStep("first")}>Ersten Beitrag vergleichen</button>
+          </>:null}
+          {(intentStage==="second"||intentStage==="complete")?<div role="status">
+            <strong>1 · Vergleich nach eigener Formulierung</strong>
+            <p>Dein Beitrag: <span lang="ja">{intentFirst}</span></p>
+            <p>Eine mögliche Form: <span lang="ja">{intentPath.firstModel}</span></p>
+            <p><strong>Gesprächspartner:</strong> <span lang="ja">{intentPath.partner}</span></p>
+            <p>{intentPath.partnerMeaning}</p>
+          </div>:null}
+          {intentStage==="second"?<>
+            <label htmlFor="p36-intent-second">2 · Reagiere auf die Rückfrage</label>
+            <textarea id="p36-intent-second" lang="ja" rows={2} value={intentSecond}
+              disabled={busy} onChange={e=>setIntentSecond(e.target.value)}
+              onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
+                e.preventDefault();void submitIntentStep("second");
+              }}}/>
+            <button type="button" disabled={busy||disabled||!intentSecond.trim()}
+              onClick={()=>void submitIntentStep("second")}>Anschlussantwort vergleichen</button>
+          </>:null}
+          {intentStage==="complete"?<div role="status">
+            <strong>Zwei eigene Gesprächsbeiträge abgeschlossen – unbewertet</strong>
+            <p>Deine Antwort: <span lang="ja">{intentSecond}</span></p>
+            <p>Mögliche Antwort: <span lang="ja">{intentPath.secondModel}</span></p>
+            <p>{intentPath.explanation}</p>
+            <button type="button" disabled={busy} onClick={next}>Zur nächsten Rolle</button>
+          </div>:null}
+        </div>:null}
+      </section>:null}
       <div className="p33-role__actions">
         <button type="button" disabled={disabled} onClick={onGrammar}>
           Partikeln und Höflichkeit im StudyPlayer vertiefen</button>
-        <button type="button" onClick={()=>{
-          setFeedback(null);setAssisted(true);startTime.current=performance.now();
+        <button type="button" disabled={busy} onClick={()=>{
+          setFeedback(null);setAssisted(true);resetIntents();startTime.current=performance.now();
         }}>Antwort überarbeiten (unbewertet)</button>
-        <button type="button" onClick={next}>Nächste Antwort / Rolle wechseln</button>
+        <button type="button" disabled={busy} onClick={next}>Nächste Antwort / Rolle wechseln</button>
       </div>
     </div>:null}
     {error?<p role="alert">{error}</p>:null}

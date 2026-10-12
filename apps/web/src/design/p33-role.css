@@ -43,3 +43,12 @@
 
 .p33-role [aria-pressed=true]:focus-visible,.p33-role [aria-keyshortcuts]:focus-visible{outline:3px solid currentColor;outline-offset:2px}
 @media(prefers-reduced-motion:reduce){.p33-role *{scroll-behavior:auto;transition:none}}
+
+.p33-role__intents{border-top:1px solid currentColor;margin-top:1rem;padding-top:.9rem}
+.p33-role__intents h5{font-size:1rem;margin:.3rem 0}
+.p33-role__intents>p{font-size:.88rem}
+.p33-role__intents label{display:block;font-weight:600;margin:.55rem 0}
+.p33-role__intents textarea{width:100%;min-height:5.5rem;display:block;margin:.5rem 0}
+.p33-role__intents [role=status]{border-left:3px solid currentColor;padding:.5rem .75rem;margin:.7rem 0}
+.p33-role__intents [lang=ja]{font-size:1.13rem}
+@media(max-width:580px){.p33-role__intents .p33-role__choices{display:grid}.p33-role__intents button{width:100%;min-height:44px}}
