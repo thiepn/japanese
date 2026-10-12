@@ -635,7 +635,7 @@ export const p31ContinuityScenarios:readonly ContinuityScenario[]=[
           {
             "japanese": "いいえ、一つだけです。",
             "meaning": "Nein, nur einer.",
-            "next": "one",
+            "next": "two",
             "appropriate": true,
             "note": "Eine passende Antwort; der Gesprächspartner greift diese Entscheidung im nächsten Schritt auf."
           },
@@ -757,7 +757,7 @@ export const p31ContinuityScenarios:readonly ContinuityScenario[]=[
           {
             "japanese": "では、映画を見ませんか。",
             "meaning": "Sehen wir einen Film?",
-            "next": "one",
+            "next": "two",
             "appropriate": true,
             "note": "Eine passende Antwort; der Gesprächspartner greift diese Entscheidung im nächsten Schritt auf."
           },

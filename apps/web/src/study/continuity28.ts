@@ -1,5 +1,6 @@
 import type {StudyPrompt} from "@thiepn/study-player";
 import {p29ContinuityScenarios} from "./continuity29";
+import {p31ContinuityScenarios} from "./continuity31";
 import {normalizeP26} from "./pedagogy26";
 export interface ContinuityReply{
   japanese:string;meaning:string;next:string|null;appropriate:boolean;note:string;
@@ -990,7 +991,10 @@ const p28ContinuityScenarios:readonly ContinuityScenario[]=[
     ]
   }
 ];
-export const continuityScenarios:readonly ContinuityScenario[]=[...p28ContinuityScenarios,...p29ContinuityScenarios];
+export const continuityScenarios:readonly ContinuityScenario[]=[...p28ContinuityScenarios,...p29ContinuityScenarios,...p31ContinuityScenarios];
+export function continuityScenariosForUnit(unitId:string):ContinuityScenario[]{
+  return continuityScenarios.filter(s=>s.sourceUnitId===unitId);
+}
 export function continuityForUnit(unitId:string):ContinuityScenario|undefined{
   return continuityScenarios.find(s=>s.sourceUnitId===unitId);
 }
