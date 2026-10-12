@@ -49,3 +49,25 @@ export function a1SourceInventory(){
   directlyReferencedLessons:A1_LESSONS.filter(l=>l.legacyUnitIds.length+l.communicationLessonIds.length+l.roleplayIds.length>0).length
  };
 }
+
+/** Reverse index of source content used by actual StudyEvents.
+ * A word or grammar point may belong to several units; all candidates are
+ * returned and the crosswalk must report ambiguity rather than award mastery.
+ */
+export function a1PrimaryTargetCrosswalk():Record<string,readonly string[]>{
+ const index:Record<string,string[]>={};
+ for(const unit of coreContent.courseUnits.filter(unit=>unit.level==="A1")){
+  const refs=[
+   ...unit.grammarIds.map(id=>"grammar:"+id),
+   ...unit.sentenceIds.map(id=>"sentence:"+id),
+   ...unit.vocabularyIds.map(id=>"lexeme:"+id),
+   ...(unit.conjugationLexemeIds??[]).map(id=>"lexeme:"+id)
+  ];
+  for(const ref of refs){
+   const existing=index[ref]??[];
+   if(!existing.includes(unit.id))existing.push(unit.id);
+   index[ref]=existing;
+  }
+ }
+ return index;
+}
