@@ -11,7 +11,7 @@ import {p26Missions,p26Prompts,p26Lessons,missionTurnPrompt,normalizeP26} from "
  */
 export type JourneySource="p23"|"p25"|"p26";
 export type JourneyStage="learn"|"build"|"conversation"|"write"|"practice";
-export type JourneyPractice="review"|"retry"|"transfer"|"register"|"grammar"|"production";
+export type JourneyPractice="review"|"retry"|"new"|"transfer"|"register"|"grammar"|"production";
 export interface JourneyWord{form:string;reading:string;meaning:string;example:string;}
 export interface JourneyOption{
   japanese:string;meaning:string;valid:boolean;explanation:string;next?:string|null;
@@ -267,7 +267,8 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     if(!trace)return 1;
     return 0;
   };
-  const list=(relevant.length?relevant:promptsForUnit(unitId,extras)).slice().sort((a,b)=>priority(b)-priority(a));
+  // Do not silently substitute unrelated unit exercises for an empty specialist queue.
+  const list=relevant.slice().sort((a,b)=>priority(b)-priority(a));
   // Only FSRS-issued due timestamps establish that a card is due.
   // A last-incorrect event may warrant optional remediation but does not
   // override a future FSRS due date or silently turn new prompts into "due".
@@ -277,6 +278,7 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
   };
   const selected=focus==="review"?list.filter(scheduledDue)
     :focus==="retry"?list.filter(p=>latest.get(p.id)?.result==="incorrect")
+    :focus==="new"?list.filter(p=>!known.has(traceIdJourney(p))&&!latest.has(p.id))
     :list;
   const final=selected;
   return [journeyLessons["p27:unit:"+unit.id]!,...final.slice(0,14)];
