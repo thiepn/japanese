@@ -25,3 +25,8 @@
 .p33-role__alternatives li{margin:.55rem 0}
 .p33-role__alternatives li p{margin:.25rem 0}
 .p33-role__alternatives li p[lang=ja]{font-size:1.1rem}
+
+.p33-role__repair-next{padding:.75rem;margin:.8rem 0;border-top:1px solid currentColor}
+.p33-role__repair-next h5{margin:.4rem 0;font-size:.98rem}
+.p33-role__repair-next label{display:block;margin:.5rem 0}
+.p33-role__repair-next p{margin:.45rem 0}

@@ -9,6 +9,7 @@ import {journeyUnit} from "../study/journey27";
 import {p33RolesForUnit,p33RolePrompts} from "../study/role33";
 import {p33RepairForScenario} from "../study/repair33";
 import {p34AlternativesForTurn} from "../study/alternatives34";
+import {p34RepairContinuationFor} from "../study/repair34";
 import {normalizeP26} from "../study/pedagogy26";
 import "./p33-role.css";
 
@@ -31,6 +32,8 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
   const [repairOpen,setRepairOpen]=useState(false);
   const [repairDraft,setRepairDraft]=useState("");
   const [repairDone,setRepairDone]=useState(false);
+  const [followupDraft,setFollowupDraft]=useState("");
+  const [followupDone,setFollowupDone]=useState(false);
   const exposed=useRef(new Set<string>());
   const startTime=useRef(0);
   const ownerRef=useRef(owner);ownerRef.current=owner;
@@ -38,6 +41,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
   const role=scenario?.roles.find(r=>r.id===perspective)??scenario?.roles[0];
   const turn=role?.turns[turnIndex];
   const repair=p33RepairForScenario(scenario?.id??"");
+  const repairFollowup=p34RepairContinuationFor(scenario?.id??"");
   const alternatives=p34AlternativesForTurn(scenario?.id??"",perspective,turnIndex);
   const identity=scenario?.id+":"+perspective+":"+turnIndex;
   const prompt=p33RolePrompts.find(p=>p.eventMetadata?.scenarioId===scenario?.id&&
@@ -47,6 +51,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
     setPerspective("guest");setTurnIndex(0);setDraft("");setFirstDraft("");
     setAssisted(false);setFeedback(null);setBusy(false);setError("");
     setRepairOpen(false);setRepairDraft("");setRepairDone(false);
+    setFollowupDraft("");setFollowupDone(false);
     setShowPartner(true);setShowMeaning(false);exposed.current.clear();
     startTime.current=performance.now();
   },[unitId,owner]);
@@ -55,6 +60,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
     setScenarioId(id);setPerspective(p);setTurnIndex(0);setDraft("");setFirstDraft("");
     setFeedback(null);setAssisted(false);setError("");setShowPartner(true);setShowMeaning(false);
     setRepairOpen(false);setRepairDraft("");setRepairDone(false);
+    setFollowupDraft("");setFollowupDone(false);
     startTime.current=performance.now();
   }
   function playPartner(){
@@ -128,12 +134,38 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
     }catch{if(ownerRef.current===account)setError("Rückfrage konnte nicht gespeichert werden.");}
     finally{if(ownerRef.current===account)setBusy(false);}
   }
+  async function submitRepairFollowup(){
+    if(!repairFollowup||!followupDraft.trim()||!repairDone||followupDone||disabled||busy)return;
+    const account=ownerRef.current;
+    if(account!==getDevelopmentAccountId())return;
+    const event:StudyEvent={
+      id:crypto.randomUUID(),userId:account,deviceId:DEVELOPMENT_DEVICE_ID,
+      occurredAt:new Date().toISOString(),activity:"writing",
+      primaryTarget:{kind:"production_task",id:"p34:repair-followup:"+scenario!.id},
+      skillDimension:"production",promptFamily:"p34-clarification-continuation",
+      responseMode:"typed",result:"skipped",attempts:1,
+      contextId:"p33:role:"+scenario!.id,sourceId:"thiepn-original",contentVersion:"p34-1",
+      metadata:{p34:true,kind:"repair-continuation",unitId,scenarioId:scenario!.id,
+        role:perspective,turnIndex,schedulerExcluded:true,rawTextStored:false,
+        length:[...normalizeP26(followupDraft)].length}
+    };
+    setBusy(true);setError("");
+    try{
+      await saveStudyEvent(event);
+      if(ownerRef.current!==account)return;
+      setFollowupDone(true);
+      exposed.current.add(identity);
+      setAssisted(true);onReviewed();
+    }catch{if(ownerRef.current===account)setError("Anschlussantwort konnte nicht gespeichert werden.");}
+    finally{if(ownerRef.current===account)setBusy(false);}
+  }
   function next(){
     if(!role)return;
     if(turnIndex+1<role.turns.length)setTurnIndex(t=>t+1);
     else{setTurnIndex(0);setPerspective(p=>p==="guest"?"host":"guest");}
     setDraft("");setFirstDraft("");setAssisted(false);setFeedback(null);setError("");
     setRepairOpen(false);setRepairDraft("");setRepairDone(false);
+    setFollowupDraft("");setFollowupDone(false);
     setShowMeaning(false);startTime.current=performance.now();
   }
   if(!scenario||!role||!turn)return null;
@@ -176,7 +208,25 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
           <p>{repair.explanation}</p>
           <p><strong>Partner erklärt:</strong> <span lang="ja">{repair.clarification}</span>
             {" — "}{repair.clarificationMeaning}</p>
-          <button type="button" onClick={()=>setRepairOpen(false)}>Mit eigener Antwort weiter</button>
+          {repairFollowup?<div className="p33-role__repair-next">
+            <h5>2 · Nach der Erklärung weiterreden</h5>
+            <p>So könntest du auf die Klärung reagieren:
+              <span lang="ja"> {repairFollowup.clarifiedAnswer}</span> — {repairFollowup.clarifiedMeaning}</p>
+            <p>Der Partner fragt weiter:
+              <span lang="ja"> {repairFollowup.partnerFollowup}</span> — {repairFollowup.partnerMeaning}</p>
+            <label htmlFor="p34-repair-followup">Formuliere selbst eine Anschlussantwort</label>
+            <textarea id="p34-repair-followup" lang="ja" rows={2} value={followupDraft}
+              disabled={busy||followupDone} onChange={e=>setFollowupDraft(e.target.value)}/>
+            <button type="button" disabled={disabled||busy||followupDone||!followupDraft.trim()}
+              onClick={()=>void submitRepairFollowup()}>Anschlussantwort vergleichen (unbewertet)</button>
+            {followupDone?<div role="status">
+              <p>Ein mögliches Muster:
+                <span lang="ja"> {repairFollowup.modelReply}</span> — {repairFollowup.modelMeaning}</p>
+              <p>{repairFollowup.note}</p>
+              <p>Eine freie Alternative ist nicht automatisch falsch. Diese Reparatur verleiht keine FSRS-Beherrschung.</p>
+            </div>:null}
+          </div>:null}
+          <button type="button" onClick={()=>setRepairOpen(false)}>Zum ursprünglichen Gespräch zurück</button>
         </div>:null}
       </div>:null}
     </div>:null}
