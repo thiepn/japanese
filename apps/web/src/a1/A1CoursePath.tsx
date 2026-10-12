@@ -39,7 +39,7 @@ export function A1CoursePath({onStartUnit,disabled}:Props){
   {A1_MODULES.map((module,index)=>{
    const lessons=A1_LESSONS.filter(l=>l.moduleId===module.id);
    const mapped=lessons.filter(l=>l.legacyUnitIds.length+l.communicationLessonIds.length+l.roleplayIds.length>0).length;
-   return <details key={module.id} open={index===0?true:undefined} className="a1-course-path__module">
+   return <details key={module.id} defaultOpen={index===0} className="a1-course-path__module">
     <summary><span>Modul {module.order}: {module.title}</span><small>{mapped}/{lessons.length} mit verlinktem Altmaterial</small></summary>
     <p>{module.description}</p>
     <ol className="a1-course-path__list" start={(module.order-1)*4+1}>
