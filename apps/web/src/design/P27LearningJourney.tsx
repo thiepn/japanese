@@ -101,7 +101,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
   const globalRecall=useMemo(()=>evidence?
     p31GlobalDue(evidence.traces,evidence.events,extraJourneyPrompts):[],
     [evidence]);
-  const otherDue=globalRecall.find(item=>item.unitId!==unitId&&item.due>0);
+  const dueUnits=globalRecall.filter(item=>item.due>0).slice(0,4);
   const nearestReturn=globalRecall.filter(item=>item.nextDueAt)
     .sort((a,b)=>Date.parse(a.nextDueAt!)-Date.parse(b.nextDueAt!))[0];
   const recallPlan=useMemo(()=>evidence?
@@ -499,13 +499,19 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
         </section>:null}
         {stage==="practice"?<section className="p27-journey__panel">
           <h4>Kontextualisierte Wiederholung</h4>
-          {otherDue?<div className="p27-journey__return-navigation">
-            <strong>Auch anderswo sind Karten fällig</strong>
-            <p>{otherDue.due} bekannte fällige FSRS-Abrufe in der Einheit
-              „{journeyUnit(otherDue.unitId).title}“.</p>
-            <button type="button" disabled={disabled} onClick={()=>{
-              setUnitId(otherDue.unitId);setStage("practice");
-            }}>Zu fälliger Einheit wechseln</button>
+          {dueUnits.length?<div className="p27-journey__due-shortcuts">
+            <h5>Jetzt fällige Wiederholungen</h5>
+            <p>Diese direkten Aktionen starten die bestehenden FSRS-Wiederholungssitzungen,
+              keine neuen oder bloß freiwilligen Übungen.</p>
+            {dueUnits.map(item=><div key={item.unitId} className="p27-journey__due-row">
+              <div><strong>{journeyUnit(item.unitId).title}</strong>
+                <small>{item.due} fällige Karten</small></div>
+              <button type="button" disabled={disabled}
+                onClick={()=>onJourneyPractice(item.unitId,"review")}>Jetzt wiederholen</button>
+              <button type="button" onClick={()=>{
+                setUnitId(item.unitId);setStage("practice");
+              }}>Einheit ansehen</button>
+            </div>)}
           </div>:nearestReturn?<div className="p27-journey__return-navigation">
             <strong>Nächste bereits geplante Wiederholung</strong>
             <p>{journeyUnit(nearestReturn.unitId).title} ·

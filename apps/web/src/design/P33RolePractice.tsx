@@ -4,6 +4,7 @@ import type {StudyEvent} from "@thiepn/domain";
 import {gradeStudyPrompt} from "@thiepn/study-player";
 import {DEVELOPMENT_DEVICE_ID,getDevelopmentAccountId,recordStudyAnswer} from "../study/runtime";
 import {grammarReflection} from "../study/feedback27";
+import {p32ContrastForUnit} from "../study/contrast32";
 import {journeyUnit} from "../study/journey27";
 import {p33RolesForUnit,p33RolePrompts} from "../study/role33";
 import {p33RepairForScenario} from "../study/repair33";
@@ -94,6 +95,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
       setAssisted(true);
       setFeedback({correctModel:matched,independent,notes:[
         turn.gloss,...grammarReflection(journeyUnit(unitId),draft),
+        ...(p32ContrastForUnit(unitId)?[p32ContrastForUnit(unitId)!.explanation]:[]),
         "Weitere natürlich richtige Formulierungen sind möglich und werden hier nicht automatisch bewertet."
       ]});
       onReviewed();
