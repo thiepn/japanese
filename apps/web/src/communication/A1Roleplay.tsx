@@ -48,12 +48,12 @@ export function A1Roleplay(){
  return <section className="j4-practice a1-roleplay-shell" aria-labelledby="a1-roleplay-title">
   <h2 id="a1-roleplay-title">A1 · Gesprächstraining</h2>
   <p>Wähle passende Antworten. Dein Gegenüber reagiert auf deine Entscheidung. Die Auswahl wird lokal als Übung gespeichert.</p>
-  <label>Situation <select value={scenarioIndex} onChange={e=>start(Number(e.target.value))}>{scenarios.map((s,i)=><option key={s.id} value={i}>{s.title}</option>)}</select></label>
+  <label>Situation <select value={scenarioIndex} disabled={busy} onChange={e=>start(Number(e.target.value))}>{scenarios.map((s,i)=><option key={s.id} value={i}>{s.title}</option>)}</select></label>
   <p>{scenario.intro}</p>
  {graphErrors.length?<p role="alert">Dieser Gesprächspfad ist fehlerhaft und wurde zur Sicherheit deaktiviert.</p>:null}
  <p>{history[scenario.id]?history[scenario.id]!.correct+" passende · "+history[scenario.id]!.incorrect+" unpassende Antworten bisher":"Noch kein gespeicherter Verlauf in dieser Situation."}</p>
  {historyError?<p role="alert">{historyError}</p>:null}
- <p>Empfohlene Wiederholung: {scenarios.find(s=>s.id===Object.entries(history).sort((a,b)=>b[1].incorrect-a[1].incorrect)[0]?.[0])?.title??"Noch keine Fehler erfasst"}</p><progress value={turnIndex+(choice===null?0:1)} max={scenario.turns.length} aria-label="Gesprächsfortschritt"/>
+ <p>Empfohlene Wiederholung: {scenarios.find(s=>s.id===Object.entries(history).sort((a,b)=>b[1].incorrect-a[1].incorrect)[0]?.[0])?.title??"Noch keine Fehler erfasst"}</p><progress value={Math.min(visited.length,scenario.turns.length)} max={scenario.turns.length} aria-label="Besuchte Gesprächsknoten"/>
   <p>Gesprächsknoten {turnIndex+1} von {scenario.turns.length} · Dein Weg kann sich je nach Antwort verzweigen.</p>{previousMismatch&&choiceIndex===null?<p role="status">Dein Gegenüber war irritiert. Wähle jetzt eine Antwort, die zur Situation passt.</p>:null}
   <article><strong>{turn.speaker}</strong><p lang="ja">{turn.prompt}</p><button type="button" onClick={()=>speak(turn.prompt)}>Anhören</button></article>
   <fieldset disabled={choice!==null||busy||graphErrors.length>0}><legend>Was antwortest du?</legend><div className="a1-choice-grid">
@@ -61,13 +61,13 @@ export function A1Roleplay(){
     <span lang="ja">{option.japanese}</span>{showGerman?<small> — {option.german}</small>:null}
   </button>)}</div></fieldset>
   <label><input type="checkbox" checked={showGerman} onChange={e=>setShowGerman(e.target.checked)}/> Deutsche Hilfen anzeigen</label>
-  {choice?<div role="status"><strong>{choice.correct?"Passende Antwort":"In dieser Situation unpassend"}</strong>
+  {choice?<div role="status" className={choice.correct?"a1-feedback a1-feedback-correct":"a1-feedback a1-feedback-retry"}><strong>{choice.correct?"Passende Antwort":"In dieser Situation unpassend"}</strong>
    <p>{choice.german}</p><p><strong>{turn.speaker}:</strong> <span lang="ja">{choice.reply}</span> — {choice.replyGerman}</p>
    <button type="button" onClick={()=>speak(choice.reply)}>Reaktion anhören</button>
    <p>{!choice.correct?"Versuche beim nächsten Durchgang eine passendere Antwort.":""}</p>
    {!choice.correct?<button type="button" onClick={()=>{setChoiceIndex(null);}}>Missverständnis klären und erneut antworten</button>:null}
    {done?<div><p>{score} passende Antworten auf {visited.length} besuchten Gesprächsschritten.</p><button type="button" onClick={()=>start(scenarioIndex)}>Gespräch wiederholen</button></div>
-    :<button type="button" disabled={!choice.correct} onClick={()=>{setTurnIndex(choice.next??Math.min(turnIndex+1,scenario.turns.length-1));setChoiceIndex(null);setPreviousMismatch(false);}}>Gespräch fortsetzen</button>}
+    :<button type="button" disabled={!choice.correct||busy} onClick={()=>{setTurnIndex(choice.next??Math.min(turnIndex+1,scenario.turns.length-1));setChoiceIndex(null);setPreviousMismatch(false);}}>Gespräch fortsetzen</button>}
   </div>:null}
   {error?<p role="alert">{error}</p>:null}
  </section>;
