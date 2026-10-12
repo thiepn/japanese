@@ -8,6 +8,7 @@ import {p32ContrastForUnit} from "../study/contrast32";
 import {journeyUnit} from "../study/journey27";
 import {p33RolesForUnit,p33RolePrompts} from "../study/role33";
 import {p33RepairForScenario} from "../study/repair33";
+import {p34AlternativesForTurn} from "../study/alternatives34";
 import {normalizeP26} from "../study/pedagogy26";
 import "./p33-role.css";
 
@@ -37,6 +38,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
   const role=scenario?.roles.find(r=>r.id===perspective)??scenario?.roles[0];
   const turn=role?.turns[turnIndex];
   const repair=p33RepairForScenario(scenario?.id??"");
+  const alternatives=p34AlternativesForTurn(scenario?.id??"",perspective,turnIndex);
   const identity=scenario?.id+":"+perspective+":"+turnIndex;
   const prompt=p33RolePrompts.find(p=>p.eventMetadata?.scenarioId===scenario?.id&&
     p.eventMetadata?.role===perspective&&p.eventMetadata?.turnIndex===turnIndex);
@@ -192,6 +194,11 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
       <strong>{feedback.independent?"Geübte Antwort unabhängig getroffen":
         feedback.correctModel?"Geübte Form mit Hilfe getroffen":"Eigene Alternative · unbewertet"}</strong>
       <p>Mögliche Antwort: <span lang="ja">{turn.model}</span></p>
+      {alternatives.length?<details className="p33-role__alternatives">
+        <summary>Weitere kontextuell passende Antworten ({alternatives.length})</summary>
+        <ul>{alternatives.map((alt,i)=><li key={i}>
+          <p lang="ja">{alt.answer}</p><p>{alt.nuance}</p></li>)}</ul>
+      </details>:null}
       {firstDraft&&draft!==firstDraft?<div className="p33-role__revision">
         <strong>Überarbeitung – nicht bewertet</strong>
         <p>Erste Fassung: <span lang="ja">{firstDraft}</span></p>

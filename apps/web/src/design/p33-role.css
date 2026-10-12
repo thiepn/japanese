@@ -19,3 +19,9 @@
 .p33-role__repair button{margin:.35rem 0}
 .p33-role__repair [role=status]{padding:.65rem;border-left:3px solid currentColor}
 .p33-role__revision{padding:.65rem;border:1px solid currentColor;margin:.7rem 0}
+
+.p33-role__alternatives{margin:.75rem 0;padding:.5rem;border:1px solid currentColor}
+.p33-role__alternatives summary{cursor:pointer;font-weight:600}
+.p33-role__alternatives li{margin:.55rem 0}
+.p33-role__alternatives li p{margin:.25rem 0}
+.p33-role__alternatives li p[lang=ja]{font-size:1.1rem}
