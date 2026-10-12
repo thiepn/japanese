@@ -22,6 +22,7 @@ import {continuityPrompts} from "../study/continuity28";
 import {register28Prompts} from "../study/register28";
 import {deriveWeakAreas,areaLabels} from "../study/remediation30";
 import {recentP35Mistakes} from "../study/remediation35";
+import {p36RemediationHint} from "../study/remediation36";
 import {p31ContrastPrompts,p31ContrastForUnit} from "../study/contrast31";
 import {planP31Recall,p31GlobalDue} from "../study/recall31";
 import {p31SentencePrompts} from "../study/sentence31";
@@ -565,10 +566,21 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 <span>{mistake.context}</span>
                 <small>Letzter Fehler: {new Date(mistake.lastIncorrectAt).toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"})}</small>
               </div>
-              <button type="button" disabled={disabled}
-                onClick={()=>onMistakePractice(unitId,mistake.promptId)}>
-                Genau diese Aufgabe üben
-              </button>
+              <div className="p27-journey__mistake-actions">
+                <button type="button" disabled={disabled}
+                  onClick={()=>onMistakePractice(unitId,mistake.promptId)}>
+                  Genau diese Aufgabe üben
+                </button>
+                <details>
+                  <summary>Worauf achten? (ohne Antwortvorgabe)</summary>
+                  <strong>{p36RemediationHint(mistake.promptId,extraJourneyPrompts).title}</strong>
+                  <p>{p36RemediationHint(mistake.promptId,extraJourneyPrompts).promptSpecificGoal}</p>
+                  <button type="button" onClick={()=>
+                    setStage(p36RemediationHint(mistake.promptId,extraJourneyPrompts).lessonStage)}>
+                    {p36RemediationHint(mistake.promptId,extraJourneyPrompts).action}
+                  </button>
+                </details>
+              </div>
             </div>)}
           </section>:null}
           {weakAreas?<div className="p27-journey__weakareas">

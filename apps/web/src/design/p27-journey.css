@@ -84,3 +84,10 @@
 .p27-journey__mistake small{opacity:.75}
 .p27-journey__mistake button{min-height:44px;flex-shrink:0}
 @media(max-width:620px){.p27-journey__mistake{display:grid}.p27-journey__mistake button{width:100%}}
+
+.p27-journey__mistake-actions{display:grid;gap:.4rem;justify-items:stretch;max-width:20rem}
+.p27-journey__mistake-actions details{border:1px solid currentColor;padding:.5rem}
+.p27-journey__mistake-actions summary{cursor:pointer;font-size:.85rem}
+.p27-journey__mistake-actions details p{font-size:.85rem;margin:.4rem 0}
+.p27-journey__mistake-actions details button{width:100%;margin-top:.35rem}
+@media(max-width:620px){.p27-journey__mistake-actions{max-width:none;width:100%}}
