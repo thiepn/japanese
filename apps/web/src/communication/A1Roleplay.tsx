@@ -84,13 +84,14 @@ export function A1Roleplay(){
  }setHistory(next);}).catch(()=>{if(active)setHistoryError("Gesprächsfortschritt konnte nicht geladen werden.");});
  return()=>{active=false};},[owner]);
  useEffect(()=>{const handle=(event:Event)=>{const request=(event as CustomEvent<A1Navigation>).detail;if(request.destination!=="roleplay")return;const index=scenarios.findIndex(s=>s.id===request.scenarioId);if(index>=0)start(index);};window.addEventListener(A1_NAV_EVENT,handle);return()=>window.removeEventListener(A1_NAV_EVENT,handle);},[]);
- const scenario=scenarios[scenarioIndex],turn=scenario.turns[turnIndex],choice=choiceIndex===null?null:turn.choices[choiceIndex];
+ const scenario=scenarios[scenarioIndex]!,turn=scenario.turns[turnIndex]!,choice=choiceIndex===null?null:turn.choices[choiceIndex]??null;
  const graphErrors=validateRoleplayGraph(scenario.turns);
  const done=choice!==null&&choice.correct&&(choice.next===null||(choice.next===undefined&&turnIndex===scenario.turns.length-1));
  function start(index:number){setScenarioIndex(index);setTurnIndex(0);setChoiceIndex(null);setScore(0);setVisited([]);setPreviousMismatch(false);setError("");}
  async function choose(index:number){
   if(busy||choiceIndex!==null)return;
   const selected=turn.choices[index];
+  if(!selected||graphErrors.length)return;
   const event:StudyEvent={id:crypto.randomUUID(),userId:owner,deviceId:"japanese-communication-local",occurredAt:new Date().toISOString(),activity:"lesson",
    primaryTarget:{kind:"can_do",id:"roleplay:"+scenario.id},skillDimension:"comprehension",promptFamily:"a1-roleplay-choice",responseMode:"choice",
    result:selected.correct?"correct":"incorrect",attempts:1,sourceId:"original-a1-roleplay-v1",contentVersion:"1",contextId:scenario.id,
@@ -107,7 +108,7 @@ export function A1Roleplay(){
   <label>Situation <select value={scenarioIndex} onChange={e=>start(Number(e.target.value))}>{scenarios.map((s,i)=><option key={s.id} value={i}>{s.title}</option>)}</select></label>
   <p>{scenario.intro}</p>
  {graphErrors.length?<p role="alert">Dieser Gesprächspfad ist fehlerhaft und wurde zur Sicherheit deaktiviert.</p>:null}
- <p>{history[scenario.id]?history[scenario.id].correct+" passende · "+history[scenario.id].incorrect+" unpassende Antworten bisher":"Noch kein gespeicherter Verlauf in dieser Situation."}</p>
+ <p>{history[scenario.id]?history[scenario.id]!.correct+" passende · "+history[scenario.id]!.incorrect+" unpassende Antworten bisher":"Noch kein gespeicherter Verlauf in dieser Situation."}</p>
  {historyError?<p role="alert">{historyError}</p>:null}
  <p>Empfohlene Wiederholung: {scenarios.find(s=>s.id===Object.entries(history).sort((a,b)=>b[1].incorrect-a[1].incorrect)[0]?.[0])?.title??"Noch keine Fehler erfasst"}</p><progress value={turnIndex+(choice===null?0:1)} max={scenario.turns.length} aria-label="Gesprächsfortschritt"/>
   <p>Gesprächsknoten {turnIndex+1} von {scenario.turns.length} · Dein Weg kann sich je nach Antwort verzweigen.</p>{previousMismatch&&choiceIndex===null?<p role="status">Dein Gegenüber war irritiert. Wähle jetzt eine Antwort, die zur Situation passt.</p>:null}
