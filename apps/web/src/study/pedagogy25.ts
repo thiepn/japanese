@@ -1377,14 +1377,15 @@ export function p25Session(
   const s=p25Scenarios.find(s=>s.id===scenarioId);
   if(!s)throw new Error("UNKNOWN_P25_SCENARIO:"+scenarioId);
   const lookup=new Map(traces.map(trace=>[trace.id,trace]));
-  const prompts=p25StructuredPrompts.filter(p=>p.contextId===p25Context(s.id));
+  const prompts=(mode==="lesson"?p25StructuredPrompts:p25Prompts).filter(p=>p.contextId===p25Context(s.id));
   const scored=prompts.map(prompt=>({prompt,status:promptPriority(prompt,lookup,events,now)}))
     .sort((a,b)=>weights[b.status]-weights[a.status]);
   const selected=mode==="repair"?scored.filter(p=>p.status==="due"||p.status==="retry")
     :mode==="transfer"?scored.filter(p=>p.prompt.skill==="production"||p.status==="due")
     :scored;
-  const final=selected.length?selected:scored;
-  return [p25Lessons[p25Context(s.id)]!,...final.map(p=>p.prompt)];
+  const final=selected.length?selected:(mode==="repair"?scored.filter(p=>p.status==="unseen"):scored);
+  const bounded=final.length?final:scored;
+  return [p25Lessons[p25Context(s.id)]!,...bounded.map(p=>p.prompt)];
 }
 export interface RevisionObservations{
   beforeCount:number;afterCount:number;beforeFeatures:string[];afterFeatures:string[];

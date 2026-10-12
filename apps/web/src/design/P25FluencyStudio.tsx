@@ -222,7 +222,7 @@ export function P25FluencyStudio({
         <div className="p25-studio__toolbar">
           <button disabled={!canStart("lesson")} onClick={()=>onStart(scenarioId,"lesson")}>6 Lernaufgaben starten</button>
           <button disabled={!canStart("transfer")} onClick={()=>onStart(scenarioId,"transfer")}>Transfer + fällige Aufgaben</button>
-          <button disabled={!canStart("repair")} onClick={()=>onStart(scenarioId,"repair")}>Fehler gezielt wiederholen {current?.due||current?.retry?"("+(current.due+current.retry)+")":""}</button>
+          <button disabled={!canStart("repair")} onClick={()=>onStart(scenarioId,"repair")}>Fehler gezielt wiederholen {((current?.due??0)+(current?.retry??0))>0?"("+((current?.due??0)+(current?.retry??0))+")":""}</button>
         </div>
         <div className="p25-studio__mode" aria-label="Trainingsmodus">
           <button type="button" aria-pressed={tab==="dialogue"} onClick={()=>setTab("dialogue")}>Mehrstufiger Dialog</button>
