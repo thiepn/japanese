@@ -1,6 +1,7 @@
 import type {StudyPrompt} from "@thiepn/study-player";
 import {p34AcceptedRoleAnswers} from "./alternatives34";
 import {p35RoleContinuation} from "./turns35";
+import {p35AcceptedRoleAnswers} from "./alternatives35";
 export interface P33RoleTurn{partner:string;meaning:string;model:string;gloss:string;}
 export interface P33Role{ id:"guest"|"host";label:string;turns:readonly P33RoleTurn[]; }
 export interface P33RoleScenario{id:string;unitId:string;title:string;roles:readonly P33Role[];}
@@ -371,7 +372,9 @@ export const p33RolePrompts:StudyPrompt[]=p35ExtendedRoleScenarios.flatMap(s=>s.
     skill:"production" as const,cueFamily:"p33-role-"+role.id+"-"+index,
     promptType:"typed" as const,
     instruction:"In der eigenen Gesprächsrolle auf Japanisch antworten",
-    prompt:turn.partner,acceptedAnswers:p34AcceptedRoleAnswers(s.id,role.id,index,turn.model),displayAnswer:turn.model,
+    prompt:turn.partner,
+    acceptedAnswers:[...new Set([...p34AcceptedRoleAnswers(s.id,role.id,index,turn.model),
+      ...p35AcceptedRoleAnswers(s.id,role.id,index)])],displayAnswer:turn.model,
     explanation:turn.gloss,answerNormalization:"japanese" as const,
     promptLanguage:"ja" as const,contextId:"p33:role:"+s.id,
     sourceId:"thiepn-original",contentVersion:"p33-1",

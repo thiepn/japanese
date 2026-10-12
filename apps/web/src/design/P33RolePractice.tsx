@@ -9,6 +9,7 @@ import {journeyUnit} from "../study/journey27";
 import {p33RolesForUnit,p33RolePrompts} from "../study/role33";
 import {p33RepairForScenario} from "../study/repair33";
 import {p34AlternativesForTurn} from "../study/alternatives34";
+import {p35AlternativesForTurn} from "../study/alternatives35";
 import {p34RepairContinuationFor} from "../study/repair34";
 import {p34RoleFeedback} from "../study/feedback34";
 import {normalizeP26} from "../study/pedagogy26";
@@ -45,7 +46,10 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
   const turn=role?.turns[turnIndex];
   const repair=p33RepairForScenario(scenario?.id??"");
   const repairFollowup=p34RepairContinuationFor(scenario?.id??"");
-  const alternatives=p34AlternativesForTurn(scenario?.id??"",perspective,turnIndex);
+  const alternatives=[
+    ...p34AlternativesForTurn(scenario?.id??"",perspective,turnIndex),
+    ...p35AlternativesForTurn(scenario?.id??"",perspective,turnIndex)
+  ];
   const identity=scenario?.id+":"+perspective+":"+turnIndex;
   const completedInScenario=(scenario?.roles??[]).filter(r=>completedRoles.has(scenario!.id+":"+r.id)).length;
   const prompt=p33RolePrompts.find(p=>p.eventMetadata?.scenarioId===scenario?.id&&
