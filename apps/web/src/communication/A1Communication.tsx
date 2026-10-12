@@ -17,6 +17,8 @@ export function A1Communication(){
   const [showTranslation,setShowTranslation]=useState(true);
   const [dialogueStep,setDialogueStep]=useState(0);
   const [stage,setStage]=useState<"learn"|"dialogue"|"practice"|"finish">("learn");
+  const [speakingText,setSpeakingText]=useState("");
+  const [speakingNote,setSpeakingNote]=useState("");
   const [completed,setCompleted]=useState<Record<string,number>>({});
   const owner=getDevelopmentAccountId();
   const ownerRef=useRef(owner);
@@ -50,6 +52,11 @@ export function A1Communication(){
     const utterance=new SpeechSynthesisUtterance(japanese);
     utterance.lang="ja-JP";utterance.rate=0.82;
     window.speechSynthesis.speak(utterance);
+  }
+  function practiceSpeaking(japanese:string){
+    setSpeakingText(japanese);setSpeakingNote("");
+    if(typeof window==="undefined"||!("speechSynthesis" in window)){setSpeakingNote("Keine Sprachausgabe verfügbar.");return;}
+    speak(japanese);
   }
   async function submit(){
     if(!lesson||!exercise||busy||feedback)return;
@@ -89,6 +96,7 @@ export function A1Communication(){
       <h3>{lesson.title}</h3><p>{lesson.canDo}</p>
       <nav aria-label="Lektionsnavigation"><button type="button" disabled={lessonIndex===0} onClick={()=>select(Math.max(0,(lessonIndex??0)-1))}>Vorherige Lektion</button> <span>Lektion {(lessonIndex??0)+1} von {a1CommunicationLessons.length}</span> <button type="button" disabled={lessonIndex===a1CommunicationLessons.length-1} onClick={()=>select(Math.min(a1CommunicationLessons.length-1,(lessonIndex??0)+1))}>Nächste Lektion</button></nav>
       <label><input type="checkbox" checked={showRomaji} onChange={event=>setShowRomaji(event.target.checked)}/> Romaji anzeigen</label> <label><input type="checkbox" checked={showTranslation} onChange={event=>setShowTranslation(event.target.checked)}/> Übersetzung anzeigen</label>
+      <p role="status">Lernpfad: {stage==="learn"?"Wörter und Grammatik":stage==="dialogue"?"Hören und sprechen":stage==="practice"?"Aufgaben lösen":"Ergebnis ansehen"}</p>
       <nav aria-label="Lernschritte"><button type="button" aria-current={stage==="learn"?"step":undefined} onClick={()=>setStage("learn")}>1 · Lernen</button> <button type="button" aria-current={stage==="dialogue"?"step":undefined} onClick={()=>setStage("dialogue")}>2 · Dialog</button> <button type="button" aria-current={stage==="practice"?"step":undefined} onClick={()=>setStage("practice")}>3 · Üben</button> <button type="button" aria-current={stage==="finish"?"step":undefined} onClick={()=>setStage("finish")}>4 · Ergebnis</button></nav>
       {stage==="learn"?<div><h4>Neue Wörter und Grammatik</h4><details open><summary>Grammatik und Wortschatz</summary>
         <ul>{lesson.grammar.map(point=><li key={point}>{point}</li>)}</ul>
@@ -102,8 +110,10 @@ export function A1Communication(){
           <p><strong>{line.speaker}:</strong> <span lang="ja">{line.japanese}</span></p>
           {showRomaji?<p>{line.romaji}</p>:null}
           {showTranslation?<p>{line.german}</p>:null}
-          <button type="button" onClick={()=>speak(line.japanese)}>Japanisch anhören</button>
+          <button type="button" onClick={()=>practiceSpeaking(line.japanese)}>Hören und nachsprechen</button>
         </div>:null)}
+        {speakingText?<div><p lang="ja">Sprich nach: {speakingText}</p><p>Wiederhole den Satz laut und vergleiche mit der Wiedergabe. Eine automatische Bewertung deiner Aussprache findet nicht statt.</p><button type="button" onClick={()=>speak(speakingText)}>Noch einmal hören</button><button type="button" onClick={()=>{setSpeakingText("");setSpeakingNote("Sprechübung selbst abgeschlossen.");}}>Ich habe nachgesprochen</button></div>:null}
+        {speakingNote?<p role="status">{speakingNote}</p>:null}
         <button type="button" disabled={dialogueStep===0} onClick={()=>setDialogueStep(v=>Math.max(0,v-1))}>Vorherige Zeile</button>
         <button type="button" disabled={dialogueStep===lesson.dialogue.length-1} onClick={()=>setDialogueStep(v=>Math.min(lesson.dialogue.length-1,v+1))}>Nächste Zeile</button>
         <button type="button" onClick={()=>setDialogueStep(0)}>Dialog neu beginnen</button>
@@ -111,7 +121,7 @@ export function A1Communication(){
       </section>
       <button type="button" onClick={()=>setStage("practice")}>Weiter zu den Übungen</button></div>:null}
       {stage==="practice"&&exercise?<div aria-labelledby="a1-question">
-        <p>Übung {exerciseIndex+1}/{lesson.exercises.length}</p>
+        <p>Übung {exerciseIndex+1}/{lesson.exercises.length}</p><progress value={exerciseIndex} max={lesson.exercises.length} aria-label="Übungsfortschritt"/>
         <h4 id="a1-question">{exercise.prompt}</h4>
         {exercise.kind==="choice"?<fieldset disabled={busy||feedback!==null}><legend>Wähle eine Antwort</legend>{exercise.options.map(option=><label key={option} style={{display:"block"}}><input type="radio" name="a1-answer" checked={response===option} onChange={()=>setResponse(option)}/>{option}</label>)}</fieldset>:null}
         {exercise.kind==="fill"?<label>Deine Antwort <input disabled={busy||feedback!==null} value={response} onChange={event=>setResponse(event.target.value)}/></label>:null}
