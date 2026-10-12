@@ -36,6 +36,7 @@ export function P28Continuity({
   const [firstDraft,setFirstDraft]=useState("");
   const [revisions,setRevisions]=useState(0);
   const [modelRevealed,setModelRevealed]=useState(false);
+  const [choiceOptionsSeen,setChoiceOptionsSeen]=useState(false);
   const startedAt=useRef(0);
   const node=scenario?.turns.find(t=>t.id===nodeId)??scenario?.turns[0];
   const register=p29RegisterExampleForUnit(unitId);
@@ -43,7 +44,7 @@ export function P28Continuity({
   useEffect(()=>{
     setStarted(false);setNodeId("start");setCount(0);setMode("typed");
     setDraft("");setFeedback(null);setError("");setShowMeaning(false);setBusy(false);
-    setFirstDraft("");setRevisions(0);setModelRevealed(false);
+    setFirstDraft("");setRevisions(0);setModelRevealed(false);setChoiceOptionsSeen(false);
     startedAt.current=performance.now();
   },[unitId,owner,scenarioId]);
   if(!scenario||!node)return null;
@@ -71,7 +72,7 @@ export function P28Continuity({
     const prompt=continuityPrompt(scenario!,node!,kind);
     const grade=gradeStudyPrompt(prompt,response);
     const accepted=grade.result==="correct";
-    const independentlyProduced=kind==="typed"&&accepted&&!modelRevealed&&revisions===0;
+    const independentlyProduced=kind==="typed"&&accepted&&!modelRevealed&&!choiceOptionsSeen&&revisions===0;
     const independentChoice=kind==="choice"&&!modelRevealed&&revisions===0;
     const choice=node!.choices.find(c=>normalizeP26(c.japanese)===normalizeP26(response));
     const next=choice?.next??node!.id;
@@ -107,7 +108,7 @@ export function P28Continuity({
   }
   function advance(next:string|null){
     setCount(n=>n+1);setNodeId(next??"__done__");setDraft("");
-    setFeedback(null);setError("");setFirstDraft("");setRevisions(0);setModelRevealed(false);
+    setFeedback(null);setError("");setFirstDraft("");setRevisions(0);setModelRevealed(false);setChoiceOptionsSeen(false);
     startedAt.current=performance.now();
   }
   const completed=nodeId==="__done__";
@@ -145,7 +146,7 @@ export function P28Continuity({
         onChange={e=>setShowMeaning(e.target.checked)}/> Deutsche Bedeutung anzeigen</label>
       <div className="p28-continuity__mode" role="group" aria-label="Antwortmodus">
         <button type="button" aria-pressed={mode==="typed"} disabled={busy} onClick={()=>{setMode("typed");setFeedback(null);}}>Selbst eintippen</button>
-        <button type="button" aria-pressed={mode==="choice"} disabled={busy} onClick={()=>{setMode("choice");setFeedback(null);}}>Antwortauswahl</button>
+        <button type="button" aria-pressed={mode==="choice"} disabled={busy} onClick={()=>{setMode("choice");setChoiceOptionsSeen(true);setFeedback(null);}}>Antwortauswahl</button>
       </div>
       {mode==="typed"?<div>
         <label htmlFor="p28-continuity-draft">Japanische Antwort</label>

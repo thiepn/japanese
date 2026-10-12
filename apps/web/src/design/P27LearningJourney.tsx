@@ -15,6 +15,8 @@ import {p30TransformationPrompts,transformationForUnit} from "../study/pedagogy3
 import {continuityPrompts} from "../study/continuity28";
 import {register28Prompts} from "../study/register28";
 import {deriveWeakAreas,areaLabels} from "../study/remediation30";
+import {p31ContrastPrompts,p31ContrastForUnit} from "../study/contrast31";
+import {planP31Recall} from "../study/recall31";
 import {
   deriveJourneyProgress,journeyTypedPrompt,journeyUnits,journeyUnit,nextTurn,recommendedJourneyUnit,
   type JourneyPractice,type JourneySource,type JourneyStage,type JourneyOption,type JourneyUnitProgress
@@ -31,7 +33,7 @@ interface SpeechCapture {
 interface Feedback { kind:"graded"|"ungraded"|"choice";message:string;model:string;notes:string[];next:string|null; }
 interface RewriteReport {changed:boolean;oldLength:number;newLength:number;found:string[];missing:string[];}
 const extraJourneyPrompts=[...p28NewSentencePrompts,...p29AdditionalPrompts,
-  ...p29LexicalPrompts,...p30TransformationPrompts,...continuityPrompts,...register28Prompts];
+  ...p29LexicalPrompts,...p30TransformationPrompts,...continuityPrompts,...register28Prompts,...p31ContrastPrompts];
 const steps:[JourneyStage,string][]=[["learn","1 · Verstehen"],["build","2 · Satzbau"],["conversation","3 · Antworten"],["write","4 · Schreiben"],["practice","5 · Festigen"]];
 function compareWriting(before:string,after:string,features:readonly string[]):RewriteReport{
   const oldText=normalizeP26(before),newText=normalizeP26(after);
@@ -83,6 +85,10 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
   const learningLinks=lexicalLinksForUnit(unitId);
   const pragmatics=p29RegisterExampleForUnit(unitId);
   const transformation=transformationForUnit(unitId);
+  const contrast=p31ContrastForUnit(unitId);
+  const recallPlan=useMemo(()=>evidence?
+    planP31Recall(unitId,evidence.traces,evidence.events,extraJourneyPrompts):null,
+    [unitId,evidence]);
   const weakAreas=useMemo(()=>evidence?deriveWeakAreas(unitId,evidence.traces,evidence.events,
     extraJourneyPrompts):null,[unitId,evidence]);
   const nextActions=useMemo(()=>evidence?
@@ -169,7 +175,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
     const prompt=journeyTypedPrompt(unit,turn);
     const normalized=normalizeP26(answer);
     const exact=gradeStudyPrompt(prompt,normalized).result==="correct";
-    const independent=exact&&!hintUsed&&!speechUsed;
+    const independent=exact&&!hintUsed&&!speechUsed&&!choiceExampleSeen;
     const choice=turn.options.find(o=>o.valid&&normalizeP26(o.japanese)===normalized);
     setBusy(true);setError("");
     try{
@@ -265,10 +271,25 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
       </aside>
       <div className="p27-journey__content">
         <h3>{unit.title}</h3><p><strong>Lernziel:</strong> {unit.goal}</p>
+        <div className="p27-journey__position">
+          <span>{journeyUnits.indexOf(unit)+1} / {journeyUnits.length} · {unit.level} · {steps.findIndex(([name])=>name===stage)+1} / {steps.length} Lernschritte</span>
+          <div>
+            <button type="button" onClick={()=>selectUnit(journeyUnits[Math.max(0,journeyUnits.indexOf(unit)-1)]!.id)}
+              disabled={journeyUnits.indexOf(unit)===0}>Vorherige Einheit</button>
+            <button type="button" onClick={()=>selectUnit(journeyUnits[Math.min(journeyUnits.length-1,journeyUnits.indexOf(unit)+1)]!.id)}
+              disabled={journeyUnits.indexOf(unit)===journeyUnits.length-1}>Nächste Einheit</button>
+          </div>
+        </div>
         <nav className="p27-journey__steps" aria-label="Lernschritte">
           {steps.map(([id,label])=><button type="button" key={id} aria-current={stage===id?"step":undefined}
             onClick={()=>{setStage(id);setError("");}}>{label}</button>)}
         </nav>
+        <div className="p27-journey__step-navigation" role="group" aria-label="Zwischen Lernschritten wechseln">
+          <button type="button" disabled={stage==="learn"}
+            onClick={()=>setStage(steps[Math.max(0,steps.findIndex(([s])=>s===stage)-1)]![0])}>Vorheriger Schritt</button>
+          <button type="button" disabled={stage==="practice"}
+            onClick={()=>setStage(steps[Math.min(steps.length-1,steps.findIndex(([s])=>s===stage)+1)]![0])}>Nächster Schritt</button>
+        </div>
         {stage==="learn"?<section className="p27-journey__panel">
           <div className="p27-journey__note"><strong>Situation</strong><p>{unit.situation}</p></div>
           <h4>So funktioniert das Muster</h4><p>{unit.model}</p>
@@ -281,6 +302,14 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
           </div>:null}
           <div className="p27-journey__contrast"><div><strong>Unterscheide</strong><p>{unit.contrast}</p></div>
             <div><strong>Höflichkeit & Fehlerquelle</strong><p>{unit.register}</p></div></div>
+          {contrast?<div className="p27-journey__quality-example">
+            <h5>Welche Form passt hier besser?</h5>
+            <p><strong>Situation:</strong> {contrast.situation}</p>
+            <p><span lang="ja">{contrast.preferred}</span> / <span lang="ja">{contrast.alternative}</span></p>
+            <details><summary>Warum die Formen sich unterscheiden</summary><p>{contrast.why}</p></details>
+            <button type="button" disabled={disabled}
+              onClick={()=>onJourneyPractice(unitId,"grammar")}>Grammatik und Register aktiv entscheiden</button>
+          </div>:null}
           <h4>Wörter in Sätzen</h4>
           <div className="p27-journey__words">{unit.words.map(w=><div key={w.form+"-"+w.reading}>
             <strong lang="ja">{w.form}</strong><small lang="ja">{w.reading}</small>
@@ -298,7 +327,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
           <h4>Mehrstufiger Dialog</h4>
           <div className="p27-journey__filters" role="group" aria-label="Antwortart">
             <button type="button" aria-pressed={inputMode==="compose"} onClick={()=>{setInputMode("compose");setFeedback(null);}}>Selbst formulieren</button>
-            <button type="button" aria-pressed={inputMode==="choose"} onClick={()=>{setInputMode("choose");setHintUsed(true);setFeedback(null);}}>Antworten auswählen</button>
+            <button type="button" aria-pressed={inputMode==="choose"} onClick={()=>{setInputMode("choose");setHintUsed(true);setChoiceExampleSeen(true);setFeedback(null);}}>Antworten auswählen</button>
           </div>
           {nodeId!=="__finished__"&&stepsTaken<14?<div>
             <p className="p27-journey__muted">Gesprächsschritt {stepsTaken+1} · höchstens 14</p>
@@ -420,6 +449,21 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
         </section>:null}
         {stage==="practice"?<section className="p27-journey__panel">
           <h4>Kontextualisierte Wiederholung</h4>
+          {recallPlan?<section className="p27-journey__recall" aria-label="Geplante FSRS-Wiederholung">
+            <h5>Später wieder abrufen · tatsächliche FSRS-Termine</h5>
+            <p>{recallPlan.explanation}</p>
+            <div className="p27-journey__recall-stats">
+              <span><strong>{recallPlan.dueNow.length}</strong> jetzt fällig</span>
+              <span><strong>{recallPlan.notYetDue}</strong> später geplant</span>
+            </div>
+            {recallPlan.nextDue?<p>Nächster geplanter Termin: <strong>
+              {new Date(recallPlan.nextDue.dueAt).toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"})}
+            </strong></p>:null}
+            {recallPlan.recentlyReviewed>0?<p>{recallPlan.recentlyReviewed} geübte Abrufe innerhalb der letzten {recallPlan.recentWindowMinutes} Minuten.
+              Für noch nicht fällige Inhalte ist kein sofortiger erneuter FSRS-Abruf erforderlich.</p>:null}
+            <button type="button" disabled={disabled||recallPlan.dueNow.length===0}
+              onClick={()=>onJourneyPractice(unitId,"review")}>Fällige Karten jetzt wiederholen</button>
+          </section>:null}
           <p>Heute fällige Karten, letzte Fehler und neue Situationen werden aus demselben bestehenden Lernverlauf ermittelt.</p>
           <div className="p27-journey__stats">
             <div><strong>{profile?.due??0}</strong><span>fällig</span></div>
@@ -470,7 +514,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
               onClick={()=>onJourneyPractice(unitId,"transfer")}>Verknüpften Wortschatz im StudyPlayer abrufen</button>
           </div>:null}
           <div className="p27-journey__actions">
-            <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"review")}>Fehler und FSRS-Karten wiederholen</button>
+            <button type="button" disabled={disabled||!(profile?.due||profile?.retry)} onClick={()=>onJourneyPractice(unitId,"review")}>Fällige und fehlerhafte Karten wiederholen</button>
             <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"transfer")}>Transfer in neue Situationen</button>
             <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"register")}>Höflichkeit & Register</button>
             <button type="button" disabled={disabled} onClick={()=>onSourcePractice(unit.source,unit.sourceId,"context")}>Weitere Übungen zu diesem Thema</button>

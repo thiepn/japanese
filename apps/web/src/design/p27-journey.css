@@ -44,3 +44,15 @@
 .p27-journey__weakgrid p{margin:.4rem 0}
 .p27-journey__weakgrid small{opacity:.76;display:block;margin:.5rem 0}
 .p27-journey__weakgrid button{width:100%}
+
+.p27-journey__position{display:flex;justify-content:space-between;align-items:center;gap:.65rem;padding:.6rem 0;border-block:1px solid currentColor}
+.p27-journey__position>div,.p27-journey__step-navigation{display:flex;gap:.4rem;flex-wrap:wrap}
+.p27-journey__position>span{font-size:.85rem;font-weight:600}
+.p27-journey__step-navigation{justify-content:space-between;margin:.8rem 0}
+.p27-journey__recall{border:1px solid currentColor;padding:.9rem;margin:1rem 0}
+.p27-journey__recall h5{font-size:1rem;margin:0}
+.p27-journey__recall p{margin:.55rem 0}
+.p27-journey__recall-stats{display:flex;flex-wrap:wrap;gap:1rem;margin:.75rem 0}
+.p27-journey__recall-stats strong{font-size:1.2rem}
+.p27-journey__quality-example details{margin:.6rem 0}
+@media(max-width:520px){.p27-journey__position{display:grid}.p27-journey__position>div{display:grid;grid-template-columns:1fr 1fr}.p27-journey__step-navigation button{flex:1}.p27-journey__steps{gap:.25rem}.p27-journey__steps button{padding:.5rem .35rem;font-size:.88rem}.p27-journey__position button{width:100%}}
