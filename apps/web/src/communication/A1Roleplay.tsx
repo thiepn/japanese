@@ -89,7 +89,7 @@ export function A1Roleplay(){
   const event:StudyEvent={id:crypto.randomUUID(),userId:owner,deviceId:"japanese-communication-local",occurredAt:new Date().toISOString(),activity:"lesson",
    primaryTarget:{kind:"can_do",id:"roleplay:"+scenario.id},skillDimension:"comprehension",promptFamily:"a1-roleplay-choice",responseMode:"choice",
    result:selected.correct?"correct":"incorrect",attempts:1,sourceId:"original-a1-roleplay-v1",contentVersion:"1",contextId:scenario.id,
-   metadata:{scenarioId:scenario.id,turnIndex,selected:index,nextTurn:selected.next??null,schedulerExcluded:true}};
+   metadata:{scenarioId:scenario.id,turnIndex,selected:index,nextTurn:selected.next===undefined?turnIndex+1:selected.next,schedulerExcluded:true}};
   setBusy(true);setError("");
   try{await saveStudyEvent(event);setChoiceIndex(index);setVisited(previous=>previous.includes(turnIndex)?previous:[...previous,turnIndex]);if(selected.correct){setScore(v=>v+1);setPreviousMismatch(false);}else setPreviousMismatch(true);
  setHistory(previous=>{const old=previous[scenario.id]??{correct:0,incorrect:0};return {...previous,[scenario.id]:{correct:old.correct+(selected.correct?1:0),incorrect:old.incorrect+(selected.correct?0:1)}};});}
@@ -103,7 +103,7 @@ export function A1Roleplay(){
   <p>{scenario.intro}</p>
  <p>{history[scenario.id]?history[scenario.id].correct+" passende · "+history[scenario.id].incorrect+" unpassende Antworten bisher":"Noch kein gespeicherter Verlauf in dieser Situation."}</p>
  {historyError?<p role="alert">{historyError}</p>:null}
- <p>Empfohlene Wiederholung: {Object.entries(history).sort((a,b)=>b[1].incorrect-a[1].incorrect)[0]?.[0]??"Noch keine Fehler erfasst"}</p><progress value={turnIndex+(choice===null?0:1)} max={scenario.turns.length} aria-label="Gesprächsfortschritt"/>
+ <p>Empfohlene Wiederholung: {scenarios.find(s=>s.id===Object.entries(history).sort((a,b)=>b[1].incorrect-a[1].incorrect)[0]?.[0])?.title??"Noch keine Fehler erfasst"}</p><progress value={turnIndex+(choice===null?0:1)} max={scenario.turns.length} aria-label="Gesprächsfortschritt"/>
   <p>Gesprächsknoten {turnIndex+1} von {scenario.turns.length} · Dein Weg kann sich je nach Antwort verzweigen.</p>{previousMismatch&&choiceIndex===null?<p role="status">Dein Gegenüber war irritiert. Wähle jetzt eine Antwort, die zur Situation passt.</p>:null}
   <article><strong>{turn.speaker}</strong><p lang="ja">{turn.prompt}</p><button type="button" onClick={()=>speak(turn.prompt)}>Anhören</button></article>
   <fieldset disabled={choice!==null||busy}><legend>Was antwortest du?</legend><div className="a1-choice-grid">
