@@ -1,6 +1,7 @@
 import {useMemo} from "react";
 import {A1Communication} from "../communication/A1Communication";
 import {A1Recall} from "../communication/A1Recall";
+import {A1Roleplay} from "../communication/A1Roleplay";
 import {AdaptiveRemediation} from "../study/AdaptiveRemediation";
 import {AiCoach} from "../ai/AiCoach";
 import {RealWorldPerformancePanel} from "../study/RealWorldPerformancePanel";
@@ -319,6 +320,7 @@ export function J4Learn(props:Props){
     </section>
 
     <A1Communication/>
+      <A1Roleplay/>
       <A1Recall/>
 
     <section className="j4-evidence" aria-label="Learning evidence overview">
