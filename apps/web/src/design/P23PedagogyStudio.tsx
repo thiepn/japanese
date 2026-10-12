@@ -1,4 +1,5 @@
 import {useEffect,useState} from "react";
+import {P24GuidedLab} from "./P24GuidedLab";
 import {listMemoryTraces,listStudyEvents} from "@thiepn/local-db";
 import {getDevelopmentAccountId} from "../study/runtime";
 import {navigateA1} from "../communication/a1-navigation";
@@ -8,8 +9,8 @@ import {
 } from "../study/pedagogy23";
 import "./p23-pedagogy.css";
 
-type Props={onStart:(scenarioId:string,mode:PedagogyMode)=>void;disabled:boolean};
-export function P23PedagogyStudio({onStart,disabled}:Props){
+type Props={onStart:(scenarioId:string,mode:PedagogyMode)=>void;onStartTransfer:(scenarioId:string,mode:"full"|"repair")=>void;disabled:boolean};
+export function P23PedagogyStudio({onStart,onStartTransfer,disabled}:Props){
   const owner=getDevelopmentAccountId();
   const [selected,setSelected]=useState(pedagogyScenarios[0]!.id);
   const [progress,setProgress]=useState<PedagogyProgress[]>([]);
@@ -102,6 +103,7 @@ export function P23PedagogyStudio({onStart,disabled}:Props){
         </div>
         <p className="p23-studio__disclaimer">Geschlossene Aufgaben haben eindeutige Zielantworten. Richtige Antworten belegen keinen freien Gesprächserfolg; die FSRS-Wiederholungen nutzen den vorhandenen Lernstand.</p>
       </article>
+      <P24GuidedLab key={scenario.id+":"+owner} scenarioId={scenario.id} onPractice={onStartTransfer} disabled={disabled}/>
     </div>
   </section>;
 }

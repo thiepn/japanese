@@ -233,7 +233,7 @@ const sentenceBlueprints:readonly Omit<SentencePuzzle,"level"|"answer">[]=[
   {id:"past-a",scenarioId:"past",situation:"Erlebnis berichten",meaning:"Gestern habe ich einen Film gesehen.",tokens:["昨日","映画","を","見ました"],explanation:"ました ist die höfliche Vergangenheitsform."},
   {id:"past-b",scenarioId:"past",situation:"Verneinung in der Vergangenheit",meaning:"Gestern bin ich nicht zur Schule gegangen.",tokens:["昨日","は","学校","に","行きませんでした"],explanation:"ませんでした verneint vergangene Handlungen höflich."}
 ];
-export const sentencePuzzles:readonly SentencePuzzle[]=sentenceBlueprints.map(item=>({
+export const sentencePuzzles:readonly SentencePuzzle[]=sentenceBlueprints.map((item):SentencePuzzle=>({
   ...item,
   level:item.scenarioId==="plans"||item.scenarioId==="past"?"A2":"A1",
   answer:item.tokens.join("")
@@ -297,9 +297,9 @@ export const p24Lessons:Record<string,StudyLesson>=Object.fromEntries(
       examples:scenario.words.map(w=>({expression:w.example,note:w.meaning}))
     };
     return [
-      ["p24:sentence:"+scenario.id,{...base,id:base.id+"-sentence",contextId:"p24:sentence:"+scenario.id}],
-      ["p24:transfer:"+scenario.id,{...base,id:base.id+"-transfer",contextId:"p24:transfer:"+scenario.id}],
-      ["p24:dialogue:"+scenario.id,{...base,id:base.id+"-dialogue",contextId:"p24:dialogue:"+scenario.id}]
+      ["p24:sentence:"+scenario.id,{...base,id:base.id+"-sentence",contextId:"p24:sentence:"+scenario.id}] as const,
+      ["p24:transfer:"+scenario.id,{...base,id:base.id+"-transfer",contextId:"p24:transfer:"+scenario.id}] as const,
+      ["p24:dialogue:"+scenario.id,{...base,id:base.id+"-dialogue",contextId:"p24:dialogue:"+scenario.id}] as const
     ];
   })
 );

@@ -70,6 +70,7 @@ export function P24GuidedLab({
     recognizerRef.current?.stop();
     recognizerRef.current=null;
     setTurnId("start");setVisited(0);setDialogueDone(false);setAnswer(null);
+    elapsedRef.current=performance.now();
     setSaving(false);setError("");setPuzzleIndex(0);setSelectedTiles([]);
     setPuzzleFeedback(null);setDraft("");setChecklist(null);setProductionSaved(false);
     setView("conversation");
