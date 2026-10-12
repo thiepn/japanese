@@ -1,8 +1,8 @@
-import {useState} from "react";
-import {saveStudyEvent} from "@thiepn/local-db";
+import {useEffect,useState} from "react";
+import {listStudyEvents,saveStudyEvent} from "@thiepn/local-db";
 import type {StudyEvent} from "@thiepn/domain";
 import {getDevelopmentAccountId} from "../study/runtime";
-import {a1CommunicationLessons} from "../../../../packages/a1-communication-seed/src/index";
+
 
 type Turn={speaker:string;prompt:string;choices:readonly {japanese:string;german:string;correct:boolean;reply:string;replyGerman:string}[]};
 type Scenario={id:string;title:string;intro:string;turns:readonly Turn[]};
@@ -44,18 +44,29 @@ export function A1Roleplay(){
  const [choiceIndex,setChoiceIndex]=useState<number|null>(null),[score,setScore]=useState(0);
  const [busy,setBusy]=useState(false),[error,setError]=useState("");
  const [showGerman,setShowGerman]=useState(false);
+ const [history,setHistory]=useState<Record<string,{correct:number;incorrect:number}>>({});
+ const [historyError,setHistoryError]=useState("");
+ const owner=getDevelopmentAccountId();
+ useEffect(()=>{let active=true;setHistory({});setHistoryError("");
+ void listStudyEvents(owner).then(events=>{if(!active)return;const next:Record<string,{correct:number;incorrect:number}>={};
+ for(const event of events){if(event.userId!==owner||event.sourceId!=="original-a1-roleplay-v1")continue;
+ const key=event.metadata?.scenarioId;if(typeof key!=="string")continue;
+ const old=next[key]??{correct:0,incorrect:0};if(event.result==="correct")old.correct++;else old.incorrect++;next[key]=old;
+ }setHistory(next);}).catch(()=>{if(active)setHistoryError("Gesprächsfortschritt konnte nicht geladen werden.");});
+ return()=>{active=false};},[owner]);
  const scenario=scenarios[scenarioIndex],turn=scenario.turns[turnIndex],choice=choiceIndex===null?null:turn.choices[choiceIndex];
  const done=turnIndex===scenario.turns.length-1&&choice!==null;
  function start(index:number){setScenarioIndex(index);setTurnIndex(0);setChoiceIndex(null);setScore(0);setError("");}
  async function choose(index:number){
   if(busy||choiceIndex!==null)return;
-  const selected=turn.choices[index];const owner=getDevelopmentAccountId();
+  const selected=turn.choices[index];
   const event:StudyEvent={id:crypto.randomUUID(),userId:owner,deviceId:"japanese-communication-local",occurredAt:new Date().toISOString(),activity:"lesson",
    primaryTarget:{kind:"can_do",id:"roleplay:"+scenario.id},skillDimension:"comprehension",promptFamily:"a1-roleplay-choice",responseMode:"choice",
    result:selected.correct?"correct":"incorrect",attempts:1,sourceId:"original-a1-roleplay-v1",contentVersion:"1",contextId:scenario.id,
    metadata:{scenarioId:scenario.id,turnIndex,selected:index,schedulerExcluded:true}};
   setBusy(true);setError("");
-  try{await saveStudyEvent(event);setChoiceIndex(index);if(selected.correct)setScore(v=>v+1);}
+  try{await saveStudyEvent(event);setChoiceIndex(index);if(selected.correct)setScore(v=>v+1);
+ setHistory(previous=>{const old=previous[scenario.id]??{correct:0,incorrect:0};return {...previous,[scenario.id]:{correct:old.correct+(selected.correct?1:0),incorrect:old.incorrect+(selected.correct?0:1)}};});}
   catch{setError("Antwort konnte nicht gespeichert werden. Bitte erneut versuchen.");}
   finally{setBusy(false);}
  }
@@ -63,7 +74,10 @@ export function A1Roleplay(){
   <h2 id="a1-roleplay-title">A1 · Gesprächstraining</h2>
   <p>Wähle passende Antworten. Dein Gegenüber reagiert auf deine Entscheidung. Die Auswahl wird lokal als Übung gespeichert.</p>
   <label>Situation <select value={scenarioIndex} onChange={e=>start(Number(e.target.value))}>{scenarios.map((s,i)=><option key={s.id} value={i}>{s.title}</option>)}</select></label>
-  <p>{scenario.intro}</p><progress value={turnIndex+(choice===null?0:1)} max={scenario.turns.length} aria-label="Gesprächsfortschritt"/>
+  <p>{scenario.intro}</p>
+ <p>{history[scenario.id]?history[scenario.id].correct+" passende · "+history[scenario.id].incorrect+" unpassende Antworten bisher":"Noch kein gespeicherter Verlauf in dieser Situation."}</p>
+ {historyError?<p role="alert">{historyError}</p>:null}
+ <p>Empfohlene Wiederholung: {Object.entries(history).sort((a,b)=>b[1].incorrect-a[1].incorrect)[0]?.[0]??"Noch keine Fehler erfasst"}</p><progress value={turnIndex+(choice===null?0:1)} max={scenario.turns.length} aria-label="Gesprächsfortschritt"/>
   <p>Gesprächsschritt {turnIndex+1} von {scenario.turns.length}</p>
   <article><strong>{turn.speaker}</strong><p lang="ja">{turn.prompt}</p><button type="button" onClick={()=>speak(turn.prompt)}>Anhören</button></article>
   <fieldset disabled={choice!==null||busy}><legend>Was antwortest du?</legend><div className="a1-choice-grid">
