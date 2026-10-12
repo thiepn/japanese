@@ -369,7 +369,7 @@ export function a1ManifestErrors():string[]{
  }
  return errors;
 }
-export type A1EvidenceOrigin={id:string;userId:string;sourceId?:string|null;contextId?:string|null;metadata?:Record<string,unknown>|null};
+export type A1EvidenceOrigin={id:string;userId:string;sourceId?:string|null;contextId?:string|null;metadata?:Record<string,unknown>|null;primaryTarget?:{kind:string;id:string}|null};
 export type A1CrosswalkRow={eventId:string;status:"aligned"|"ambiguous"|"unmapped";legacyRefs:readonly string[];candidateLessonIds:readonly string[];reason:string};
 export type A1CrosswalkReport={rows:readonly A1CrosswalkRow[];outOfScope:number;aligned:number;ambiguous:number;unmapped:number};
 /**
@@ -377,15 +377,21 @@ export type A1CrosswalkReport={rows:readonly A1CrosswalkRow[];outOfScope:number;
  * No synthetic StudyEvent, no mastery claim, no mutation of original records.
  */
 export function reconcileA1Evidence(
- events:readonly A1EvidenceOrigin[],owner:string,exerciseToCommunicationLesson:Readonly<Record<string,string>>={}
+ events:readonly A1EvidenceOrigin[],owner:string,exerciseToCommunicationLesson:Readonly<Record<string,string>>={},targetToLegacyUnits:Readonly<Record<string,readonly string[]>>={}
 ):A1CrosswalkReport{
  const rows:A1CrosswalkRow[]=[];let outOfScope=0;
  const core=new Set(A1_LEGACY_UNIT_IDS),communication=new Set<string>(A1_COMMUNICATION_IDS),roleplays=new Set<string>(A1_ROLEPLAY_IDS);
  for(const event of events){
   if(event.userId!==owner){outOfScope++;continue;}
+  // An explicitly higher-level context is never silently imported into A1.
+  if(typeof event.contextId==="string"&&/^(?:a2|b1|b2|c1)(?:-|:)/.test(event.contextId)){outOfScope++;continue;}
   const refs=new Set<string>();
   const ctx=event.contextId;
   const unit=event.metadata?.unitId;
+  const target=event.primaryTarget;
+  if(target){
+   for(const legacyId of targetToLegacyUnits[target.kind+":"+target.id]??[])if(core.has(legacyId))refs.add(legacyId);
+  }
   if(typeof ctx==="string"&&core.has(ctx))refs.add(ctx);
   if(typeof unit==="string"&&core.has(unit))refs.add(unit);
   if(event.sourceId==="original-a1-communication-v1"){
