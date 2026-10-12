@@ -26,3 +26,21 @@
 .a1-roleplay-shell progress{display:block;width:100%}
 @media(max-width:600px){.a1-dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.a1-dashboard-grid article strong{font-size:1.05rem}.a1-dashboard-links{display:grid;grid-template-columns:1fr}.a1-roleplay-shell{padding-inline:.75rem}}
 @media(max-width:350px){.a1-dashboard-grid{grid-template-columns:1fr}}
+
+/* A1 practice: high-contrast feedback without relying on color alone. */
+.a1-feedback{border:2px solid currentColor;border-radius:.3rem;padding:1rem;margin-block:1rem;overflow-wrap:anywhere}
+.a1-feedback strong{display:block;margin-bottom:.5rem}
+.a1-feedback button{min-height:2.75rem;white-space:normal;text-align:left}
+.a1-roleplay-shell .a1-choice-grid button:focus-visible,
+.a1-dashboard-links button:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+.a1-roleplay-shell .a1-choice-grid button[aria-pressed="true"]{outline:2px solid currentColor;outline-offset:1px;font-weight:700}
+.a1-roleplay-shell fieldset:disabled{opacity:.8}
+.a1-roleplay-shell [role="alert"],.a1-recall-shell [role="alert"]{border-left:3px solid currentColor;padding-inline:.75rem}
+.a1-dashboard-links button{min-height:2.75rem;padding:.6rem .8rem;white-space:normal;text-align:left}
+@media(max-width:600px){
+ .a1-roleplay-shell select{width:100%}
+ .a1-roleplay-shell .a1-choice-grid button{width:100%;min-height:3.25rem}
+ .a1-roleplay-shell .a1-feedback button{width:100%;margin-block:.3rem}
+ .a1-dashboard-links button{width:100%}
+}
+@media(prefers-reduced-motion:reduce){.a1-roleplay-shell *,.a1-recall-shell *{scroll-behavior:auto!important;transition:none!important}}
