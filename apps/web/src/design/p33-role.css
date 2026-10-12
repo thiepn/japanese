@@ -85,3 +85,5 @@
 .p33-role__revision-workspace ul{padding-left:1.25rem}
 .p33-role__revision-workspace p{margin:.4rem 0}
 @media(max-width:580px){.p33-role__revision-workspace button{min-height:44px;width:100%}}
+
+.p33-role__exact-due button:focus-visible{outline:3px solid currentColor;outline-offset:2px}

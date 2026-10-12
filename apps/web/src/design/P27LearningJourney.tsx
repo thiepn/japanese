@@ -52,12 +52,13 @@ function compareWriting(before:string,after:string,features:readonly string[]):R
     found:features.filter(f=>newText.includes(normalizeP26(f))),
     missing:features.filter(f=>!newText.includes(normalizeP26(f)))};
 }
-export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,onMistakePractice,onRoleDuePractice}:{
+export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,onMistakePractice,onRoleDuePractice,onCorrectionDuePractice}:{
   disabled:boolean;
   onSourcePractice:(source:JourneySource,sourceId:string,mode:SourceMode)=>void;
   onJourneyPractice:(id:string,mode:JourneyPractice)=>void;
   onMistakePractice:(id:string,promptId:string)=>void;
   onRoleDuePractice:(unitId:string,scenarioId:string)=>void;
+  onCorrectionDuePractice:(unitId:string,scenarioId:string)=>void;
 }){
   const owner=getDevelopmentAccountId();
   const currentOwner=useRef(owner);currentOwner.current=owner;
@@ -464,7 +465,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               onReview={()=>onJourneyPractice(unitId,"review")}
               onGrammar={()=>onJourneyPractice(unitId,"grammar")}
               traces={evidence?.traces??[]}
-              onRoleDue={scenarioId=>onRoleDuePractice(unitId,scenarioId)}/>
+              onRoleDue={scenarioId=>onRoleDuePractice(unitId,scenarioId)}
+              onCorrectionDue={scenarioId=>onCorrectionDuePractice(unitId,scenarioId)}/>
           </details>:null}
           {(nodeId==="__finished__"||stepsTaken>=14)?<P28Continuity key={unit.id+":"+owner}
             unitId={unit.id} owner={owner} disabled={disabled} onReviewed={()=>setReload(n=>n+1)}

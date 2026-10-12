@@ -19,13 +19,15 @@ import {p37CorrectionAlternativesFor} from "../study/correction37";
 import {normalizeP26} from "../study/pedagogy26";
 import type {MemoryTrace} from "@thiepn/scheduler";
 import {dueP36RolePrompts} from "../study/roleDue36";
+import {dueP37CorrectionPrompts} from "../study/correctionDue37";
 import "./p33-role.css";
 
 interface AnswerFeedback{correctModel:boolean;independent:boolean;notes:string[];}
-export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onReview,onGrammar,traces,onRoleDue}:{
+export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onReview,onGrammar,traces,onRoleDue,onCorrectionDue}:{
   unitId:string;owner:string;disabled:boolean;onReviewed:()=>void;
   dueCount:number;onReview:()=>void;onGrammar:()=>void;
   traces:readonly MemoryTrace[];onRoleDue:(scenarioId:string)=>void;
+  onCorrectionDue:(scenarioId:string)=>void;
 }){
   const scenarios=p33RolesForUnit(unitId);
   const [scenarioId,setScenarioId]=useState(scenarios[0]?.id??"");
@@ -58,6 +60,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
   const scenario=scenarios.find(s=>s.id===scenarioId)??scenarios[0];
   const role=scenario?.roles.find(r=>r.id===perspective)??scenario?.roles[0];
   const scenarioDue=scenario?dueP36RolePrompts(unitId,scenario.id,traces).length:0;
+  const correctionDue=scenario?dueP37CorrectionPrompts(unitId,scenario.id,traces).length:0;
   const turn=role?.turns[turnIndex];
   const repair=p33RepairForScenario(scenario?.id??"");
   const repairFollowup=p34RepairContinuationFor(scenario?.id??"");
@@ -283,6 +286,12 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
         onClick={()=>onRoleDue(scenario!.id)}>Genau diesen Dialog fällig wiederholen</button>
       <small>Es werden ausschließlich die nach dem bestehenden FSRS-Termin fälligen
         Antwortkarten gestartet. Neue und freiwillige Fehlerübungen sind getrennt.</small>
+    </div>
+    <div className="p33-role__exact-due" aria-label="Fällige Grammatikreparaturen in dieser Situation">
+      <strong>{correctionDue} FSRS-fällige Korrekturen genau dieses Gesprächs</strong>
+      <button type="button" disabled={disabled||busy||correctionDue===0}
+        onClick={()=>onCorrectionDue(scenario!.id)}>Fällige Korrekturen gezielt wiederholen</button>
+      <small>Keine neuen, nicht fälligen Aufgaben. Alle Termine stammen aus dem vorhandenen FSRS-Lernverlauf.</small>
     </div>
     <div role="group" aria-label="Situationsauswahl" className="p33-role__choices">
       {scenarios.map(s=><button type="button" key={s.id} disabled={busy}
