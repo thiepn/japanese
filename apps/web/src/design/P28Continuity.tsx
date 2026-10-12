@@ -37,6 +37,7 @@ export function P28Continuity({
   const [revisions,setRevisions]=useState(0);
   const [modelRevealed,setModelRevealed]=useState(false);
   const [choiceOptionsSeen,setChoiceOptionsSeen]=useState(false);
+  const [intendedReply,setIntendedReply]=useState<string|null>(null);
   const startedAt=useRef(0);
   const revealedTurnIds=useRef<Set<string>>(new Set());
   const node=scenario?.turns.find(t=>t.id===nodeId)??scenario?.turns[0];
@@ -45,7 +46,7 @@ export function P28Continuity({
   useEffect(()=>{
     setStarted(false);setNodeId("start");setCount(0);setMode("typed");
     setDraft("");setFeedback(null);setError("");setShowMeaning(false);setBusy(false);
-    setFirstDraft("");setRevisions(0);setModelRevealed(false);setChoiceOptionsSeen(false);
+    setFirstDraft("");setRevisions(0);setModelRevealed(false);setChoiceOptionsSeen(false);setIntendedReply(null);
     startedAt.current=performance.now();
   },[unitId,owner,scenarioId]);
   useEffect(()=>{revealedTurnIds.current.clear();},[unitId,owner]);
@@ -62,7 +63,8 @@ export function P28Continuity({
       contextId:"p28:continuity:"+scenario!.id,
       sourceId:"thiepn-original",contentVersion:"p28-1",
       metadata:{p28:true,kind:"continuity-ungraded",scenarioId:scenario!.id,
-        turnId:node!.id,helpUsed:modelRevealed,revisions, revisedAfterModel:revisions>0,textStored:false,
+        turnId:node!.id,helpUsed:modelRevealed,revisions, revisedAfterModel:revisions>0,
+        intentSelected:Boolean(intendedReply),textStored:false,
         characters:[...normalizeP26(response)].length,schedulerExcluded:true}
     };
     await saveStudyEvent(event);
@@ -74,12 +76,13 @@ export function P28Continuity({
     const prompt=continuityPrompt(scenario!,node!,kind);
     const grade=gradeStudyPrompt(prompt,response);
     const accepted=grade.result==="correct";
-    const independentlyProduced=kind==="typed"&&accepted&&!modelRevealed&&!choiceOptionsSeen&&revisions===0&&
+    const independentlyProduced=kind==="typed"&&accepted&&!modelRevealed&&!choiceOptionsSeen&&!intendedReply&&revisions===0&&
       !revealedTurnIds.current.has(scenario!.id+":"+node!.id);
     const independentChoice=kind==="choice"&&!modelRevealed&&revisions===0&&
       !revealedTurnIds.current.has(scenario!.id+":"+node!.id);
     const choice=node!.choices.find(c=>normalizeP26(c.japanese)===normalizeP26(response));
-    const next=choice?.next??node!.id;
+    const intended=node!.choices.find(c=>c.appropriate&&c.japanese===intendedReply);
+    const next=choice?.next??intended?.next??node!.id;
     setBusy(true);setError("");
     try{
       if(independentChoice||independentlyProduced){
@@ -98,11 +101,12 @@ export function P28Continuity({
           :"Auswahl nach angezeigtem Beispiel – unbewertete Übung.")
           :independentlyProduced?"Eine der geübten Zielformen unabhängig produziert; FSRS-Ereignis gespeichert."
             :accepted?"Geübte Zielform bei einer Überarbeitung getroffen; wegen zuvor gezeigter Hilfe unbewertet."
+            :intended?"Selbst verfasst und nach deiner gewählten Absicht weitergeleitet; Inhalt bleibt unbewertet."
             :"Freie andere Formulierung: nicht automatisch beurteilbar und nicht als Fehler eingestuft.",
         model:node!.choices.find(c=>c.appropriate)?.japanese??"",
         next,
         notes:[
-          choice?.note??"Die Referenzantworten decken nicht alle sprachlich richtigen Varianten ab.",
+          choice?.note??intended?.note??"Die Referenzantworten decken nicht alle sprachlich richtigen Varianten ab.",
           ...grammarReflection(journeyUnit(unitId),response)
         ]
       });
@@ -113,7 +117,7 @@ export function P28Continuity({
   }
   function advance(next:string|null){
     setCount(n=>n+1);setNodeId(next??"__done__");setDraft("");
-    setFeedback(null);setError("");setFirstDraft("");setRevisions(0);setModelRevealed(false);setChoiceOptionsSeen(false);
+    setFeedback(null);setError("");setFirstDraft("");setRevisions(0);setModelRevealed(false);setChoiceOptionsSeen(false);setIntendedReply(null);
     startedAt.current=performance.now();
   }
   const completed=nodeId==="__done__";
@@ -141,7 +145,7 @@ export function P28Continuity({
       <div className="p28-continuity__actions">
         <button type="button" onClick={()=>onOpenUnit(scenario.destinationUnitId)}>
           Verknüpfte nächste Einheit öffnen</button>
-        <button type="button" onClick={()=>{setCount(0);setNodeId("start");setFeedback(null);setDraft("");setFirstDraft("");setRevisions(0);setModelRevealed(false);startedAt.current=performance.now();}}>
+        <button type="button" onClick={()=>{setCount(0);setNodeId("start");setFeedback(null);setDraft("");setFirstDraft("");setRevisions(0);setModelRevealed(false);setIntendedReply(null);startedAt.current=performance.now();}}>
           Folgegespräch erneut beginnen</button>
       </div>
     </div>:<div className="p28-continuity__dialogue">
@@ -154,6 +158,18 @@ export function P28Continuity({
         <button type="button" aria-pressed={mode==="choice"} disabled={busy} onClick={()=>{setMode("choice");setChoiceOptionsSeen(true);setFeedback(null);}}>Antwortauswahl</button>
       </div>
       {mode==="typed"?<div>
+        <div className="p28-continuity__intent-scaffold" role="group" aria-label="Kommunikative Absicht vorgeben">
+          <strong>Was möchtest du ausdrücken?</strong>
+          <p>Optional: Wähle die Bedeutung, ohne eine fertige japanische Antwort zu übernehmen.
+             Mit diesem Hinweis wird die Antwort unbewertet gespeichert.</p>
+          {node.choices.filter(c=>c.appropriate).map((option,i)=><button type="button"
+            key={i} disabled={busy||Boolean(feedback)}
+            aria-pressed={intendedReply===option.japanese}
+            onClick={()=>{
+              setIntendedReply(option.japanese);
+              setModelRevealed(true);
+            }}>{option.meaning}</button>)}
+        </div>
         <label htmlFor="p28-continuity-draft">Japanische Antwort</label>
         <textarea id="p28-continuity-draft" lang="ja" rows={3} value={draft}
           disabled={Boolean(feedback)||busy} onChange={e=>setDraft(e.target.value)}/>
