@@ -24,7 +24,7 @@ import {pedagogyPrompts,pedagogyLessons,pedagogySession,type PedagogyMode} from 
 import {p24Lessons,p24ReviewPrompts,p24PracticeSession,type PracticeMode} from "./pedagogy24";
 import {p25Lessons,p25Prompts,p25Session,type P25Mode} from "./pedagogy25";
 import {p26Lessons,p26Prompts,p26Session,type P26Mode} from "./pedagogy26";
-import {journeyPrompts,journeyLessons,journeySession,type JourneyPractice} from "./journey27";
+import {journeyPrompts,journeyLessons,journeySession,promptsForUnit,type JourneyPractice} from "./journey27";
 import {p28NewSentencePrompts} from "./sentence28";
 import {continuityPrompts} from "./continuity28";
 import {register28Prompts} from "./register28";
@@ -134,20 +134,29 @@ export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
   return insertFirstExposureLessons(queue,byId,privatePrompts);
 }
 
+const p35JourneyExtras:StudyPrompt[]=[...p28NewSentencePrompts.map(p=>p29SentencePromptOverrides.get(p.id)??p),...continuityPrompts,...register28Prompts,...p29AdditionalPrompts,...p29LexicalPrompts,...p30TransformationPrompts,...p31ContrastPrompts,...p31SentencePrompts,...p32SentencePrompts,...p32ContrastPrompts,...p33RolePrompts,...p33SentencePrompts,...p34SentencePrompts,...p35PragmaticPrompts];
 export async function buildP27JourneySession(unitId:string,focus:JourneyPractice="review"):Promise<StudyStep[]>{
   const accountId=DEVELOPMENT_ACCOUNT_ID;
   const [traces,events]=await Promise.all([listMemoryTraces(accountId),listStudyEvents(accountId)]);
   if(DEVELOPMENT_ACCOUNT_ID!==accountId)throw new Error("P27_WORKSPACE_CHANGED");
-  return journeySession(unitId,focus,traces,events,Date.now(),[...p28NewSentencePrompts.map(p=>p29SentencePromptOverrides.get(p.id)??p),...continuityPrompts,...register28Prompts,...p29AdditionalPrompts,...p29LexicalPrompts,...p30TransformationPrompts,...p31ContrastPrompts,...p31SentencePrompts,...p32SentencePrompts,...p32ContrastPrompts,...p33RolePrompts,...p33SentencePrompts,...p34SentencePrompts,...p35PragmaticPrompts]);
+  return journeySession(unitId,focus,traces,events,Date.now(),p35JourneyExtras);
 }
 
-/** Reuse the canonical StudyPlayer and the exact last-incorrect prompt identity.
- * Recheck its status against the current owner's graded StudyEvents at invocation. */
+/** Re-check the latest independently graded event, and resolve the exact
+ * authorized source prompt without slicing through the normal 14-card queue. */
 export async function buildP35MistakeSession(unitId:string,promptId:string):Promise<StudyStep[]>{
-  const session=await buildP27JourneySession(unitId,"retry");
-  const targeted=session.filter((step,index)=>index===0||step.id===promptId);
-  if(targeted.length!==2)throw new Error("P35_MISTAKE_NO_LONGER_ACTIVE");
-  return targeted;
+  const accountId=DEVELOPMENT_ACCOUNT_ID;
+  const events=await listStudyEvents(accountId);
+  if(DEVELOPMENT_ACCOUNT_ID!==accountId)throw new Error("P35_WORKSPACE_CHANGED");
+  const last=events.filter(event=>event.userId===accountId&&
+    event.metadata?.promptId===promptId&&event.metadata?.schedulerExcluded!==true&&
+    (event.result==="correct"||event.result==="incorrect"))
+    .sort((a,b)=>b.occurredAt.localeCompare(a.occurredAt))[0];
+  if(last?.result!=="incorrect")throw new Error("P35_MISTAKE_NO_LONGER_ACTIVE");
+  const prompt=promptsForUnit(unitId,p35JourneyExtras).find(item=>item.id===promptId);
+  const lesson=journeyLessons["p27:unit:"+unitId];
+  if(!prompt||!lesson)throw new Error("P35_PROMPT_NOT_IN_UNIT");
+  return [lesson,prompt];
 }
 export async function buildP26PrecisionSession(missionId:string,mode:P26Mode="course"):Promise<StudyStep[]>{
   const accountId=DEVELOPMENT_ACCOUNT_ID;
