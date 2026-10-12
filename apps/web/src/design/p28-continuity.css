@@ -1,0 +1,12 @@
+.p28-continuity{margin:1rem 0;padding:1rem;border-top:2px solid currentColor;min-width:0}
+.p28-continuity header small{font-size:.8rem;opacity:.75}.p28-continuity h4{margin:.3rem 0}
+.p28-continuity__dialogue blockquote{margin:1rem 0;padding:.85rem;border-left:3px solid currentColor;background:rgba(120,120,120,.08)}
+.p28-continuity__dialogue blockquote p{font-size:1.25rem}.p28-continuity__dialogue blockquote small{display:block}
+.p28-continuity__mode,.p28-continuity__actions{display:flex;gap:.5rem;flex-wrap:wrap;margin:.8rem 0}
+.p28-continuity__choices{display:grid;gap:.55rem;margin:1rem 0}.p28-continuity__choices button{display:grid;gap:.2rem}
+.p28-continuity__choices span{font-size:1.15rem}.p28-continuity__choices small{opacity:.75}
+.p28-continuity__feedback{padding:.85rem;border-left:3px solid currentColor;background:rgba(120,120,120,.08);margin:1rem 0}
+.p28-continuity__feedback ul{padding-left:1.25rem}.p28-continuity__feedback li{margin:.3rem 0}
+.p28-continuity__check{display:flex!important;gap:.5rem;align-items:center}
+.p28-continuity__caveat{font-size:.82rem;opacity:.8}
+@media(max-width:520px){.p28-continuity__actions{display:grid}.p28-continuity__actions button{width:100%}}
