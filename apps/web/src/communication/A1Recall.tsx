@@ -58,7 +58,7 @@ export function A1Recall(){
  const schedule=recallSchedule(attempts,now);
  const reviewDue=(card:Item)=>isRecallDue(schedule[card.id],now);
  const dueTotal=items.filter(card=>reviewDue(card)).length;
- const pool=items.filter(item=>item.kind===mode&&(lessonFilter==="all"||item.id.includes(":"+lessonFilter+":"))&&(!dailyOnly||!history[item.id]?.last||new Date(history[item.id].last).toLocaleDateString("sv-SE")!==today)&&(!mistakesOnly||(schedule[item.id]?.streak===0&&schedule[item.id]?.incorrect>0))&&(!reviewMode||reviewDue(item))).sort((a,b)=>{
+ const pool=items.filter(item=>item.kind===mode&&(lessonFilter==="all"||item.id.includes(":"+lessonFilter+":"))&&(!dailyOnly||!history[item.id]?.last||new Date(history[item.id]!.last).toLocaleDateString("sv-SE")!==today)&&(!mistakesOnly||(schedule[item.id]?.streak===0&&schedule[item.id]?.incorrect>0))&&(!reviewMode||reviewDue(item))).sort((a,b)=>{
  const x=history[a.id],y=history[b.id];
  const priority=(h:typeof x)=>h?(h.wrong>h.correct?0:h.correct===0?1:h.wrong>0?2:3):-1;
  return priority(x)-priority(y)||a.id.localeCompare(b.id);
