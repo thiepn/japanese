@@ -11,7 +11,7 @@
 .p27-journey__filters,.p27-journey__actions{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0}
 .p27-journey__units{display:grid;gap:.5rem;max-height:42rem;overflow-y:auto;align-content:start}
 .p27-journey__units button{display:grid;gap:.25rem;width:100%}.p27-journey__units small{opacity:.76}
-.p27-journey__steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.5rem;margin:1rem 0}.p27-journey__steps button{text-align:center}
+.p27-journey__steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.5rem;margin:1rem 0}.p27-journey__steps button{text-align:center}
 .p27-journey__note{border-left:3px solid currentColor;background:rgba(120,120,120,.07);padding:.8rem 1rem;margin:1rem 0}
 .p27-journey__note p{margin:.4rem 0}.p27-journey__contrast{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
 .p27-journey__contrast div{border:1px solid currentColor;padding:.8rem}.p27-journey__contrast p{margin:.4rem 0}

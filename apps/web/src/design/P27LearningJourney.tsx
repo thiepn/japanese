@@ -5,6 +5,9 @@ import type {StudyEvent} from "@thiepn/domain";
 import {DEVELOPMENT_DEVICE_ID,getDevelopmentAccountId,recordStudyAnswer} from "../study/runtime";
 import {normalizeP26} from "../study/pedagogy26";
 import {grammarReflection} from "../study/feedback27";
+import {P28SentenceBuilder} from "./P28SentenceBuilder";
+import {P28Continuity} from "./P28Continuity";
+import {p28NewSentencePrompts} from "../study/sentence28";
 import {
   deriveJourneyProgress,journeyTypedPrompt,journeyUnits,journeyUnit,nextTurn,recommendedJourneyUnit,
   type JourneyPractice,type JourneySource,type JourneyStage,type JourneyOption,type JourneyUnitProgress
@@ -20,7 +23,7 @@ interface SpeechCapture {
 }
 interface Feedback { kind:"graded"|"ungraded"|"choice";message:string;model:string;notes:string[];next:string|null; }
 interface RewriteReport {changed:boolean;oldLength:number;newLength:number;found:string[];missing:string[];}
-const steps:[JourneyStage,string][]=[["learn","1 · Verstehen"],["conversation","2 · Antworten"],["write","3 · Schreiben"],["practice","4 · Festigen"]];
+const steps:[JourneyStage,string][]=[["learn","1 · Verstehen"],["build","2 · Satzbau"],["conversation","3 · Antworten"],["write","4 · Schreiben"],["practice","5 · Festigen"]];
 function compareWriting(before:string,after:string,features:readonly string[]):RewriteReport{
   const oldText=normalizeP26(before),newText=normalizeP26(after);
   return {changed:oldText!==newText,oldLength:[...oldText].length,newLength:[...newText].length,
@@ -73,7 +76,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
     let active=true;setLoading(true);setLoadError("");
     void Promise.all([listStudyEvents(owner),listMemoryTraces(owner)]).then(([events,traces])=>{
       if(active&&currentOwner.current===owner)
-        setProgress(deriveJourneyProgress(traces.filter(t=>t.userId===owner),events.filter(e=>e.userId===owner)));
+        setProgress(deriveJourneyProgress(traces.filter(t=>t.userId===owner),events.filter(e=>e.userId===owner),Date.now(),p28NewSentencePrompts));
     }).catch(()=>{if(active)setLoadError("Lernverlauf nicht verfügbar; die Übungen können trotzdem verwendet werden.");})
       .finally(()=>{if(active)setLoading(false);});
     return()=>{active=false;};
@@ -197,7 +200,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
   return <section className="p27-journey" aria-labelledby="p27-title">
     <header><p className="j4-kicker">JAPANESE · EIN LERNWEG</p>
       <h2 id="p27-title">Japanisch im Zusammenhang lernen</h2>
-      <p>18 Originaleinheiten mit vier Lernschritten: verstehen, antworten, eigene Texte schreiben und gezielt wiederholen.</p>
+      <p>18 Originaleinheiten mit fünf verbundenen Lernschritten: verstehen, Sätze bauen, antworten, schreiben und gezielt wiederholen.</p>
     </header>
     <div className="p27-journey__next">
       <div><strong>Empfohlene nächste Einheit</strong><p>{loading?"Lernverlauf laden …":recommendedUnit.title}</p></div>
@@ -247,8 +250,12 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
             <span>{w.meaning}</span><small lang="ja">{w.example}</small></div>)}</div>
           <div className="p27-journey__actions">
             <button type="button" disabled={disabled} onClick={()=>onSourcePractice(unit.source,unit.sourceId,"core")}>Originale Grundlagen üben</button>
-            <button type="button" onClick={()=>setStage("conversation")}>Weiter zum Gespräch</button>
+            <button type="button" onClick={()=>setStage("build")}>Weiter zum Satzbau</button>
           </div>
+        </section>:null}
+        {stage==="build"?<section className="p27-journey__panel">
+          <P28SentenceBuilder key={unit.id+":"+owner} unitId={unit.id} owner={owner} disabled={disabled}
+            onReviewed={()=>setReload(n=>n+1)} onContinue={()=>setStage("conversation")}/>
         </section>:null}
         {stage==="conversation"?<section className="p27-journey__panel">
           <h4>Mehrstufiger Dialog</h4>
@@ -295,6 +302,9 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
             <strong>{nodeId==="__finished__"?"Gespräch abgeschlossen":"Nach wiederholten Versuchen unterbrochen"}</strong>
             <p>Auswahl oder Mustererkennung sind keine umfassende Bewertung freier Gespräche.</p>
           </div>}
+          {(nodeId==="__finished__"||stepsTaken>=14)?<P28Continuity key={unit.id+":"+owner}
+            unitId={unit.id} owner={owner} disabled={disabled} onReviewed={()=>setReload(n=>n+1)}
+            onOpenUnit={selectUnit}/>:null}
           <div className="p27-journey__actions">
             <button type="button" onClick={resetDialogue}>Gespräch wiederholen</button>
             <button type="button" onClick={()=>setStage("write")}>Weiter: Schreiben</button>

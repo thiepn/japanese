@@ -54,7 +54,7 @@ const reused:JourneySentencePuzzle[]=sentencePuzzles.map(p=>({
 }));
 export const journeySentencePuzzles:readonly JourneySentencePuzzle[]=[...reused,...authored.map(newPuzzle)];
 export const p28NewSentencePrompts:StudyPrompt[]=journeySentencePuzzles
-  .filter(p=>p.id.startsWith("p28-")===false&&p.prompt.id.startsWith("p28-"))
+  .filter(p=>p.prompt.id.startsWith("p28-build-"))
   .map(p=>p.prompt);
 export function sentencePuzzlesForUnit(id:string):JourneySentencePuzzle[]{
   journeyUnit(id);

@@ -10,7 +10,7 @@ import {p26Missions,p26Prompts,p26Lessons,missionTurnPrompt,normalizeP26} from "
  * No per-phase progress, duplicate learner events, or additional master store.
  */
 export type JourneySource="p23"|"p25"|"p26";
-export type JourneyStage="learn"|"conversation"|"write"|"practice";
+export type JourneyStage="learn"|"build"|"conversation"|"write"|"practice";
 export type JourneyPractice="review"|"transfer"|"register";
 export interface JourneyWord{form:string;reading:string;meaning:string;example:string;}
 export interface JourneyOption{
@@ -179,10 +179,10 @@ function initialPrompts(unit:JourneyUnit):StudyPrompt[]{
   if(unit.source==="p25")return p25Prompts.filter(p=>p.contextId==="p25:"+unit.sourceId);
   return p26Prompts.filter(p=>p.contextId==="p26:mission:"+unit.sourceId);
 }
-export function promptsForUnit(unitId:string):StudyPrompt[]{
+export function promptsForUnit(unitId:string,extras:readonly StudyPrompt[]=[]):StudyPrompt[]{
   const unit=journeyUnit(unitId);
   const seen=new Set<string>();
-  return [...initialPrompts(unit),...unit.turns.map(t=>journeyTypedPrompt(unit,t)),...transferForUnit(unitId)]
+  return [...initialPrompts(unit),...unit.turns.map(t=>journeyTypedPrompt(unit,t)),...transferForUnit(unitId),...extras.filter(p=>p.eventMetadata?.unitId===unitId||p.eventMetadata?.sourceUnit===unitId)]
     .filter(p=>{if(seen.has(p.id))return false;seen.add(p.id);return true;});
 }
 export function traceIdJourney(p:StudyPrompt):string{
@@ -194,7 +194,7 @@ export interface JourneyUnitProgress{
   recommendation:"repeat"|"continue"|"new";lastPracticedAt?:string;
 }
 export function deriveJourneyProgress(
-  traces:readonly MemoryTrace[],events:readonly StudyEvent[],now=Date.now()
+  traces:readonly MemoryTrace[],events:readonly StudyEvent[],now=Date.now(),extras:readonly StudyPrompt[]=[]
 ):JourneyUnitProgress[]{
   const traceMap=new Map(traces.map(t=>[t.id,t]));
   const lastEvent=new Map<string,StudyEvent>();
@@ -205,7 +205,7 @@ export function deriveJourneyProgress(
     if(!prior||prior.occurredAt<event.occurredAt)lastEvent.set(id,event);
   }
   return journeyUnits.map(u=>{
-    const prompts=promptsForUnit(u.id);
+    const prompts=promptsForUnit(u.id,extras);
     let due=0,retry=0,unseen=0,attempted=0;
     let lastPracticedAt:string|undefined;
     for(const p of prompts){
@@ -228,12 +228,12 @@ export function recommendedJourneyUnit(progress:readonly JourneyUnitProgress[]):
   if(candidates.length)return candidates[0]!.id;
   return progress.find(p=>p.unseen>0)?.id??journeyUnits[0]!.id;
 }
-export function journeySession(unitId:string,focus:JourneyPractice,traces:readonly MemoryTrace[],events:readonly StudyEvent[],now=Date.now()):StudyStep[]{
+export function journeySession(unitId:string,focus:JourneyPractice,traces:readonly MemoryTrace[],events:readonly StudyEvent[],now=Date.now(),extras:readonly StudyPrompt[]=[]):StudyStep[]{
   const unit=journeyUnit(unitId);
   const known=new Map(traces.map(t=>[t.id,t]));
   const relevant=focus==="transfer"||focus==="register"
     ?transferForUnit(unitId).filter(p=>focus!=="register"||/register|polite|tone|Höflich|Einladungston/.test(p.id+" "+p.instruction))
-    :promptsForUnit(unitId);
+    :promptsForUnit(unitId,extras);
   const latest=new Map<string,StudyEvent>();
   for(const e of events){
     if(typeof e.metadata?.promptId!=="string"||(e.result!=="correct"&&e.result!=="incorrect"))continue;
