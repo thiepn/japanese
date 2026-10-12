@@ -13,9 +13,9 @@ describe("A1-0 immutable curriculum and source custody",()=>{
  });
  it("audits the real source without counting higher levels as A1",()=>{
   const inventory=a1SourceInventory();
-  expect(inventory).toMatchObject({sourceUnits:20,communicationLessons:7,referencedVocabulary:131,referencedGrammar:37,referencedSentences:89,a1ReadingTexts:4,proposedLessons:24});
+  expect(inventory).toMatchObject({sourceUnits:20,communicationLessons:14,referencedVocabulary:131,referencedGrammar:37,referencedSentences:89,a1ReadingTexts:4,proposedLessons:24});
   expect(inventory.vocabularyWithLinkedAudio).toBeLessThan(inventory.referencedVocabulary);
-  expect(Object.keys(a1CommunicationExerciseCrosswalk())).toHaveLength(22);
+  expect(Object.keys(a1CommunicationExerciseCrosswalk())).toHaveLength(33);
   expect(a1PrimaryTargetCrosswalk()["sentence:sentence-a1-001"]).toContain("a1-unit-01");
  });
 });
