@@ -26,7 +26,7 @@ function areaFor(prompt:StudyPrompt):PracticeArea{
   if(kind==="reformulation"||kind==="sentence-order"||kind==="sentence-build"||
     kind==="sentence"||kind==="sentence-order-variation"||prompt.id.startsWith("p24-build-"))return "sentence";
   if(kind==="independent-dialogue"||typeof kind==="string"&&kind.startsWith("continuity")||
-    kind==="guided-response"||prompt.id.startsWith("p24-dialogue-")||
+    kind==="guided-response"||kind==="role-response"||prompt.id.startsWith("p24-dialogue-")||
     prompt.id.startsWith("p27-typed-")||prompt.id.startsWith("p25-dialogue-"))return "dialogue";
   if(kind==="register-contrast"||kind==="contextual-contrast"||kind==="contrast"||prompt.skill==="form_selection")return "grammar";
   return prompt.skill==="production"?"sentence":"lexicon";
