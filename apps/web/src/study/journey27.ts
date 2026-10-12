@@ -226,7 +226,13 @@ export function deriveJourneyProgress(
 export function recommendedJourneyUnit(progress:readonly JourneyUnitProgress[]):string{
   const candidates=progress.filter(p=>p.due||p.retry).sort((a,b)=>b.due-a.due||b.retry-a.retry);
   if(candidates.length)return candidates[0]!.id;
-  return progress.find(p=>p.unseen>0)?.id??journeyUnits[0]!.id;
+  // Optional repair and alternative cues may remain unseen by design.
+  // Visit completely untouched units before repeatedly recommending the
+  // earliest partially attempted dialogue.
+  return progress.find(p=>p.attempted===0&&p.unseen>0)?.id
+    ??progress.filter(p=>p.unseen>0).sort((a,b)=>
+      (a.attempted/a.total)-(b.attempted/b.total))[0]?.id
+    ??journeyUnits[0]!.id;
 }
 export function journeySession(unitId:string,focus:JourneyPractice,traces:readonly MemoryTrace[],events:readonly StudyEvent[],now=Date.now(),extras:readonly StudyPrompt[]=[]):StudyStep[]{
   const unit=journeyUnit(unitId);

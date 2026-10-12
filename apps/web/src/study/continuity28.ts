@@ -150,14 +150,14 @@ export const continuityScenarios:readonly ContinuityScenario[]=[
           {
             "japanese": "はい、二つください。",
             "meaning": "Ja, zwei bitte.",
-            "next": "two",
+            "next": "one",
             "appropriate": true,
             "note": "Die Menge wird bestätigt."
           },
           {
             "japanese": "いいえ、一つだけです。",
             "meaning": "Nein, nur einer.",
-            "next": "one",
+            "next": "two",
             "appropriate": true,
             "note": "Du korrigierst höflich die Menge."
           },

@@ -21,3 +21,8 @@ Stack parent: feature/p27-unified-learning-journey at 408622fa3a08785b608d0b6f81
 
 ## Next P29
 Strengthen the unified journey rather than add screens: resolve genuine authoring/source defects identified from focused review, add multi-role pragmatic response variations, and improve sentence construction/remediation density and adaptive cross-unit sequencing while keeping StudyEvents/FSRS canonical.
+
+
+## Implementation refinements
+- The café quantity-confirmation branch connects two coffees to the corresponding two-coffee follow-up, while a one-coffee correction leads to its own confirmation.
+- Adaptive unit ordering prioritizes entirely unvisited units once currently due and incorrectly answered material is exhausted, instead of repeatedly targeting optional unvisited repair branches within the first partially practiced lesson.
