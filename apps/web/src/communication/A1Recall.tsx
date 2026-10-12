@@ -1,3 +1,4 @@
+import {notifyA1Progress} from "./a1-events";
 import {A1_NAV_EVENT,type A1Navigation} from "./a1-navigation";
 import {recallSchedule,isRecallDue,type RecallAttempt} from "./a1-review-schedule";
 import "./a1-mobile.css";
@@ -75,7 +76,7 @@ export function A1Recall(){
  promptFamily:"a1-recall-"+mode,responseMode:"typed",result:correct?"correct":"incorrect",attempts:1,
  sourceId:SOURCE,contentVersion:"1",contextId:item.context,metadata:{recallId:item.id,schedulerExcluded:true}};
  setBusy(true);setMessage("");
- try{await saveStudyEvent(event);setActiveId(item.id);setAttempts(previous=>[...previous,{id:item.id,at:event.occurredAt,correct}]);setHistory(previous=>{const old=previous[item.id]??{correct:0,wrong:0,last:""};return {...previous,[item.id]:{correct:old.correct+(correct?1:0),wrong:old.wrong+(correct?0:1),last:event.occurredAt}}});setRevealed(true);if(!correct)setQueue(previous=>previous.includes(item.id)?previous:[...previous,item.id]);}
+ try{await saveStudyEvent(event);notifyA1Progress();setActiveId(item.id);setAttempts(previous=>[...previous,{id:item.id,at:event.occurredAt,correct}]);setHistory(previous=>{const old=previous[item.id]??{correct:0,wrong:0,last:""};return {...previous,[item.id]:{correct:old.correct+(correct?1:0),wrong:old.wrong+(correct?0:1),last:event.occurredAt}}});setRevealed(true);if(!correct)setQueue(previous=>previous.includes(item.id)?previous:[...previous,item.id]);}
  catch{setMessage("Antwort konnte nicht gespeichert werden.");}finally{setBusy(false);}
  }
  function next(){if(!item)return;
