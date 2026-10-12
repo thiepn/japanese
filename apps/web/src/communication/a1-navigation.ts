@@ -1,6 +1,6 @@
 import {a1CommunicationLessons} from "../../../../packages/a1-communication-seed/src/index";
 export type A1Destination="lesson"|"roleplay"|"recall";
-export type A1Navigation={destination:A1Destination;lessonId?:string;scenarioId?:string;mode?:"vocabulary"|"reverse"|"context"};
+export type A1Navigation={destination:A1Destination;lessonId?:string;scenarioId?:string;mode?:"kana"|"katakana"|"vocabulary"|"reverse"|"context"};
 export const A1_NAV_EVENT="japanese:a1:navigate";
 export function navigateA1(detail:A1Navigation):void{
  if(typeof window==="undefined")return;
