@@ -18,8 +18,8 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Nach einer alternativen Busverbindung fragen",
         "firstModel": "ほかのバスもありますか。",
         "partner": "はい、十時のバスもあります。",
-        "partnerMeaning": "Wann fährt der andere Bus?",
-        "secondModel": "十時に出ます。",
+        "partnerMeaning": "Ja, es gibt auch einen Bus um zehn.",
+        "secondModel": "では、十時のバスに乗ります。",
         "explanation": "Der Ausdruck ほかの fragt nach einer Alternative."
       },
       {
@@ -27,7 +27,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Den Treffpunkt nach der Ankunft klären",
         "firstModel": "大学の前で会えますか。",
         "partner": "はい、正門の前で会いましょう。",
-        "partnerMeaning": "Wo genau treffen wir uns?",
+        "partnerMeaning": "Ja, treffen wir uns vor dem Haupteingang.",
         "secondModel": "正門の前ですね。",
         "explanation": "で markiert den Treffpunkt."
       }
@@ -51,7 +51,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Nachfragen, ob die Erklärung klar ist",
         "firstModel": "道はわかりましたか。",
         "partner": "まだ少しわかりません。",
-        "partnerMeaning": "Wie hilfst du weiter?",
+        "partnerMeaning": "Ich verstehe es noch nicht ganz.",
         "secondModel": "一緒に地図を見ましょう。",
         "explanation": "ましょう schlägt gemeinsames Handeln vor."
       }
@@ -66,7 +66,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Nach der Rückgabe fragen",
         "firstModel": "返す日はいつですか。",
         "partner": "来週の火曜日です。",
-        "partnerMeaning": "Du bestätigst das Datum.",
+        "partnerMeaning": "Nächsten Dienstag.",
         "secondModel": "火曜日ですね。わかりました。",
         "explanation": "Die Rückfrage präzisiert den Abgabetermin."
       },
@@ -75,7 +75,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Eine Verlängerung erfragen",
         "firstModel": "もう一週間借りてもいいですか。",
         "partner": "すみません、できません。",
-        "partnerMeaning": "Du reagierst höflich auf die Absage.",
+        "partnerMeaning": "Tut mir leid, das geht nicht.",
         "secondModel": "わかりました。ありがとうございます。",
         "explanation": "てもいいですか fragt nach Erlaubnis."
       }
@@ -90,7 +90,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Rückgabeweg erläutern",
         "firstModel": "こちらの箱に返してください。",
         "partner": "ここでいいですか。",
-        "partnerMeaning": "Du bestätigst den Rückgabeort.",
+        "partnerMeaning": "Ist es hier richtig?",
         "secondModel": "はい、そこで大丈夫です。",
         "explanation": "に markiert das Ziel des Zurückgebens."
       },
@@ -99,7 +99,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Alternative Bücher anbieten",
         "firstModel": "こちらの本もあります。",
         "partner": "これは借りられますか。",
-        "partnerMeaning": "Du erlaubst die Ausleihe.",
+        "partnerMeaning": "Kann ich dieses Buch ausleihen?",
         "secondModel": "はい、借りられます。",
         "explanation": "Die höfliche Auskunft beantwortet die Erlaubnisfrage."
       }
@@ -114,7 +114,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Eine Bestellung richtigstellen",
         "firstModel": "すみません、コーヒーは一つだけです。",
         "partner": "一つですね。申し訳ありません。",
-        "partnerMeaning": "Du bestätigst die Korrektur.",
+        "partnerMeaning": "Einer also. Entschuldigen Sie bitte.",
         "secondModel": "はい、一つです。",
         "explanation": "だけ begrenzt die gewünschte Menge."
       },
@@ -123,7 +123,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Nach dem Bezahlen fragen",
         "firstModel": "カードで払ってもいいですか。",
         "partner": "はい、使えます。",
-        "partnerMeaning": "Du reagierst auf die Zusage.",
+        "partnerMeaning": "Ja, das geht.",
         "secondModel": "ありがとうございます。",
         "explanation": "で markiert das Zahlungsmittel, てもいい die Erlaubnis."
       }
@@ -138,7 +138,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Eine Mengenangabe rückbestätigen",
         "firstModel": "コーヒーは一つですね。",
         "partner": "はい、一つだけです。",
-        "partnerMeaning": "Du korrigierst die ursprüngliche Verwechslung höflich.",
+        "partnerMeaning": "Ja, nur einer.",
         "secondModel": "失礼しました。一つで承ります。",
         "explanation": "Serviceorientierte Entschuldigung und Bestätigung."
       },
@@ -147,7 +147,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Eine zusätzliche Bitte verstehen",
         "firstModel": "ほかにご注文はありますか。",
         "partner": "水もお願いします。",
-        "partnerMeaning": "Du bestätigst die zusätzliche Bestellung.",
+        "partnerMeaning": "Wasser bitte auch.",
         "secondModel": "お水ですね。かしこまりました。",
         "explanation": "ほかに fragt nach weiteren Bestellungen."
       }
@@ -162,7 +162,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Einen Treffpunkt vorschlagen",
         "firstModel": "図書館で会いませんか。",
         "partner": "いいですね。何時にしますか。",
-        "partnerMeaning": "Du machst einen Uhrzeitvorschlag.",
+        "partnerMeaning": "Klingt gut. Um wie viel Uhr?",
         "secondModel": "三時はどうですか。",
         "explanation": "で benennt den Ort des Treffens."
       },
@@ -171,7 +171,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Verspätung höflich ankündigen",
         "firstModel": "すみません、少し遅れます。",
         "partner": "何分ぐらいですか。",
-        "partnerMeaning": "Du nennst eine ungefähre Dauer.",
+        "partnerMeaning": "Ungefähr wie viele Minuten?",
         "secondModel": "十分ぐらいです。",
         "explanation": "ぐらい bezeichnet hier eine ungefähre Menge."
       }
@@ -186,7 +186,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Einen anderen Tag anbieten",
         "firstModel": "では、金曜日はどうですか。",
         "partner": "金曜日なら大丈夫です。",
-        "partnerMeaning": "Du bestätigst das neue Datum.",
+        "partnerMeaning": "Freitag passt.",
         "secondModel": "ありがとうございます。金曜日に会いましょう。",
         "explanation": "はどうですか bietet eine Alternative an."
       },
@@ -195,7 +195,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Den Treffpunkt überprüfen",
         "firstModel": "駅の前で会いましょうか。",
         "partner": "駅のどちら側ですか。",
-        "partnerMeaning": "Du konkretisierst den Ort.",
+        "partnerMeaning": "Auf welcher Seite des Bahnhofs?",
         "secondModel": "東口でお願いします。",
         "explanation": "で markiert den Treffpunkt."
       }
@@ -210,7 +210,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Den Fundort nachfragen",
         "firstModel": "傘はもう見つかりましたか。",
         "partner": "まだ見つかっていません。",
-        "partnerMeaning": "Du bittest um spätere Nachricht.",
+        "partnerMeaning": "Er wurde noch nicht gefunden.",
         "secondModel": "見つかったら連絡してください。",
         "explanation": "たら kennzeichnet eine Bedingung in der Bitte."
       },
@@ -219,7 +219,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Den Schirm genauer beschreiben",
         "firstModel": "黒くて小さい傘です。",
         "partner": "名前は書いてありますか。",
-        "partnerMeaning": "Du antwortest zum Namensschild.",
+        "partnerMeaning": "Steht ein Name darauf?",
         "secondModel": "いいえ、書いていません。",
         "explanation": "くて verbindet Adjektivbeschreibungen."
       }
@@ -234,7 +234,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Eine Beschreibung bestätigen",
         "firstModel": "黒い傘ですね。",
         "partner": "はい、黒い傘です。",
-        "partnerMeaning": "Du erklärst das weitere Vorgehen.",
+        "partnerMeaning": "Ja, ein schwarzer Schirm.",
         "secondModel": "探してみます。少しお待ちください。",
         "explanation": "てみます beschreibt einen Versuch."
       },
@@ -243,7 +243,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Fundbenachrichtigung anbieten",
         "firstModel": "見つかったら連絡します。",
         "partner": "ありがとうございます。",
-        "partnerMeaning": "Du verabschiedest dich höflich.",
+        "partnerMeaning": "Vielen Dank.",
         "secondModel": "どういたしまして。",
         "explanation": "Die Antwort schließt eine höfliche Hilfeleistung ab."
       }
@@ -258,7 +258,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Eine andere Größe erfragen",
         "firstModel": "もう少し小さいのはありますか。",
         "partner": "はい、こちらです。",
-        "partnerMeaning": "Du möchtest die Größe ansehen.",
+        "partnerMeaning": "Ja, hier bitte.",
         "secondModel": "見せてください。",
         "explanation": "の ersetzt hier das bekannte Nomen."
       },
@@ -267,7 +267,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Nach dem Preisnachlass fragen",
         "firstModel": "少し安くなりますか。",
         "partner": "すみません、同じ値段です。",
-        "partnerMeaning": "Du akzeptierst den festen Preis.",
+        "partnerMeaning": "Entschuldigung, der Preis bleibt gleich.",
         "secondModel": "わかりました。ありがとうございます。",
         "explanation": "なりますか fragt nach einer Preisänderung."
       }
@@ -282,7 +282,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Eine ähnliche Tasche anbieten",
         "firstModel": "こちらも人気があります。",
         "partner": "もう少し小さいのはありますか。",
-        "partnerMeaning": "Du zeigst eine Alternative.",
+        "partnerMeaning": "Gibt es eine etwas kleinere?",
         "secondModel": "はい、こちらのサイズです。",
         "explanation": "この／こちら hängen vom Sprecherstandort ab."
       },
@@ -291,7 +291,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Den Preis genau angeben",
         "firstModel": "税込みで三千円です。",
         "partner": "カードで払えますか。",
-        "partnerMeaning": "Du gibst Zahlungsmittel-Auskunft.",
+        "partnerMeaning": "Kann ich mit Karte bezahlen?",
         "secondModel": "はい、カードも使えます。",
         "explanation": "で kennzeichnet die gewählte Bezahlweise."
       }
@@ -306,7 +306,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Zusammen lernen vorschlagen",
         "firstModel": "今度、一緒に勉強しませんか。",
         "partner": "いいですね。いつにしますか。",
-        "partnerMeaning": "Du schlägst einen Tag vor.",
+        "partnerMeaning": "Klingt gut. Wann wollen wir es machen?",
         "secondModel": "金曜日はどうですか。",
         "explanation": "ませんか ist eine höfliche Einladung."
       },
@@ -315,7 +315,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Die eigene Sprache nennen",
         "firstModel": "日本語を勉強しています。",
         "partner": "どのくらい勉強していますか。",
-        "partnerMeaning": "Du beschreibst eine Dauer.",
+        "partnerMeaning": "Wie lange lernen Sie schon?",
         "secondModel": "半年ぐらいです。",
         "explanation": "ぐらい macht die Zeitdauer ungefähr."
       }
@@ -330,7 +330,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Nach Lernzielen fragen",
         "firstModel": "日本語で何をしたいですか。",
         "partner": "日本へ旅行したいです。",
-        "partnerMeaning": "Du reagierst auf das Ziel.",
+        "partnerMeaning": "Ich möchte nach Japan reisen.",
         "secondModel": "いいですね。応援しています。",
         "explanation": "たい drückt einen Wunsch aus."
       },
@@ -339,7 +339,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Weitere Zusammenarbeit anbieten",
         "firstModel": "次の授業も一緒に勉強しましょう。",
         "partner": "はい、お願いします。",
-        "partnerMeaning": "Du bestätigst die Verabredung.",
+        "partnerMeaning": "Ja, gerne.",
         "secondModel": "では、また来週。",
         "explanation": "ましょう dient als gemeinsamer Vorschlag."
       }
@@ -354,7 +354,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Einen alternativen Tag vorschlagen",
         "firstModel": "土曜日は難しいです。日曜日はどうですか。",
         "partner": "日曜日なら大丈夫です。",
-        "partnerMeaning": "Du bestätigst den Plan.",
+        "partnerMeaning": "Sonntag passt.",
         "secondModel": "ありがとうございます。日曜日に会いましょう。",
         "explanation": "Absage mit Alternative ist höflicher als eine bloße Absage."
       },
@@ -363,7 +363,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Den Film genauer erfragen",
         "firstModel": "どんな映画を見ますか。",
         "partner": "日本の映画はどうですか。",
-        "partnerMeaning": "Du stimmst dem Vorschlag zu.",
+        "partnerMeaning": "Wie wäre ein japanischer Film?",
         "secondModel": "いいですね。それを見ましょう。",
         "explanation": "はどうですか bittet um eine Bewertung des Vorschlags."
       }
@@ -378,7 +378,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Zeitpunkt absprechen",
         "firstModel": "何時に会いましょうか。",
         "partner": "午後三時はどうですか。",
-        "partnerMeaning": "Du bestätigst die Uhrzeit.",
+        "partnerMeaning": "Wie wäre drei Uhr nachmittags?",
         "secondModel": "はい、三時で大丈夫です。",
         "explanation": "Die Alternative wird als konkreter Termin bestätigt."
       },
@@ -387,7 +387,7 @@ export const p36IntentScenarios:readonly P36IntentScenario[]=[
         "goal": "Einen neuen Treffpunkt nennen",
         "firstModel": "駅ではなく、カフェで会いませんか。",
         "partner": "いいですね。どこのカフェですか。",
-        "partnerMeaning": "Du erklärst den Ort.",
+        "partnerMeaning": "Klingt gut. Welches Café?",
         "secondModel": "駅の近くのカフェです。",
         "explanation": "ではなく korrigiert einen bisherigen Vorschlag."
       }
