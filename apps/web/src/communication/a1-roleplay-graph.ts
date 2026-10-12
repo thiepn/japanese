@@ -9,7 +9,7 @@ export function validateRoleplayGraph(turns:readonly BranchTurn[]):string[]{
   if(visited.has(index))continue;
   if(index<0||index>=turns.length){errors.push("unreachable destination "+index);continue;}
   visited.add(index);
-  const turn=turns[index];
+  const turn=turns[index]!;
   if(!turn.choices.some(c=>c.correct))errors.push("no valid answer at "+index);
   for(const choice of turn.choices){
    if(!choice.correct)continue;
@@ -20,6 +20,6 @@ export function validateRoleplayGraph(turns:readonly BranchTurn[]):string[]{
    }
   }
  }
- if(![...visited].some(i=>turns[i].choices.some(c=>c.correct&&(c.next===null||(c.next===undefined&&i===turns.length-1)))))errors.push("no reachable ending");
+ if(![...visited].some(i=>turns[i]!.choices.some(c=>c.correct&&(c.next===null||(c.next===undefined&&i===turns.length-1)))))errors.push("no reachable ending");
  return errors;
 }
