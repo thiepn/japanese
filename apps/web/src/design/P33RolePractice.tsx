@@ -13,6 +13,7 @@ import {p35AlternativesForTurn} from "../study/alternatives35";
 import {p34RepairContinuationFor} from "../study/repair34";
 import {p34RoleFeedback} from "../study/feedback34";
 import {p36IntentsForRole} from "../study/intent36";
+import {P37ResponseRevision} from "./P37ResponseRevision";
 import {p36CorrectionsForScenario,p36CorrectionRecognized} from "../study/correction36";
 import {p37CorrectionAlternativesFor} from "../study/correction37";
 import {normalizeP26} from "../study/pedagogy26";
@@ -422,6 +423,10 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
               </div>)}
             </details>
             <p>Andere korrekte Lösungen sind möglich. Das ist kein unabhängiger FSRS-Abruf.</p>
+            <P37ResponseRevision key={identity+":"+correction.id}
+              owner={owner} unitId={unitId} scenarioId={scenario!.id} role={perspective}
+              taskId={correction.id} original={correctionDraft} model={correction.model}
+              onReviewed={onReviewed}/>
           </div>:null}
         </div>:null}
       </section>:null}
@@ -473,6 +478,14 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
             <p>Deine Antwort: <span lang="ja">{intentSecond}</span></p>
             <p>Mögliche Antwort: <span lang="ja">{intentPath.secondModel}</span></p>
             <p>{intentPath.explanation}</p>
+            <P37ResponseRevision key={identity+":"+intentPath.id+":first"}
+              owner={owner} unitId={unitId} scenarioId={scenario!.id} role={perspective}
+              taskId={scenario!.id+"-"+perspective+"-"+intentPath.id+"-first"}
+              original={intentFirst} model={intentPath.firstModel} onReviewed={onReviewed}/>
+            <P37ResponseRevision key={identity+":"+intentPath.id+":second"}
+              owner={owner} unitId={unitId} scenarioId={scenario!.id} role={perspective}
+              taskId={scenario!.id+"-"+perspective+"-"+intentPath.id+"-second"}
+              original={intentSecond} model={intentPath.secondModel} onReviewed={onReviewed}/>
             <button type="button" disabled={busy} onClick={next}>Zur nächsten Rolle</button>
           </div>:null}
         </div>:null}

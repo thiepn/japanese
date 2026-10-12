@@ -2,7 +2,6 @@ import {useEffect,useRef,useState} from "react";
 import {saveStudyEvent} from "@thiepn/local-db";
 import type {StudyEvent} from "@thiepn/domain";
 import {DEVELOPMENT_DEVICE_ID,getDevelopmentAccountId} from "../study/runtime";
-import {normalizeP26} from "../study/pedagogy26";
 import {compareP37Drafts} from "../study/revision37";
 
 export function P37ResponseRevision({owner,unitId,scenarioId,role,taskId,original,model,onReviewed}:{
