@@ -38,6 +38,7 @@ import {p33RolePrompts} from "./role33";
 import {p33SentencePrompts} from "./sentence33";
 import {p34SentencePrompts} from "./sentence34";
 import {p35PragmaticPrompts} from "./pragmatics35";
+import {dueP36RolePrompts} from "./roleDue36";
 import { buildC1SynthesisSession } from "./c1Synthesis";
 
 export const GUEST_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
@@ -140,6 +141,17 @@ export async function buildP27JourneySession(unitId:string,focus:JourneyPractice
   const [traces,events]=await Promise.all([listMemoryTraces(accountId),listStudyEvents(accountId)]);
   if(DEVELOPMENT_ACCOUNT_ID!==accountId)throw new Error("P27_WORKSPACE_CHANGED");
   return journeySession(unitId,focus,traces,events,Date.now(),p35JourneyExtras);
+}
+
+/** A focused native StudyPlayer session of genuinely due cues from one role scenario. */
+export async function buildP36RoleDueSession(unitId:string,scenarioId:string):Promise<StudyStep[]>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const traces=await listMemoryTraces(owner);
+  if(DEVELOPMENT_ACCOUNT_ID!==owner)throw new Error("P36_WORKSPACE_CHANGED");
+  const prompts=dueP36RolePrompts(unitId,scenarioId,traces.filter(t=>t.userId===owner));
+  const lesson=journeyLessons["p27:unit:"+unitId];
+  if(!lesson||!prompts.length)throw new Error("P36_NO_DUE_ROLE_CUES");
+  return [lesson,...prompts];
 }
 
 /** Re-check the latest independently graded event, and resolve the exact

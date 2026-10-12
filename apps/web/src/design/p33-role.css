@@ -52,3 +52,9 @@
 .p33-role__intents [role=status]{border-left:3px solid currentColor;padding:.5rem .75rem;margin:.7rem 0}
 .p33-role__intents [lang=ja]{font-size:1.13rem}
 @media(max-width:580px){.p33-role__intents .p33-role__choices{display:grid}.p33-role__intents button{width:100%;min-height:44px}}
+
+.p33-role__exact-due{margin:.7rem 0;padding:.7rem;border:1px solid currentColor;display:grid;gap:.45rem}
+.p33-role__exact-due strong{font-size:.9rem}
+.p33-role__exact-due small{font-size:.8rem;opacity:.8}
+.p33-role__exact-due button{justify-self:start}
+@media(max-width:580px){.p33-role__exact-due button{width:100%}}

@@ -14,12 +14,15 @@ import {p34RepairContinuationFor} from "../study/repair34";
 import {p34RoleFeedback} from "../study/feedback34";
 import {p36IntentsForRole} from "../study/intent36";
 import {normalizeP26} from "../study/pedagogy26";
+import type {MemoryTrace} from "@thiepn/scheduler";
+import {dueP36RolePrompts} from "../study/roleDue36";
 import "./p33-role.css";
 
 interface AnswerFeedback{correctModel:boolean;independent:boolean;notes:string[];}
-export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onReview,onGrammar}:{
+export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onReview,onGrammar,traces,onRoleDue}:{
   unitId:string;owner:string;disabled:boolean;onReviewed:()=>void;
   dueCount:number;onReview:()=>void;onGrammar:()=>void;
+  traces:readonly MemoryTrace[];onRoleDue:(scenarioId:string)=>void;
 }){
   const scenarios=p33RolesForUnit(unitId);
   const [scenarioId,setScenarioId]=useState(scenarios[0]?.id??"");
@@ -48,6 +51,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
   const ownerRef=useRef(owner);ownerRef.current=owner;
   const scenario=scenarios.find(s=>s.id===scenarioId)??scenarios[0];
   const role=scenario?.roles.find(r=>r.id===perspective)??scenario?.roles[0];
+  const scenarioDue=scenario?dueP36RolePrompts(unitId,scenario.id,traces).length:0;
   const turn=role?.turns[turnIndex];
   const repair=p33RepairForScenario(scenario?.id??"");
   const repairFollowup=p34RepairContinuationFor(scenario?.id??"");
@@ -234,6 +238,13 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
     </div>:<p className="p33-role__due-note">
       Keine bekannten fälligen Karten dieser Einheit. Neue Dialoge sind freiwillige Übung, keine überfällige Wiederholung.
     </p>}
+    <div className="p33-role__exact-due" aria-label="Wiederholung der gewählten Gesprächssituation">
+      <strong>{scenarioDue} FSRS-fällige Antworten genau für diese Situation</strong>
+      <button type="button" disabled={disabled||busy||scenarioDue===0}
+        onClick={()=>onRoleDue(scenario!.id)}>Genau diesen Dialog fällig wiederholen</button>
+      <small>Es werden ausschließlich die nach dem bestehenden FSRS-Termin fälligen
+        Antwortkarten gestartet. Neue und freiwillige Fehlerübungen sind getrennt.</small>
+    </div>
     <div role="group" aria-label="Situationsauswahl" className="p33-role__choices">
       {scenarios.map(s=><button type="button" key={s.id} disabled={busy}
         aria-pressed={scenario.id===s.id} onClick={()=>switchPath(s.id,perspective)}>{s.title}</button>)}
