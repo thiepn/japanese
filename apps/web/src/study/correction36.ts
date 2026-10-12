@@ -1,5 +1,6 @@
 import type {StudyPrompt} from "@thiepn/study-player";
 import {normalizeP26} from "./pedagogy26";
+import {p37CorrectionAccepted} from "./correction37";
 export interface P36Correction {
   id:string;scenarioId:string;
   focus:"particle"|"register"|"function"|"time";
@@ -168,7 +169,7 @@ export const p36CorrectionPrompts:StudyPrompt[]=p36Corrections.map(c=>({
   skill:"production",cueFamily:"p36-reformulate-"+c.id,
   promptType:"typed",instruction:"Formuliere den Ausgangssatz für die gegebene Situation neu",
   prompt:c.situation+"\nAusgangssatz: "+c.startingSentence,
-  acceptedAnswers:[normalizeP26(c.model)],displayAnswer:c.model,
+  acceptedAnswers:p37CorrectionAccepted(c.id,c.model),displayAnswer:c.model,
   explanation:c.explanation,
   contextId:"p36:unit:"+sourceUnits[c.scenarioId],
   answerNormalization:"japanese",sourceId:"thiepn-original",contentVersion:"p36-1",
@@ -179,5 +180,5 @@ export function p36CorrectionsForScenario(id:string):P36Correction[]{
  return p36Corrections.filter(c=>c.scenarioId===id);
 }
 export function p36CorrectionRecognized(c:P36Correction,typed:string):boolean{
- return normalizeP26(c.model)===normalizeP26(typed);
+ return p37CorrectionAccepted(c.id,c.model).includes(normalizeP26(typed));
 }

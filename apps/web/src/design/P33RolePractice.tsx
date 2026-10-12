@@ -14,6 +14,7 @@ import {p34RepairContinuationFor} from "../study/repair34";
 import {p34RoleFeedback} from "../study/feedback34";
 import {p36IntentsForRole} from "../study/intent36";
 import {p36CorrectionsForScenario,p36CorrectionRecognized} from "../study/correction36";
+import {p37CorrectionAlternativesFor} from "../study/correction37";
 import {normalizeP26} from "../study/pedagogy26";
 import type {MemoryTrace} from "@thiepn/scheduler";
 import {dueP36RolePrompts} from "../study/roleDue36";
@@ -63,6 +64,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
   const intentPath=intentPaths.find(p=>p.id===intentPathId);
   const corrections=p36CorrectionsForScenario(scenario?.id??"");
   const correction=corrections.find(c=>c.id===correctionId);
+  const correctionAlternatives=p37CorrectionAlternativesFor(correctionId);
   const alternatives=[
     ...p34AlternativesForTurn(scenario?.id??"",perspective,turnIndex),
     ...p35AlternativesForTurn(scenario?.id??"",perspective,turnIndex)
@@ -410,9 +412,15 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
           <button type="button" disabled={busy||disabled||correctionMatch!==null||!correctionDraft.trim()}
             onClick={()=>void submitCorrection()}>Mit Zielform vergleichen</button>
           {correctionMatch!==null?<div role="status">
-            <strong>{correctionMatch?"Hinterlegte Zielform getroffen":"Deine Form unterscheidet sich vom hinterlegten Modell"}</strong>
+            <strong>{correctionMatch?"Eine qualifizierte Zielform getroffen":"Deine Form entspricht keiner hinterlegten Variante"}</strong>
             <p>Ein Beispiel: <span lang="ja">{correction.model}</span></p>
             <p>{correction.explanation}</p>
+            <details>
+              <summary>Weitere passende Korrekturen und Unterschiede</summary>
+              {correctionAlternatives.map(alt=><div key={alt.answer}>
+                <p lang="ja">{alt.answer}</p><p>{alt.nuance}</p>
+              </div>)}
+            </details>
             <p>Andere korrekte Lösungen sind möglich. Das ist kein unabhängiger FSRS-Abruf.</p>
           </div>:null}
         </div>:null}
