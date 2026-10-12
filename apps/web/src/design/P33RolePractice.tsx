@@ -36,6 +36,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
   const [repairDone,setRepairDone]=useState(false);
   const [followupDraft,setFollowupDraft]=useState("");
   const [followupDone,setFollowupDone]=useState(false);
+  const [completedRoles,setCompletedRoles]=useState<Set<string>>(()=>new Set());
   const exposed=useRef(new Set<string>());
   const startTime=useRef(0);
   const ownerRef=useRef(owner);ownerRef.current=owner;
@@ -46,6 +47,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
   const repairFollowup=p34RepairContinuationFor(scenario?.id??"");
   const alternatives=p34AlternativesForTurn(scenario?.id??"",perspective,turnIndex);
   const identity=scenario?.id+":"+perspective+":"+turnIndex;
+  const completedInScenario=(scenario?.roles??[]).filter(r=>completedRoles.has(scenario!.id+":"+r.id)).length;
   const prompt=p33RolePrompts.find(p=>p.eventMetadata?.scenarioId===scenario?.id&&
     p.eventMetadata?.role===perspective&&p.eventMetadata?.turnIndex===turnIndex);
   useEffect(()=>{
@@ -55,6 +57,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
     setRepairOpen(false);setRepairDraft("");setRepairDone(false);
     setFollowupDraft("");setFollowupDone(false);
     setShowPartner(true);setShowMeaning(false);exposed.current.clear();
+    setCompletedRoles(new Set());
     startTime.current=performance.now();
   },[unitId,owner]);
   function switchPath(id:string,p:"guest"|"host"){
@@ -165,7 +168,11 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
   function next(){
     if(!role)return;
     if(turnIndex+1<role.turns.length)setTurnIndex(t=>t+1);
-    else{setTurnIndex(0);setPerspective(p=>p==="guest"?"host":"guest");}
+    else{
+      const completedKey=scenario!.id+":"+perspective;
+      setCompletedRoles(previous=>new Set([...previous,completedKey]));
+      setTurnIndex(0);setPerspective(p=>p==="guest"?"host":"guest");
+    }
     setDraft("");setFirstDraft("");setAssisted(false);setFeedback(null);setError("");
     setRepairOpen(false);setRepairDraft("");setRepairDone(false);
     setFollowupDraft("");setFollowupDone(false);
@@ -193,7 +200,14 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
         aria-pressed={perspective===r.id} onClick={()=>switchPath(scenario.id,r.id)}>
         Als {r.label} antworten</button>)}
     </div>
-    <p><strong>{role.label}</strong> · Antwort {turnIndex+1} von {role.turns.length}</p>
+    <div className="p33-role__position" aria-live="polite">
+      <p><strong>{role.label}</strong> · Antwort {turnIndex+1} von {role.turns.length}</p>
+      <p>Rollendurchläufe dieser Sitzung: {completedInScenario} von {scenario.roles.length}.
+        Das ist keine gespeicherte Beherrschungsbewertung.</p>
+      {completedInScenario===scenario.roles.length?<p>
+        Beide Rollen wurden mindestens einmal abgeschlossen. Du kannst andere Formulierungen ausprobieren
+        oder fällige FSRS-Karten wiederholen.</p>:null}
+    </div>
     <div className="p33-role__partner">
       <button type="button" onClick={playPartner} disabled={busy}>Gesprächspartner synthetisch anhören</button>
       <label><input type="checkbox" checked={showPartner} onChange={e=>setShowPartner(e.target.checked)}/> Japanischen Gesprächspartner zeigen</label>

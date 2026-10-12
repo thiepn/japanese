@@ -83,7 +83,7 @@ export const p34RoleAlternatives:readonly P34Alternative[]=[
     "scenarioId": "cafe-fix",
     "role": "host",
     "turnIndex": 0,
-    "answer": "ありがとうございます。コーヒーを二つですね。",
+    "answer": "はい、コーヒー二つですね。",
     "nuance": "Höfliche Bestätigung der Zweierbestellung."
   },
   {

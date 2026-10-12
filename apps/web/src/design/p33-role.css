@@ -37,3 +37,6 @@
 .p33-role__shortcut{display:block;margin:.3rem 0;opacity:.8}
 .p33-role textarea:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 @media(max-width:580px){.p33-role__due button{width:100%}.p33-role__repair button{width:100%}}
+
+.p33-role__position{padding:.6rem;margin:.75rem 0;border-left:2px solid currentColor}
+.p33-role__position p{margin:.3rem 0}
