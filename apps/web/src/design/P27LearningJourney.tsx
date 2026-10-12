@@ -16,6 +16,7 @@ import {p35PragmaticPrompts} from "../study/pragmatics35";
 import {p36CorrectionPrompts} from "../study/correction36";
 import {p38CrossUnitPrompts,p38CrossUnitForUnit} from "../study/transfer38";
 import {p38ProductionPrompts,p38ProductionForUnit} from "../study/production38";
+import {p39LifePrompts,p39CasesForUnit,p39AuthoredFeedback} from "../study/life39";
 import {p28NewSentencePrompts} from "../study/sentence28";
 import {p29AdditionalPrompts,p29LexicalPrompts,lexicalLinksForUnit,recommendP29Actions} from "../study/depth29";
 import {describeP29Revision,p29RegisterExampleForUnit} from "../study/revision29";
@@ -47,7 +48,7 @@ interface SpeechCapture {
 interface Feedback { kind:"graded"|"ungraded"|"choice";message:string;model:string;notes:string[];next:string|null; }
 interface RewriteReport {changed:boolean;oldLength:number;newLength:number;found:string[];missing:string[];}
 const extraJourneyPrompts=[...p28NewSentencePrompts,...p29AdditionalPrompts,
-  ...p29LexicalPrompts,...p30TransformationPrompts,...continuityPrompts,...register28Prompts,...p31ContrastPrompts,...p31SentencePrompts,...p32ContrastPrompts,...p32SentencePrompts,...p33RolePrompts,...p33SentencePrompts,...p34SentencePrompts,...p35PragmaticPrompts,...p36CorrectionPrompts,...p38CrossUnitPrompts,...p38ProductionPrompts];
+  ...p29LexicalPrompts,...p30TransformationPrompts,...continuityPrompts,...register28Prompts,...p31ContrastPrompts,...p31SentencePrompts,...p32ContrastPrompts,...p32SentencePrompts,...p33RolePrompts,...p33SentencePrompts,...p34SentencePrompts,...p35PragmaticPrompts,...p36CorrectionPrompts,...p38CrossUnitPrompts,...p38ProductionPrompts,...p39LifePrompts];
 const steps:[JourneyStage,string][]=[["learn","1 · Verstehen"],["build","2 · Satzbau"],["conversation","3 · Antworten"],["write","4 · Schreiben"],["practice","5 · Festigen"]];
 function compareWriting(before:string,after:string,features:readonly string[]):RewriteReport{
   const oldText=normalizeP26(before),newText=normalizeP26(after);
@@ -86,6 +87,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const [showTranslation,setShowTranslation]=useState(false);
   const [inlineContrastAnswer,setInlineContrastAnswer]=useState<string|null>(null);
   const [p38Choice,setP38Choice]=useState<{id:string;answer:string}|null>(null);
+  const [p39Choice,setP39Choice]=useState<{id:string;answer:string}|null>(null);
+  const [p39WritingId,setP39WritingId]=useState("");
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
   const [voiceStatus,setVoiceStatus]=useState("");
@@ -112,6 +115,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const p32Question=p32ContrastPrompts.find(p=>p.eventMetadata?.unitId===unitId);
   const p38TransferCases=p38CrossUnitForUnit(unitId);
   const p38WritingCases=p38ProductionForUnit(unitId);
+  const p39UnitCases=p39CasesForUnit(unitId);
   const globalRecall=useMemo(()=>evidence?
     p31GlobalDue(evidence.traces,evidence.events,extraJourneyPrompts):[],
     [evidence]);
@@ -126,6 +130,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const mistakes=useMemo(()=>evidence?
     recentP35Mistakes(unitId,evidence.events,extraJourneyPrompts):[],
     [unitId,evidence]);
+  const p39Priority=p39UnitCases.find(c=>mistakes.some(m=>m.promptId==="p39-context-"+c.id||m.promptId==="p39-repair-"+c.id))??p39UnitCases[0];
+  const p39Chosen=p39UnitCases.find(c=>c.id===p39WritingId);
   const reviewCatalog=useMemo(()=>promptsForUnit(unitId,extraJourneyPrompts),[unitId]);
   const nextActions=useMemo(()=>evidence?
     recommendP29Actions(unitId,progress,evidence.events,evidence.traces):[],
@@ -151,7 +157,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     microphone.current?.stop();microphone.current=null;revealedTurnIds.current.clear();
     setNodeId(unit.turns[0]!.id);setStepsTaken(0);setAnswer("");setFirstConversationDraft("");setFeedback(null);
     setChoiceExampleSeen(false);
-    setHintUsed(false);setSpeechUsed(false);setShowTranslation(false);setInputMode("compose");setInlineContrastAnswer(null);setP38Choice(null);
+    setHintUsed(false);setSpeechUsed(false);setShowTranslation(false);setInputMode("compose");setInlineContrastAnswer(null);setP38Choice(null);setP39Choice(null);setP39WritingId("");
     setError("");setDraft("");setRewrite("");
     setRewriteStage("draft");setReport(null);setSaved(false);setVoiceStatus("");
     started.current=performance.now();
@@ -416,6 +422,29 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Themenübergreifende Aufgaben selbst abrufen
             </button>
           </section>:null}
+          {p39Priority?<section className="p27-journey__p39-lesson" aria-label="Situationsspezifische Sprachwahl">
+            <h4>Alltagssprache bewusst unterscheiden</h4>
+            <p>Wähle die zum Gespräch passende Aussage. Die Erklärung ist unbewertet;
+              neue unabhängige Aufgaben erscheinen im vorhandenen StudyPlayer.</p>
+            <h5>{p39Priority.title}</h5><p>{p39Priority.situation}</p>
+            <div className="p27-journey__p39-options" role="group" aria-label="Japanische Ausdrucksweise wählen">
+              {[p39Priority.model,...p39Priority.distractors.map(d=>d.form)].map(form=><button key={form}
+                type="button" lang="ja" aria-pressed={p39Choice?.id===p39Priority.id&&p39Choice.answer===form}
+                onClick={()=>setP39Choice({id:p39Priority.id,answer:form})}>{form}</button>)}
+            </div>
+            {p39Choice?.id===p39Priority.id?<div className="p27-journey__p39-feedback" role="status">
+              <strong>{p39AuthoredFeedback(p39Priority,p39Choice.answer).kind==="model"
+                ?"Diese Ausdrucksweise erfüllt die Gesprächsabsicht":"Hier passt eine andere Ausdrucksweise"}</strong>
+              <p>{p39AuthoredFeedback(p39Priority,p39Choice.answer).message}</p>
+              <small>Nur ein authorierter Vergleich, kein FSRS-Nachweis.</small>
+            </div>:null}
+            <div className="p27-journey__actions">
+              <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"grammar")}>
+                Selbstständig unterscheiden</button>
+              <button type="button" onClick={()=>{setStage("write");setP39WritingId(p39Priority.id);}}>
+                Diese Situation schriftlich überarbeiten</button>
+            </div>
+          </section>:null}
           <h4>Wörter in Sätzen</h4>
           <div className="p27-journey__words">{unit.words.map(w=><div key={w.form+"-"+w.reading}>
             <strong lang="ja">{w.form}</strong><small lang="ja">{w.reading}</small>
@@ -539,7 +568,24 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Situationswechsel selbstständig üben
             </button>
           </section>:null}
-          <p>{unit.writing.task}</p>
+          {p39UnitCases.length?<section className="p27-journey__p39-writing" aria-label="Alltagssituation für das Schreiben wählen">
+            <h5>Gezielte Schreibkorrektur</h5>
+            <p>Wähle einen Kontext; eine zuletzt verfehlte Lernkarte wird bevorzugt vorgeschlagen.
+              Dein Entwurf bleibt im bestehenden Schreibfeld und wird nicht automatisch sprachlich bewertet.</p>
+            <div className="p27-journey__p39-picker" role="group" aria-label="Schreibsituation">
+              <button type="button" aria-pressed={!p39Chosen}
+                onClick={()=>{setP39WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
+                Reguläres Lernziel</button>
+              {p39UnitCases.map(c=><button key={c.id} type="button" aria-pressed={p39Chosen?.id===c.id}
+                onClick={()=>{setP39WritingId(c.id);setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
+                {c.title}{p39Priority?.id===c.id?" · Vorschlag":""}</button>)}
+            </div>
+            {p39Chosen?<p>Problematischer Ausgangssatz: <span lang="ja">{p39Chosen.distractors[0]?.form}</span>.
+              Formuliere diesen Satz für die vorgegebene Absicht neu.</p>:null}
+            <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"production")}>
+              Unabhängige Schreibkorrekturen im StudyPlayer</button>
+          </section>:null}
+          <p>{p39Chosen?p39Chosen.situation:unit.writing.task}</p>
           <p className="p27-journey__keyhint">Tastatur: Strg + Enter (Mac: ⌘ + Enter) vergleicht Antworten oder öffnet den nächsten Schreibschritt. Japanische IME-Eingabe bleibt ungestört.</p>
           <label htmlFor="p27-draft">Erste Fassung</label>
           <textarea id="p27-draft" rows={4} lang="ja" value={draft}
@@ -560,16 +606,19 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
           </div>
           {rewriteStage!=="draft"?<>
             <div className="p27-journey__note">
-              <strong>Orientierung zur Korrektur</strong><p>{unit.writing.reflection}</p>
-              <p><span lang="ja">{unit.writing.features.join(" · ")}</span></p>
-              <details><summary>Originales Beispiel vergleichen</summary><p lang="ja">{unit.writing.reference}</p></details>
+              <strong>Orientierung zur Korrektur</strong>
+              <p>{p39Chosen?p39Chosen.rule:unit.writing.reflection}</p>
+              {!p39Chosen?<p><span lang="ja">{unit.writing.features.join(" · ")}</span></p>:null}
+              <details><summary>Originales Beispiel vergleichen</summary>
+                <p lang="ja">{p39Chosen?p39Chosen.model:unit.writing.reference}</p>
+                {p39Chosen?<p lang="ja">{p39Chosen.alternative}</p>:null}</details>
             </div>
             <label htmlFor="p27-rewrite">Überarbeitete Version</label>
             <textarea id="p27-rewrite" rows={4} lang="ja" value={rewrite}
               aria-keyshortcuts="Control+Enter Meta+Enter"
               onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
                 e.preventDefault();if(rewrite.trim()&&!busy){
-                  setReport(compareWriting(draft,rewrite,unit.writing.features));setRewriteStage("compare");
+                  setReport(compareWriting(draft,rewrite,p39Chosen?[]:unit.writing.features));setRewriteStage("compare");
                 }
               }}}
               onChange={e=>{
@@ -578,16 +627,23 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <div className="p27-journey__actions">
               <button type="button" onClick={()=>recognize("rewrite")}>Überarbeitung diktieren</button>
               <button type="button" disabled={!rewrite.trim()} onClick={()=>{
-                setReport(compareWriting(draft,rewrite,unit.writing.features));setRewriteStage("compare");
+                setReport(compareWriting(draft,rewrite,p39Chosen?[]:unit.writing.features));setRewriteStage("compare");
               }}>Versionen vergleichen</button>
             </div>
           </>:null}
           {rewriteStage==="compare"&&report?<div className="p27-journey__note" role="status">
             <strong>Zeichenbasierte Beobachtungen, keine Sprachbewertung</strong>
             <p>{report.oldLength} → {report.newLength} Zeichen. Geändert: {report.changed?"ja":"nein"}</p>
-            <p>Erkannte Zielzeichenfolgen: {report.found.join(" · ")||"keine"}</p>
-            <p>Nicht erkannt: {report.missing.join(" · ")||"keine"}</p>
-            <ul>{grammarReflection(unit,rewrite).map((note,i)=><li key={i}>{note}</li>)}</ul>
+            {p39Chosen?<div className="p27-journey__p39-feedback">
+              <strong>Nur Abgleich mit bekannten Beispielvarianten</strong>
+              <p>{p39AuthoredFeedback(p39Chosen,rewrite).message}</p>
+              {p39AuthoredFeedback(p39Chosen,rewrite).kind==="unknown"?<small>
+                Andere Formulierungen können richtig sein und bleiben hier unbewertet.</small>:null}
+            </div>:<>
+              <p>Erkannte Zielzeichenfolgen: {report.found.join(" · ")||"keine"}</p>
+              <p>Nicht erkannt: {report.missing.join(" · ")||"keine"}</p>
+              <ul>{grammarReflection(unit,rewrite).map((note,i)=><li key={i}>{note}</li>)}</ul>
+            </>}
             <div className="p27-journey__revision">
               <strong>Überarbeitete Partikeln und Formen</strong>
               <p>Neue Partikeln: {describeP29Revision(draft,rewrite,unit).addedParticles.join(" · ")||"keine"}</p>
