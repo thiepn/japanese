@@ -3,12 +3,6 @@ export interface P35PragmaticChoice{
   id:string;unitId:string;scenarioId:string;focus:string;
   question:string;preferred:string;contrast:string;explanation:string;
 }
-const units:Record<string,string>={
- "station-questions":"p26:station-to-campus","library-study":"p26:library-project",
- "cafe-fix":"p26:cafe-conversation","appointment-shift":"p25:appointment",
- "umbrella-owner":"p25:lostfound","shop-colors":"p25:shopping",
- "campus-greeting":"p23:introduction","weekend-invite":"p26:weekend-switch"
-};
 export const p35PragmaticChoices:readonly P35PragmaticChoice[]=[
   {
     "id": "p35-pragmatic-1",

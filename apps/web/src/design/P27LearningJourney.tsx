@@ -12,6 +12,7 @@ import {P33RolePractice} from "./P33RolePractice";
 import {p33RolePrompts,p33RolesForUnit} from "../study/role33";
 import {p33SentencePrompts} from "../study/sentence33";
 import {p34SentencePrompts} from "../study/sentence34";
+import {p35PragmaticPrompts} from "../study/pragmatics35";
 import {p28NewSentencePrompts} from "../study/sentence28";
 import {p29AdditionalPrompts,p29LexicalPrompts,lexicalLinksForUnit,recommendP29Actions} from "../study/depth29";
 import {describeP29Revision,p29RegisterExampleForUnit} from "../study/revision29";
@@ -41,7 +42,7 @@ interface SpeechCapture {
 interface Feedback { kind:"graded"|"ungraded"|"choice";message:string;model:string;notes:string[];next:string|null; }
 interface RewriteReport {changed:boolean;oldLength:number;newLength:number;found:string[];missing:string[];}
 const extraJourneyPrompts=[...p28NewSentencePrompts,...p29AdditionalPrompts,
-  ...p29LexicalPrompts,...p30TransformationPrompts,...continuityPrompts,...register28Prompts,...p31ContrastPrompts,...p31SentencePrompts,...p32ContrastPrompts,...p32SentencePrompts,...p33RolePrompts,...p33SentencePrompts,...p34SentencePrompts];
+  ...p29LexicalPrompts,...p30TransformationPrompts,...continuityPrompts,...register28Prompts,...p31ContrastPrompts,...p31SentencePrompts,...p32ContrastPrompts,...p32SentencePrompts,...p33RolePrompts,...p33SentencePrompts,...p34SentencePrompts,...p35PragmaticPrompts];
 const steps:[JourneyStage,string][]=[["learn","1 · Verstehen"],["build","2 · Satzbau"],["conversation","3 · Antworten"],["write","4 · Schreiben"],["practice","5 · Festigen"]];
 function compareWriting(before:string,after:string,features:readonly string[]):RewriteReport{
   const oldText=normalizeP26(before),newText=normalizeP26(after);
@@ -444,7 +445,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <P33RolePractice key={unit.id+":"+owner} unitId={unit.id} owner={owner}
               disabled={disabled} onReviewed={()=>setReload(n=>n+1)}
               dueCount={recallPlan?.dueNow.length??0}
-              onReview={()=>onJourneyPractice(unitId,"review")}/>
+              onReview={()=>onJourneyPractice(unitId,"review")}
+              onGrammar={()=>onJourneyPractice(unitId,"grammar")}/>
           </details>:null}
           {(nodeId==="__finished__"||stepsTaken>=14)?<P28Continuity key={unit.id+":"+owner}
             unitId={unit.id} owner={owner} disabled={disabled} onReviewed={()=>setReload(n=>n+1)}

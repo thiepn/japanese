@@ -15,9 +15,9 @@ import {normalizeP26} from "../study/pedagogy26";
 import "./p33-role.css";
 
 interface AnswerFeedback{correctModel:boolean;independent:boolean;notes:string[];}
-export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onReview}:{
+export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onReview,onGrammar}:{
   unitId:string;owner:string;disabled:boolean;onReviewed:()=>void;
-  dueCount:number;onReview:()=>void;
+  dueCount:number;onReview:()=>void;onGrammar:()=>void;
 }){
   const scenarios=p33RolesForUnit(unitId);
   const [scenarioId,setScenarioId]=useState(scenarios[0]?.id??"");
@@ -292,6 +292,8 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
       </div>:null}
       <ul>{feedback.notes.map((note,i)=><li key={i}>{note}</li>)}</ul>
       <div className="p33-role__actions">
+        <button type="button" disabled={disabled} onClick={onGrammar}>
+          Partikeln und Höflichkeit im StudyPlayer vertiefen</button>
         <button type="button" onClick={()=>{
           setFeedback(null);setAssisted(true);startTime.current=performance.now();
         }}>Antwort überarbeiten (unbewertet)</button>

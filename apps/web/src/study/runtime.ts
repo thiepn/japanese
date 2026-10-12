@@ -37,6 +37,7 @@ import {p32ContrastPrompts} from "./contrast32";
 import {p33RolePrompts} from "./role33";
 import {p33SentencePrompts} from "./sentence33";
 import {p34SentencePrompts} from "./sentence34";
+import {p35PragmaticPrompts} from "./pragmatics35";
 import { buildC1SynthesisSession } from "./c1Synthesis";
 
 export const GUEST_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
@@ -104,7 +105,7 @@ function foundationApplicationPool():StudyPrompt[]{
 function allPrompts():StudyPrompt[]{
   return [...foundationPrompts,...vocabularyMeaningPrompts,...foundationApplicationPool(),...allGrammarCoursePrompts,...pedagogyPrompts,...p24ReviewPrompts,...p25Prompts,...p26Prompts,...journeyPrompts,...p28NewSentencePrompts,...continuityPrompts,...register28Prompts]
     .map(prompt=>p29SentencePromptOverrides.get(prompt.id)??prompt)
-    .concat(p29AdditionalPrompts,p29LexicalPrompts,p30TransformationPrompts,p31ContrastPrompts,p31SentencePrompts,p32SentencePrompts,p32ContrastPrompts,p33RolePrompts,p33SentencePrompts,p34SentencePrompts);
+    .concat(p29AdditionalPrompts,p29LexicalPrompts,p30TransformationPrompts,p31ContrastPrompts,p31SentencePrompts,p32SentencePrompts,p32ContrastPrompts,p33RolePrompts,p33SentencePrompts,p34SentencePrompts,p35PragmaticPrompts);
 }
 
 export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
@@ -137,7 +138,7 @@ export async function buildP27JourneySession(unitId:string,focus:JourneyPractice
   const accountId=DEVELOPMENT_ACCOUNT_ID;
   const [traces,events]=await Promise.all([listMemoryTraces(accountId),listStudyEvents(accountId)]);
   if(DEVELOPMENT_ACCOUNT_ID!==accountId)throw new Error("P27_WORKSPACE_CHANGED");
-  return journeySession(unitId,focus,traces,events,Date.now(),[...p28NewSentencePrompts.map(p=>p29SentencePromptOverrides.get(p.id)??p),...continuityPrompts,...register28Prompts,...p29AdditionalPrompts,...p29LexicalPrompts,...p30TransformationPrompts,...p31ContrastPrompts,...p31SentencePrompts,...p32SentencePrompts,...p32ContrastPrompts,...p33RolePrompts,...p33SentencePrompts,...p34SentencePrompts]);
+  return journeySession(unitId,focus,traces,events,Date.now(),[...p28NewSentencePrompts.map(p=>p29SentencePromptOverrides.get(p.id)??p),...continuityPrompts,...register28Prompts,...p29AdditionalPrompts,...p29LexicalPrompts,...p30TransformationPrompts,...p31ContrastPrompts,...p31SentencePrompts,...p32SentencePrompts,...p32ContrastPrompts,...p33RolePrompts,...p33SentencePrompts,...p34SentencePrompts,...p35PragmaticPrompts]);
 }
 
 /** Reuse the canonical StudyPlayer and the exact last-incorrect prompt identity.
