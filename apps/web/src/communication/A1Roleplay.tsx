@@ -1,0 +1,83 @@
+import {useState} from "react";
+import {saveStudyEvent} from "@thiepn/local-db";
+import type {StudyEvent} from "@thiepn/domain";
+import {getDevelopmentAccountId} from "../study/runtime";
+import {a1CommunicationLessons} from "../../../../packages/a1-communication-seed/src/index";
+
+type Turn={speaker:string;prompt:string;choices:readonly {japanese:string;german:string;correct:boolean;reply:string;replyGerman:string}[]};
+type Scenario={id:string;title:string;intro:string;turns:readonly Turn[]};
+const scenarios:readonly Scenario[]=[
+ {id:"cafe",title:"Im Café",intro:"Du möchtest etwas zu trinken bestellen.",turns:[
+  {speaker:"店員",prompt:"いらっしゃいませ。",choices:[
+   {japanese:"おちゃをください。",german:"Einen Tee bitte.",correct:true,reply:"はい、どうぞ。",replyGerman:"Ja, bitte schön."},
+   {japanese:"えきはどこですか。",german:"Wo ist der Bahnhof?",correct:false,reply:"ここはカフェです。",replyGerman:"Hier ist ein Café."},
+   {japanese:"さようなら。",german:"Auf Wiedersehen.",correct:false,reply:"ありがとうございました。",replyGerman:"Vielen Dank."}]},
+  {speaker:"店員",prompt:"ほかに何か？",choices:[
+   {japanese:"みずをください。",german:"Wasser bitte.",correct:true,reply:"はい、どうぞ。",replyGerman:"Ja, bitte schön."},
+   {japanese:"わたしはアンナです。",german:"Ich bin Anna.",correct:false,reply:"そうですか。",replyGerman:"Ach so."},
+   {japanese:"さんじです。",german:"Es ist drei Uhr.",correct:false,reply:"そうですか。",replyGerman:"Ach so."}]}
+ ]},
+ {id:"station",title:"Am Bahnhof",intro:"Du suchst den Bahnhof und möchtest nach Tokio fahren.",turns:[
+  {speaker:"通行人",prompt:"こんにちは。",choices:[
+   {japanese:"すみません。えきはどこですか。",german:"Entschuldigung. Wo ist der Bahnhof?",correct:true,reply:"えきはみぎです。",replyGerman:"Der Bahnhof ist rechts."},
+   {japanese:"コーヒーをください。",german:"Kaffee bitte.",correct:false,reply:"ここにはありません。",replyGerman:"Das gibt es hier nicht."},
+   {japanese:"おやすみなさい。",german:"Gute Nacht.",correct:false,reply:"こんにちは。",replyGerman:"Guten Tag."}]},
+  {speaker:"通行人",prompt:"どこへいきますか。",choices:[
+   {japanese:"とうきょうへいきます。",german:"Ich fahre nach Tokio.",correct:true,reply:"そうですか。",replyGerman:"Ach so."},
+   {japanese:"おんがくがすきです。",german:"Ich mag Musik.",correct:false,reply:"そうですか。",replyGerman:"Ach so."},
+   {japanese:"いちじです。",german:"Es ist ein Uhr.",correct:false,reply:"そうですか。",replyGerman:"Ach so."}]}
+ ]},
+ {id:"meeting",title:"Neue Bekanntschaft",intro:"Du lernst eine Person kennen.",turns:[
+  {speaker:"相手",prompt:"はじめまして。",choices:[
+   {japanese:"はじめまして。",german:"Schön, Sie kennenzulernen.",correct:true,reply:"おなまえは？",replyGerman:"Wie heißen Sie?"},
+   {japanese:"これをください。",german:"Das hier bitte.",correct:false,reply:"え？",replyGerman:"Wie bitte?"},
+   {japanese:"みぎです。",german:"Es ist rechts.",correct:false,reply:"え？",replyGerman:"Wie bitte?"}]},
+  {speaker:"相手",prompt:"おなまえは？",choices:[
+   {japanese:"わたしはアンナです。",german:"Ich bin Anna.",correct:true,reply:"よろしくおねがいします。",replyGerman:"Ich freue mich auf den Kontakt."},
+   {japanese:"さんじです。",german:"Es ist drei Uhr.",correct:false,reply:"え？",replyGerman:"Wie bitte?"},
+   {japanese:"いくらですか。",german:"Wie viel kostet es?",correct:false,reply:"え？",replyGerman:"Wie bitte?"}]}
+ ]}
+];
+function speak(text:string){if(typeof window==="undefined"||!("speechSynthesis" in window))return;window.speechSynthesis.cancel();const voice=new SpeechSynthesisUtterance(text);voice.lang="ja-JP";voice.rate=.82;window.speechSynthesis.speak(voice);}
+export function A1Roleplay(){
+ const [scenarioIndex,setScenarioIndex]=useState(0),[turnIndex,setTurnIndex]=useState(0);
+ const [choiceIndex,setChoiceIndex]=useState<number|null>(null),[score,setScore]=useState(0);
+ const [busy,setBusy]=useState(false),[error,setError]=useState("");
+ const [showGerman,setShowGerman]=useState(false);
+ const scenario=scenarios[scenarioIndex],turn=scenario.turns[turnIndex],choice=choiceIndex===null?null:turn.choices[choiceIndex];
+ const done=turnIndex===scenario.turns.length-1&&choice!==null;
+ function start(index:number){setScenarioIndex(index);setTurnIndex(0);setChoiceIndex(null);setScore(0);setError("");}
+ async function choose(index:number){
+  if(busy||choiceIndex!==null)return;
+  const selected=turn.choices[index];const owner=getDevelopmentAccountId();
+  const event:StudyEvent={id:crypto.randomUUID(),userId:owner,deviceId:"japanese-communication-local",occurredAt:new Date().toISOString(),activity:"lesson",
+   primaryTarget:{kind:"can_do",id:"roleplay:"+scenario.id},skillDimension:"comprehension",promptFamily:"a1-roleplay-choice",responseMode:"choice",
+   result:selected.correct?"correct":"incorrect",attempts:1,sourceId:"original-a1-roleplay-v1",contentVersion:"1",contextId:scenario.id,
+   metadata:{scenarioId:scenario.id,turnIndex,selected:index,schedulerExcluded:true}};
+  setBusy(true);setError("");
+  try{await saveStudyEvent(event);setChoiceIndex(index);if(selected.correct)setScore(v=>v+1);}
+  catch{setError("Antwort konnte nicht gespeichert werden. Bitte erneut versuchen.");}
+  finally{setBusy(false);}
+ }
+ return <section className="j4-practice a1-roleplay-shell" aria-labelledby="a1-roleplay-title">
+  <h2 id="a1-roleplay-title">A1 · Gesprächstraining</h2>
+  <p>Wähle passende Antworten. Dein Gegenüber reagiert auf deine Entscheidung. Die Auswahl wird lokal als Übung gespeichert.</p>
+  <label>Situation <select value={scenarioIndex} onChange={e=>start(Number(e.target.value))}>{scenarios.map((s,i)=><option key={s.id} value={i}>{s.title}</option>)}</select></label>
+  <p>{scenario.intro}</p><progress value={turnIndex+(choice===null?0:1)} max={scenario.turns.length} aria-label="Gesprächsfortschritt"/>
+  <p>Gesprächsschritt {turnIndex+1} von {scenario.turns.length}</p>
+  <article><strong>{turn.speaker}</strong><p lang="ja">{turn.prompt}</p><button type="button" onClick={()=>speak(turn.prompt)}>Anhören</button></article>
+  <fieldset disabled={choice!==null||busy}><legend>Was antwortest du?</legend><div className="a1-choice-grid">
+  {turn.choices.map((option,index)=><button type="button" key={option.japanese} onClick={()=>void choose(index)} aria-pressed={choiceIndex===index}>
+    <span lang="ja">{option.japanese}</span>{showGerman?<small> — {option.german}</small>:null}
+  </button>)}</div></fieldset>
+  <label><input type="checkbox" checked={showGerman} onChange={e=>setShowGerman(e.target.checked)}/> Deutsche Hilfen anzeigen</label>
+  {choice?<div role="status"><strong>{choice.correct?"Passende Antwort":"In dieser Situation unpassend"}</strong>
+   <p>{choice.german}</p><p><strong>{turn.speaker}:</strong> <span lang="ja">{choice.reply}</span> — {choice.replyGerman}</p>
+   <button type="button" onClick={()=>speak(choice.reply)}>Reaktion anhören</button>
+   <p>{!choice.correct?"Versuche beim nächsten Durchgang eine passendere Antwort.":""}</p>
+   {done?<div><p>{score} von {scenario.turns.length} passenden Antworten.</p><button type="button" onClick={()=>start(scenarioIndex)}>Gespräch wiederholen</button></div>
+    :<button type="button" onClick={()=>{setTurnIndex(v=>v+1);setChoiceIndex(null);}}>Gespräch fortsetzen</button>}
+  </div>:null}
+  {error?<p role="alert">{error}</p>:null}
+ </section>;
+}
