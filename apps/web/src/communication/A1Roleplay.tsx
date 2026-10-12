@@ -1,3 +1,4 @@
+import {notifyA1Progress} from "./a1-events";
 import {A1_NAV_EVENT,type A1Navigation} from "./a1-navigation";
 import {useEffect,useState} from "react";
 import {listStudyEvents,saveStudyEvent} from "@thiepn/local-db";
@@ -93,7 +94,7 @@ export function A1Roleplay(){
    result:selected.correct?"correct":"incorrect",attempts:1,sourceId:"original-a1-roleplay-v1",contentVersion:"1",contextId:scenario.id,
    metadata:{scenarioId:scenario.id,turnIndex,selected:index,nextTurn:selected.next===undefined?turnIndex+1:selected.next,schedulerExcluded:true}};
   setBusy(true);setError("");
-  try{await saveStudyEvent(event);setChoiceIndex(index);setVisited(previous=>previous.includes(turnIndex)?previous:[...previous,turnIndex]);if(selected.correct){setScore(v=>v+1);setPreviousMismatch(false);}else setPreviousMismatch(true);
+  try{await saveStudyEvent(event);notifyA1Progress();setChoiceIndex(index);setVisited(previous=>previous.includes(turnIndex)?previous:[...previous,turnIndex]);if(selected.correct){setScore(v=>v+1);setPreviousMismatch(false);}else setPreviousMismatch(true);
  setHistory(previous=>{const old=previous[scenario.id]??{correct:0,incorrect:0};return {...previous,[scenario.id]:{correct:old.correct+(selected.correct?1:0),incorrect:old.incorrect+(selected.correct?0:1)}};});}
   catch{setError("Antwort konnte nicht gespeichert werden. Bitte erneut versuchen.");}
   finally{setBusy(false);}
