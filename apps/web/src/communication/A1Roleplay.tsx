@@ -4,16 +4,16 @@ import type {StudyEvent} from "@thiepn/domain";
 import {getDevelopmentAccountId} from "../study/runtime";
 
 
-type Turn={speaker:string;prompt:string;choices:readonly {japanese:string;german:string;correct:boolean;reply:string;replyGerman:string}[]};
+type Turn={speaker:string;prompt:string;choices:readonly {japanese:string;german:string;correct:boolean;reply:string;replyGerman:string;next?:number|null}[]};
 type Scenario={id:string;title:string;intro:string;turns:readonly Turn[]};
 const scenarios:readonly Scenario[]=[
  {id:"cafe",title:"Im Café",intro:"Du möchtest etwas zu trinken bestellen.",turns:[
   {speaker:"店員",prompt:"いらっしゃいませ。",choices:[
-   {japanese:"おちゃをください。",german:"Einen Tee bitte.",correct:true,reply:"はい、どうぞ。",replyGerman:"Ja, bitte schön."},
+   {japanese:"おちゃをください。",german:"Einen Tee bitte.",correct:true,reply:"はい、どうぞ。",replyGerman:"Ja, bitte schön.",next:1},
    {japanese:"えきはどこですか。",german:"Wo ist der Bahnhof?",correct:false,reply:"ここはカフェです。",replyGerman:"Hier ist ein Café."},
    {japanese:"さようなら。",german:"Auf Wiedersehen.",correct:false,reply:"ありがとうございました。",replyGerman:"Vielen Dank."}]},
   {speaker:"店員",prompt:"ほかに何か？",choices:[
-   {japanese:"みずをください。",german:"Wasser bitte.",correct:true,reply:"はい、どうぞ。",replyGerman:"Ja, bitte schön."},
+   {japanese:"みずをください。",german:"Wasser bitte.",correct:true,reply:"はい、どうぞ。",replyGerman:"Ja, bitte schön.",next:null},
    {japanese:"わたしはアンナです。",german:"Ich bin Anna.",correct:false,reply:"そうですか。",replyGerman:"Ach so."},
    {japanese:"さんじです。",german:"Es ist drei Uhr.",correct:false,reply:"そうですか。",replyGerman:"Ach so."}]}
  ]},
@@ -45,6 +45,7 @@ export function A1Roleplay(){
  const [busy,setBusy]=useState(false),[error,setError]=useState("");
  const [showGerman,setShowGerman]=useState(false);
  const [repair,setRepair]=useState(false);
+ const [visited,setVisited]=useState<number[]>([]);
  const [previousMismatch,setPreviousMismatch]=useState(false);
  const [history,setHistory]=useState<Record<string,{correct:number;incorrect:number}>>({});
  const [historyError,setHistoryError]=useState("");
@@ -57,17 +58,17 @@ export function A1Roleplay(){
  }setHistory(next);}).catch(()=>{if(active)setHistoryError("Gesprächsfortschritt konnte nicht geladen werden.");});
  return()=>{active=false};},[owner]);
  const scenario=scenarios[scenarioIndex],turn=scenario.turns[turnIndex],choice=choiceIndex===null?null:turn.choices[choiceIndex];
- const done=turnIndex===scenario.turns.length-1&&choice!==null&&!repair;
- function start(index:number){setScenarioIndex(index);setTurnIndex(0);setChoiceIndex(null);setScore(0);setRepair(false);setPreviousMismatch(false);setError("");}
+ const done=choice!==null&&choice.correct&&(choice.next===null||(choice.next===undefined&&turnIndex===scenario.turns.length-1));
+ function start(index:number){setScenarioIndex(index);setTurnIndex(0);setChoiceIndex(null);setScore(0);setRepair(false);setVisited([]);setPreviousMismatch(false);setError("");}
  async function choose(index:number){
   if(busy||choiceIndex!==null)return;
   const selected=turn.choices[index];
   const event:StudyEvent={id:crypto.randomUUID(),userId:owner,deviceId:"japanese-communication-local",occurredAt:new Date().toISOString(),activity:"lesson",
    primaryTarget:{kind:"can_do",id:"roleplay:"+scenario.id},skillDimension:"comprehension",promptFamily:"a1-roleplay-choice",responseMode:"choice",
    result:selected.correct?"correct":"incorrect",attempts:1,sourceId:"original-a1-roleplay-v1",contentVersion:"1",contextId:scenario.id,
-   metadata:{scenarioId:scenario.id,turnIndex,selected:index,schedulerExcluded:true}};
+   metadata:{scenarioId:scenario.id,turnIndex,selected:index,nextTurn:selected.next??null,schedulerExcluded:true}};
   setBusy(true);setError("");
-  try{await saveStudyEvent(event);setChoiceIndex(index);if(selected.correct){setScore(v=>v+1);setPreviousMismatch(false);}else setPreviousMismatch(true);
+  try{await saveStudyEvent(event);setChoiceIndex(index);setVisited(previous=>previous.includes(turnIndex)?previous:[...previous,turnIndex]);if(selected.correct){setScore(v=>v+1);setPreviousMismatch(false);}else setPreviousMismatch(true);
  setHistory(previous=>{const old=previous[scenario.id]??{correct:0,incorrect:0};return {...previous,[scenario.id]:{correct:old.correct+(selected.correct?1:0),incorrect:old.incorrect+(selected.correct?0:1)}};});}
   catch{setError("Antwort konnte nicht gespeichert werden. Bitte erneut versuchen.");}
   finally{setBusy(false);}
@@ -92,8 +93,8 @@ export function A1Roleplay(){
    <button type="button" onClick={()=>speak(choice.reply)}>Reaktion anhören</button>
    <p>{!choice.correct?"Versuche beim nächsten Durchgang eine passendere Antwort.":""}</p>
    {!choice.correct?<button type="button" onClick={()=>{setRepair(true);setChoiceIndex(null);}}>Missverständnis klären und erneut antworten</button>:null}
-   {done?<div><p>{score} von {scenario.turns.length} passenden Antworten.</p><button type="button" onClick={()=>start(scenarioIndex)}>Gespräch wiederholen</button></div>
-    :<button type="button" disabled={!choice.correct} onClick={()=>{setTurnIndex(v=>Math.min(v+1,scenario.turns.length-1));setChoiceIndex(null);setRepair(false);setPreviousMismatch(false);}}>Gespräch fortsetzen</button>}
+   {done?<div><p>{score} passende Antworten auf {visited.length} besuchten Gesprächsschritten.</p><button type="button" onClick={()=>start(scenarioIndex)}>Gespräch wiederholen</button></div>
+    :<button type="button" disabled={!choice.correct} onClick={()=>{setTurnIndex(choice.next??Math.min(turnIndex+1,scenario.turns.length-1));setChoiceIndex(null);setRepair(false);setPreviousMismatch(false);}}>Gespräch fortsetzen</button>}
   </div>:null}
   {error?<p role="alert">{error}</p>:null}
  </section>;
