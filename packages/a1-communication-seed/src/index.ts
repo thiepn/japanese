@@ -110,10 +110,383 @@ export const a1CommunicationLessons: readonly A1CommunicationLesson[] = [
     dialogue:[{speaker:"A",japanese:"おちゃをください。",romaji:"Ocha o kudasai.",german:"Einen Tee bitte."},{speaker:"B",japanese:"はい。",romaji:"Hai.",german:"Ja."},{speaker:"A",japanese:"ありがとうございます。",romaji:"Arigatou gozaimasu.",german:"Vielen Dank."}],
     exercises:[{id:"cafe-choice",kind:"choice",prompt:"Was bestellt A?",options:["Tee","Wasser","Kaffee"],answer:"Tee",explanation:"おちゃ bedeutet Tee."},{id:"cafe-order",kind:"order",prompt:"Ordne: Wasser bitte.",tokens:["ください","みずを"],answer:["みずを","ください"],explanation:"みずをください bedeutet Wasser bitte."},{id:"cafe-fill",kind:"fill",prompt:"Ergänze: おちゃを___。",answer:"ください",explanation:"ください drückt die höfliche Bitte aus."}]
   }
-
+,
+  {
+  "id": "a1-directions",
+  "level": "A1",
+  "title": "Nach dem Weg fragen",
+  "canDo": "Ich kann nach einem Ort fragen und einfache Richtungsangaben verstehen.",
+  "grammar": [
+    "～はどこですか fragt nach dem Standort.",
+    "みぎ bedeutet rechts; ひだり bedeutet links."
+  ],
+  "vocabulary": [
+    {
+      "japanese": "えき",
+      "romaji": "eki",
+      "german": "Bahnhof"
+    },
+    {
+      "japanese": "どこ",
+      "romaji": "doko",
+      "german": "wo"
+    },
+    {
+      "japanese": "みぎ",
+      "romaji": "migi",
+      "german": "rechts"
+    },
+    {
+      "japanese": "ひだり",
+      "romaji": "hidari",
+      "german": "links"
+    },
+    {
+      "japanese": "ここ",
+      "romaji": "koko",
+      "german": "hier"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "A",
+      "japanese": "すみません。えきはどこですか。",
+      "romaji": "Sumimasen. Eki wa doko desu ka.",
+      "german": "Entschuldigung. Wo ist der Bahnhof?"
+    },
+    {
+      "speaker": "B",
+      "japanese": "えきはみぎです。",
+      "romaji": "Eki wa migi desu.",
+      "german": "Der Bahnhof ist rechts."
+    },
+    {
+      "speaker": "A",
+      "japanese": "ありがとうございます。",
+      "romaji": "Arigatou gozaimasu.",
+      "german": "Vielen Dank."
+    }
+  ],
+  "exercises": [
+    {
+      "id": "directions-choice",
+      "kind": "choice",
+      "prompt": "えきはどこですか。 Was wird gefragt?",
+      "options": [
+        "Wo ist der Bahnhof?",
+        "Wie teuer ist das?",
+        "Wie heißen Sie?"
+      ],
+      "answer": "Wo ist der Bahnhof?",
+      "explanation": "えき bedeutet Bahnhof, どこ fragt nach einem Ort."
+    },
+    {
+      "id": "directions-fill",
+      "kind": "fill",
+      "prompt": "Ergänze: えきは___ですか。",
+      "answer": "どこ",
+      "explanation": "どこ bedeutet wo."
+    }
+  ]
+},
+  {
+  "id": "a1-time",
+  "level": "A1",
+  "title": "Uhrzeit und Verabredung",
+  "canDo": "Ich kann nach der Uhrzeit fragen und eine einfache Zeitangabe verstehen.",
+  "grammar": [
+    "いまなんじですか fragt nach der aktuellen Uhrzeit.",
+    "～じ markiert die volle Stunde."
+  ],
+  "vocabulary": [
+    {
+      "japanese": "いま",
+      "romaji": "ima",
+      "german": "jetzt"
+    },
+    {
+      "japanese": "なんじ",
+      "romaji": "nanji",
+      "german": "wie viel Uhr"
+    },
+    {
+      "japanese": "いちじ",
+      "romaji": "ichiji",
+      "german": "ein Uhr"
+    },
+    {
+      "japanese": "にじ",
+      "romaji": "niji",
+      "german": "zwei Uhr"
+    },
+    {
+      "japanese": "さんじ",
+      "romaji": "sanji",
+      "german": "drei Uhr"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "A",
+      "japanese": "いまなんじですか。",
+      "romaji": "Ima nanji desu ka.",
+      "german": "Wie spät ist es jetzt?"
+    },
+    {
+      "speaker": "B",
+      "japanese": "さんじです。",
+      "romaji": "Sanji desu.",
+      "german": "Es ist drei Uhr."
+    }
+  ],
+  "exercises": [
+    {
+      "id": "time-choice",
+      "kind": "choice",
+      "prompt": "Was bedeutet さんじです。?",
+      "options": [
+        "Es ist drei Uhr.",
+        "Es ist zwei Uhr.",
+        "Es ist ein Uhr."
+      ],
+      "answer": "Es ist drei Uhr.",
+      "explanation": "さんじ bezeichnet drei Uhr."
+    },
+    {
+      "id": "time-fill",
+      "kind": "fill",
+      "prompt": "Ergänze: いま___ですか。",
+      "answer": "なんじ",
+      "explanation": "なんじ fragt nach der Uhrzeit."
+    }
+  ]
+},
+  {
+  "id": "a1-family",
+  "level": "A1",
+  "title": "Über Familie sprechen",
+  "canDo": "Ich kann einfache Angaben über Familienmitglieder machen.",
+  "grammar": [
+    "これは～です bedeutet: Das ist …",
+    "わたしの bedeutet mein/meine."
+  ],
+  "vocabulary": [
+    {
+      "japanese": "かぞく",
+      "romaji": "kazoku",
+      "german": "Familie"
+    },
+    {
+      "japanese": "はは",
+      "romaji": "haha",
+      "german": "meine Mutter"
+    },
+    {
+      "japanese": "ちち",
+      "romaji": "chichi",
+      "german": "mein Vater"
+    },
+    {
+      "japanese": "あね",
+      "romaji": "ane",
+      "german": "meine ältere Schwester"
+    },
+    {
+      "japanese": "あに",
+      "romaji": "ani",
+      "german": "mein älterer Bruder"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "A",
+      "japanese": "これはだれですか。",
+      "romaji": "Kore wa dare desu ka.",
+      "german": "Wer ist das?"
+    },
+    {
+      "speaker": "B",
+      "japanese": "わたしのははです。",
+      "romaji": "Watashi no haha desu.",
+      "german": "Das ist meine Mutter."
+    }
+  ],
+  "exercises": [
+    {
+      "id": "family-choice",
+      "kind": "choice",
+      "prompt": "Was bedeutet はは?",
+      "options": [
+        "meine Mutter",
+        "mein Vater",
+        "meine ältere Schwester"
+      ],
+      "answer": "meine Mutter",
+      "explanation": "はは bezeichnet die eigene Mutter, wenn man über sie spricht."
+    },
+    {
+      "id": "family-fill",
+      "kind": "fill",
+      "prompt": "Ergänze: わたし___ははです。",
+      "answer": "の",
+      "explanation": "の zeigt hier die Zugehörigkeit an."
+    }
+  ]
+},
+  {
+  "id": "a1-hobbies",
+  "level": "A1",
+  "title": "Freizeit und Vorlieben",
+  "canDo": "Ich kann sagen, was ich mag, und nach Vorlieben fragen.",
+  "grammar": [
+    "～がすきです bedeutet: Ich mag …",
+    "～がすきですか fragt nach einer Vorliebe."
+  ],
+  "vocabulary": [
+    {
+      "japanese": "おんがく",
+      "romaji": "ongaku",
+      "german": "Musik"
+    },
+    {
+      "japanese": "ほん",
+      "romaji": "hon",
+      "german": "Buch"
+    },
+    {
+      "japanese": "スポーツ",
+      "romaji": "supootsu",
+      "german": "Sport"
+    },
+    {
+      "japanese": "すき",
+      "romaji": "suki",
+      "german": "mögen / gernhaben"
+    },
+    {
+      "japanese": "はい",
+      "romaji": "hai",
+      "german": "ja"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "A",
+      "japanese": "おんがくがすきですか。",
+      "romaji": "Ongaku ga suki desu ka.",
+      "german": "Mögen Sie Musik?"
+    },
+    {
+      "speaker": "B",
+      "japanese": "はい。おんがくがすきです。",
+      "romaji": "Hai. Ongaku ga suki desu.",
+      "german": "Ja. Ich mag Musik."
+    }
+  ],
+  "exercises": [
+    {
+      "id": "hobby-choice",
+      "kind": "choice",
+      "prompt": "Was mag Person B?",
+      "options": [
+        "Musik",
+        "Sport",
+        "Bücher"
+      ],
+      "answer": "Musik",
+      "explanation": "おんがく bedeutet Musik."
+    },
+    {
+      "id": "hobby-order",
+      "kind": "order",
+      "prompt": "Ordne: Ich mag Musik.",
+      "tokens": [
+        "すきです",
+        "おんがくが"
+      ],
+      "answer": [
+        "おんがくが",
+        "すきです"
+      ],
+      "explanation": "Nomen + が + すきです."
+    }
+  ]
+},
+  {
+  "id": "a1-transport",
+  "level": "A1",
+  "title": "Mit dem Zug fahren",
+  "canDo": "Ich kann ein einfaches Reiseziel nennen.",
+  "grammar": [
+    "～へいきます bedeutet: Ich fahre/gehe nach …",
+    "へ wird als Richtungs-Partikel e ausgesprochen."
+  ],
+  "vocabulary": [
+    {
+      "japanese": "でんしゃ",
+      "romaji": "densha",
+      "german": "Zug"
+    },
+    {
+      "japanese": "バス",
+      "romaji": "basu",
+      "german": "Bus"
+    },
+    {
+      "japanese": "えき",
+      "romaji": "eki",
+      "german": "Bahnhof"
+    },
+    {
+      "japanese": "とうきょう",
+      "romaji": "toukyou",
+      "german": "Tokio"
+    },
+    {
+      "japanese": "いきます",
+      "romaji": "ikimasu",
+      "german": "fahren / gehen"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "A",
+      "japanese": "どこへいきますか。",
+      "romaji": "Doko e ikimasu ka.",
+      "german": "Wohin fahren Sie?"
+    },
+    {
+      "speaker": "B",
+      "japanese": "とうきょうへいきます。",
+      "romaji": "Toukyou e ikimasu.",
+      "german": "Ich fahre nach Tokio."
+    }
+  ],
+  "exercises": [
+    {
+      "id": "transport-choice",
+      "kind": "choice",
+      "prompt": "Wohin fährt Person B?",
+      "options": [
+        "Nach Tokio",
+        "Zum Café",
+        "Nach Deutschland"
+      ],
+      "answer": "Nach Tokio",
+      "explanation": "とうきょう bedeutet Tokio."
+    },
+    {
+      "id": "transport-fill",
+      "kind": "fill",
+      "prompt": "Ergänze: とうきょう___いきます。",
+      "answer": "へ",
+      "explanation": "へ markiert das Reiseziel und wird e ausgesprochen."
+    }
+  ]
+}
 ];
 
-export function evaluateA1Exercise(exercise: A1Exercise, response: string | readonly string[]): boolean {
+export function evaluateA1Exercise/(exercise: A1Exercise, response: string | readonly string[]): boolean {
   if (exercise.kind === "order") {
     return Array.isArray(response) && response.length === exercise.answer.length
       && response.every((token, index) => token === exercise.answer[index]);
