@@ -13,3 +13,9 @@
 .p28-builder__result details{margin:.75rem 0}
 .p28-builder__result details summary{cursor:pointer;font-weight:600}
 .p28-builder__result details span[lang=ja]{font-size:1.07rem}
+
+.p28-builder__transform{border-top:1px solid currentColor;margin-top:1.4rem;padding-top:1rem}
+.p28-builder__transform h4{margin:.5rem 0}
+.p28-builder__transform label{display:block;font-weight:600;margin:.65rem 0}
+.p28-builder__transform textarea{display:block;width:100%;border:1px solid currentColor;color:inherit;background:transparent;padding:.65rem;resize:vertical;font:inherit}
+.p28-builder__transform [lang=ja]{font-size:1.14rem}

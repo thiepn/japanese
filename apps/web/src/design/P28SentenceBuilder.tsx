@@ -10,6 +10,8 @@ import {
   p29AllSentencePuzzles,sentence29Queue,acceptedSentenceOrder,sentenceVariants,orderFeedback29
 } from "../study/depth29";
 import {journeyUnit} from "../study/journey27";
+import {transformationForUnit,inspectTransformation,p30TransformationPrompts} from "../study/pedagogy30";
+import {normalizeP26} from "../study/pedagogy26";
 import "./p28-sentence.css";
 
 type Submission={status:"correct"|"unrecognized"|"assisted";feedback:string[]};
@@ -30,8 +32,14 @@ export function P28SentenceBuilder({
   const [historyError,setHistoryError]=useState("");
   const [error,setError]=useState("");
   const [sequence,setSequence]=useState(0);
+  const [transformText,setTransformText]=useState("");
+  const [transformAssisted,setTransformAssisted]=useState(false);
+  const [transformResult,setTransformResult]=useState<{recognized:boolean;assisted:boolean;notes:string[]}|null>(null);
+  const [transformBusy,setTransformBusy]=useState(false);
+  const seenModels=useRef<Set<string>>(new Set());
   const started=useRef(0);
   const current=ordered.find(p=>p.id===choice)??ordered[0]??p29AllSentencePuzzles[0]!;
+  const transform=transformationForUnit(unitId);
   const original=useMemo(()=>shuffledTiles(current),[current.id]);
   const remaining=original.filter(i=>!selection.includes(i));
   const answer=builtAnswer(current,selection);
@@ -48,11 +56,12 @@ export function P28SentenceBuilder({
   },[owner,unitId,sequence]);
   useEffect(()=>{
     setChoice(undefined);setSelection([]);setAssisted(false);setSubmission(null);
-    setError("");started.current=performance.now();
+    setError("");seenModels.current.clear();setTransformText("");setTransformAssisted(false);
+    setTransformResult(null);started.current=performance.now();
   },[unitId,owner]);
   function selectPuzzle(id:string){
     if(busy)return;
-    setChoice(id);setSelection([]);setAssisted(false);setSubmission(null);setError("");
+    setChoice(id);setSelection([]);setAssisted(seenModels.current.has(id));setSubmission(null);setError("");
     started.current=performance.now();
   }
   function removeTile(position:number){
@@ -88,6 +97,7 @@ export function P28SentenceBuilder({
         responseTimeMs:Math.max(0,Math.round(performance.now()-started.current))
       });
       if(accountRef.current!==account)return;
+      seenModels.current.add(current.id);
       setSubmission({
         status:assisted?"assisted":recognized?"correct":"unrecognized",
         feedback:orderFeedback29(current,answer)
@@ -98,6 +108,41 @@ export function P28SentenceBuilder({
     }finally{if(accountRef.current===account)setBusy(false);}
   }
   function undo(){if(!submission&&!busy)setSelection(list=>list.slice(0,-1));}
+  async function submitTransformation(){
+    if(!transform||!transformText.trim()||transformResult||transformBusy||disabled)return;
+    const account=accountRef.current;
+    if(getDevelopmentAccountId()!==account)return;
+    const prompt=p30TransformationPrompts.find(p=>p.eventMetadata?.taskId===transform.id);
+    if(!prompt)return;
+    const observation=inspectTransformation(transform,transformText);
+    const independentlyRecognized=observation.known&&!transformAssisted;
+    setTransformBusy(true);setError("");
+    try{
+      if(independentlyRecognized){
+        await recordStudyAnswer({prompt,response:normalizeP26(transformText),result:"correct",
+          responseTimeMs:Math.max(0,Math.round(performance.now()-started.current))});
+      }else{
+        const event:StudyEvent={
+          id:crypto.randomUUID(),userId:account,deviceId:DEVELOPMENT_DEVICE_ID,
+          occurredAt:new Date().toISOString(),activity:"writing",
+          primaryTarget:{kind:"production_task",id:"p30:reformulation:"+transform.id},
+          skillDimension:"production",promptFamily:"p30-guided-reformulation",
+          responseMode:"typed",result:"skipped",attempts:1,
+          contextId:"p30:unit:"+unitId,sourceId:"thiepn-original",contentVersion:"p30-1",
+          metadata:{p30:true,kind:"reformulation",taskId:transform.id,unitId,
+            schedulerExcluded:true,rawTextStored:false,assisted:transformAssisted,
+            characters:[...normalizeP26(transformText)].length}
+        };
+        await saveStudyEvent(event);
+      }
+      if(accountRef.current!==account)return;
+      setTransformAssisted(true); // The model becomes visible after checking.
+      setTransformResult({recognized:observation.known,assisted:!independentlyRecognized,
+        notes:observation.remarks});onReviewed();
+    }catch{
+      if(accountRef.current===account)setError("Umformulierung konnte nicht gespeichert werden. Bitte erneut versuchen.");
+    }finally{if(accountRef.current===account)setTransformBusy(false);}
+  }
   function next(){
     const i=ordered.findIndex(p=>p.id===current.id);
     selectPuzzle(ordered[(i+1)%ordered.length]?.id??current.id);
@@ -159,6 +204,31 @@ export function P28SentenceBuilder({
         <button type="button" onClick={next}>Nächster Satz</button>
         <button type="button" onClick={onContinue}>Weiter zum Gespräch</button>
       </div>
+    </div>:null}
+    {transform?<div className="p28-builder__transform" aria-label="Satz im Kontext umformen">
+      <h4>Eigene Umformulierung</h4>
+      <p><strong>Kommunikative Aufgabe:</strong> {transform.context}</p>
+      <p><strong>Ausgangssatz:</strong> <span lang="ja">{transform.startingSentence}</span></p>
+      <label htmlFor="p30-transform-input">Formuliere selbst einen passenden japanischen Satz</label>
+      <textarea id="p30-transform-input" lang="ja" rows={3} value={transformText}
+        disabled={transformBusy||Boolean(transformResult)} onChange={e=>setTransformText(e.target.value)}/>
+      <div className="p28-builder__actions">
+        <button type="button" disabled={transformBusy||Boolean(transformResult)} onClick={()=>setTransformAssisted(true)}>
+          Grammatikhilfe ansehen (danach unbewertet)</button>
+        <button type="button" disabled={transformBusy||disabled||Boolean(transformResult)||!transformText.trim()}
+          onClick={()=>void submitTransformation()}>Formulierung vergleichen</button>
+      </div>
+      {transformAssisted&&!transformResult?<p role="status">{transform.explanation}</p>:null}
+      {transformResult?<div className="p28-builder__result" role="status">
+        <strong>{transformResult.recognized
+          ?transformResult.assisted?"Passendes Muster – unterstützt, unbewertet":"Zielform unabhängig getroffen"
+          :"Freie Alternative – nicht automatisch beurteilbar"}</strong>
+        <p>Beispiel: <span lang="ja">{transform.model}</span></p>
+        <ul>{transformResult.notes.map((note,i)=><li key={i}>{note}</li>)}</ul>
+        <button type="button" onClick={()=>{
+          setTransformResult(null);setTransformAssisted(true);started.current=performance.now();
+        }}>Antwort mit Hilfe überarbeiten</button>
+      </div>:null}
     </div>:null}
     {error?<p role="alert">{error}</p>:null}
   </section>;
