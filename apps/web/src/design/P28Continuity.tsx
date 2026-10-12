@@ -50,6 +50,11 @@ export function P28Continuity({
     startedAt.current=performance.now();
   },[unitId,owner,scenarioId]);
   useEffect(()=>{revealedTurnIds.current.clear();},[unitId,owner]);
+  useEffect(()=>{
+    if(showMeaning&&scenario&&node){
+      revealedTurnIds.current.add(scenario.id+":"+node.id);
+    }
+  },[showMeaning,scenario?.id,node?.id]);
   if(!scenario||!node)return null;
   async function saveUngraded(response:string){
     const account=accountRef.current;
@@ -76,9 +81,9 @@ export function P28Continuity({
     const prompt=continuityPrompt(scenario!,node!,kind);
     const grade=gradeStudyPrompt(prompt,response);
     const accepted=grade.result==="correct";
-    const independentlyProduced=kind==="typed"&&accepted&&!modelRevealed&&!choiceOptionsSeen&&!intendedReply&&revisions===0&&
+    const independentlyProduced=kind==="typed"&&accepted&&!modelRevealed&&!choiceOptionsSeen&&!showMeaning&&!intendedReply&&revisions===0&&
       !revealedTurnIds.current.has(scenario!.id+":"+node!.id);
-    const independentChoice=kind==="choice"&&!modelRevealed&&revisions===0&&
+    const independentChoice=kind==="choice"&&!modelRevealed&&!showMeaning&&revisions===0&&
       !revealedTurnIds.current.has(scenario!.id+":"+node!.id);
     const choice=node!.choices.find(c=>normalizeP26(c.japanese)===normalizeP26(response));
     const intended=node!.choices.find(c=>c.appropriate&&c.japanese===intendedReply);
@@ -153,7 +158,13 @@ export function P28Continuity({
       <p><strong>Folgeschritt {count+1}</strong> · deine Entscheidung verändert die nächste Nachfrage.</p>
       <blockquote><p lang="ja">{node.partner}</p>{showMeaning?<small>{node.meaning}</small>:null}</blockquote>
       <label className="p28-continuity__check"><input type="checkbox" checked={showMeaning}
-        onChange={e=>setShowMeaning(e.target.checked)}/> Deutsche Bedeutung anzeigen</label>
+        onChange={e=>{
+          setShowMeaning(e.target.checked);
+          if(e.target.checked){
+            setModelRevealed(true);
+            revealedTurnIds.current.add(scenario!.id+":"+node!.id);
+          }
+        }}/> Deutsche Bedeutung anzeigen</label>
       <div className="p28-continuity__mode" role="group" aria-label="Antwortmodus">
         <button type="button" aria-pressed={mode==="typed"} disabled={busy} onClick={()=>{setMode("typed");setFeedback(null);}}>Selbst eintippen</button>
         <button type="button" aria-pressed={mode==="choice"} disabled={busy} onClick={()=>{setMode("choice");setChoiceOptionsSeen(true);setFeedback(null);}}>Antwortauswahl</button>

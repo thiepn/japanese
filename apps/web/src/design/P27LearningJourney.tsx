@@ -148,6 +148,13 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setRewriteStage("draft");setReport(null);setSaved(false);setVoiceStatus("");
     started.current=performance.now();
   },[unitId,owner]);
+  // A German explanation is a learning scaffold even if switched off later.
+  // Track the turn, not just the current checkbox value, across navigation.
+  useEffect(()=>{
+    if(showTranslation&&nodeId!=="__finished__"){
+      revealedTurnIds.current.add(unitId+":"+turn.id);
+    }
+  },[unitId,nodeId,showTranslation,turn.id]);
   useEffect(()=>()=>microphone.current?.stop(),[]);
   function selectUnit(id:string){setUnitId(id);setStage("learn");}
   function resetDialogue(){
@@ -203,14 +210,14 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     const prompt=journeyTypedPrompt(unit,turn);
     const normalized=normalizeP26(answer);
     const exact=gradeStudyPrompt(prompt,normalized).result==="correct";
-    const independent=exact&&!hintUsed&&!speechUsed&&!choiceExampleSeen&&
+    const independent=exact&&!hintUsed&&!speechUsed&&!choiceExampleSeen&&!showTranslation&&
       !revealedTurnIds.current.has(unitId+":"+turn.id);
     const choice=turn.options.find(o=>o.valid&&normalizeP26(o.japanese)===normalized);
     setBusy(true);setError("");
     try{
       if(independent)await recordStudyAnswer({prompt,response:normalized,result:"correct",
         responseTimeMs:Math.max(0,Math.round(performance.now()-started.current))});
-      else await ungraded("response",answer,hintUsed||speechUsed);
+      else await ungraded("response",answer,hintUsed||speechUsed||showTranslation);
       if(currentOwner.current!==account)return;
       if(!firstConversationDraft)setFirstConversationDraft(answer);
       setChoiceExampleSeen(true);revealedTurnIds.current.add(unitId+":"+turn.id);
@@ -231,7 +238,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     if(account!==getDevelopmentAccountId())return;
     setBusy(true);setError("");
     try{
-      if(turn.originalPrompt?.promptType==="choice"&&!choiceExampleSeen&&
+      if(turn.originalPrompt?.promptType==="choice"&&!choiceExampleSeen&&!showTranslation&&
         !revealedTurnIds.current.has(unitId+":"+turn.id)){
         const prompt=turn.originalPrompt;
         await recordStudyAnswer({prompt,response:option.japanese,
@@ -240,7 +247,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
       }else await ungraded("response",option.japanese,true);
       if(currentOwner.current!==account)return;
       setChoiceExampleSeen(true);revealedTurnIds.current.add(unitId+":"+turn.id);
-      setFeedback({kind:"choice",message:choiceExampleSeen?"Auswahl nach zuvor gezeigter Hilfe: unbewertet.":option.valid?"Situationsgerechte Auswahl.":"Missverständnis: Versuche eine passendere Antwort.",
+      setFeedback({kind:"choice",message:choiceExampleSeen||showTranslation?"Auswahl nach Sprachhilfe: unbewertet.":option.valid?"Situationsgerechte Auswahl.":"Missverständnis: Versuche eine passendere Antwort.",
         model:turn.reference,notes:[option.explanation,turn.hint],next:nextTurn(unit,turn,option)});
       setReload(n=>n+1);
     }catch{if(currentOwner.current===account)setError("Antwortauswahl konnte nicht gespeichert werden.");}
@@ -392,7 +399,13 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <button type="button" onClick={()=>speak(turn.partner)}>Synthetisch anhören</button>
             </div>
             <label><input type="checkbox" checked={showTranslation}
-              onChange={e=>setShowTranslation(e.target.checked)}/> Deutsche Hilfe anzeigen</label>
+              onChange={e=>{
+                setShowTranslation(e.target.checked);
+                if(e.target.checked){
+                  setHintUsed(true);
+                  revealedTurnIds.current.add(unitId+":"+turn.id);
+                }
+              }}/> Deutsche Hilfe anzeigen</label>
             {inputMode==="compose"?<>
               <label htmlFor="p27-reply">Deine japanische Antwort</label>
               <textarea rows={3} id="p27-reply" lang="ja" value={answer} disabled={Boolean(feedback)||busy}
