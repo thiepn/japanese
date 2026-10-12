@@ -1,6 +1,6 @@
 export type RecallAttempt={id:string;at:string;correct:boolean};
 export type RecallState={streak:number;attempts:number;incorrect:number;last:string;dueAt:string};
-export function recallSchedule(attempts:readonly RecallAttempt[],now=Date.now()):Record<string,RecallState>{
+export function recallSchedule(attempts:readonly RecallAttempt[],_now=Date.now()):Record<string,RecallState>{
  const sorted=[...attempts].filter(a=>Number.isFinite(Date.parse(a.at))).sort((a,b)=>Date.parse(a.at)-Date.parse(b.at));
  const result:Record<string,RecallState>={};
  for(const attempt of sorted){
