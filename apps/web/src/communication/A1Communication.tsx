@@ -13,6 +13,9 @@ export function A1Communication(){
   const [feedback,setFeedback]=useState<"correct"|"incorrect"|null>(null);
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
+  const [showRomaji,setShowRomaji]=useState(true);
+  const [showTranslation,setShowTranslation]=useState(true);
+  const [dialogueStep,setDialogueStep]=useState(0);
   const [completed,setCompleted]=useState<Record<string,number>>({});
   const owner=getDevelopmentAccountId();
   const ownerRef=useRef(owner);
@@ -34,11 +37,18 @@ export function A1Communication(){
   },[owner]);
   const lesson=lessonIndex===null?null:a1CommunicationLessons[lessonIndex];
   const exercise=lesson?.exercises[exerciseIndex];
-  function select(index:number){setLessonIndex(index);setExerciseIndex(0);setResponse("");setOrdered([]);setFeedback(null);setError("");}
+  function select(index:number){setDialogueStep(0);setLessonIndex(index);setExerciseIndex(0);setResponse("");setOrdered([]);setFeedback(null);setError("");}
   function next(){
     if(!lesson)return;
     if(exerciseIndex+1>=lesson.exercises.length){setLessonIndex(null);return;}
     setExerciseIndex(value=>value+1);setResponse("");setOrdered([]);setFeedback(null);setError("");
+  }
+  function speak(japanese:string){
+    if(typeof window==="undefined"||!("speechSynthesis" in window))return;
+    window.speechSynthesis.cancel();
+    const utterance=new SpeechSynthesisUtterance(japanese);
+    utterance.lang="ja-JP";utterance.rate=0.82;
+    window.speechSynthesis.speak(utterance);
   }
   async function submit(){
     if(!lesson||!exercise||busy||feedback)return;
@@ -76,13 +86,26 @@ export function A1Communication(){
     </article>)}</div>:<div>
       <button type="button" onClick={()=>setLessonIndex(null)}>Zurück zur Übersicht</button>
       <h3>{lesson.title}</h3><p>{lesson.canDo}</p>
+      <nav aria-label="Lektionsnavigation"><button type="button" disabled={lessonIndex===0} onClick={()=>select(Math.max(0,(lessonIndex??0)-1))}>Vorherige Lektion</button> <span>Lektion {(lessonIndex??0)+1} von {a1CommunicationLessons.length}</span> <button type="button" disabled={lessonIndex===a1CommunicationLessons.length-1} onClick={()=>select(Math.min(a1CommunicationLessons.length-1,(lessonIndex??0)+1))}>Nächste Lektion</button></nav>
+      <label><input type="checkbox" checked={showRomaji} onChange={event=>setShowRomaji(event.target.checked)}/> Romaji anzeigen</label> <label><input type="checkbox" checked={showTranslation} onChange={event=>setShowTranslation(event.target.checked)}/> Übersetzung anzeigen</label>
       <details><summary>Grammatik und Wortschatz</summary>
         <ul>{lesson.grammar.map(point=><li key={point}>{point}</li>)}</ul>
-        <dl>{lesson.vocabulary.map(word=><div key={word.japanese}><dt lang="ja">{word.japanese} ({word.romaji})</dt><dd>{word.german}</dd></div>)}</dl>
+        <dl>{lesson.vocabulary.map(word=><div key={word.japanese}><dt><span lang="ja">{word.japanese}</span> {showRomaji?<small>{word.romaji}</small>:null} <button type="button" onClick={()=>speak(word.japanese)} aria-label={`Aussprache: ${word.japanese}`}>Anhören</button></dt>{showTranslation?<dd>{word.german}</dd>:null}</div>)}</dl>
       </details>
-      <details open><summary>Dialog mit Übersetzung</summary>
-        {lesson.dialogue.map((line,index)=><p key={index}><strong>{line.speaker}:</strong> <span lang="ja">{line.japanese}</span> <small>{line.romaji} — {line.german}</small></p>)}
-      </details>
+      <section aria-label="Interaktiver Dialog">
+        <h4>Dialog üben</h4>
+        <p>Zeile {dialogueStep+1} von {lesson.dialogue.length}</p>
+        {lesson.dialogue.map((line,index)=>index===dialogueStep?<div key={index}>
+          <p><strong>{line.speaker}:</strong> <span lang="ja">{line.japanese}</span></p>
+          {showRomaji?<p>{line.romaji}</p>:null}
+          {showTranslation?<p>{line.german}</p>:null}
+          <button type="button" onClick={()=>speak(line.japanese)}>Japanisch anhören</button>
+        </div>:null)}
+        <button type="button" disabled={dialogueStep===0} onClick={()=>setDialogueStep(v=>Math.max(0,v-1))}>Vorherige Zeile</button>
+        <button type="button" disabled={dialogueStep===lesson.dialogue.length-1} onClick={()=>setDialogueStep(v=>Math.min(lesson.dialogue.length-1,v+1))}>Nächste Zeile</button>
+        <button type="button" onClick={()=>setDialogueStep(0)}>Dialog neu beginnen</button>
+        <p><small>Sprachausgabe verwendet die japanische Stimme des Geräts, sofern verfügbar; keine Aussprachebewertung.</small></p>
+      </section>
       {exercise?<div aria-labelledby="a1-question">
         <p>Übung {exerciseIndex+1}/{lesson.exercises.length}</p>
         <h4 id="a1-question">{exercise.prompt}</h4>
