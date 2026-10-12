@@ -116,3 +116,33 @@
 .p27-journey__keyhint{font-size:.83rem;opacity:.78}
 #p27-reply:focus-visible,#p27-draft:focus-visible,#p27-rewrite:focus-visible{outline:3px solid currentColor;outline-offset:3px}
 @media(max-width:580px){#p27-reply,#p27-draft,#p27-rewrite{min-height:7rem;font-size:1rem}}
+
+
+/* P39 remains in the original lesson and writing surfaces. */
+.p27-journey__p39-lesson,.p27-journey__p39-writing{
+  margin:1.1rem 0;padding:.95rem;border:1px solid currentColor;min-width:0
+}
+.p27-journey__p39-lesson h5,.p27-journey__p39-writing h5{
+  font-size:1rem;margin:.35rem 0
+}
+.p27-journey__p39-options,.p27-journey__p39-picker{
+  display:flex;gap:.55rem;flex-wrap:wrap;margin:.75rem 0
+}
+.p27-journey__p39-options button{
+  flex:1 1 12rem;overflow-wrap:anywhere;font-size:1.07rem
+}
+.p27-journey__p39-picker button{flex:1 1 12rem}
+.p27-journey__p39-picker [aria-pressed=true],.p27-journey__p39-options [aria-pressed=true]{
+  outline:2px solid currentColor;outline-offset:1px
+}
+.p27-journey__p39-feedback{border-left:3px solid currentColor;padding:.7rem 1rem;background:rgba(120,120,120,.08)}
+.p27-journey__p39-feedback p{margin:.4rem 0}
+.p27-journey__p39-feedback small{display:block;opacity:.8}
+.p27-journey__p39-lesson [lang=ja],.p27-journey__p39-writing [lang=ja]{
+  line-height:1.6;overflow-wrap:anywhere
+}
+@media(max-width:620px){
+  .p27-journey__p39-lesson,.p27-journey__p39-writing{padding:.65rem}
+  .p27-journey__p39-options,.p27-journey__p39-picker{display:grid;grid-template-columns:minmax(0,1fr)}
+  .p27-journey__p39-options button,.p27-journey__p39-picker button{width:100%;min-height:44px}
+}
