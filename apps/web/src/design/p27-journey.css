@@ -34,3 +34,13 @@
 .p27-journey__linked article p{margin:.25rem 0}
 .p27-journey__revision{padding:.75rem;border-left:2px solid currentColor;margin:.8rem 0}
 .p27-journey__revision details{margin:.65rem 0}
+
+.p27-journey__quality-example{border-left:3px solid currentColor;background:rgba(120,120,120,.07);padding:.75rem 1rem;margin:1rem 0}
+.p27-journey__quality-example h5,.p27-journey__weakareas h5{font-size:1rem;margin:.25rem 0}
+.p27-journey__quality-example [lang=ja]{font-size:1.16rem}
+.p27-journey__weakareas{margin:1.2rem 0;padding:1rem 0;border-top:1px solid currentColor}
+.p27-journey__weakgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.65rem}
+.p27-journey__weakgrid>div{padding:.8rem;border:1px solid currentColor;min-width:0}
+.p27-journey__weakgrid p{margin:.4rem 0}
+.p27-journey__weakgrid small{opacity:.76;display:block;margin:.5rem 0}
+.p27-journey__weakgrid button{width:100%}

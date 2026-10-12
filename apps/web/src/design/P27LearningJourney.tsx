@@ -11,6 +11,10 @@ import {P28Continuity} from "./P28Continuity";
 import {p28NewSentencePrompts} from "../study/sentence28";
 import {p29AdditionalPrompts,p29LexicalPrompts,lexicalLinksForUnit,recommendP29Actions} from "../study/depth29";
 import {describeP29Revision,p29RegisterExampleForUnit} from "../study/revision29";
+import {p30TransformationPrompts,transformationForUnit} from "../study/pedagogy30";
+import {continuityPrompts} from "../study/continuity28";
+import {register28Prompts} from "../study/register28";
+import {deriveWeakAreas,areaLabels} from "../study/remediation30";
 import {
   deriveJourneyProgress,journeyTypedPrompt,journeyUnits,journeyUnit,nextTurn,recommendedJourneyUnit,
   type JourneyPractice,type JourneySource,type JourneyStage,type JourneyOption,type JourneyUnitProgress
@@ -26,6 +30,8 @@ interface SpeechCapture {
 }
 interface Feedback { kind:"graded"|"ungraded"|"choice";message:string;model:string;notes:string[];next:string|null; }
 interface RewriteReport {changed:boolean;oldLength:number;newLength:number;found:string[];missing:string[];}
+const extraJourneyPrompts=[...p28NewSentencePrompts,...p29AdditionalPrompts,
+  ...p29LexicalPrompts,...p30TransformationPrompts,...continuityPrompts,...register28Prompts];
 const steps:[JourneyStage,string][]=[["learn","1 · Verstehen"],["build","2 · Satzbau"],["conversation","3 · Antworten"],["write","4 · Schreiben"],["practice","5 · Festigen"]];
 function compareWriting(before:string,after:string,features:readonly string[]):RewriteReport{
   const oldText=normalizeP26(before),newText=normalizeP26(after);
@@ -75,6 +81,9 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
   const recommendedUnit=journeyUnit(recommended);
   const learningLinks=lexicalLinksForUnit(unitId);
   const pragmatics=p29RegisterExampleForUnit(unitId);
+  const transformation=transformationForUnit(unitId);
+  const weakAreas=useMemo(()=>evidence?deriveWeakAreas(unitId,evidence.traces,evidence.events,
+    extraJourneyPrompts):null,[unitId,evidence]);
   const nextActions=useMemo(()=>evidence?
     recommendP29Actions(unitId,progress,evidence.events,evidence.traces):[],
     [unitId,progress,evidence]);
@@ -89,8 +98,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
         const personalTraces=traces.filter(t=>t.userId===owner);
         const personalEvents=events.filter(e=>e.userId===owner);
         setEvidence({events:personalEvents,traces:personalTraces});
-        setProgress(deriveJourneyProgress(personalTraces,personalEvents,Date.now(),
-          [...p28NewSentencePrompts,...p29AdditionalPrompts,...p29LexicalPrompts]));
+        setProgress(deriveJourneyProgress(personalTraces,personalEvents,Date.now(),extraJourneyPrompts));
       }
     }).catch(()=>{if(active)setLoadError("Lernverlauf nicht verfügbar; die Übungen können trotzdem verwendet werden.");})
       .finally(()=>{if(active)setLoading(false);});
@@ -259,6 +267,13 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
         {stage==="learn"?<section className="p27-journey__panel">
           <div className="p27-journey__note"><strong>Situation</strong><p>{unit.situation}</p></div>
           <h4>So funktioniert das Muster</h4><p>{unit.model}</p>
+          {transformation?<div className="p27-journey__quality-example">
+            <h5>Ausdruck bewusst verbessern</h5>
+            <p><strong>Ziel:</strong> {transformation.context}</p>
+            <p><span lang="ja">{transformation.startingSentence}</span> → <span lang="ja">{transformation.model}</span></p>
+            <p>{transformation.explanation}</p>
+            <small>Im anschließenden Satzbau kannst du dieses Muster ohne Vorlage selbst formulieren.</small>
+          </div>:null}
           <div className="p27-journey__contrast"><div><strong>Unterscheide</strong><p>{unit.contrast}</p></div>
             <div><strong>Höflichkeit & Fehlerquelle</strong><p>{unit.register}</p></div></div>
           <h4>Wörter in Sätzen</h4>
@@ -394,6 +409,27 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
             <div><strong>{profile?.retry??0}</strong><span>zuletzt falsch</span></div>
             <div><strong>{profile?.unseen??0}</strong><span>noch nicht geübt</span></div>
           </div>
+          {weakAreas?<div className="p27-journey__weakareas">
+            <h5>Übungsschwerpunkte aus echten Versuchen</h5>
+            <p>Diese Zahlen sind <strong>keine</strong> Sprachstand- oder Beherrschungsprozente. Sie beruhen auf fälligen Karten und zuletzt bewerteten Antworten.</p>
+            <div className="p27-journey__weakgrid">
+              {weakAreas.areas.filter(area=>area.total>0).map(area=><div key={area.area}>
+                <strong>{areaLabels[area.area]}</strong>
+                <p>{area.reason}</p>
+                <small>{area.practiced} von {area.total} Übungscues bisher versucht</small>
+                <button type="button" disabled={disabled} onClick={()=>{
+                  if(area.area==="sentence"){setStage("build");return;}
+                  if(area.area==="grammar"){onJourneyPractice(unitId,"grammar");return;}
+                  if(area.area==="dialogue"){onJourneyPractice(unitId,"production");return;}
+                  onJourneyPractice(unitId,"transfer");
+                }}>
+                  {area.area==="sentence"?"Satzbau gezielt üben":
+                  area.area==="grammar"?"Grammatikkontraste üben":
+                  area.area==="dialogue"?"Aktive Antworten üben":"Wörter übertragen"}
+                </button>
+              </div>)}
+            </div>
+          </div>:null}
           {nextActions.length?<div className="p27-journey__adaptive">
             <h5>Deine nächsten Lernschritte</h5>
             <p>Aus dem vorhandenen lokalen Lernverlauf abgeleitet, ohne neue Beherrschungsnote.</p>
