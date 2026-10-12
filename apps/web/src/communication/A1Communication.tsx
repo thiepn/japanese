@@ -1,8 +1,9 @@
+import {A1_NAV_EVENT,navigateA1,scenarioForLesson,type A1Navigation} from "./a1-navigation";
 import "./a1-mobile.css";
 import {useEffect,useRef,useState} from "react";
 import {listStudyEvents,saveStudyEvent} from "@thiepn/local-db";
 import type {StudyEvent} from "@thiepn/domain";
-import {a1CommunicationLessons,evaluateA1Exercise,type A1Exercise} from "../../../../packages/a1-communication-seed/src/index";
+import {a1CommunicationLessons,evaluateA1Exercise} from "../../../../packages/a1-communication-seed/src/index";
 import {getDevelopmentAccountId} from "../study/runtime";
 
 const SOURCE="original-a1-communication-v1";
@@ -41,6 +42,7 @@ export function A1Communication(){
     }).catch(()=>{if(active)setError("Fortschritt konnte nicht geladen werden.");});
     return()=>{active=false;};
   },[owner]);
+  useEffect(()=>{const handle=(event:Event)=>{const request=(event as CustomEvent<A1Navigation>).detail;if(request.destination!=="lesson"||!request.lessonId)return;const index=a1CommunicationLessons.findIndex(l=>l.id===request.lessonId);if(index>=0)select(index);};window.addEventListener(A1_NAV_EVENT,handle);return()=>window.removeEventListener(A1_NAV_EVENT,handle);},[]);
   const lesson=lessonIndex===null?null:a1CommunicationLessons[lessonIndex];
   const exercise=lesson?.exercises[exerciseIndex];
   function select(index:number){setAudioRevealed(false);setSpeakingText("");setSpeakingNote("");setStage("learn");setDialogueStep(0);setLessonIndex(index);setExerciseIndex(0);setResponse("");setOrdered([]);setFeedback(null);setError("");}
@@ -137,7 +139,7 @@ export function A1Communication(){
         </div>:null}
         {feedback===null?<button type="button" disabled={busy||(exercise.kind==="order"?ordered.length!==exercise.tokens.length:!response.trim())} onClick={()=>void submit()}>{busy?"Speichere…":"Antwort prüfen"}</button>:<div role="status" aria-live="polite"><strong>{feedback==="correct"?"Richtig":"Noch nicht richtig"}</strong><p>{exercise.explanation}</p><button type="button" onClick={next}>{exerciseIndex+1===lesson.exercises.length?"Lektion abschließen":"Weiter"}</button></div>}
       </div>:null}
-      {stage==="finish"?<section aria-label="Lektionsergebnis"><h4>{lesson.exercises.every(ex=>(completed[ex.id]??0)>0)?"Alle Aufgaben mindestens einmal richtig":"Lektion bearbeitet"}</h4><p>{lesson.exercises.filter(ex=>(completed[ex.id]??0)>0).length} von {lesson.exercises.length} Übungen mindestens einmal richtig beantwortet.</p><p>Wiederhole schwierige Wörter anschließend im Bereich „Aktives Wiederholen“.</p><button type="button" onClick={()=>select(lessonIndex===null?0:Math.min(lessonIndex+1,a1CommunicationLessons.length-1))}>Nächste Lektion lernen</button><button type="button" onClick={()=>setLessonIndex(null)}>Zur Lektionsübersicht</button></section>:null}
+      {stage==="finish"?<section aria-label="Lektionsergebnis"><h4>{lesson.exercises.every(ex=>(completed[ex.id]??0)>0)?"Alle Aufgaben mindestens einmal richtig":"Lektion bearbeitet"}</h4><p>{lesson.exercises.filter(ex=>(completed[ex.id]??0)>0).length} von {lesson.exercises.length} Übungen mindestens einmal richtig beantwortet.</p><p>Wiederhole schwierige Wörter anschließend im Bereich „Aktives Wiederholen“.</p><button type="button" onClick={()=>select(lessonIndex===null?0:Math.min(lessonIndex+1,a1CommunicationLessons.length-1))}>Nächste Lektion lernen</button><button type="button" onClick={()=>setLessonIndex(null)}>Zur Lektionsübersicht</button><button type="button" onClick={()=>navigateA1({destination:"roleplay",scenarioId:scenarioForLesson(lesson.id)})}>Passendes Gespräch üben</button><button type="button" onClick={()=>navigateA1({destination:"recall",lessonId:lesson.id,mode:"vocabulary"})}>Wörter dieser Lektion wiederholen</button></section>:null}
     </div>}
     {error?<p role="alert">{error}</p>:null}
   </section>;
