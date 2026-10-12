@@ -148,7 +148,9 @@ export const A1_LESSONS:readonly A1Lesson[]=[
     "legacyUnitIds": [
       "a1-unit-15"
     ],
-    "communicationLessonIds": [],
+    "communicationLessonIds": [
+      "a1-family"
+    ],
     "roleplayIds": [],
     "readingTextIds": [
       "text-a1-family"
@@ -221,7 +223,9 @@ export const A1_LESSONS:readonly A1Lesson[]=[
     "legacyUnitIds": [
       "a1-unit-12"
     ],
-    "communicationLessonIds": [],
+    "communicationLessonIds": [
+      "a1-time"
+    ],
     "roleplayIds": []
   },
   {
@@ -263,7 +267,9 @@ export const A1_LESSONS:readonly A1Lesson[]=[
       "a1-unit-07",
       "a1-unit-14"
     ],
-    "communicationLessonIds": [],
+    "communicationLessonIds": [
+      "a1-hobbies"
+    ],
     "roleplayIds": []
   },
   {
@@ -276,7 +282,8 @@ export const A1_LESSONS:readonly A1Lesson[]=[
       "a1-unit-16"
     ],
     "communicationLessonIds": [
-      "a1-cafe"
+      "a1-cafe",
+      "a1-restaurant"
     ],
     "roleplayIds": [
       "cafe"
@@ -318,7 +325,10 @@ export const A1_LESSONS:readonly A1Lesson[]=[
     "legacyUnitIds": [
       "a1-unit-18"
     ],
-    "communicationLessonIds": [],
+    "communicationLessonIds": [
+      "a1-directions",
+      "a1-transport"
+    ],
     "roleplayIds": [
       "station"
     ],
@@ -357,7 +367,9 @@ export const A1_LESSONS:readonly A1Lesson[]=[
     "legacyUnitIds": [
       "a1-unit-20"
     ],
-    "communicationLessonIds": [],
+    "communicationLessonIds": [
+      "a1-hotel"
+    ],
     "roleplayIds": [
       "meeting"
     ],
@@ -367,7 +379,7 @@ export const A1_LESSONS:readonly A1Lesson[]=[
   }
 ];
 export const A1_LEGACY_UNIT_IDS=Array.from({length:20},(_,i)=>"a1-unit-"+String(i+1).padStart(2,"0"));
-export const A1_COMMUNICATION_IDS=["a1-greetings","a1-introductions","a1-origin","a1-asking-names","a1-thanks","a1-shopping","a1-cafe"] as const;
+export const A1_COMMUNICATION_IDS=["a1-greetings","a1-introductions","a1-origin","a1-asking-names","a1-thanks","a1-shopping","a1-cafe","a1-directions","a1-time","a1-family","a1-hobbies","a1-transport","a1-hotel","a1-restaurant"] as const;
 export const A1_ROLEPLAY_IDS=["cafe","station","meeting"] as const;
 export const A1_FOUNDATION_IDS=["hiragana-vowels","hiragana-basic","hiragana-advanced","katakana-basic","katakana-advanced"] as const;
 export const A1_READING_IDS=["text-a1-family","text-a1-morning","text-a1-shopping","text-a1-transport"] as const;
