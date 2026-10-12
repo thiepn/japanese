@@ -9,7 +9,7 @@ import {grammarReflection} from "../study/feedback27";
 import {P28SentenceBuilder} from "./P28SentenceBuilder";
 import {P28Continuity} from "./P28Continuity";
 import {p28NewSentencePrompts} from "../study/sentence28";
-import {p29AdditionalPrompts,p29LexicalPrompts,lexicalLinksForUnit,recommendP29Actions,type JourneyNextAction} from "../study/depth29";
+import {p29AdditionalPrompts,p29LexicalPrompts,lexicalLinksForUnit,recommendP29Actions} from "../study/depth29";
 import {describeP29Revision,p29RegisterExampleForUnit} from "../study/revision29";
 import {
   deriveJourneyProgress,journeyTypedPrompt,journeyUnits,journeyUnit,nextTurn,recommendedJourneyUnit,
