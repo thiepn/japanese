@@ -38,6 +38,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
   const [firstDraft,setFirstDraft]=useState("");
   const [assisted,setAssisted]=useState(false);
   const [showPartner,setShowPartner]=useState(true);
+  const [heardForTurn,setHeardForTurn]=useState<string|null>(null);
   const [showMeaning,setShowMeaning]=useState(false);
   const [feedback,setFeedback]=useState<AnswerFeedback|null>(null);
   const [busy,setBusy]=useState(false);
@@ -76,6 +77,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
     ...p35AlternativesForTurn(scenario?.id??"",perspective,turnIndex)
   ];
   const identity=scenario?.id+":"+perspective+":"+turnIndex;
+  const currentIdentity=useRef(identity);currentIdentity.current=identity;
   const completedInScenario=(scenario?.roles??[]).filter(r=>completedRoles.has(scenario!.id+":"+r.id)).length;
   const prompt=p33RolePrompts.find(p=>p.eventMetadata?.scenarioId===scenario?.id&&
     p.eventMetadata?.role===perspective&&p.eventMetadata?.turnIndex===turnIndex);
@@ -91,23 +93,27 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
     setAssisted(false);setFeedback(null);setBusy(false);setError("");
     setRepairOpen(false);setRepairDraft("");setRepairDone(false);
     setFollowupDraft("");setFollowupDone(false);
-    setShowPartner(true);setShowMeaning(false);exposed.current.clear();
+    setShowPartner(true);setShowMeaning(false);setHeardForTurn(null);exposed.current.clear();
     setCompletedRoles(new Set());resetIntents();resetCorrection();
     startTime.current=performance.now();
   },[unitId,owner]);
   function switchPath(id:string,p:"guest"|"host"){
     if(busy)return;
     setScenarioId(id);setPerspective(p);setTurnIndex(0);setDraft("");setFirstDraft("");
-    setFeedback(null);setAssisted(false);setError("");setShowPartner(true);setShowMeaning(false);
+    setFeedback(null);setAssisted(false);setError("");setShowPartner(true);setShowMeaning(false);setHeardForTurn(null);
     setRepairOpen(false);setRepairDraft("");setRepairDone(false);
     setFollowupDraft("");setFollowupDone(false);resetIntents();resetCorrection();
     startTime.current=performance.now();
   }
   function playPartner(){
     if(!turn||!("speechSynthesis" in window))return;
+    const cue=currentIdentity.current;
     window.speechSynthesis.cancel();
     const utterance=new SpeechSynthesisUtterance(turn.partner);
     utterance.lang="ja-JP";utterance.rate=.83;
+    utterance.onstart=()=>{
+      if(currentIdentity.current===cue)setHeardForTurn(cue);
+    };
     window.speechSynthesis.speak(utterance);
   }
   async function ungraded(response:string){
@@ -130,7 +136,10 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
     const account=ownerRef.current;
     if(account!==getDevelopmentAccountId())return;
     const matched=gradeStudyPrompt(prompt,normalizeP26(draft)).result==="correct";
-    const independent=matched&&!assisted&&!exposed.current.has(identity);
+    // In audio-only mode, no independent recall evidence is possible until
+    // the partner's audible cue has actually started.
+    const cueDelivered=showPartner||heardForTurn===identity;
+    const independent=matched&&cueDelivered&&!assisted&&!exposed.current.has(identity);
     setBusy(true);setError("");
     try{
       if(independent){
@@ -267,7 +276,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
     setDraft("");setFirstDraft("");setAssisted(false);setFeedback(null);setError("");
     setRepairOpen(false);setRepairDraft("");setRepairDone(false);
     setFollowupDraft("");setFollowupDone(false);resetIntents();resetCorrection();
-    setShowMeaning(false);startTime.current=performance.now();
+    setShowMeaning(false);setHeardForTurn(null);startTime.current=performance.now();
   }
   if(!scenario||!role||!turn)return null;
   return <section className="p33-role" aria-labelledby="p33-role-title">
@@ -313,9 +322,12 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
         oder fällige FSRS-Karten wiederholen.</p>:null}
     </div>
     <div className="p33-role__partner">
-      <button type="button" onClick={playPartner} disabled={busy}>Gesprächspartner synthetisch anhören</button>
+      <button type="button" onClick={playPartner} disabled={disabled||busy}>Gesprächspartner synthetisch anhören</button>
       <label><input type="checkbox" checked={showPartner} onChange={e=>setShowPartner(e.target.checked)}/> Japanischen Gesprächspartner zeigen</label>
-      {showPartner?<p lang="ja">{turn.partner}</p>:<p>Nur hören und selbst antworten. Synthetische Stimme; keine Aussprachebewertung.</p>}
+      {showPartner?<p lang="ja">{turn.partner}</p>:<p>
+        Nur hören und selbst antworten. Synthetische Stimme; keine Aussprachebewertung.
+        {heardForTurn!==identity?" Vor dem unabhängigen Abruf bitte die Audiowiedergabe starten.":""}
+      </p>}
       <label><input type="checkbox" checked={showMeaning} onChange={e=>{setShowMeaning(e.target.checked);if(e.target.checked){setAssisted(true);exposed.current.add(identity);}}}/> Deutsche Verständnisstütze</label>
       {showMeaning?<p>{turn.meaning} · Mit deutscher Hilfe ist diese Antwort unbewertete Übung.</p>:null}
     </div>
