@@ -8,7 +8,7 @@ import {journeyUnit} from "../study/journey27";
 import {normalizeP26} from "../study/pedagogy26";
 import {describeP29Revision,p29RegisterExampleForUnit} from "../study/revision29";
 import {
-  continuityForUnit,continuityPrompt,
+  continuityScenariosForUnit,continuityPrompt,
   type ContinuityReply
 } from "../study/continuity28";
 import "./p28-continuity.css";
@@ -20,7 +20,9 @@ export function P28Continuity({
 }:{
   unitId:string;owner:string;disabled:boolean;onReviewed:()=>void;onOpenUnit:(id:string)=>void
 }){
-  const scenario=continuityForUnit(unitId);
+  const available=continuityScenariosForUnit(unitId);
+  const [scenarioId,setScenarioId]=useState("");
+  const scenario=available.find(s=>s.id===scenarioId)??available[0];
   const accountRef=useRef(owner);accountRef.current=owner;
   const [started,setStarted]=useState(false);
   const [nodeId,setNodeId]=useState("start");
@@ -43,7 +45,7 @@ export function P28Continuity({
     setDraft("");setFeedback(null);setError("");setShowMeaning(false);setBusy(false);
     setFirstDraft("");setRevisions(0);setModelRevealed(false);
     startedAt.current=performance.now();
-  },[unitId,owner]);
+  },[unitId,owner,scenarioId]);
   if(!scenario||!node)return null;
   async function saveUngraded(response:string){
     const account=accountRef.current;
@@ -115,8 +117,19 @@ export function P28Continuity({
       <h4 id="p28-continuity-title">{scenario.title}</h4>
       <p>{scenario.situation}</p>
     </header>
-    {!started?<button type="button" onClick={()=>{setStarted(true);startedAt.current=performance.now();}}>
-      Folgegespräch mit neuem Kontext starten</button>:completed||count>=10?<div role="status" className="p28-continuity__feedback">
+    {!started?<div className="p28-continuity__scenario-picker">
+      {available.length>1?<div role="group" aria-label="Folgesituation wählen">
+        <strong>Wähle den nächsten Gesprächskontext</strong>
+        <div className="p28-continuity__scenario-options">
+          {available.map(option=><button key={option.id} type="button"
+            aria-pressed={scenario.id===option.id}
+            onClick={()=>setScenarioId(option.id)}>{option.title}
+            <small>{option.situation}</small></button>)}
+        </div>
+      </div>:null}
+      <button type="button" disabled={disabled} onClick={()=>{setStarted(true);startedAt.current=performance.now();}}>
+        Ausgewähltes Folgegespräch starten</button>
+    </div>:completed||count>=10?<div role="status" className="p28-continuity__feedback">
       <strong>{completed?"Folgegespräch abgeschlossen":"Nach mehreren Reparaturen beendet"}</strong>
       <p>Der nächste Kontext ist Teil desselben A1–A2-Lernwegs; bisherige Antworten bleiben in StudyEvents.</p>
       <div className="p28-continuity__actions">
