@@ -282,7 +282,7 @@ export const p39LifeCases:readonly P39LifeCase[]=[
     "title": "Gemeinsame Lernsession",
     "situation": "Lade einen Mitschüler höflich ein, morgen gemeinsam zu lernen.",
     "model": "明日、一緒に勉強しませんか。",
-    "alternative": "明日、一緒に勉強しませんか？",
+    "alternative": "明日、私と一緒に勉強しませんか。",
     "distractors": [
       {
         "form": "明日、一緒に勉強します。",
