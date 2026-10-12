@@ -623,10 +623,28 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               onClick={()=>onJourneyPractice(unitId,"review")}>Fällige Karten jetzt wiederholen</button>
           </section>:null}
           <p>Heute fällige Karten, letzte Fehler und neue Situationen werden aus demselben bestehenden Lernverlauf ermittelt.</p>
-          <div className="p27-journey__stats">
-            <div><strong>{profile?.due??0}</strong><span>fällig</span></div>
-            <div><strong>{profile?.retry??0}</strong><span>zuletzt falsch</span></div>
-            <div><strong>{profile?.unseen??0}</strong><span>noch nicht geübt</span></div>
+          <div className="p27-journey__practice-paths" aria-label="Drei unterschiedliche Lernwege">
+            <section>
+              <strong>{profile?.unseen??0} neu</strong>
+              <p>Erste Begegnung mit noch nicht unabhängig bewerteten oder
+                eingeplanten Aufgaben. Nicht als überfällig bezeichnet.</p>
+              <button type="button" disabled={disabled||!(profile?.unseen)}
+                onClick={()=>onJourneyPractice(unitId,"new")}>Neu lernen</button>
+            </section>
+            <section>
+              <strong>{profile?.retry??0} zuletzt fehlerhaft</strong>
+              <p>Freiwillige erneute Übung nach einem bewerteten Fehler.
+                Dies kann einen zukünftigen FSRS-Termin vorziehen.</p>
+              <button type="button" disabled={disabled||!(profile?.retry)}
+                onClick={()=>onJourneyPractice(unitId,"retry")}>Fehler üben</button>
+            </section>
+            <section>
+              <strong>{profile?.due??0} laut FSRS fällig</strong>
+              <p>Nur Karten, deren festgelegter FSRS-Wiederholungstermin
+                bereits erreicht wurde.</p>
+              <button type="button" disabled={disabled||!(profile?.due)}
+                onClick={()=>onJourneyPractice(unitId,"review")}>Jetzt wiederholen</button>
+            </section>
           </div>
           {mistakes.length>0?<section className="p27-journey__mistakes" aria-labelledby="p35-mistakes-title">
             <h5 id="p35-mistakes-title">Konkrete letzte Fehler gezielt wiederholen</h5>
@@ -707,12 +725,6 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               onClick={()=>onJourneyPractice(unitId,"transfer")}>Verknüpften Wortschatz im StudyPlayer abrufen</button>
           </div>:null}
           <div className="p27-journey__actions">
-            <button type="button" disabled={disabled||!(profile?.unseen)}
-              onClick={()=>onJourneyPractice(unitId,"new")}>Neue Karten zum ersten Mal lernen</button>
-            <button type="button" disabled={disabled||!(profile?.due)}
-              onClick={()=>onJourneyPractice(unitId,"review")}>FSRS-fällige Karten wiederholen</button>
-            <button type="button" disabled={disabled||!(profile?.retry)}
-              onClick={()=>onJourneyPractice(unitId,"retry")}>Zuletzt fehlerhafte Karten gezielt üben</button>
             <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"transfer")}>Transfer in neue Situationen</button>
             <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"register")}>Höflichkeit & Register</button>
             <button type="button" disabled={disabled} onClick={()=>onSourcePractice(unit.source,unit.sourceId,"context")}>Weitere Übungen zu diesem Thema</button>

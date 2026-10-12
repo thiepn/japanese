@@ -213,9 +213,14 @@ export function deriveJourneyProgress(
       const trace=traceMap.get(traceIdJourney(p));
       const latest=lastEvent.get(p.id);
       if(latest&&(!lastPracticedAt||lastPracticedAt<latest.occurredAt))lastPracticedAt=latest.occurredAt;
-      if(trace){attempted++;if(Date.parse(trace.card.due)<=now){due++;continue;}}
+      // A graded event remains practice evidence even if its FSRS trace is missing.
+      const alreadyPracticed=Boolean(trace||latest);
+      if(alreadyPracticed)attempted++;
+      if(trace&&Number.isFinite(Date.parse(trace.card.due))&&Date.parse(trace.card.due)<=now){
+        due++;continue;
+      }
       if(latest?.result==="incorrect"){retry++;continue;}
-      if(!trace)unseen++;
+      if(!alreadyPracticed)unseen++;
     }
     return {
       id:u.id,attempted,total:prompts.length,due,retry,unseen,

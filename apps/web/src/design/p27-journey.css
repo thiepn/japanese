@@ -105,3 +105,10 @@
 .p27-journey__p38-result{padding:.5rem .7rem;border-left:3px solid currentColor}
 .p27-journey__p38-related{margin:.6rem 0;min-height:44px}
 @media(max-width:580px){.p27-journey__p38-cross{padding:.65rem}.p27-journey__p38-options{display:grid}.p27-journey__p38-options button{width:100%}.p27-journey__p38-related{width:100%}}
+
+.p27-journey__practice-paths{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin:1rem 0}
+.p27-journey__practice-paths section{border:1px solid currentColor;padding:.85rem;min-width:0;display:flex;flex-direction:column;align-items:flex-start}
+.p27-journey__practice-paths strong{font-size:1.04rem}
+.p27-journey__practice-paths p{font-size:.86rem;margin:.55rem 0 1rem;flex:1}
+.p27-journey__practice-paths button{min-height:44px;width:100%}
+@media(max-width:760px){.p27-journey__practice-paths{grid-template-columns:1fr}.p27-journey__practice-paths section{padding:.65rem}.p27-journey__practice-paths p{margin:.35rem 0 .65rem}}
