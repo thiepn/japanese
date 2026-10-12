@@ -18,6 +18,8 @@ export function A1Communication(){
   const [showTranslation,setShowTranslation]=useState(true);
   const [dialogueStep,setDialogueStep]=useState(0);
   const [stage,setStage]=useState<"learn"|"dialogue"|"practice"|"finish">("learn");
+  const [listenFirst,setListenFirst]=useState(false);
+  const [audioRevealed,setAudioRevealed]=useState(false);
   const [speakingText,setSpeakingText]=useState("");
   const [speakingNote,setSpeakingNote]=useState("");
   const [completed,setCompleted]=useState<Record<string,number>>({});
@@ -41,7 +43,7 @@ export function A1Communication(){
   },[owner]);
   const lesson=lessonIndex===null?null:a1CommunicationLessons[lessonIndex];
   const exercise=lesson?.exercises[exerciseIndex];
-  function select(index:number){setSpeakingText("");setSpeakingNote("");setStage("learn");setDialogueStep(0);setLessonIndex(index);setExerciseIndex(0);setResponse("");setOrdered([]);setFeedback(null);setError("");}
+  function select(index:number){setAudioRevealed(false);setSpeakingText("");setSpeakingNote("");setStage("learn");setDialogueStep(0);setLessonIndex(index);setExerciseIndex(0);setResponse("");setOrdered([]);setFeedback(null);setError("");}
   function next(){
     if(!lesson)return;
     if(exerciseIndex+1>=lesson.exercises.length){setStage("finish");return;}
@@ -87,11 +89,12 @@ export function A1Communication(){
   }
   return <section aria-labelledby="a1-communication-title" className="j4-practice a1-lesson-shell">
     <h2 id="a1-communication-title">A1 · Kommunikation</h2>
+    <p>{a1CommunicationLessons.filter(item=>item.exercises.every(ex=>(completed[ex.id]??0)>0)).length} von {a1CommunicationLessons.length} Lektionen mit allen Übungen mindestens einmal richtig · {a1CommunicationLessons.reduce((sum,item)=>sum+item.exercises.filter(ex=>(completed[ex.id]??0)>0).length,0)} erfolgreiche unterschiedliche Übungen</p>
     <p>Originale Alltagssituationen · Deutsch, Japanisch und Romaji. Ergebnisse werden als lokale Lernereignisse gespeichert; keine automatische Meisterschaftsbehauptung.</p>
     {!lesson?<div>{a1CommunicationLessons.map((item,index)=><article key={item.id}>
       <h3>{item.title}</h3><p>{item.canDo}</p>
       <p>{item.exercises.filter(ex=>(completed[ex.id]??0)>0).length}/{item.exercises.length} Übungen mindestens einmal richtig</p>
-      <button type="button" onClick={()=>select(index)}>Lektion öffnen</button>
+      <progress value={item.exercises.filter(ex=>(completed[ex.id]??0)>0).length} max={item.exercises.length} aria-label={"Übungsfortschritt "+item.title}/><button type="button" onClick={()=>select(index)}>{item.exercises.every(ex=>(completed[ex.id]??0)>0)?"Lektion wiederholen":"Lektion öffnen"}</button>
     </article>)}</div>:<div>
       <button type="button" onClick={()=>setLessonIndex(null)}>Zurück zur Übersicht</button>
       <h3>{lesson.title}</h3><p>{lesson.canDo}</p>
@@ -105,19 +108,20 @@ export function A1Communication(){
       </details>
       <button type="button" onClick={()=>setStage("dialogue")}>Weiter zum Dialog</button></div>:null}
       {stage==="dialogue"?<div><section aria-label="Interaktiver Dialog">
-        <h4>Dialog üben</h4>
+        <h4>Dialog üben</h4><label><input type="checkbox" checked={listenFirst} onChange={event=>{setListenFirst(event.target.checked);setAudioRevealed(false);}}/> Erst hören, dann lesen</label>
         <p>Zeile {dialogueStep+1} von {lesson.dialogue.length}</p>
         {lesson.dialogue.map((line,index)=>index===dialogueStep?<div key={index}>
-          <p><strong>{line.speaker}:</strong> <span lang="ja">{line.japanese}</span></p>
-          {showRomaji?<p>{line.romaji}</p>:null}
-          {showTranslation?<p>{line.german}</p>:null}
+          <p><strong>{line.speaker}:</strong> {(!listenFirst||audioRevealed)?<span lang="ja">{line.japanese}</span>:<span>Japanischen Text zunächst verborgen</span>}</p>
+          {listenFirst&&!audioRevealed?<button type="button" onClick={()=>setAudioRevealed(true)}>Text aufdecken</button>:null}
+          {showRomaji&&(!listenFirst||audioRevealed)?<p>{line.romaji}</p>:null}
+          {showTranslation&&(!listenFirst||audioRevealed)?<p>{line.german}</p>:null}
           <button type="button" onClick={()=>practiceSpeaking(line.japanese)}>Hören und nachsprechen</button>
         </div>:null)}
         {speakingText?<div><p lang="ja">Sprich nach: {speakingText}</p><p>Wiederhole den Satz laut und vergleiche mit der Wiedergabe. Eine automatische Bewertung deiner Aussprache findet nicht statt.</p><button type="button" onClick={()=>speak(speakingText)}>Noch einmal hören</button><button type="button" onClick={()=>{setSpeakingText("");setSpeakingNote("Sprechübung selbst abgeschlossen.");}}>Ich habe nachgesprochen</button></div>:null}
         {speakingNote?<p role="status">{speakingNote}</p>:null}
-        <button type="button" disabled={dialogueStep===0} onClick={()=>{setSpeakingText("");setSpeakingNote("");setDialogueStep(v=>Math.max(0,v-1));}}>Vorherige Zeile</button>
-        <button type="button" disabled={dialogueStep===lesson.dialogue.length-1} onClick={()=>{setSpeakingText("");setSpeakingNote("");setDialogueStep(v=>Math.min(lesson.dialogue.length-1,v+1));}}>Nächste Zeile</button>
-        <button type="button" onClick={()=>setDialogueStep(0)}>Dialog neu beginnen</button>
+        <button type="button" disabled={dialogueStep===0} onClick={()=>{setSpeakingText("");setSpeakingNote("");setAudioRevealed(false);setDialogueStep(v=>Math.max(0,v-1));}}>Vorherige Zeile</button>
+        <button type="button" disabled={dialogueStep===lesson.dialogue.length-1} onClick={()=>{setSpeakingText("");setSpeakingNote("");setAudioRevealed(false);setDialogueStep(v=>Math.min(lesson.dialogue.length-1,v+1));}}>Nächste Zeile</button>
+        <button type="button" onClick={()=>{setAudioRevealed(false);setDialogueStep(0);}}>Dialog neu beginnen</button>
         <p><small>Sprachausgabe verwendet die japanische Stimme des Geräts, sofern verfügbar; keine Aussprachebewertung.</small></p>
       </section>
       <button type="button" onClick={()=>setStage("practice")}>Weiter zu den Übungen</button></div>:null}
