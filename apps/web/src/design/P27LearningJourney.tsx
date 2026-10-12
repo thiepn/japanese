@@ -18,6 +18,8 @@ import {deriveWeakAreas,areaLabels} from "../study/remediation30";
 import {p31ContrastPrompts,p31ContrastForUnit} from "../study/contrast31";
 import {planP31Recall} from "../study/recall31";
 import {p31SentencePrompts} from "../study/sentence31";
+import {p32SentencePrompts} from "../study/sentence32";
+import {p32ContrastPrompts,p32ContrastForUnit} from "../study/contrast32";
 import {
   deriveJourneyProgress,journeyTypedPrompt,journeyUnits,journeyUnit,nextTurn,recommendedJourneyUnit,
   type JourneyPractice,type JourneySource,type JourneyStage,type JourneyOption,type JourneyUnitProgress
@@ -34,7 +36,7 @@ interface SpeechCapture {
 interface Feedback { kind:"graded"|"ungraded"|"choice";message:string;model:string;notes:string[];next:string|null; }
 interface RewriteReport {changed:boolean;oldLength:number;newLength:number;found:string[];missing:string[];}
 const extraJourneyPrompts=[...p28NewSentencePrompts,...p29AdditionalPrompts,
-  ...p29LexicalPrompts,...p30TransformationPrompts,...continuityPrompts,...register28Prompts,...p31ContrastPrompts,...p31SentencePrompts];
+  ...p29LexicalPrompts,...p30TransformationPrompts,...continuityPrompts,...register28Prompts,...p31ContrastPrompts,...p31SentencePrompts,...p32ContrastPrompts,...p32SentencePrompts];
 const steps:[JourneyStage,string][]=[["learn","1 · Verstehen"],["build","2 · Satzbau"],["conversation","3 · Antworten"],["write","4 · Schreiben"],["practice","5 · Festigen"]];
 function compareWriting(before:string,after:string,features:readonly string[]):RewriteReport{
   const oldText=normalizeP26(before),newText=normalizeP26(after);
