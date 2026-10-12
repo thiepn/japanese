@@ -1,3 +1,4 @@
+import {subscribeA1Progress} from "./a1-events";
 import {navigateA1,scenarioForLesson} from "./a1-navigation";
 import {recallSchedule,countStudiedDue,type RecallAttempt} from "./a1-review-schedule";
 import {useEffect,useState} from "react";
@@ -10,6 +11,8 @@ type Summary={lessons:number;correctExercises:number;totalExercises:number;rolep
 const EMPTY:Summary={lessons:0,correctExercises:0,totalExercises:a1CommunicationLessons.reduce((n,l)=>n+l.exercises.length,0),roleplayCorrect:0,roleplayAttempts:0,roleplayMistakes:{},lessonIds:[],recallCorrect:0,recallWrong:0,recallDue:0,lastPractice:""};
 export function A1Dashboard(){
  const owner=getDevelopmentAccountId();
+ const [revision,setRevision]=useState(0);
+ useEffect(()=>subscribeA1Progress(()=>setRevision(n=>n+1)),[]);
  const [summary,setSummary]=useState<Summary>(EMPTY),[error,setError]=useState(""),[loading,setLoading]=useState(true);
  useEffect(()=>{let active=true;setLoading(true);setError("");setSummary(EMPTY);
  void listStudyEvents(owner).then(events=>{
@@ -35,7 +38,7 @@ export function A1Dashboard(){
   const lessonIds=a1CommunicationLessons.filter(l=>l.exercises.some(e=>!successful.has(e.id))).map(l=>l.id);
   setSummary({lessons,lessonIds,correctExercises:successful.size,totalExercises:EMPTY.totalExercises,roleplayCorrect,roleplayAttempts,roleplayMistakes:mistakes,recallCorrect,recallWrong,recallDue:due,lastPractice});
  }).catch(()=>{if(active)setError("Der A1-Fortschritt konnte nicht geladen werden.");}).finally(()=>{if(active)setLoading(false);});
- return()=>{active=false};},[owner]);
+ return()=>{active=false};},[owner,revision]);
  const retry=Object.entries(summary.roleplayMistakes).sort((a,b)=>b[1]-a[1]).slice(0,3);
  return <section id="a1-dashboard" className="j4-practice a1-dashboard" aria-labelledby="a1-dashboard-title">
   <h2 id="a1-dashboard-title">A1 · Lernübersicht</h2>
