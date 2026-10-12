@@ -1,3 +1,4 @@
+import {nextRecallCard,advanceRecallQueue} from "./a1-review-queue";
 import {notifyA1Progress} from "./a1-events";
 import {A1_NAV_EVENT,type A1Navigation} from "./a1-navigation";
 import {recallSchedule,isRecallDue,type RecallAttempt} from "./a1-review-schedule";
@@ -24,7 +25,7 @@ export function A1Recall(){
  const [mode,setMode]=useState<Item["kind"]>("kana");
  const [dailyOnly,setDailyOnly]=useState(false);
  const [lessonFilter,setLessonFilter]=useState("all");
- const [index,setIndex]=useState(0);
+
  const [answer,setAnswer]=useState("");
  const [revealed,setRevealed]=useState(false);
  const [busy,setBusy]=useState(false);
@@ -41,7 +42,7 @@ export function A1Recall(){
  const [reviewMode,setReviewMode]=useState(false);
  const [seen,setSeen]=useState<string[]>([]);
  const owner=getDevelopmentAccountId();
- useEffect(()=>{let live=true;setHistory({});setAttempts([]);setActiveId(null);setIndex(0);setAnswer("");setRevealed(false);
+ useEffect(()=>{let live=true;setHistory({});setAttempts([]);setActiveId(null);setAnswer("");setRevealed(false);
  void listStudyEvents(owner).then(events=>{if(!live)return;const next:typeof history={};const loaded:RecallAttempt[]=[];
  for(const event of events){if(event.userId!==owner||event.sourceId!==SOURCE)continue;
  const id=event.metadata?.recallId;if(typeof id!=="string")continue;
@@ -62,8 +63,7 @@ export function A1Recall(){
  const priority=(h:typeof x)=>h?(h.wrong>h.correct?0:h.correct===0?1:h.wrong>0?2:3):-1;
  return priority(x)-priority(y)||a.id.localeCompare(b.id);
  });
- const retryItem=queue.length?items.find(card=>card.id===queue[0]&&card.kind===mode&&(lessonFilter==="all"||card.id.includes(":"+lessonFilter+":"))):undefined;
- const item=items.find(card=>card.id===activeId)??retryItem??pool.find(card=>!seen.includes(card.id))??pool[index%pool.length];
+ const item=items.find(card=>card.id===activeId)??nextRecallCard(pool,queue,seen);
  const alternatives=item?items.filter(card=>card.kind===item.kind&&card.id!==item.id&&card.answer!==item.answer&&card.front!==item.front).slice(0,3):[];
  const choices=item?[item,...alternatives].sort((a,b)=>a.answer.localeCompare(b.answer,"ja")).map(card=>card.answer):[];
  function reset(){setActiveId(null);setAnswer("");setRevealed(false);setHint(false);setMessage("");}
@@ -76,13 +76,13 @@ export function A1Recall(){
  promptFamily:"a1-recall-"+mode,responseMode:"typed",result:correct?"correct":"incorrect",attempts:1,
  sourceId:SOURCE,contentVersion:"1",contextId:item.context,metadata:{recallId:item.id,schedulerExcluded:true}};
  setBusy(true);setMessage("");
- try{await saveStudyEvent(event);notifyA1Progress();setActiveId(item.id);setAttempts(previous=>[...previous,{id:item.id,at:event.occurredAt,correct}]);setHistory(previous=>{const old=previous[item.id]??{correct:0,wrong:0,last:""};return {...previous,[item.id]:{correct:old.correct+(correct?1:0),wrong:old.wrong+(correct?0:1),last:event.occurredAt}}});setRevealed(true);if(!correct)setQueue(previous=>previous.includes(item.id)?previous:[...previous,item.id]);}
+ try{await saveStudyEvent(event);notifyA1Progress();setActiveId(item.id);setAttempts(previous=>[...previous,{id:item.id,at:event.occurredAt,correct}]);setHistory(previous=>{const old=previous[item.id]??{correct:0,wrong:0,last:""};return {...previous,[item.id]:{correct:old.correct+(correct?1:0),wrong:old.wrong+(correct?0:1),last:event.occurredAt}}});setRevealed(true);}
  catch{setMessage("Antwort konnte nicht gespeichert werden.");}finally{setBusy(false);}
  }
  function next(){if(!item)return;
- if(queue[0]===item.id)setQueue(previous=>previous.slice(1));
- setSeen(previous=>previous.length>=pool.length?[]:[...previous,item.id]);
- setIndex(value=>value+1);setSession(value=>value+1);reset();}
+ const advanced=advanceRecallQueue(queue,seen,item.id,normalize(answer)===normalize(item.answer),pool.map(card=>card.id));
+ setQueue(advanced.retries);setSeen(advanced.seen.length>=pool.length?[]:advanced.seen);
+setSession(value=>value+1);reset();}
  return <section aria-labelledby="a1-recall-title" className="j4-practice a1-recall-shell">
  <h2 id="a1-recall-title">A1 · Aktives Wiederholen</h2>
  <p>Schriftzeichen, Wörter und Sätze selbst abrufen. Fehlerhafte und neue Karten erscheinen zuerst; Ergebnisse werden lokal pro Lernkonto gespeichert.</p>
