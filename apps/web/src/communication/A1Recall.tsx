@@ -33,6 +33,7 @@ export function A1Recall(){
  const [choiceMode,setChoiceMode]=useState(false);
  const [listeningMode,setListeningMode]=useState(false);
  const [queue,setQueue]=useState<string[]>([]);
+ const [reviewMode,setReviewMode]=useState(false);
  const owner=getDevelopmentAccountId();
  useEffect(()=>{let live=true;setHistory({});setIndex(0);setAnswer("");setRevealed(false);
  void listStudyEvents(owner).then(events=>{if(!live)return;const next:typeof history={};
@@ -44,7 +45,15 @@ export function A1Recall(){
  }setHistory(next);}).catch(()=>{if(live)setMessage("Lernverlauf konnte nicht geladen werden.");});
  return()=>{live=false};},[owner]);
  const today=new Date().toISOString().slice(0,10);
- const pool=items.filter(item=>item.kind===mode&&(lessonFilter==="all"||item.id.includes(":"+lessonFilter+":"))&&(!dailyOnly||!history[item.id]?.last.startsWith(today))&&(!mistakesOnly||(history[item.id]?.wrong??0)>0)).sort((a,b)=>{
+ const now=Date.now();
+ const reviewDue=(card:Item)=>{
+  const record=history[card.id];if(!record)return true;
+  const correct=record.correct,wrong=record.wrong;
+  const days=correct===0?0:wrong>=correct?1:correct===1?1:correct===2?3:correct===3?7:14;
+  const last=Date.parse(record.last);return !Number.isFinite(last)||last+days*86400000<=now;
+ };
+ const dueTotal=items.filter(reviewDue).length;
+ const pool=items.filter(item=>item.kind===mode&&(lessonFilter==="all"||item.id.includes(":"+lessonFilter+":"))&&(!dailyOnly||!history[item.id]?.last.startsWith(today))&&(!mistakesOnly||(history[item.id]?.wrong??0)>0)&&(!reviewMode||reviewDue(item))).sort((a,b)=>{
  const x=history[a.id],y=history[b.id];
  const priority=(h:typeof x)=>h?(h.wrong>h.correct?0:h.correct===0?1:h.wrong>0?2:3):-1;
  return priority(x)-priority(y)||a.id.localeCompare(b.id);
@@ -65,19 +74,21 @@ export function A1Recall(){
  try{await saveStudyEvent(event);setHistory(previous=>{const old=previous[item.id]??{correct:0,wrong:0,last:""};return {...previous,[item.id]:{correct:old.correct+(correct?1:0),wrong:old.wrong+(correct?0:1),last:event.occurredAt}}});setRevealed(true);if(!correct)setQueue(previous=>previous.includes(item.id)?previous:[...previous,item.id]);}
  catch{setMessage("Antwort konnte nicht gespeichert werden.");}finally{setBusy(false);}
  }
- function next(){if(queue[0]===item?.id)setQueue(previous=>previous.slice(1));setIndex(value=>value+1);setSession(value=>value+1);reset();}
+ function next(){if(queue[0]===item?.id)setQueue(previous=>previous.slice(1));setIndex(0);setSession(value=>value+1);reset();}
  return <section aria-labelledby="a1-recall-title" className="j4-practice a1-recall-shell">
  <h2 id="a1-recall-title">A1 · Aktives Wiederholen</h2>
  <p>Schriftzeichen, Wörter und Sätze selbst abrufen. Fehlerhafte und neue Karten erscheinen zuerst; Ergebnisse werden lokal pro Lernkonto gespeichert.</p>
  <fieldset><legend>Übungsmodus</legend>
  {(["kana","katakana","vocabulary","reverse","context"] as const).map(value=><label key={value} style={{marginRight:"1rem"}}><input type="radio" name="a1-recall-mode" checked={mode===value} onChange={()=>changeMode(value)}/>{value==="kana"?"Hiragana":value==="katakana"?"Katakana":value==="vocabulary"?"Wortschatz":value==="reverse"?"Deutsch → Japanisch":"Sätze verstehen"}</label>)}
  </fieldset>
+ <label><input type="checkbox" checked={reviewMode} onChange={event=>{setReviewMode(event.target.checked);setIndex(0);setQueue([]);reset();}}/> Fällige Wiederholungen</label>
  <label><input type="checkbox" checked={mistakesOnly} onChange={event=>{setMistakesOnly(event.target.checked);setIndex(0);reset();}}/> Fehler gezielt wiederholen</label>
  <label><input type="checkbox" checked={dailyOnly} onChange={event=>{setDailyOnly(event.target.checked);setIndex(0);reset();}}/> Heute noch nicht geübt</label>
  {(mode==="vocabulary"||mode==="reverse"||mode==="context")?<label> Lektion <select value={lessonFilter} onChange={event=>{setLessonFilter(event.target.value);setIndex(0);reset();}}><option value="all">Alle Lektionen</option>{a1CommunicationLessons.map(lesson=><option key={lesson.id} value={lesson.id}>{lesson.title}</option>)}</select></label>:null}
  <div className="a1-mobile-actions"><label><input type="checkbox" checked={choiceMode} onChange={event=>{setChoiceMode(event.target.checked);reset();}}/> Auswahl statt Tippen</label><label><input type="checkbox" checked={listeningMode} onChange={event=>{setListeningMode(event.target.checked);reset();}}/> Hörmodus</label></div>
+ <p>{dueTotal} von {items.length} Karten aktuell zur Wiederholung fällig (einfache Intervall-Heuristik).</p>
  <p>{session} Karten in dieser Sitzung bearbeitet · {pool.length} Karten · {pool.filter(card=>(history[card.id]?.correct??0)>0).length} mindestens einmal richtig</p>
- {!item?<p role="status">Keine Karten in dieser Auswahl. Deaktiviere den Tagesfilter oder wähle eine andere Lektion.</p>:null}
+ {!item?<p role="status">Keine Karten in dieser Auswahl. Deaktiviere einen Filter oder wähle eine andere Lektion.</p>:null}
  {item?<div><p>{item.context}</p>{!listeningMode||mode==="reverse"?<h3 lang={mode==="reverse"?"de":"ja"}>{item.front}</h3>:<h3>Höre zu und beantworte die Frage</h3>}
  {listeningMode&&mode!=="reverse"?<button type="button" onClick={()=>{if("speechSynthesis" in window){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(item.front);u.lang="ja-JP";u.rate=0.8;window.speechSynthesis.speak(u);}}}>Audio abspielen</button>:null}
  {mode==="context"?<button type="button" onClick={()=>{if("speechSynthesis" in window){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(item.front);u.lang="ja-JP";u.rate=0.8;window.speechSynthesis.speak(u);}}}>Satz anhören</button>:null}
