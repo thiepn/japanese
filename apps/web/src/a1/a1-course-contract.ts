@@ -440,9 +440,18 @@ export function reconcileA1Evidence(
   const unit=event.metadata?.unitId;
   const target=event.primaryTarget;
   if(target){
+   if(target.kind==="kana"){
+    if(target.id.startsWith("hiragana-"))refs.add("hiragana-basic");
+    if(target.id.startsWith("katakana-"))refs.add("katakana-basic");
+   }
+   if(target.kind==="text"&&(A1_READING_IDS as readonly string[]).includes(target.id))refs.add(target.id);
    for(const legacyId of targetToLegacyUnits[target.kind+":"+target.id]??[])if(core.has(legacyId))refs.add(legacyId);
   }
   if(typeof ctx==="string"&&core.has(ctx))refs.add(ctx);
+  if(typeof ctx==="string"&&(
+   (A1_FOUNDATION_IDS as readonly string[]).includes(ctx)||
+   (A1_READING_IDS as readonly string[]).includes(ctx)||
+   (A1_ASSESSMENT_IDS as readonly string[]).includes(ctx)))refs.add(ctx);
   if(typeof unit==="string"&&core.has(unit))refs.add(unit);
   if(event.sourceId==="original-a1-communication-v1"){
    if(typeof ctx==="string"&&communication.has(ctx))refs.add(ctx);
@@ -463,7 +472,7 @@ export function reconcileA1Evidence(
   const isA1=refs.size>0||event.sourceId?.startsWith("original-a1-")||
     (typeof ctx==="string"&&(ctx.startsWith("a1-")||ctx==="assessment-a1-milestone"));
   if(!isA1){outOfScope++;continue;}
-  const candidates=A1_LESSONS.filter(l=>[...refs].some(ref=>[...l.legacyUnitIds,...l.communicationLessonIds,...l.roleplayIds].includes(ref))).map(l=>l.id);
+  const candidates=A1_LESSONS.filter(l=>[...refs].some(ref=>[...l.legacyUnitIds,...l.communicationLessonIds,...l.roleplayIds,...(l.foundationIds??[]),...(l.readingTextIds??[]),...(l.assessmentIds??[])].includes(ref))).map(l=>l.id);
   const status=candidates.length===1?"aligned":candidates.length>1?"ambiguous":"unmapped";
   rows.push({eventId:event.id,status,legacyRefs:[...refs],candidateLessonIds:candidates,reason:status==="aligned"?"Provenance only; not completion":status==="ambiguous"?"Conflicting legacy targets require review":"No exact lesson crosswalk; original event remains authoritative"});
  }
