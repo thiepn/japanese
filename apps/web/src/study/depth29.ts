@@ -581,16 +581,18 @@ export const p29LexicalPrompts:StudyPrompt[]=p29LexicalLinks.flatMap(link=>{
       cueFamily:"p29-meaning-"+link.id,promptType:"choice" as const,
       instruction:"Zwei Themen verbinden: Kontext erschließen",
       prompt:link.example+"\n"+link.translation+"\nWas bedeutet "+link.first+"?",
-      choices:[link.firstMeaning,link.secondMeaning,"immer","nebenan"].filter((v,i,a)=>a.indexOf(v)===i),
+      choices:[link.firstMeaning,link.secondMeaning,...p29LexicalLinks
+        .filter(other=>other.id!==link.id)
+        .flatMap(other=>[other.firstMeaning,other.secondMeaning])].filter((v,i,a)=>a.indexOf(v)===i).slice(0,4),
       acceptedAnswers:[link.firstMeaning],displayAnswer:link.firstMeaning,
       explanation:link.first+" = "+link.firstMeaning+" · "+link.second+" = "+link.secondMeaning},
     {...base,id:"p29-link-first-"+link.id,skill:"production" as const,
       cueFamily:"p29-first-"+link.id,promptType:"typed" as const,
-      instruction:"Kontextwort aktiv abrufen",prompt:link.translation+"\n"+link.firstMeaning+" — japanisches Wort?",
+      instruction:"Kontextwort aktiv abrufen",prompt:"Situation: "+link.translation+"\nWie lautet «"+link.firstMeaning+"» auf Japanisch?",
       acceptedAnswers:[link.first],displayAnswer:link.first,explanation:link.example},
     {...base,id:"p29-link-second-"+link.id,skill:"production" as const,
       cueFamily:"p29-second-"+link.id,promptType:"typed" as const,
-      instruction:"Verknüpftes Wort aktiv abrufen",prompt:link.translation+"\n"+link.secondMeaning+" — japanisches Wort?",
+      instruction:"Verknüpftes Wort aktiv abrufen",prompt:"Situation: "+link.translation+"\nWie lautet «"+link.secondMeaning+"» auf Japanisch?",
       acceptedAnswers:[link.second],displayAnswer:link.second,explanation:link.example}
   ];
 });
