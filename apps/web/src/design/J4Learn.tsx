@@ -2,6 +2,7 @@ import {useMemo,useState} from "react";
 import {A1CoursePath} from "../a1/A1CoursePath";
 import {P23PedagogyStudio} from "./P23PedagogyStudio";
 import {P25FluencyStudio} from "./P25FluencyStudio";
+import {P26PrecisionStudio} from "./P26PrecisionStudio";
 import {A1Communication} from "../communication/A1Communication";
 import {A1Recall} from "../communication/A1Recall";
 import {A1Roleplay} from "../communication/A1Roleplay";
@@ -46,6 +47,7 @@ type Props={
   onStartPedagogy:(scenarioId:string,mode:"lesson"|"repair")=>void;
   onStartP24:(scenarioId:string,mode:"full"|"repair")=>void;
   onStartP25:(scenarioId:string,mode:"lesson"|"repair"|"transfer")=>void;
+  onStartP26:(missionId:string,mode:"course"|"precision"|"repair"|"transfer")=>void;
   onStartAssessment:(id:string)=>void;
   onStartMilestone:()=>void;
   onStartB1Milestone:()=>void;
@@ -79,7 +81,7 @@ export function J4Learn(props:Props){
   const {
     summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
     milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,
-    onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartPedagogy,onStartP24,onStartP25,onStartAssessment,
+    onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartPedagogy,onStartP24,onStartP25,onStartP26,onStartAssessment,
     onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,
     onC1Practice,onProductive,onLexicalFluency,onRealWorldChain,onRealWorldQualification,
   }=props;
@@ -151,6 +153,7 @@ export function J4Learn(props:Props){
     <A1CoursePath onStartUnit={onStartUnit} onStartMilestone={onStartMilestone} disabled={status==="loading"}/>
     <P23PedagogyStudio onStart={onStartPedagogy} onStartTransfer={onStartP24} disabled={status==="loading"}/>
     <P25FluencyStudio onStart={onStartP25} disabled={status==="loading"}/>
+    <P26PrecisionStudio onStart={onStartP26} disabled={status==="loading"}/>
 
     <section className="j4-foundation" aria-labelledby="j4-foundation-title">
       <header>
