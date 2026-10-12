@@ -28,6 +28,7 @@ import {journeyPrompts,journeyLessons,journeySession,type JourneyPractice} from 
 import {p28NewSentencePrompts} from "./sentence28";
 import {continuityPrompts} from "./continuity28";
 import {register28Prompts} from "./register28";
+import {p29AdditionalPrompts,p29LexicalPrompts,p29SentencePromptOverrides} from "./depth29";
 import { buildC1SynthesisSession } from "./c1Synthesis";
 
 export const GUEST_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
@@ -93,7 +94,9 @@ function foundationApplicationPool():StudyPrompt[]{
   return [...pronunciationPerceptionPrompts,...foundationApplicationPrompts,...vocabularyApplicationPrompts,...conjugationPrompts,...lexicalChunkPrompts,...productivePrompts,...c1DiscoursePrompts];
 }
 function allPrompts():StudyPrompt[]{
-  return [...foundationPrompts,...vocabularyMeaningPrompts,...foundationApplicationPool(),...allGrammarCoursePrompts,...pedagogyPrompts,...p24ReviewPrompts,...p25Prompts,...p26Prompts,...journeyPrompts,...p28NewSentencePrompts,...continuityPrompts,...register28Prompts];
+  return [...foundationPrompts,...vocabularyMeaningPrompts,...foundationApplicationPool(),...allGrammarCoursePrompts,...pedagogyPrompts,...p24ReviewPrompts,...p25Prompts,...p26Prompts,...journeyPrompts,...p28NewSentencePrompts,...continuityPrompts,...register28Prompts]
+    .map(prompt=>p29SentencePromptOverrides.get(prompt.id)??prompt)
+    .concat(p29AdditionalPrompts,p29LexicalPrompts);
 }
 
 export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
@@ -126,7 +129,7 @@ export async function buildP27JourneySession(unitId:string,focus:JourneyPractice
   const accountId=DEVELOPMENT_ACCOUNT_ID;
   const [traces,events]=await Promise.all([listMemoryTraces(accountId),listStudyEvents(accountId)]);
   if(DEVELOPMENT_ACCOUNT_ID!==accountId)throw new Error("P27_WORKSPACE_CHANGED");
-  return journeySession(unitId,focus,traces,events,Date.now(),[...p28NewSentencePrompts,...continuityPrompts,...register28Prompts]);
+  return journeySession(unitId,focus,traces,events,Date.now(),[...p28NewSentencePrompts.map(p=>p29SentencePromptOverrides.get(p.id)??p),...continuityPrompts,...register28Prompts,...p29AdditionalPrompts,...p29LexicalPrompts]);
 }
 
 export async function buildP26PrecisionSession(missionId:string,mode:P26Mode="course"):Promise<StudyStep[]>{

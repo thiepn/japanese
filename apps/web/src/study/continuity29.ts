@@ -1,4 +1,4 @@
-import type {ContinuityScenario,ContinuityReply} from "./continuity28";
+import type {ContinuityScenario} from "./continuity28";
 
 /** Six original extensions for the existing continuity player, not a separate engine. */
 export const p29ContinuityScenarios:readonly ContinuityScenario[]=[

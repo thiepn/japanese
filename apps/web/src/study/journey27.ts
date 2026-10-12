@@ -182,7 +182,8 @@ function initialPrompts(unit:JourneyUnit):StudyPrompt[]{
 export function promptsForUnit(unitId:string,extras:readonly StudyPrompt[]=[]):StudyPrompt[]{
   const unit=journeyUnit(unitId);
   const seen=new Set<string>();
-  return [...initialPrompts(unit),...unit.turns.map(t=>journeyTypedPrompt(unit,t)),...transferForUnit(unitId),...extras.filter(p=>p.eventMetadata?.unitId===unitId||p.eventMetadata?.sourceUnit===unitId)]
+  return [...initialPrompts(unit),...unit.turns.map(t=>journeyTypedPrompt(unit,t)),...transferForUnit(unitId),...extras.filter(p=>p.eventMetadata?.unitId===unitId||p.eventMetadata?.sourceUnit===unitId||
+      (Array.isArray(p.eventMetadata?.unitIds)&&p.eventMetadata.unitIds.includes(unitId)))]
     .filter(p=>{if(seen.has(p.id))return false;seen.add(p.id);return true;});
 }
 export function traceIdJourney(p:StudyPrompt):string{
@@ -243,7 +244,11 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
   });
   const relatedRegister=transferForUnit(unitId).filter(p=>/register|polite|tone|Höflich|Einladungston/.test(p.id+" "+p.instruction));
   const relevant=focus==="register"?[...pragmatic,...relatedRegister]
-    :focus==="transfer"?transferForUnit(unitId)
+    :focus==="transfer"?[
+      ...transferForUnit(unitId),
+      ...extras.filter(p=>p.eventMetadata?.kind==="linked-lexicon"&&
+        Array.isArray(p.eventMetadata?.unitIds)&&p.eventMetadata.unitIds.includes(unitId))
+    ]
     :promptsForUnit(unitId,extras);
   const latest=new Map<string,StudyEvent>();
   for(const e of events){

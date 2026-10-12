@@ -1,4 +1,5 @@
 import type {StudyPrompt} from "@thiepn/study-player";
+import {p29ContinuityScenarios} from "./continuity29";
 import {normalizeP26} from "./pedagogy26";
 export interface ContinuityReply{
   japanese:string;meaning:string;next:string|null;appropriate:boolean;note:string;
@@ -11,7 +12,7 @@ export interface ContinuityScenario{
   start:string;turns:readonly ContinuityTurn[];
 }
 
-export const continuityScenarios:readonly ContinuityScenario[]=[
+const p28ContinuityScenarios:readonly ContinuityScenario[]=[
   {
     "id": "campus-route",
     "sourceUnitId": "p23:places",
@@ -989,6 +990,7 @@ export const continuityScenarios:readonly ContinuityScenario[]=[
     ]
   }
 ];
+export const continuityScenarios:readonly ContinuityScenario[]=[...p28ContinuityScenarios,...p29ContinuityScenarios];
 export function continuityForUnit(unitId:string):ContinuityScenario|undefined{
   return continuityScenarios.find(s=>s.sourceUnitId===unitId);
 }

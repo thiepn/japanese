@@ -1,7 +1,7 @@
 import type {StudyPrompt} from "@thiepn/study-player";
 import type {StudyEvent} from "@thiepn/domain";
 import type {MemoryTrace} from "@thiepn/scheduler";
-import {journeySentencePuzzles,type JourneySentencePuzzle} from "./sentence28";
+import {journeySentencePuzzles,puzzleEvidence,type JourneySentencePuzzle} from "./sentence28";
 import {normalizeP26} from "./pedagogy26";
 import {type JourneyUnitProgress,journeyUnits} from "./journey27";
 
@@ -622,7 +622,7 @@ export function recommendP29Actions(
   });
   const source=events.filter(e=>e.metadata?.unitId===unitId&&!e.metadata?.schedulerExcluded);
   const latest=source.sort((a,b)=>b.occurredAt.localeCompare(a.occurredAt))[0];
-  const count=traces.filter(t=>t.entity.kind==="can_do"&&t.entity.id.includes(unitId)).length;
+  const count=traces.filter(t=>t.id.includes(unitId)).length;
   candidates.push({
     id:"sentence-current",unitId,focus:"sentence",label:"Satzbau ohne Musterhilfe",
     reason:latest?.result==="incorrect"?"Jüngstes gewertetes Ereignis war fehlerhaft":"Eigene Satzproduktion, unabhängig von bloßem Lesen"
@@ -637,4 +637,27 @@ export function recommendP29Actions(
     reason:count?"Gesprächsformen in neuen Zusammenhängen weiter üben":"Noch ohne belegte selbstständige Gesprächsantwort"
   });
   return candidates.slice(0,4);
+}
+
+/** Preserve historic FSRS card IDs while admitting qualified alternate word orders. */
+export const p29SentencePromptOverrides:ReadonlyMap<string,StudyPrompt>=new Map(
+  p29AllSentencePuzzles.filter(p=>!p.prompt.id.startsWith("p29-build-"))
+    .map(p=>[p.prompt.id,p.prompt])
+);
+const orderWeight={due:4,retry:3,new:2,seen:1} as const;
+export function sentence29Queue(id:string,traces:readonly MemoryTrace[],events:readonly StudyEvent[]):JourneySentencePuzzle[]{
+  const map=new Map(traces.map(t=>[t.id,t]));
+  return p29AllSentencePuzzles.filter(p=>p.unitId===id).sort((a,b)=>
+    orderWeight[puzzleEvidence(b,map,events)]-orderWeight[puzzleEvidence(a,map,events)]
+  );
+}
+export function orderFeedback29(p:JourneySentencePuzzle,answer:string):string[]{
+  if(acceptedSentenceOrder(p,answer)){
+    return ["Eine der ausdrücklich hinterlegten korrekten Wortreihenfolgen erkannt.",p.explanation];
+  }
+  return [
+    "Die Anordnung entspricht keiner der hinterlegten Varianten. Sie wird nicht automatisch als sprachlich falsch bewertet.",
+    p.explanation,
+    "Vergleiche Partikeln, Satzende und Schwerpunkt mit den Musterstellungen. Frei gebildete alternative Wortfolgen benötigen menschliche Prüfung."
+  ];
 }
