@@ -45,6 +45,17 @@ describe("A1-1 provenance crosswalk never manufactures mastery",()=>{
   expect(report.outOfScope).toBe(1);
   expect(report.rows[0]?.candidateLessonIds).toEqual(["a1:lesson:05"]);
  });
+ it("preserves kana, reading and assessment provenance without awarding completion",()=>{
+  const report=reconcileA1Evidence([
+   {id:"kana",userId:owner,sourceId:"thiepn-original",primaryTarget:{kind:"kana",id:"hiragana-あ"}},
+   {id:"katakana",userId:owner,sourceId:"thiepn-original",primaryTarget:{kind:"kana",id:"katakana-ア"}},
+   {id:"reading",userId:owner,sourceId:"thiepn-original",primaryTarget:{kind:"text",id:"text-a1-family"}},
+   {id:"milestone",userId:owner,sourceId:"thiepn-original",contextId:"assessment-a1-milestone"}
+  ],owner,map,a1PrimaryTargetCrosswalk());
+  expect(report.aligned).toBe(4);
+  expect(report.rows.map(row=>row.candidateLessonIds[0])).toEqual(["a1:lesson:02","a1:lesson:03","a1:lesson:08","a1:lesson:24"]);
+  expect(report.rows.every(row=>row.reason.includes("not completion"))).toBe(true);
+ });
  it("reports conflicting links and unrecognized A1 records without dropping them",()=>{
   const report=reconcileA1Evidence([
    {id:"conflict",userId:owner,sourceId:"original-a1-communication-v1",contextId:"a1-shopping",metadata:{unitId:"a1-unit-01"}},
