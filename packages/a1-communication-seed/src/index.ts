@@ -483,10 +483,163 @@ export const a1CommunicationLessons: readonly A1CommunicationLesson[] = [
       "explanation": "へ markiert das Reiseziel und wird e ausgesprochen."
     }
   ]
+},
+{
+  "id": "a1-hotel",
+  "level": "A1",
+  "title": "Im Hotel einchecken",
+  "canDo": "Ich kann eine Reservierung angeben und nach einem Zimmer fragen.",
+  "grammar": [
+    "よやく bedeutet Reservierung.",
+    "～があります bedeutet: Es gibt … / Ich habe …."
+  ],
+  "vocabulary": [
+    {
+      "japanese": "ホテル",
+      "romaji": "hoteru",
+      "german": "Hotel"
+    },
+    {
+      "japanese": "よやく",
+      "romaji": "yoyaku",
+      "german": "Reservierung"
+    },
+    {
+      "japanese": "へや",
+      "romaji": "heya",
+      "german": "Zimmer"
+    },
+    {
+      "japanese": "あります",
+      "romaji": "arimasu",
+      "german": "es gibt / vorhanden sein"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "A",
+      "japanese": "すみません。よやくがあります。",
+      "romaji": "Sumimasen. Yoyaku ga arimasu.",
+      "german": "Entschuldigung. Ich habe eine Reservierung."
+    },
+    {
+      "speaker": "B",
+      "japanese": "おなまえは？",
+      "romaji": "Onamae wa?",
+      "german": "Wie heißen Sie?"
+    },
+    {
+      "speaker": "A",
+      "japanese": "たなかです。",
+      "romaji": "Tanaka desu.",
+      "german": "Ich heiße Tanaka."
+    }
+  ],
+  "exercises": [
+    {
+      "id": "hotel-choice",
+      "kind": "choice",
+      "prompt": "Was bedeutet よやく?",
+      "options": [
+        "Reservierung",
+        "Bahnhof",
+        "Wasser"
+      ],
+      "answer": "Reservierung",
+      "explanation": "よやく bedeutet Reservierung."
+    },
+    {
+      "id": "hotel-fill",
+      "kind": "fill",
+      "prompt": "Ergänze: よやくが___。",
+      "answer": "あります",
+      "explanation": "あります drückt aus, dass etwas vorhanden ist."
+    }
+  ]
+},
+{
+  "id": "a1-restaurant",
+  "level": "A1",
+  "title": "Im Restaurant",
+  "canDo": "Ich kann nach einer Speisekarte fragen und etwas bestellen.",
+  "grammar": [
+    "メニュー bedeutet Speisekarte.",
+    "～をください ist eine höfliche Bestellung."
+  ],
+  "vocabulary": [
+    {
+      "japanese": "メニュー",
+      "romaji": "menyuu",
+      "german": "Speisekarte"
+    },
+    {
+      "japanese": "ごはん",
+      "romaji": "gohan",
+      "german": "Reis / Mahlzeit"
+    },
+    {
+      "japanese": "さかな",
+      "romaji": "sakana",
+      "german": "Fisch"
+    },
+    {
+      "japanese": "おいしい",
+      "romaji": "oishii",
+      "german": "lecker"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "A",
+      "japanese": "メニューをください。",
+      "romaji": "Menyuu o kudasai.",
+      "german": "Die Speisekarte bitte."
+    },
+    {
+      "speaker": "B",
+      "japanese": "はい、どうぞ。",
+      "romaji": "Hai, douzo.",
+      "german": "Ja, bitte schön."
+    },
+    {
+      "speaker": "A",
+      "japanese": "さかなをください。",
+      "romaji": "Sakana o kudasai.",
+      "german": "Fisch bitte."
+    }
+  ],
+  "exercises": [
+    {
+      "id": "restaurant-choice",
+      "kind": "choice",
+      "prompt": "Was wird mit さかなをください bestellt?",
+      "options": [
+        "Fisch",
+        "Reis",
+        "Tee"
+      ],
+      "answer": "Fisch",
+      "explanation": "さかな bedeutet Fisch."
+    },
+    {
+      "id": "restaurant-order",
+      "kind": "order",
+      "prompt": "Ordne: Die Speisekarte bitte.",
+      "tokens": [
+        "ください",
+        "メニューを"
+      ],
+      "answer": [
+        "メニューを",
+        "ください"
+      ],
+      "explanation": "メニューをください ist eine höfliche Bitte."
+    }
+  ]
 }
 ];
 
-export function evaluateA1Exercise/(exercise: A1Exercise, response: string | readonly string[]): boolean {
+export function evaluateA1Exercise//(exercise: A1Exercise, response: string | readonly string[]): boolean {
   if (exercise.kind === "order") {
     return Array.isArray(response) && response.length === exercise.answer.length
       && response.every((token, index) => token === exercise.answer[index]);
