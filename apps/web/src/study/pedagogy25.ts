@@ -1360,7 +1360,7 @@ export function p25Stats(
       unseen:priorities.filter(p=>p==="unseen").length,
       correct:graded.filter(e=>e.result==="correct").length,
       incorrect:graded.filter(e=>e.result==="incorrect").length,
-      ...(graded.length?{lastAt:graded.map(e=>e.occurredAt).sort().at(-1)}:{})
+      ...(graded.length?{lastAt:graded.map(e=>e.occurredAt).sort().at(-1)!}:{})
     };
   });
 }

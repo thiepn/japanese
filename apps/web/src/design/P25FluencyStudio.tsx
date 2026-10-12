@@ -191,7 +191,8 @@ export function P25FluencyStudio({
         </p></div>
       <button type="button" disabled={disabled||loadingHistory} onClick={()=>{
         setScenarioId(recommended.id);
-        onStart(recommended.id,(stats.find(s=>s.id===recommended.id)?.due??0)>0?"repair":"lesson");
+        const nextStats=stats.find(s=>s.id===recommended.id);
+        onStart(recommended.id,((nextStats?.due??0)+(nextStats?.retry??0))>0?"repair":"lesson");
       }}>Empfohlenes Training öffnen</button>
     </div>
     {statsError?<p role="status" className="p25-studio__error">{statsError}</p>:null}
