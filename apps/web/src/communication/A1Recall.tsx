@@ -43,7 +43,7 @@ export function A1Recall(){
  if(!item||busy||revealed)return;
  const correct=normalize(answer)===normalize(item.answer);
  const event:StudyEvent={id:crypto.randomUUID(),userId:owner,deviceId:"japanese-communication-local",occurredAt:new Date().toISOString(),
- activity:"lesson",primaryTarget:{kind:"can_do",id:"recall:"+item.id},skillDimension:"recall",
+ activity:"lesson",primaryTarget:{kind:"can_do",id:"recall:"+item.id},skillDimension:mode==="kana"?"reading":"meaning_recognition",
  promptFamily:"a1-recall-"+mode,responseMode:"typed",result:correct?"correct":"incorrect",attempts:1,
  sourceId:SOURCE,contentVersion:"1",contextId:item.context,metadata:{recallId:item.id,schedulerExcluded:true}};
  setBusy(true);setMessage("");
