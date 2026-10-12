@@ -13,6 +13,7 @@ import {p35AlternativesForTurn} from "../study/alternatives35";
 import {p34RepairContinuationFor} from "../study/repair34";
 import {p34RoleFeedback} from "../study/feedback34";
 import {p36IntentsForRole} from "../study/intent36";
+import {p37IntentVariation} from "../study/intent37";
 import {P37ResponseRevision} from "./P37ResponseRevision";
 import {p36CorrectionsForScenario,p36CorrectionRecognized} from "../study/correction36";
 import {p37CorrectionAlternativesFor} from "../study/correction37";
@@ -66,6 +67,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
   const repairFollowup=p34RepairContinuationFor(scenario?.id??"");
   const intentPaths=p36IntentsForRole(scenario?.id??"",perspective);
   const intentPath=intentPaths.find(p=>p.id===intentPathId);
+  const intentVariation=p37IntentVariation(scenario?.id??"",perspective,intentPathId);
   const corrections=p36CorrectionsForScenario(scenario?.id??"");
   const correction=corrections.find(c=>c.id===correctionId);
   const correctionAlternatives=p37CorrectionAlternativesFor(correctionId);
@@ -468,6 +470,8 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
             <strong>1 · Vergleich nach eigener Formulierung</strong>
             <p>Dein Beitrag: <span lang="ja">{intentFirst}</span></p>
             <p>Eine mögliche Form: <span lang="ja">{intentPath.firstModel}</span></p>
+            {intentVariation?<p>Andere mögliche Form:
+              <span lang="ja"> {intentVariation.alternateFirst}</span></p>:null}
             <p><strong>Gesprächspartner:</strong> <span lang="ja">{intentPath.partner}</span></p>
             <p>{intentPath.partnerMeaning}</p>
           </div>:null}
@@ -486,7 +490,10 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
             <strong>Zwei eigene Gesprächsbeiträge abgeschlossen – unbewertet</strong>
             <p>Deine Antwort: <span lang="ja">{intentSecond}</span></p>
             <p>Mögliche Antwort: <span lang="ja">{intentPath.secondModel}</span></p>
+            {intentVariation?<p>Andere passende Antwort:
+              <span lang="ja"> {intentVariation.alternateSecond}</span></p>:null}
             <p>{intentPath.explanation}</p>
+            {intentVariation?<p>Sprachliche Nuance: {intentVariation.nuance}</p>:null}
             <P37ResponseRevision key={identity+":"+intentPath.id+":first"}
               owner={owner} unitId={unitId} scenarioId={scenario!.id} role={perspective}
               taskId={scenario!.id+"-"+perspective+"-"+intentPath.id+"-first"}
