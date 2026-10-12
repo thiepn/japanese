@@ -23,13 +23,14 @@ import {register28Prompts} from "../study/register28";
 import {deriveWeakAreas,areaLabels} from "../study/remediation30";
 import {recentP35Mistakes} from "../study/remediation35";
 import {p36RemediationHint} from "../study/remediation36";
+import {p37ReviewSignal} from "../study/reviewSignal37";
 import {p31ContrastPrompts,p31ContrastForUnit} from "../study/contrast31";
 import {planP31Recall,p31GlobalDue} from "../study/recall31";
 import {p31SentencePrompts} from "../study/sentence31";
 import {p32SentencePrompts} from "../study/sentence32";
 import {p32ContrastPrompts,p32ContrastForUnit} from "../study/contrast32";
 import {
-  deriveJourneyProgress,journeyTypedPrompt,journeyUnits,journeyUnit,nextTurn,recommendedJourneyUnit,
+  deriveJourneyProgress,journeyTypedPrompt,journeyUnits,journeyUnit,nextTurn,recommendedJourneyUnit,promptsForUnit,
   type JourneyPractice,type JourneySource,type JourneyStage,type JourneyOption,type JourneyUnitProgress
 } from "../study/journey27";
 import "./p27-journey.css";
@@ -120,6 +121,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const mistakes=useMemo(()=>evidence?
     recentP35Mistakes(unitId,evidence.events,extraJourneyPrompts):[],
     [unitId,evidence]);
+  const reviewCatalog=useMemo(()=>promptsForUnit(unitId,extraJourneyPrompts),[unitId]);
   const nextActions=useMemo(()=>evidence?
     recommendP29Actions(unitId,progress,evidence.events,evidence.traces):[],
     [unitId,progress,evidence]);
@@ -580,6 +582,10 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <div><strong>{mistake.label}</strong>
                 <span>{mistake.context}</span>
                 <small>Letzter Fehler: {new Date(mistake.lastIncorrectAt).toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"})}</small>
+                <small><strong>{p37ReviewSignal(mistake.promptId,reviewCatalog,evidence?.traces??[]).status}</strong></small>
+                <small>{p37ReviewSignal(mistake.promptId,reviewCatalog,evidence?.traces??[]).explanation}</small>
+                {p37ReviewSignal(mistake.promptId,reviewCatalog,evidence?.traces??[]).nextDueAt?
+                  <small>FSRS-Wiederholung ab {new Date(p37ReviewSignal(mistake.promptId,reviewCatalog,evidence?.traces??[]).nextDueAt!).toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"})}</small>:null}
               </div>
               <div className="p27-journey__mistake-actions">
                 <button type="button" disabled={disabled}

@@ -16,7 +16,7 @@ export function P37ResponseRevision({owner,unitId,scenarioId,role,taskId,origina
  useEffect(()=>{setDraft(original);setSaved(false);setError("");},[original,taskId,owner]);
  const comparison=compareP37Drafts(original,draft);
  async function save(){
-   if(!comparison.changed||saved||busy||ownerRef.current!==getDevelopmentAccountId())return;
+   if(!comparison.changed||!draft.trim()||saved||busy||ownerRef.current!==getDevelopmentAccountId())return;
    const account=ownerRef.current;
    setBusy(true);setError("");
    try{

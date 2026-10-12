@@ -91,3 +91,6 @@
 .p27-journey__mistake-actions details p{font-size:.85rem;margin:.4rem 0}
 .p27-journey__mistake-actions details button{width:100%;margin-top:.35rem}
 @media(max-width:620px){.p27-journey__mistake-actions{max-width:none;width:100%}}
+
+.p27-journey__mistake small strong{font-weight:700}
+.p27-journey__mistake details:focus-within{outline:1px solid currentColor;outline-offset:1px}
