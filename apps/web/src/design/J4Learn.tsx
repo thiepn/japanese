@@ -1,4 +1,5 @@
 import {useMemo} from "react";
+import {A1Communication} from "../communication/A1Communication";
 import {AdaptiveRemediation} from "../study/AdaptiveRemediation";
 import {AiCoach} from "../ai/AiCoach";
 import {RealWorldPerformancePanel} from "../study/RealWorldPerformancePanel";
@@ -315,6 +316,8 @@ export function J4Learn(props:Props){
         <div><AiCoach preferredChainId={preferredCoachChain} onPreferredChainApplied={onPreferredCoachChainApplied}/></div>
       </details>
     </section>
+
+    <A1Communication/>
 
     <section className="j4-evidence" aria-label="Learning evidence overview">
       <Evidence value={kana.overall} glyph="仮" label="Kana"/>
