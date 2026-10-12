@@ -1,3 +1,4 @@
+import {recallSchedule,countStudiedDue,type RecallAttempt} from "./a1-review-schedule";
 import {useEffect,useState} from "react";
 import {listStudyEvents} from "@thiepn/local-db";
 import {a1CommunicationLessons} from "../../../../packages/a1-communication-seed/src/index";
@@ -13,7 +14,7 @@ export function A1Dashboard(){
  void listStudyEvents(owner).then(events=>{
   if(!active)return;
   const own=events.filter(e=>e.userId===owner);
-  const successful=new Set<string>(),mistakes:Record<string,number>={},recall=new Map<string,{last:string;correct:number;wrong:number}>();
+  const successful=new Set<string>(),mistakes:Record<string,number>={},recallAttempts:RecallAttempt[]=[];
   let roleplayCorrect=0,roleplayAttempts=0,recallCorrect=0,recallWrong=0,lastPractice="";
   for(const event of own){
    if(!["original-a1-communication-v1","original-a1-roleplay-v1","original-a1-recall-v1"].includes(event.sourceId??""))continue;
@@ -24,18 +25,12 @@ export function A1Dashboard(){
     else{const key=typeof event.metadata?.scenarioId==="string"?event.metadata.scenarioId:"unbekannt";mistakes[key]=(mistakes[key]??0)+1;}
    }
    if(event.sourceId==="original-a1-recall-v1"&&typeof event.metadata?.recallId==="string"){
-    const key=event.metadata.recallId,old=recall.get(key)??{last:"",correct:0,wrong:0};
-    if(event.result==="correct"){old.correct++;recallCorrect++;}else{old.wrong++;recallWrong++;}
-    if(event.occurredAt>old.last)old.last=event.occurredAt;
-    recall.set(key,old);
+    recallAttempts.push({id:event.metadata.recallId,at:event.occurredAt,correct:event.result==="correct"});
+    if(event.result==="correct")recallCorrect++;else recallWrong++;
    }
   }
   const lessons=a1CommunicationLessons.filter(l=>l.exercises.every(e=>successful.has(e.id))).length;
-  const now=Date.now();let due=0;
-  for(const item of recall.values()){
-   const days=item.correct===0?0:item.wrong>=item.correct?1:item.correct===1?1:item.correct===2?3:item.correct===3?7:14;
-   if(!Number.isFinite(Date.parse(item.last))||Date.parse(item.last)+days*86400000<=now)due++;
-  }
+  const due=countStudiedDue(recallSchedule(recallAttempts));
   setSummary({lessons,correctExercises:successful.size,totalExercises:EMPTY.totalExercises,roleplayCorrect,roleplayAttempts,roleplayMistakes:mistakes,recallCorrect,recallWrong,recallDue:due,lastPractice});
  }).catch(()=>{if(active)setError("Der A1-Fortschritt konnte nicht geladen werden.");}).finally(()=>{if(active)setLoading(false);});
  return()=>{active=false};},[owner]);
