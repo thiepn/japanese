@@ -212,7 +212,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
       <button type="button" onClick={playPartner} disabled={busy}>Gesprächspartner synthetisch anhören</button>
       <label><input type="checkbox" checked={showPartner} onChange={e=>setShowPartner(e.target.checked)}/> Japanischen Gesprächspartner zeigen</label>
       {showPartner?<p lang="ja">{turn.partner}</p>:<p>Nur hören und selbst antworten. Synthetische Stimme; keine Aussprachebewertung.</p>}
-      <label><input type="checkbox" checked={showMeaning} onChange={e=>{setShowMeaning(e.target.checked);if(e.target.checked)setAssisted(true);}}/> Deutsche Verständnisstütze</label>
+      <label><input type="checkbox" checked={showMeaning} onChange={e=>{setShowMeaning(e.target.checked);if(e.target.checked){setAssisted(true);exposed.current.add(identity);}}}/> Deutsche Verständnisstütze</label>
       {showMeaning?<p>{turn.meaning} · Mit deutscher Hilfe ist diese Antwort unbewertete Übung.</p>:null}
     </div>
     {repair?<div className="p33-role__repair">
@@ -270,7 +270,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
       disabled={busy||repairOpen||Boolean(feedback)} rows={3} lang="ja"/>
     <small className="p33-role__shortcut">Strg + Enter (Mac: ⌘ + Enter): Antwort vergleichen</small>
     <div className="p33-role__actions">
-      <button type="button" disabled={busy||Boolean(feedback)} onClick={()=>setAssisted(true)}>
+      <button type="button" disabled={busy||Boolean(feedback)} onClick={()=>{setAssisted(true);exposed.current.add(identity);}}>
         {assisted?"Mit Hilfe · unbewertet":"Hinweis zum Gesprächsziel"}</button>
       <button type="button" disabled={disabled||busy||repairOpen||Boolean(feedback)||!draft.trim()}
         onClick={()=>void submit()}>Antwort vergleichen</button>
