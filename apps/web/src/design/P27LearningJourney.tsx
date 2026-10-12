@@ -77,6 +77,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
   const [saved,setSaved]=useState(false);
   const microphone=useRef<SpeechCapture|null>(null);
   const started=useRef(0);
+  // Ephemeral exposure guards: preserve FSRS evidence across a replay in the same unit.
+  const revealedTurnIds=useRef<Set<string>>(new Set());
   const unit=journeyUnit(unitId);
   const turn=unit.turns.find(t=>t.id===nodeId)??unit.turns[0]!;
   const profile=progress.find(p=>p.id===unitId);
@@ -112,7 +114,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
     return()=>{active=false;};
   },[owner,reload]);
   useEffect(()=>{
-    microphone.current?.stop();microphone.current=null;
+    microphone.current?.stop();microphone.current=null;revealedTurnIds.current.clear();
     setNodeId(unit.turns[0]!.id);setStepsTaken(0);setAnswer("");setFirstConversationDraft("");setFeedback(null);
     setChoiceExampleSeen(false);
     setHintUsed(false);setSpeechUsed(false);setShowTranslation(false);setInputMode("compose");
@@ -175,7 +177,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
     const prompt=journeyTypedPrompt(unit,turn);
     const normalized=normalizeP26(answer);
     const exact=gradeStudyPrompt(prompt,normalized).result==="correct";
-    const independent=exact&&!hintUsed&&!speechUsed&&!choiceExampleSeen;
+    const independent=exact&&!hintUsed&&!speechUsed&&!choiceExampleSeen&&
+      !revealedTurnIds.current.has(unitId+":"+turn.id);
     const choice=turn.options.find(o=>o.valid&&normalizeP26(o.japanese)===normalized);
     setBusy(true);setError("");
     try{
@@ -184,7 +187,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
       else await ungraded("response",answer,hintUsed||speechUsed);
       if(currentOwner.current!==account)return;
       if(!firstConversationDraft)setFirstConversationDraft(answer);
-      setChoiceExampleSeen(true);
+      setChoiceExampleSeen(true);revealedTurnIds.current.add(unitId+":"+turn.id);
       setHintUsed(true); // The displayed model makes any subsequent retry ungraded.
       setFeedback({kind:independent?"graded":"ungraded",model:turn.reference,
         message:independent?"Geübte Zielform unabhängig getroffen. FSRS-Übung gespeichert."
@@ -202,14 +205,15 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
     if(account!==getDevelopmentAccountId())return;
     setBusy(true);setError("");
     try{
-      if(turn.originalPrompt?.promptType==="choice"&&!choiceExampleSeen){
+      if(turn.originalPrompt?.promptType==="choice"&&!choiceExampleSeen&&
+        !revealedTurnIds.current.has(unitId+":"+turn.id)){
         const prompt=turn.originalPrompt;
         await recordStudyAnswer({prompt,response:option.japanese,
           result:gradeStudyPrompt(prompt,option.japanese).result,
           responseTimeMs:Math.max(0,Math.round(performance.now()-started.current))});
       }else await ungraded("response",option.japanese,true);
       if(currentOwner.current!==account)return;
-      setChoiceExampleSeen(true);
+      setChoiceExampleSeen(true);revealedTurnIds.current.add(unitId+":"+turn.id);
       setFeedback({kind:"choice",message:choiceExampleSeen?"Auswahl nach zuvor gezeigter Hilfe: unbewertet.":option.valid?"Situationsgerechte Auswahl.":"Missverständnis: Versuche eine passendere Antwort.",
         model:turn.reference,notes:[option.explanation,turn.hint],next:nextTurn(unit,turn,option)});
       setReload(n=>n+1);

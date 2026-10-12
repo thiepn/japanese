@@ -38,6 +38,7 @@ export function P28Continuity({
   const [modelRevealed,setModelRevealed]=useState(false);
   const [choiceOptionsSeen,setChoiceOptionsSeen]=useState(false);
   const startedAt=useRef(0);
+  const revealedTurnIds=useRef<Set<string>>(new Set());
   const node=scenario?.turns.find(t=>t.id===nodeId)??scenario?.turns[0];
   const register=p29RegisterExampleForUnit(unitId);
   const revision=firstDraft&&draft&&revisions>0?describeP29Revision(firstDraft,draft,journeyUnit(unitId)):null;
@@ -47,6 +48,7 @@ export function P28Continuity({
     setFirstDraft("");setRevisions(0);setModelRevealed(false);setChoiceOptionsSeen(false);
     startedAt.current=performance.now();
   },[unitId,owner,scenarioId]);
+  useEffect(()=>{revealedTurnIds.current.clear();},[unitId,owner]);
   if(!scenario||!node)return null;
   async function saveUngraded(response:string){
     const account=accountRef.current;
@@ -72,8 +74,10 @@ export function P28Continuity({
     const prompt=continuityPrompt(scenario!,node!,kind);
     const grade=gradeStudyPrompt(prompt,response);
     const accepted=grade.result==="correct";
-    const independentlyProduced=kind==="typed"&&accepted&&!modelRevealed&&!choiceOptionsSeen&&revisions===0;
-    const independentChoice=kind==="choice"&&!modelRevealed&&revisions===0;
+    const independentlyProduced=kind==="typed"&&accepted&&!modelRevealed&&!choiceOptionsSeen&&revisions===0&&
+      !revealedTurnIds.current.has(scenario!.id+":"+node!.id);
+    const independentChoice=kind==="choice"&&!modelRevealed&&revisions===0&&
+      !revealedTurnIds.current.has(scenario!.id+":"+node!.id);
     const choice=node!.choices.find(c=>normalizeP26(c.japanese)===normalizeP26(response));
     const next=choice?.next??node!.id;
     setBusy(true);setError("");
@@ -86,6 +90,7 @@ export function P28Continuity({
       }else await saveUngraded(response);
       if(accountRef.current!==account)return;
       if(kind==="typed"&&!firstDraft)setFirstDraft(response);
+      revealedTurnIds.current.add(scenario!.id+":"+node!.id);
       setModelRevealed(true);
       setFeedback({
         message:kind==="choice"?(independentChoice
