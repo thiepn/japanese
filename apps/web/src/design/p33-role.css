@@ -11,3 +11,11 @@
 .p33-role__feedback{border-left:3px solid currentColor;padding:.65rem;margin:1rem 0;background:rgba(110,110,110,.08)}
 .p33-role__feedback li{margin:.3rem 0}
 @media(max-width:580px){.p33-role{padding:.7rem}.p33-role__actions{display:grid}.p33-role__actions button{width:100%}}
+
+.p33-role__repair{border:1px solid currentColor;margin:1rem 0;padding:.75rem}
+.p33-role__repair label{display:block;font-weight:600;margin:.5rem 0}
+.p33-role__repair textarea{margin:.5rem 0}
+.p33-role__repair [lang=ja]{font-size:1.13rem}
+.p33-role__repair button{margin:.35rem 0}
+.p33-role__repair [role=status]{padding:.65rem;border-left:3px solid currentColor}
+.p33-role__revision{padding:.65rem;border:1px solid currentColor;margin:.7rem 0}

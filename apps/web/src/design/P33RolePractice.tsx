@@ -5,7 +5,8 @@ import {gradeStudyPrompt} from "@thiepn/study-player";
 import {DEVELOPMENT_DEVICE_ID,getDevelopmentAccountId,recordStudyAnswer} from "../study/runtime";
 import {grammarReflection} from "../study/feedback27";
 import {journeyUnit} from "../study/journey27";
-import {p33RolesForUnit,p33RolePrompts,type P33RoleScenario} from "../study/role33";
+import {p33RolesForUnit,p33RolePrompts} from "../study/role33";
+import {p33RepairForScenario} from "../study/repair33";
 import {normalizeP26} from "../study/pedagogy26";
 import "./p33-role.css";
 
@@ -25,12 +26,16 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
   const [feedback,setFeedback]=useState<AnswerFeedback|null>(null);
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
+  const [repairOpen,setRepairOpen]=useState(false);
+  const [repairDraft,setRepairDraft]=useState("");
+  const [repairDone,setRepairDone]=useState(false);
   const exposed=useRef(new Set<string>());
   const startTime=useRef(0);
   const ownerRef=useRef(owner);ownerRef.current=owner;
   const scenario=scenarios.find(s=>s.id===scenarioId)??scenarios[0];
   const role=scenario?.roles.find(r=>r.id===perspective)??scenario?.roles[0];
   const turn=role?.turns[turnIndex];
+  const repair=p33RepairForScenario(scenario?.id??"");
   const identity=scenario?.id+":"+perspective+":"+turnIndex;
   const prompt=p33RolePrompts.find(p=>p.eventMetadata?.scenarioId===scenario?.id&&
     p.eventMetadata?.role===perspective&&p.eventMetadata?.turnIndex===turnIndex);
@@ -38,6 +43,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
     setScenarioId(p33RolesForUnit(unitId)[0]?.id??"");
     setPerspective("guest");setTurnIndex(0);setDraft("");setFirstDraft("");
     setAssisted(false);setFeedback(null);setBusy(false);setError("");
+    setRepairOpen(false);setRepairDraft("");setRepairDone(false);
     setShowPartner(true);setShowMeaning(false);exposed.current.clear();
     startTime.current=performance.now();
   },[unitId,owner]);
@@ -45,6 +51,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
     if(busy)return;
     setScenarioId(id);setPerspective(p);setTurnIndex(0);setDraft("");setFirstDraft("");
     setFeedback(null);setAssisted(false);setError("");setShowPartner(true);setShowMeaning(false);
+    setRepairOpen(false);setRepairDraft("");setRepairDone(false);
     startTime.current=performance.now();
   }
   function playPartner(){
@@ -93,11 +100,36 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
     }catch{if(account===ownerRef.current)setError("Antwort konnte nicht gespeichert werden. Erneut versuchen.");}
     finally{if(account===ownerRef.current)setBusy(false);}
   }
+  async function submitRepair(){
+    if(!repair||!repairDraft.trim()||busy||disabled||repairDone)return;
+    const account=ownerRef.current;
+    if(account!==getDevelopmentAccountId())return;
+    const event:StudyEvent={
+      id:crypto.randomUUID(),userId:account,deviceId:DEVELOPMENT_DEVICE_ID,
+      occurredAt:new Date().toISOString(),activity:"writing",
+      primaryTarget:{kind:"production_task",id:"p33:repair:"+scenario!.id},
+      skillDimension:"production",promptFamily:"p33-clarification-repair",
+      responseMode:"typed",result:"skipped",attempts:1,
+      contextId:"p33:role:"+scenario!.id,sourceId:"thiepn-original",contentVersion:"p33-1",
+      metadata:{p33:true,kind:"repair-ungraded",unitId,scenarioId:scenario!.id,
+        role:perspective,turnIndex,schedulerExcluded:true,rawTextStored:false,
+        length:[...normalizeP26(repairDraft)].length}
+    };
+    setBusy(true);setError("");
+    try{
+      await saveStudyEvent(event);
+      if(ownerRef.current!==account)return;
+      exposed.current.add(identity);
+      setAssisted(true);setRepairDone(true);onReviewed();
+    }catch{if(ownerRef.current===account)setError("Rückfrage konnte nicht gespeichert werden.");}
+    finally{if(ownerRef.current===account)setBusy(false);}
+  }
   function next(){
     if(!role)return;
     if(turnIndex+1<role.turns.length)setTurnIndex(t=>t+1);
     else{setTurnIndex(0);setPerspective(p=>p==="guest"?"host":"guest");}
     setDraft("");setFirstDraft("");setAssisted(false);setFeedback(null);setError("");
+    setRepairOpen(false);setRepairDraft("");setRepairDone(false);
     setShowMeaning(false);startTime.current=performance.now();
   }
   if(!scenario||!role||!turn)return null;
@@ -121,13 +153,36 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
       <label><input type="checkbox" checked={showMeaning} onChange={e=>setShowMeaning(e.target.checked)}/> Deutsche Verständnisstütze</label>
       {showMeaning?<p>{turn.meaning}</p>:null}
     </div>
+    {repair?<div className="p33-role__repair">
+      <button type="button" disabled={disabled||busy||Boolean(feedback)}
+        onClick={()=>{
+          setRepairOpen(v=>!v);
+          setAssisted(true);exposed.current.add(identity);
+        }}>{repairOpen?"Verständnisreparatur schließen":"Ich habe nicht verstanden: Rückfrage formulieren"}</button>
+      {repairOpen?<div>
+        <p><strong>Verständnisproblem:</strong> <span lang="ja">{repair.partner}</span></p>
+        <p>{repair.meaning}</p>
+        <label htmlFor="p33-repair-draft">Bitte auf Japanisch um Wiederholung oder Erklärung</label>
+        <textarea id="p33-repair-draft" lang="ja" rows={2} value={repairDraft}
+          disabled={busy||repairDone} onChange={e=>setRepairDraft(e.target.value)}/>
+        <button type="button" disabled={disabled||busy||repairDone||!repairDraft.trim()}
+          onClick={()=>void submitRepair()}>Rückfrage vergleichen (unbewertet)</button>
+        {repairDone?<div role="status">
+          <p>Muster für eine Bitte: <span lang="ja">{repair.model}</span> · {repair.gloss}</p>
+          <p>{repair.explanation}</p>
+          <p><strong>Partner erklärt:</strong> <span lang="ja">{repair.clarification}</span>
+            {" — "}{repair.clarificationMeaning}</p>
+          <button type="button" onClick={()=>setRepairOpen(false)}>Mit eigener Antwort weiter</button>
+        </div>:null}
+      </div>:null}
+    </div>:null}
     <label htmlFor="p33-role-draft">Deine japanische Antwort</label>
     <textarea id="p33-role-draft" value={draft} onChange={e=>setDraft(e.target.value)}
-      disabled={busy||Boolean(feedback)} rows={3} lang="ja"/>
+      disabled={busy||repairOpen||Boolean(feedback)} rows={3} lang="ja"/>
     <div className="p33-role__actions">
       <button type="button" disabled={busy||Boolean(feedback)} onClick={()=>setAssisted(true)}>
         {assisted?"Mit Hilfe · unbewertet":"Hinweis zum Gesprächsziel"}</button>
-      <button type="button" disabled={disabled||busy||Boolean(feedback)||!draft.trim()}
+      <button type="button" disabled={disabled||busy||repairOpen||Boolean(feedback)||!draft.trim()}
         onClick={()=>void submit()}>Antwort vergleichen</button>
     </div>
     {assisted&&!feedback?<p role="status">Aufgabe: {turn.gloss}. Die nächste Eingabe zählt nicht als unabhängiger FSRS-Abruf.</p>:null}
