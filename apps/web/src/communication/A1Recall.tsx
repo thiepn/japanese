@@ -29,6 +29,9 @@ export function A1Recall(){
  const [mistakesOnly,setMistakesOnly]=useState(false);
  const [hint,setHint]=useState(false);
  const [session,setSession]=useState(0);
+ const [choiceMode,setChoiceMode]=useState(false);
+ const [listeningMode,setListeningMode]=useState(false);
+ const [queue,setQueue]=useState<string[]>([]);
  const owner=getDevelopmentAccountId();
  useEffect(()=>{let live=true;setHistory({});setIndex(0);setAnswer("");setRevealed(false);
  void listStudyEvents(owner).then(events=>{if(!live)return;const next:typeof history={};
@@ -45,9 +48,11 @@ export function A1Recall(){
  const priority=(h:typeof x)=>h?(h.wrong>h.correct?0:h.correct===0?1:h.wrong>0?2:3):-1;
  return priority(x)-priority(y)||a.id.localeCompare(b.id);
  });
- const item=pool[index%pool.length];
+ const item=pool.find(card=>card.id===queue[0])??pool[index%pool.length];
+ const alternatives=item?items.filter(card=>card.kind===item.kind&&card.id!==item.id&&card.answer!==item.answer).slice(0,3):[];
+ const choices=item?[item,...alternatives].sort((a,b)=>a.answer.localeCompare(b.answer,"ja")).map(card=>card.answer):[];
  function reset(){setAnswer("");setRevealed(false);setHint(false);setMessage("");}
- function changeMode(next:Item["kind"]){setMode(next);setIndex(0);reset();}
+ function changeMode(next:Item["kind"]){setMode(next);setIndex(0);setQueue([]);reset();}
  async function check(){
  if(!item||busy||revealed)return;
  const correct=normalize(answer)===normalize(item.answer);
@@ -56,10 +61,10 @@ export function A1Recall(){
  promptFamily:"a1-recall-"+mode,responseMode:"typed",result:correct?"correct":"incorrect",attempts:1,
  sourceId:SOURCE,contentVersion:"1",contextId:item.context,metadata:{recallId:item.id,schedulerExcluded:true}};
  setBusy(true);setMessage("");
- try{await saveStudyEvent(event);setHistory(previous=>{const old=previous[item.id]??{correct:0,wrong:0,last:""};return {...previous,[item.id]:{correct:old.correct+(correct?1:0),wrong:old.wrong+(correct?0:1),last:event.occurredAt}}});setRevealed(true);}
+ try{await saveStudyEvent(event);setHistory(previous=>{const old=previous[item.id]??{correct:0,wrong:0,last:""};return {...previous,[item.id]:{correct:old.correct+(correct?1:0),wrong:old.wrong+(correct?0:1),last:event.occurredAt}}});setRevealed(true);if(!correct)setQueue(previous=>previous.includes(item.id)?previous:[...previous,item.id]);}
  catch{setMessage("Antwort konnte nicht gespeichert werden.");}finally{setBusy(false);}
  }
- function next(){setIndex(value=>value+1);setSession(value=>value+1);reset();}
+ function next(){if(queue[0]===item?.id)setQueue(previous=>previous.slice(1));setIndex(value=>value+1);setSession(value=>value+1);reset();}
  return <section aria-labelledby="a1-recall-title" className="j4-practice">
  <h2 id="a1-recall-title">A1 · Aktives Wiederholen</h2>
  <p>Schriftzeichen, Wörter und Sätze selbst abrufen. Fehlerhafte und neue Karten erscheinen zuerst; Ergebnisse werden lokal pro Lernkonto gespeichert.</p>
@@ -69,17 +74,19 @@ export function A1Recall(){
  <label><input type="checkbox" checked={mistakesOnly} onChange={event=>{setMistakesOnly(event.target.checked);setIndex(0);reset();}}/> Fehler gezielt wiederholen</label>
  <label><input type="checkbox" checked={dailyOnly} onChange={event=>{setDailyOnly(event.target.checked);setIndex(0);reset();}}/> Heute noch nicht geübt</label>
  {(mode==="vocabulary"||mode==="reverse"||mode==="context")?<label> Lektion <select value={lessonFilter} onChange={event=>{setLessonFilter(event.target.value);setIndex(0);reset();}}><option value="all">Alle Lektionen</option>{a1CommunicationLessons.map(lesson=><option key={lesson.id} value={lesson.id}>{lesson.title}</option>)}</select></label>:null}
+ <div className="a1-mobile-actions"><label><input type="checkbox" checked={choiceMode} onChange={event=>{setChoiceMode(event.target.checked);reset();}}/> Auswahl statt Tippen</label><label><input type="checkbox" checked={listeningMode} onChange={event=>{setListeningMode(event.target.checked);reset();}}/> Hörmodus</label></div>
  <p>{session} Karten in dieser Sitzung bearbeitet · {pool.length} Karten · {pool.filter(card=>(history[card.id]?.correct??0)>0).length} mindestens einmal richtig</p>
  {!item?<p role="status">Keine Karten in dieser Auswahl. Deaktiviere den Tagesfilter oder wähle eine andere Lektion.</p>:null}
- {item?<div><p>{item.context}</p><h3 lang={mode==="reverse"?"de":"ja"}>{item.front}</h3>
+ {item?<div><p>{item.context}</p>{!listeningMode||mode==="reverse"?<h3 lang={mode==="reverse"?"de":"ja"}>{item.front}</h3>:<h3>Höre zu und beantworte die Frage</h3>}
+ {listeningMode&&mode!=="reverse"?<button type="button" onClick={()=>{if("speechSynthesis" in window){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(item.front);u.lang="ja-JP";u.rate=0.8;window.speechSynthesis.speak(u);}}}>Audio abspielen</button>:null}
  {mode==="context"?<button type="button" onClick={()=>{if("speechSynthesis" in window){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(item.front);u.lang="ja-JP";u.rate=0.8;window.speechSynthesis.speak(u);}}}>Satz anhören</button>:null}
  {!revealed?<button type="button" onClick={()=>setHint(true)}>Hinweis anzeigen</button>:null}
  {hint&&!revealed?<p role="status">Die Antwort beginnt mit: {item.answer.slice(0,mode==="kana"||mode==="katakana"?1:2)}…</p>:null}
  <form onSubmit={event=>{event.preventDefault();void check();}}>
- <label>Deine Antwort <input autoComplete="off" value={answer} disabled={busy||revealed} onChange={event=>setAnswer(event.target.value)}/></label>
+ {choiceMode?<fieldset disabled={busy||revealed}><legend>Wähle die richtige Antwort</legend><div className="a1-choice-grid">{choices.map(option=><label key={option}><input type="radio" name="a1-recall-choice" checked={answer===option} onChange={()=>setAnswer(option)}/>{option}</label>)}</div></fieldset>:<label>Deine Antwort <input autoComplete="off" value={answer} disabled={busy||revealed} onChange={event=>setAnswer(event.target.value)}/></label>}
  {!revealed?<button type="submit" disabled={!answer.trim()||busy}>Prüfen</button>:null}
  </form>
- {revealed?<div role="status"><p>Richtige Antwort: <strong>{item.answer}</strong></p><p>{normalize(answer)===normalize(item.answer)?"Richtig":"Noch nicht richtig – diese Karte bleibt zur Wiederholung vorgemerkt."}</p><button type="button" onClick={next}>Nächste Karte</button></div>:null}
+ {revealed?<div role="status"><p>Richtige Antwort: <strong>{item.answer}</strong></p><p>{normalize(answer)===normalize(item.answer)?"Richtig":"Noch nicht richtig – diese Karte kommt in die Wiederholungsschlange."}</p><button type="button" onClick={next}>Nächste Karte</button></div>:null}
  </div>:null}
  {message?<p role="alert">{message}</p>:null}
  </section>;
