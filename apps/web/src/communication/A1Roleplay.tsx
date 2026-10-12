@@ -44,6 +44,8 @@ export function A1Roleplay(){
  const [choiceIndex,setChoiceIndex]=useState<number|null>(null),[score,setScore]=useState(0);
  const [busy,setBusy]=useState(false),[error,setError]=useState("");
  const [showGerman,setShowGerman]=useState(false);
+ const [repair,setRepair]=useState(false);
+ const [previousMismatch,setPreviousMismatch]=useState(false);
  const [history,setHistory]=useState<Record<string,{correct:number;incorrect:number}>>({});
  const [historyError,setHistoryError]=useState("");
  const owner=getDevelopmentAccountId();
@@ -55,8 +57,8 @@ export function A1Roleplay(){
  }setHistory(next);}).catch(()=>{if(active)setHistoryError("Gesprächsfortschritt konnte nicht geladen werden.");});
  return()=>{active=false};},[owner]);
  const scenario=scenarios[scenarioIndex],turn=scenario.turns[turnIndex],choice=choiceIndex===null?null:turn.choices[choiceIndex];
- const done=turnIndex===scenario.turns.length-1&&choice!==null;
- function start(index:number){setScenarioIndex(index);setTurnIndex(0);setChoiceIndex(null);setScore(0);setError("");}
+ const done=turnIndex===scenario.turns.length-1&&choice!==null&&!repair;
+ function start(index:number){setScenarioIndex(index);setTurnIndex(0);setChoiceIndex(null);setScore(0);setRepair(false);setPreviousMismatch(false);setError("");}
  async function choose(index:number){
   if(busy||choiceIndex!==null)return;
   const selected=turn.choices[index];
@@ -65,7 +67,7 @@ export function A1Roleplay(){
    result:selected.correct?"correct":"incorrect",attempts:1,sourceId:"original-a1-roleplay-v1",contentVersion:"1",contextId:scenario.id,
    metadata:{scenarioId:scenario.id,turnIndex,selected:index,schedulerExcluded:true}};
   setBusy(true);setError("");
-  try{await saveStudyEvent(event);setChoiceIndex(index);if(selected.correct)setScore(v=>v+1);
+  try{await saveStudyEvent(event);setChoiceIndex(index);if(selected.correct){setScore(v=>v+1);setPreviousMismatch(false);}else setPreviousMismatch(true);
  setHistory(previous=>{const old=previous[scenario.id]??{correct:0,incorrect:0};return {...previous,[scenario.id]:{correct:old.correct+(selected.correct?1:0),incorrect:old.incorrect+(selected.correct?0:1)}};});}
   catch{setError("Antwort konnte nicht gespeichert werden. Bitte erneut versuchen.");}
   finally{setBusy(false);}
@@ -78,7 +80,7 @@ export function A1Roleplay(){
  <p>{history[scenario.id]?history[scenario.id].correct+" passende · "+history[scenario.id].incorrect+" unpassende Antworten bisher":"Noch kein gespeicherter Verlauf in dieser Situation."}</p>
  {historyError?<p role="alert">{historyError}</p>:null}
  <p>Empfohlene Wiederholung: {Object.entries(history).sort((a,b)=>b[1].incorrect-a[1].incorrect)[0]?.[0]??"Noch keine Fehler erfasst"}</p><progress value={turnIndex+(choice===null?0:1)} max={scenario.turns.length} aria-label="Gesprächsfortschritt"/>
-  <p>Gesprächsschritt {turnIndex+1} von {scenario.turns.length}</p>
+  <p>Gesprächsschritt {turnIndex+1} von {scenario.turns.length}</p>{previousMismatch&&choiceIndex===null?<p role="status">Dein Gegenüber war irritiert. Wähle jetzt eine Antwort, die zur Situation passt.</p>:null}
   <article><strong>{turn.speaker}</strong><p lang="ja">{turn.prompt}</p><button type="button" onClick={()=>speak(turn.prompt)}>Anhören</button></article>
   <fieldset disabled={choice!==null||busy}><legend>Was antwortest du?</legend><div className="a1-choice-grid">
   {turn.choices.map((option,index)=><button type="button" key={option.japanese} onClick={()=>void choose(index)} aria-pressed={choiceIndex===index}>
@@ -89,8 +91,9 @@ export function A1Roleplay(){
    <p>{choice.german}</p><p><strong>{turn.speaker}:</strong> <span lang="ja">{choice.reply}</span> — {choice.replyGerman}</p>
    <button type="button" onClick={()=>speak(choice.reply)}>Reaktion anhören</button>
    <p>{!choice.correct?"Versuche beim nächsten Durchgang eine passendere Antwort.":""}</p>
+   {!choice.correct?<button type="button" onClick={()=>{setRepair(true);setChoiceIndex(null);}}>Missverständnis klären und erneut antworten</button>:null}
    {done?<div><p>{score} von {scenario.turns.length} passenden Antworten.</p><button type="button" onClick={()=>start(scenarioIndex)}>Gespräch wiederholen</button></div>
-    :<button type="button" onClick={()=>{setTurnIndex(v=>v+1);setChoiceIndex(null);}}>Gespräch fortsetzen</button>}
+    :<button type="button" disabled={!choice.correct} onClick={()=>{setTurnIndex(v=>Math.min(v+1,scenario.turns.length-1));setChoiceIndex(null);setRepair(false);setPreviousMismatch(false);}}>Gespräch fortsetzen</button>}
   </div>:null}
   {error?<p role="alert">{error}</p>:null}
  </section>;
