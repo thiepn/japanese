@@ -71,7 +71,7 @@ export function A1Communication(){
     <p>Originale Alltagssituationen · Deutsch, Japanisch und Romaji. Ergebnisse werden als lokale Lernereignisse gespeichert; keine automatische Meisterschaftsbehauptung.</p>
     {!lesson?<div>{a1CommunicationLessons.map((item,index)=><article key={item.id}>
       <h3>{item.title}</h3><p>{item.canDo}</p>
-      <p>{item.exercises.filter(ex=>completed[ex.id]>0).length}/{item.exercises.length} Übungen mindestens einmal richtig</p>
+      <p>{item.exercises.filter(ex=>(completed[ex.id]??0)>0).length}/{item.exercises.length} Übungen mindestens einmal richtig</p>
       <button type="button" onClick={()=>select(index)}>Lektion öffnen</button>
     </article>)}</div>:<div>
       <button type="button" onClick={()=>setLessonIndex(null)}>Zurück zur Übersicht</button>
