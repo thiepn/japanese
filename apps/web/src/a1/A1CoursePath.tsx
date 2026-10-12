@@ -7,13 +7,13 @@ import {A1_CONTRACT_VERSION,A1_MODULES,A1_LESSONS,reconcileA1Evidence,type A1Cro
 import {a1CommunicationExerciseCrosswalk,a1PrimaryTargetCrosswalk,a1SourceInventory,auditA1SourceLinks} from "./a1-source-audit";
 import "./a1-course-path.css";
 
-type Props={onStartUnit:(unitId:string)=>void;disabled:boolean};
+type Props={onStartUnit:(unitId:string)=>void;onStartMilestone:()=>void;disabled:boolean};
 const sourceIssues=auditA1SourceLinks();
 const inventory=a1SourceInventory();
 const exerciseMap=a1CommunicationExerciseCrosswalk();
 const targetMap=a1PrimaryTargetCrosswalk();
 
-export function A1CoursePath({onStartUnit,disabled}:Props){
+export function A1CoursePath({onStartUnit,onStartMilestone,disabled}:Props){
  const owner=getDevelopmentAccountId();
  const [report,setReport]=useState<A1CrosswalkReport|null>(null);
  const [error,setError]=useState("");
@@ -39,13 +39,13 @@ export function A1CoursePath({onStartUnit,disabled}:Props){
   <div className="a1-course-path__modules">
   {A1_MODULES.map((module,index)=>{
    const lessons=A1_LESSONS.filter(l=>l.moduleId===module.id);
-   const mapped=lessons.filter(l=>l.legacyUnitIds.length+l.communicationLessonIds.length+l.roleplayIds.length>0).length;
+   const mapped=lessons.filter(l=>l.legacyUnitIds.length+l.communicationLessonIds.length+l.roleplayIds.length+(l.foundationIds?.length??0)+(l.readingTextIds?.length??0)>0).length;
    return <details key={module.id} defaultOpen={index===0} className="a1-course-path__module">
     <summary><span>Modul {module.order}: {module.title}</span><small>{mapped}/{lessons.length} mit verlinktem Altmaterial</small></summary>
     <p>{module.description}</p>
     <ol className="a1-course-path__list" start={(module.order-1)*4+1}>
     {lessons.map(lesson=>{
-     const hasMaterial=lesson.legacyUnitIds.length+lesson.communicationLessonIds.length+lesson.roleplayIds.length>0;
+     const hasMaterial=lesson.legacyUnitIds.length+lesson.communicationLessonIds.length+lesson.roleplayIds.length+(lesson.foundationIds?.length??0)+(lesson.readingTextIds?.length??0)>0;
      const matched=report?.rows.filter(r=>r.status==="aligned"&&r.candidateLessonIds.includes(lesson.id)).length??0;
      return <li key={lesson.id}>
       <article>
@@ -53,10 +53,13 @@ export function A1CoursePath({onStartUnit,disabled}:Props){
        <p>{lesson.canDo}</p>
        {matched>0?<p className="a1-course-path__provenance">{matched} historische Lernereignisse zugeordnet, ohne neue Meisterschaft</p>:null}
        {hasMaterial?<div className="a1-course-path__actions">
+        {lesson.foundationIds?.length?<button type="button" onClick={()=>navigateA1({destination:"recall",mode:lesson.foundationIds?.some(id=>id.startsWith("katakana"))?"katakana":"kana"})}>Kana üben</button>:null}
         {lesson.legacyUnitIds.map(unitId=><button key={unitId} type="button" disabled={disabled||sourceIssues.length>0} onClick={()=>onStartUnit(unitId)}>Kerneinheit {unitId.slice(-2)} üben</button>)}
         {lesson.communicationLessonIds.map(communicationId=><button key={communicationId} type="button" onClick={()=>navigateA1({destination:"lesson",lessonId:communicationId})}>Kommunikation: {communicationId.slice(3).replaceAll("-"," ")}</button>)}
         {lesson.roleplayIds.map(roleplayId=><button key={roleplayId} type="button" onClick={()=>navigateA1({destination:"roleplay",scenarioId:roleplayId})}>Dialog: {roleplayId}</button>)}
+        {lesson.assessmentIds?.length?<button type="button" disabled={disabled} onClick={onStartMilestone}>A1-Abschlusscheck (bestehender Kurztest)</button>:null}
        </div>:<p className="a1-course-path__pending">Lerninhalt und Übungen werden in der nächsten Inhaltsphase erstellt.</p>}
+       {lesson.readingTextIds?.length?<p className="a1-course-path__provenance">Verknüpfte A1-Lesetexte: {lesson.readingTextIds.join(", ")} (Leser-Verknüpfung folgt).</p>:null}
       </article>
      </li>;
     })}
