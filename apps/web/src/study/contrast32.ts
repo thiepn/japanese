@@ -164,12 +164,32 @@ export const p32Contrasts:readonly P32Contrast[]=[
     "focus": "function"
   }
 ];
-export const p32ContrastPrompts:StudyPrompt[]=p32Contrasts.map(c=>({
+const p32Questions:readonly string[]=[
+  "Welche Version grüßt beim Erstkontakt mit einer Lehrkraft höflicher?",
+  "Welche Version nennt die Person 私 ausdrücklich als Thema?",
+  "Welche Version macht この本 zum Thema?",
+  "Welche Version beschreibt das Ziel einer Bewegung?",
+  "Welche Version nennt mit 朝 eine Zeitangabe?",
+  "Welche Version erbittet einen Kaffee?",
+  "Welche Version fragt höflich nach Interesse am gemeinsamen Gehen?",
+  "Welche Version beschreibt eine abgeschlossene Handlung gestern?",
+  "Welche Version beschreibt, wo sich eine Person befindet?",
+  "Welche Version nennt einen Bus als Verkehrsmittel?",
+  "Welche Version äußert einen Ausleihwunsch, ohne ausdrücklich um Erlaubnis zu bitten?",
+  "Welche Version fragt nach einer Tasche in der Nähe des Sprechers?",
+  "Welche Version schlägt Freitag als Termin vor?",
+  "Welche Version berichtet vom Finden eines Schirms am Bahnhof?",
+  "Welche Version nennt die Abfahrtszeit des Busses?",
+  "Welche Version lädt höflich zum gemeinsamen Lernen ein?",
+  "Welche Version beschränkt auf genau einen Kuchen ohne vorangestellte Entschuldigung?",
+  "Welche Version erklärt, warum Samstag nicht passt?"
+];
+export const p32ContrastPrompts:StudyPrompt[]=p32Contrasts.map((c,index)=>({
   id:c.id,primaryTarget:{kind:"can_do",id:"p32:contrast:"+c.unitId},
   skill:"form_selection",cueFamily:"p32-role-"+c.id,promptType:"choice",
-  instruction:"Welche der beiden Aussagen drückt die erste genannte Funktion aus?",
-  prompt:c.context+" — Form und Funktion unterscheiden",
-  choices:[c.first,c.second],acceptedAnswers:[c.first],displayAnswer:c.first,
+   instruction:"Bestimme die ausdrücklich erfragte Form oder Bedeutung, nicht pauschal »richtig« gegen »falsch«",
+  prompt:p32Questions[index]!,
+  choices:index%2?[c.second,c.first]:[c.first,c.second],acceptedAnswers:[c.first],displayAnswer:c.first,
   explanation:c.explanation,answerNormalization:"japanese",
   contextId:"p32:unit:"+c.unitId,sourceId:"thiepn-original",contentVersion:"p32-1",
   eventMetadata:{p32:true,kind:"contextual-contrast",unitId:c.unitId,contrastId:c.id}
