@@ -1,0 +1,31 @@
+# P36 — Independent Production & Adaptive Conversation Continuity
+
+Base: feature/p35-conversational-integrity-adaptive-recall at exact commit 4d78294b9e169ce22fef6235bf37d3284519bfee
+Stacked source-only branch: feature/p36-independent-production-conversation-continuity
+
+## Committed learner-facing work
+
+1. **32 original conversation continuations** across the eight existing role situations and both role perspectives. Each offers two distinct German-language communicative intentions and then two original learner-written Japanese turns separated by an authored Japanese partner reply. The branch's first and second example responses are revealed *only after* an attempt. Both replies are deliberately ungraded because the intent choice and earlier role interaction supply help. Free responses and their text remain ephemeral; canonical StudyEvents record only scheduler-excluded activity and no raw text/audio.
+2. **Role-specific native FSRS due review**. The existing role component now shows its selected scenario's actual due role cues, not a mixed unit count. A direct "Genau diesen Dialog fällig wiederholen" action passes through the existing P27 -> J4Learn -> App -> StudyPlayer integration to \`buildP36RoleDueSession\`. The builder rereads owner-scoped MemoryTraces at invocation and selects only valid FSRS due times and the role's original prompt identities. It returns the existing P27 lesson plus due prompts, not a new review engine. Earlier P33/P35 cue families are preserved.
+3. **16 original context-bound particle, time, polite-register and speech-function corrections**. Each has a specific situation, deliberately unsuitable starting sentence, independently authored revised target and explanatory feedback. The new typed \`StudyPrompt\` identities are registered with the pre-existing Today catalog and StudyPlayer focused sessions. Additionally, role feedback offers an inline free-text correction with the model hidden until after writing. This role-embedded comparison creates only ungraded, scheduler-excluded StudyEvents, not a second route to FSRS mastery.
+4. **Last-mistake pedagogy without answer leakage**. The existing P35 exact-mistake list now exposes category-specific, source-metadata-derived guidance in a collapsible details section. It does not reveal the accepted answer before review. Learners can return to the relevant existing lesson stage, or open the exact mistake in the established native StudyPlayer. The existing separation between truly due reviews and optional early mistake remediation is retained.
+5. **Protect independent retrieval in two inherited conversation players**. The main P27 journey and P28 continuity previously allowed German meaning help to be displayed and later hidden while preserving the ability to record independent graded responses. German translation exposure now marks the turn as assisted, and the guard is maintained when navigating to subsequent turns with the translation still visible. Both typed and choice routes are protected. These guards are ephemeral (local component lifetime) and do not invent persistent disclosure/maturity data.
+6. **Keyboard/mobile and course-flow refinements**. Japanese composition in both P36 intent turns and the correction activity supports IME-safe Ctrl/⌘+Enter and advertises keyboard shortcuts to assistive technology. More obvious focus styling and responsive wrapping are added to the existing role panel. An inherited P33 instruction erroneously said there were two turns after P35 had introduced three; the current lesson instructions now describe three before role switching.
+7. **Faithful German teaching text**. All 32 new partner-reply meanings were independently reviewed against the newly written Japanese lines during source editing; misleading mismatches were corrected before the handoff. These are original THIEPN-authored dialogues, not textbook content.
+
+## Identity, rights, privacy and limits
+
+- Preserve all P23–P35 original lesson data, preceding branches, StudyPlayer cue IDs, native Today/Learn architecture and owner-scoped StudyEvents/FSRS traces.
+- Marugoto PDFs are used only as general teaching-method references; no Marugoto publisher examples, dialogues, figures, lesson text or audio were imported or copied.
+- No raw learner Japanese response or audio is persisted by P36's new in-dialogue writing activities. All P36 intent/scaffold and inline correction events use \`schedulerExcluded:true\` and \`rawTextStored:false\`, with only minimal activity metadata.
+- The P36 corrected-sentence prompts can be graded by the *existing* StudyPlayer when accessed independently. The in-dialogue comparisons are ungraded because contextual examples or intent scaffolds were already seen. There is no parallel mastery database.
+- Authored targets are finite; unrelated correct Japanese expressions cannot be reliably assessed by automated exact matching. P36 does not claim general Japanese grammar parsing, free-response semantic judging, CEFR certification or pronunciation grading. Audio synthesis remains dependent on browser support.
+- Due dates and mistake suggestions are snapshots from current owner-scoped local records, not future notifications. Optional early remediation may legitimately change the user's canonical FSRS schedule.
+
+## Verification boundary
+
+GitHub source commits were created and the branch preserved separately. TypeScript typecheck, compilation/build, unit tests, browser acceptance, CI/GitHub Actions and full suites are **NOT_TESTED/NOT_RUN by request**. Source-level review and edits cannot guarantee runtime correctness. No PR, merge, deployment, database migration, new credentials, main-branch changes or production learner data access.
+
+## P37 candidate — Natural Production Consolidation and Contextual Review
+
+Continue with authored pragmatic branches and clearer learner revision, strengthen form/meaning diagnostics without falsely auto-grading free Japanese, improve unit-to-unit adaptive navigation using existing FSRS due/mistake evidence, and refine accessibility and load/error states. Stay inside the unified Learn five-stage journey and canonical StudyPlayer/FSRS authority. Keep work in a separate stacked source branch; do not substitute qualification-only work.
