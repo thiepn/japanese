@@ -1,3 +1,4 @@
+import {notifyA1Progress} from "./a1-events";
 import {A1_NAV_EVENT,navigateA1,scenarioForLesson,type A1Navigation} from "./a1-navigation";
 import "./a1-mobile.css";
 import {useEffect,useRef,useState} from "react";
@@ -50,7 +51,7 @@ export function A1Communication(){
   function next(){
     if(!lesson)return;
     if(exerciseIndex+1>=lesson.exercises.length){setStage("finish");return;}
-    setExerciseIndex(value=>value+1);setResponse("");setOrdered([]);setFeedback(null);setError("");
+    setExerciseIndex(value=>value+1);setResponse("");setOrdered([]);setOrderedIndices([]);setFeedback(null);setError("");
   }
   function speak(japanese:string){
     if(typeof window==="undefined"||!("speechSynthesis" in window))return;
@@ -84,6 +85,7 @@ export function A1Communication(){
     setBusy(true);setError("");
     try{
       await saveStudyEvent(event);
+      notifyA1Progress();
       if(ownerRef.current!==currentOwner)return;
       setFeedback(correct?"correct":"incorrect");
       if(correct)setCompleted(previous=>({...previous,[exercise.id]:(previous[exercise.id]??0)+1}));
