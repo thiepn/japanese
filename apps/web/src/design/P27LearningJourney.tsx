@@ -4,6 +4,7 @@ import {gradeStudyPrompt} from "@thiepn/study-player";
 import type {StudyEvent} from "@thiepn/domain";
 import {DEVELOPMENT_DEVICE_ID,getDevelopmentAccountId,recordStudyAnswer} from "../study/runtime";
 import {normalizeP26} from "../study/pedagogy26";
+import {grammarReflection} from "../study/feedback27";
 import {
   deriveJourneyProgress,journeyTypedPrompt,journeyUnits,journeyUnit,nextTurn,recommendedJourneyUnit,
   type JourneyPractice,type JourneySource,type JourneyStage,type JourneyOption,type JourneyUnitProgress
@@ -81,7 +82,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
     microphone.current?.stop();microphone.current=null;
     setNodeId(unit.turns[0]!.id);setStepsTaken(0);setAnswer("");setFeedback(null);
     setHintUsed(false);setSpeechUsed(false);setShowTranslation(false);setInputMode("compose");
-    setStage("learn");setError("");setDraft("");setRewrite("");
+    setError("");setDraft("");setRewrite("");
     setRewriteStage("draft");setReport(null);setSaved(false);setVoiceStatus("");
     started.current=performance.now();
   },[unitId,owner]);
@@ -151,7 +152,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
         message:independent?"Geübte Zielform unabhängig getroffen. FSRS-Übung gespeichert."
           :exact?"Zielform getroffen, aber mit Hilfe oder Spracherkennung: unbewerteter Versuch."
           :"Deine freie Antwort lässt sich mit den begrenzten Mustern nicht sicher beurteilen. Sie ist nicht automatisch falsch.",
-        notes:[turn.hint,"Vergleiche Partikel, Zeitform, Höflichkeit und Gesprächsziel."],
+        notes:[turn.hint,...grammarReflection(unit,answer)],
         next:exact?nextTurn(unit,turn,choice):turn.next});
       setReload(n=>n+1);
     }catch{if(currentOwner.current===account)setError("Antwort konnte nicht gespeichert werden.");}
@@ -253,7 +254,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
           <h4>Mehrstufiger Dialog</h4>
           <div className="p27-journey__filters" role="group" aria-label="Antwortart">
             <button type="button" aria-pressed={inputMode==="compose"} onClick={()=>{setInputMode("compose");setFeedback(null);}}>Selbst formulieren</button>
-            <button type="button" aria-pressed={inputMode==="choose"} onClick={()=>{setInputMode("choose");setFeedback(null);}}>Antworten auswählen</button>
+            <button type="button" aria-pressed={inputMode==="choose"} onClick={()=>{setInputMode("choose");setHintUsed(true);setFeedback(null);}}>Antworten auswählen</button>
           </div>
           {nodeId!=="__finished__"&&stepsTaken<14?<div>
             <p className="p27-journey__muted">Gesprächsschritt {stepsTaken+1} · höchstens 14</p>
@@ -334,6 +335,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
             <p>{report.oldLength} → {report.newLength} Zeichen. Geändert: {report.changed?"ja":"nein"}</p>
             <p>Erkannte Zielzeichenfolgen: {report.found.join(" · ")||"keine"}</p>
             <p>Nicht erkannt: {report.missing.join(" · ")||"keine"}</p>
+            <ul>{grammarReflection(unit,rewrite).map((note,i)=><li key={i}>{note}</li>)}</ul>
             <button type="button" disabled={disabled||busy||saved} onClick={()=>void saveRevision()}>
               Unbewertete Überarbeitung protokollieren</button>
             {saved?<p>Ohne Rohtext oder Audiodatei gespeichert; kein FSRS-Erfolg.</p>:null}

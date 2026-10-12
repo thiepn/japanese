@@ -12,7 +12,7 @@
 - 24 newly authored cross-context grammar, politeness and lexical-transfer choices, each with a unique FSRS identity; relevant choices are connected to multiple scenario contexts by metadata.
 - One account-scoped evidence-derived recommendation across the 18 scenarios from the same StudyEvents and FSRS traces. No new database, user progress or scheduled review store. Existing Today queue includes P27 due prompts.
 - Flexible shared Learn practice actions reuse all P23/P24/P25/P26 StudyPlayer sessions and the new focused cross-context StudyPlayer sessions.
-- Guided free writing and optionally dictated text with draft→rewrite→comparison and literal pattern checks. Ungraded StudyEvents store limited metadata only, without answer text or audio.
+- Guided free writing and optionally dictated text with draft→rewrite→comparison and literal pattern checks, plus 14 explainable advisory patterns for particles, verb forms, context, and register. Ungraded StudyEvents store limited metadata only, without answer text or audio.
 - Device speech synthesis remains explicitly synthetic. Browser speech recognition is optional and can use external services.
 
 ## Boundaries
