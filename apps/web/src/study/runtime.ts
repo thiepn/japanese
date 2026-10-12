@@ -40,6 +40,7 @@ import {p34SentencePrompts} from "./sentence34";
 import {p35PragmaticPrompts} from "./pragmatics35";
 import {dueP36RolePrompts} from "./roleDue36";
 import {p36CorrectionPrompts} from "./correction36";
+import {dueP37CorrectionPrompts} from "./correctionDue37";
 import { buildC1SynthesisSession } from "./c1Synthesis";
 
 export const GUEST_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
@@ -149,9 +150,21 @@ export async function buildP36RoleDueSession(unitId:string,scenarioId:string):Pr
   const owner=DEVELOPMENT_ACCOUNT_ID;
   const traces=await listMemoryTraces(owner);
   if(DEVELOPMENT_ACCOUNT_ID!==owner)throw new Error("P36_WORKSPACE_CHANGED");
-  const prompts=dueP36RolePrompts(unitId,scenarioId,traces.filter(t=>t.userId===owner));
+  const prompts=dueP36RolePrompts(unitId,scenarioId,traces);
   const lesson=journeyLessons["p27:unit:"+unitId];
   if(!lesson||!prompts.length)throw new Error("P36_NO_DUE_ROLE_CUES");
+  return [lesson,...prompts];
+}
+
+/** Launch only FSRS-scheduled correction cues of the selected scenario.
+ * Continue in the existing owner-scoped StudyPlayer. */
+export async function buildP37CorrectionDueSession(unitId:string,scenarioId:string):Promise<StudyStep[]>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const traces=await listMemoryTraces(owner);
+  if(DEVELOPMENT_ACCOUNT_ID!==owner)throw new Error("P37_WORKSPACE_CHANGED");
+  const prompts=dueP37CorrectionPrompts(unitId,scenarioId,traces);
+  const lesson=journeyLessons["p27:unit:"+unitId];
+  if(!lesson||!prompts.length)throw new Error("P37_NO_DUE_CORRECTIONS");
   return [lesson,...prompts];
 }
 
