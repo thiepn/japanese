@@ -19,6 +19,7 @@ import {p30TransformationPrompts,transformationForUnit} from "../study/pedagogy3
 import {continuityPrompts} from "../study/continuity28";
 import {register28Prompts} from "../study/register28";
 import {deriveWeakAreas,areaLabels} from "../study/remediation30";
+import {recentP35Mistakes} from "../study/remediation35";
 import {p31ContrastPrompts,p31ContrastForUnit} from "../study/contrast31";
 import {planP31Recall,p31GlobalDue} from "../study/recall31";
 import {p31SentencePrompts} from "../study/sentence31";
@@ -48,10 +49,11 @@ function compareWriting(before:string,after:string,features:readonly string[]):R
     found:features.filter(f=>newText.includes(normalizeP26(f))),
     missing:features.filter(f=>!newText.includes(normalizeP26(f)))};
 }
-export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}:{
+export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,onMistakePractice}:{
   disabled:boolean;
   onSourcePractice:(source:JourneySource,sourceId:string,mode:SourceMode)=>void;
   onJourneyPractice:(id:string,mode:JourneyPractice)=>void;
+  onMistakePractice:(id:string,promptId:string)=>void;
 }){
   const owner=getDevelopmentAccountId();
   const currentOwner=useRef(owner);currentOwner.current=owner;
@@ -110,6 +112,9 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
     [unitId,evidence]);
   const weakAreas=useMemo(()=>evidence?deriveWeakAreas(unitId,evidence.traces,evidence.events,
     extraJourneyPrompts):null,[unitId,evidence]);
+  const mistakes=useMemo(()=>evidence?
+    recentP35Mistakes(unitId,evidence.events,extraJourneyPrompts):[],
+    [unitId,evidence]);
   const nextActions=useMemo(()=>evidence?
     recommendP29Actions(unitId,progress,evidence.events,evidence.traces):[],
     [unitId,progress,evidence]);
@@ -544,6 +549,22 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice}
             <div><strong>{profile?.retry??0}</strong><span>zuletzt falsch</span></div>
             <div><strong>{profile?.unseen??0}</strong><span>noch nicht geübt</span></div>
           </div>
+          {mistakes.length>0?<section className="p27-journey__mistakes" aria-labelledby="p35-mistakes-title">
+            <h5 id="p35-mistakes-title">Konkrete letzte Fehler gezielt wiederholen</h5>
+            <p>Diese Aufgaben hatten zuletzt einen <strong>unabhängig bewerteten</strong>
+              fehlerhaften Versuch. Das ist nicht automatisch ein fälliger FSRS-Termin.
+              Eine freiwillige gezielte Wiederholung kann deinen FSRS-Zeitplan aktualisieren.</p>
+            {mistakes.map(mistake=><div className="p27-journey__mistake" key={mistake.promptId}>
+              <div><strong>{mistake.label}</strong>
+                <span>{mistake.context}</span>
+                <small>Letzter Fehler: {new Date(mistake.lastIncorrectAt).toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"})}</small>
+              </div>
+              <button type="button" disabled={disabled}
+                onClick={()=>onMistakePractice(unitId,mistake.promptId)}>
+                Genau diese Aufgabe üben
+              </button>
+            </div>)}
+          </section>:null}
           {weakAreas?<div className="p27-journey__weakareas">
             <h5>Übungsschwerpunkte aus echten Versuchen</h5>
             <p>Diese Zahlen sind <strong>keine</strong> Sprachstand- oder Beherrschungsprozente. Sie beruhen auf fälligen Karten und zuletzt bewerteten Antworten.</p>

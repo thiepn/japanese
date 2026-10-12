@@ -45,6 +45,7 @@ type Props={
   onStartUnit:(id:string)=>void;
   onStartJourneySource:(source:JourneySource,sourceId:string,mode:"core"|"context"|"repair")=>void;
   onStartJourneyPractice:(unitId:string,mode:JourneyPractice)=>void;
+  onStartJourneyMistake:(unitId:string,promptId:string)=>void;
   onStartAssessment:(id:string)=>void;
   onStartMilestone:()=>void;
   onStartB1Milestone:()=>void;
@@ -78,7 +79,7 @@ export function J4Learn(props:Props){
   const {
     summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
     milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,
-    onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartJourneySource,onStartJourneyPractice,onStartAssessment,
+    onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartJourneySource,onStartJourneyPractice,onStartJourneyMistake,onStartAssessment,
     onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,
     onC1Practice,onProductive,onLexicalFluency,onRealWorldChain,onRealWorldQualification,
   }=props;
@@ -148,7 +149,8 @@ export function J4Learn(props:Props){
 
     <div className="j4-level-scope"><button type="button" onClick={()=>setShowAllLevels(value=>!value)} aria-expanded={showAllLevels}>{showAllLevels?"Nur A1 anzeigen":"Archivierte höhere Niveaus anzeigen"}</button><small> A2–C1 sind nicht Teil des aktiven A1-Kurses.</small></div>
     <A1CoursePath onStartUnit={onStartUnit} onStartMilestone={onStartMilestone} disabled={status==="loading"}/>
-    <P27LearningJourney onSourcePractice={onStartJourneySource} onJourneyPractice={onStartJourneyPractice} disabled={status==="loading"}/>
+    <P27LearningJourney onSourcePractice={onStartJourneySource} onJourneyPractice={onStartJourneyPractice}
+      onMistakePractice={onStartJourneyMistake} disabled={status==="loading"}/>
 
     <section className="j4-foundation" aria-labelledby="j4-foundation-title">
       <header>

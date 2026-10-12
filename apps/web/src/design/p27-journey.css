@@ -75,3 +75,12 @@
 .p27-journey__due-row small{display:block;opacity:.75;margin:.25rem 0}
 .p27-journey__due-row button{min-height:44px}
 @media(max-width:620px){.p27-journey__due-row{grid-template-columns:1fr 1fr}.p27-journey__due-row>div{grid-column:1 / -1}.p27-journey__due-row button{width:100%}}
+
+.p27-journey__mistakes{border-top:1px solid currentColor;padding:1rem 0;margin:1rem 0}
+.p27-journey__mistakes h5{font-size:1rem;margin:0 0 .4rem}
+.p27-journey__mistakes>p{font-size:.88rem;opacity:.8}
+.p27-journey__mistake{display:flex;justify-content:space-between;gap:1rem;align-items:center;padding:.7rem 0;border-bottom:1px solid currentColor}
+.p27-journey__mistake>div{display:grid;gap:.2rem;min-width:0}
+.p27-journey__mistake small{opacity:.75}
+.p27-journey__mistake button{min-height:44px;flex-shrink:0}
+@media(max-width:620px){.p27-journey__mistake{display:grid}.p27-journey__mistake button{width:100%}}

@@ -140,6 +140,14 @@ export async function buildP27JourneySession(unitId:string,focus:JourneyPractice
   return journeySession(unitId,focus,traces,events,Date.now(),[...p28NewSentencePrompts.map(p=>p29SentencePromptOverrides.get(p.id)??p),...continuityPrompts,...register28Prompts,...p29AdditionalPrompts,...p29LexicalPrompts,...p30TransformationPrompts,...p31ContrastPrompts,...p31SentencePrompts,...p32SentencePrompts,...p32ContrastPrompts,...p33RolePrompts,...p33SentencePrompts,...p34SentencePrompts]);
 }
 
+/** Reuse the canonical StudyPlayer and the exact last-incorrect prompt identity.
+ * Recheck its status against the current owner's graded StudyEvents at invocation. */
+export async function buildP35MistakeSession(unitId:string,promptId:string):Promise<StudyStep[]>{
+  const session=await buildP27JourneySession(unitId,"retry");
+  const targeted=session.filter((step,index)=>index===0||step.id===promptId);
+  if(targeted.length!==2)throw new Error("P35_MISTAKE_NO_LONGER_ACTIVE");
+  return targeted;
+}
 export async function buildP26PrecisionSession(missionId:string,mode:P26Mode="course"):Promise<StudyStep[]>{
   const accountId=DEVELOPMENT_ACCOUNT_ID;
   const [traces,events]=await Promise.all([listMemoryTraces(accountId),listStudyEvents(accountId)]);
