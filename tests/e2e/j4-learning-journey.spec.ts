@@ -29,7 +29,7 @@ test("J4 defaults to A1 and preserves archived higher-level journey",async({page
   await page.getByRole("button",{name:"Archivierte höhere Niveaus anzeigen"}).click();
   await expect(page.getByRole("region",{name:"A1 to C1 learning journey"}).locator(".j4-region")).toHaveCount(5);
   await expect(page.locator(".j4-landmark")).toHaveCount(68);
-  await expect(landmarks.last().getByRole("heading",{name:"Integrated recommendation and accountability"})).toBeVisible();
+  await expect(page.locator(".j4-landmark").last().getByRole("heading",{name:"Integrated recommendation and accountability"})).toBeVisible();
 
   await expect(page.locator(".unit-card")).toHaveCount(0);
 
