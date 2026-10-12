@@ -152,8 +152,8 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed}:{
       <button type="button" onClick={playPartner} disabled={busy}>Gesprächspartner synthetisch anhören</button>
       <label><input type="checkbox" checked={showPartner} onChange={e=>setShowPartner(e.target.checked)}/> Japanischen Gesprächspartner zeigen</label>
       {showPartner?<p lang="ja">{turn.partner}</p>:<p>Nur hören und selbst antworten. Synthetische Stimme; keine Aussprachebewertung.</p>}
-      <label><input type="checkbox" checked={showMeaning} onChange={e=>setShowMeaning(e.target.checked)}/> Deutsche Verständnisstütze</label>
-      {showMeaning?<p>{turn.meaning}</p>:null}
+      <label><input type="checkbox" checked={showMeaning} onChange={e=>{setShowMeaning(e.target.checked);if(e.target.checked)setAssisted(true);}}/> Deutsche Verständnisstütze</label>
+      {showMeaning?<p>{turn.meaning} · Mit deutscher Hilfe ist diese Antwort unbewertete Übung.</p>:null}
     </div>
     {repair?<div className="p33-role__repair">
       <button type="button" disabled={disabled||busy||Boolean(feedback)}
