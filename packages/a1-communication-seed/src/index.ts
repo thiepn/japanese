@@ -639,7 +639,7 @@ export const a1CommunicationLessons: readonly A1CommunicationLesson[] = [
 }
 ];
 
-export function evaluateA1Exercise//(exercise: A1Exercise, response: string | readonly string[]): boolean {
+export function evaluateA1Exercise(exercise: A1Exercise, response: string | readonly string[]): boolean {
   if (exercise.kind === "order") {
     return Array.isArray(response) && response.length === exercise.answer.length
       && response.every((token, index) => token === exercise.answer[index]);
