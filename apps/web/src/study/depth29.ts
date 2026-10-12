@@ -653,13 +653,21 @@ export function sentence29Queue(id:string,traces:readonly MemoryTrace[],events:r
     orderWeight[puzzleEvidence(b,map,events)]-orderWeight[puzzleEvidence(a,map,events)]
   );
 }
-export function orderFeedback29(p:JourneySentencePuzzle,answer:string):string[]{
+export function orderFeedback29(
+  p:JourneySentencePuzzle,answer:string,selected:readonly number[]=[]
+):string[]{
   if(acceptedSentenceOrder(p,answer)){
     return ["Eine der ausdrücklich hinterlegten korrekten Wortreihenfolgen erkannt.",p.explanation];
   }
+  const firstDifference=selected.findIndex((tileIndex,position)=>tileIndex!==position);
+  const positionHint=firstDifference>=0&&firstDifference<p.tiles.length
+    ?"Erster Unterschied zur Standardanordnung: Position "+(firstDifference+1)+
+      " — du hast «"+p.tiles[selected[firstDifference]!]!+
+      "» gewählt; im Grundmuster steht «"+p.tiles[firstDifference]!+"»."
+    :"Überprüfe den Schwerpunkt und die Reihenfolge von Thema, Ergänzungen und Verb.";
   return [
-    "Die Anordnung entspricht keiner der hinterlegten Varianten. Sie wird nicht automatisch als sprachlich falsch bewertet.",
-    p.explanation,
-    "Vergleiche Partikeln, Satzende und Schwerpunkt mit den Musterstellungen. Frei gebildete alternative Wortfolgen benötigen menschliche Prüfung."
+    "Die Anordnung entspricht keiner der ausdrücklich hinterlegten Varianten. Das ist kein Beweis für einen Grammatikfehler.",
+    positionHint,p.explanation,
+    "Japanische Wortstellung ist teilweise flexibel. Der Hinweis vergleicht nur ein authored Grundmuster."
   ];
 }

@@ -215,10 +215,32 @@ export function transformationForUnit(id:string):P30Transformation|undefined{
 }
 export function inspectTransformation(t:P30Transformation,response:string):{known:boolean;remarks:string[]}{
   const normalized=normalizeP26(response);
+  const model=normalizeP26(t.model);
   const known=[t.model,...t.alternatives].some(form=>normalizeP26(form)===normalized);
+  const focus:Record<P30Transformation["focus"],string>={
+    particle:"Achte bei に／へ auf ein Bewegungsziel, bei で auf Ort oder Mittel, bei を auf ein Objekt.",
+    form:"Achte darauf, ob Nomen mit です, Verben mit ます und höfliche Fragen mit か gebildet sind.",
+    register:"Überlege, mit wem du sprichst: fremdes Personal, Lehrkraft oder enger Freund.",
+    time:"Stimmen Zeitangabe und Vergangenheitsform zusammen? ました berichtet Vergangenes.",
+    meaning:"Wunsch (たい), Erlaubnis (てもいいですか), Menge (だけ) und höfliche Korrektur ändern die Absicht."
+  };
+  const observations:string[]=[focus[t.focus]];
+  if(t.focus==="particle"){
+    for(const particle of ["に","へ","で","を"]){
+      if(model.includes(particle)&&!normalized.includes(particle))
+        observations.push("Im Modell kommt "+particle+" vor. Prüfe seine Rolle in deinem Satz.");
+    }
+  }
+  if(t.focus==="time"&&model.includes("ました")&&!normalized.includes("ました"))
+    observations.push("Das Modell berichtet mit ました über eine abgeschlossene Handlung.");
+  if(t.focus==="register"&&/です|ます|ください/.test(model)&&
+      !/です|ます|ください/.test(normalized))
+    observations.push("Im Modell erscheint eine höfliche Endung beziehungsweise Bitte.");
+  if(t.focus==="meaning"&&model.includes("てもいいですか")&&!normalized.includes("てもいいですか"))
+    observations.push("Die Bitte um Erlaubnis ist nicht dasselbe wie die Aussage, dass man etwas möchte.");
   return {known,remarks:[
-    t.explanation,
-    known?"Eine ausdrücklich hinterlegte Zielform getroffen. Eine vollständige kommunikative Bewertung ist das nicht.":
-      "Andere Lösungen sind möglich. Vergleiche vor allem die kommunikative Absicht und das höfliche Satzende."
+    t.explanation,...observations,
+    known?"Eine ausdrücklich hinterlegte Zielform getroffen, aber keine umfassende Sprachbewertung.":
+      "Eine andere sprachlich richtige Antwort ist möglich und bleibt ohne automatische Negativwertung."
   ]};
 }

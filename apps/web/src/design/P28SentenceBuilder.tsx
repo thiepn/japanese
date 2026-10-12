@@ -100,7 +100,7 @@ export function P28SentenceBuilder({
       seenModels.current.add(current.id);
       setSubmission({
         status:assisted?"assisted":recognized?"correct":"unrecognized",
-        feedback:orderFeedback29(current,answer)
+        feedback:orderFeedback29(current,answer,selection)
       });
       setSequence(n=>n+1);onReviewed();
     }catch{
