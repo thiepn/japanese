@@ -1,3 +1,4 @@
+import {foundationSections,foundationLessons} from "../study/foundationPrompts";
 import {coreContent} from "../coreContent";
 import {a1CommunicationLessons} from "../../../../packages/a1-communication-seed/src/index";
 import {scenarios} from "../communication/a1-roleplay-scenarios";
@@ -9,6 +10,8 @@ export function auditA1SourceLinks():string[]{
  const units=new Map(coreContent.courseUnits.map(unit=>[unit.id,unit]));
  const communications=new Map(a1CommunicationLessons.map(l=>[l.id,l]));
  const roleplays=new Set(scenarios.map(s=>s.id));
+ const foundationIds=new Set([...foundationSections.map(x=>x.id),...Object.keys(foundationLessons)]);
+ const readingTexts=new Map(coreContent.readingTexts.map(x=>[x.id,x]));
  for(const lesson of A1_LESSONS){
   for(const id of lesson.legacyUnitIds){
    const unit=units.get(id);
@@ -17,6 +20,9 @@ export function auditA1SourceLinks():string[]{
   }
   for(const id of lesson.communicationLessonIds)if(!communications.has(id))errors.push("Missing communication lesson: "+id);
   for(const id of lesson.roleplayIds)if(!roleplays.has(id))errors.push("Missing roleplay: "+id);
+  for(const id of lesson.foundationIds??[])if(!foundationIds.has(id))errors.push("Missing script foundation: "+id);
+  for(const id of lesson.readingTextIds??[]){const item=readingTexts.get(id);if(!item)errors.push("Missing A1 reading: "+id);else if(item.level!=="A1")errors.push("Higher-level reading linked to A1: "+id);}
+  for(const id of lesson.assessmentIds??[])if(id!=="assessment-a1-milestone")errors.push("Unknown A1 assessment: "+id);
  }
  const coreA1=coreContent.courseUnits.filter(unit=>unit.level==="A1");
  for(const unit of coreA1)if(!A1_LESSONS.some(l=>l.legacyUnitIds.includes(unit.id)))errors.push("Unmapped A1 source unit: "+unit.id);
