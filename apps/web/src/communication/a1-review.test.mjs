@@ -25,3 +25,23 @@ test("single-card mode remains usable",()=>{
  const only=[{id:"one"}];
  assert.equal(nextRecallCard(only,[],["one"],"one")?.id,"one");
 });
+
+test("a wrong answer schedules immediate retry, then a correct answer postpones review",()=>{
+ const attempts=[{id:"kana",at:"2026-10-10T09:00:00Z",correct:false},{id:"kana",at:"2026-10-10T09:05:00Z",correct:true}];
+ const state=recallSchedule(attempts).kana;
+ assert.equal(state.incorrect,1);
+ assert.equal(state.streak,1);
+ assert.equal(state.dueAt,"2026-10-11T09:05:00.000Z");
+});
+test("invalid event dates cannot corrupt persistent scheduling",()=>{
+ const state=recallSchedule([{id:"a",at:"not-a-date",correct:true},{id:"a",at:"2026-10-10T00:00:00Z",correct:false}]).a;
+ assert.equal(state.attempts,1);
+ assert.equal(state.dueAt,"2026-10-10T00:00:00.000Z");
+});
+test("filter transitions remove stale retries and keep a single eligible card",()=>{
+ const eligible=["one"];
+ const state=advanceRecallQueue(["old","one"],["old"],"one",false,eligible);
+ assert.deepEqual(state.retries,["one"]);
+ assert.deepEqual(state.seen,["one"]);
+ assert.equal(nextRecallCard([{id:"one"}],state.retries,state.seen,"one")?.id,"one");
+});
