@@ -67,3 +67,7 @@
 .p33-role__correction [role=status]{border-left:3px solid currentColor;padding:.55rem .75rem;margin:.7rem 0}
 .p33-role__correction textarea{min-height:5rem}
 @media(max-width:580px){.p33-role__correction button{min-height:44px}}
+
+.p33-role__intents textarea:focus-visible,.p33-role__correction textarea:focus-visible{outline:3px solid currentColor;outline-offset:2px}
+.p33-role__intents button:focus-visible,.p33-role__correction button:focus-visible{outline:3px solid currentColor;outline-offset:2px}
+@media(max-width:580px){.p33-role__intents [role=status] p,.p33-role__correction [role=status] p{overflow-wrap:anywhere}}

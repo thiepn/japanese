@@ -264,7 +264,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
   if(!scenario||!role||!turn)return null;
   return <section className="p33-role" aria-labelledby="p33-role-title">
     <h4 id="p33-role-title">Rollenwechsel: selbst antworten</h4>
-    <p>In zwei aufeinanderfolgenden Runden reagieren. Danach kannst du die Perspektive tauschen. Freie Alternativen bleiben unbewertet.</p>
+    <p>Reagiere in drei aufeinanderfolgenden Gesprächsschritten. Danach kannst du die Perspektive wechseln und den Dialog aus der anderen Rolle führen. Freie Alternativen werden nicht pauschal als Fehler gewertet.</p>
     {dueCount>0?<div className="p33-role__due">
       <p><strong>{dueCount} FSRS-Karten dieser Einheit jetzt fällig.</strong>
         Du kannst den Dialog weiterüben oder die gespeicherte Wiederholungsrunde direkt öffnen.</p>
@@ -402,6 +402,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
           <p>Zu überarbeiten: <span lang="ja">{correction.startingSentence}</span></p>
           <label htmlFor="p36-role-correction">Dein korrigierter japanischer Satz</label>
           <textarea id="p36-role-correction" lang="ja" rows={2} value={correctionDraft}
+            aria-keyshortcuts="Control+Enter Meta+Enter"
             disabled={busy||correctionMatch!==null} onChange={e=>setCorrectionDraft(e.target.value)}
             onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
               e.preventDefault();void submitCorrection();
@@ -432,6 +433,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
           {intentStage==="first"?<>
             <label htmlFor="p36-intent-first">1 · Drücke dein Anliegen auf Japanisch aus</label>
             <textarea id="p36-intent-first" lang="ja" rows={2}
+              aria-keyshortcuts="Control+Enter Meta+Enter"
               value={intentFirst} disabled={busy}
               onChange={e=>setIntentFirst(e.target.value)}
               onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
@@ -450,6 +452,7 @@ export function P33RolePractice({unitId,owner,disabled,onReviewed,dueCount,onRev
           {intentStage==="second"?<>
             <label htmlFor="p36-intent-second">2 · Reagiere auf die Rückfrage</label>
             <textarea id="p36-intent-second" lang="ja" rows={2} value={intentSecond}
+              aria-keyshortcuts="Control+Enter Meta+Enter"
               disabled={busy} onChange={e=>setIntentSecond(e.target.value)}
               onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
                 e.preventDefault();void submitIntentStep("second");
