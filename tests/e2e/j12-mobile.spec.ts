@@ -99,9 +99,12 @@ test("J12 keeps coarse mobile UI flat and free of expensive shell effects",async
 
   await expect(page.locator(".j2-ambient__brush")).toHaveCSS("display","none");
   const practice=page.locator(".j4-practice");
-  await expect(practice).toBeVisible();
-  const contentVisibility=await practice.evaluate((node)=>getComputedStyle(node).contentVisibility);
-  expect(contentVisibility).toBe("auto");
+  const practiceCount=await practice.count();
+  expect(practiceCount).toBeGreaterThan(0);
+  for(const section of await practice.all()){
+    await expect(section).toBeVisible();
+    await expect(section).toHaveCSS("content-visibility","auto");
+  }
 
   const navShadow=await page.getByRole("navigation",{name:"Primary"}).evaluate((node)=>getComputedStyle(node).boxShadow);
   expect(navShadow).toBe("none");
