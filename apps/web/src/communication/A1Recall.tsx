@@ -34,6 +34,7 @@ export function A1Recall(){
  const [listeningMode,setListeningMode]=useState(false);
  const [queue,setQueue]=useState<string[]>([]);
  const [reviewMode,setReviewMode]=useState(false);
+ const [seen,setSeen]=useState<string[]>([]);
  const owner=getDevelopmentAccountId();
  useEffect(()=>{let live=true;setHistory({});setIndex(0);setAnswer("");setRevealed(false);
  void listStudyEvents(owner).then(events=>{if(!live)return;const next:typeof history={};
@@ -44,7 +45,7 @@ export function A1Recall(){
  current.last=event.occurredAt;next[id]=current;
  }setHistory(next);}).catch(()=>{if(live)setMessage("Lernverlauf konnte nicht geladen werden.");});
  return()=>{live=false};},[owner]);
- const today=new Date().toISOString().slice(0,10);
+ const today=new Date().toLocaleDateString("sv-SE");
  const now=Date.now();
  const reviewDue=(card:Item)=>{
   const record=history[card.id];if(!record)return true;
@@ -53,16 +54,16 @@ export function A1Recall(){
   const last=Date.parse(record.last);return !Number.isFinite(last)||last+days*86400000<=now;
  };
  const dueTotal=items.filter(reviewDue).length;
- const pool=items.filter(item=>item.kind===mode&&(lessonFilter==="all"||item.id.includes(":"+lessonFilter+":"))&&(!dailyOnly||!history[item.id]?.last.startsWith(today))&&(!mistakesOnly||(history[item.id]?.wrong??0)>0)&&(!reviewMode||reviewDue(item))).sort((a,b)=>{
+ const pool=items.filter(item=>item.kind===mode&&(lessonFilter==="all"||item.id.includes(":"+lessonFilter+":"))&&(!dailyOnly||!history[item.id]?.last||new Date(history[item.id].last).toLocaleDateString("sv-SE")!==today)&&(!mistakesOnly||(history[item.id]?.wrong??0)>0)&&(!reviewMode||reviewDue(item))).sort((a,b)=>{
  const x=history[a.id],y=history[b.id];
  const priority=(h:typeof x)=>h?(h.wrong>h.correct?0:h.correct===0?1:h.wrong>0?2:3):-1;
  return priority(x)-priority(y)||a.id.localeCompare(b.id);
  });
- const item=pool.find(card=>card.id===queue[0])??pool[index%pool.length];
+ const item=pool.find(card=>card.id===queue[0])??pool.find(card=>!seen.includes(card.id))??pool[index%pool.length];
  const alternatives=item?items.filter(card=>card.kind===item.kind&&card.id!==item.id&&card.answer!==item.answer).slice(0,3):[];
  const choices=item?[item,...alternatives].sort((a,b)=>a.answer.localeCompare(b.answer,"ja")).map(card=>card.answer):[];
  function reset(){setAnswer("");setRevealed(false);setHint(false);setMessage("");}
- function changeMode(next:Item["kind"]){setMode(next);setIndex(0);setQueue([]);reset();}
+ function changeMode(next:Item["kind"]){setMode(next);setIndex(0);setQueue([]);setSeen([]);reset();}
  async function check(){
  if(!item||busy||revealed)return;
  const correct=normalize(answer)===normalize(item.answer);
@@ -74,7 +75,7 @@ export function A1Recall(){
  try{await saveStudyEvent(event);setHistory(previous=>{const old=previous[item.id]??{correct:0,wrong:0,last:""};return {...previous,[item.id]:{correct:old.correct+(correct?1:0),wrong:old.wrong+(correct?0:1),last:event.occurredAt}}});setRevealed(true);if(!correct)setQueue(previous=>previous.includes(item.id)?previous:[...previous,item.id]);}
  catch{setMessage("Antwort konnte nicht gespeichert werden.");}finally{setBusy(false);}
  }
- function next(){if(queue[0]===item?.id)setQueue(previous=>previous.slice(1));setIndex(0);setSession(value=>value+1);reset();}
+ function next(){if(!item)return;if(queue[0]===item.id)setQueue(previous=>previous.slice(1));setSeen(previous=>previous.length>=pool.length?[]:[...previous,item.id]);setIndex(value=>value+1);setSession(value=>value+1);reset();}
  return <section aria-labelledby="a1-recall-title" className="j4-practice a1-recall-shell">
  <h2 id="a1-recall-title">A1 · Aktives Wiederholen</h2>
  <p>Schriftzeichen, Wörter und Sätze selbst abrufen. Fehlerhafte und neue Karten erscheinen zuerst; Ergebnisse werden lokal pro Lernkonto gespeichert.</p>
