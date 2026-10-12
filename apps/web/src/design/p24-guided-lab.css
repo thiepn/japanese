@@ -1,0 +1,29 @@
+.p24-lab{grid-column:2;min-width:0;border-top:2px solid currentColor;margin-top:1rem;padding-top:1.25rem}
+.p24-lab h3{font-size:1.45rem;margin:.4rem 0}.p24-lab h4{font-size:1.2rem;margin:.8rem 0}.p24-lab h5{font-size:1rem;margin:.5rem 0}
+.p24-lab__recommend{display:grid;grid-template-columns:1fr auto;gap:.4rem 1rem;border:1px solid currentColor;padding:1rem;margin:1rem 0}
+.p24-lab__recommend span{grid-column:1;opacity:.8}.p24-lab__recommend button{grid-column:2;grid-row:1/3}
+.p24-lab__tabs,.p24-lab__puzzles,.p24-lab__actions{display:flex;flex-wrap:wrap;gap:.5rem;margin:.8rem 0}
+.p24-lab button{color:inherit;background:transparent;border:1px solid currentColor;padding:.55rem .7rem;min-height:44px;cursor:pointer;font:inherit}
+.p24-lab button:disabled{opacity:.48;cursor:not-allowed}
+.p24-lab button:focus-visible,.p24-lab textarea:focus-visible{outline:3px solid currentColor;outline-offset:2px}
+.p24-lab button[aria-pressed=true]{box-shadow:inset 0 -3px currentColor;font-weight:700}
+.p24-lab__content{padding:1rem;border:1px solid currentColor;min-width:0}
+.p24-lab__step{font-size:.9rem;opacity:.8}
+.p24-lab__bubble{margin:1rem 0;border-left:3px solid currentColor;padding:.75rem 1rem;background:rgba(120,120,120,.09)}
+.p24-lab__bubble p{font-size:1.3rem;margin:.4rem 0}
+.p24-lab__bubble small{display:block;margin:.3rem 0}
+.p24-lab__bubble button{margin-top:.5rem}
+.p24-lab__choices{display:grid;gap:.6rem}
+.p24-lab__choices button{text-align:left;display:grid;gap:.2rem;justify-items:start}
+.p24-lab__choices span{font-size:1.18rem}.p24-lab__choices small{opacity:.8}
+.p24-lab fieldset{border:none;padding:0;margin:1.2rem 0;min-width:0}
+.p24-lab legend{font-weight:700;margin-bottom:.5rem}
+.p24-lab__toggle{display:flex;align-items:center;gap:.4rem}
+.p24-lab__response,.p24-lab__checklist{border-left:3px solid currentColor;background:rgba(120,120,120,.1);padding:.8rem 1rem;margin:1rem 0}
+.p24-lab__sentence{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;border:1px dashed currentColor;min-height:5rem;padding:.65rem}
+.p24-lab__sentence span{font-size:.9rem;opacity:.75}.p24-lab__sentence button,.p24-lab__tiles button{font-size:1.18rem}
+.p24-lab__tiles{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0;min-height:3rem}
+.p24-lab textarea{display:block;width:100%;padding:.7rem;font:inherit;resize:vertical;background:transparent;color:inherit;border:1px solid currentColor}
+.p24-lab__disclaimer{font-size:.83rem;opacity:.75}
+@media(max-width:750px){.p24-lab{grid-column:1}.p24-lab__recommend{grid-template-columns:1fr}.p24-lab__recommend span,.p24-lab__recommend button{grid-column:1;grid-row:auto}.p24-lab__content{padding:.75rem}}
+@media(max-width:480px){.p24-lab__tabs{display:grid;grid-template-columns:1fr}.p24-lab__tabs button{width:100%}.p24-lab__actions button{width:100%}.p24-lab__dialogue{max-width:100%}}
