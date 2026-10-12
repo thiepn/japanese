@@ -123,7 +123,7 @@ export function J4Learn(props:Props){
         {status==="empty"?<p role="status">No steps are available for that activity yet. Try another lesson.</p>:null}
         {status==="error"?<p role="alert">This activity could not be loaded. Try again.</p>:null}
         <div className="j4-hero__actions">
-          <button className="j4-primary" disabled={status==="loading"} onClick={()=>current?onStartUnit(current.id):onStart()} type="button">
+          <button className="j4-primary" disabled={status==="loading"||(!current&&!showAllLevels)} onClick={()=>showAllLevels?onStart():current?onStartUnit(current.id):undefined} type="button">
             <span aria-hidden="true">進</span>
             <span><strong>{current?"A1-Kerneinheit fortsetzen":"A1 wiederholen"}</strong><small>{current?current.title:"A1-Lernweg"}</small></span>
           </button>
@@ -143,7 +143,7 @@ export function J4Learn(props:Props){
     </header>
 
     <div className="j4-level-scope"><button type="button" onClick={()=>setShowAllLevels(value=>!value)} aria-expanded={showAllLevels}>{showAllLevels?"Nur A1 anzeigen":"Archivierte höhere Niveaus anzeigen"}</button><small> A2–C1 sind nicht Teil des aktiven A1-Kurses.</small></div>
-    <A1CoursePath onStartUnit={onStartUnit} disabled={status==="loading"}/>
+    <A1CoursePath onStartUnit={onStartUnit} onStartMilestone={onStartMilestone} disabled={status==="loading"}/>
 
     <section className="j4-foundation" aria-labelledby="j4-foundation-title">
       <header>
