@@ -1,3 +1,4 @@
+import "./a1-mobile.css";
 import {useEffect,useState} from "react";
 import {listStudyEvents,saveStudyEvent} from "@thiepn/local-db";
 import type {StudyEvent} from "@thiepn/domain";
@@ -65,7 +66,7 @@ export function A1Recall(){
  catch{setMessage("Antwort konnte nicht gespeichert werden.");}finally{setBusy(false);}
  }
  function next(){if(queue[0]===item?.id)setQueue(previous=>previous.slice(1));setIndex(value=>value+1);setSession(value=>value+1);reset();}
- return <section aria-labelledby="a1-recall-title" className="j4-practice">
+ return <section aria-labelledby="a1-recall-title" className="j4-practice a1-recall-shell">
  <h2 id="a1-recall-title">A1 · Aktives Wiederholen</h2>
  <p>Schriftzeichen, Wörter und Sätze selbst abrufen. Fehlerhafte und neue Karten erscheinen zuerst; Ergebnisse werden lokal pro Lernkonto gespeichert.</p>
  <fieldset><legend>Übungsmodus</legend>
