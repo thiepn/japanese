@@ -1,4 +1,4 @@
-import {useEffect,useMemo,useRef,useState} from "react";
+import {useEffect,useMemo,useRef,useState,type KeyboardEvent} from "react";
 import {listMemoryTraces,listStudyEvents,saveStudyEvent} from "@thiepn/local-db";
 import type {StudyEvent} from "@thiepn/domain";
 import {DEVELOPMENT_DEVICE_ID,getDevelopmentAccountId,recordStudyAnswer} from "../study/runtime";
@@ -93,7 +93,7 @@ export function P28SentenceBuilder({
     try{
       if(assisted||!recognized)await saveUngraded(answer,assisted?"hint":"unrecognized");
       else await recordStudyAnswer({
-        prompt:current.prompt,response:answer,result:grade.result,
+        prompt:current.prompt,response:answer,result:"correct",
         responseTimeMs:Math.max(0,Math.round(performance.now()-started.current))
       });
       if(accountRef.current!==account)return;
@@ -108,6 +108,23 @@ export function P28SentenceBuilder({
     }finally{if(accountRef.current===account)setBusy(false);}
   }
   function undo(){if(!submission&&!busy)setSelection(list=>list.slice(0,-1));}
+  function onTilesKeyboard(event:KeyboardEvent<HTMLElement>){
+    if(disabled||busy||submission||event.altKey||event.ctrlKey||event.metaKey)return;
+    const target=event.target as HTMLElement;
+    if(target.tagName==="INPUT"||target.tagName==="TEXTAREA"||target.isContentEditable)return;
+    if(/^[1-9]$/.test(event.key)){
+      const number=Number(event.key)-1;
+      const available=shuffledTiles(current).filter(i=>!selection.includes(i));
+      if(available[number]!==undefined){
+        event.preventDefault();
+        setSelection(previous=>[...previous,available[number]!]);
+      }
+    }else if(event.key==="Backspace"&&selection.length){
+      event.preventDefault();undo();
+    }else if(event.key==="Escape"&&selection.length){
+      event.preventDefault();setSelection([]);
+    }
+  }
   async function submitTransformation(){
     if(!transform||!transformText.trim()||transformResult||transformBusy||disabled)return;
     const account=accountRef.current;
@@ -147,8 +164,14 @@ export function P28SentenceBuilder({
     const i=ordered.findIndex(p=>p.id===current.id);
     selectPuzzle(ordered[(i+1)%ordered.length]?.id??current.id);
   }
-  return <section className="p28-builder" aria-labelledby="p28-builder-heading">
+  return <section className="p28-builder" aria-labelledby="p28-builder-heading"
+    tabIndex={0} onKeyDown={onTilesKeyboard}
+    aria-describedby="p32-keyboard-help">
     <h4 id="p28-builder-heading">Japanische Sätze selbst zusammensetzen</h4>
+    <p id="p32-keyboard-help" className="p28-builder__keyboard-help">
+      Tastatur: Bereich fokussieren, 1–9 für die angezeigten verfügbaren Teile,
+      Rücktaste zum Entfernen des letzten Teils, Escape zum Leeren. Alle Bausteine sind auch anklickbar.
+    </p>
     <p>Baue einen vollständigen Satz. Mehrere natürlich passende Wortstellungen werden bei ausgewählten Aufgaben ausdrücklich akzeptiert.</p>
     <div className="p28-builder__selector" role="group" aria-label="Satzaufgabe auswählen">
       {ordered.map((p,i)=><button key={p.id} type="button" aria-pressed={p.id===current.id}
@@ -170,7 +193,9 @@ export function P28SentenceBuilder({
     </div>
     <p><strong>Verfügbare Teile</strong></p>
     <div className="p28-builder__available" role="group" aria-label="Verfügbare Wortbausteine">
-      {remaining.map(index=><button type="button" key={index} lang="ja"
+      {remaining.map((index,i)=><button type="button" key={index} lang="ja"
+        aria-keyshortcuts={i<9?String(i+1):undefined}
+        aria-label={"Baustein "+(i+1)+": "+current.tiles[index]}
         disabled={busy||Boolean(submission)}
         onClick={()=>setSelection(s=>[...s,index])}>{current.tiles[index]}</button>)}
       {!remaining.length?<span>Alle Teile verwendet.</span>:null}

@@ -19,3 +19,8 @@
 .p28-builder__transform label{display:block;font-weight:600;margin:.65rem 0}
 .p28-builder__transform textarea{display:block;width:100%;border:1px solid currentColor;color:inherit;background:transparent;padding:.65rem;resize:vertical;font:inherit}
 .p28-builder__transform [lang=ja]{font-size:1.14rem}
+
+.p28-builder__keyboard-help{font-size:.85rem;opacity:.8}
+.p28-builder:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+.p28-builder__available button,.p28-builder__assembly button{min-height:44px;min-width:44px;overflow-wrap:anywhere}
+@media(max-width:520px){.p28-builder__available,.p28-builder__assembly{gap:.35rem}.p28-builder__selector{overflow-x:auto;flex-wrap:nowrap}.p28-builder__selector button{white-space:nowrap;flex:0 0 auto}}
