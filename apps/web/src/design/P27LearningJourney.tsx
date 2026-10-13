@@ -549,8 +549,10 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
       const trace=evidence?.traces.find(t=>t.id===traceIdJourney(prompt));
       const when=trace?Date.parse(trace.card.due):NaN;
       return {id:prompt.id,historicalReturn,historicalReady:historicalStatus?.eligible??false,
-        historicalStatus:historicalStatus?.status,arcId:String(prompt.eventMetadata?.arcId??prompt.eventMetadata?.sceneId??
-          prompt.eventMetadata?.caseId??prompt.eventMetadata?.challengeId??prompt.eventMetadata?.readingId??prompt.eventMetadata?.sceneId??prompt.eventMetadata?.documentId??prompt.eventMetadata?.missionId??prompt.eventMetadata?.sourceUnit??prompt.eventMetadata?.contrastId??prompt.eventMetadata?.transformationId??prompt.eventMetadata?.vocabularyId),
+        historicalStatus:historicalStatus?.status,
+        historicalSourceIds:historicalStatus?.sourcePromptIds??[],
+        arcId:String(prompt.eventMetadata?.arcId??prompt.eventMetadata?.sceneId??
+          prompt.eventMetadata?.caseId??prompt.eventMetadata?.challengeId??prompt.eventMetadata?.readingId??prompt.eventMetadata?.threadId??prompt.eventMetadata?.documentId??prompt.eventMetadata?.missionId??prompt.eventMetadata?.sourceUnit??prompt.eventMetadata?.contrastId??prompt.eventMetadata?.transformationId??prompt.eventMetadata?.vocabularyId),
         planned:Boolean(trace&&Number.isFinite(when)),
         due:Boolean(trace&&Number.isFinite(when)&&when<=Date.now()),
         p52Ready:prompt.eventMetadata?.p52===true&&p52RecallReadyIds.includes(String(prompt.eventMetadata?.transformationId)),
@@ -2652,7 +2654,23 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                     "Erst nach einer bewerteten Originalaufgabe und echtem Lernabstand verfügbar":
                   cue.p52Ready?"Neuer P52-Transfer nach echtem Lernabstand freigegeben":
                   cue.planned?"Für einen späteren FSRS-Termin eingeplant":
-                  "Noch kein FSRS-Termin vorhanden"}</small></div>
+                  "Noch kein FSRS-Termin vorhanden"}</small>
+                {cue.historicalReturn?<small>Originalbelege: {cue.historicalSourceIds.length} zugehörige
+                  Übungen · {cue.historicalStatus==="source-due"?"Frühere Originalkarte tatsächlich fällig":
+                   cue.historicalStatus==="elapsed"?"Originalantwort vor mindestens 24 Stunden bewertet":
+                   cue.historicalStatus==="existing"?"Original-Transferkarte bereits vorhanden":
+                   "Noch kein belegter Lernabstand"}</small>:null}
+              </div>
+              {cue.historicalReturn&&cue.historicalSourceIds.length>0?<button type="button"
+                disabled={disabled}
+                onClick={()=>{
+                  const source=p60Historical.find(item=>cue.historicalSourceIds.includes(item.id)&&
+                    item.unitIds.includes(unitId));
+                  if(source)startPractice(unitId,`source60:${source.id}`);
+                }}>
+                {p60Historical.some(item=>cue.historicalSourceIds.includes(item.id)&&item.unitIds.includes(unitId))?
+                  "Originale Quellaufgabe wiederholen":"Quellaufgabe im Kurs suchen"}
+              </button>:null}
               <button type="button" disabled={disabled||!cue.due}
                 onClick={()=>startPractice(unitId,cue.historicalReturn?`return-due-id:${cue.id}`:`return-due:${cue.arcId}`)}>
                 Fälligen Abruf üben
