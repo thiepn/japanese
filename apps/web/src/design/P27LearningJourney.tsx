@@ -2661,16 +2661,15 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                    cue.historicalStatus==="existing"?"Original-Transferkarte bereits vorhanden":
                    "Noch kein belegter Lernabstand"}</small>:null}
               </div>
-              {cue.historicalReturn&&cue.historicalSourceIds.length>0?<button type="button"
-                disabled={disabled}
-                onClick={()=>{
-                  const source=p60Historical.find(item=>cue.historicalSourceIds.includes(item.id)&&
-                    item.unitIds.includes(unitId));
-                  if(source)startPractice(unitId,`source60:${source.id}`);
-                }}>
-                {p60Historical.some(item=>cue.historicalSourceIds.includes(item.id)&&item.unitIds.includes(unitId))?
-                  "Originale Quellaufgabe wiederholen":"Quellaufgabe im Kurs suchen"}
-              </button>:null}
+              {cue.historicalReturn&&cue.historicalSourceIds.length>0?(()=>{
+                const source=p60Historical.find(item=>cue.historicalSourceIds.includes(item.id)&&
+                  item.unitIds.includes(unitId));
+                return source?<button type="button" disabled={disabled}
+                  onClick={()=>startPractice(unitId,`source60:${source.id}`)}>
+                  Zugehörige Originalquelle vor dem Transfer üben
+                </button>:<small>Originalquellen vorhanden, aber in dieser Einheit
+                  aktuell nicht als eigenständige Quellaufgabe erreichbar.</small>;
+              })():null}
               <button type="button" disabled={disabled||!cue.due}
                 onClick={()=>startPractice(unitId,cue.historicalReturn?`return-due-id:${cue.id}`:`return-due:${cue.arcId}`)}>
                 Fälligen Abruf üben
