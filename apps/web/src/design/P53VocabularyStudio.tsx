@@ -1,6 +1,7 @@
 import {useState} from "react";
 import {p53Compare,type P53Vocabulary,type P53Domain,type P53PracticeKind} from "../study/vocabulary53";
 import "./p53-vocabulary.css";
+import {p53FamiliesFor} from "../study/vocabulary53-families";
 type Kind=Exclude<P53PracticeKind,"all">;
 const domains:Record<P53Domain,string>={
  travel:"Unterwegs und Termine",time:"Zeit",services:"Läden und Dienstleistungen",
@@ -16,6 +17,7 @@ export function P53VocabularyStudio({items,preferredId,recallReadyIds,disabled,o
  const [selected,setSelected]=useState("");
  const [domain,setDomain]=useState<P53Domain|"all">("all");
  const [search,setSearch]=useState("");
+ const [visibleLimit,setVisibleLimit]=useState(60);
  const [mode,setMode]=useState<"meaning"|"production">("meaning");
  const [draft,setDraft]=useState("");
  const [attempted,setAttempted]=useState(false);
@@ -45,23 +47,26 @@ export function P53VocabularyStudio({items,preferredId,recallReadyIds,disabled,o
   <div className="p53-study__filters">
    <label htmlFor="p53-domain">Bereich</label>
    <select id="p53-domain" value={domain}
-    onChange={e=>setDomain(e.target.value as P53Domain|"all")}>
+    onChange={e=>{setDomain(e.target.value as P53Domain|"all");setVisibleLimit(60)}}>
     <option value="all">Alle Themenbereiche</option>
     {([...new Set(items.map(x=>x.domain))] as P53Domain[]).map(k=>
      <option key={k} value={k}>{domains[k]}</option>)}
    </select>
    <label htmlFor="p53-search">Japanisch oder Bedeutung suchen</label>
-   <input id="p53-search" type="search" value={search} onChange={e=>setSearch(e.target.value)}
+   <input id="p53-search" type="search" value={search} onChange={e=>{setSearch(e.target.value);setVisibleLimit(60)}}
     placeholder="z. B. 予約, のりかえ, erklären"/>
   </div>
   <div className="p53-study__layout">
    <nav className="p53-study__catalog" aria-label="P53 originale Wörter">
     <p>{visible.length} von {items.length} Einträgen</p>
-    {visible.map((v)=><button type="button" key={v.id}
+    {visible.slice(0,visibleLimit).map((v)=><button type="button" key={v.id}
       aria-current={v.id===item.id?"page":undefined} onClick={()=>choose(v.id)}>
       <strong lang="ja">{v.written}</strong> <small lang="ja">{v.reading}</small>
       <small>{v.meaning} · {domains[v.domain]}</small>
     </button>)}
+    {visible.length>visibleLimit?<button type="button" onClick={()=>setVisibleLimit(n=>n+60)}>
+      Weitere {Math.min(60,visible.length-visibleLimit)} Einträge anzeigen
+     </button>:null}
     {!visible.length?<p>Kein Wort gefunden.</p>:null}
    </nav>
    <article className="p53-study__workspace">
@@ -120,6 +125,18 @@ export function P53VocabularyStudio({items,preferredId,recallReadyIds,disabled,o
       <p>{item.nuance}</p>
       <p><strong>Beispielübersetzung:</strong> {item.translation}</p>
       <p><strong>Typischer Fehler:</strong> {item.misconception} {item.repair}</p>
+      {p53FamiliesFor(item.id).map(f=><div className="p53-study__family" key={f.id}>
+       <strong>{f.relationship}</strong>
+       <p>{f.explanation}</p>
+       <div className="p53-study__actions">
+        {f.members.filter(id=>id!==item.id).map(id=>{
+         const linked=items.find(v=>v.id===id);
+         return linked?<button type="button" key={id} onClick={()=>choose(id)}>
+          <span lang="ja">{linked.written}</span> · {linked.meaning}
+         </button>:null;
+        })}
+       </div>
+      </div>)}
      </div>:null}
      <button type="button" onClick={()=>onWriting(item.id)}>
       Im vorhandenen Learn-Schreiben-Editor überarbeiten
