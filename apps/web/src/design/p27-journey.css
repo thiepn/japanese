@@ -146,3 +146,57 @@
   .p27-journey__p39-options,.p27-journey__p39-picker{display:grid;grid-template-columns:minmax(0,1fr)}
   .p27-journey__p39-options button,.p27-journey__p39-picker button{width:100%;min-height:44px}
 }
+
+
+/* P40 reuses the canonical Learn, conversation, writing and review surfaces. */
+.p27-journey__p40-guidance,.p27-journey__p40-dialogue,
+.p27-journey__p40-writing,.p27-journey__p40-return{
+  min-width:0;border:1px solid currentColor;padding:1rem;margin:1.1rem 0
+}
+.p27-journey__p40-guidance h4,.p27-journey__p40-dialogue h5,
+.p27-journey__p40-writing h5,.p27-journey__p40-return h5{
+  font-size:1.05rem;margin:.2rem 0 .55rem
+}
+.p27-journey__p40-arcs{display:flex;flex-wrap:wrap;gap:.45rem;margin:.7rem 0}
+.p27-journey__p40-arcs button{flex:1 1 12rem;min-width:0;min-height:44px}
+.p27-journey__p40-arcs button[aria-pressed=true]{
+  font-weight:700;outline:2px solid currentColor;outline-offset:1px
+}
+.p27-journey__p40-dialogue article{
+  border-top:1px solid currentColor;padding:.85rem 0;margin:.75rem 0
+}
+.p27-journey__p40-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:.5rem}
+.p27-journey__p40-options button[lang=ja]{
+  min-height:48px;line-height:1.6;font-size:1.08rem;overflow-wrap:anywhere
+}
+.p27-journey__p40-options button[aria-pressed=true]{
+  font-weight:700;outline:2px solid currentColor;outline-offset:1px
+}
+.p27-journey__p40-feedback{border-left:3px solid currentColor;margin:.7rem 0;padding:.65rem .85rem;background:rgba(120,120,120,.08)}
+.p27-journey__p40-feedback p{margin:.35rem 0}
+.p27-journey__p40-feedback small{display:block;opacity:.8}
+.p27-journey__p40-context{border-left:2px solid currentColor;padding:.5rem .8rem;margin:.7rem 0}
+.p27-journey__p40-context p{margin:.45rem 0}
+.p27-journey__p40-context [lang=ja],.p27-journey__p40-dialogue [lang=ja]{
+  overflow-wrap:anywhere;line-height:1.6
+}
+.p27-journey__p40-return-item{
+  display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.5rem;
+  align-items:center;border-top:1px solid currentColor;padding:.7rem 0
+}
+.p27-journey__p40-return-item small{display:block;opacity:.78;margin:.3rem 0}
+.p27-journey__p40-return-item button{min-height:44px}
+@media(max-width:720px){
+  .p27-journey__p40-return-item{grid-template-columns:1fr 1fr}
+  .p27-journey__p40-return-item>div{grid-column:1 / -1}
+  .p27-journey__p40-options{grid-template-columns:1fr}
+}
+@media(max-width:520px){
+  .p27-journey__p40-guidance,.p27-journey__p40-dialogue,
+  .p27-journey__p40-writing,.p27-journey__p40-return{padding:.65rem}
+  .p27-journey__p40-arcs{display:grid;grid-template-columns:minmax(0,1fr)}
+  .p27-journey__p40-arcs button{width:100%}
+  .p27-journey__p40-return-item{display:grid;grid-template-columns:minmax(0,1fr)}
+  .p27-journey__p40-return-item>div{grid-column:auto}
+  .p27-journey__p40-return-item button{width:100%}
+}
