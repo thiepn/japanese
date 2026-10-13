@@ -185,3 +185,33 @@ export function p60HistoricalSources(
   return rank(a.status)-rank(b.status)||b.phase-a.phase||a.id.localeCompare(b.id);
  });
 }
+
+/** A single read-only map over established original learning phases;
+ * milestones are navigation categories, never mastery or official level results.
+ */
+export const p60CourseTracks=[
+ {id:"interaction",title:"Höflich sprechen, nachfragen und reparieren",
+  phases:[40,41,42,43,44,45,56],
+  aim:"Rollen, Register, Missverständnisse und geänderte Absichten eigenständig behandeln",
+  next:"Erst einen unbelegten Plan klären, dann mit natürlichem Japanisch reagieren"},
+ {id:"reading",title:"Verbunden lesen und Quellen vergleichen",
+  phases:[46,48,49,54],
+  aim:"Längere Informationen, Belege, Gründe, Quellenstatus und Chronologie finden",
+  next:"Die neueste Quelle zitieren, ohne andere Texte zum selben Ereignis umzudeuten"},
+ {id:"listening",title:"Gesprochene Informationen und Sprecher verfolgen",
+  phases:[47,55],
+  aim:"Sprecherrollen, Sprechtempo, Absicht und korrigierte Angaben bewusst erschließen",
+  next:"Gespräch erst ohne Transkript hören; dann die tatsächlichen Aussagen textgestützt prüfen"},
+ {id:"language",title:"Formen, Bedeutungen und Wortfamilien übertragen",
+  phases:[51,52,53],
+  aim:"Originale A2-Grammatik, Satztransformation und kontextuelles Vokabular verbinden",
+  next:"Eine sprachliche Form in einem neuen tatsächlichen Alltagskontext verwenden"},
+ {id:"writing",title:"Eigene Nachrichten schreiben und überarbeiten",
+  phases:[57],
+  aim:"Anfragen, Bestätigungen, längere Antworten und eigene mehrstufige Revision",
+  next:"Zuerst eigenständig verfassen, dann belegte Fehler und Register überarbeiten"},
+ {id:"integrated",title:"Komplexe praktische Missionen unabhängig lösen",
+  phases:[50,58,59],
+  aim:"Lesen, Sprecherangaben, Entscheidung, höfliche Antwort und neue Transferfrage kombinieren",
+  next:"Im P60-Abschlussfall keine unbekannte Genehmigung oder Bestätigung erfinden"}
+] as const;
