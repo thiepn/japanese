@@ -75,7 +75,7 @@ export function P60ConsolidationStudio({
  const comparison=attempt?p60Compare(draft,[task.model,task.alternative],task.trap,task.why):null;
  const words=p60RelatedVocabulary(lesson);
  const filtered=historical.filter(item=>
-  (scope==="all"||item.unitId===lesson.units[0])&&
+  (scope==="all"||item.unitIds.includes(lesson.units[0]!))&&
   (phase==="all"||String(item.phase)===phase)&&
   (selectedTrack==="all"||p60CourseTracks.some(track=>track.id===selectedTrack&&
      (track.phases as readonly number[]).includes(item.phase)))&&
@@ -198,9 +198,9 @@ export function P60ConsolidationStudio({
     {filtered.slice(0,showMore).map(item=><div key={item.id}>
      <strong>P{item.phase}</strong><span>{statusText[item.status]}</span>
      <p>{item.instruction.slice(0,150)}</p>
-     <small>Ursprüngliche ID: <code>{item.id}</code></small>
+     <small>Ursprüngliche ID: <code>{item.id}</code> · Originaleinheiten: {item.unitIds.join(" · ")}</small>
      <button type="button" disabled={disabled}
-      onClick={()=>onHistorical(item.id,item.unitId)}>Originale StudyPlayer-Aufgabe öffnen</button>
+      onClick={()=>onHistorical(item.id,item.unitIds.includes(lesson.units[0]!)?lesson.units[0]!:item.unitId)}>Originale StudyPlayer-Aufgabe öffnen</button>
     </div>)}
    </div>
    {filtered.length>showMore?<button type="button" onClick={()=>setShowMore(n=>n+20)}>Weitere ursprüngliche Quellen</button>:null}
@@ -231,7 +231,7 @@ export function P60ConsolidationStudio({
         setPhase("all");setSelectedTrack(track.id);setShowMore(15);
        }}>Originalquellen öffnen</button>
        <button type="button" disabled={!candidate||disabled}
-        onClick={()=>{if(candidate)onHistorical(candidate.id,candidate.unitId)}}>
+        onClick={()=>{if(candidate)onHistorical(candidate.id,candidate.unitIds.includes(lesson.units[0]!)?lesson.units[0]!:candidate.unitId)}}>
         Konkrete nächste Originalübung</button>
       </div>
      </div>;
