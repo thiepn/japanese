@@ -1,6 +1,7 @@
 import {useEffect,useMemo,useRef,useState} from "react";
 import {p60Compare,p60RelatedVocabulary,p60Stage,p60CourseTracks,
  type P60Unit,type P60PracticeKind,type P60HistoricalReviewSource} from "../study/consolidation60";
+import {originalEditorialNote} from "../study/sourceEditorialR2";
 import "./p60-consolidation.css";
 type Practice=Exclude<P60PracticeKind,"all">;
 type Step="reading"|"speaking"|"writing"|"reflection";
@@ -76,6 +77,7 @@ export function P60ConsolidationStudio({
   }:{
    situation:lesson.reply.goal,model:lesson.reply.model,
    alternative:lesson.reply.alternative,trap:lesson.reply.trap,why:lesson.reply.why};
+ const editorial=originalEditorialNote(lesson.id);
  const comparison=attempt?p60Compare(draft,[task.model,task.alternative],task.trap,task.why):null;
  const words=p60RelatedVocabulary(lesson);
  const filtered=historical.filter(item=>
@@ -359,6 +361,22 @@ export function P60ConsolidationStudio({
       {mode==="question"?<details>
        <summary>Originale getrennte Quellenbelege anzeigen</summary>
        <p lang="ja">「{q.documentEvidence}」</p><p lang="ja">「{q.spokenEvidence}」</p>
+      </details>:null}
+      {editorial?<details className="r2-source-editorial">
+       <summary>R2 · Originale Quellenkritik, Zeitfolge und Höflichkeit nach eigener Antwort</summary>
+       <h6>{editorial.title}</h6>
+       <p><strong>Schriftlicher Originalbeleg</strong></p>
+       <p lang="ja">「{editorial.writtenQuote}」</p>
+       <p>{editorial.writtenMeaning}</p>
+       <p><strong>Originale Sprecherangabe</strong></p>
+       <p lang="ja">「{editorial.spokenQuote}」</p>
+       <p>{editorial.spokenMeaning}</p>
+       <p><strong>Chronologie und Verbindlichkeit:</strong> {editorial.chronology}</p>
+       <p><strong>Höflichkeit und natürliche Formulierungen:</strong> {editorial.register}</p>
+       <p><strong>Konkretes Missverständnis:</strong> {editorial.commonMistake}</p>
+       <p><strong>Eigenständige neue Korrektur:</strong> {editorial.selfRepair}</p>
+       <small>Nur originale Unterrichtsnotiz, keine semantische Freitextbewertung,
+         keine veröffentlichte Fremdquelle und kein vorweggenommenes Delayed-Return-Modell.</small>
       </details>:null}
       <button type="button" aria-expanded={models} onClick={()=>setModels(v=>!v)}>
        {models?"Modelle ausblenden":"Erst jetzt originale japanische Modelle anzeigen"}</button>
