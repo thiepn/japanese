@@ -289,7 +289,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   useEffect(()=>()=>microphone.current?.stop(),[]);
   function selectUnit(id:string){setUnitId(id);setStage("learn");}
   function chooseP40Writing(arcId:string,turnIndex?:number){
-    setP40WritingArcId(arcId);setP39WritingId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");
+    setP40WritingArcId(arcId);setP39WritingId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");
     const target=p41ArcById(arcId)??p42ArcById(arcId);
     setP40WritingTurnIndex(turnIndex??(target?target.pivotTurn-1:1));
     setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
@@ -298,21 +298,21 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   function chooseP43Writing(sceneId:string,route:P43RouteKey){
     if(!p43ForUnit(unitId).some(s=>s.id===sceneId))return;
     setP43WritingSceneId(sceneId);setP43WritingRoute(route);
-    setP40WritingArcId("");setP39WritingId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");
+    setP40WritingArcId("");setP39WritingId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");
     setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
     setStage("write");
   }
   function chooseP44Writing(id:string,step:"production"|"reply"){
     if(!p44ForUnit(unitId).some(c=>c.id===id))return;
     setP44WritingId(id);setP44WritingStep(step);
-    setP40WritingArcId("");setP39WritingId("");setP43WritingSceneId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");
+    setP40WritingArcId("");setP39WritingId("");setP43WritingSceneId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");
     setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
     setStage("write");
   }
   function chooseP45Writing(id:string,turnIndex:number){
     if(!p45ForUnit(unitId).some(c=>c.id===id))return;
     setP45WritingId(id);setP45WritingIndex(turnIndex);
-    setP40WritingArcId("");setP39WritingId("");setP43WritingSceneId("");setP44WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");
+    setP40WritingArcId("");setP39WritingId("");setP43WritingSceneId("");setP44WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");
     setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
     setStage("write");
   }
@@ -322,7 +322,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setUnitId(reading.units[0]!);
     setP46WritingId(reading.id);
     setP40WritingArcId("");setP39WritingId("");setP43WritingSceneId("");
-    setP44WritingId("");setP45WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");
+    setP44WritingId("");setP45WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");
     setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
     setStage("write");
   }
@@ -332,7 +332,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setUnitId(scene.units[0]!);
     setP47WritingId(scene.id);
     setP40WritingArcId("");setP39WritingId("");setP43WritingSceneId("");
-    setP44WritingId("");setP45WritingId("");setP46WritingId("");setP48WritingId("");setP49WritingId("");
+    setP44WritingId("");setP45WritingId("");setP46WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");
     setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
     setStage("write");
   }
