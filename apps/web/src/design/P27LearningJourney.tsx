@@ -656,16 +656,37 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Situationswechsel selbstständig üben
             </button>
           </section>:null}
+          {p40UnitArcs.length?<section className="p27-journey__p40-writing" aria-label="Zusammenhängendes Gespräch schriftlich korrigieren">
+            <h5>Antwort aus einem Gespräch korrigieren</h5>
+            <p>Wähle einen vollständigen Gesprächskontext. Schreibe im bestehenden
+              Textfeld eine passende Antwort auf die zweite Rückfrage.
+              Erst nach deinem ersten Entwurf erscheint die Musterantwort.</p>
+            <div className="p27-journey__p40-arcs" role="group" aria-label="Gespräch für Schreibaufgabe wählen">
+              {p40UnitArcs.map(arc=><button key={arc.id} type="button"
+                aria-pressed={p40WritingArc?.id===arc.id} onClick={()=>chooseP40Writing(arc.id)}>
+                {arc.title}</button>)}
+            </div>
+            {p40WritingArc&&p40WritingTurn?<div className="p27-journey__p40-context">
+              <p><strong>Bisheriger Verlauf:</strong> {p40WritingArc.setting}</p>
+              <p><strong>Gesprächspartner:</strong> <span lang="ja">{p40WritingTurn.partner}</span></p>
+              <p><strong>Fehlerhafter Satz:</strong> <span lang="ja">{p40WritingTurn.misstep}</span></p>
+              <p><strong>Absicht:</strong> {p40WritingTurn.intention}</p>
+            </div>:null}
+            <button type="button" disabled={disabled}
+              onClick={()=>onJourneyPractice(unitId,"production")}>
+              Weitere unabhängige Schreibaufgaben im StudyPlayer
+            </button>
+          </section>:null}
           {p39UnitCases.length?<section className="p27-journey__p39-writing" aria-label="Alltagssituation für das Schreiben wählen">
             <h5>Gezielte Schreibkorrektur</h5>
             <p>Wähle einen Kontext; eine zuletzt verfehlte Lernkarte wird bevorzugt vorgeschlagen.
               Dein Entwurf bleibt im bestehenden Schreibfeld und wird nicht automatisch sprachlich bewertet.</p>
             <div className="p27-journey__p39-picker" role="group" aria-label="Schreibsituation">
               <button type="button" aria-pressed={!p39Chosen}
-                onClick={()=>{setP39WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
+                onClick={()=>{setP39WritingId("");setP40WritingArcId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
                 Reguläres Lernziel</button>
               {p39UnitCases.map(c=><button key={c.id} type="button" aria-pressed={p39Chosen?.id===c.id}
-                onClick={()=>{setP39WritingId(c.id);setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
+                onClick={()=>{setP39WritingId(c.id);setP40WritingArcId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
                 {c.title}{p39Priority?.id===c.id?" · Vorschlag":""}</button>)}
             </div>
             {p39Chosen?<p>Problematischer Ausgangssatz: <span lang="ja">{p39Chosen.distractors[0]?.form}</span>.
@@ -673,7 +694,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"production")}>
               Unabhängige Schreibkorrekturen im StudyPlayer</button>
           </section>:null}
-          <p>{p39Chosen?p39Chosen.situation:unit.writing.task}</p>
+          <p>{p40WritingTurn?p40WritingTurn.intention:p39Chosen?p39Chosen.situation:unit.writing.task}</p>
           <p className="p27-journey__keyhint">Tastatur: Strg + Enter (Mac: ⌘ + Enter) vergleicht Antworten oder öffnet den nächsten Schreibschritt. Japanische IME-Eingabe bleibt ungestört.</p>
           <label htmlFor="p27-draft">Erste Fassung</label>
           <textarea id="p27-draft" rows={4} lang="ja" value={draft}
@@ -695,18 +716,19 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
           {rewriteStage!=="draft"?<>
             <div className="p27-journey__note">
               <strong>Orientierung zur Korrektur</strong>
-              <p>{p39Chosen?p39Chosen.rule:unit.writing.reflection}</p>
-              {!p39Chosen?<p><span lang="ja">{unit.writing.features.join(" · ")}</span></p>:null}
+              <p>{p40WritingTurn?p40WritingTurn.why:p39Chosen?p39Chosen.rule:unit.writing.reflection}</p>
+              {!p39Chosen&&!p40WritingTurn?<p><span lang="ja">{unit.writing.features.join(" · ")}</span></p>:null}
               <details><summary>Originales Beispiel vergleichen</summary>
-                <p lang="ja">{p39Chosen?p39Chosen.model:unit.writing.reference}</p>
-                {p39Chosen?<p lang="ja">{p39Chosen.alternative}</p>:null}</details>
+                <p lang="ja">{p40WritingTurn?p40WritingTurn.model:p39Chosen?p39Chosen.model:unit.writing.reference}</p>
+                {p40WritingTurn?<p lang="ja">{p40WritingTurn.alternative}</p>:
+                  p39Chosen?<p lang="ja">{p39Chosen.alternative}</p>:null}</details>
             </div>
             <label htmlFor="p27-rewrite">Überarbeitete Version</label>
             <textarea id="p27-rewrite" rows={4} lang="ja" value={rewrite}
               aria-keyshortcuts="Control+Enter Meta+Enter"
               onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
                 e.preventDefault();if(rewrite.trim()&&!busy){
-                  setReport(compareWriting(draft,rewrite,p39Chosen?[]:unit.writing.features));setRewriteStage("compare");
+                  setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn?[]:unit.writing.features));setRewriteStage("compare");
                 }
               }}}
               onChange={e=>{
@@ -715,14 +737,19 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <div className="p27-journey__actions">
               <button type="button" onClick={()=>recognize("rewrite")}>Überarbeitung diktieren</button>
               <button type="button" disabled={!rewrite.trim()} onClick={()=>{
-                setReport(compareWriting(draft,rewrite,p39Chosen?[]:unit.writing.features));setRewriteStage("compare");
+                setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn?[]:unit.writing.features));setRewriteStage("compare");
               }}>Versionen vergleichen</button>
             </div>
           </>:null}
           {rewriteStage==="compare"&&report?<div className="p27-journey__note" role="status">
             <strong>Zeichenbasierte Beobachtungen, keine Sprachbewertung</strong>
             <p>{report.oldLength} → {report.newLength} Zeichen. Geändert: {report.changed?"ja":"nein"}</p>
-            {p39Chosen?<div className="p27-journey__p39-feedback">
+            {p40WritingTurn?<div className="p27-journey__p40-feedback">
+              <strong>Kontextgebundene Schreibkorrektur, keine freie Sprachnotenvergabe</strong>
+              <p>{p40TurnFeedback(p40WritingTurn,rewrite).message}</p>
+              {p40TurnFeedback(p40WritingTurn,rewrite).kind==="unknown"?<small>
+                Andere japanische Antworten bleiben ausdrücklich ungeprüft.</small>:null}
+            </div>:p39Chosen?<div className="p27-journey__p39-feedback">
               <strong>Nur Abgleich mit bekannten Beispielvarianten</strong>
               <p>{p39AuthoredFeedback(p39Chosen,rewrite).message}</p>
               {p39AuthoredFeedback(p39Chosen,rewrite).kind==="unknown"?<small>
@@ -732,7 +759,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <p>Nicht erkannt: {report.missing.join(" · ")||"keine"}</p>
               <ul>{grammarReflection(unit,rewrite).map((note,i)=><li key={i}>{note}</li>)}</ul>
             </>}
-            {!p39Chosen?<div className="p27-journey__revision">
+            {!p39Chosen&&!p40WritingTurn?<div className="p27-journey__revision">
               <strong>Überarbeitete Partikeln und Formen</strong>
               <p>Neue Partikeln: {describeP29Revision(draft,rewrite,unit).addedParticles.join(" · ")||"keine"}</p>
               <p>Entfernte Partikeln: {describeP29Revision(draft,rewrite,unit).removedParticles.join(" · ")||"keine"}</p>
