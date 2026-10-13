@@ -302,7 +302,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setUnitId(reading.units[0]!);
     setP46WritingId(reading.id);
     setP40WritingArcId("");setP39WritingId("");setP43WritingSceneId("");
-    setP44WritingId("");setP45WritingId("");
+    setP44WritingId("");setP45WritingId("");setP47WritingId("");setP48WritingId("");
     setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
     setStage("write");
   }
@@ -312,7 +312,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setUnitId(scene.units[0]!);
     setP47WritingId(scene.id);
     setP40WritingArcId("");setP39WritingId("");setP43WritingSceneId("");
-    setP44WritingId("");setP45WritingId("");setP46WritingId("");
+    setP44WritingId("");setP45WritingId("");setP46WritingId("");setP48WritingId("");
     setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
     setStage("write");
   }
