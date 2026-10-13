@@ -555,8 +555,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               </div>:null}
               <div className="p27-journey__p40-options" role="group" aria-label="Antwort im Verlauf auswählen">
                 {[p40CurrentTurn.misstep,p40CurrentTurn.model,p40CurrentTurn.alternative].map(form=>
-                  <button key={form} type="button" lang="ja" aria-pressed={p40Choice===form}
-                    onClick={()=>setP40Choice(form)}>{form}</button>)}
+                  <button key={form} type="button" lang="ja" disabled={p40GuidedFinished}
+                    aria-pressed={p40Choice===form} onClick={()=>setP40Choice(form)}>{form}</button>)}
               </div>
               {p40Choice?<div className="p27-journey__p40-feedback" role="status">
                 <strong>{p40TurnFeedback(p40CurrentTurn,p40Choice).kind==="authored"?
