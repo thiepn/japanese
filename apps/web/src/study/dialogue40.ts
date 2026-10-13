@@ -646,15 +646,17 @@ export function p40TurnFeedback(
   return {kind:"unknown",message:"Nicht automatisch beurteilt: Eine andere freie Formulierung kann sinnvoll sein. Prüfe Bedeutung, Adressat und bisherigen Gesprächsverlauf."};
 }
 function p40Base(arc:P40DialogueArc,turn:P40DialogueTurn):Pick<StudyPrompt,
-  "primaryTarget"|"skill"|"cueFamily"|"instruction"|"prompt"|"displayAnswer"|"explanation"|
+  "id"|"primaryTarget"|"skill"|"cueFamily"|"instruction"|"prompt"|"displayAnswer"|"explanation"|
   "answerNormalization"|"contextId"|"sourceId"|"contentVersion"|"eventMetadata">{
   return {
+    id:"p40-turn-"+turn.id,
     primaryTarget:{kind:"can_do",id:"p40:dialogue:"+turn.id},
     skill:turn.number===1?"form_selection":"production",
     cueFamily:"p40-dialogue-turn-"+turn.id,
     instruction:turn.number===2?"Korrigiere die Aussage im fortlaufenden Dialog":
       "Reagiere in einem zusammenhängenden Alltagsgespräch.",
     prompt:arc.setting+"\nGespräch "+turn.number+"/3 — "+turn.intention+
+      (turn.number>1?"\nBisheriges Gesprächsziel: "+arc.turns.slice(0,turn.number-1).map(t=>t.intention).join(" → "):"")+
       "\nGesprächspartner: "+turn.partner+
       (turn.number===2?"\nMissverständliche Antwort: "+turn.misstep:""),
     displayAnswer:turn.model,
