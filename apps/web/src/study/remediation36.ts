@@ -21,6 +21,35 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p44===true){
+    const step=prompt.eventMetadata.stage;
+    const focus=typeof prompt.eventMetadata.focus==="string"?
+      prompt.eventMetadata.focus:"die soziale Absicht";
+    const register=prompt.eventMetadata.register==="casual"?
+      "Wähle einen vertrauten Ton, ohne die Beziehung übertrieben förmlich zu behandeln.":
+      "Berücksichtige einen respektvollen Ton; eine höfliche Bitte ist nicht automatisch eine Zusage.";
+    if(step==="return")return {
+      title:"Soziale Absicht mit neuem Gegenüber erneut abrufen",
+      promptSpecificGoal:"Prüfe im neuen Fall erneut Beziehung, Absicht und mögliche Ablehnung. "+
+        "Die Antwort des früheren Dialogs passt nicht zwangsläufig unverändert.",
+      lessonStage:"practice",action:"Unabhängigen Transfer wiederholen"
+    };
+    if(step==="reply")return {
+      title:"Partnerreaktion in ihrem Kontext beantworten",
+      promptSpecificGoal:"Höre auf die konkrete zweite Äußerung statt nur die Ausgangssituation zu wiederholen. "+
+        register+" Das Lernziel betrifft "+focus+".",
+      lessonStage:"conversation",action:"Zweite Gesprächsantwort erneut ansehen"
+    };
+    return {
+      title:step==="contrast"?"Passende soziale Nuance unterscheiden":
+        "Antwort nach Absicht und Beziehung umformulieren",
+      promptSpecificGoal:"Unterscheide zuerst die Funktion der Aussage und die Beziehung der Personen. "+
+        register+" Vergleiche nicht nur Grammatik, sondern auch mögliche Fehlinterpretationen.",
+      lessonStage:step==="production"?"write":"learn",
+      action:step==="production"?"Eigene Antwort schriftlich überarbeiten":
+        "Beziehungs- und Antwortkontrast untersuchen"
+    };
+  }
   if(prompt?.eventMetadata?.p43===true){
     const route=prompt.eventMetadata.route;
     if(route==="return")return {
