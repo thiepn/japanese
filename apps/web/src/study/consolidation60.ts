@@ -64,7 +64,7 @@ function qPrompt(m:P60Unit,q:P60Question,i:number):StudyPrompt{
   acceptedAnswers:[normalizeP26(q.model),normalizeP26(q.alternative)],
   displayAnswer:q.model,explanation:q.why+" Quellenbelege: 「"+q.documentEvidence+
    "」 und 「"+q.spokenEvidence+
-   "」. Weitere natürliche Japanischantworten können außerhalb der endlichen Varianten liegen.",
+   "」. Diese begrenzte Antwortauswahl bewertet keine frei formulierte japanische Paraphrase. Schreibe eigene Varianten im bestehenden unbenoteten Learn-Editor.",
   eventMetadata:{...base.eventMetadata,kind:"a2-cumulative-evidence",questionId:q.id,questionKind:q.kind,nativeGradedMode:"authored-closed-choice",freeJapaneseWritingUngraded:true}
  };
 }
