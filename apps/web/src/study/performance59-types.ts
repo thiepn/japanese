@@ -70,3 +70,21 @@ export function authoredP59(raw:P59RawMission):P59Mission{
   revision:{flawed,goal,model:revisionModel,alternative:revisionAlternate,explanation:revisionWhy},
   returnCue:task(raw.returnCue),contrast:raw.contrast,words:[...raw.words]};
 }
+
+/** Compact, fully authored corpus format: no invented generated passage or answer content. */
+export type P59Compact=readonly [
+ id:string,title:string,unit:string,genre:string,register:P59RawMission["register"],
+ situation:string,goal:string,
+ source:P59RawMission["source"],messages:P59RawMission["messages"],
+ dialogue:P59RawMission["dialogue"],questions:P59RawMission["questions"],
+ strategy:P59TaskRaw,write:P59TaskRaw,reply:P59ReplyRaw,
+ revision:P59RevisionRaw,returnCue:P59TaskRaw,
+ contrast:string,words:readonly string[]
+];
+export function authoredP59Compact([
+ id,title,unit,genre,register,situation,goal,source,messages,dialogue,questions,
+ strategy,write,reply,revision,returnCue,contrast,words
+]:P59Compact):P59Mission{
+ return authoredP59({id,title,unit,genre,register,situation,goal,
+  source,messages,dialogue,questions,strategy,write,reply,revision,returnCue,contrast,words});
+}
