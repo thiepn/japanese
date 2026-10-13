@@ -166,7 +166,7 @@ export async function buildP27JourneySession(unitId:string,focus:JourneyPractice
   const accountId=DEVELOPMENT_ACCOUNT_ID;
   const [traces,events]=await Promise.all([listMemoryTraces(accountId),listStudyEvents(accountId)]);
   if(DEVELOPMENT_ACCOUNT_ID!==accountId)throw new Error("P27_WORKSPACE_CHANGED");
-  const session=journeySession(unitId,focus,traces,events,Date.now(),p35JourneyExtras);
+  const session=journeySession(unitId,focus,traces,events,Date.now(),p35JourneyExtras,accountId);
   // A specialist practice route must never appear to succeed with a lesson alone.
   // The app's existing session error status can surface the empty queue truthfully.
   if(session.length<=1)throw new Error("P38_NO_ELIGIBLE_"+focus.toUpperCase()+"_PROMPTS");
