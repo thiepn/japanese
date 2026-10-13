@@ -4,10 +4,11 @@ import {p58Compare,p58Progression,p58RelatedSource,p58RelatedWords,
 import "./p58-missions.css";
 type Kind=Exclude<P58PracticeKind,"all">;
 export function P58MissionsStudio({missions,preferredId,recallReadyIds,disabled,
- onPractice,onWriting,onRelated}:{
+ onPractice,onWriting,onRelated,onDirtyChange}:{
  missions:readonly P58Mission[];preferredId?:string;recallReadyIds:readonly string[];
  disabled:boolean;onPractice:(id:string,kind:Kind)=>void;
  onWriting:(id:string)=>void;onRelated:(id:string,kind:"reading"|"listening"|"writing"|"document"|"interaction"|"conversation"|"independence")=>void;
+ onDirtyChange?:(dirty:boolean)=>void;
 }){
  const [selected,setSelected]=useState("");
  const [search,setSearch]=useState("");
@@ -17,6 +18,9 @@ export function P58MissionsStudio({missions,preferredId,recallReadyIds,disabled,
  const [focus,setFocus]=useState<"question"|"choice"|"write"|"reply"|"repair">("question");
  const [questionIndex,setQuestionIndex]=useState(0);
  const [draft,setDraft]=useState("");
+ // Ephemeral visibility only: never send or persist actual Japanese draft text.
+ useEffect(()=>{onDirtyChange?.(Boolean(draft.trim()));return ()=>onDirtyChange?.(false);},
+  [draft,onDirtyChange]);
  const [attempted,setAttempted]=useState(false);
  const [models,setModels]=useState(false);
  const [voiceMessage,setVoiceMessage]=useState("");
