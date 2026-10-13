@@ -19,6 +19,24 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const kind=prompt?.eventMetadata?.kind;
   const focus=prompt?.eventMetadata?.focus;
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
+  // P40 mistakes link back to the actual conversational function without
+  // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p40===true){
+    if(focus==="delayed-independent-return")return {
+      title:"Gelerntes in einer neuen Situation abrufen",
+      promptSpecificGoal:"Erinnere dich an die kommunikative Absicht des ursprünglichen Gesprächs. Der neue Ort, Zeitpunkt oder Gegenstand erfordert eine selbstständig angepasste Formulierung.",
+      lessonStage:"practice",action:"Fälligkeit und freien Transfer ansehen"
+    };
+    const repair=kind==="cross-context-reformulation";
+    return {
+      title:repair?"Missverständlichen Dialogzug gezielt verbessern":"Gesprächsabsicht über mehrere Züge halten",
+      promptSpecificGoal:"Prüfe zuerst die letzte Frage des Gegenübers, dann deine Aufgabe ("+
+        (typeof focus==="string"?focus:"Antwort")+
+        "). Behalte den bestehenden Plan und die passende Höflichkeit bei. Die Lösung bleibt verborgen.",
+      lessonStage:repair?"write":"conversation",
+      action:repair?"Schreibkorrektur im Gespräch öffnen":"Zusammenhängenden Dialog ansehen"
+    };
+  }
   if(kind==="cross-context-reformulation")
     return {title:"Gelerntes in einem anderen Thema selbst formulieren",
       promptSpecificGoal:generic??"Prüfe, welche neue Situation angesprochen wird und wie die Partikeln, Höflichkeit und Zeitform diese Absicht ausdrücken.",
