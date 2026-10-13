@@ -21,6 +21,63 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p51===true){
+    const kind=prompt.eventMetadata.kind;
+    const domain=prompt.eventMetadata.domain;
+    const focus=prompt.eventMetadata.focus;
+    if(focus==="delayed-independent-return")return {
+      title:"A2 Grammatik in neuen Sprecher- und Alltagssituationen übertragen",
+      promptSpecificGoal:"Die neue Situation enthält eine neue Rolle, Zeit, Absicht oder "+
+        "Evidenzquelle. Wähle die grammatische Form nach Bedeutung und "+
+        "Kontext statt einen alten Beispielsatz auszutauschen. "+
+        "Nur echte bestehende FSRS-Trace-Daten machen eine Karte fällig.",
+      lessonStage:"practice",action:"Unbekannten Kontext im vorhandenen StudyPlayer beantworten"
+    };
+    if(focus==="contextual-grammar-writing")return {
+      title:"A2 Bedeutungsunterschied in eigenem Satz sichtbar machen",
+      promptSpecificGoal:"Lies zuerst die genannte Kommunikationsabsicht und "+
+        "den Adressaten. Bestimme, ob du bittest, anbietest, eine Absicht "+
+        "aussprichst, etwas nur vermutest oder eine notwendige Bedingung benennst. "+
+        "Erst dann wähle die Form.",
+      lessonStage:"write",action:"Begründeten Originalkontrast im Schreibeditor reflektieren"
+    };
+    if(kind==="contextual-meaning")return {
+      title:"Form, Sprecherperspektive und Aussagefunktion auseinanderhalten",
+      promptSpecificGoal:"Die beiden Formen sind nicht allein durch ein "+
+        "deutsches Stichwort austauschbar. Vergleiche die Originalaussage "+
+        "mit der Sprecherrolle, dem Zeitpunkt und der beabsichtigten Folge. "+
+        "Das Textmuster ist keine allgemeine Bedeutungsbewertung.",
+      lessonStage:"learn",action:"Kontext, drei Beispielsätze und Erklärungen erneut öffnen"
+    };
+    if(domain==="evidence")return {
+      title:"Vermutung, eigene Meinung und fremden Bericht sauber markieren",
+      promptSpecificGoal:"Prüfe, ob eine Aussage aus eigener Beobachtung, "+
+        "persönlicher Erwartung oder berichteter Fremdquelle stammt. "+
+        "Möglichkeit ist weder Gewissheit noch eine offiziell bestätigte Tatsache.",
+      lessonStage:"learn",action:"Originalbeleg für den Informationsstatus wiederfinden"
+    };
+    if(domain==="condition")return {
+      title:"Bedingung, natürliche Folge und Zugeständnis unterscheiden",
+      promptSpecificGoal:"Frage, ob eine Handlung bei einem Ereignis folgt, "+
+        "trotz des Ereignisses stattfindet oder als Vorschlag nach Eintritt "+
+        "der Bedingung geäußert wird. Nicht alle wenn-Formen sind identisch.",
+      lessonStage:"learn",action:"Situationsbedingung und Konsequenz rekonstruieren"
+    };
+    if(domain==="permission"||domain==="social")return {
+      title:"Erlaubnis, Pflicht, Bitte und Hilfe-Richtung prüfen",
+      promptSpecificGoal:"Wer darf, muss oder soll etwas tun? "+
+        "Welcher Sprecher ist Helfer oder Empfänger? "+
+        "Prüfe bei Bitten, ob das soziale Verhältnis eine direkte Form erlaubt.",
+      lessonStage:"learn",action:"Sprecher- und Empfängerrollen in den Originalbeispielen vergleichen"
+    };
+    return {
+      title:"Zeit, Aspekt oder grammatische Satzrolle im Kontext erklären",
+      promptSpecificGoal:"Prüfe konkrete Verben, Argumente, Zeitadverbien "+
+        "und die Perspektive. Eine Lernform ersetzt nicht automatisch "+
+        "eine andere, selbst wenn die deutsche Kurzübersetzung ähnlich ist.",
+      lessonStage:"learn",action:"Originalkontrast erklären, dann neuen Satz schreiben"
+    };
+  }
   if(prompt?.eventMetadata?.p50===true){
     const reason=prompt.eventMetadata.questionKind;
     const focus=prompt.eventMetadata.focus;
