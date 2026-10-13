@@ -17,7 +17,7 @@ export function parseP53Corpus(domain:P53Domain,raw:string):P53Vocabulary[]{
    const split=delayed!.split("⇒");
    if(split.length!==2)throw new Error("P53_RETURN_FIELDS:"+domain+":"+id);
    return {id:id!,written:written!,reading:reading!,meaning:meaning!,domain,
-    units:[unit!],collocations:[c1!,c2!],nuance:nuance!,
+    units:[unit!],collocations:[c1!,c2!] as const,nuance:nuance!,
     scene:scene!,example:example!,translation:translation!,misconception:misconception!,
     repair:repair!,production:{situation:productionScene!,model:productionModel!},
     return:{situation:split[0]!.trim(),model:split[1]!.trim()}};
