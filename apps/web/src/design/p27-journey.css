@@ -402,3 +402,92 @@
  .p27-journey__p45-picker button,.p27-journey__p45-support button,
  .p27-journey__p45-turn-select button{width:100%}
 }
+
+
+/* P46 — original progressive reading library inside established Learn. */
+.p27-journey__p46,.p27-journey__p46-intro,.p27-journey__p46-writing-selection{
+ padding:1rem;margin:1rem 0;border:1px solid currentColor;min-width:0
+}
+.p27-journey__p46 h4,.p27-journey__p46-intro h4,
+.p27-journey__p46-writing-selection h5{font-size:1.09rem;margin:.2rem 0 .6rem}
+.p27-journey__p46-filters{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:end;
+ gap:.5rem .8rem;margin:.85rem 0
+}
+.p27-journey__p46-filters label{font-size:.87rem}
+.p27-journey__p46-filters select,.p27-journey__p46-filters input{
+ min-height:44px;padding:.55rem;width:100%;box-sizing:border-box;max-width:100%
+}
+.p27-journey__p46-layout{
+ display:grid;grid-template-columns:minmax(9rem,13rem) minmax(0,1fr);gap:1rem;align-items:start
+}
+.p27-journey__p46-catalog{
+ border-right:1px solid currentColor;max-height:31rem;overflow-y:auto;
+ overflow-x:hidden;padding-right:.6rem;min-width:0
+}
+.p27-journey__p46-catalog button{
+ display:block;text-align:left;width:100%;min-height:48px;
+ border-bottom:1px solid rgba(120,120,120,.25);padding:.6rem .45rem;
+ white-space:normal;overflow-wrap:anywhere
+}
+.p27-journey__p46-catalog button[aria-current=page]{
+ outline:2px solid currentColor;outline-offset:-2px
+}
+.p27-journey__p46-catalog button small{
+ display:block;font-size:.78rem;opacity:.78;margin-top:.15rem
+}
+.p27-journey__p46-reader{min-width:0;overflow-wrap:anywhere}
+.p27-journey__p46-reader h5{font-size:1.1rem;margin:.5rem 0}
+.p27-journey__p46-reader header{margin-bottom:.7rem}
+.p27-journey__p46-passage{
+ font-size:1.13rem;line-height:2.05;letter-spacing:.017em;
+ background:rgba(120,120,120,.055);padding:1rem;
+ overflow-wrap:anywhere
+}
+.p27-journey__p46-passage p{margin:0 0 1.25rem}
+.p27-journey__p46-passage p:last-child{margin-bottom:0}
+.p27-journey__p46-context{padding:.6rem 0}
+.p27-journey__p46-context summary{cursor:pointer;padding:.35rem 0;min-height:44px}
+.p27-journey__p46-vocab{margin:.75rem 0}
+.p27-journey__p46-vocab button{min-height:44px}
+.p27-journey__p46-vocab dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
+.p27-journey__p46-vocab dl>div{padding:.5rem;border:1px solid rgba(130,130,130,.4)}
+.p27-journey__p46-vocab dt{font-weight:700;margin-bottom:.3rem}
+.p27-journey__p46-vocab dt span{font-weight:400}
+.p27-journey__p46-vocab dd{margin:0;font-size:.88rem;overflow-wrap:anywhere}
+.p27-journey__p46-questions,.p27-journey__p46-writing,
+.p27-journey__p46-transfer{
+ border-top:1px solid rgba(120,120,120,.45);padding-top:.9rem;margin-top:1rem
+}
+.p27-journey__p46-steps{display:flex;flex-wrap:wrap;gap:.4rem;margin:.7rem 0}
+.p27-journey__p46-steps button{flex:1 1 8rem;min-height:44px}
+.p27-journey__p46-steps button[aria-pressed=true]{
+ outline:2px solid currentColor;outline-offset:1px;font-weight:700
+}
+.p27-journey__p46-questions textarea{
+ width:100%;max-width:100%;min-height:5rem;padding:.65rem;line-height:1.7;
+ box-sizing:border-box;display:block
+}
+.p27-journey__p46-feedback,.p27-journey__p46-comparison{
+ border-left:3px solid currentColor;background:rgba(120,120,120,.075);
+ padding:.8rem;margin:.8rem 0;overflow-wrap:anywhere
+}
+.p27-journey__p46 button:focus-visible,
+.p27-journey__p46-intro button:focus-visible,
+.p27-journey__p46-writing-selection button:focus-visible{
+ outline:3px solid currentColor;outline-offset:2px
+}
+@media(max-width:790px){
+ .p27-journey__p46-layout{grid-template-columns:minmax(0,1fr)}
+ .p27-journey__p46-catalog{
+  max-height:12rem;border-right:0;border-bottom:1px solid currentColor;
+  padding-right:0;padding-bottom:.6rem
+ }
+}
+@media(max-width:560px){
+ .p27-journey__p46,.p27-journey__p46-intro,.p27-journey__p46-writing-selection{padding:.6rem}
+ .p27-journey__p46-filters{grid-template-columns:1fr}
+ .p27-journey__p46-vocab dl{grid-template-columns:minmax(0,1fr)}
+ .p27-journey__p46-passage{font-size:1.08rem;line-height:1.9;padding:.75rem}
+ .p27-journey__p46-steps{display:grid;grid-template-columns:1fr}
+}
