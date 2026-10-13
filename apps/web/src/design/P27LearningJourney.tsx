@@ -890,6 +890,37 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Situationswechsel selbstständig üben
             </button>
           </section>:null}
+          {p45UnitChallenges.length?<section className="p27-journey__p45-writing"
+            aria-label="Gesprächsantwort in ursprünglichem Schreibeditor überarbeiten">
+            <h5>Einen Gesprächszug ohne Vorlage schreiben</h5>
+            <p>Wähle eine der längeren Originalunterhaltungen und einen einzelnen
+              Gesprächszug. Das erste eigene Ergebnis bleibt unbeurteilt,
+              bis du die vorhandene Entwurf-Überarbeitung geöffnet hast.</p>
+            <div className="p27-journey__p45-picker" role="group"
+              aria-label="Selbstständige Situation zum Schreiben auswählen">
+              {p45UnitChallenges.map(c=><button key={c.id} type="button"
+                aria-pressed={p45WritingChallenge?.id===c.id}
+                onClick={()=>chooseP45Writing(c.id,2)}>{c.title}</button>)}
+            </div>
+            {p45WritingChallenge&&p45WritingTurn?<div className="p27-journey__p45-writing-context">
+              <p><strong>Rahmen:</strong> {p45WritingChallenge.setting}</p>
+              <p><strong>Absicht:</strong> {p45WritingChallenge.purpose}</p>
+              <div className="p27-journey__p45-turn-select" role="group"
+                aria-label="Welchen Dialogzug selbstständig überarbeiten">
+                {p45WritingChallenge.turns.map((t,i)=><button key={t.id} type="button"
+                  aria-pressed={i===p45WritingIndex}
+                  onClick={()=>chooseP45Writing(p45WritingChallenge.id,i)}>Zug {i+1}</button>)}
+              </div>
+              <p><strong>Gegenüber:</strong> <span lang="ja">{p45WritingTurn.partner}</span></p>
+              <p><strong>Dein Ziel:</strong> {p45WritingTurn.goal}</p>
+              <p><strong>Kontextänderung:</strong> {p45WritingChallenge.unexpected}</p>
+            </div>:null}
+            <button type="button" disabled={disabled||!p45WritingChallenge}
+              onClick={()=>p45WritingChallenge&&onJourneyPractice(unitId,
+                `independent:${p45WritingChallenge.id}`)}>
+              Alle vier Züge unabhängig im StudyPlayer beantworten
+            </button>
+          </section>:null}
           {p44UnitCases.length?<section className="p27-journey__p44-writing"
             aria-label="Pragmatischen Gesprächskontext selbst verfassen">
             <h5>Situationsgerechte Antwort selbst schreiben</h5>
@@ -998,11 +1029,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <p>Wähle einen Kontext; eine zuletzt verfehlte Lernkarte wird bevorzugt vorgeschlagen.
               Dein Entwurf bleibt im bestehenden Schreibfeld und wird nicht automatisch sprachlich bewertet.</p>
             <div className="p27-journey__p39-picker" role="group" aria-label="Schreibsituation">
-              <button type="button" aria-pressed={!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase}
-                onClick={()=>{setP39WritingId("");setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
+              <button type="button" aria-pressed={!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn}
+                onClick={()=>{setP39WritingId("");setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
                 Reguläres Lernziel</button>
               {p39UnitCases.map(c=><button key={c.id} type="button" aria-pressed={p39Chosen?.id===c.id}
-                onClick={()=>{setP39WritingId(c.id);setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
+                onClick={()=>{setP39WritingId(c.id);setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
                 {c.title}{p39Priority?.id===c.id?" · Vorschlag":""}</button>)}
             </div>
             {p39Chosen?<p>Problematischer Ausgangssatz: <span lang="ja">{p39Chosen.distractors[0]?.form}</span>.
@@ -1010,7 +1041,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"production")}>
               Unabhängige Schreibkorrekturen im StudyPlayer</button>
           </section>:null}
-          <p>{p44WritingCase?p44WritingTask:p43WritingDetail?p43WritingDetail.intention:
+          <p>{p45WritingTurn?p45WritingTurn.goal:
+            p44WritingCase?p44WritingTask:p43WritingDetail?p43WritingDetail.intention:
             p40WritingTurn?p40WritingTurn.intention:
             p39Chosen?p39Chosen.situation:unit.writing.task}</p>
           <p className="p27-journey__keyhint">Tastatur: Strg + Enter (Mac: ⌘ + Enter) vergleicht Antworten oder öffnet den nächsten Schreibschritt. Japanische IME-Eingabe bleibt ungestört.</p>
