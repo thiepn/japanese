@@ -161,8 +161,11 @@ export function p60HistoricalSources(
   if(!match||p.id.includes("-return-")||seen.has(p.id))continue;
   const phase=Number(match[1]);
   const meta=p.eventMetadata;
-  const owned=meta?.unitId===unitId||meta?.sourceUnit===unitId||
-   (Array.isArray(meta?.unitIds)&&meta.unitIds.includes(unitId));
+  const resolvedUnit=typeof meta?.unitId==="string"?meta.unitId:
+   Array.isArray(meta?.unitIds)?meta.unitIds.find((u):u is string=>typeof u==="string"):
+   typeof meta?.sourceUnit==="string"?meta.sourceUnit:"";
+  const owned=Boolean(resolvedUnit)&&(unitId==="*"||resolvedUnit===unitId||
+   (Array.isArray(meta?.unitIds)&&meta.unitIds.includes(unitId)));
   if(!owned)continue;
   seen.add(p.id);
   const trace=map.get(traceId(p));
@@ -171,7 +174,7 @@ export function p60HistoricalSources(
   const status:P60ReviewStatus=trace&&Number.isFinite(time)&&time<=now?"due":
    latest?.result==="incorrect"?"needs-repair":
    !trace&&!latest?"unseen":"previously-practiced";
-  result.push({id:p.id,phase,unitId,
+  result.push({id:p.id,phase,unitId:resolvedUnit,
    title:"P"+phase+" · "+(p.instruction||"Originale Lernübung").slice(0,112),
    instruction:p.instruction||"Originale Quellenpraxis",status,
    lastEventAt:latest?.occurredAt,
