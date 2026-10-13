@@ -1,0 +1,47 @@
+/** P53 original semantic and word-family connections; read-only authored learning notes. */
+export interface P53Family {id:string;members:readonly string[];relationship:string;explanation:string;}
+export const p53Families:readonly P53Family[]=[
+ {id:"departure-arrival",members:["shuppatsu","touchaku"],relationship:"Gegenrichtung",explanation:"出発 markiert den Beginn der Fahrt; 到着 das erreichte Ziel. Die Uhrzeiten haben unterschiedliche Funktionen."},
+ {id:"travel-transfer",members:["norikae","noriba","kippu"],relationship:"Reiseablauf",explanation:"乗り場 ist der Einstiegsort, 乗り換え der Wechsel der Verbindung, 切符 der Fahrschein."},
+ {id:"fare-journey",members:["katamichi","oufuku"],relationship:"Reisedauer",explanation:"片道 umfasst nur eine Richtung; 往復 enthält Hin- und Rückweg."},
+ {id:"entry-directions",members:["iriguchi","deguchi","uketsuke"],relationship:"Ortsunterschiede",explanation:"入口 führt hinein, 出口 hinaus und 受付 zur Anmeldung oder Nachfrage."},
+ {id:"street-orientation",members:["kousaten","shingou","yokodanhodou","chikadou"],relationship:"Wegmarkierungen",explanation:"交差点 ist die Kreuzung, 信号 das Signal, 横断歩道 ein Überweg und 地下道 die Unterführung."},
+ {id:"service-acceptance",members:["uketsuke","uketsukeru"],relationship:"Nomen–Verb",explanation:"受付 benennt Empfang oder Registrierung; 受け付ける beschreibt die tatsächliche Annahme von Anmeldungen."},
+ {id:"booking-planning",members:["yoyaku","yotei","yakusoku"],relationship:"Sprechakt",explanation:"予約 ist Buchung, 予定 ein Plan und 約束 eine Verabredung oder Zusage."},
+ {id:"change-cancel-delay",members:["henkou","chuushi","enki"],relationship:"Ergebnis eines Plans",explanation:"変更 ersetzt eine Angabe, 中止 lässt die Veranstaltung ausfallen und 延期 verschiebt sie auf später."},
+ {id:"late-on-time",members:["chikoku","osoku","maniau"],relationship:"Zeit und Verpflichtung",explanation:"遅れる gilt breit für Verspätungen, 遅刻 für zu spät zum Termin; 間に合う ist rechtzeitig ankommen."},
+ {id:"temporal-order",members:["saisho","saigo","tochuu"],relationship:"Abschnitt",explanation:"最初 ist der Anfang, 最後 das Ende und 途中 ein Abschnitt mittendrin."},
+ {id:"pricing-direction",members:["kakaku","neage","nesage","waribiki"],relationship:"Preisentwicklung",explanation:"価格 ist der Preis, 値上げ Erhöhung, 値下げ Senkung; 割引 kann ein spezieller Rabatt sein."},
+ {id:"return-exchange",members:["henpin","koukan"],relationship:"Kundenanliegen",explanation:"返品 ist Rückgabe, 交換 Ersatz oder Tausch; beide sind nicht automatisch identisch."},
+ {id:"tax-inclusion",members:["zeikomi","zeinuki"],relationship:"Endbetrag",explanation:"税込み schließt Steuer ein, 税抜き schließt sie aus."},
+ {id:"dispatch-delivery",members:["hassou","haitatsu","toriyose","nyuuka"],relationship:"Warenfluss",explanation:"取り寄せ beschafft, 入荷 trifft im Geschäft ein, 発送 verschickt, 配達 liefert zum Empfänger."},
+ {id:"report-or-inform",members:["anai","setsumei","shoukai","houkoku","soudan"],relationship:"Kommunikative Funktion",explanation:"案内 weist den Weg, 説明 erläutert, 紹介 stellt vor, 報告 meldet und 相談 sucht Austausch oder Rat."},
+ {id:"course-work",members:["jugyou","kougi","enshuu","kadai"],relationship:"Lernaktivität",explanation:"授業 ist Unterricht, 講義 der Vortrag, 演習 die aktive Übung und 課題 die gestellte Aufgabe."},
+ {id:"question-answer",members:["mondai","kotae","riyuu","kekka"],relationship:"Begründete Problemlösung",explanation:"問題 stellt eine Frage, 答え antwortet, 理由 begründet; 結果 bezeichnet das entstandene Ergebnis."},
+ {id:"prepare-review",members:["yoshuu","fukushuu"],relationship:"Lernzeit",explanation:"予習 bereitet vor der nächsten Stunde vor; 復習 wiederholt danach."},
+ {id:"look-find",members:["shiraberu","sagasu","mitsukeru","mitsukaru"],relationship:"Informations- und Objektsuche",explanation:"調べる recherchiert, 探す sucht, 見つける findet aktiv, 見つかる sagt, dass etwas gefunden wurde."},
+ {id:"save-send-receive",members:["hozon","soushin","jushin"],relationship:"Digitaler Datenfluss",explanation:"保存 speichert, 送信 sendet und 受信 empfängt. Eine Speicherung ist keine Übermittlung."},
+ {id:"access-control",members:["koukai","hikooukai","kyouyuu"],relationship:"Sichtbarkeit",explanation:"公開 ist öffentlich, 非公開 nicht öffentlich; 共有 kann gezielt nur Teammitgliedern Zugriff geben."},
+ {id:"document-lifecycle",members:["seisaku","henshuu","sakujo","tenpu"],relationship:"Dateibearbeitung",explanation:"作成 erstellt, 編集 verändert, 削除 entfernt und 添付 fügt einem anderen Dokument eine Datei bei."},
+ {id:"health-treatment",members:["yoyakuiryou","kensa","chiryuu","yobou"],relationship:"Gesundheitsablauf",explanation:"診察 ist ärztliche Untersuchung, 検査 gezielter Test, 治療 Behandlung und 予防 Vorbeugung."},
+ {id:"fix-recover",members:["naosu","naoru","kowareru","shuuri"],relationship:"Schaden und Abhilfe",explanation:"壊れる heißt kaputtgehen; 直す und 修理 reparieren, 治る bezeichnet bei Krankheiten das Gesundwerden."},
+ {id:"temperature",members:["samui","tsumetai","atsui"],relationship:"Wetter und Gefühl",explanation:"寒い beschreibt meist Umgebungskälte, 冷たい kalten Kontakt und 熱い heißen Kontakt."},
+ {id:"taste",members:["amai","karai","shoppai","suppai","nigai"],relationship:"Geschmack",explanation:"甘い süß, 辛い scharf, しょっぱい salzig, 酸っぱい sauer und 苦い bitter."},
+ {id:"chores",members:["sentaku","souji","katazukeru"],relationship:"Haushalt",explanation:"洗濯 wäscht Textilien, 掃除 entfernt Schmutz und 片づける räumt auf."},
+ {id:"dry-wet-soil",members:["kawaku","nurseru","kogaru"],relationship:"Zustandsänderung",explanation:"乾く ist trocken werden, 濡れる nass werden und 汚れる schmutzig werden."},
+ {id:"feelings",members:["anshin","fuan","kinchou","shinpai"],relationship:"Gefühlszustände",explanation:"安心 beruhigt, 不安 ist Unsicherheit, 緊張 Nervosität und 心配 Sorge um ein mögliches Problem."},
+ {id:"joy-time",members:["yorokobu","tanoshimu","tanoshimi"],relationship:"Erlebnis und Erwartung",explanation:"喜ぶ ist Freude als Reaktion, 楽しむ etwas aktiv genießen, 楽しみにする Vorfreude."},
+ {id:"invitation-participation",members:["shoutai","sasou","sanka"],relationship:"Zusammenkommen",explanation:"招待 lädt als Gast, 誘う wirbt um gemeinsames Mitkommen und 参加 bedeutet teilnehmen."},
+ {id:"freedom-vs-free-price",members:["jiyuu","muryou"],relationship:"Zwei Arten von frei",explanation:"自由 ist Wahlfreiheit; 無料 bedeutet ohne Preis."},
+ {id:"need-convenience",members:["hitsuyou","benri"],relationship:"Stärke einer Voraussetzung",explanation:"必要 ist erforderlich; 便利 ist praktisch, aber nicht notwendig."},
+ {id:"personal-formal-value",members:["taisetsu","juuyou"],relationship:"Wichtigkeit",explanation:"大切 kann persönlich wertvoll sein, 重要 ist oft sachlich bedeutsam."},
+ {id:"difficulty",members:["kantan","muzukashii","fukuzatsu"],relationship:"Aufgabenbeschreibung",explanation:"簡単 ist leicht, 難しい anspruchsvoll, 複雑 besteht aus vielen verwobenen Teilen."},
+ {id:"request-help",members:["tanomu","tayoru","tetsudau","tasukeru"],relationship:"Hilfe",explanation:"頼む bittet konkret, 頼る stützt sich auf andere, 手伝う unterstützt bei Aufgaben, 助ける hilft in schwieriger Lage."},
+ {id:"thanks-or-request",members:["kansha","orei","onegai"],relationship:"Höflicher Sprechakt",explanation:"感謝 ist Dankbarkeit, お礼 eine Danksagung oder Gabe, お願い eine Bitte."},
+ {id:"acknowledge",members:["shouchi","ryoukai","teinei","shitsurei"],relationship:"Gesprächsregister",explanation:"承知しました ist formell, 了解 ist kürzer; 丁寧 beschreibt Höflichkeit, 失礼 ist unhöflich oder Teil höflicher Formeln."},
+ {id:"decisions",members:["kimeru","kimaru"],relationship:"Transitivitätskontrast",explanation:"予定を決める benennt den Handelnden; 予定が決まる die feststehende Entscheidung."},
+ {id:"message-transfer",members:["tsutaeru","tsutawaru"],relationship:"Transitivitätskontrast",explanation:"伝える übermittelt aktiv, 伝わる sagt, dass Information beim Gegenüber angekommen ist."}
+];
+export function p53FamiliesFor(id:string):P53Family[]{
+ return p53Families.filter(f=>f.members.includes(id));
+}
