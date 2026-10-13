@@ -21,6 +21,43 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p47===true){
+    const focus=prompt.eventMetadata.focus;
+    const kind=prompt.eventMetadata.questionKind;
+    if(focus==="delayed-independent-return")return {
+      title:"Gehörte Funktion ohne alten Wortlaut übertragen",
+      promptSpecificGoal:"Die neue Situation verändert Zeit, Ort, Gegenstand oder Voraussetzung. "+
+        "Wiederhole keinen alten Mustersatz ohne diese Fakten selbst zu prüfen. "+
+        "Ein FSRS-Abruf erfordert eine wirkliche, fällige Lernkarte.",
+      lessonStage:"practice",action:"Unabhängigen Kontexttransfer im vorhandenen StudyPlayer öffnen"
+    };
+    if(prompt.eventMetadata.kind==="listening-followup-writing")return {
+      title:"Auf eine gehörte Situation eigenständig reagieren",
+      promptSpecificGoal:"Nimm die letzte gültige Information aus dem Gespräch. "+
+        "Beschreibe eine passende eigene Handlung, statt den früheren verworfenen Plan zu bestätigen. "+
+        "Textbezogene Übung ersetzt keine geprüfte Audioleistung.",
+      lessonStage:"write",action:"Situationsgerechte Antwort im bestehenden Editor überarbeiten"
+    };
+    if(kind==="inference")return {
+      title:"Gehörte Einschränkung und Schlussfolgerung verbinden",
+      promptSpecificGoal:"Achte auf でも, しかし, では oder だけ. "+
+        "Eine korrigierte Aussage kann eine frühere ersetzen; unterscheide Schluss "+
+        "aus dem Gehörten von einem wörtlichen Detail.",
+      lessonStage:"learn",action:"Original-TTS noch einmal hören, dann Beleg vergleichen"
+    };
+    if(kind==="intent")return {
+      title:"Absicht der Sprecher aus dem Zusammenhang hören",
+      promptSpecificGoal:"Prüfe, ob der Sprecher informiert, absagt, korrigiert, um Erlaubnis "+
+        "bittet oder eine Reaktion erwartet. Versuche es erst ohne Transkript.",
+      lessonStage:"learn",action:"Hörziel und neue Sprecherhandlung erläutern"
+    };
+    return {
+      title:"Die letzte gültige Hörinformation erfassen",
+      promptSpecificGoal:"Notiere nach dem ersten Hören Zeit, Ort, Anzahl oder Gegenstand. "+
+        "Nach しかし oder einer ausdrücklichen Korrektur gilt möglicherweise eine neue Angabe.",
+      lessonStage:"learn",action:"Ohne Transkript erneut hören und Details vergleichen"
+    };
+  }
   if(prompt?.eventMetadata?.p46===true){
     const focus=prompt.eventMetadata.focus;
     const questionKind=prompt.eventMetadata.questionKind;
