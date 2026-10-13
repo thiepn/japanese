@@ -16,6 +16,7 @@ import {p49ById,p49PromptsForDocument,p49ReturnPrompts,type P49PracticeKind} fro
 import {p50ById,p50PromptsForMission,p50ReturnPrompts,type P50PracticeKind} from "./integrated50";
 import {p51ById,p51PromptsForContrast,p51ReturnPrompts,type P51PracticeKind} from "./grammar51";
 import {p52ById,p52PromptsForTransformation,p52ReturnPrompts,type P52PracticeKind} from "./transformation52";
+import {p53ById,p53PromptsForVocabulary,p53ReturnPrompts,p53MeaningPrompts,type P53PracticeKind} from "./vocabulary53";
 import {p25Scenarios,p25Prompts,p25Lessons,p25DialoguePrompt} from "./pedagogy25";
 import {p26Missions,p26Prompts,p26Lessons,missionTurnPrompt,normalizeP26} from "./pedagogy26";
 
@@ -24,7 +25,7 @@ import {p26Missions,p26Prompts,p26Lessons,missionTurnPrompt,normalizeP26} from "
  */
 export type JourneySource="p23"|"p25"|"p26";
 export type JourneyStage="learn"|"build"|"conversation"|"write"|"practice";
-export type JourneyPractice="review"|"retry"|"new"|"transfer"|"register"|"grammar"|"production"|`dialogue:${string}`|`branch:${string}`|`branch-route:${string}`|`pragmatic:${string}`|`pragmatic-step:${string}`|`independent:${string}`|`reading:${string}`|`reading-kind:${string}`|`listening:${string}`|`listening-kind:${string}`|`connected:${string}`|`connected-kind:${string}`|`document:${string}`|`document-kind:${string}`|`integrated:${string}`|`integrated-kind:${string}`|`contrast:${string}`|`contrast-kind:${string}`|`transform:${string}`|`transform-kind:${string}`|`return:${string}`|`return-due:${string}`;
+export type JourneyPractice="review"|"retry"|"new"|"transfer"|"register"|"grammar"|"production"|`dialogue:${string}`|`branch:${string}`|`branch-route:${string}`|`pragmatic:${string}`|`pragmatic-step:${string}`|`independent:${string}`|`reading:${string}`|`reading-kind:${string}`|`listening:${string}`|`listening-kind:${string}`|`connected:${string}`|`connected-kind:${string}`|`document:${string}`|`document-kind:${string}`|`integrated:${string}`|`integrated-kind:${string}`|`contrast:${string}`|`contrast-kind:${string}`|`transform:${string}`|`transform-kind:${string}`|`lexical:${string}`|`lexical-kind:${string}`|`return:${string}`|`return-due:${string}`;
 export interface JourneyWord{form:string;reading:string;meaning:string;example:string;}
 export interface JourneyOption{
   japanese:string;meaning:string;valid:boolean;explanation:string;next?:string|null;
@@ -200,7 +201,7 @@ export function promptsForUnit(unitId:string,extras:readonly StudyPrompt[]=[]):S
     // P52 unseen transfer must not leak into ordinary "new"/"production" practice.
     // Dedicated return / return-due routes and native Today FSRS-due remain authoritative.
     .filter(p=>{
-      if(p.id.startsWith("p52-return-")||seen.has(p.id))return false;
+      if(p.id.startsWith("p52-return-")||p.id.startsWith("p53-return-")||seen.has(p.id))return false;
       seen.add(p.id);return true;
     });
 }
@@ -266,6 +267,32 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     return p.eventMetadata?.kind==="register-contrast"&&Array.isArray(ids)&&ids.includes(unitId);
   });
   const relatedRegister=transferForUnit(unitId).filter(p=>/register|polite|tone|Höflich|Einladungston/.test(p.id+" "+p.instruction));
+  const lexicalId=focus.startsWith("lexical:")?
+    focus.slice("lexical:".length):"";
+  const lexicalInput=focus.startsWith("lexical-kind:")?
+    focus.slice("lexical-kind:".length):"";
+  const lexicalSplit=lexicalInput.lastIndexOf(":");
+  const lexicalKindId=lexicalSplit>0?lexicalInput.slice(0,lexicalSplit):"";
+  const lexicalKindName=lexicalSplit>0?lexicalInput.slice(lexicalSplit+1):"";
+  const lexicalKind=(["meaning","production","return"] as const)
+    .find(k=>k===lexicalKindName) as P53PracticeKind|undefined;
+  const lexicalCues=lexicalId&&p53ById(lexicalId)?.units.includes(unitId)?
+    p53PromptsForVocabulary(lexicalId):[];
+  const lexicalKindCues=lexicalKind&&p53ById(lexicalKindId)?.units.includes(unitId)?
+    p53PromptsForVocabulary(lexicalKindId,lexicalKind):[];
+  // Read the existing owner-bound FSRS state; eligibility never creates a review.
+  const lexicalReturnUnlocked=(id:string):boolean=>{
+    const first=p53MeaningPrompts.find(p=>p.eventMetadata?.vocabularyId===id);
+    const returned=p53ReturnPrompts.find(p=>p.eventMetadata?.vocabularyId===id);
+    if(!first||!returned)return false;
+    if(known.has(traceIdJourney(returned)))return true;
+    const original=known.get(traceIdJourney(first));
+    const due=original?Date.parse(original.card.due):NaN;
+    if(Number.isFinite(due)&&due<=now)return true;
+    return events.some(e=>e.metadata?.promptId===first.id&&
+      (e.result==="correct"||e.result==="incorrect")&&e.metadata?.schedulerExcluded!==true&&
+      Number.isFinite(Date.parse(e.occurredAt))&&Date.parse(e.occurredAt)<=now-86400000);
+  };
   const transformId=focus.startsWith("transform:")?
     focus.slice("transform:".length):"";
   const transformInput=focus.startsWith("transform-kind:")?
@@ -398,6 +425,7 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
   const integratedReturn=returnId?p50ById(returnId):undefined;
   const contrastReturn=returnId?p51ById(returnId):undefined;
   const transformationReturn=returnId?p52ById(returnId):undefined;
+  const lexicalReturn=returnId?p53ById(returnId):undefined;
   const returnCue=returnArc?.units.includes(unitId)?
     [...p40ReturnPrompts,...p41ReturnPrompts,...p42ReturnPrompts].filter(p=>p.eventMetadata?.arcId===returnId):
     branchReturnScene?.unitIds.includes(unitId)?
@@ -419,8 +447,12 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     contrastReturn?.units.includes(unitId)?
     p51ReturnPrompts.filter(p=>p.eventMetadata?.contrastId===returnId):
     transformationReturn?.units.includes(unitId)?
-    p52ReturnPrompts.filter(p=>p.eventMetadata?.transformationId===returnId):[];
-  const relevant=transformId?transformCues
+    p52ReturnPrompts.filter(p=>p.eventMetadata?.transformationId===returnId):
+    lexicalReturn?.units.includes(unitId)&&lexicalReturnUnlocked(returnId)?
+    p53ReturnPrompts.filter(p=>p.eventMetadata?.vocabularyId===returnId):[];
+  const relevant=lexicalId?lexicalCues
+    :lexicalKindId?(lexicalKind==="return"&&!lexicalReturnUnlocked(lexicalKindId)?[]:lexicalKindCues)
+    :transformId?transformCues
     :transformKindId?transformKindCues
     :contrastId?contrastCues
     :contrastKindId?contrastKindCues
@@ -468,7 +500,7 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     return 0;
   };
   // Do not silently substitute unrelated unit exercises for an empty specialist queue.
-  const list=contrastId||contrastKindId||integratedId||integratedKindId||documentId||documentKindId||connectedId||connectedKindId||listeningId||listeningKindId||readingId||readingKindId||independentId||dialogueId||branchId||branchRouteId||pragmaticId||pragmaticStepId?relevant.slice():relevant.slice().sort((a,b)=>priority(b)-priority(a));
+  const list=lexicalId||lexicalKindId||transformId||transformKindId||contrastId||contrastKindId||integratedId||integratedKindId||documentId||documentKindId||connectedId||connectedKindId||listeningId||listeningKindId||readingId||readingKindId||independentId||dialogueId||branchId||branchRouteId||pragmaticId||pragmaticStepId?relevant.slice():relevant.slice().sort((a,b)=>priority(b)-priority(a));
   // Only FSRS-issued due timestamps establish that a card is due.
   // A last-incorrect event may warrant optional remediation but does not
   // override a future FSRS due date or silently turn new prompts into "due".
