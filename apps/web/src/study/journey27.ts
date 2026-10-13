@@ -739,8 +739,30 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
   // Every direct P40–P52 return request, including source-specific :return
   // specialist routes, must satisfy original graded-source / FSRS evidence.
   // Keep all other native P53–P60 gates and historical prompt IDs unchanged.
-  const eligibleRelevant=relevant.filter(p=>!isHistoricalReturn(p)||
-    historicalReturnEligibility(p,traces,events,now).eligible);
+  const eligibleRelevant=relevant.filter(p=>{
+    if(isHistoricalReturn(p))
+      return historicalReturnEligibility(p,traces,events,now).eligible;
+    // "transfer" and other broad selectors read original eventMetadata;
+    // their return sources must obey the same specialist gates as a button.
+    const m=p.eventMetadata;
+    if(p.id.startsWith("p53-return-"))
+      return typeof m?.vocabularyId==="string"&&lexicalReturnUnlocked(m.vocabularyId);
+    if(p.id.startsWith("p54-return-"))
+      return typeof m?.readingId==="string"&&reading54ReturnUnlocked(m.readingId);
+    if(p.id.startsWith("p55-return-"))
+      return typeof m?.sceneId==="string"&&listening55ReturnUnlocked(m.sceneId);
+    if(p.id.startsWith("p56-return-"))
+      return typeof m?.sceneId==="string"&&interaction56ReturnUnlocked(m.sceneId);
+    if(p.id.startsWith("p57-return-"))
+      return typeof m?.threadId==="string"&&writing57ReturnUnlocked(m.threadId);
+    if(p.id.startsWith("p58-return-"))
+      return typeof m?.missionId==="string"&&mission58ReturnUnlocked(m.missionId);
+    if(p.id.startsWith("p59-return-"))
+      return typeof m?.missionId==="string"&&performance59ReturnUnlocked(m.missionId);
+    if(p.id.startsWith("p60-return-"))
+      return typeof m?.sourceUnit==="string"&&consolidation60ReturnUnlocked(m.sourceUnit);
+    return true;
+  });
   const latest=new Map<string,StudyEvent>();
   for(const e of events){
     if(typeof e.metadata?.promptId!=="string"||(e.result!=="correct"&&e.result!=="incorrect")||e.metadata?.schedulerExcluded===true)continue;
