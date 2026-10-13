@@ -1018,7 +1018,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               FSRS-Karte einen zukünftigen Termin. Ohne Termin ist die Übung
               <strong> nicht überfällig</strong>. Freiwilliges Vorziehen kann FSRS aktualisieren.</p>
             {p40ReturnCueStatus.map(cue=><div key={cue.id} className="p27-journey__p40-return-item">
-              <div><strong>{p40UnitArcs.find(arc=>arc.id===cue.arcId)?.title??"Gesprächstransfer"}</strong>
+              <div><strong>{p40UnitArcs.find(arc=>arc.id===cue.arcId)?.title??p43SceneById(cue.arcId)?.title??"Gesprächstransfer"}</strong>
                 <small>{cue.due?"Jetzt laut FSRS fällig":
                   cue.planned?"Für einen späteren FSRS-Termin eingeplant":
                   "Noch kein FSRS-Termin vorhanden"}</small></div>
