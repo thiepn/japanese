@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {p54AuthoredComparison,p54RelatedWords,type P54Genre,type P54Reading,type P54PracticeKind} from "../study/reading54";
+import {p54AuthoredComparison,p54RelatedWords,p54Progression,type P54Genre,type P54Reading,type P54PracticeKind} from "../study/reading54";
 import "./p54-reading.css";
 
 type Kind=Exclude<P54PracticeKind,"all">;
@@ -36,6 +36,8 @@ export function P54ReadingStudio({items,preferredId,recallReadyIds,disabled,onPr
  const compare=attempted?p54AuthoredComparison(answer,
   [question.model,question.alternative],question.misconception,question.explanation):null;
  const words=p54RelatedWords(item);
+ const progression=p54Progression(item.id);
+ const attestedCount=words.filter(w=>w.attested).length;
  const reset=()=>{
   setQuestionIndex(0);setAnswer("");setAttempted(false);setModels(false);
   setTranslations([]);setVocabularyOpen(false);setWritingOpen(false);
@@ -79,7 +81,8 @@ export function P54ReadingStudio({items,preferredId,recallReadyIds,disabled,onPr
    </nav>
    <article className="p54-reading__workspace">
     <header>
-     <small>A2 · {genres[item.genre]} · {items.indexOf(item)+1} / {items.length}</small>
+     <small>A2 · Stufe {progression.stage}/4 · {genres[item.genre]} · {items.indexOf(item)+1} / {items.length}</small>
+     <p><strong>Progression:</strong> {progression.label} — {progression.focus}</p>
      <h5 lang="ja">{item.title}</h5>
      <p><strong>Situation:</strong> {item.situation}</p>
      <p><strong>Leseziel:</strong> {item.purpose}</p>
@@ -152,8 +155,8 @@ export function P54ReadingStudio({items,preferredId,recallReadyIds,disabled,onPr
        {w.families.slice(0,2).map(f=><p key={f.id}>{f.explanation}</p>)}
       </div>)}
      </div>:null}
-     <button type="button" disabled={disabled} onClick={()=>onPractice(item.id,"vocabulary")}>
-      Im Text belegten Wortschatz im StudyPlayer abrufen
+     <button type="button" disabled={disabled||attestedCount===0} onClick={()=>onPractice(item.id,"vocabulary")}>
+      {attestedCount} im Text belegte P53-Wörter im StudyPlayer abrufen
      </button>
     </section>
     <section>
