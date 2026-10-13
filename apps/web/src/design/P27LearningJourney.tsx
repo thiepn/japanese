@@ -610,6 +610,20 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               </button>
             </article>)}
           </section>:null}
+          {p46Recommended?<section className="p27-journey__p46-intro"
+            aria-label="Progressiv Japanisch lesen">
+            <h4>Vom Textdetail zur begründeten Schlussfolgerung</h4>
+            <p><strong>{p46Recommended.title}</strong> · {p46Recommended.level} · {p46Recommended.purpose}</p>
+            <p>In den 30 eigenständig verfassten Texten werden konkrete Aussagen,
+              implizite Zusammenhänge und Textabsichten unterschieden.
+              Die Originalstelle bleibt im Leseunterricht verfügbar;
+              spätere Transferfragen verändern die Situation.</p>
+            <button type="button" disabled={disabled}
+              onClick={()=>onJourneyPractice(p46Recommended.units[0]!,
+                `reading-kind:${p46Recommended.id}:comprehension`)}>
+              Textfragen unabhängig im StudyPlayer bearbeiten
+            </button>
+          </section>:null}
           {p45Recommended?<section className="p27-journey__p45-intro"
             aria-label="Gespräch zunehmend selbstständig führen">
             <h4>Japanisch ohne Auswahlantworten</h4>
@@ -667,6 +681,16 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               {p40Recommended.turns.length} zusammenhängende Gesprächszüge öffnen
             </button>
           </section>:null}
+          <P46ReadingLibrary
+            key={owner} readings={p46Readings} preferredId={p46Recommended?.id}
+            disabled={disabled}
+            onPractice={(readingId,kind)=>{
+              const target=p46ById(readingId);
+              if(target)onJourneyPractice(target.units[0]!,
+                `reading-kind:${target.id}:${kind}`);
+            }}
+            onWriting={chooseP46Writing}
+          />
           <h4>Wörter in Sätzen</h4>
           <div className="p27-journey__words">{unit.words.map(w=><div key={w.form+"-"+w.reading}>
             <strong lang="ja">{w.form}</strong><small lang="ja">{w.reading}</small>
