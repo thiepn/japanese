@@ -261,3 +261,51 @@
  .p27-journey__p42-speaker{padding:.65rem}
  .p27-journey__p42-variation article button{width:100%}
 }
+
+
+/* P43: authored decision graph on existing Learn, without an independent player. */
+.p27-journey__p43,.p27-journey__p43-intro,.p27-journey__p43-writing{
+ margin:1rem 0;padding:1rem;border:1px solid currentColor;min-width:0
+}
+.p27-journey__p43 h4,.p27-journey__p43-intro h4,
+.p27-journey__p43-writing h5{font-size:1.1rem;margin:.2rem 0 .65rem}
+.p27-journey__p43-picker{display:flex;flex-wrap:wrap;gap:.45rem;margin:.75rem 0}
+.p27-journey__p43-picker button{min-height:44px;flex:1 1 12rem;text-align:left}
+.p27-journey__p43-picker button[aria-pressed=true],
+.p27-journey__p43-branches button[aria-pressed=true],
+.p27-journey__p43-choices button[aria-pressed=true]{
+ outline:2px solid currentColor;outline-offset:1px;font-weight:700
+}
+.p27-journey__p43-node,.p27-journey__p43-result{
+ border-top:1px solid currentColor;padding:.9rem 0;margin:.75rem 0
+}
+.p27-journey__p43-choices{
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:.55rem;
+ margin:.65rem 0
+}
+.p27-journey__p43-choices button{
+ min-height:48px;text-align:left;line-height:1.6;overflow-wrap:anywhere;
+ padding:.65rem
+}
+.p27-journey__p43-history{margin:1rem 0;padding-left:1.3rem}
+.p27-journey__p43-history li{padding:.6rem 0;border-bottom:1px solid rgba(120,120,120,.32)}
+.p27-journey__p43-history p{margin:.3rem 0;overflow-wrap:anywhere}
+.p27-journey__p43-history small{display:block;opacity:.8}
+.p27-journey__p43-consequence,.p27-journey__p43-comparison{
+ border-left:3px solid currentColor;background:rgba(120,120,120,.08);
+ padding:.7rem .85rem;margin:.7rem 0;overflow-wrap:anywhere
+}
+.p27-journey__p43-branches{display:flex;flex-wrap:wrap;gap:.5rem;margin:.5rem 0}
+.p27-journey__p43-branches button{min-height:44px;flex:1 1 9rem}
+.p27-journey__p43-writing-context{padding:.7rem;border:1px solid currentColor;margin:.7rem 0}
+.p27-journey__p43-writing-context p{margin:.5rem 0;overflow-wrap:anywhere}
+.p27-journey__p43 button:focus-visible,.p27-journey__p43-writing button:focus-visible{
+ outline:3px solid currentColor;outline-offset:2px
+}
+@media(max-width:650px){
+ .p27-journey__p43,.p27-journey__p43-intro,.p27-journey__p43-writing{padding:.65rem}
+ .p27-journey__p43-choices{grid-template-columns:1fr}
+ .p27-journey__p43-picker{display:grid;grid-template-columns:minmax(0,1fr)}
+ .p27-journey__p43-picker button{width:100%}
+ .p27-journey__p43-branches{display:grid;grid-template-columns:minmax(0,1fr)}
+}
