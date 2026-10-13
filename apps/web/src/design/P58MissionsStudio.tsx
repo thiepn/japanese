@@ -181,6 +181,7 @@ export function P58MissionsStudio({missions,preferredId,recallReadyIds,disabled,
      {focus==="question"?<div className="p58-missions__actions">
       {current.questions.map((question,i)=><button key={question.id} type="button"
        aria-pressed={questionIndex===i} onClick={()=>{
+        if(i!==questionIndex&&!allowDiscard())return;
         setQuestionIndex(i);setDraft("");setAttempted(false);setModels(false);
        }}>Frage {i+1} · {question.kind}</button>)}
      </div>:null}
