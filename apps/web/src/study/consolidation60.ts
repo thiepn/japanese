@@ -4,7 +4,6 @@ import type {MemoryTrace} from "@thiepn/scheduler";
 import {normalizeP26} from "./pedagogy26";
 import {p53ById} from "./vocabulary53";
 import {p53FamiliesFor} from "./vocabulary53-families";
-import {traceIdJourney} from "./journey27";
 import {p60UnitsA} from "./consolidation60-corpus-a";
 import {p60UnitsB} from "./consolidation60-corpus-b";
 import {p60UnitsC} from "./consolidation60-corpus-c";
@@ -144,7 +143,7 @@ export interface P60HistoricalReviewSource{
  */
 export function p60HistoricalSources(
  unitId:string,prompts:readonly StudyPrompt[],events:readonly StudyEvent[],
- traces:readonly MemoryTrace[],now=Date.now()
+ traces:readonly MemoryTrace[],traceId:(p:StudyPrompt)=>string,now=Date.now()
 ):P60HistoricalReviewSource[]{
  const map=new Map(traces.map(t=>[t.id,t]));
  const last=new Map<string,StudyEvent>();
@@ -166,7 +165,7 @@ export function p60HistoricalSources(
    (Array.isArray(meta?.unitIds)&&meta.unitIds.includes(unitId));
   if(!owned)continue;
   seen.add(p.id);
-  const trace=map.get(traceIdJourney(p));
+  const trace=map.get(traceId(p));
   const time=trace?Date.parse(trace.card.due):NaN;
   const latest=last.get(p.id);
   const status:P60ReviewStatus=trace&&Number.isFinite(time)&&time<=now?"due":
