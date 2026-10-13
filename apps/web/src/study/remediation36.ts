@@ -21,6 +21,29 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p42===true){
+    const role=typeof prompt.eventMetadata.relationship==="string"?
+      prompt.eventMetadata.relationship:"die angegebene Beziehung";
+    const register=prompt.eventMetadata.register==="casual"?
+      "Verwende natürliche vertraute Formen, keine unpassend steife Servicerede.":
+      "Achte auf passende höfliche Fragen, Absagen, Bitten und Bestätigungen.";
+    if(focus==="delayed-independent-return")return {
+      title:"Neue Person, neue Situation – selbstständig übertragen",
+      promptSpecificGoal:"Der vertraute Ausdruck allein reicht nicht. Bestimme zuerst, was jetzt anders ist, und prüfe die soziale Beziehung zu "+role+". "+register,
+      lessonStage:"practice",action:"Unabhängigen Sprecherwechsel ansehen"
+    };
+    return {
+      title:kind==="cross-context-reformulation"?
+        "Veränderte Aussageabsicht und Sprecherrolle korrigieren":
+        "Antwort an den tatsächlichen Gesprächspartner anpassen",
+      promptSpecificGoal:"Prüfe zuerst die zuletzt mitgeteilte Änderung, dann den Gesprächspartner ("+role+"). "+register+
+        " Behalte die übrigen vereinbarten Fakten bei, ohne eine Musterantwort abzulesen.",
+      lessonStage:kind==="cross-context-reformulation"?"write":"conversation",
+      action:kind==="cross-context-reformulation"?
+        "Betroffenen Gesprächszug schriftlich überarbeiten":
+        "Sprecherrolle und Gesprächsverlauf ansehen"
+    };
+  }
   if(prompt?.eventMetadata?.p40===true||prompt?.eventMetadata?.p41===true){
     if(focus==="delayed-independent-return")return {
       title:"Gelerntes in einer neuen Situation abrufen",
