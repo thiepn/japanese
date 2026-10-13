@@ -138,7 +138,8 @@ export function p60PromptsForUnit(id:string,kind:P60PracticeKind="all"):StudyPro
 }
 export type P60ReviewStatus="due"|"needs-repair"|"unseen"|"previously-practiced";
 export interface P60HistoricalReviewSource{
- id:string;phase:number;unitId:string;title:string;instruction:string;
+ id:string;phase:number;unitId:string;unitIds:readonly string[];
+ title:string;instruction:string;
  status:P60ReviewStatus;lastEventAt?:string;scheduledAt?:string;
 }
 /** Discovery of existing P40–P59 *original* prompt identities from the catalog.
@@ -147,7 +148,8 @@ export interface P60HistoricalReviewSource{
  */
 export function p60HistoricalSources(
  unitId:string,prompts:readonly StudyPrompt[],events:readonly StudyEvent[],
- traces:readonly MemoryTrace[],traceId:(p:StudyPrompt)=>string,now=Date.now()
+ traces:readonly MemoryTrace[],traceId:(p:StudyPrompt)=>string,now=Date.now(),
+ knownUnitIds?:ReadonlySet<string>
 ):P60HistoricalReviewSource[]{
  const map=new Map(traces.map(t=>[t.id,t]));
  const last=new Map<string,StudyEvent>();
@@ -165,12 +167,16 @@ export function p60HistoricalSources(
   if(!match||p.id.includes("-return-")||seen.has(p.id))continue;
   const phase=Number(match[1]);
   const meta=p.eventMetadata;
-  const resolvedUnit=typeof meta?.unitId==="string"?meta.unitId:
-   Array.isArray(meta?.unitIds)?meta.unitIds.find((u):u is string=>typeof u==="string"):
-   typeof meta?.sourceUnit==="string"?meta.sourceUnit:"";
-  const owned=Boolean(resolvedUnit)&&(unitId==="*"||resolvedUnit===unitId||
-   (Array.isArray(meta?.unitIds)&&meta.unitIds.includes(unitId)));
-  if(!owned)continue;
+  // A single original prompt can be practiced in multiple historical units.
+  // The earlier first-unit-only lookup hid it in other valid unit filters.
+  const declared=[
+   ...(typeof meta?.unitId==="string"?[meta.unitId]:[]),
+   ...(Array.isArray(meta?.unitIds)?meta.unitIds.filter((u):u is string=>typeof u==="string"):[]),
+   ...(typeof meta?.sourceUnit==="string"?[meta.sourceUnit]:[])
+  ];
+  const unitIds=[...new Set(declared)].filter(u=>!knownUnitIds||knownUnitIds.has(u));
+  const resolvedUnit=unitId!=="*"&&unitIds.includes(unitId)?unitId:unitIds[0]??"";
+  if(!resolvedUnit||(unitId!=="*"&&!unitIds.includes(unitId)))continue;
   seen.add(p.id);
   const trace=map.get(traceId(p));
   const time=trace?Date.parse(trace.card.due):NaN;
@@ -178,7 +184,7 @@ export function p60HistoricalSources(
   const status:P60ReviewStatus=trace&&Number.isFinite(time)&&time<=now?"due":
    latest?.result==="incorrect"?"needs-repair":
    !trace&&!latest?"unseen":"previously-practiced";
-  result.push({id:p.id,phase,unitId:resolvedUnit,
+  result.push({id:p.id,phase,unitId:resolvedUnit,unitIds,
    title:"P"+phase+" · "+(p.instruction||"Originale Lernübung").slice(0,112),
    instruction:p.instruction||"Originale Quellenpraxis",status,
    lastEventAt:latest?.occurredAt,
