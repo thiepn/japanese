@@ -21,6 +21,27 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p43===true){
+    const route=prompt.eventMetadata.route;
+    if(route==="return")return {
+      title:"Neue Situation unabhängig weiterdenken",
+      promptSpecificGoal:"Erinnere dich an die ursprüngliche Absicht, aber übertrage sie in den neuen Kontext. Der Ausgang einer geführten Entscheidung ist kein FSRS-Ergebnis. Lies die Lösung erst nach dem eigenständigen Versuch.",
+      lessonStage:"practice",action:"Tatsächlich fälligen oder freiwilligen Abruf öffnen"
+    };
+    if(route==="opening")return {
+      title:"Entscheidung und tatsächliche Folge unterscheiden",
+      promptSpecificGoal:"Beachte zwei mögliche passende Wege und die nicht umsetzbare dritte Reaktion. Prüfe Angebot, Einschränkung und eigenes Ziel; ein alternativer brauchbarer Weg ist nicht automatisch falsch.",
+      lessonStage:"conversation",action:"Beide Gesprächszweige vergleichen"
+    };
+    return {
+      title:route==="repair"?"Nach einem Missverständnis klar reparieren":
+        "Genau den selbst gewählten Gesprächszweig fortsetzen",
+      promptSpecificGoal:"Der Gesprächspartner reagiert auf eine konkret getroffene Wahl. Behalte seine neue Information und das ursprüngliche Ziel im Blick; korrigiere nicht vorschnell zu einer Antwort aus dem anderen Zweig.",
+      lessonStage:route==="repair"?"write":"conversation",
+      action:route==="repair"?"Missverständnis in Schreibaufgabe korrigieren":
+        "Partnerantwort und Konsequenz im Kontext ansehen"
+    };
+  }
   if(prompt?.eventMetadata?.p42===true){
     const role=typeof prompt.eventMetadata.relationship==="string"?
       prompt.eventMetadata.relationship:"die angegebene Beziehung";
