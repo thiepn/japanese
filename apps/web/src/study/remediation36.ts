@@ -21,6 +21,73 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p59===true){
+    const kind=prompt.eventMetadata?.kind;
+    const focus=prompt.eventMetadata?.focus;
+    const questionKind=prompt.eventMetadata?.questionKind;
+    if(focus==="delayed-independent-return")return {
+      title:"Unbekannten Quellenkontext ohne alte Antwort wiederfinden",
+      promptSpecificGoal:"Neuer P59-Fall nach tatsächlichem Lernabstand: Eigenständig "
+       +"Person, neuere Quelle, Ausnahme und bestätigten Sachstand klären. "
+       +"Die Original-FSRS-Karte wird nur nach einer tatsächlich bewerteten "
+       +"StudyPlayer-Handlung geplant, nicht nach unbewertetem Entwurf.",
+      lessonStage:"practice",action:"Eine andere A2-Situation ohne vorgezeigtes Modell lösen"
+    };
+    if(kind==="independent-message-correction")return {
+      title:"Kumulative Fehler in einer praktischen Nachricht eigenständig korrigieren",
+      promptSpecificGoal:"Identifiziere mindestens zwei unabhängig falsche Angaben "
+       +"im Entwurf. Berücksichtige ältere schriftliche Quellen, "
+       +"neuere Originalaussagen, belegte Kapazitäten und nur tatsächlich "
+       +"erteilte Genehmigungen. Ein richtiger Einzelwert reicht nicht aus.",
+      lessonStage:"write",action:"Mehrteilige Quellenkorrektur selbstständig formulieren"
+    };
+    if(kind==="independent-new-turn-repair")return {
+      title:"Eine neue Nachricht verlangt eine echte Planrevision",
+      promptSpecificGoal:"Das neue Gegenüber kann Zeit, Ort, Anzahl, Voraussetzung "
+       +"oder bestätigten Abschluss ausdrücklich ändern. Passe die Reaktion "
+       +"situationsgerecht an, ohne dass alte Annahmen automatisch gültig bleiben. "
+       +"Nicht semantisch erkannte freie Varianten sind nicht automatisch falsch.",
+      lessonStage:"conversation",action:"Auf den spezifischen neuen Sprecher angemessen reagieren"
+    };
+    if(kind==="independent-connected-writing")return {
+      title:"Eigenständig mehrere Aussagen in natürliches Japanisch überführen",
+      promptSpecificGoal:"Plane Zweck, Empfänger und passendes です／ます oder "
+       +"lockeres Register. Verknüpfe mindestens zwei Quellen und ihre "
+       +"Einschränkungen. Der unbenotete Learn-Editor ist für mehrstufige "
+       +"Revision; der native Musterabgleich erkennt nicht alle natürlichen Texte.",
+      lessonStage:"write",action:"Eigenen längeren Entwurf schreiben und unabhängig revidieren"
+    };
+    if(kind==="independent-multi-source-strategy")return {
+      title:"Erst belegte Handlung, dann Kommunikation",
+      promptSpecificGoal:"Prüfe, wer zuständig ist und welcher Schritt tatsächlich "
+       +"bestätigt wurde. Zwei unterschiedliche vernünftige Strategien "
+       +"sind im Original vorgesehen, die dritte schließt unberechtigt "
+       +"von Verfügbarkeit, Wunsch oder altem Stand auf eine Zusage.",
+      lessonStage:"learn",action:"Die verantwortliche Handlungsreihenfolge ableiten"
+    };
+    if(questionKind==="chronology")return {
+      title:"Neue Quellenlage zeitlich statt schematisch einordnen",
+      promptSpecificGoal:"Ordne ました, まだ, 予定, てから, までに, "
+       +"ursprüngliche schriftliche Angaben und spätere mündliche "
+       +"Ausnahmen. Prüfe, ob eine frühere Aussage ersetzt oder nur ergänzt wird.",
+      lessonStage:"learn",action:"Originalen Ablauf mit Quelle und Zeitpunkt wiederherstellen"
+    };
+    if(questionKind==="speaker"||questionKind==="intent")return {
+      title:"Sprecher, Zielperson und beabsichtigte Aussage unterscheiden",
+      promptSpecificGoal:"Unterscheide berichtete Vermutung, verbindliche "
+       +"Institutionenauskunft, höfliche Nachfrage, Zusage und "
+       +"kommunikative Absicht. Mehrere natürliche Antworten können passen.",
+      lessonStage:"learn",action:"Sprecherbeleg und Registerniveau gezielt vergleichen"
+    };
+    return {
+      title:"Längere A2-Quellen unabhängig vergleichen statt ein Wort zu erraten",
+      promptSpecificGoal:"Bestimme den relevanten japanischen Beleg in längeren "
+       +"schriftlichen und gesprochenen Quellen, ohne eigene Sachverhalte "
+       +"hinzuzuerfinden. Geräte-TTS und lesbares Skript sind Lernhilfen, "
+       +"keine gemessene Hörprüfung oder offizieller Sprachnachweis.",
+      lessonStage:"learn",action:"Mehrere relevante Originalbelege selbst auswählen"
+    };
+  }
   if(prompt?.eventMetadata?.p58===true){
     const kind=prompt.eventMetadata?.kind;
     const focus=prompt.eventMetadata?.focus;
