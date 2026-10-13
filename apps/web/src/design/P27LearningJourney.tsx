@@ -36,6 +36,8 @@ import {p49Prompts,p49ReturnPrompts,p49Documents,p49ForUnit,p49ById,p49AuthoredC
 import {P49DocumentLibrary} from "./P49DocumentLibrary";
 import {p50Prompts,p50ReturnPrompts,p50Missions,p50ForUnit,p50ById,p50AuthoredComparison} from "../study/integrated50";
 import {P50IntegratedStudio} from "./P50IntegratedStudio";
+import {p51Prompts,p51ReturnPrompts,p51Contrasts,p51ForUnit,p51ById,p51AuthoredComparison} from "../study/grammar51";
+import {P51GrammarStudio} from "./P51GrammarStudio";
 import {p28NewSentencePrompts} from "../study/sentence28";
 import {p29AdditionalPrompts,p29LexicalPrompts,lexicalLinksForUnit,recommendP29Actions} from "../study/depth29";
 import {describeP29Revision,p29RegisterExampleForUnit} from "../study/revision29";
@@ -67,7 +69,7 @@ interface SpeechCapture {
 interface Feedback { kind:"graded"|"ungraded"|"choice";message:string;model:string;notes:string[];next:string|null; }
 interface RewriteReport {changed:boolean;oldLength:number;newLength:number;found:string[];missing:string[];}
 const extraJourneyPrompts=[...p28NewSentencePrompts,...p29AdditionalPrompts,
-  ...p29LexicalPrompts,...p30TransformationPrompts,...continuityPrompts,...register28Prompts,...p31ContrastPrompts,...p31SentencePrompts,...p32ContrastPrompts,...p32SentencePrompts,...p33RolePrompts,...p33SentencePrompts,...p34SentencePrompts,...p35PragmaticPrompts,...p36CorrectionPrompts,...p38CrossUnitPrompts,...p38ProductionPrompts,...p39LifePrompts,...p40Prompts,...p41Prompts,...p42Prompts,...p43Prompts,...p44Prompts,...p45Prompts,...p46Prompts,...p47Prompts,...p48Prompts,...p49Prompts,...p50Prompts];
+  ...p29LexicalPrompts,...p30TransformationPrompts,...continuityPrompts,...register28Prompts,...p31ContrastPrompts,...p31SentencePrompts,...p32ContrastPrompts,...p32SentencePrompts,...p33RolePrompts,...p33SentencePrompts,...p34SentencePrompts,...p35PragmaticPrompts,...p36CorrectionPrompts,...p38CrossUnitPrompts,...p38ProductionPrompts,...p39LifePrompts,...p40Prompts,...p41Prompts,...p42Prompts,...p43Prompts,...p44Prompts,...p45Prompts,...p46Prompts,...p47Prompts,...p48Prompts,...p49Prompts,...p50Prompts,...p51Prompts];
 const steps:[JourneyStage,string][]=[["learn","1 · Verstehen"],["build","2 · Satzbau"],["conversation","3 · Antworten"],["write","4 · Schreiben"],["practice","5 · Festigen"]];
 function compareWriting(before:string,after:string,features:readonly string[]):RewriteReport{
   const oldText=normalizeP26(before),newText=normalizeP26(after);
@@ -126,6 +128,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const [p48WritingId,setP48WritingId]=useState("");
   const [p49WritingId,setP49WritingId]=useState("");
   const [p50WritingId,setP50WritingId]=useState("");
+  const [p51WritingId,setP51WritingId]=useState("");
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
   const [voiceStatus,setVoiceStatus]=useState("");
@@ -163,6 +166,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const p48UnitCases=p48ForUnit(unitId);
   const p49UnitDocuments=p49ForUnit(unitId);
   const p50UnitMissions=p50ForUnit(unitId);
+  const p51UnitContrasts=p51ForUnit(unitId);
   const p40UnitArcs=[...p42UnitArcs,...p41UnitArcs,...p40ArcsForUnit(unitId)];
   const globalRecall=useMemo(()=>evidence?
     p31GlobalDue(evidence.traces,evidence.events,extraJourneyPrompts):[],
@@ -191,6 +195,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const p40WritingTurn=p40WritingArc?.turns[p40WritingTurnIndex];
   const p41ActiveArc=p40ActiveArc?(p41ArcById(p40ActiveArc.id)??p42ArcById(p40ActiveArc.id)):undefined;
   const p42ActiveArc=p40ActiveArc?p42ArcById(p40ActiveArc.id):undefined;
+  const p51WritingContrast=p51ById(p51WritingId);
   const p50WritingMission=p50ById(p50WritingId);
   const p49WritingDocument=p49ById(p49WritingId);
   const p48WritingCase=p48ById(p48WritingId);
@@ -206,6 +211,9 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const p43Recommended=p43UnitScenes.find(s=>mistakes.some(m=>
     m.promptId==="p43-decision-"+s.id||m.promptId==="p43-return-"+s.id||
     m.promptId.endsWith("-"+s.id)&&m.promptId.startsWith("p43-route-")))??p43UnitScenes[0];
+  const p51Recommended=p51UnitContrasts.find(c=>mistakes.some(m=>
+    m.promptId==="p51-production-"+c.id||m.promptId==="p51-return-"+c.id||
+    m.promptId==="p51-meaning-"+c.id))??p51UnitContrasts[0];
   const p50Recommended=p50UnitMissions.find(mission=>mistakes.some(m=>
     m.promptId==="p50-write-"+mission.id||m.promptId==="p50-return-"+mission.id||
     m.promptId.startsWith("p50-question-"+mission.id+"-")||
@@ -229,13 +237,13 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const p44Recommended=p44UnitCases.find(c=>mistakes.some(m=>
     ["p44-contrast-","p44-production-","p44-reply-","p44-return-"].some(prefix=>
       m.promptId===prefix+c.id)))??p44UnitCases[0];
-  const p40ReturnCueStatus=[...p50ReturnPrompts,...p49ReturnPrompts,...p48ReturnPrompts,...p47ReturnPrompts,...p46ReturnPrompts,...p45ReturnPrompts,...p44ReturnPrompts,...p43ReturnPrompts,...p42ReturnPrompts,...p41ReturnPrompts,...p40ReturnPrompts].filter(p=>
+  const p40ReturnCueStatus=[...p51ReturnPrompts,...p50ReturnPrompts,...p49ReturnPrompts,...p48ReturnPrompts,...p47ReturnPrompts,...p46ReturnPrompts,...p45ReturnPrompts,...p44ReturnPrompts,...p43ReturnPrompts,...p42ReturnPrompts,...p41ReturnPrompts,...p40ReturnPrompts].filter(p=>
     Array.isArray(p.eventMetadata?.unitIds)&&p.eventMetadata.unitIds.includes(unitId))
     .map(prompt=>{
       const trace=evidence?.traces.find(t=>t.id===traceIdJourney(prompt));
       const when=trace?Date.parse(trace.card.due):NaN;
       return {id:prompt.id,arcId:String(prompt.eventMetadata?.arcId??prompt.eventMetadata?.sceneId??
-          prompt.eventMetadata?.caseId??prompt.eventMetadata?.challengeId??prompt.eventMetadata?.readingId??prompt.eventMetadata?.sceneId??prompt.eventMetadata?.documentId??prompt.eventMetadata?.missionId),
+          prompt.eventMetadata?.caseId??prompt.eventMetadata?.challengeId??prompt.eventMetadata?.readingId??prompt.eventMetadata?.sceneId??prompt.eventMetadata?.documentId??prompt.eventMetadata?.missionId??prompt.eventMetadata?.contrastId),
         planned:Boolean(trace&&Number.isFinite(when)),
         due:Boolean(trace&&Number.isFinite(when)&&when<=Date.now())};
     });
@@ -274,6 +282,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setP48WritingId(prev=>p48ById(prev)?.units.includes(unitId)?prev:"");
     setP49WritingId(prev=>p49ById(prev)?.units.includes(unitId)?prev:"");
     setP50WritingId(prev=>p50ById(prev)?.units.includes(unitId)?prev:"");
+    setP51WritingId(prev=>p51ById(prev)?.units.includes(unitId)?prev:"");
     setP40GuidedHistory([]);setP40GuidedFinished(false);
     setError("");setDraft("");setRewrite("");
     setRewriteStage("draft");setReport(null);setSaved(false);setVoiceStatus("");
@@ -368,6 +377,17 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
     setStage("write");
   }
+  function chooseP51Writing(contrastId:string){
+    const contrast=p51ById(contrastId);
+    if(!contrast)return;
+    setUnitId(contrast.units[0]!);
+    setP51WritingId(contrast.id);
+    setP40WritingArcId("");setP39WritingId("");setP43WritingSceneId("");
+    setP44WritingId("");setP45WritingId("");setP46WritingId("");
+    setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");
+    setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
+    setStage("write");
+  }
   function resetDialogue(){
     setNodeId(unit.turns[0]!.id);setStepsTaken(0);setAnswer("");setFirstConversationDraft("");setFeedback(null);
     setChoiceExampleSeen(false);
@@ -413,6 +433,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
         ...(kind==="response"?{turnId:turn.id}:{}),
         ...(kind==="rewrite"&&p39Chosen?{p39:true,authoredCaseId:p39Chosen.id,
           sourceContextId:"p39:repair:"+p39Chosen.id}:{}),
+        ...(kind==="rewrite"&&p51WritingContrast?{
+          p51:true,authoredContrastId:p51WritingContrast.id,
+          sourceContextId:"p51:contrast:"+p51WritingContrast.id,
+          grammarDomain:p51WritingContrast.domain,guidedRewrite:true
+        }:{ }),
         ...(kind==="rewrite"&&p50WritingMission?{
           p50:true,authoredMissionId:p50WritingMission.id,
           sourceContextId:"p50:integrated:"+p50WritingMission.id,
