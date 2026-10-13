@@ -13,20 +13,6 @@ export interface P42Arc extends P41Arc {
 }
 export type P42Line=readonly [string,string,string,string,string,string,string];
 export type P42Return=readonly [string,string,string,string,string];
-export function makeP42Arc(input:{
-  id:string; baseArcId:string;level:"A1"|"A2";units:readonly string[];
-  title:string;setting:string;interlocutor:string;relationship:string;
-  register:"polite"|"casual";variation:string;contrast:string;
-  pivotTurn:number;outcome:string;turns:readonly P42Line[];
-  returnCue:P42Return;
-}):P42Arc{
-  const turns:P41Turn[]=input.turns.map(([partner,intention,model,alternative,misstep,why,focus],i)=>({
-    id:input.id+"-t"+(i+1),number:i+1,partner,intention,model,alternative,misstep,why,focus,
-    shift:(i+1===input.pivotTurn?"Neuer Sachverhalt — ":"Kontextziel — ")+intention
-  }));
-  const [intention,model,alternative,misstep,why]=input.returnCue;
-  return {...input,turns,returnCue:{intention,model,alternative,misstep,why}};
-}
 export const p42Arcs:readonly P42Arc[]=[...p42CorpusA,...p42CorpusB,...p42CorpusC];
 export function p42ArcsForUnit(unitId:string):P42Arc[]{
   return p42Arcs.filter(a=>a.units.includes(unitId));
