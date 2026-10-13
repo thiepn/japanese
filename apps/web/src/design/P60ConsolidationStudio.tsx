@@ -1,5 +1,5 @@
 import {useEffect,useMemo,useRef,useState} from "react";
-import {p60Compare,p60RelatedVocabulary,p60Stage,
+import {p60Compare,p60RelatedVocabulary,p60Stage,p60CourseTracks,
  type P60Unit,type P60PracticeKind,type P60HistoricalReviewSource} from "../study/consolidation60";
 import "./p60-consolidation.css";
 type Practice=Exclude<P60PracticeKind,"all">;
@@ -33,7 +33,6 @@ export function P60ConsolidationStudio({
  const [models,setModels]=useState(false);
  const [reveal,setReveal]=useState<readonly string[]>([]);
  const [spoken,setSpoken]=useState(false);
- const [followup,setFollowup]=useState(false);
  const [showVocabulary,setShowVocabulary]=useState(false);
  const [catalog,setCatalog]=useState(false);
  const [reviewOnly,setReviewOnly]=useState<"all"|"due"|"needs-repair"|"unseen">("all");
@@ -89,12 +88,11 @@ export function P60ConsolidationStudio({
  function choose(id:string){
   stop();setChosen(id);setStep("reading");setMode("question");setQuestionIndex(0);
   setDraft("");setAttempt(false);setModels(false);
-  setReveal([]);setSpoken(false);setFollowup(false);setShowVocabulary(false);
+  setReveal([]);setSpoken(false);setShowVocabulary(false);
   setSearch("");setShowMore(15);setTtsStatus("");
  }
  function taskMode(next:Kind){
   setMode(next);setDraft("");setAttempt(false);setModels(false);
-  if(next==="followup")setFollowup(true);
  }
  function next(){setStep(steps[Math.min(steps.length-1,stepIndex+1)]![0]);}
  function play(from=0){
@@ -197,6 +195,38 @@ export function P60ConsolidationStudio({
    {filtered.length>showMore?<button type="button" onClick={()=>setShowMore(n=>n+20)}>Weitere ursprüngliche Quellen</button>:null}
    {!filtered.length?<p>Keine entsprechende belegte Originalquelle in dieser Auswahl.</p>:null}
   </section>:null}
+  <section className="p60-consolidation__tracks" aria-label="Kohärenter Originalkurs-Lernpfad P40 bis P60">
+   <h5>Zusammenhängender Kursweg · original P40–P59 nachlernen</h5>
+   <p>Die folgenden sechs Bereiche sind Navigation nach tatsächlichen
+    Originalquellen. Bearbeitete Übungsfragen sind keine als bestanden
+    gewerteten CEFR-Kompetenzen. Nur echte FSRS-MemoryTraces bestimmen Fälligkeit.</p>
+   <div className="p60-consolidation__tracks-grid">
+    {p60CourseTracks.map(track=>{
+     const items=historical.filter(item=>
+       (track.phases as readonly number[]).includes(item.phase));
+     const dueCount=items.filter(item=>item.status==="due").length;
+     const wrongCount=items.filter(item=>item.status==="needs-repair").length;
+     const candidate=items.find(item=>item.status==="due")??
+      items.find(item=>item.status==="needs-repair")??items[0];
+     return <div key={track.id}>
+      <strong>{track.title}</strong>
+      <small>Originalphasen: {track.phases.map(p=>"P"+p).join(" · ")}</small>
+      <p>{track.aim}</p><p><strong>Nächste Aufgabe:</strong> {track.next}</p>
+      <small>{items.length} tatsächlich auffindbare Originalfragen ·
+       {dueCount} FSRS-fällig · {wrongCount} zuletzt falsch</small>
+      <div className="p60-consolidation__actions">
+       <button type="button" disabled={!items.length} onClick={()=>{
+        setCatalog(true);setScope("all");setReviewOnly("all");
+        setPhase(String(items[0]!.phase));setShowMore(15);
+       }}>Originalquellen öffnen</button>
+       <button type="button" disabled={!candidate||disabled}
+        onClick={()=>{if(candidate)onHistorical(candidate.id,candidate.unitId)}}>
+        Konkrete nächste Originalübung</button>
+      </div>
+     </div>;
+    })}
+   </div>
+  </section>
   <div className="p60-consolidation__layout">
    <nav className="p60-consolidation__lessons" aria-label="20 originale A2-Konsolidierungslektionen">
     <label htmlFor="p60-search">Neue P60-Lektion finden</label>
