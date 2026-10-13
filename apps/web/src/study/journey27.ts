@@ -205,10 +205,13 @@ export function promptsForUnit(unitId:string,extras:readonly StudyPrompt[]=[]):S
   const seen=new Set<string>();
   return [...initialPrompts(unit),...unit.turns.map(t=>journeyTypedPrompt(unit,t)),...transferForUnit(unitId),...extras.filter(p=>p.eventMetadata?.unitId===unitId||p.eventMetadata?.sourceUnit===unitId||
       (Array.isArray(p.eventMetadata?.unitIds)&&p.eventMetadata.unitIds.includes(unitId)))]
-    // P52 unseen transfer must not leak into ordinary "new"/"production" practice.
-    // Dedicated return / return-due routes and native Today FSRS-due remain authoritative.
+    // Historical P40–P51 independent returns were previously visible in ordinary
+    // unit/new/production pools while P52–P60 were hidden. Conceal ALL delayed
+    // authored contexts uniformly, without altering original prompt identities.
+    // Explicit return / return-due specialist routing still handles their access,
+    // and Today still uses only authentic existing FSRS-due MemoryTraces.
     .filter(p=>{
-      if(p.id.startsWith("p52-return-")||p.id.startsWith("p53-return-")||p.id.startsWith("p54-return-")||p.id.startsWith("p55-return-")||p.id.startsWith("p56-return-")||p.id.startsWith("p57-return-")||p.id.startsWith("p58-return-")||p.id.startsWith("p59-return-")||p.id.startsWith("p60-return-")||seen.has(p.id))return false;
+      if(/^p(?:4\d|5\d|60)-return-/.test(p.id)||seen.has(p.id))return false;
       seen.add(p.id);return true;
     });
 }
