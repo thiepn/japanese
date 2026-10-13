@@ -58,13 +58,19 @@ export function P58MissionsStudio({missions,preferredId,recallReadyIds,disabled,
  const feedback=attempted?p58Compare(draft,[task.model,task.alternative],task.misleading,task.why):null;
  const related=p58RelatedSource(current),words=p58RelatedWords(current),stage=p58Progression(current.id);
  const toggleGerman=(id:string)=>setGerman(old=>old.includes(id)?old.filter(a=>a!==id):[...old,id]);
+ function allowDiscard():boolean{
+  if(!draft.trim())return true;
+  return typeof window!=="undefined"&&window.confirm(
+   "Eine noch nicht abgeschlossene japanische Antwort würde beim Wechsel verworfen. Diese Eingabe wurde nicht gespeichert. Trotzdem wechseln?");
+ }
  function reset(){
   stop();setGerman([]);setShowSpoken(false);setFocus("question");setQuestionIndex(0);
   setDraft("");setAttempted(false);setModels(false);setVoiceMessage("");
   setRelatedOpen(false);setVocabOpen(false);setReplyOpen(false);
  }
- function choose(id:string){reset();setSelected(id);}
+ function choose(id:string){if(id!==current.id&&!allowDiscard())return;reset();setSelected(id);}
  function setTask(key:typeof focus){
+  if(key!==focus&&!allowDiscard())return;
   setFocus(key);setDraft("");setAttempted(false);setModels(false);
   if(key==="reply")setReplyOpen(true);
  }
