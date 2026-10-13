@@ -21,6 +21,37 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p45===true){
+    const number=Number(prompt.eventMetadata.turnNumber);
+    const isReturn=prompt.eventMetadata.focus==="delayed-independent-return";
+    if(isReturn)return {
+      title:"Eigenständige neue Situation lösen, ohne alten Antwortsatz zu übernehmen",
+      promptSpecificGoal:"Behalte die kommunikative Funktion bei, aber prüfe neu den Gegenstand, "+
+        "Zeitpunkt, Ort und Adressaten. Ein zuvor gesehenes Muster beantwortet die neue Situation nicht automatisch.",
+      lessonStage:"practice",action:"FSRS-Fälligkeit und freiwilligen Transfer ansehen"
+    };
+    if(number===3)return {
+      title:"Unerwarteten Wechsel erkennen und eigene Antwort überarbeiten",
+      promptSpecificGoal:"Ein Teil des bisherigen Plans wurde verändert. Bestimme, welche "+
+        "Information nicht mehr gilt, und welche Zusagen erhalten bleiben. "+
+        "Formuliere ohne Multiple-Choice-Antworten neu.",
+      lessonStage:"write",action:"Den dritten Gesprächszug im bisherigen Editor überarbeiten"
+    };
+    if(number===4)return {
+      title:"Gespräch ohne Muster zum stimmigen Abschluss bringen",
+      promptSpecificGoal:"Prüfe, ob deine letzte Aussage mit der geänderten Zeit, dem "+
+        "Treffpunkt, der Menge oder der Reihenfolge übereinstimmt; "+
+        "vermeide die versehentliche Rückkehr zum alten Plan.",
+      lessonStage:"conversation",action:"Eigenständigen Abschluss erneut versuchen"
+    };
+    return {
+      title:"Eigene japanische Antwort im Zusammenhang formulieren",
+      promptSpecificGoal:"Achte auf die Antwortfunktion des Gegenübers und die "+
+        "früheren eigenen Zusagen. Ersetze eine auswendig gelernte Phrase durch "+
+        "eine passende, unabhängig formulierte Aussage.",
+      lessonStage:"conversation",action:"Verlauf zunächst mit wenigen Hinweisen ansehen"
+    };
+  }
   if(prompt?.eventMetadata?.p44===true){
     const step=prompt.eventMetadata.stage;
     const focus=typeof prompt.eventMetadata.focus==="string"?
