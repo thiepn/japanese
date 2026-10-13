@@ -55,6 +55,7 @@ import {P58MissionsStudio} from "./P58MissionsStudio";
 import {p59Prompts,p59ComprehensionPrompts,p59ReturnPrompts,p59Missions,p59ForUnit,p59ById,p59AuthoredFeedback,p59RelatedSources} from "../study/performance59";
 import {P59PerformanceStudio} from "./P59PerformanceStudio";
 import {p60Prompts,p60ComprehensionPrompts,p60ReturnPrompts,p60Units,p60ForUnit,p60ById,p60Compare,p60HistoricalSources} from "../study/consolidation60";
+import {historicalReturnEligibility,isHistoricalReturn} from "../study/returnEligibilityR2";
 import {P60ConsolidationStudio} from "./P60ConsolidationStudio";
 import {p28NewSentencePrompts} from "../study/sentence28";
 import {p29AdditionalPrompts,p29LexicalPrompts,lexicalLinksForUnit,recommendP29Actions} from "../study/depth29";
@@ -542,9 +543,13 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const p40ReturnCueStatus=[...p60ReturnPrompts,...p59ReturnPrompts,...p58ReturnPrompts,...p57ReturnPrompts,...p56ReturnPrompts,...p55ReturnPrompts,...p54ReturnPrompts,...p53ReturnPrompts,...p52ReturnPrompts,...p51ReturnPrompts,...p50ReturnPrompts,...p49ReturnPrompts,...p48ReturnPrompts,...p47ReturnPrompts,...p46ReturnPrompts,...p45ReturnPrompts,...p44ReturnPrompts,...p43ReturnPrompts,...p42ReturnPrompts,...p41ReturnPrompts,...p40ReturnPrompts].filter(p=>
     Array.isArray(p.eventMetadata?.unitIds)&&p.eventMetadata.unitIds.includes(unitId))
     .map(prompt=>{
+      const historicalReturn=isHistoricalReturn(prompt);
+      const historicalStatus=historicalReturn?historicalReturnEligibility(
+        prompt,evidence?.traces??[],evidence?.events??[],Date.now()):null;
       const trace=evidence?.traces.find(t=>t.id===traceIdJourney(prompt));
       const when=trace?Date.parse(trace.card.due):NaN;
-      return {id:prompt.id,arcId:String(prompt.eventMetadata?.arcId??prompt.eventMetadata?.sceneId??
+      return {id:prompt.id,historicalReturn,historicalReady:historicalStatus?.eligible??false,
+        historicalStatus:historicalStatus?.status,arcId:String(prompt.eventMetadata?.arcId??prompt.eventMetadata?.sceneId??
           prompt.eventMetadata?.caseId??prompt.eventMetadata?.challengeId??prompt.eventMetadata?.readingId??prompt.eventMetadata?.sceneId??prompt.eventMetadata?.documentId??prompt.eventMetadata?.missionId??prompt.eventMetadata?.sourceUnit??prompt.eventMetadata?.contrastId??prompt.eventMetadata?.transformationId??prompt.eventMetadata?.vocabularyId),
         planned:Boolean(trace&&Number.isFinite(when)),
         due:Boolean(trace&&Number.isFinite(when)&&when<=Date.now()),
@@ -2641,14 +2646,20 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                   cue.p55Ready?"Neuer P55-Hördialog-Kontext nach echtem Lernabstand freigegeben":
                   cue.p54Ready?"Neuer P54-Lesetransfer nach echtem Lernabstand freigegeben":
                   cue.p53Ready?"Neuer P53-Wortgebrauch nach echtem Lernabstand freigegeben":
+                  cue.historicalReturn&&cue.historicalReady?
+                    "Originaler P40–P52-Transfer: anhand echter früherer Übung freigegeben":
+                  cue.historicalReturn?
+                    "Erst nach einer bewerteten Originalaufgabe und echtem Lernabstand verfügbar":
                   cue.p52Ready?"Neuer P52-Transfer nach echtem Lernabstand freigegeben":
                   cue.planned?"Für einen späteren FSRS-Termin eingeplant":
                   "Noch kein FSRS-Termin vorhanden"}</small></div>
               <button type="button" disabled={disabled||!cue.due}
-                onClick={()=>startPractice(unitId,`return-due:${cue.arcId}`)}>
+                onClick={()=>startPractice(unitId,cue.historicalReturn?`return-due-id:${cue.id}`:`return-due:${cue.arcId}`)}>
                 Fälligen Abruf üben
               </button>
-              <button type="button" disabled={disabled||(Boolean(p52ById(cue.arcId))&&!cue.p52Ready&&!cue.due)||
+              <button type="button" disabled={disabled||
+                  (cue.historicalReturn&&!cue.historicalReady)||
+                  (!cue.historicalReturn&&Boolean(p52ById(cue.arcId))&&!cue.p52Ready&&!cue.due)||
                   (Boolean(p53ById(cue.arcId))&&!cue.p53Ready&&!cue.due)||
                   (Boolean(p54ById(cue.arcId))&&!cue.p54Ready&&!cue.due)||
                   (Boolean(p55ById(cue.arcId))&&!cue.p55Ready&&!cue.due)||
@@ -2657,7 +2668,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                   (Boolean(p58ById(cue.arcId))&&!cue.p58Ready&&!cue.due)||
                   (Boolean(p59ById(cue.arcId))&&!cue.p59Ready&&!cue.due)||
                   (Boolean(p60ById(cue.arcId))&&!cue.p60Ready&&!cue.due)}
-                onClick={()=>startPractice(unitId,`return:${cue.arcId}`)}>
+                onClick={()=>startPractice(unitId,cue.historicalReturn?`return-id:${cue.id}`:`return:${cue.arcId}`)}>
                 Freiwillig selbstständig üben
               </button>
             </div>)}
