@@ -123,9 +123,11 @@ export function P52TransformationStudio({items,preferredId,recallReadyIds,disabl
     <section>
      <h5>3 · Verzögerter Abruf in wirklich verändertem Kontext</h5>
      <p>Ein neuer, hier absichtlich nicht gezeigter Fall verändert Fakten,
-      Rollen oder Intention. Der erste Transfer wird erst nach einer tatsächlich
-      fälligen ursprünglichen Transformationskarte freigegeben. Spätere Termine
-      stammen ausschließlich aus den vorhandenen FSRS-MemoryTraces.</p>
+      Rollen oder Intention. Dieser neue Fall wird erst freigegeben, wenn die
+      ursprüngliche Karte wirklich fällig ist oder seit einer echten eigenen
+      StudyPlayer-Antwort mindestens 24 Stunden vergangen sind. Die Freigabe
+      selbst ist keine FSRS-Fälligkeitsbehauptung; spätere Rückruftermine stammen
+      nur aus den bestehenden FSRS-MemoryTraces.</p>
      {!recallReadyIds.includes(item.id)?<p>
       Noch nicht freigegeben: Bearbeite erst die ursprüngliche Umformung im
       StudyPlayer und warte auf ihren echten FSRS-Termin.
