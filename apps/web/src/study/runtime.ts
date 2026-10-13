@@ -44,6 +44,7 @@ import {p38CrossUnitPrompts} from "./transfer38";
 import {p38ProductionPrompts} from "./production38";
 import {p39LifePrompts} from "./life39";
 import {p40Prompts} from "./dialogue40";
+import {p41Prompts} from "./dialogue41";
 import {dueP37CorrectionPrompts} from "./correctionDue37";
 import { buildC1SynthesisSession } from "./c1Synthesis";
 
@@ -112,7 +113,7 @@ function foundationApplicationPool():StudyPrompt[]{
 function allPrompts():StudyPrompt[]{
   return [...foundationPrompts,...vocabularyMeaningPrompts,...foundationApplicationPool(),...allGrammarCoursePrompts,...pedagogyPrompts,...p24ReviewPrompts,...p25Prompts,...p26Prompts,...journeyPrompts,...p28NewSentencePrompts,...continuityPrompts,...register28Prompts]
     .map(prompt=>p29SentencePromptOverrides.get(prompt.id)??prompt)
-    .concat(p29AdditionalPrompts,p29LexicalPrompts,p30TransformationPrompts,p31ContrastPrompts,p31SentencePrompts,p32SentencePrompts,p32ContrastPrompts,p33RolePrompts,p33SentencePrompts,p34SentencePrompts,p35PragmaticPrompts,p36CorrectionPrompts,p38CrossUnitPrompts,p38ProductionPrompts,p39LifePrompts,p40Prompts);
+    .concat(p29AdditionalPrompts,p29LexicalPrompts,p30TransformationPrompts,p31ContrastPrompts,p31SentencePrompts,p32SentencePrompts,p32ContrastPrompts,p33RolePrompts,p33SentencePrompts,p34SentencePrompts,p35PragmaticPrompts,p36CorrectionPrompts,p38CrossUnitPrompts,p38ProductionPrompts,p39LifePrompts,p40Prompts,p41Prompts);
 }
 
 export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
@@ -141,7 +142,7 @@ export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
   return insertFirstExposureLessons(queue,byId,privatePrompts);
 }
 
-const p35JourneyExtras:StudyPrompt[]=[...p28NewSentencePrompts.map(p=>p29SentencePromptOverrides.get(p.id)??p),...continuityPrompts,...register28Prompts,...p29AdditionalPrompts,...p29LexicalPrompts,...p30TransformationPrompts,...p31ContrastPrompts,...p31SentencePrompts,...p32SentencePrompts,...p32ContrastPrompts,...p33RolePrompts,...p33SentencePrompts,...p34SentencePrompts,...p35PragmaticPrompts,...p36CorrectionPrompts,...p38CrossUnitPrompts,...p38ProductionPrompts,...p39LifePrompts,...p40Prompts];
+const p35JourneyExtras:StudyPrompt[]=[...p28NewSentencePrompts.map(p=>p29SentencePromptOverrides.get(p.id)??p),...continuityPrompts,...register28Prompts,...p29AdditionalPrompts,...p29LexicalPrompts,...p30TransformationPrompts,...p31ContrastPrompts,...p31SentencePrompts,...p32SentencePrompts,...p32ContrastPrompts,...p33RolePrompts,...p33SentencePrompts,...p34SentencePrompts,...p35PragmaticPrompts,...p36CorrectionPrompts,...p38CrossUnitPrompts,...p38ProductionPrompts,...p39LifePrompts,...p40Prompts,...p41Prompts];
 export async function buildP27JourneySession(unitId:string,focus:JourneyPractice="review"):Promise<StudyStep[]>{
   const accountId=DEVELOPMENT_ACCOUNT_ID;
   const [traces,events]=await Promise.all([listMemoryTraces(accountId),listStudyEvents(accountId)]);
