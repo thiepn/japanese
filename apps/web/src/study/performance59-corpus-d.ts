@@ -156,6 +156,33 @@ const raw:readonly P59Compact[]=[
 ["先生","火曜日になりました。人数を確認したいので、本日中に出席か欠席かをお知らせください。","Lehrkraft: Heute Dienstag, definitive Zusage/Absage bis heute.","Reagiere ehrlich: Du kannst nicht kommen, bitte nach Materialien fragen.","申し訳ありませんが、仕事のため今回は欠席します。後で配布資料を受け取れるでしょうか。","欠席のご連絡をします。資料について教えてください。","参加できるかわかりませんが返事しません。","Konkrete Teilnahmeentscheidung fristgerecht."],
 ["水曜日は六時から二階で、仕事が終わったら必ず参加します。","Korrigiere frühere Zeiten und tatsächliche Absage.","今回は欠席します。会は水曜日の六時半に一階の図書室で行われます。資料を後で確認したいです。","火曜日に欠席を学校へ伝えました。","Eigener neuer Status muss im Bericht stimmen."],
 ["Neue Stadtteilsitzung: Ursprünglich Freitag 17 Uhr Obergeschoss, nun Freitag 17:45 Raum unten, Antwort Donnerstag, Person sagt abgesagt.","会は金曜日の五時四十五分に下の部屋で行います。今回は欠席すると木曜日までに連絡します。","新しい場所と時間を確認し、参加できないことを伝えます。","古い時間に二階へ行きます。","Neue Institution."],
-"古い連絡から新しい日時を正確に更新し、実際の返事も別に伝える.",["henkou","renraku","kakunin"]]
+"古い連絡から新しい日時を正確に更新し、実際の返事も別に伝える.",["henkou","renraku","kakunin"]],
+["town-bus-repair","町のバスが止まったら","p25:transport","地域交通の変更","polite",
+"Ein Regionalbus wird nach einer früheren Ankündigung eingestellt; Reisende prüfen Umsteigemöglichkeiten, Kosten und Zugang zu einer Bürgersprechstunde.",
+"Veralteten Busplan, aktuellen Ersatzverkehr und nur vorgeschlagene Fahrten getrennt kommunizieren",
+[
+["古いバスの時刻表","図書館前から市役所へ行くバスは、平日の午前九時十分に出発します。乗車料金は二百円です。","Alter Fahrplan: Bus vor Bibliothek zum Rathaus werktags 9:10, 200 Yen."],
+["今週のお知らせ","道路工事のため、木曜日はこのバスが走りません。臨時のバスは南駅から九時半に出る予定です。","Wocheninfo: Donnerstag alte Linie wegen Bau gesperrt; Ersatzbus voraussichtlich 9:30 vom Südbahnhof."],
+["市役所の案内","市役所の相談は午前十時からです。遅れる場合は、相談の窓口に事前にご連絡ください。","Rathausinfo: Beratung 10 Uhr, bei Verspätung vorher am Schalter melden."]],
+[
+["ハナ","九時十分のバスに乗るつもりだったけど、木曜日は動かないんだね。","Hana: Wollte 9:10-Bus, Donnerstag fährt er nicht."],
+["タク","南駅まで歩くと二十分かかるよ。臨時バスに間に合うか調べよう。","Taku: Fußweg zum Südbahnhof 20 Minuten; Anschluss prüfen."]],
+[
+["運転手","臨時バスは南駅を九時半に出ますが、市役所に着く時間はまだ確認中です。","Fahrer: Ersatzbus 9:30 vom Südbahnhof, Ankunft am Rathaus noch ungeklärt."],
+["ハナ","料金は前の二百円のままですか。","Hana: Bleibt Preis 200 Yen?"],
+["運転手","料金は今、会社に確認しています。前と同じだとはまだ言えません。","Fahrer: Preis wird geprüft, bisheriger Tarif nicht bestätigt."],
+["タク","時間と料金を確認してから、市役所に遅れる可能性も知らせよう。","Taku: Zeit, Preis und mögliche Verspätung mit Rathaus klären."]],
+[
+["status","古い九時十分のバスは木曜日も走りますか。","いいえ、木曜日は走りません。","いいえ、工事のため中止です。","はい、九時十分に必ず走ります。","Ein früher gültiger Fahrplan kann ausfallen.","木曜日はこのバスが走りません","臨時バスは南駅を九時半に出ます"],
+["evidence","臨時バスの料金は二百円と決まりましたか。","いいえ、確認中です。","いいえ、同じ料金かまだわかりません。","はい、前と同じです。","Altes Ticket sagt nichts Verbindliches über Ersatzbus.","乗車料金は二百円です","前と同じだとはまだ言えません"],
+["chronology","十時の相談に遅れる可能性がある時はどうしますか。","先に市役所の窓口へ連絡します。","相談の前に連絡します。","何も連絡せず遅れます。","Abfahrtszeit des Ersatzbusses garantiert nicht Ankunft.","遅れる場合は、相談の窓口に事前に","市役所に着く時間はまだ確認中です"]
+],
+["Überlege eine verantwortliche Reiseentscheidung.","南駅の九時半の臨時バスを確認し、料金と到着の予定を聞きます。遅れそうなら市役所に連絡します。","無理のない時間に南駅へ行き、相談に間に合うか確かめます。","古いバスに乗れば必ず十時に着きます。","Jeder Verkehrsparameter muss erneut belegt werden."],
+["Schreibe zwei bis drei höfliche japanische Sätze an das Rathaus.","木曜日はいつものバスが工事で走らないそうです。南駅から九時半の臨時バスがありますが、市役所に着く時間はまだわかりません。相談に遅れるかもしれないため、事前にご連絡しました。","臨時バスの時間を確認しています。遅れそうな場合は改めて知らせます。","いつものバスで十時に必ず着きます。","Höfliche und ehrliche Ungewissheit."],
+["運転手","会社から返事が来ました。臨時バスの料金は三百円で、市役所には十時十分ごろ着く予定です。","Fahrer: Unternehmen bestätigt Ersatzbus 300 Yen, Ankunft voraussichtlich 10:10.","Reagiere auf neue bestätigte Kosten und nur geplante Ankunft.","教えていただきありがとうございます。料金は三百円で、十時十分ごろの到着予定なのですね。市役所へ遅れることを連絡します。","新しい時間と料金を確認しました。相談の窓口に知らせます。","二百円で十時ちょうどに到着しました。","Kosten bestätigt, Ankunft nur voraussichtlich."],
+["木曜日はいつものバスがあり、二百円で九時十分に図書館前を出ます。","Korrigiere alte Linie und unverbindliche Ankunft.","木曜日は南駅から九時半の臨時バスが出ます。料金は三百円で、到着は十時十分ごろの予定です。","相談には少し遅れる可能性があるので、事前に連絡します。","Hintereinander Quellen überschrieben."],
+["Neuer Fährersatz: Original Fähre 8:45 für 400 Yen fährt Freitag nicht, Ersatzbus 9:15 für 500 Yen, Ankunft 10:05 nur geplant.","金曜日は船が中止で、九時十五分のバスを使う予定です。料金は五百円で、到着は十時五分ごろなので、遅れるなら連絡します。","交通の新しい条件を確認します。","船は予定どおり四百円で出ます。","Andere Verkehrsmittel und Beträge."],
+"古い時刻表・臨時便・発車確定・到着予定・料金確定は別の情報.",["jikokuhyou","henkou","kakunin"]]
+
 ];
 export const p59MissionsD=raw.map(authoredP59Compact);
