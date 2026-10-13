@@ -498,8 +498,13 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
       return (Number.isFinite(due)&&due<=now)||older.has(first.id);
     }).map(m=>m.id);
   },[evidence]);
-  const p60Historical=useMemo(()=>evidence?p60HistoricalSources("*",
-    extraJourneyPrompts,evidence.events,evidence.traces,traceIdJourney):[],[evidence]);
+  const p60Historical=useMemo(()=>{
+    if(!evidence)return [];
+    const validIds=new Set(journeyUnits.map(unit=>unit.id));
+    return p60HistoricalSources("*",extraJourneyPrompts,
+      evidence.events,evidence.traces,traceIdJourney)
+      .filter(item=>validIds.has(item.unitId));
+  },[evidence]);
   const p60RecallReadyIds=useMemo(()=>{
     if(!evidence)return [];
     const now=Date.now(),aged=now-86400000;
