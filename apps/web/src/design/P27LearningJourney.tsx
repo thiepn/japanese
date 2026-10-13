@@ -495,6 +495,24 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 Diese Situation schriftlich überarbeiten</button>
             </div>
           </section>:null}
+          {p42UnitArcs.length>0?<section className="p27-journey__p42-variation" aria-label="Sprechrollen und Situationen übertragen">
+            <h4>Andere Person, anderes Register, neue Entscheidung</h4>
+            <p>Vergleiche, was gegenüber dem bekannten Dialog anders geworden ist.
+              Das Beispiel bleibt unbewertet. Erst der native StudyPlayer bewertet
+              eigenständige Antworten; neue Transferfragen werden separat wiederholt.</p>
+            {p42UnitArcs.slice(0,4).map(arc=><article key={arc.id}>
+              <h5>{arc.title} · {arc.level}</h5>
+              <p><strong>Gegenüber:</strong> {arc.interlocutor} · {arc.relationship}</p>
+              <p><strong>Register:</strong> {arc.register==="polite"?"höfliche Formen":"vertrautes Gespräch"}</p>
+              <p><strong>Veränderte Information:</strong> {arc.variation}</p>
+              <p>{arc.contrast}</p>
+              <button type="button" onClick={()=>{setP40ArcId(arc.id);setP40TurnIndex(0);
+                setP40Choice("");setP40GuidedHistory([]);setP40GuidedFinished(false);
+                setStage("conversation");}}>
+                Diese neue Gesprächsrolle untersuchen
+              </button>
+            </article>)}
+          </section>:null}
           {p40Recommended?<section className="p27-journey__p40-guidance">
             <h4>Mehrere Antworten im selben Gespräch</h4>
             <p>Über {p40Recommended.turns.length} Gesprächszüge bleiben Ziel, Bedeutung
@@ -535,6 +553,17 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 {arc.title}</button>)}
             </div>
             <p>{p40ActiveArc.setting}</p>
+            {p42ActiveArc?<div className="p27-journey__p42-speaker" aria-label="Sprecherrolle und sozialer Kontext">
+              <strong>Sprecherwechsel gegenüber der früheren Situation</strong>
+              <p>{p42ActiveArc.interlocutor} · {p42ActiveArc.relationship}</p>
+              <p><strong>Passendes Register:</strong>{" "}
+                {p42ActiveArc.register==="polite"?"Höflicher Erst- oder Servicekontakt":"Vertraut und informell"}</p>
+              <p><strong>Geändert:</strong> {p42ActiveArc.variation}</p>
+              <details><summary>Welche Funktion musst du übertragen?</summary>
+                <p>{p42ActiveArc.contrast}</p>
+                <p>Diese Hilfe erklärt den Kontext, gibt aber keine unabhängige Abrufbewertung.</p>
+              </details>
+            </div>:null}
             {p41ActiveArc?<p className="p27-journey__p41-outcome">
               <strong>Ziel der Unterhaltung:</strong> {p41ActiveArc.outcome} · {p41ActiveArc.level}
             </p>:null}
@@ -566,6 +595,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 <strong>{p40TurnFeedback(p40CurrentTurn,p40Choice).kind==="authored"?
                   "Passende Ausdrucksweise":"Diese Antwort verfehlt die beabsichtigte Gesprächsrichtung"}</strong>
                 <p>{p40TurnFeedback(p40CurrentTurn,p40Choice).message}</p>
+                {p42ActiveArc?<p>{p42ActiveArc.contrast}</p>:null}
                 <small>Nur dieses Beispiel ist beurteilt; keine Aussage über freie Alternativen.</small>
               </div>:null}
               <div className="p27-journey__actions">
@@ -718,7 +748,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
           {p40UnitArcs.length?<section className="p27-journey__p40-writing" aria-label="Zusammenhängendes Gespräch schriftlich korrigieren">
             <h5>Antwort aus einem Gespräch korrigieren</h5>
             <p>Wähle einen Gesprächskontext. Überarbeite die entscheidende Antwort
-              nach dem unerwarteten Hinweis. Bei P41 kannst du auch andere Züge auswählen.
+              nach dem unerwarteten Hinweis. Bei längeren Dialogen kannst du auch andere Züge auswählen.
               Die Musterantwort erscheint erst im vorhandenen Überarbeitungsablauf.</p>
             <div className="p27-journey__p40-arcs" role="group" aria-label="Gespräch für Schreibaufgabe wählen">
               {p40UnitArcs.map(arc=><button key={arc.id} type="button"
@@ -737,6 +767,10 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               {p40WritingTurnIndex>0?<p><strong>Vorherige Ziele:</strong>{" "}
                 {p40WritingArc.turns.slice(0,p40WritingTurnIndex).map(t=>t.intention).join(" → ")}</p>:null}
               <p><strong>Bisheriger Verlauf:</strong> {p40WritingArc.setting}</p>
+              {p42ArcById(p40WritingArc.id)?<p><strong>Adressat und Register:</strong>{" "}
+                {p42ArcById(p40WritingArc.id)?.interlocutor} ·
+                {p42ArcById(p40WritingArc.id)?.register==="polite"?" höflich":" vertraut"}.
+                {p42ArcById(p40WritingArc.id)?.contrast}</p>:null}
               <p><strong>Gesprächspartner:</strong> <span lang="ja">{p40WritingTurn.partner}</span></p>
               <p><strong>Fehlerhafter Satz:</strong> <span lang="ja">{p40WritingTurn.misstep}</span></p>
               <p><strong>Absicht:</strong> {p40WritingTurn.intention}</p>
