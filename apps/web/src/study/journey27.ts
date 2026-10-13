@@ -270,7 +270,7 @@ export function recommendedJourneyUnit(progress:readonly JourneyUnitProgress[]):
       (a.attempted/a.total)-(b.attempted/b.total))[0]?.id
     ??journeyUnits[0]!.id;
 }
-export function journeySession(unitId:string,focus:JourneyPractice,traces:readonly MemoryTrace[],events:readonly StudyEvent[],now=Date.now(),extras:readonly StudyPrompt[]=[]):StudyStep[]{
+export function journeySession(unitId:string,focus:JourneyPractice,traces:readonly MemoryTrace[],events:readonly StudyEvent[],now=Date.now(),extras:readonly StudyPrompt[]=[],ownerId?:string):StudyStep[]{
   const unit=journeyUnit(unitId);
   const known=new Map(traces.map(t=>[t.id,t]));
   const pragmatic=extras.filter(p=>{
@@ -625,7 +625,7 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     p.id===exactHistoricalId&&
     Array.isArray(p.eventMetadata?.unitIds)&&p.eventMetadata.unitIds.includes(unitId)):undefined;
   const exactHistoricalCue=exactHistorical&&
-    historicalReturnEligibility(exactHistorical,traces,events,now).eligible?[exactHistorical]:[];
+    historicalReturnEligibility(exactHistorical,traces,events,now,ownerId).eligible?[exactHistorical]:[];
   const returnId=focus.startsWith("return-due:")?focus.slice("return-due:".length):
     focus.startsWith("return:")?focus.slice("return:".length):"";
   const returnArc=returnId?(p40DialogueById(returnId)??p41ArcById(returnId)??p42ArcById(returnId)):undefined;
@@ -741,7 +741,7 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
   // Keep all other native P53–P60 gates and historical prompt IDs unchanged.
   const eligibleRelevant=relevant.filter(p=>{
     if(isHistoricalReturn(p))
-      return historicalReturnEligibility(p,traces,events,now).eligible;
+      return historicalReturnEligibility(p,traces,events,now,ownerId).eligible;
     // "transfer" and other broad selectors read original eventMetadata;
     // their return sources must obey the same specialist gates as a button.
     const m=p.eventMetadata;
