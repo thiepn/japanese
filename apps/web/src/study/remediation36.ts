@@ -21,6 +21,49 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p56===true){
+    const kind=prompt.eventMetadata?.kind;
+    const focus=prompt.eventMetadata?.focus;
+    const branch=prompt.eventMetadata?.branch;
+    if(focus==="delayed-independent-return")return {
+      title:"Späteren ungewohnten Gesprächskontext unabhängig lösen",
+      promptSpecificGoal:"Die neue A2-Situation hat andere Personen, Zeiten oder Hinweise. "+
+       "Nutze nicht die vorherige Modellantwort, sondern kläre die jetzige Absicht. "+
+       "Die bestehende FSRS-Karte entsteht nur aus einem wirklich bewerteten "+
+       "StudyPlayer-Versuch, nicht aus einem im Studio gesehenen Text.",
+      lessonStage:"practice",action:"Originalen neuen Kontext unabhängig abrufen"
+    };
+    if(kind==="interaction-misconception-repair"||branch==="repair")return {
+      title:"Missverständnis ausdrücklich reparieren, ohne es zu verdecken",
+      promptSpecificGoal:"Deine erste Antwort war nicht mit der Partneraussage vereinbar. "+
+       "Markiere den Irrtum kurz, entschuldige dich wenn passend, "+
+       "und formuliere die korrigierte japanische Aussage mit richtigem "+
+       "Objekt, Zeitpunkt, Register und Sicherheit.",
+      lessonStage:"conversation",action:"Den echten Reparaturzweig selbstständig fortsetzen"
+    };
+    if(kind==="interaction-independent-followup")return {
+      title:"Unerwartete Folgeäußerung im gewählten Zweig verarbeiten",
+      promptSpecificGoal:"Lies zuerst nur die konkrete neue Antwort des Gegenübers. "+
+       "Eine neue Bedingung kann deinen ersten Vorschlag verändern. "+
+       "Der direkte und alternative Zweig haben verschiedene Ziele "+
+       "und werden nicht zu einer allgemeinen Musterantwort vermischt.",
+      lessonStage:"conversation",action:"Den gewählten Originalgesprächszweig fortsetzen"
+    };
+    if(kind==="interaction-route-choice")return {
+      title:"Zwei passende Einstiege mit unterschiedlichen Gesprächsfolgen",
+      promptSpecificGoal:"Wähle nach Beziehung, Absicht und nachweisbarer Information. "+
+       "Zwei ausdrücklich verfasste Wege sind gültig; die dritte Antwort "+
+       "enthält eine konkret erklärte Bedeutungsverwechslung.",
+      lessonStage:"learn",action:"Direkten und alternativen Originalweg vergleichen"
+    };
+    return {
+      title:"Spontane A2-Reaktion eigenständig und situationsgerecht formulieren",
+      promptSpecificGoal:"Trenne Bitte von Zusage, Vorschlag von Entscheidung, "+
+       "Gerücht von bestätigter Information und höflichen Ausdruck von bloßem Versprechen. "+
+       "Alternative korrekte japanische Formulierungen werden nicht generell bewertet.",
+      lessonStage:"write",action:"Eigene Antwort ohne vorgegebene Formulierung schreiben"
+    };
+  }
   if(prompt?.eventMetadata?.p55===true){
     const kind=prompt.eventMetadata?.kind;
     const focus=prompt.eventMetadata?.focus;
