@@ -309,3 +309,46 @@
  .p27-journey__p43-picker button{width:100%}
  .p27-journey__p43-branches{display:grid;grid-template-columns:minmax(0,1fr)}
 }
+
+
+/* P44: contextual Japanese pragmatics within existing lesson stages. */
+.p27-journey__p44,.p27-journey__p44-intro,.p27-journey__p44-writing{
+ border:1px solid currentColor;padding:1rem;margin:1rem 0;min-width:0
+}
+.p27-journey__p44 h4,.p27-journey__p44-intro h4,.p27-journey__p44-writing h5{
+ font-size:1.08rem;margin:.25rem 0 .6rem
+}
+.p27-journey__p44-picker{display:flex;flex-wrap:wrap;gap:.5rem;margin:.8rem 0}
+.p27-journey__p44-picker button{flex:1 1 12rem;min-height:44px;text-align:left}
+.p27-journey__p44-picker [aria-pressed=true],
+.p27-journey__p44-options [aria-pressed=true],
+.p27-journey__p44-step-choice [aria-pressed=true]{
+ font-weight:700;outline:2px solid currentColor;outline-offset:2px
+}
+.p27-journey__p44-exchange,.p27-journey__p44-result{
+ border-top:1px solid currentColor;margin-top:.8rem;padding-top:.8rem
+}
+.p27-journey__p44-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:.5rem;margin:.8rem 0}
+.p27-journey__p44-options button{
+ min-height:48px;line-height:1.65;text-align:left;padding:.65rem;overflow-wrap:anywhere
+}
+.p27-journey__p44-feedback,.p27-journey__p44-writing-context{
+ padding:.8rem;margin:.7rem 0;border-inline-start:3px solid currentColor;
+ background:rgba(120,120,120,.07);overflow-wrap:anywhere
+}
+.p27-journey__p44-feedback small{display:block;opacity:.8}
+.p27-journey__p44-step-choice{display:flex;gap:.5rem;flex-wrap:wrap;margin:.7rem 0}
+.p27-journey__p44-step-choice button{min-height:44px;flex:1 1 9rem}
+.p27-journey__p44 button:focus-visible,
+.p27-journey__p44-intro button:focus-visible,
+.p27-journey__p44-writing button:focus-visible{
+ outline:3px solid currentColor;outline-offset:2px
+}
+@media(max-width:620px){
+ .p27-journey__p44,.p27-journey__p44-intro,.p27-journey__p44-writing{padding:.65rem}
+ .p27-journey__p44-picker,.p27-journey__p44-step-choice{
+  display:grid;grid-template-columns:minmax(0,1fr)
+ }
+ .p27-journey__p44-picker button,.p27-journey__p44-step-choice button{width:100%}
+ .p27-journey__p44-options{grid-template-columns:minmax(0,1fr)}
+}
