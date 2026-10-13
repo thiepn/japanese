@@ -20,7 +20,7 @@ export function P59PerformanceStudio({missions,preferredId,recallReadyIds,disabl
  const [attempt,setAttempt]=useState(false);
  const [showAnswer,setShowAnswer]=useState(false);
  const [meaning,setMeaning]=useState<readonly string[]>([]);
- const [openedSources,setOpenedSources]=useState(false);
+ const [openedSources,setOpenedSources]=useState(true);
  const [transcript,setTranscript]=useState(false);
  const [unexpected,setUnexpected]=useState(false);
  const [vocab,setVocab]=useState(false);
@@ -138,10 +138,10 @@ export function P59PerformanceStudio({missions,preferredId,recallReadyIds,disabl
      <h5>1 · Drei zusammenhängende Originalinformationen verstehen</h5>
      <p>{stage.number>=3?"Später Abschnitt: Du entscheidest selbst, wann du die Quellen benötigst.":
       "Lies die längeren Quellen zuerst und decke die Bedeutungen nur bei Bedarf auf."}</p>
-     <button type="button" aria-expanded={openedSources||stage.number<=2}
+     <button type="button" aria-expanded={openedSources}
       onClick={()=>setOpenedSources(v=>!v)}>
-      {openedSources||stage.number<=2?"Schriftliche Quellen einklappen":"Originalquellen eigenständig öffnen"}</button>
-     {openedSources||stage.number<=2?<div className="p59-performance__sources">
+      {openedSources?"Schriftliche Quellen einklappen":"Originalquellen eigenständig öffnen"}</button>
+     {openedSources?<div className="p59-performance__sources">
       {current.source.map((line,i)=>sourceLine(line,"source"+i))}
      </div>:null}
      <h5>2 · Zwei zugehörige Nachrichten</h5>
