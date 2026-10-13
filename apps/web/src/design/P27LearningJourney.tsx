@@ -658,6 +658,19 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               </button>
             </article>)}
           </section>:null}
+          {p48Recommended?<section className="p27-journey__p48-intro"
+            aria-label="Mehrere Quellen und aktuelle Information">
+            <h4>Japanische Angaben zusammenführen statt auswendig kopieren</h4>
+            <p><strong>{p48Recommended.title}</strong> · {p48Recommended.level}</p>
+            <p>{p48Recommended.goal}. Drei Originalquellen vergleichen,
+              Quelle und Zeitpunkt unterscheiden, eigene Antworten begründen
+              und eine spätere andere Situation bewältigen.</p>
+            <button type="button" disabled={disabled}
+              onClick={()=>onJourneyPractice(p48Recommended.units[0]!,
+                `connected-kind:${p48Recommended.id}:comprehension`)}>
+              Drei unabhängige Quellenfragen bearbeiten
+            </button>
+          </section>:null}
           {p47Recommended?<section className="p27-journey__p47-intro"
             aria-label="Erst hören, dann mit Transkript abgleichen">
             <h4>Japanisch verstehen – vom Hören zur eigenen Antwort</h4>
@@ -742,6 +755,15 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               {p40Recommended.turns.length} zusammenhängende Gesprächszüge öffnen
             </button>
           </section>:null}
+          <P48ConnectedSources key={"p48:"+owner} cases={p48Cases}
+            preferredId={p48Recommended?.id} disabled={disabled}
+            onPractice={(caseId,kind)=>{
+              const source=p48ById(caseId);
+              if(source)onJourneyPractice(source.units[0]!,
+                `connected-kind:${source.id}:${kind}`);
+            }}
+            onWriting={chooseP48Writing}
+          />
           <P47ListeningStudio key={"p47:"+owner} scenes={p47Scenes}
             preferredId={p47Recommended?.id} disabled={disabled}
             onPractice={(sceneId,kind)=>{
@@ -1008,6 +1030,25 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Situationswechsel selbstständig üben
             </button>
           </section>:null}
+          {p48WritingCase?<section className="p27-journey__p48-writing-selection"
+            aria-label="Aus drei Japanischquellen ein eigenes Ergebnis schreiben">
+            <h5>Zusammengeführtes Ergebnis unabhängig schreiben</h5>
+            <p><strong>{p48WritingCase.title}</strong> · {p48WritingCase.level}</p>
+            <p>{p48WritingCase.writing.instruction}</p>
+            <p>Nutze die drei originalen Belege und überarbeite dein Ergebnis
+              im existierenden Schreibeditor. Nur die nativen StudyPlayer-Antworten
+              können einen echten FSRS-Lernnachweis erzeugen.</p>
+            <div className="p27-journey__actions">
+              <button type="button" disabled={disabled}
+                onClick={()=>onJourneyPractice(unitId,
+                  `connected-kind:${p48WritingCase.id}:writing`)}>
+                Eigenständig im StudyPlayer schreiben
+              </button>
+              <button type="button" onClick={()=>setP48WritingId("")}>
+                Standardaufgabe wählen
+              </button>
+            </div>
+          </section>:null}
           {p47WritingScene?<section className="p27-journey__p47-writing-selection"
             aria-label="Aus dem gehörten Gespräch eine eigene Antwort verfassen">
             <h5>Gehörte Situation eigenständig weiterführen</h5>
@@ -1181,11 +1222,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <p>Wähle einen Kontext; eine zuletzt verfehlte Lernkarte wird bevorzugt vorgeschlagen.
               Dein Entwurf bleibt im bestehenden Schreibfeld und wird nicht automatisch sprachlich bewertet.</p>
             <div className="p27-journey__p39-picker" role="group" aria-label="Schreibsituation">
-              <button type="button" aria-pressed={!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene}
-                onClick={()=>{setP39WritingId("");setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
+              <button type="button" aria-pressed={!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase}
+                onClick={()=>{setP39WritingId("");setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
                 Reguläres Lernziel</button>
               {p39UnitCases.map(c=><button key={c.id} type="button" aria-pressed={p39Chosen?.id===c.id}
-                onClick={()=>{setP39WritingId(c.id);setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
+                onClick={()=>{setP39WritingId(c.id);setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
                 {c.title}{p39Priority?.id===c.id?" · Vorschlag":""}</button>)}
             </div>
             {p39Chosen?<p>Problematischer Ausgangssatz: <span lang="ja">{p39Chosen.distractors[0]?.form}</span>.
@@ -1193,7 +1234,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"production")}>
               Unabhängige Schreibkorrekturen im StudyPlayer</button>
           </section>:null}
-          <p>{p47WritingScene?p47WritingScene.response.instruction:
+          <p>{p48WritingCase?p48WritingCase.writing.instruction:
+            p47WritingScene?p47WritingScene.response.instruction:
             p46WritingPassage?p46WritingPassage.writing.situation:
             p45WritingTurn?p45WritingTurn.goal:
             p44WritingCase?p44WritingTask:p43WritingDetail?p43WritingDetail.intention:
