@@ -21,6 +21,64 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p55===true){
+    const kind=prompt.eventMetadata?.kind;
+    const focus=prompt.eventMetadata?.focus;
+    const questionKind=prompt.eventMetadata?.questionKind;
+    if(focus==="delayed-independent-return")return {
+      title:"Neuen Gesprächskontext ohne bekanntes Modell eigenständig lösen",
+      promptSpecificGoal:"Die spätere P55-Aufgabe hat andere Personen, Zahlen oder Gründe. "+
+       "Wähle die tatsächlich passende Sprecherabsicht und formulierte Aussage, "+
+       "ohne die alte Szene als neues Hörmaterial auszugeben. Keine FSRS-Fälligkeit "+
+       "aus ungesehener Übung erfinden.",
+      lessonStage:"practice",action:"Neuen A2-Kontext im originalen StudyPlayer bearbeiten"
+    };
+    if(kind==="connected-listening-response")return {
+      title:"Eigenständige japanische Reaktion mit klarer Sprecherrolle",
+      promptSpecificGoal:"Was muss der Adressat wissen oder entscheiden? "+
+       "Antworte situativ mit angemessenem Register und Zeitbezug. "+
+       "Unbewertetes Nachsprechen und getippte Texte sind kein "+
+       "gemessenes Hör- oder Sprechzertifikat.",
+      lessonStage:"write",action:"Im ursprünglichen Learn-Editor selbst formulieren und überarbeiten"
+    };
+    if(kind==="spoken-context-lexicon")return {
+      title:"Wortgebrauch aus tatsächlichem Originalsprechzug erschließen",
+      promptSpecificGoal:"Achte auf die gesprochene Wortverbindung und den Satzbezug. "+
+       "Eine wörtlich belegte P53-Vokabel trägt keine automatische "+
+       "Beherrschungswertung aus bloßem TTS-Anhören.",
+      lessonStage:"learn",action:"Sprechzug bei Bedarf mit Geräte-TTS erneut hören"
+    };
+    if(questionKind==="speaker")return {
+      title:"Sprecherzuordnung statt bloßer Schlagwörter",
+      promptSpecificGoal:"Unterscheide denjenigen, der fragt, denjenigen, "+
+       "der etwas behauptet, und die Person, deren Termin geändert wird. "+
+       "Bei einer synthetischen Stimme ist die Rollenbeschriftung im "+
+       "Originalskript die zuverlässige Zuordnung.",
+      lessonStage:"learn",action:"Rollen und Aussagen am originalen Dialog nachlesen"
+    };
+    if(questionKind==="chronology")return {
+      title:"Erst Vorschlag, dann Prüfung, erst danach Bestätigung",
+      promptSpecificGoal:"Ordne zeitliche Ausdrücke, ursprüngliche Planung, "+
+       "Änderung und tatsächlich erteilte Zusagen. "+
+       "Ein vorgeschlagener neuer Termin wurde damit noch nicht bestätigt.",
+      lessonStage:"learn",action:"Die relevanten Sprechzüge in Reihenfolge zuordnen"
+    };
+    if(questionKind==="cause")return {
+      title:"Hintergrund und tatsächliche Ursache unterscheiden",
+      promptSpecificGoal:"Suche in der Aussage den explizit genannten Grund "+
+       "statt eine nur mögliche Erklärung auszufüllen. "+
+       "Hörensagen mit そうです oder かもしれない bleibt als solches markiert.",
+      lessonStage:"learn",action:"Kausale Wörter im originalen Dialog prüfen"
+    };
+    return {
+      title:"Sprecherabsicht, Unsicherheit und belegt richtige Folgerung",
+      promptSpecificGoal:"Eine höfliche Bitte ist keine Zusage, "+
+       "ein im Gespräch vorgeschlagener Plan noch keine Entscheidung. "+
+       "Nutze die originalen Sätze als Beleg. "+
+       "Textgestützte StudyPlayer-Fragen messen keine tatsächliche Audiowahrnehmung.",
+      lessonStage:"learn",action:"Den entscheidenden Sprechzug erneut abspielen oder lesen"
+    };
+  }
   if(prompt?.eventMetadata?.p54===true){
     const kind=prompt.eventMetadata?.kind;
     const focus=prompt.eventMetadata?.focus;
