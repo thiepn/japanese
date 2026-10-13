@@ -72,6 +72,11 @@ P60 is original A2-targeted instructional content, **not** an earned CEFR A2 cer
 
 **NOT_DONE:** PR creation, merge, migrations, production access, deployments, credentials, paid services, external native voice installation, publisher copying, new progress/grading stores.
 
+
+### P60 source-choice assessment boundary (final correction)
+
+The native P60 **writing, follow-up, revision and unseen transfer** StudyPrompts intentionally use the *original* `form_selection` / `choice` mode: two original context-supported Japanese responses and one specifically wrong source-trap. These are the only alternatives the original graded StudyPlayer records for those modalities. Truly independent user-authored longer Japanese text is composed in the existing ephemeral P60 studio and original multi-draft Learn writer and remains **ungraded** and scheduler-excluded. A matching correct choice is **not** an assessed grade of the learner's separate open writing; no semantic evaluator or private draft persistence has been introduced. Source comprehension retains bounded original textual prompts, with no claim of full semantic Japanese assessment. The late-stage reading source panels are initially concealed at stages three and four and expanded only by user choice, without grading or recording the reveal.
+
 ## Post-P60 outstanding work / proposed next work
 
 P41–P60 original A2 content phases now have substantial committed source. Before release or making any proficiency promises, follow-up must address:
