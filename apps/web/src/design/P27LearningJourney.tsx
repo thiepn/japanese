@@ -192,6 +192,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   },[unitId,nodeId,showTranslation,turn.id]);
   useEffect(()=>()=>microphone.current?.stop(),[]);
   function selectUnit(id:string){setUnitId(id);setStage("learn");}
+  function chooseP40Writing(arcId:string){
+    setP40WritingArcId(arcId);setP39WritingId("");
+    setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
+    setStage("write");
+  }
   function resetDialogue(){
     setNodeId(unit.turns[0]!.id);setStepsTaken(0);setAnswer("");setFirstConversationDraft("");setFeedback(null);
     setChoiceExampleSeen(false);
@@ -470,6 +475,16 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 Diese Situation schriftlich überarbeiten</button>
             </div>
           </section>:null}
+          {p40Recommended?<section className="p27-journey__p40-guidance">
+            <h4>Mehrere Antworten im selben Gespräch</h4>
+            <p>Gesprächspartner, Ziel und Höflichkeit bleiben über drei Schritte
+              erhalten. Du entscheidest nicht nur über einzelne Wörter.</p>
+            <p><strong>{p40Recommended.title}</strong> — {p40Recommended.setting}</p>
+            <button type="button" onClick={()=>{setP40ArcId(p40Recommended.id);setP40TurnIndex(0);
+              setP40Choice("");setStage("conversation");}}>
+              Gespräch mit drei zusammenhängenden Zügen öffnen
+            </button>
+          </section>:null}
           <h4>Wörter in Sätzen</h4>
           <div className="p27-journey__words">{unit.words.map(w=><div key={w.form+"-"+w.reading}>
             <strong lang="ja">{w.form}</strong><small lang="ja">{w.reading}</small>
@@ -485,6 +500,54 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
         </section>:null}
         {stage==="conversation"?<section className="p27-journey__panel">
           <h4>Mehrstufiger Dialog</h4>
+          {p40ActiveArc&&p40CurrentTurn?<section className="p27-journey__p40-dialogue"
+            aria-label="Originales Gespräch mit drei Schritten">
+            <h5>Drei Gesprächszüge — Bedeutung beibehalten</h5>
+            <p>Diese geführte Gegenüberstellung ist <strong>unbewertet</strong>.
+              Die Antworten der Gesprächspartner sind vorgegeben. Die getrennten
+              StudyPlayer-Aufgaben prüfen anschließend ohne eingeblendete Lösung.</p>
+            <div className="p27-journey__p40-arcs" role="group" aria-label="Gesprächssituation wechseln">
+              {p40UnitArcs.map(arc=><button key={arc.id} type="button"
+                aria-pressed={p40ActiveArc.id===arc.id}
+                onClick={()=>{setP40ArcId(arc.id);setP40TurnIndex(0);setP40Choice("");}}>
+                {arc.title}</button>)}
+            </div>
+            <p>{p40ActiveArc.setting}</p>
+            <article aria-label={"Gesprächsschritt "+p40CurrentTurn.number}>
+              <strong>Schritt {p40CurrentTurn.number} von {p40ActiveArc.turns.length}</strong>
+              <p><strong>Gesprächspartner:</strong> <span lang="ja">{p40CurrentTurn.partner}</span></p>
+              <p><strong>Dein Ziel:</strong> {p40CurrentTurn.intention}</p>
+              <div className="p27-journey__p40-options" role="group" aria-label="Antwort im Verlauf auswählen">
+                {[p40CurrentTurn.misstep,p40CurrentTurn.model,p40CurrentTurn.alternative].map(form=>
+                  <button key={form} type="button" lang="ja" aria-pressed={p40Choice===form}
+                    onClick={()=>setP40Choice(form)}>{form}</button>)}
+              </div>
+              {p40Choice?<div className="p27-journey__p40-feedback" role="status">
+                <strong>{p40TurnFeedback(p40CurrentTurn,p40Choice).kind==="authored"?
+                  "Passende Ausdrucksweise":"Diese Antwort verfehlt die beabsichtigte Gesprächsrichtung"}</strong>
+                <p>{p40TurnFeedback(p40CurrentTurn,p40Choice).message}</p>
+                <small>Nur dieses Beispiel ist beurteilt; keine Aussage über freie Alternativen.</small>
+              </div>:null}
+              <div className="p27-journey__actions">
+                <button type="button" disabled={!p40Choice||p40TurnIndex>=p40ActiveArc.turns.length-1}
+                  onClick={()=>{setP40TurnIndex(i=>i+1);setP40Choice("");}}>
+                  Nächste Gesprächsantwort
+                </button>
+                <button type="button" onClick={()=>{setP40TurnIndex(0);setP40Choice("");}}>
+                  Gespräch von vorn ansehen
+                </button>
+              </div>
+            </article>
+            <div className="p27-journey__actions">
+              <button type="button" disabled={disabled}
+                onClick={()=>onJourneyPractice(unitId,`dialogue:${p40ActiveArc.id}`)}>
+                Alle drei Schritte ohne Lösung im StudyPlayer bearbeiten
+              </button>
+              <button type="button" onClick={()=>chooseP40Writing(p40ActiveArc.id)}>
+                Zweiten Zug selbst schriftlich korrigieren
+              </button>
+            </div>
+          </section>:null}
           <div className="p27-journey__filters" role="group" aria-label="Antwortart">
             <button type="button" aria-pressed={inputMode==="compose"} onClick={()=>{setInputMode("compose");setFeedback(null);}}>Selbst formulieren</button>
             <button type="button" aria-pressed={inputMode==="choose"} onClick={()=>{setInputMode("choose");setHintUsed(true);setChoiceExampleSeen(true);setFeedback(null);}}>Antworten auswählen</button>
