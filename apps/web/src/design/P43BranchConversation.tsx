@@ -102,10 +102,10 @@ export function P43BranchConversation({scenes,disabled,preferredId,onIndependent
        {phase==="opening"?"Folgeantwort des Gegenübers anzeigen":"Verlauf abschließen"}
       </button>
       <button type="button" disabled={disabled} onClick={()=>
-        phase==="opening"?onIndependent(scene.id):onIndependent(scene.id,phase)}>
+        phase==="opening"?onIndependent(scene.id):onIndependent(scene.id,phase as P43RouteKey)}>
         Diese Entscheidung im StudyPlayer selbstständig bearbeiten
       </button>
-      {route?<button type="button" onClick={()=>onWriting(scene.id,phase)}>
+      {route?<button type="button" onClick={()=>onWriting(scene.id,phase as P43RouteKey)}>
         Diese Antwort schriftlich überarbeiten
       </button>:null}
     </div>
