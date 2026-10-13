@@ -1,0 +1,20 @@
+.p53-study{margin-block:1.2rem;padding:1rem;min-width:0;border:1px solid var(--border-color,#7775)}
+.p53-study h4{margin:0 0 .7rem}
+.p53-study__filters{display:grid;grid-template-columns:minmax(9rem,13rem) minmax(0,1fr);gap:.6rem 1rem;align-items:center;margin:1rem 0}
+.p53-study__filters label{font-weight:600}
+.p53-study__filters :is(input,select){width:100%;min-width:0}
+.p53-study__layout{display:grid;grid-template-columns:minmax(11rem,16rem) minmax(0,1fr);gap:1rem;min-width:0}
+.p53-study__catalog{display:grid;align-content:start;gap:.3rem;max-height:32rem;overflow-y:auto;overscroll-behavior:contain;padding:.2rem}
+.p53-study__catalog button{display:grid;gap:.1rem;text-align:start;padding:.65rem;border-radius:.2rem;border:1px solid var(--border-color,#7774);background:transparent;color:inherit;white-space:normal}
+.p53-study__catalog button[aria-current="page"],.p53-study__modes button[aria-pressed="true"]{outline:2px solid currentColor}
+.p53-study__catalog small{opacity:.76}
+.p53-study__workspace{min-width:0;overflow-wrap:anywhere}
+.p53-study__workspace h5[lang="ja"]{font-size:1.3rem;line-height:1.55;margin-block:.5rem}
+.p53-study__workspace [lang="ja"]{font-family:system-ui,"Noto Sans JP",sans-serif;overflow-wrap:anywhere}
+.p53-study__workspace section{padding-block:.85rem;border-top:1px solid var(--border-color,#7774)}
+.p53-study__workspace textarea{box-sizing:border-box;width:100%;font-size:1.08rem;line-height:1.65}
+.p53-study__workspace :is(label,small){display:block}
+.p53-study__modes,.p53-study__actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-block:.7rem}
+.p53-study__feedback{padding:.8rem;border:1px solid var(--border-color,#8885);margin-block:.8rem}
+.p53-study button:focus-visible{outline:3px solid currentColor;outline-offset:2px}
+@media(max-width:720px){.p53-study{padding:.65rem}.p53-study__filters,.p53-study__layout{grid-template-columns:minmax(0,1fr)}.p53-study__catalog{display:flex;max-height:none;overflow-x:auto;scroll-snap-type:x mandatory}.p53-study__catalog p{display:none}.p53-study__catalog button{flex:0 0 min(72vw,16rem);scroll-snap-align:start}}
