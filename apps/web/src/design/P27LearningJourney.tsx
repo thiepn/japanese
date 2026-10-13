@@ -633,6 +633,18 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     if(!confirmUnsentWriting())return;
     onSourcePractice(source,id,mode);
   }
+  function startMistakePractice(id:string,promptId:string){
+    if(!confirmUnsentWriting())return;
+    onMistakePractice(id,promptId);
+  }
+  function startRoleDuePractice(id:string,scenarioId:string){
+    if(!confirmUnsentWriting())return;
+    onRoleDuePractice(id,scenarioId);
+  }
+  function startCorrectionDuePractice(id:string,scenarioId:string){
+    if(!confirmUnsentWriting())return;
+    onCorrectionDuePractice(id,scenarioId);
+  }
   function selectUnit(id:string,next:JourneyStage="learn"):boolean{
     if(!journeyUnits.some(item=>item.id===id))return false;
     if(id!==unitId&&!confirmUnsentWriting())return false;
@@ -1820,8 +1832,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               onReview={()=>startPractice(unitId,"review")}
               onGrammar={()=>startPractice(unitId,"grammar")}
               traces={evidence?.traces??[]}
-              onRoleDue={scenarioId=>onRoleDuePractice(unitId,scenarioId)}
-              onCorrectionDue={scenarioId=>onCorrectionDuePractice(unitId,scenarioId)}/>
+              onRoleDue={scenarioId=>startRoleDuePractice(unitId,scenarioId)}
+              onCorrectionDue={scenarioId=>startCorrectionDuePractice(unitId,scenarioId)}/>
           </details>:null}
           {(nodeId==="__finished__"||stepsTaken>=14)?<P28Continuity key={unit.id+":"+owner}
             unitId={unit.id} owner={owner} disabled={disabled} onReviewed={()=>setReload(n=>n+1)}
@@ -2690,7 +2702,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               </div>
               <div className="p27-journey__mistake-actions">
                 <button type="button" disabled={disabled}
-                  onClick={()=>onMistakePractice(unitId,mistake.promptId)}>
+                  onClick={()=>startMistakePractice(unitId,mistake.promptId)}>
                   Genau diese Aufgabe üben
                 </button>
                 <details>
