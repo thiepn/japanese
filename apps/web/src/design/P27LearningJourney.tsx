@@ -1262,22 +1262,25 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
           {rewriteStage!=="draft"?<>
             <div className="p27-journey__note">
               <strong>Orientierung zur Korrektur</strong>
-              <p>{p47WritingScene?p47WritingScene.response.feedback:
+              <p>{p48WritingCase?p48WritingCase.writing.feedback:
+                p47WritingScene?p47WritingScene.response.feedback:
                 p46WritingPassage?p46WritingPassage.writing.why:
                 p45WritingTurn?p45WritingTurn.why:
                 p44WritingCase?(p44WritingStep==="reply"?p44WritingCase.followupWhy:p44WritingCase.nuance):
                 p43WritingDetail?p43WritingDetail.why:p40WritingTurn?p40WritingTurn.why:
                 p39Chosen?p39Chosen.rule:unit.writing.reflection}</p>
-              {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene?
+              {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase?
                 <p><span lang="ja">{unit.writing.features.join(" · ")}</span></p>:null}
               <details><summary>Originales Beispiel vergleichen</summary>
-                <p lang="ja">{p47WritingScene?p47WritingScene.response.model:
+                <p lang="ja">{p48WritingCase?p48WritingCase.writing.model:
+                  p47WritingScene?p47WritingScene.response.model:
                   p46WritingPassage?p46WritingPassage.writing.model:
                   p45WritingTurn?p45WritingTurn.model:
                   p44WritingCase?(p44WritingStep==="reply"?p44WritingCase.followupModel:p44WritingCase.model):
                   p43WritingDetail?p43WritingDetail.model:p40WritingTurn?p40WritingTurn.model:
                   p39Chosen?p39Chosen.model:unit.writing.reference}</p>
-                {p47WritingScene?<p lang="ja">{p47WritingScene.response.alternative}</p>:
+                {p48WritingCase?<p lang="ja">{p48WritingCase.writing.alternative}</p>:
+                  p47WritingScene?<p lang="ja">{p47WritingScene.response.alternative}</p>:
                   p46WritingPassage?<p lang="ja">{p46WritingPassage.writing.alternative}</p>:
                   p45WritingTurn?<p lang="ja">{p45WritingTurn.alternative}</p>:
                   p44WritingCase?<p lang="ja">{p44WritingStep==="reply"?
@@ -1291,7 +1294,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               aria-keyshortcuts="Control+Enter Meta+Enter"
               onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
                 e.preventDefault();if(rewrite.trim()&&!busy){
-                  setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase||p45WritingTurn||p46WritingPassage||p47WritingScene?[]:unit.writing.features));setRewriteStage("compare");
+                  setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase||p45WritingTurn||p46WritingPassage||p47WritingScene||p48WritingCase?[]:unit.writing.features));setRewriteStage("compare");
                 }
               }}}
               onChange={e=>{
@@ -1300,14 +1303,22 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <div className="p27-journey__actions">
               <button type="button" onClick={()=>recognize("rewrite")}>Überarbeitung diktieren</button>
               <button type="button" disabled={!rewrite.trim()} onClick={()=>{
-                setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase||p45WritingTurn||p46WritingPassage||p47WritingScene?[]:unit.writing.features));setRewriteStage("compare");
+                setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase||p45WritingTurn||p46WritingPassage||p47WritingScene||p48WritingCase?[]:unit.writing.features));setRewriteStage("compare");
               }}>Versionen vergleichen</button>
             </div>
           </>:null}
           {rewriteStage==="compare"&&report?<div className="p27-journey__note" role="status">
             <strong>Zeichenbasierte Beobachtungen, keine Sprachbewertung</strong>
             <p>{report.oldLength} → {report.newLength} Zeichen. Geändert: {report.changed?"ja":"nein"}</p>
-            {p47WritingScene?<div className="p27-journey__p47-comparison">
+            {p48WritingCase?<div className="p27-journey__p48-comparison">
+              <strong>Quellenbezogener Mustervergleich – keine automatisch bewertete Japanischprosa</strong>
+              <p>{p48Comparison(rewrite,
+                [p48WritingCase.writing.model,p48WritingCase.writing.alternative],
+                p48WritingCase.writing.misconception,p48WritingCase.writing.feedback).message}</p>
+              <p>{p48WritingCase.sourceNotes}</p>
+              <small>Weitere sachlich korrekte Antworten können außerhalb der verfassten
+                Muster liegen und werden nicht als falsch eingeordnet.</small>
+            </div>:p47WritingScene?<div className="p27-journey__p47-comparison">
               <strong>Gehörter Kontext – begrenzter schriftlicher Mustervergleich</strong>
               <p>{p47AuthoredFeedback(rewrite,
                 [p47WritingScene.response.model,p47WritingScene.response.alternative],
@@ -1362,7 +1373,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <p>Nicht erkannt: {report.missing.join(" · ")||"keine"}</p>
               <ul>{grammarReflection(unit,rewrite).map((note,i)=><li key={i}>{note}</li>)}</ul>
             </>}
-            {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene?
+            {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase?
               <div className="p27-journey__revision">
               <strong>Überarbeitete Partikeln und Formen</strong>
               <p>Neue Partikeln: {describeP29Revision(draft,rewrite,unit).addedParticles.join(" · ")||"keine"}</p>
@@ -1426,7 +1437,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             {p40ReturnCueStatus.map(cue=><div key={cue.id} className="p27-journey__p40-return-item">
               <div><strong>{p40UnitArcs.find(arc=>arc.id===cue.arcId)?.title??
                 p43SceneById(cue.arcId)?.title??p44ById(cue.arcId)?.title??
-                p45ById(cue.arcId)?.title??p46ById(cue.arcId)?.title??p47ById(cue.arcId)?.title??"Gesprächstransfer"}</strong>
+                p45ById(cue.arcId)?.title??p46ById(cue.arcId)?.title??p47ById(cue.arcId)?.title??p48ById(cue.arcId)?.title??"Gesprächstransfer"}</strong>
                 <small>{cue.due?"Jetzt laut FSRS fällig":
                   cue.planned?"Für einen späteren FSRS-Termin eingeplant":
                   "Noch kein FSRS-Termin vorhanden"}</small></div>
