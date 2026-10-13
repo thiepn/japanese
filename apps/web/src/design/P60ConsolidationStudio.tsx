@@ -26,6 +26,7 @@ export function P60ConsolidationStudio({
 }){
  const [chosen,setChosen]=useState("");
  const [step,setStep]=useState<Step>("reading");
+ const [sourceDisclosure,setSourceDisclosure]=useState<boolean|null>(null);
  const [mode,setMode]=useState<Kind>("question");
  const [questionIndex,setQuestionIndex]=useState(0);
  const [draft,setDraft]=useState("");
@@ -62,6 +63,7 @@ export function P60ConsolidationStudio({
   .sort((a,b)=>a-b),[historical]);
  if(!lesson)return null;
  const stage=p60Stage(lesson.id),q=lesson.questions[questionIndex]??lesson.questions[0]!;
+ const sourcesVisible=sourceDisclosure??stage.stage<=2;
  const task=mode==="question"?q:mode==="strategy"?lesson.strategy:
   mode==="writing"?lesson.writing:mode==="revision"?{
    situation:"Korrigiere den ursprünglichen originalen Fehltext ohne unbelegte Behauptungen.",
@@ -89,7 +91,7 @@ export function P60ConsolidationStudio({
  const stepIndex=steps.findIndex(s=>s[0]===step);
  const toggle=(key:string)=>setReveal(old=>old.includes(key)?old.filter(v=>v!==key):[...old,key]);
  function choose(id:string){
-  stop();setChosen(id);setStep("reading");setMode("question");setQuestionIndex(0);
+  stop();setChosen(id);setStep("reading");setSourceDisclosure(null);setMode("question");setQuestionIndex(0);
   setDraft("");setAttempt(false);setModels(false);
   setReveal([]);setSpoken(false);setShowVocabulary(false);
   setSearch("");setShowMore(15);setTtsStatus("");
@@ -261,9 +263,18 @@ export function P60ConsolidationStudio({
      <p>Lies die drei Originaltexte und zwei Nachrichten. Übersetzungen
       sind optional. Kennzeichne selbst, wer etwas vorschlägt und wer
       eine Änderung bestätigt.</p>
-     {lesson.text.map((x,i)=>source(x,"text"+i))}
-     <h5>Zwei neue Nachrichten</h5>
-     {lesson.messages.map((x,i)=>source(x,"message"+i))}
+     <button type="button" aria-expanded={sourcesVisible}
+      onClick={()=>setSourceDisclosure(!sourcesVisible)}>
+      {sourcesVisible?"Originalquellen einklappen":"Originalquellen zum eigenständigen Lesen öffnen"}
+     </button>
+     {stage.stage>=3?<p>Stufe {stage.stage}: Die Originaltexte bleiben zunächst verborgen.
+      Öffne sie selbst, wenn du den Sachstand belegen musst. Das Abrufen der
+      Quelle ist keine Bewertung und erzeugt keine Lernhistorie.</p>:null}
+     {sourcesVisible?<div className="p60-consolidation__source-set">
+      {lesson.text.map((x,i)=>source(x,"text"+i))}
+      <h5>Zwei neue Nachrichten</h5>
+      {lesson.messages.map((x,i)=>source(x,"message"+i))}
+     </div>:null}
      <button type="button" onClick={next}>Zum Gespräch und Hören</button>
     </section>:null}
     {step==="speaking"?<section>
