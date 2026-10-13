@@ -545,7 +545,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     .map(prompt=>{
       const historicalReturn=isHistoricalReturn(prompt);
       const historicalStatus=historicalReturn?historicalReturnEligibility(
-        prompt,evidence?.traces??[],evidence?.events??[],Date.now()):null;
+        prompt,evidence?.traces??[],evidence?.events??[],Date.now(),owner):null;
       const trace=evidence?.traces.find(t=>t.id===traceIdJourney(prompt));
       const when=trace?Date.parse(trace.card.due):NaN;
       return {id:prompt.id,historicalReturn,historicalReady:historicalStatus?.eligible??false,
