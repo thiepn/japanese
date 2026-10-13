@@ -298,7 +298,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   useEffect(()=>()=>microphone.current?.stop(),[]);
   function selectUnit(id:string){setUnitId(id);setStage("learn");}
   function chooseP40Writing(arcId:string,turnIndex?:number){
-    setP40WritingArcId(arcId);setP39WritingId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");
+    setP40WritingArcId(arcId);setP39WritingId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");setP51WritingId("");
     const target=p41ArcById(arcId)??p42ArcById(arcId);
     setP40WritingTurnIndex(turnIndex??(target?target.pivotTurn-1:1));
     setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
@@ -307,21 +307,21 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   function chooseP43Writing(sceneId:string,route:P43RouteKey){
     if(!p43ForUnit(unitId).some(s=>s.id===sceneId))return;
     setP43WritingSceneId(sceneId);setP43WritingRoute(route);
-    setP40WritingArcId("");setP39WritingId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");
+    setP40WritingArcId("");setP39WritingId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");setP51WritingId("");
     setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
     setStage("write");
   }
   function chooseP44Writing(id:string,step:"production"|"reply"){
     if(!p44ForUnit(unitId).some(c=>c.id===id))return;
     setP44WritingId(id);setP44WritingStep(step);
-    setP40WritingArcId("");setP39WritingId("");setP43WritingSceneId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");
+    setP40WritingArcId("");setP39WritingId("");setP43WritingSceneId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");setP51WritingId("");
     setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
     setStage("write");
   }
   function chooseP45Writing(id:string,turnIndex:number){
     if(!p45ForUnit(unitId).some(c=>c.id===id))return;
     setP45WritingId(id);setP45WritingIndex(turnIndex);
-    setP40WritingArcId("");setP39WritingId("");setP43WritingSceneId("");setP44WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");
+    setP40WritingArcId("");setP39WritingId("");setP43WritingSceneId("");setP44WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");setP51WritingId("");
     setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
     setStage("write");
   }
@@ -331,7 +331,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setUnitId(reading.units[0]!);
     setP46WritingId(reading.id);
     setP40WritingArcId("");setP39WritingId("");setP43WritingSceneId("");
-    setP44WritingId("");setP45WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");
+    setP44WritingId("");setP45WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");setP51WritingId("");
     setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
     setStage("write");
   }
@@ -341,7 +341,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setUnitId(scene.units[0]!);
     setP47WritingId(scene.id);
     setP40WritingArcId("");setP39WritingId("");setP43WritingSceneId("");
-    setP44WritingId("");setP45WritingId("");setP46WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");
+    setP44WritingId("");setP45WritingId("");setP46WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");setP51WritingId("");
     setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
     setStage("write");
   }
@@ -1465,7 +1465,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
           {rewriteStage!=="draft"?<>
             <div className="p27-journey__note">
               <strong>Orientierung zur Korrektur</strong>
-              <p>{p50WritingMission?p50WritingMission.writing.feedback:
+              <p>{p51WritingContrast?p51WritingContrast.production.feedback:
+                p50WritingMission?p50WritingMission.writing.feedback:
                 p49WritingDocument?p49WritingDocument.writing.explanation:
                 p48WritingCase?p48WritingCase.writing.feedback:
                 p47WritingScene?p47WritingScene.response.feedback:
@@ -1474,10 +1475,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 p44WritingCase?(p44WritingStep==="reply"?p44WritingCase.followupWhy:p44WritingCase.nuance):
                 p43WritingDetail?p43WritingDetail.why:p40WritingTurn?p40WritingTurn.why:
                 p39Chosen?p39Chosen.rule:unit.writing.reflection}</p>
-              {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase&&!p49WritingDocument&&!p50WritingMission?
+              {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase&&!p49WritingDocument&&!p50WritingMission&&!p51WritingContrast?
                 <p><span lang="ja">{unit.writing.features.join(" · ")}</span></p>:null}
               <details><summary>Originales Beispiel vergleichen</summary>
-                <p lang="ja">{p50WritingMission?p50WritingMission.writing.model:
+                <p lang="ja">{p51WritingContrast?p51WritingContrast.production.model:
+                  p50WritingMission?p50WritingMission.writing.model:
                   p49WritingDocument?p49WritingDocument.writing.model:
                   p48WritingCase?p48WritingCase.writing.model:
                   p47WritingScene?p47WritingScene.response.model:
@@ -1486,7 +1488,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                   p44WritingCase?(p44WritingStep==="reply"?p44WritingCase.followupModel:p44WritingCase.model):
                   p43WritingDetail?p43WritingDetail.model:p40WritingTurn?p40WritingTurn.model:
                   p39Chosen?p39Chosen.model:unit.writing.reference}</p>
-                {p50WritingMission?<p lang="ja">{p50WritingMission.writing.alternative}</p>:
+                {p51WritingContrast?<p lang="ja">{p51WritingContrast.production.alternative}</p>:
+                  p50WritingMission?<p lang="ja">{p50WritingMission.writing.alternative}</p>:
                   p49WritingDocument?<p lang="ja">{p49WritingDocument.writing.alternative}</p>:
                   p48WritingCase?<p lang="ja">{p48WritingCase.writing.alternative}</p>:
                   p47WritingScene?<p lang="ja">{p47WritingScene.response.alternative}</p>:
@@ -1503,7 +1506,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               aria-keyshortcuts="Control+Enter Meta+Enter"
               onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
                 e.preventDefault();if(rewrite.trim()&&!busy){
-                  setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase||p45WritingTurn||p46WritingPassage||p47WritingScene||p48WritingCase||p49WritingDocument||p50WritingMission?[]:unit.writing.features));setRewriteStage("compare");
+                  setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase||p45WritingTurn||p46WritingPassage||p47WritingScene||p48WritingCase||p49WritingDocument||p50WritingMission||p51WritingContrast?[]:unit.writing.features));setRewriteStage("compare");
                 }
               }}}
               onChange={e=>{
@@ -1512,14 +1515,23 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <div className="p27-journey__actions">
               <button type="button" onClick={()=>recognize("rewrite")}>Überarbeitung diktieren</button>
               <button type="button" disabled={!rewrite.trim()} onClick={()=>{
-                setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase||p45WritingTurn||p46WritingPassage||p47WritingScene||p48WritingCase||p49WritingDocument||p50WritingMission?[]:unit.writing.features));setRewriteStage("compare");
+                setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase||p45WritingTurn||p46WritingPassage||p47WritingScene||p48WritingCase||p49WritingDocument||p50WritingMission||p51WritingContrast?[]:unit.writing.features));setRewriteStage("compare");
               }}>Versionen vergleichen</button>
             </div>
           </>:null}
           {rewriteStage==="compare"&&report?<div className="p27-journey__note" role="status">
             <strong>Zeichenbasierte Beobachtungen, keine Sprachbewertung</strong>
             <p>{report.oldLength} → {report.newLength} Zeichen. Geändert: {report.changed?"ja":"nein"}</p>
-            {p50WritingMission?<div className="p27-journey__p50-comparison">
+            {p51WritingContrast?<div className="p27-journey__p51-comparison-feedback">
+              <strong>Grammatische Sprecherabsicht – begrenzter Originalbeispielvergleich</strong>
+              <p>{p51AuthoredComparison(rewrite,
+                [p51WritingContrast.production.model,p51WritingContrast.production.alternative],
+                p51WritingContrast.production.misconception,
+                p51WritingContrast.production.feedback).message}</p>
+              <p>{p51WritingContrast.choiceRule}</p>
+              <small>Außerhalb dieser Beispiele formulierte richtige japanische Sätze
+                können hier nicht automatisch als richtig erkannt werden.</small>
+            </div>:p50WritingMission?<div className="p27-journey__p50-comparison">
               <strong>Quellenbezogener Mustervergleich – keine allgemeine Bedeutungsbewertung</strong>
               <p>{p50AuthoredComparison(rewrite,
                 [p50WritingMission.writing.model,p50WritingMission.writing.alternative],
@@ -1598,7 +1610,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <p>Nicht erkannt: {report.missing.join(" · ")||"keine"}</p>
               <ul>{grammarReflection(unit,rewrite).map((note,i)=><li key={i}>{note}</li>)}</ul>
             </>}
-            {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase&&!p49WritingDocument&&!p50WritingMission?
+            {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase&&!p49WritingDocument&&!p50WritingMission&&!p51WritingContrast?
               <div className="p27-journey__revision">
               <strong>Überarbeitete Partikeln und Formen</strong>
               <p>Neue Partikeln: {describeP29Revision(draft,rewrite,unit).addedParticles.join(" · ")||"keine"}</p>
@@ -1662,7 +1674,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             {p40ReturnCueStatus.map(cue=><div key={cue.id} className="p27-journey__p40-return-item">
               <div><strong>{p40UnitArcs.find(arc=>arc.id===cue.arcId)?.title??
                 p43SceneById(cue.arcId)?.title??p44ById(cue.arcId)?.title??
-                p45ById(cue.arcId)?.title??p46ById(cue.arcId)?.title??p47ById(cue.arcId)?.title??p48ById(cue.arcId)?.title??p49ById(cue.arcId)?.title??p50ById(cue.arcId)?.title??"Gesprächstransfer"}</strong>
+                p45ById(cue.arcId)?.title??p46ById(cue.arcId)?.title??p47ById(cue.arcId)?.title??p48ById(cue.arcId)?.title??p49ById(cue.arcId)?.title??p50ById(cue.arcId)?.title??p51ById(cue.arcId)?.title??"Gesprächstransfer"}</strong>
                 <small>{cue.due?"Jetzt laut FSRS fällig":
                   cue.planned?"Für einen späteren FSRS-Termin eingeplant":
                   "Noch kein FSRS-Termin vorhanden"}</small></div>
