@@ -62,7 +62,7 @@ const raw:readonly P60RawUnit[]=[
 ["住人Ａ","そうだったのですね。では、結果がわかったら教えてください。","A: Bitte Untersuchungsergebnis mitteilen."],
 ["管理人","はい。明日の午後に確認してからご連絡します。","Verwaltung: Prüft morgen Nachmittag und meldet sich."]],
 [["status","音の原因は隣の人だと決まりましたか。","いいえ、まだ調べています。","いいえ、機械の可能性もあります。","はい、隣の人が原因です。","Uncertain cause.","原因はまだわかりません","調べています"],
-["chronology","管理人はいつ確認する予定ですか。","明日の午後です。","明日の午後に調べます。","昨日の朝です。","Future verification.","木曜日の午後","明日の午後に確認"]],
+["chronology","管理人はいつ確認する予定ですか。","明日の午後です。","明日の午後に調べます。","昨日の朝です。","Der schriftliche Hinweis am Donnerstag betrifft die Flurreinigung, NICHT die Untersuchung. Nur die spätere mündliche Aussage des Hausverwalters nennt morgen Nachmittag.","木曜日の午後に共用の廊下を掃除します","明日の午後に確認"]],
 ["Appropriate next action.","音の原因を決めつけずに、管理人の確認を待ちます。","落ち着いて状況を説明します。","隣の人が悪いと全員に知らせます。","Avoid unsupported blame."],
 ["Write a respectful note in two or three sentences.","昨夜十一時ごろに大きな音が聞こえましたが、原因はまだわかりません。ご確認いただき、結果を教えていただけますか。よろしくお願いいたします。","夜の音について一度ご相談したいです。","隣の人がうるさいので必ず罰してください。","Neutral account."],
 ["管理人","調べたところ、共用の機械が原因でした。修理は来週を予定しています。","Verwaltung: Haustechnik ursächlich; Reparatur nächste Woche geplant.","Update source and future repair truthfully.","ご確認ありがとうございます。機械が原因だとわかりました。修理は来週の予定なのですね。","原因がわかって安心しました。修理の連絡を待ちます。","隣の人が原因でした。","New confirmed evidence."],
