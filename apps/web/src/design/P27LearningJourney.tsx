@@ -735,6 +735,20 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               </button>
             </article>)}
           </section>:null}
+          {p51Recommended?<section className="p27-journey__p51-intro"
+            aria-label="A2 Grammatikform und Sprechabsicht unterscheiden">
+            <h4>A2 Grammatik – Situationen erklären statt Satzenden sammeln</h4>
+            <p><strong>{p51Recommended.title}</strong> ·
+               <span lang="ja"> {p51Recommended.formA} / {p51Recommended.formB}</span></p>
+            <p>{p51Recommended.scene} Kontrast, eigene Formulierung,
+              Fehlannahme, praktische Überarbeitung und späterer Transfer
+              laufen über die vorhandene Lernarchitektur.</p>
+            <button type="button" disabled={disabled}
+              onClick={()=>onJourneyPractice(p51Recommended.units[0]!,
+                `contrast-kind:${p51Recommended.id}:meaning`)}>
+              Grammatikbedeutung im StudyPlayer abrufen
+            </button>
+          </section>:null}
           {p50Recommended?<section className="p27-journey__p50-intro"
             aria-label="Gelesene und gehörte Japanischinformationen verknüpfen">
             <h4>Japanisch kombiniert verstehen: erst lesen, dann hören</h4>
@@ -858,6 +872,15 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               {p40Recommended.turns.length} zusammenhängende Gesprächszüge öffnen
             </button>
           </section>:null}
+          <P51GrammarStudio key={"p51:"+owner} contrasts={p51Contrasts}
+            preferredId={p51Recommended?.id} disabled={disabled}
+            onPractice={(contrastId,kind)=>{
+              const contrast=p51ById(contrastId);
+              if(contrast)onJourneyPractice(contrast.units[0]!,
+                `contrast-kind:${contrast.id}:${kind}`);
+            }}
+            onWriting={chooseP51Writing}
+          />
           <P50IntegratedStudio key={"p50:"+owner} missions={p50Missions}
             preferredId={p50Recommended?.id} disabled={disabled}
             onPractice={(missionId,kind)=>{
@@ -1151,6 +1174,24 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Situationswechsel selbstständig üben
             </button>
           </section>:null}
+          {p51WritingContrast?<section className="p27-journey__p51-writing-selection"
+            aria-label="A2 grammatische Form im eigenen Kontext überarbeiten">
+            <h5>Grammatik aus der Situation heraus schriftlich verwenden</h5>
+            <p><strong>{p51WritingContrast.title}</strong> · <span lang="ja">
+              {p51WritingContrast.formA} / {p51WritingContrast.formB}</span></p>
+            <p>{p51WritingContrast.production.situation}</p>
+            <p>Das vorhandene Schreiben-System erfasst den Entwurf und
+              die Revision, aber bewertet freies Japanisch nicht semantisch.
+              Nur unabhängige StudyPlayer-Antworten nutzen die native FSRS-Instanz.</p>
+            <div className="p27-journey__actions">
+              <button type="button" disabled={disabled}
+                onClick={()=>onJourneyPractice(unitId,
+                  `contrast-kind:${p51WritingContrast.id}:production`)}>
+                Eigenständige Grammatikproduktion im StudyPlayer
+              </button>
+              <button type="button" onClick={()=>setP51WritingId("")}>Standardaufgabe wählen</button>
+            </div>
+          </section>:null}
           {p50WritingMission?<section className="p27-journey__p50-writing-selection"
             aria-label="Auf gelesene und gehörte Originalinformation reagieren">
             <h5>Informationen verbinden und eigenständig antworten</h5>
@@ -1381,11 +1422,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <p>Wähle einen Kontext; eine zuletzt verfehlte Lernkarte wird bevorzugt vorgeschlagen.
               Dein Entwurf bleibt im bestehenden Schreibfeld und wird nicht automatisch sprachlich bewertet.</p>
             <div className="p27-journey__p39-picker" role="group" aria-label="Schreibsituation">
-              <button type="button" aria-pressed={!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase&&!p49WritingDocument&&!p50WritingMission}
-                onClick={()=>{setP39WritingId("");setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
+              <button type="button" aria-pressed={!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase&&!p49WritingDocument&&!p50WritingMission&&!p51WritingContrast}
+                onClick={()=>{setP39WritingId("");setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");setP51WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
                 Reguläres Lernziel</button>
               {p39UnitCases.map(c=><button key={c.id} type="button" aria-pressed={p39Chosen?.id===c.id}
-                onClick={()=>{setP39WritingId(c.id);setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
+                onClick={()=>{setP39WritingId(c.id);setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");setP51WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
                 {c.title}{p39Priority?.id===c.id?" · Vorschlag":""}</button>)}
             </div>
             {p39Chosen?<p>Problematischer Ausgangssatz: <span lang="ja">{p39Chosen.distractors[0]?.form}</span>.
@@ -1393,7 +1434,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"production")}>
               Unabhängige Schreibkorrekturen im StudyPlayer</button>
           </section>:null}
-          <p>{p50WritingMission?p50WritingMission.writing.instruction:
+          <p>{p51WritingContrast?p51WritingContrast.production.situation:
+            p50WritingMission?p50WritingMission.writing.instruction:
             p49WritingDocument?p49WritingDocument.writing.instruction:
             p48WritingCase?p48WritingCase.writing.instruction:
             p47WritingScene?p47WritingScene.response.instruction:
