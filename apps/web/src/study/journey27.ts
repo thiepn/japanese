@@ -4,6 +4,7 @@ import type {StudyLesson,StudyPrompt,StudyStep} from "@thiepn/study-player";
 import {pedagogyScenarios,pedagogyPrompts,pedagogyLessons} from "./pedagogy23";
 import {conversationForScenario,p24ReviewPrompts,dialoguePrompt,productionTasks} from "./pedagogy24";
 import {p40DialogueById,p40PromptsForArc,p40ReturnPrompts} from "./dialogue40";
+import {p41ArcById,p41PromptsForArc,p41ReturnPrompts} from "./dialogue41";
 import {p25Scenarios,p25Prompts,p25Lessons,p25DialoguePrompt} from "./pedagogy25";
 import {p26Missions,p26Prompts,p26Lessons,missionTurnPrompt,normalizeP26} from "./pedagogy26";
 
@@ -250,13 +251,14 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
   });
   const relatedRegister=transferForUnit(unitId).filter(p=>/register|polite|tone|Höflich|Einladungston/.test(p.id+" "+p.instruction));
   const dialogueId=focus.startsWith("dialogue:")?focus.slice("dialogue:".length):"";
-  const dialogueArc=dialogueId?p40DialogueById(dialogueId):undefined;
-  const dialogueCues=dialogueArc?.units.includes(unitId)?p40PromptsForArc(dialogueId):[];
+  const dialogueArc=dialogueId?(p40DialogueById(dialogueId)??p41ArcById(dialogueId)):undefined;
+  const dialogueCues=dialogueArc?.units.includes(unitId)?
+    (p40DialogueById(dialogueId)?p40PromptsForArc(dialogueId):p41PromptsForArc(dialogueId)):[];
   const returnId=focus.startsWith("return-due:")?focus.slice("return-due:".length):
     focus.startsWith("return:")?focus.slice("return:".length):"";
-  const returnArc=returnId?p40DialogueById(returnId):undefined;
+  const returnArc=returnId?(p40DialogueById(returnId)??p41ArcById(returnId)):undefined;
   const returnCue=returnArc?.units.includes(unitId)?
-    p40ReturnPrompts.filter(p=>p.eventMetadata?.arcId===returnId):[];
+    [...p40ReturnPrompts,...p41ReturnPrompts].filter(p=>p.eventMetadata?.arcId===returnId):[];
   const relevant=dialogueId?dialogueCues
     :returnId?returnCue
     :focus==="register"?[...pragmatic,...relatedRegister]
