@@ -504,6 +504,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <h5>{arc.title} · {arc.level}</h5>
               <p><strong>Gegenüber:</strong> {arc.interlocutor} · {arc.relationship}</p>
               <p><strong>Register:</strong> {arc.register==="polite"?"höfliche Formen":"vertrautes Gespräch"}</p>
+              <p><strong>Bekannter Ausgangsfall:</strong> {p41ArcById(arc.baseArcId)?.title??"frühere Einheit"}</p>
               <p><strong>Veränderte Information:</strong> {arc.variation}</p>
               <p>{arc.contrast}</p>
               <button type="button" onClick={()=>{setP40ArcId(arc.id);setP40TurnIndex(0);
@@ -558,7 +559,14 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <p>{p42ActiveArc.interlocutor} · {p42ActiveArc.relationship}</p>
               <p><strong>Passendes Register:</strong>{" "}
                 {p42ActiveArc.register==="polite"?"Höflicher Erst- oder Servicekontakt":"Vertraut und informell"}</p>
+              <p><strong>Ausgangsfall:</strong> {p41ArcById(p42ActiveArc.baseArcId)?.title??"früherer Dialog"}</p>
               <p><strong>Geändert:</strong> {p42ActiveArc.variation}</p>
+              {p41ArcById(p42ActiveArc.baseArcId)&&
+                p41ArcById(p42ActiveArc.baseArcId)!.units.includes(unitId)?
+                <button type="button" onClick={()=>{
+                  setP40ArcId(p42ActiveArc.baseArcId);setP40TurnIndex(0);setP40Choice("");
+                  setP40GuidedHistory([]);setP40GuidedFinished(false);
+                }}>Ursprüngliche Gesprächssituation ansehen</button>:null}
               <details><summary>Welche Funktion musst du übertragen?</summary>
                 <p>{p42ActiveArc.contrast}</p>
                 <p>Diese Hilfe erklärt den Kontext, gibt aber keine unabhängige Abrufbewertung.</p>
