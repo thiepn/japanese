@@ -9,7 +9,7 @@ export interface P35Mistake {
 }
 function classify(prompt:StudyPrompt):P35Mistake["area"]{
   const kind=prompt.eventMetadata?.kind;
-  if(kind==="role-response"||typeof kind==="string"&&kind.startsWith("continuity")||
+  if(kind==="dialogue-continuity"||kind==="role-response"||typeof kind==="string"&&kind.startsWith("continuity")||
     prompt.id.startsWith("p27-typed"))return "dialogue";
   if(prompt.skill==="form_selection"||kind==="register-contrast"||kind==="contextual-contrast")
     return "grammar";
