@@ -634,6 +634,19 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               </button>
             </article>)}
           </section>:null}
+          {p47Recommended?<section className="p27-journey__p47-intro"
+            aria-label="Erst hören, dann mit Transkript abgleichen">
+            <h4>Japanisch verstehen – vom Hören zur eigenen Antwort</h4>
+            <p><strong>{p47Recommended.title}</strong> · {p47Recommended.level} · {p47Recommended.listeningGoal}</p>
+            <p>40 Originalskripte, optional von der TTS-Stimme deines Geräts vorgelesen:
+              erst hören, dann Fragen beantworten und Transkript oder Textbeleg einblenden.
+              Keine vorgetäuschte menschliche Sprecheraufnahme oder Audioprüfung.</p>
+            <button type="button" disabled={disabled}
+              onClick={()=>onJourneyPractice(p47Recommended.units[0]!,
+                `listening-kind:${p47Recommended.id}:comprehension`)}>
+              Nachgehörte Fragen textgestützt im StudyPlayer bearbeiten
+            </button>
+          </section>:null}
           {p46Recommended?<section className="p27-journey__p46-intro"
             aria-label="Progressiv Japanisch lesen">
             <h4>Vom Textdetail zur begründeten Schlussfolgerung</h4>
@@ -705,6 +718,15 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               {p40Recommended.turns.length} zusammenhängende Gesprächszüge öffnen
             </button>
           </section>:null}
+          <P47ListeningStudio key={"p47:"+owner} scenes={p47Scenes}
+            preferredId={p47Recommended?.id} disabled={disabled}
+            onPractice={(sceneId,kind)=>{
+              const source=p47ById(sceneId);
+              if(source)onJourneyPractice(source.units[0]!,
+                `listening-kind:${source.id}:${kind}`);
+            }}
+            onWriting={chooseP47Writing}
+          />
           <P46ReadingLibrary
             key={owner} readings={p46Readings} preferredId={p46Recommended?.id}
             disabled={disabled}
