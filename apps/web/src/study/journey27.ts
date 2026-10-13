@@ -7,6 +7,7 @@ import {p40DialogueById,p40PromptsForArc,p40ReturnPrompts} from "./dialogue40";
 import {p41ArcById,p41PromptsForArc,p41ReturnPrompts} from "./dialogue41";
 import {p42ArcById,p42PromptsForArc,p42ReturnPrompts} from "./dialogue42";
 import {p43SceneById,p43BranchPrompts,p43ReturnPrompts,type P43RouteKey} from "./dialogue43";
+import {p44ById,p44PromptsForCase,p44ReturnPrompts,type P44PracticeStep} from "./pragmatics44";
 import {p25Scenarios,p25Prompts,p25Lessons,p25DialoguePrompt} from "./pedagogy25";
 import {p26Missions,p26Prompts,p26Lessons,missionTurnPrompt,normalizeP26} from "./pedagogy26";
 
@@ -15,7 +16,7 @@ import {p26Missions,p26Prompts,p26Lessons,missionTurnPrompt,normalizeP26} from "
  */
 export type JourneySource="p23"|"p25"|"p26";
 export type JourneyStage="learn"|"build"|"conversation"|"write"|"practice";
-export type JourneyPractice="review"|"retry"|"new"|"transfer"|"register"|"grammar"|"production"|`dialogue:${string}`|`branch:${string}`|`branch-route:${string}`|`return:${string}`|`return-due:${string}`;
+export type JourneyPractice="review"|"retry"|"new"|"transfer"|"register"|"grammar"|"production"|`dialogue:${string}`|`branch:${string}`|`branch-route:${string}`|`pragmatic:${string}`|`pragmatic-step:${string}`|`return:${string}`|`return-due:${string}`;
 export interface JourneyWord{form:string;reading:string;meaning:string;example:string;}
 export interface JourneyOption{
   japanese:string;meaning:string;valid:boolean;explanation:string;next?:string|null;
@@ -252,6 +253,16 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     return p.eventMetadata?.kind==="register-contrast"&&Array.isArray(ids)&&ids.includes(unitId);
   });
   const relatedRegister=transferForUnit(unitId).filter(p=>/register|polite|tone|Höflich|Einladungston/.test(p.id+" "+p.instruction));
+  const pragmaticId=focus.startsWith("pragmatic:")?focus.slice("pragmatic:".length):"";
+  const pragmaticInput=focus.startsWith("pragmatic-step:")?focus.slice("pragmatic-step:".length):"";
+  const pragmaticSep=pragmaticInput.lastIndexOf(":");
+  const pragmaticStepId=pragmaticSep>0?pragmaticInput.slice(0,pragmaticSep):"";
+  const pragmaticStepPart=pragmaticSep>0?pragmaticInput.slice(pragmaticSep+1):"";
+  const pragmaticStep=(["contrast","production","reply","return"] as const).find(s=>s===pragmaticStepPart) as P44PracticeStep|undefined;
+  const pragmaticCues=pragmaticId&&p44ById(pragmaticId)?.unitIds.includes(unitId)?
+    p44PromptsForCase(pragmaticId):[];
+  const pragmaticStepCues=pragmaticStep&&p44ById(pragmaticStepId)?.unitIds.includes(unitId)?
+    p44PromptsForCase(pragmaticStepId,pragmaticStep):[];
   const branchId=focus.startsWith("branch:")?focus.slice("branch:".length):"";
   const branchRouteInput=focus.startsWith("branch-route:")?focus.slice("branch-route:".length):"";
   const branchRouteColon=branchRouteInput.lastIndexOf(":");
@@ -272,11 +283,16 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     focus.startsWith("return:")?focus.slice("return:".length):"";
   const returnArc=returnId?(p40DialogueById(returnId)??p41ArcById(returnId)??p42ArcById(returnId)):undefined;
   const branchReturnScene=returnId?p43SceneById(returnId):undefined;
+  const pragmaticReturn=returnId?p44ById(returnId):undefined;
   const returnCue=returnArc?.units.includes(unitId)?
     [...p40ReturnPrompts,...p41ReturnPrompts,...p42ReturnPrompts].filter(p=>p.eventMetadata?.arcId===returnId):
     branchReturnScene?.unitIds.includes(unitId)?
-    p43ReturnPrompts.filter(p=>p.eventMetadata?.sceneId===returnId):[];
-  const relevant=branchId?branchCues
+    p43ReturnPrompts.filter(p=>p.eventMetadata?.sceneId===returnId):
+    pragmaticReturn?.unitIds.includes(unitId)?
+    p44ReturnPrompts.filter(p=>p.eventMetadata?.caseId===returnId):[];
+  const relevant=pragmaticId?pragmaticCues
+    :pragmaticStepId?pragmaticStepCues
+    :branchId?branchCues
     :branchRouteId?branchRouteCues
     :dialogueId?dialogueCues
     :returnId?returnCue
@@ -307,7 +323,7 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     return 0;
   };
   // Do not silently substitute unrelated unit exercises for an empty specialist queue.
-  const list=dialogueId||branchId||branchRouteId?relevant.slice():relevant.slice().sort((a,b)=>priority(b)-priority(a));
+  const list=dialogueId||branchId||branchRouteId||pragmaticId||pragmaticStepId?relevant.slice():relevant.slice().sort((a,b)=>priority(b)-priority(a));
   // Only FSRS-issued due timestamps establish that a card is due.
   // A last-incorrect event may warrant optional remediation but does not
   // override a future FSRS due date or silently turn new prompts into "due".
