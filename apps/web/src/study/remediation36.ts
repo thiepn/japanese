@@ -21,6 +21,73 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p60===true){
+    const pKind=prompt.eventMetadata?.kind;
+    const questionKind=prompt.eventMetadata?.questionKind;
+    const delayed=prompt.eventMetadata?.focus==="delayed-independent-return";
+    if(delayed)return {
+      title:"Neue unbekannte A2-Situation nach echtem Lernabstand",
+      promptSpecificGoal:"Bearbeite den neuen Fall ohne die alte japanische "
+       +"Antwort zu kopieren. Prüfe erneut, welche Quelle verbindlich ist, "
+       +"wer die Handlung bestätigt hat und welche Fragen offen bleiben. "
+       +"Nur der vorhandene echte FSRS-Termin oder ein mindestens einen Tag "
+       +"alter bewerteter Originalversuch gibt den Rückweg frei.",
+      lessonStage:"practice",action:"Ungesehene neue Originalpraxis im StudyPlayer bearbeiten"
+    };
+    if(pKind==="a2-cumulative-misconception-repair")return {
+      title:"Mehrere Fehler mit unterschiedlichen Originalbelegen reparieren",
+      promptSpecificGoal:"Korrigiere nicht nur ein Zeitwort. Finde Ort, Uhrzeit, "
+       +"Genehmigung, Kapazität und tatsächlichen Handlungsstand, soweit die "
+       +"Originalquellen ihn belegen. Eine bloße Planung ist noch kein Abschluss.",
+      lessonStage:"write",action:"Quellenbewusste mehrsätzige Korrektur verfassen"
+    };
+    if(pKind==="a2-updated-response")return {
+      title:"Neueste Sprecherinformation in eine angemessene Antwort übertragen",
+      promptSpecificGoal:"Vergleiche die frühere schriftliche Information mit "
+       +"dem neuen Sprecher. Prüfe, ob sich eine Bedingung, Frist oder "
+       +"Einwilligung wirklich geändert hat. Antworte höflich oder vertraut "
+       +"entsprechend der Zielperson statt ein veraltetes Modell zu übernehmen.",
+      lessonStage:"conversation",action:"Nach unerwartetem neuen Fakt angemessen reagieren"
+    };
+    if(pKind==="a2-cumulative-independent-writing")return {
+      title:"Eigene zusammenhängende A2-Nachricht mit mehreren Quellen",
+      promptSpecificGoal:"Nenne gesicherte Fakten und noch offene Dinge getrennt. "
+       +"Verknüpfe mehrere japanische Sätze, benutze angemessenes Register "
+       +"und respektiere 予定, まだ, てから, までに und die Sprecherabsicht. "
+       +"Ein freier anderer Satz wird im Originalmustervergleich nicht "
+       +"vollständig semantisch benotet.",
+      lessonStage:"write",action:"Unbenotete ursprüngliche Learn-Revision öffnen"
+    };
+    if(pKind==="a2-cumulative-pragmatics")return {
+      title:"Belegbare Lösung unter mehreren vernünftigen Reaktionen wählen",
+      promptSpecificGoal:"Originalquellen können zwei passende nächste "
+       +"Handlungen zulassen, aber keine erfundene Zustimmung oder bereits "
+       +"abgeschlossene Zahlung. Unterscheide Tatsachen von Vorschlägen.",
+      lessonStage:"learn",action:"Zwei verantwortliche Strategien vergleichen"
+    };
+    if(questionKind==="chronology")return {
+      title:"Chronologie und aktuell gültige Ausnahme selbst rekonstruieren",
+      promptSpecificGoal:"Unterscheide das ältere Schreiben, später verfasste "
+       +"Nachrichten und die letzte belegte mündliche Anweisung. Achte auf "
+       +"〜てから, までに, 予定です und schon ausgeführte Verben.",
+      lessonStage:"learn",action:"Quellen nach zeitlichem Geltungsbereich sortieren"
+    };
+    if(questionKind==="speaker"||questionKind==="intention")return {
+      title:"Sprecherabsicht und tatsächliche Autorität unterscheiden",
+      promptSpecificGoal:"Eine höfliche Anfrage, eine Vermutung und eine "
+       +"verbindliche Zusage stammen aus unterschiedlichen Sprecherrollen. "
+       +"Begründe, warum die tatsächlich aktuelle Quelle die Antwort trägt.",
+      lessonStage:"conversation",action:"Rolle und Absicht an Originalaussagen prüfen"
+    };
+    return {
+      title:"Echten A2-Quellenbeleg finden statt einzelne Stichwörter raten",
+      promptSpecificGoal:"Belege eine eigene japanische Antwort sowohl "
+       +"mit dem Schrifttext als auch der neueren Sprecherinformation. "
+       +"Ein lesbares Geräteskript und synthetisches TTS sind Text- und "
+       +"Aussprachehilfen, keine objektiv gemessene Hörleistung.",
+      lessonStage:"learn",action:"Originale Schrift- und Gesprächsquellen erneut vergleichen"
+    };
+  }
   if(prompt?.eventMetadata?.p59===true){
     const kind=prompt.eventMetadata?.kind;
     const focus=prompt.eventMetadata?.focus;
