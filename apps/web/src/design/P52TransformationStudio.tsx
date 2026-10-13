@@ -1,4 +1,5 @@
 import {useState} from "react";
+import "./p52-transformations.css";
 import {p52Compare,type P52Domain,type P52Transformation,type P52PracticeKind} from "../study/transformation52";
 type Kind=Exclude<P52PracticeKind,"all">;
 const labels:Record<P52Domain,string>={
