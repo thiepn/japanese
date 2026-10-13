@@ -2,8 +2,8 @@
 
 ## Scope and ancestry
 
-- **Required prior P59 branch:** \`feature/p59-independent-a2-performance-missions\` was exactly verified at commit \`0c10672c29309134b3f5b064204944e094c31e41\` before making a branch (\`compare_commits\`: \`identical\`).
-- **Distinct direct P59-child development branch:** \`feature/p60-a2-consolidation-independent-review\`.
+- **Required prior P59 branch:** `feature/p59-independent-a2-performance-missions` was exactly verified at commit `0c10672c29309134b3f5b064204944e094c31e41` before making a branch (`compare_commits`: `identical`).
+- **Distinct direct P59-child development branch:** `feature/p60-a2-consolidation-independent-review`.
 - Main, production and historical stacked development branches are not merged or modified.
 - P60 is **an original learning implementation**, not an authorization for tests, builds, CI, deployment, credentials, migrations, production access or external paid services.
 
@@ -13,10 +13,10 @@ Four new independent THIEPN-first-party corpora each contain **five** substantia
 
 | Corpus | Five detailed practical themes |
 | --- | --- |
-| \`consolidation60-corpus-a.ts\` | Library extension versus return; rescheduled group meeting; independent listening summary; permitted shift exception; refund authorization versus actual receipt |
-| \`consolidation60-corpus-b.ts\` | Housing inspection versus repair; community venue/capacity; independent academic source comparison; individually changing medical appointments without medical advice; family/school notice correction |
-| \`consolidation60-corpus-c.ts\` | Approved student event and revised fire safety capacity; disrupted travel and still-uncertain tickets; private photos versus approved publication; neighbor noise without unsupported blame; honest language self-review |
-| \`consolidation60-corpus-d.ts\` | Source-based final report with submission verification; accessible event entrance versus attendee confirmation; numerical evidence with changed research scope; cumulative long message with multiple changing venue constraints; next-stage independent-language practice and realistic self-reflection |
+| `consolidation60-corpus-a.ts` | Library extension versus return; rescheduled group meeting; independent listening summary; permitted shift exception; refund authorization versus actual receipt |
+| `consolidation60-corpus-b.ts` | Housing inspection versus repair; community venue/capacity; independent academic source comparison; individually changing medical appointments without medical advice; family/school notice correction |
+| `consolidation60-corpus-c.ts` | Approved student event and revised fire safety capacity; disrupted travel and still-uncertain tickets; private photos versus approved publication; neighbor noise without unsupported blame; honest language self-review |
+| `consolidation60-corpus-d.ts` | Source-based final report with submission verification; accessible event entrance versus attendee confirmation; numerical evidence with changed research scope; cumulative long message with multiple changing venue constraints; next-stage independent-language practice and realistic self-reflection |
 
 Each original scenario contains:
 1. **Three original multi-sentence Japanese practical source passages** with individual German meaning annotations and speaker/source provenance.
@@ -37,14 +37,14 @@ The four stages increasingly require self-directed cross-source chronology, real
 
 ## Original native learner and scheduling architecture
 
-- \`consolidation60-types.ts\`, \`consolidation60-corpus-a.ts\` through \`-d.ts\`: typed independent first-party Japanese teaching content; no new learner-state authority.
-- \`consolidation60.ts\`: original authored registry, source-aware P53 vocabulary linkage, original P60 prompt adapter, exact model comparison clearly marked non-semantic, read-only original review evidence, and a six-path historical source navigation map.
-- Every P60 prompt uses a stable \`p60-...\` source ID, \`sourceId:"thiepn-original"\`, \`contentVersion:"p60-1"\`, original \`primaryTarget\`, \`cueFamily\`, \`contextId\`, original Japanese answer normalization and existing StudyPlayer event writer. The six activity types are question (two), choice, writing, follow-up, revision and gated unseen transfer.
-- \`runtime.ts\`: P60 original prompts appended to the same canonical Learn/Today prompt sets and original FSRS due logic. An authored new prompt is not automatically due.
-- \`journey27.ts\`: native unit-scoped \`consolidation60:<id>\`, \`consolidation60-kind:<id>:comprehension|strategy|writing|followup|revision|return\` and **\`source60:<exact-prior-prompt-id>\`**. The historical selection points to an actual original prompt already in the existing catalog, rather than duplicating content or grading. Existing source IDs P40–P59 remain unchanged. Hidden new returns are excluded from ordinary sessions and only first become accessible based on existing due original comprehension MemoryTrace or a real graded first-source StudyEvent at least 24 hours old. An unlocked transfer is **not automatically FSRS-due**.
-- \`P60ConsolidationStudio.tsx\`, \`p60-consolidation.css\`: responsive four-stage course shell with 20 original lessons, source reading, optional German annotations, optional non-recorded device-TTS dialogue, new source question/strategy/writing/follow-up/revision task, answer models only after the learner attempts, hidden delayed changed-context handoff, vocabulary/collocation connections and practical onward reflection.
-- \`P27LearningJourney.tsx\`: mounts the course completion component, uses genuine original owner-scoped \`StudyEvents\` and \`MemoryTraces\` to derive due/last-wrong/unseen status; reads original P40–P59 prompts through a unified historical catalog; opens exact original prompt IDs in StudyPlayer. Reuses original ungraded draft/revise/compare Learn workflow, with no new draft store or grade writer.
-- \`remediation36.ts\`: source-specific existing native misconception repair for chronological changes, source hierarchy, permission, register, incomplete actions, independent writing, and unseen returns.
+- `consolidation60-types.ts`, `consolidation60-corpus-a.ts` through `-d.ts`: typed independent first-party Japanese teaching content; no new learner-state authority.
+- `consolidation60.ts`: original authored registry, source-aware P53 vocabulary linkage, original P60 prompt adapter, exact model comparison clearly marked non-semantic, read-only original review evidence, and a six-path historical source navigation map.
+- Every P60 prompt uses a stable `p60-...` source ID, `sourceId:"thiepn-original"`, `contentVersion:"p60-1"`, original `primaryTarget`, `cueFamily`, `contextId`, original Japanese answer normalization and existing StudyPlayer event writer. The six activity types are question (two), choice, writing, follow-up, revision and gated unseen transfer.
+- `runtime.ts`: P60 original prompts appended to the same canonical Learn/Today prompt sets and original FSRS due logic. An authored new prompt is not automatically due.
+- `journey27.ts`: native unit-scoped `consolidation60:<id>`, `consolidation60-kind:<id>:comprehension|strategy|writing|followup|revision|return` and **`source60:<exact-prior-prompt-id>`**. The historical selection points to an actual original prompt already in the existing catalog, rather than duplicating content or grading. Existing source IDs P40–P59 remain unchanged. Hidden new returns are excluded from ordinary sessions and only first become accessible based on existing due original comprehension MemoryTrace or a real graded first-source StudyEvent at least 24 hours old. An unlocked transfer is **not automatically FSRS-due**.
+- `P60ConsolidationStudio.tsx`, `p60-consolidation.css`: responsive four-stage course shell with 20 original lessons, source reading, optional German annotations, optional non-recorded device-TTS dialogue, new source question/strategy/writing/follow-up/revision task, answer models only after the learner attempts, hidden delayed changed-context handoff, vocabulary/collocation connections and practical onward reflection.
+- `P27LearningJourney.tsx`: mounts the course completion component, uses genuine original owner-scoped `StudyEvents` and `MemoryTraces` to derive due/last-wrong/unseen status; reads original P40–P59 prompts through a unified historical catalog; opens exact original prompt IDs in StudyPlayer. Reuses original ungraded draft/revise/compare Learn workflow, with no new draft store or grade writer.
+- `remediation36.ts`: source-specific existing native misconception repair for chronological changes, source hierarchy, permission, register, incomplete actions, independent writing, and unseen returns.
 
 ### Six original-source learning routes (P40–P59)
 
@@ -64,7 +64,7 @@ The dashboard shows counts of genuinely source-backed original prompts, previous
 
 All new Japanese passages, dialogue, German annotations, questions, response models, grammar notes, alternative answers, practical letters, misconception notes, revision prompts and previously unseen returns are written as THIEPN-original material. User-attached Marugoto A1/A2 and other copyrighted Japanese publisher files remain **teaching references only**; publisher-owned text, audio, artwork, data tables and exercises were not copied.
 
-Native free-writing editor drafts remain ephemeral and its events source-qualified, ungraded and \`schedulerExcluded:true\` through the original event path, with no private full-draft persistence or fabricated FSRS memory writes. Exact authored examples can be recognized by finite string matching, but this is **not full Japanese semantic grading**: different natural valid responses may remain unassessed or fail finite native StudyPlayer acceptance. Device speech synthesis produces **no recorded human audio or validated listening assessment**.
+Native free-writing editor drafts remain ephemeral and its events source-qualified, ungraded and `schedulerExcluded:true` through the original event path, with no private full-draft persistence or fabricated FSRS memory writes. Exact authored examples can be recognized by finite string matching, but this is **not full Japanese semantic grading**: different natural valid responses may remain unassessed or fail finite native StudyPlayer acceptance. Device speech synthesis produces **no recorded human audio or validated listening assessment**.
 
 P60 is original A2-targeted instructional content, **not** an earned CEFR A2 certificate, JLPT result or global mastery assessment. Unit navigation and source-level code were edited and inspected only.
 
