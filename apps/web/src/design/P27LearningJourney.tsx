@@ -561,6 +561,23 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               </button>
             </article>)}
           </section>:null}
+          {p44Recommended?<section className="p27-journey__p44-intro"
+            aria-label="Höflichkeit und soziale Gesprächsabsichten">
+            <h4>Höflichkeit ist eine Entscheidung im Kontext</h4>
+            <p><strong>{p44Recommended.title}</strong> — {p44Recommended.context}</p>
+            <p>Wer spricht mit wem, mit welcher Absicht? Zwei passende Beispiele
+              zeigen unterschiedliche Nuancen; eine dritte Form verfehlt die Absicht
+              oder passt sozial nicht gut. Beurteile sie im Gesprächskontext.</p>
+            <div className="p27-journey__actions">
+              <button type="button" onClick={()=>setStage("conversation")}>
+                Sozialen Gesprächskontrast ansehen
+              </button>
+              <button type="button" disabled={disabled}
+                onClick={()=>onJourneyPractice(unitId,`pragmatic:${p44Recommended.id}`)}>
+                Ohne Beispiel selbst antworten
+              </button>
+            </div>
+          </section>:null}
           {p43Recommended?<section className="p27-journey__p43-intro" aria-label="Gespräch mit Entscheidungen">
             <h4>Deine Entscheidung verändert den Gesprächsverlauf</h4>
             <p><strong>{p43Recommended.title}</strong> — {p43Recommended.goal}</p>
@@ -599,6 +616,13 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
         </section>:null}
         {stage==="conversation"?<section className="p27-journey__panel">
           <h4>Mehrstufiger Dialog</h4>
+          {p44UnitCases.length?<P44PragmaticsStudy key={unitId+":"+owner}
+            cases={p44UnitCases} preferredId={p44Recommended?.id} disabled={disabled}
+            onPractice={(caseId,step:undefined|P44PracticeStep)=>
+              onJourneyPractice(unitId,step?
+                `pragmatic-step:${caseId}:${step}`:`pragmatic:${caseId}`)}
+            onWriting={chooseP44Writing}
+          />:null}
           {p43UnitScenes.length?<P43BranchConversation key={unitId+":"+owner}
             scenes={p43UnitScenes} preferredId={p43Recommended?.id} disabled={disabled}
             onIndependent={(sceneId,route)=>
