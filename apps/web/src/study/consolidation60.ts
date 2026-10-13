@@ -60,6 +60,7 @@ function qPrompt(m:P60Unit,q:P60Question,i:number):StudyPrompt{
  return {...base,id:"p60-question-"+q.id,skill:"production",promptType:"typed",
   instruction:"Originale schriftliche und gesprochene Textquellen vergleichen. Ein lesbares Transkript misst keine reale Hörleistung.",
   prompt:sources(m)+"\nFrage: "+q.situation,
+  choices:[q.model,q.flawed,q.alternative],
   acceptedAnswers:[normalizeP26(q.model),normalizeP26(q.alternative)],
   displayAnswer:q.model,explanation:q.why+" Quellenbelege: 「"+q.documentEvidence+
    "」 und 「"+q.spokenEvidence+
@@ -80,37 +81,40 @@ export const p60StrategyPrompts:StudyPrompt[]=p60Units.map(m=>{
 });
 function taskPrompt(m:P60Unit,t:P60Task,k:"writing"|"return"):StudyPrompt{
  const b=basics(m,k),isReturn=k==="return";
- return {...b,id:"p60-"+k+"-"+m.id,skill:"production",promptType:"typed",
-  instruction:isReturn?"Ein vollständig anderer noch ungesehener A2-Kontext ohne altes Antwortmodell.":
-   "Eigene mehrsätzige Japanischnachricht: native Mustererkennung ist keine vollständige Freitextnote.",
+ return {...b,id:"p60-"+k+"-"+m.id,skill:"form_selection",promptType:"choice",
+  instruction:isReturn?"Unbekannten veränderten A2-Fall selbst verstehen; native Wiederholung ist Auswahl zwischen original verfassten Optionen, keine offene Freitextnote.":
+   "Eigenen mehrsätzigen Japanischtext nur unbenotet in Learn schreiben; im StudyPlayer die zwei authentischen Antwortoptionen von einem Quellenfehler unterscheiden.",
   prompt:(isReturn?"Neue eigenständige Lebenssituation: ":sources(m)+"\nEigene Aufgabe: ")+t.situation,
+  choices:[t.model,t.trap,t.alternative],
   acceptedAnswers:[normalizeP26(t.model),normalizeP26(t.alternative)],displayAnswer:t.model,
   explanation:t.why+" Bekannter Fehlschluss: "+t.trap+
    " Andere selbstständig richtige Texte können vom Originalmustervergleich abweichen.",
   eventMetadata:{...b.eventMetadata,kind:isReturn?"a2-unseen-distant-transfer":"a2-cumulative-independent-writing",
-   focus:isReturn?"delayed-independent-return":"writing"}
+   focus:isReturn?"delayed-independent-return":"writing",
+   nativeGradedMode:"authored-closed-choice",freeJapaneseWritingUngraded:true}
  };
 }
 export const p60WritingPrompts:StudyPrompt[]=p60Units.map(m=>taskPrompt(m,m.writing,"writing"));
 export const p60ReturnPrompts:StudyPrompt[]=p60Units.map(m=>taskPrompt(m,m.unseen,"return"));
 export const p60FollowupPrompts:StudyPrompt[]=p60Units.map(m=>{
  const b=basics(m,"followup"),q=m.reply;
- return {...b,id:"p60-followup-"+m.id,skill:"production",promptType:"typed",
-  instruction:"Ändere deine eigenständige japanische Reaktion nach neuem, tatsächlich autorisiertem Gesprächsbeitrag.",
+ return {...b,id:"p60-followup-"+m.id,skill:"form_selection",promptType:"choice",
+  instruction:"Nach eigenständiger unbenoteter japanischer Antwort zwei belegbare Optionen von einer veralteten Fortsetzung unterscheiden.",
   prompt:sources(m)+"\nNeue Nachricht: "+q.speaker+"： "+q.japanese+
-   "\nNeue Aufgabe: "+q.goal,acceptedAnswers:[normalizeP26(q.model),normalizeP26(q.alternative)],
+   "\nNeue Aufgabe: "+q.goal,choices:[q.model,q.trap,q.alternative],
+  acceptedAnswers:[normalizeP26(q.model),normalizeP26(q.alternative)],
   displayAnswer:q.model,explanation:q.why+" Falsche Fortsetzung: "+q.trap,
-  eventMetadata:{...b.eventMetadata,kind:"a2-updated-response"}
+  eventMetadata:{...b.eventMetadata,kind:"a2-updated-response",nativeGradedMode:"authored-closed-choice",freeJapaneseWritingUngraded:true}
  };
 });
 export const p60RevisionPrompts:StudyPrompt[]=p60Units.map(m=>{
  const b=basics(m,"revision"),q=m.revision;
- return {...b,id:"p60-revision-"+m.id,skill:"production",promptType:"typed",
-  instruction:"Quellenwidrige mehrteilige praktische Nachricht eigenständig mit neuestem Beleg korrigieren.",
+ return {...b,id:"p60-revision-"+m.id,skill:"form_selection",promptType:"choice",
+  instruction:"Eigenen Korrekturtext nur unbenotet in Learn verfassen; im nativen Review original verfasste richtige Optionen von der belegbar falschen Aussage unterscheiden.",
   prompt:sources(m)+"\nFalscher originaler Beispieltext: "+q.flawed,
   acceptedAnswers:[normalizeP26(q.model),normalizeP26(q.alternative)],
   displayAnswer:q.model,explanation:q.why+" Freie sinngleiche Ausdrücke sind nicht automatisch bewertbar.",
-  eventMetadata:{...b.eventMetadata,kind:"a2-cumulative-misconception-repair"}
+  eventMetadata:{...b.eventMetadata,kind:"a2-cumulative-misconception-repair",nativeGradedMode:"authored-closed-choice",freeJapaneseWritingUngraded:true}
  };
 });
 export const p60Prompts:StudyPrompt[]=[
