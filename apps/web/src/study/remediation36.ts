@@ -21,7 +21,7 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
-  if(prompt?.eventMetadata?.p40===true){
+  if(prompt?.eventMetadata?.p40===true||prompt?.eventMetadata?.p41===true){
     if(focus==="delayed-independent-return")return {
       title:"Gelerntes in einer neuen Situation abrufen",
       promptSpecificGoal:"Erinnere dich an die kommunikative Absicht des ursprünglichen Gesprächs. Der neue Ort, Zeitpunkt oder Gegenstand erfordert eine selbstständig angepasste Formulierung.",
