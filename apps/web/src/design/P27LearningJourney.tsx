@@ -94,6 +94,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const [p40ArcId,setP40ArcId]=useState("");
   const [p40TurnIndex,setP40TurnIndex]=useState(0);
   const [p40Choice,setP40Choice]=useState("");
+  const [p40GuidedHistory,setP40GuidedHistory]=useState<Array<{turnId:string;partner:string;answer:string;note:string}>>([]);
+  const [p40GuidedFinished,setP40GuidedFinished]=useState(false);
   const [p40WritingArcId,setP40WritingArcId]=useState("");
   const [p40WritingTurnIndex,setP40WritingTurnIndex]=useState(1);
   const [busy,setBusy]=useState(false);
@@ -186,6 +188,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setChoiceExampleSeen(false);
     setHintUsed(false);setSpeechUsed(false);setShowTranslation(false);setInputMode("compose");setInlineContrastAnswer(null);setP38Choice(null);setP39Choice(null);setP39WritingId("");
     setP40ArcId("");setP40TurnIndex(0);setP40Choice("");setP40WritingArcId("");setP40WritingTurnIndex(1);
+    setP40GuidedHistory([]);setP40GuidedFinished(false);
     setError("");setDraft("");setRewrite("");
     setRewriteStage("draft");setReport(null);setSaved(false);setVoiceStatus("");
     started.current=performance.now();
@@ -495,7 +498,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               verändert einen Teil des Plans, nicht das gesamte Gespräch.</p>
             <p><strong>{p40Recommended.title}</strong> — {p40Recommended.setting}</p>
             <button type="button" onClick={()=>{setP40ArcId(p40Recommended.id);setP40TurnIndex(0);
-              setP40Choice("");setStage("conversation");}}>
+              setP40Choice("");setP40GuidedHistory([]);setP40GuidedFinished(false);setStage("conversation");}}>
               {p40Recommended.turns.length} zusammenhängende Gesprächszüge öffnen
             </button>
           </section>:null}
@@ -523,13 +526,24 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <div className="p27-journey__p40-arcs" role="group" aria-label="Gesprächssituation wechseln">
               {p40UnitArcs.map(arc=><button key={arc.id} type="button"
                 aria-pressed={p40ActiveArc.id===arc.id}
-                onClick={()=>{setP40ArcId(arc.id);setP40TurnIndex(0);setP40Choice("");}}>
+                onClick={()=>{setP40ArcId(arc.id);setP40TurnIndex(0);setP40Choice("");
+                  setP40GuidedHistory([]);setP40GuidedFinished(false);}}>
                 {arc.title}</button>)}
             </div>
             <p>{p40ActiveArc.setting}</p>
             {p41ActiveArc?<p className="p27-journey__p41-outcome">
               <strong>Ziel der Unterhaltung:</strong> {p41ActiveArc.outcome} · {p41ActiveArc.level}
             </p>:null}
+            {p40GuidedHistory.length>0?<div className="p27-journey__p41-history">
+              <strong>Bisherige Gesprächsantworten</strong>
+              <ol>{p40GuidedHistory.map(h=><li key={h.turnId}>
+                <span lang="ja">{h.partner}</span> →
+                <span lang="ja">{h.answer}</span>
+                <small>{h.note}</small>
+              </li>)}</ol>
+              <small>Nur die ausgewählten Originalbeispiele dieser Unterrichtsansicht.
+                Keine gespeicherten Antworten oder Lernbewertungen.</small>
+            </div>:null}
             <article aria-label={"Gesprächsschritt "+p40CurrentTurn.number}>
               <strong>Schritt {p40CurrentTurn.number} von {p40ActiveArc.turns.length}</strong>
               <p><strong>Gesprächspartner:</strong> <span lang="ja">{p40CurrentTurn.partner}</span></p>
@@ -551,15 +565,34 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 <small>Nur dieses Beispiel ist beurteilt; keine Aussage über freie Alternativen.</small>
               </div>:null}
               <div className="p27-journey__actions">
-                <button type="button" disabled={!p40Choice||p40TurnIndex>=p40ActiveArc.turns.length-1}
-                  onClick={()=>{setP40TurnIndex(i=>i+1);setP40Choice("");}}>
-                  Nächste Gesprächsantwort
+                <button type="button" disabled={!p40Choice||p40GuidedFinished}
+                  onClick={()=>{
+                    const feedback=p40TurnFeedback(p40CurrentTurn,p40Choice);
+                    setP40GuidedHistory(previous=>[...previous,{
+                      turnId:p40CurrentTurn.id,partner:p40CurrentTurn.partner,
+                      answer:p40Choice,note:feedback.kind==="authored"?
+                        "Zur beabsichtigten Aussage passend":feedback.message
+                    }]);
+                    if(p40TurnIndex+1===p40ActiveArc.turns.length)setP40GuidedFinished(true);
+                    else {setP40TurnIndex(i=>i+1);setP40Choice("");}
+                  }}>
+                  {p40TurnIndex===p40ActiveArc.turns.length-1?"Gespräch abschließen":
+                    "Nächste Gesprächsantwort"}
                 </button>
-                <button type="button" onClick={()=>{setP40TurnIndex(0);setP40Choice("");}}>
+                <button type="button" onClick={()=>{setP40TurnIndex(0);setP40Choice("");
+                  setP40GuidedHistory([]);setP40GuidedFinished(false);}}>
                   Gespräch von vorn ansehen
                 </button>
               </div>
             </article>
+            {p40GuidedFinished?<div className="p27-journey__p41-completed" role="status">
+              <strong>Geführter Gesprächsverlauf abgeschlossen</strong>
+              <p>{p41ActiveArc?.outcome??p40ActiveArc.setting}</p>
+              <p>Prüfe die falschen und richtigen Richtungsentscheidungen oben.
+                Dieses Gespräch war eine unbewertete Unterrichtsaktivität.
+                Eine spätere unabhängige Wiederholung wird ausschließlich durch
+                deine wirkliche FSRS-Karte bestimmt.</p>
+            </div>:null}
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled}
                 onClick={()=>onJourneyPractice(unitId,`dialogue:${p40ActiveArc.id}`)}>
