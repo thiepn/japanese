@@ -842,6 +842,40 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Situationswechsel selbstständig üben
             </button>
           </section>:null}
+          {p44UnitCases.length?<section className="p27-journey__p44-writing"
+            aria-label="Pragmatischen Gesprächskontext selbst verfassen">
+            <h5>Situationsgerechte Antwort selbst schreiben</h5>
+            <p>Wähle, ob du die erste Bitte, Einladung, Absage oder Korrektur
+              ausdrückst oder auf die nachfolgende Person reagierst.
+              Schreibe zuerst selbst; Musterbeispiele bleiben im bestehenden Überarbeitungsschritt.</p>
+            <div className="p27-journey__p44-picker" role="group"
+              aria-label="Pragmatischen Kontrast zum Schreiben wählen">
+              {p44UnitCases.map(item=><button key={item.id} type="button"
+                aria-pressed={p44WritingCase?.id===item.id}
+                onClick={()=>chooseP44Writing(item.id,"production")}>{item.title}</button>)}
+            </div>
+            {p44WritingCase?<div className="p27-journey__p44-writing-context">
+              <p><strong>Beziehung:</strong> {p44WritingCase.relationship}</p>
+              <p><strong>Ausgangslage:</strong> {p44WritingCase.context}</p>
+              <div className="p27-journey__p44-step-choice" role="group"
+                aria-label="Erste Aussage oder anschließende Antwort wählen">
+                <button type="button" aria-pressed={p44WritingStep==="production"}
+                  onClick={()=>chooseP44Writing(p44WritingCase.id,"production")}>Erste Antwort</button>
+                <button type="button" aria-pressed={p44WritingStep==="reply"}
+                  onClick={()=>chooseP44Writing(p44WritingCase.id,"reply")}>Gesprächsfortsetzung</button>
+              </div>
+              <p><strong>Gesprächspartner:</strong>{" "}
+                <span lang="ja">{p44WritingStep==="reply"?p44WritingCase.partnerFollowup:p44WritingCase.partner}</span></p>
+              <p><strong>Deine Absicht:</strong> {p44WritingTask}</p>
+              <p><strong>Missverständliche Beispielantwort:</strong>{" "}
+                <span lang="ja">{p44WritingStep==="reply"?p44WritingCase.followupMisstep:p44WritingCase.misleading}</span></p>
+            </div>:null}
+            <button type="button" disabled={disabled||!p44WritingCase}
+              onClick={()=>p44WritingCase&&onJourneyPractice(unitId,
+                `pragmatic-step:${p44WritingCase.id}:${p44WritingStep}`)}>
+              Diese Antwort im StudyPlayer unabhängig schreiben
+            </button>
+          </section>:null}
           {p43UnitScenes.length?<section className="p27-journey__p43-writing"
             aria-label="Verzweigung und Reparatur gezielt schreiben">
             <h5>Entscheidung oder Missverständnis schriftlich korrigieren</h5>
@@ -916,11 +950,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <p>Wähle einen Kontext; eine zuletzt verfehlte Lernkarte wird bevorzugt vorgeschlagen.
               Dein Entwurf bleibt im bestehenden Schreibfeld und wird nicht automatisch sprachlich bewertet.</p>
             <div className="p27-journey__p39-picker" role="group" aria-label="Schreibsituation">
-              <button type="button" aria-pressed={!p39Chosen&&!p40WritingTurn&&!p43WritingDetail}
-                onClick={()=>{setP39WritingId("");setP40WritingArcId("");setP43WritingSceneId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
+              <button type="button" aria-pressed={!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase}
+                onClick={()=>{setP39WritingId("");setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
                 Reguläres Lernziel</button>
               {p39UnitCases.map(c=><button key={c.id} type="button" aria-pressed={p39Chosen?.id===c.id}
-                onClick={()=>{setP39WritingId(c.id);setP40WritingArcId("");setP43WritingSceneId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
+                onClick={()=>{setP39WritingId(c.id);setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
                 {c.title}{p39Priority?.id===c.id?" · Vorschlag":""}</button>)}
             </div>
             {p39Chosen?<p>Problematischer Ausgangssatz: <span lang="ja">{p39Chosen.distractors[0]?.form}</span>.
@@ -928,7 +962,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"production")}>
               Unabhängige Schreibkorrekturen im StudyPlayer</button>
           </section>:null}
-          <p>{p43WritingDetail?p43WritingDetail.intention:p40WritingTurn?p40WritingTurn.intention:
+          <p>{p44WritingCase?p44WritingTask:p43WritingDetail?p43WritingDetail.intention:
+            p40WritingTurn?p40WritingTurn.intention:
             p39Chosen?p39Chosen.situation:unit.writing.task}</p>
           <p className="p27-journey__keyhint">Tastatur: Strg + Enter (Mac: ⌘ + Enter) vergleicht Antworten oder öffnet den nächsten Schreibschritt. Japanische IME-Eingabe bleibt ungestört.</p>
           <label htmlFor="p27-draft">Erste Fassung</label>
