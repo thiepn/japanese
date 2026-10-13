@@ -15,6 +15,7 @@ import {p48ById,p48PromptsForCase,p48ReturnPrompts,type P48PracticeKind} from ".
 import {p49ById,p49PromptsForDocument,p49ReturnPrompts,type P49PracticeKind} from "./documents49";
 import {p50ById,p50PromptsForMission,p50ReturnPrompts,type P50PracticeKind} from "./integrated50";
 import {p51ById,p51PromptsForContrast,p51ReturnPrompts,type P51PracticeKind} from "./grammar51";
+import {p52ById,p52PromptsForTransformation,p52ReturnPrompts,type P52PracticeKind} from "./transformation52";
 import {p25Scenarios,p25Prompts,p25Lessons,p25DialoguePrompt} from "./pedagogy25";
 import {p26Missions,p26Prompts,p26Lessons,missionTurnPrompt,normalizeP26} from "./pedagogy26";
 
@@ -23,7 +24,7 @@ import {p26Missions,p26Prompts,p26Lessons,missionTurnPrompt,normalizeP26} from "
  */
 export type JourneySource="p23"|"p25"|"p26";
 export type JourneyStage="learn"|"build"|"conversation"|"write"|"practice";
-export type JourneyPractice="review"|"retry"|"new"|"transfer"|"register"|"grammar"|"production"|`dialogue:${string}`|`branch:${string}`|`branch-route:${string}`|`pragmatic:${string}`|`pragmatic-step:${string}`|`independent:${string}`|`reading:${string}`|`reading-kind:${string}`|`listening:${string}`|`listening-kind:${string}`|`connected:${string}`|`connected-kind:${string}`|`document:${string}`|`document-kind:${string}`|`integrated:${string}`|`integrated-kind:${string}`|`contrast:${string}`|`contrast-kind:${string}`|`return:${string}`|`return-due:${string}`;
+export type JourneyPractice="review"|"retry"|"new"|"transfer"|"register"|"grammar"|"production"|`dialogue:${string}`|`branch:${string}`|`branch-route:${string}`|`pragmatic:${string}`|`pragmatic-step:${string}`|`independent:${string}`|`reading:${string}`|`reading-kind:${string}`|`listening:${string}`|`listening-kind:${string}`|`connected:${string}`|`connected-kind:${string}`|`document:${string}`|`document-kind:${string}`|`integrated:${string}`|`integrated-kind:${string}`|`contrast:${string}`|`contrast-kind:${string}`|`transform:${string}`|`transform-kind:${string}`|`return:${string}`|`return-due:${string}`;
 export interface JourneyWord{form:string;reading:string;meaning:string;example:string;}
 export interface JourneyOption{
   japanese:string;meaning:string;valid:boolean;explanation:string;next?:string|null;
@@ -260,6 +261,19 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     return p.eventMetadata?.kind==="register-contrast"&&Array.isArray(ids)&&ids.includes(unitId);
   });
   const relatedRegister=transferForUnit(unitId).filter(p=>/register|polite|tone|Höflich|Einladungston/.test(p.id+" "+p.instruction));
+  const transformId=focus.startsWith("transform:")?
+    focus.slice("transform:".length):"";
+  const transformInput=focus.startsWith("transform-kind:")?
+    focus.slice("transform-kind:".length):"";
+  const transformSplit=transformInput.lastIndexOf(":");
+  const transformKindId=transformSplit>0?transformInput.slice(0,transformSplit):"";
+  const transformKindName=transformSplit>0?transformInput.slice(transformSplit+1):"";
+  const transformKind=(["transform","production","return"] as const)
+    .find(k=>k===transformKindName) as P52PracticeKind|undefined;
+  const transformCues=transformId&&p52ById(transformId)?.units.includes(unitId)?
+    p52PromptsForTransformation(transformId):[];
+  const transformKindCues=transformKind&&p52ById(transformKindId)?.units.includes(unitId)?
+    p52PromptsForTransformation(transformKindId,transformKind):[];
   const contrastId=focus.startsWith("contrast:")?
     focus.slice("contrast:".length):"";
   const contrastInput=focus.startsWith("contrast-kind:")?
@@ -378,6 +392,7 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
   const documentReturn=returnId?p49ById(returnId):undefined;
   const integratedReturn=returnId?p50ById(returnId):undefined;
   const contrastReturn=returnId?p51ById(returnId):undefined;
+  const transformationReturn=returnId?p52ById(returnId):undefined;
   const returnCue=returnArc?.units.includes(unitId)?
     [...p40ReturnPrompts,...p41ReturnPrompts,...p42ReturnPrompts].filter(p=>p.eventMetadata?.arcId===returnId):
     branchReturnScene?.unitIds.includes(unitId)?
@@ -397,8 +412,12 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     integratedReturn?.units.includes(unitId)?
     p50ReturnPrompts.filter(p=>p.eventMetadata?.missionId===returnId):
     contrastReturn?.units.includes(unitId)?
-    p51ReturnPrompts.filter(p=>p.eventMetadata?.contrastId===returnId):[];
-  const relevant=contrastId?contrastCues
+    p51ReturnPrompts.filter(p=>p.eventMetadata?.contrastId===returnId):
+    transformationReturn?.units.includes(unitId)?
+    p52ReturnPrompts.filter(p=>p.eventMetadata?.transformationId===returnId):[];
+  const relevant=transformId?transformCues
+    :transformKindId?transformKindCues
+    :contrastId?contrastCues
     :contrastKindId?contrastKindCues
     :integratedId?integratedCues
     :integratedKindId?integratedKindCues
