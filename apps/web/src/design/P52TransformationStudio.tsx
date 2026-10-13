@@ -10,8 +10,8 @@ const labels:Record<P52Domain,string>={
  perspective:"Perspektive & Gefallen",voice:"Aktiv & Passiv"
 };
 /** An ungraded rehearsal; all actual reviews are delegated to the original StudyPlayer. */
-export function P52TransformationStudio({items,preferredId,disabled,onPractice,onWriting}:{
- items:readonly P52Transformation[];preferredId?:string;disabled:boolean;
+export function P52TransformationStudio({items,preferredId,recallReadyIds,disabled,onPractice,onWriting}:{
+ items:readonly P52Transformation[];preferredId?:string;recallReadyIds:readonly string[];disabled:boolean;
  onPractice:(id:string,kind:Kind)=>void;onWriting:(id:string)=>void;
 }){
  const [id,setId]=useState("");
@@ -123,10 +123,15 @@ export function P52TransformationStudio({items,preferredId,disabled,onPractice,o
     <section>
      <h5>3 · Verzögerter Abruf in wirklich verändertem Kontext</h5>
      <p>Ein neuer, hier absichtlich nicht gezeigter Fall verändert Fakten,
-      Rollen oder Intention. Nur tatsächliche FSRS-MemoryTraces im bestehenden
-      Lernsystem begründen einen später fälligen Termin.</p>
-     <button type="button" disabled={disabled} onClick={()=>onPractice(item.id,"return")}>
-      Neuen, noch ungesehenen Kontext freiwillig abrufen
+      Rollen oder Intention. Der erste Transfer wird erst nach einer tatsächlich
+      fälligen ursprünglichen Transformationskarte freigegeben. Spätere Termine
+      stammen ausschließlich aus den vorhandenen FSRS-MemoryTraces.</p>
+     {!recallReadyIds.includes(item.id)?<p>
+      Noch nicht freigegeben: Bearbeite erst die ursprüngliche Umformung im
+      StudyPlayer und warte auf ihren echten FSRS-Termin.
+     </p>:null}
+     <button type="button" disabled={disabled||!recallReadyIds.includes(item.id)} onClick={()=>onPractice(item.id,"return")}>
+      Neuen, jetzt freigegebenen Kontext unabhängig abrufen
      </button>
     </section>
     <small>First-party Originalinhalt; Marugoto nur Referenz. Keine Speicherung
