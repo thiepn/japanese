@@ -586,6 +586,23 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               </button>
             </article>)}
           </section>:null}
+          {p45Recommended?<section className="p27-journey__p45-intro"
+            aria-label="Gespräch zunehmend selbstständig führen">
+            <h4>Japanisch ohne Auswahlantworten</h4>
+            <p><strong>{p45Recommended.title}</strong> — {p45Recommended.purpose}</p>
+            <p>Vier echte Partneräußerungen mit unerwarteter Änderung. Schreibe selbst,
+              behalte frühere Zusagen bei und reduziere die eingeblendeten Hilfen.
+              Die geführte Ansicht erzeugt keine Lernbewertung.</p>
+            <div className="p27-journey__actions">
+              <button type="button" onClick={()=>setStage("conversation")}>
+                Ohne Auswahlliste selbst antworten
+              </button>
+              <button type="button" disabled={disabled}
+                onClick={()=>onJourneyPractice(unitId,`independent:${p45Recommended.id}`)}>
+                Vier unabhängige StudyPlayer-Züge üben
+              </button>
+            </div>
+          </section>:null}
           {p44Recommended?<section className="p27-journey__p44-intro"
             aria-label="Höflichkeit und soziale Gesprächsabsichten">
             <h4>Höflichkeit ist eine Entscheidung im Kontext</h4>
@@ -641,6 +658,12 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
         </section>:null}
         {stage==="conversation"?<section className="p27-journey__panel">
           <h4>Mehrstufiger Dialog</h4>
+          {p45UnitChallenges.length?<P45IndependentConversation
+            key={unitId+":"+owner} challenges={p45UnitChallenges}
+            preferredId={p45Recommended?.id} disabled={disabled}
+            onPractice={id=>onJourneyPractice(unitId,`independent:${id}`)}
+            onWriting={chooseP45Writing}
+          />:null}
           {p44UnitCases.length?<P44PragmaticsStudy key={unitId+":"+owner}
             cases={p44UnitCases} preferredId={p44Recommended?.id} disabled={disabled}
             onPractice={(caseId,step:undefined|P44PracticeStep)=>
