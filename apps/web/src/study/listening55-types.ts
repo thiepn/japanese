@@ -1,6 +1,6 @@
 /** First-party, original P55 connected listening scripts: no recorded audio. */
 export type P55Genre="dialogue"|"announcement"|"voice-message"|"service"|"meeting"|"interview"|"instructions"|"conversation";
-export type P55QuestionKind="speaker"|"chronology"|"cause"|"inference"|"intention";
+export type P55QuestionKind="evidence"|"speaker"|"chronology"|"cause"|"inference"|"intention";
 export type P55RawLine=readonly [role:string,japanese:string,german:string];
 export type P55RawQuestion=readonly [kind:P55QuestionKind,question:string,model:string,alternative:string,misconception:string,why:string,evidence:string];
 export type P55RawResponse=readonly [situation:string,model:string,alternative:string,misconception:string,why:string];
