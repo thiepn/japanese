@@ -62,7 +62,7 @@ export interface HistoricalReturnEligibility{
  */
 export function historicalReturnEligibility(
  prompt:StudyPrompt,traces:readonly MemoryTrace[],events:readonly StudyEvent[],
- now=Date.now()
+ now=Date.now(),ownerId?:string
 ):HistoricalReturnEligibility{
  const anchors=sourceAnchors.get(prompt.id);
  const locked={eligible:false,status:"locked" as const,
@@ -70,8 +70,14 @@ export function historicalReturnEligibility(
  if(!anchors?.length||!isHistoricalReturn(prompt))return locked;
  const traceId=(p:StudyPrompt)=>p.primaryTarget.kind+":"+
   p.primaryTarget.id+":"+p.skill+":"+p.cueFamily;
- const owner=traces[0]?.userId??events[0]?.userId;
- if(!owner)return locked;
+ // The native caller provides the established Account owner. Other source
+ // consumers may omit it only if all evidence has one unambiguous original
+ // owner. Mixed-user arrays must never cause cross-owner unlocks.
+ const evidenceOwners=new Set([
+  ...traces.map(t=>t.userId),...events.map(e=>e.userId)
+ ]);
+ const owner=ownerId??(evidenceOwners.size===1?[...evidenceOwners][0]:undefined);
+ if(!owner||evidenceOwners.size!==1||!evidenceOwners.has(owner))return locked;
  const scopedTraces=traces.filter(t=>t.userId===owner);
  const scopedEvents=events.filter(e=>e.userId===owner&&
   (e.result==="correct"||e.result==="incorrect")&&
