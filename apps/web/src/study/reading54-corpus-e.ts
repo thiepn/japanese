@@ -97,7 +97,7 @@ const authored:readonly P54RawReading[]=[
  ["そこで、町のボランティア三人が夕方に公園へ行きました。電気がついていない場所は二か所ありましたが、一つは本当に故障中で、もう一つは工事のため電気を消していただけでした。","Drei Freiwillige besuchten den Park am Abend. An zwei Stellen brannte kein Licht. Eine Lampe war tatsächlich defekt, die andere war wegen Bauarbeiten lediglich ausgeschaltet."],
  ["三人はそれぞれの場所を写真とメモで記録して、市の担当者に報告しました。担当者は「故障した電気は来週修理する予定です。工事の場所にはしばらく入らないでください」と答えました。","Sie dokumentierten beide Stellen mit Fotos und Notizen und meldeten es der Stadt. Die Verantwortliche sagte, die defekte Lampe solle nächste Woche repariert werden; das Baugebiet dürfe vorerst nicht betreten werden."],
  ["私たちはその内容を町のページで共有しました。「公園の電気は全部壊れている」という説明は正しくありません。また、修理が終わったと確認できるまでは、夜の道を使う時に注意する必要があります。","Wir teilten diese Informationen auf der Stadtteilseite. Die Behauptung, alle Parklichter seien kaputt, ist falsch. Bis die Reparatur bestätigt ist, bleibt beim nächtlichen Weg Vorsicht nötig."]
- ],words:["koshou","kakunin","houkoku","shuuri","kyouyuu","anzen"],grammar:"のではないか / だけ / 予定です / までは",contrast:"Zwei dunkle Stellen haben unterschiedliche Ursachen; angekündigte Reparatur ist nicht erledigt.",
+ ],words:["koshou","kakunin","houkoku","shuuri","kyouyuu"],grammar:"のではないか / だけ / 予定です / までは",contrast:"Zwei dunkle Stellen haben unterschiedliche Ursachen; angekündigte Reparatur ist nicht erledigt.",
  questions:[
  ["evidence","電気がついていなかった二か所は両方故障でしたか。","いいえ、一つだけ故障していました。","いいえ、もう一つは工事のためでした。","はい、二つとも同じ故障でした。","Kausaler Gegensatz ausdrücklich genannt.","一つは本当に故障中で、もう一つは工事のため"],
  ["chronology","修理の予定を聞く前に三人は何をしましたか。","場所を写真とメモで記録して報告しました。","公園を調べてから市に報告しました。","修理が終わったと公開しました。","Recherche und Bericht gehen städtischer Rückmeldung voraus.","写真とメモで記録して、市の担当者に報告しました"],
