@@ -19,6 +19,7 @@ import {p38ProductionPrompts,p38ProductionForUnit} from "../study/production38";
 import {p39LifePrompts,p39CasesForUnit,p39AuthoredFeedback} from "../study/life39";
 import {p40Prompts,p40ReturnPrompts,p40ArcsForUnit,p40TurnFeedback} from "../study/dialogue40";
 import {p41Prompts,p41ReturnPrompts,p41ArcsForUnit,p41ArcById} from "../study/dialogue41";
+import {p42Prompts,p42ReturnPrompts,p42ArcsForUnit,p42ArcById} from "../study/dialogue42";
 import {p28NewSentencePrompts} from "../study/sentence28";
 import {p29AdditionalPrompts,p29LexicalPrompts,lexicalLinksForUnit,recommendP29Actions} from "../study/depth29";
 import {describeP29Revision,p29RegisterExampleForUnit} from "../study/revision29";
@@ -50,7 +51,7 @@ interface SpeechCapture {
 interface Feedback { kind:"graded"|"ungraded"|"choice";message:string;model:string;notes:string[];next:string|null; }
 interface RewriteReport {changed:boolean;oldLength:number;newLength:number;found:string[];missing:string[];}
 const extraJourneyPrompts=[...p28NewSentencePrompts,...p29AdditionalPrompts,
-  ...p29LexicalPrompts,...p30TransformationPrompts,...continuityPrompts,...register28Prompts,...p31ContrastPrompts,...p31SentencePrompts,...p32ContrastPrompts,...p32SentencePrompts,...p33RolePrompts,...p33SentencePrompts,...p34SentencePrompts,...p35PragmaticPrompts,...p36CorrectionPrompts,...p38CrossUnitPrompts,...p38ProductionPrompts,...p39LifePrompts,...p40Prompts,...p41Prompts];
+  ...p29LexicalPrompts,...p30TransformationPrompts,...continuityPrompts,...register28Prompts,...p31ContrastPrompts,...p31SentencePrompts,...p32ContrastPrompts,...p32SentencePrompts,...p33RolePrompts,...p33SentencePrompts,...p34SentencePrompts,...p35PragmaticPrompts,...p36CorrectionPrompts,...p38CrossUnitPrompts,...p38ProductionPrompts,...p39LifePrompts,...p40Prompts,...p41Prompts,...p42Prompts];
 const steps:[JourneyStage,string][]=[["learn","1 · Verstehen"],["build","2 · Satzbau"],["conversation","3 · Antworten"],["write","4 · Schreiben"],["practice","5 · Festigen"]];
 function compareWriting(before:string,after:string,features:readonly string[]):RewriteReport{
   const oldText=normalizeP26(before),newText=normalizeP26(after);
@@ -126,7 +127,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const p38WritingCases=p38ProductionForUnit(unitId);
   const p39UnitCases=p39CasesForUnit(unitId);
   const p41UnitArcs=p41ArcsForUnit(unitId);
-  const p40UnitArcs=[...p41UnitArcs,...p40ArcsForUnit(unitId)];
+  const p42UnitArcs=p42ArcsForUnit(unitId);
+  const p40UnitArcs=[...p42UnitArcs,...p41UnitArcs,...p40ArcsForUnit(unitId)];
   const globalRecall=useMemo(()=>evidence?
     p31GlobalDue(evidence.traces,evidence.events,extraJourneyPrompts):[],
     [evidence]);
@@ -146,13 +148,15 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const p40Recommended=p40UnitArcs.find(arc=>mistakes.some(m=>
     m.promptId.startsWith("p40-turn-"+arc.id+"-t")||
     m.promptId.startsWith("p41-turn-"+arc.id+"-t")||
-    m.promptId==="p40-return-"+arc.id||m.promptId==="p41-return-"+arc.id))??p40UnitArcs[0];
+    m.promptId.startsWith("p42-turn-"+arc.id+"-t")||
+    m.promptId==="p40-return-"+arc.id||m.promptId==="p41-return-"+arc.id||m.promptId==="p42-return-"+arc.id))??p40UnitArcs[0];
   const p40ActiveArc=p40UnitArcs.find(arc=>arc.id===p40ArcId)??p40Recommended;
   const p40CurrentTurn=p40ActiveArc?.turns[p40TurnIndex];
   const p40WritingArc=p40UnitArcs.find(arc=>arc.id===p40WritingArcId);
   const p40WritingTurn=p40WritingArc?.turns[p40WritingTurnIndex];
-  const p41ActiveArc=p40ActiveArc?p41ArcById(p40ActiveArc.id):undefined;
-  const p40ReturnCueStatus=[...p41ReturnPrompts,...p40ReturnPrompts].filter(p=>
+  const p41ActiveArc=p40ActiveArc?(p41ArcById(p40ActiveArc.id)??p42ArcById(p40ActiveArc.id)):undefined;
+  const p42ActiveArc=p40ActiveArc?p42ArcById(p40ActiveArc.id):undefined;
+  const p40ReturnCueStatus=[...p42ReturnPrompts,...p41ReturnPrompts,...p40ReturnPrompts].filter(p=>
     Array.isArray(p.eventMetadata?.unitIds)&&p.eventMetadata.unitIds.includes(unitId))
     .map(prompt=>{
       const trace=evidence?.traces.find(t=>t.id===traceIdJourney(prompt));
@@ -204,7 +208,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   function selectUnit(id:string){setUnitId(id);setStage("learn");}
   function chooseP40Writing(arcId:string,turnIndex?:number){
     setP40WritingArcId(arcId);setP39WritingId("");
-    const target=p41ArcById(arcId);
+    const target=p41ArcById(arcId)??p42ArcById(arcId);
     setP40WritingTurnIndex(turnIndex??(target?target.pivotTurn-1:1));
     setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
     setStage("write");
@@ -255,10 +259,10 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
         ...(kind==="rewrite"&&p39Chosen?{p39:true,authoredCaseId:p39Chosen.id,
           sourceContextId:"p39:repair:"+p39Chosen.id}:{}),
         ...(kind==="rewrite"&&p40WritingTurn?{
-          ...(p41ArcById(p40WritingArc!.id)?{p41:true}:{p40:true}),
+          ...(p42ArcById(p40WritingArc!.id)?{p42:true}:p41ArcById(p40WritingArc!.id)?{p41:true}:{p40:true}),
           authoredArcId:p40WritingArc!.id,
           authoredTurnId:p40WritingTurn.id,
-          sourceContextId:(p41ArcById(p40WritingArc!.id)?"p41:arc:":"p40:dialogue:")+p40WritingArc!.id
+          sourceContextId:(p42ArcById(p40WritingArc!.id)?"p42:arc:":p41ArcById(p40WritingArc!.id)?"p41:arc:":"p40:dialogue:")+p40WritingArc!.id
         }:{})}
     };
     await saveStudyEvent(event);
@@ -722,12 +726,12 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 {arc.title}</button>)}
             </div>
             {p40WritingArc&&p40WritingTurn?<div className="p27-journey__p40-context">
-              {p41ArcById(p40WritingArc.id)?<div className="p27-journey__p41-writing-turns"
+              {(p41ArcById(p40WritingArc.id)||p42ArcById(p40WritingArc.id))?<div className="p27-journey__p41-writing-turns"
                 role="group" aria-label="Gesprächszug zur schriftlichen Korrektur auswählen">
                 {p40WritingArc.turns.slice(1).map((item,i)=><button key={item.id}
                   type="button" aria-pressed={p40WritingTurnIndex===i+1}
                   onClick={()=>chooseP40Writing(p40WritingArc.id,i+1)}>
-                  Schritt {item.number}{p41ArcById(p40WritingArc.id)?.pivotTurn===item.number?" · Planwechsel":""}
+                  Schritt {item.number}{(p41ArcById(p40WritingArc.id)??p42ArcById(p40WritingArc.id))?.pivotTurn===item.number?" · Planwechsel":""}
                 </button>)}
               </div>:null}
               {p40WritingTurnIndex>0?<p><strong>Vorherige Ziele:</strong>{" "}
@@ -736,8 +740,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <p><strong>Gesprächspartner:</strong> <span lang="ja">{p40WritingTurn.partner}</span></p>
               <p><strong>Fehlerhafter Satz:</strong> <span lang="ja">{p40WritingTurn.misstep}</span></p>
               <p><strong>Absicht:</strong> {p40WritingTurn.intention}</p>
-              {p41ArcById(p40WritingArc.id)?<p><strong>Gesprächsziel:</strong>{" "}
-                {p41ArcById(p40WritingArc.id)?.outcome}</p>:null}
+              {(p41ArcById(p40WritingArc.id)||p42ArcById(p40WritingArc.id))?<p><strong>Gesprächsziel:</strong>{" "}
+                {(p41ArcById(p40WritingArc.id)??p42ArcById(p40WritingArc.id))?.outcome}</p>:null}
             </div>:null}
             <button type="button" disabled={disabled}
               onClick={()=>onJourneyPractice(unitId,"production")}>
