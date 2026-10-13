@@ -38,7 +38,7 @@ import {p50Prompts,p50ReturnPrompts,p50Missions,p50ForUnit,p50ById,p50AuthoredCo
 import {P50IntegratedStudio} from "./P50IntegratedStudio";
 import {p51Prompts,p51ReturnPrompts,p51Contrasts,p51ForUnit,p51ById,p51AuthoredComparison} from "../study/grammar51";
 import {P51GrammarStudio} from "./P51GrammarStudio";
-import {p52Prompts,p52ReturnPrompts,p52Transformations,p52ForUnit,p52ById,p52Compare} from "../study/transformation52";
+import {p52Prompts,p52TransformPrompts,p52ReturnPrompts,p52Transformations,p52ForUnit,p52ById,p52Compare} from "../study/transformation52";
 import {P52TransformationStudio} from "./P52TransformationStudio";
 import {p28NewSentencePrompts} from "../study/sentence28";
 import {p29AdditionalPrompts,p29LexicalPrompts,lexicalLinksForUnit,recommendP29Actions} from "../study/depth29";
@@ -245,6 +245,24 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const p44Recommended=p44UnitCases.find(c=>mistakes.some(m=>
     ["p44-contrast-","p44-production-","p44-reply-","p44-return-"].some(prefix=>
       m.promptId===prefix+c.id)))??p44UnitCases[0];
+  const p52RecallReadyIds=useMemo(()=>{
+    if(!evidence)return [];
+    const now=Date.now(),yesterday=now-24*60*60*1000;
+    const dueOrSpaced=(promptId:string)=>{
+      const original=p52TransformPrompts.find(p=>p.id===promptId);
+      if(!original)return false;
+      const trace=evidence.traces.find(t=>t.id===traceIdJourney(original));
+      const dueAt=trace?Date.parse(trace.card.due):NaN;
+      if(trace&&Number.isFinite(dueAt)&&dueAt<=now)return true;
+      // Genuine prior graded event plus elapsed delay unlocks a new transfer;
+      // it does not claim the transfer itself has an FSRS due time.
+      return evidence.events.some(e=>e.metadata?.promptId===original.id&&
+        (e.result==="correct"||e.result==="incorrect")&&
+        e.metadata?.schedulerExcluded!==true&&
+        Number.isFinite(Date.parse(e.occurredAt))&&Date.parse(e.occurredAt)<=yesterday);
+    };
+    return p52Transformations.filter(t=>dueOrSpaced("p52-transform-"+t.id)).map(t=>t.id);
+  },[evidence]);
   const p40ReturnCueStatus=[...p52ReturnPrompts,...p51ReturnPrompts,...p50ReturnPrompts,...p49ReturnPrompts,...p48ReturnPrompts,...p47ReturnPrompts,...p46ReturnPrompts,...p45ReturnPrompts,...p44ReturnPrompts,...p43ReturnPrompts,...p42ReturnPrompts,...p41ReturnPrompts,...p40ReturnPrompts].filter(p=>
     Array.isArray(p.eventMetadata?.unitIds)&&p.eventMetadata.unitIds.includes(unitId))
     .map(prompt=>{
@@ -253,7 +271,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
       return {id:prompt.id,arcId:String(prompt.eventMetadata?.arcId??prompt.eventMetadata?.sceneId??
           prompt.eventMetadata?.caseId??prompt.eventMetadata?.challengeId??prompt.eventMetadata?.readingId??prompt.eventMetadata?.sceneId??prompt.eventMetadata?.documentId??prompt.eventMetadata?.missionId??prompt.eventMetadata?.contrastId??prompt.eventMetadata?.transformationId),
         planned:Boolean(trace&&Number.isFinite(when)),
-        due:Boolean(trace&&Number.isFinite(when)&&when<=Date.now())};
+        due:Boolean(trace&&Number.isFinite(when)&&when<=Date.now()),
+        p52Ready:prompt.eventMetadata?.p52===true&&p52RecallReadyIds.includes(String(prompt.eventMetadata?.transformationId))};
     });
   const reviewCatalog=useMemo(()=>promptsForUnit(unitId,extraJourneyPrompts),[unitId]);
   const nextActions=useMemo(()=>evidence?
@@ -900,10 +919,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             </button>
           </section>:null}
           <P52TransformationStudio key={"p52:"+owner} items={p52Transformations}
-            preferredId={p52Recommended?.id} disabled={disabled}
+            preferredId={p52Recommended?.id} recallReadyIds={p52RecallReadyIds} disabled={disabled}
             onPractice={(taskId,kind)=>{
               const t=p52ById(taskId);
-              if(t)onJourneyPractice(t.units[0]!,`transform-kind:${t.id}:${kind}`);
+              if(t&&(kind!=="return"||p52RecallReadyIds.includes(t.id)))
+                onJourneyPractice(t.units[0]!,`transform-kind:${t.id}:${kind}`);
             }}
             onWriting={chooseP52Writing}
           />
@@ -1738,13 +1758,14 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 p43SceneById(cue.arcId)?.title??p44ById(cue.arcId)?.title??
                 p45ById(cue.arcId)?.title??p46ById(cue.arcId)?.title??p47ById(cue.arcId)?.title??p48ById(cue.arcId)?.title??p49ById(cue.arcId)?.title??p50ById(cue.arcId)?.title??p51ById(cue.arcId)?.title??p52ById(cue.arcId)?.title??"Gesprächstransfer"}</strong>
                 <small>{cue.due?"Jetzt laut FSRS fällig":
+                  cue.p52Ready?"Neuer P52-Transfer nach echtem Lernabstand freigegeben":
                   cue.planned?"Für einen späteren FSRS-Termin eingeplant":
                   "Noch kein FSRS-Termin vorhanden"}</small></div>
               <button type="button" disabled={disabled||!cue.due}
                 onClick={()=>onJourneyPractice(unitId,`return-due:${cue.arcId}`)}>
                 Fälligen Abruf üben
               </button>
-              <button type="button" disabled={disabled}
+              <button type="button" disabled={disabled||(Boolean(p52ById(cue.arcId))&&!cue.p52Ready&&!cue.due)}
                 onClick={()=>onJourneyPractice(unitId,`return:${cue.arcId}`)}>
                 Freiwillig selbstständig üben
               </button>
