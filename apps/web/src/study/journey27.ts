@@ -22,6 +22,7 @@ import {p55ById,p55PromptsForScene,p55ReturnPrompts,p55ComprehensionPrompts,type
 import {p56ById,p56PromptsForScene,p56ReturnPrompts,p56DecisionPrompts,type P56PracticeKind} from "./interaction56";
 import {p57ById,p57PromptsForThread,p57ReturnPrompts,p57ComprehensionPrompts,type P57PracticeKind} from "./writing57";
 import {p58ById,p58PromptsForMission,p58ReturnPrompts,p58ComprehensionPrompts,type P58PracticeKind} from "./missions58";
+import {p59ById,p59PromptsForMission,p59ReturnPrompts,p59ComprehensionPrompts,type P59PracticeKind} from "./performance59";
 import {p25Scenarios,p25Prompts,p25Lessons,p25DialoguePrompt} from "./pedagogy25";
 import {p26Missions,p26Prompts,p26Lessons,missionTurnPrompt,normalizeP26} from "./pedagogy26";
 
@@ -30,7 +31,7 @@ import {p26Missions,p26Prompts,p26Lessons,missionTurnPrompt,normalizeP26} from "
  */
 export type JourneySource="p23"|"p25"|"p26";
 export type JourneyStage="learn"|"build"|"conversation"|"write"|"practice";
-export type JourneyPractice="review"|"retry"|"new"|"transfer"|"register"|"grammar"|"production"|`dialogue:${string}`|`branch:${string}`|`branch-route:${string}`|`pragmatic:${string}`|`pragmatic-step:${string}`|`independent:${string}`|`reading:${string}`|`reading-kind:${string}`|`listening:${string}`|`listening-kind:${string}`|`connected:${string}`|`connected-kind:${string}`|`document:${string}`|`document-kind:${string}`|`integrated:${string}`|`integrated-kind:${string}`|`contrast:${string}`|`contrast-kind:${string}`|`transform:${string}`|`transform-kind:${string}`|`lexical:${string}`|`lexical-kind:${string}`|`reading54:${string}`|`reading54-kind:${string}`|`listening55:${string}`|`listening55-kind:${string}`|`interaction56:${string}`|`interaction56-kind:${string}`|`writing57:${string}`|`writing57-kind:${string}`|`mission58:${string}`|`mission58-kind:${string}`|`return:${string}`|`return-due:${string}`;
+export type JourneyPractice="review"|"retry"|"new"|"transfer"|"register"|"grammar"|"production"|`dialogue:${string}`|`branch:${string}`|`branch-route:${string}`|`pragmatic:${string}`|`pragmatic-step:${string}`|`independent:${string}`|`reading:${string}`|`reading-kind:${string}`|`listening:${string}`|`listening-kind:${string}`|`connected:${string}`|`connected-kind:${string}`|`document:${string}`|`document-kind:${string}`|`integrated:${string}`|`integrated-kind:${string}`|`contrast:${string}`|`contrast-kind:${string}`|`transform:${string}`|`transform-kind:${string}`|`lexical:${string}`|`lexical-kind:${string}`|`reading54:${string}`|`reading54-kind:${string}`|`listening55:${string}`|`listening55-kind:${string}`|`interaction56:${string}`|`interaction56-kind:${string}`|`writing57:${string}`|`writing57-kind:${string}`|`mission58:${string}`|`mission58-kind:${string}`|`performance59:${string}`|`performance59-kind:${string}`|`return:${string}`|`return-due:${string}`;
 export interface JourneyWord{form:string;reading:string;meaning:string;example:string;}
 export interface JourneyOption{
   japanese:string;meaning:string;valid:boolean;explanation:string;next?:string|null;
@@ -206,7 +207,7 @@ export function promptsForUnit(unitId:string,extras:readonly StudyPrompt[]=[]):S
     // P52 unseen transfer must not leak into ordinary "new"/"production" practice.
     // Dedicated return / return-due routes and native Today FSRS-due remain authoritative.
     .filter(p=>{
-      if(p.id.startsWith("p52-return-")||p.id.startsWith("p53-return-")||p.id.startsWith("p54-return-")||p.id.startsWith("p55-return-")||p.id.startsWith("p56-return-")||p.id.startsWith("p57-return-")||p.id.startsWith("p58-return-")||seen.has(p.id))return false;
+      if(p.id.startsWith("p52-return-")||p.id.startsWith("p53-return-")||p.id.startsWith("p54-return-")||p.id.startsWith("p55-return-")||p.id.startsWith("p56-return-")||p.id.startsWith("p57-return-")||p.id.startsWith("p58-return-")||p.id.startsWith("p59-return-")||seen.has(p.id))return false;
       seen.add(p.id);return true;
     });
 }
@@ -272,6 +273,33 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     return p.eventMetadata?.kind==="register-contrast"&&Array.isArray(ids)&&ids.includes(unitId);
   });
   const relatedRegister=transferForUnit(unitId).filter(p=>/register|polite|tone|Höflich|Einladungston/.test(p.id+" "+p.instruction));
+  const performance59Id=focus.startsWith("performance59:")?
+    focus.slice("performance59:".length):"";
+  const performance59Input=focus.startsWith("performance59-kind:")?
+    focus.slice("performance59-kind:".length):"";
+  const performance59Split=performance59Input.lastIndexOf(":");
+  const performance59KindId=performance59Split>0?performance59Input.slice(0,performance59Split):"";
+  const performance59KindName=performance59Split>0?performance59Input.slice(performance59Split+1):"";
+  const performance59Kind=(["comprehension","strategy","writing","reply","revision","return"] as const)
+    .find(k=>k===performance59KindName) as P59PracticeKind|undefined;
+  const performance59Cues=performance59Id&&p59ById(performance59Id)?.units.includes(unitId)?
+    p59PromptsForMission(performance59Id):[];
+  const performance59KindCues=performance59Kind&&p59ById(performance59KindId)?.units.includes(unitId)?
+    p59PromptsForMission(performance59KindId,performance59Kind):[];
+  const performance59ReturnUnlocked=(id:string):boolean=>{
+    const source=p59ById(id);
+    const first=p59ComprehensionPrompts.find(p=>p.eventMetadata?.missionId===id);
+    const ret=p59ReturnPrompts.find(p=>p.eventMetadata?.missionId===id);
+    if(!source||!first||!ret||!source.units.includes(unitId))return false;
+    if(known.has(traceIdJourney(ret)))return true;
+    const initial=known.get(traceIdJourney(first));
+    const due=initial?Date.parse(initial.card.due):NaN;
+    if(Number.isFinite(due)&&due<=now)return true;
+    return events.some(e=>e.metadata?.promptId===first.id&&
+      (e.result==="correct"||e.result==="incorrect")&&
+      e.metadata?.schedulerExcluded!==true&&
+      Number.isFinite(Date.parse(e.occurredAt))&&Date.parse(e.occurredAt)<=now-86400000);
+  };
   const mission58Id=focus.startsWith("mission58:")?
     focus.slice("mission58:".length):"";
   const mission58Input=focus.startsWith("mission58-kind:")?
@@ -571,6 +599,7 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
   const interaction56Return=returnId?p56ById(returnId):undefined;
   const writing57Return=returnId?p57ById(returnId):undefined;
   const mission58Return=returnId?p58ById(returnId):undefined;
+  const performance59Return=returnId?p59ById(returnId):undefined;
   const returnCue=returnArc?.units.includes(unitId)?
     [...p40ReturnPrompts,...p41ReturnPrompts,...p42ReturnPrompts].filter(p=>p.eventMetadata?.arcId===returnId):
     branchReturnScene?.unitIds.includes(unitId)?
@@ -604,8 +633,12 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     writing57Return?.units.includes(unitId)&&writing57ReturnUnlocked(returnId)?
     p57ReturnPrompts.filter(p=>p.eventMetadata?.threadId===returnId):
     mission58Return?.units.includes(unitId)&&mission58ReturnUnlocked(returnId)?
-    p58ReturnPrompts.filter(p=>p.eventMetadata?.missionId===returnId):[];
-  const relevant=mission58Id?mission58Cues
+    p58ReturnPrompts.filter(p=>p.eventMetadata?.missionId===returnId):
+    performance59Return?.units.includes(unitId)&&performance59ReturnUnlocked(returnId)?
+    p59ReturnPrompts.filter(p=>p.eventMetadata?.missionId===returnId):[];
+  const relevant=performance59Id?performance59Cues
+    :performance59KindId?(performance59Kind==="return"&&!performance59ReturnUnlocked(performance59KindId)?[]:performance59KindCues)
+    :mission58Id?mission58Cues
     :mission58KindId?(mission58Kind==="return"&&!mission58ReturnUnlocked(mission58KindId)?[]:mission58KindCues)
     :writing57Id?writing57Cues
     :writing57KindId?(writing57Kind==="return"&&!writing57ReturnUnlocked(writing57KindId)?[]:writing57KindCues)
@@ -665,7 +698,7 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     return 0;
   };
   // Do not silently substitute unrelated unit exercises for an empty specialist queue.
-  const list=mission58Id||mission58KindId||writing57Id||writing57KindId||interaction56Id||interaction56KindId||listening55Id||listening55KindId||reading54Id||reading54KindId||lexicalId||lexicalKindId||transformId||transformKindId||contrastId||contrastKindId||integratedId||integratedKindId||documentId||documentKindId||connectedId||connectedKindId||listeningId||listeningKindId||readingId||readingKindId||independentId||dialogueId||branchId||branchRouteId||pragmaticId||pragmaticStepId?relevant.slice():relevant.slice().sort((a,b)=>priority(b)-priority(a));
+  const list=performance59Id||performance59KindId||mission58Id||mission58KindId||writing57Id||writing57KindId||interaction56Id||interaction56KindId||listening55Id||listening55KindId||reading54Id||reading54KindId||lexicalId||lexicalKindId||transformId||transformKindId||contrastId||contrastKindId||integratedId||integratedKindId||documentId||documentKindId||connectedId||connectedKindId||listeningId||listeningKindId||readingId||readingKindId||independentId||dialogueId||branchId||branchRouteId||pragmaticId||pragmaticStepId?relevant.slice():relevant.slice().sort((a,b)=>priority(b)-priority(a));
   // Only FSRS-issued due timestamps establish that a card is due.
   // A last-incorrect event may warrant optional remediation but does not
   // override a future FSRS due date or silently turn new prompts into "due".
