@@ -57,7 +57,7 @@ const sources=(m:P60Unit)=>"Originale verknüpfte Schrifttexte:\n"+
  m.spoken.map(s=>s.speaker+"： "+s.japanese).join("\n");
 function qPrompt(m:P60Unit,q:P60Question,i:number):StudyPrompt{
  const base=basics(m,"question-"+(i+1));
- return {...base,id:"p60-question-"+q.id,skill:"form_selection",promptType:"choice",
+ return {...base,id:"p60-question-"+q.id,skill:"production",promptType:"choice",
   instruction:"Echte schriftliche und gesprochene Quellen vergleichen und die zwei original verfassten belegbaren Antworten von der beabsichtigten Fehlannahme unterscheiden. Kein automatischer Grad für eigene freie japanische Texte oder gemessenes Hörverstehen.",
   prompt:sources(m)+"\nFrage: "+q.situation,
   choices:[q.model,q.trap,q.alternative],
