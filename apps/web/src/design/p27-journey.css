@@ -239,3 +239,25 @@
  .p27-journey__p41-writing-turns{display:grid;grid-template-columns:1fr}
  .p27-journey__p41-writing-turns button{width:100%}
 }
+
+
+/* P42 speaker/relationship transfer within the existing Learn layout. */
+.p27-journey__p42-variation{padding:1rem;border:1px solid currentColor;margin:1.1rem 0;min-width:0}
+.p27-journey__p42-variation h4{font-size:1.08rem;margin:.25rem 0 .6rem}
+.p27-journey__p42-variation article{padding:.8rem 0;border-top:1px solid currentColor}
+.p27-journey__p42-variation article h5{font-size:1rem;margin:.2rem 0}
+.p27-journey__p42-variation article p{margin:.35rem 0;overflow-wrap:anywhere}
+.p27-journey__p42-variation article button{margin:.4rem 0;min-height:44px}
+.p27-journey__p42-speaker{padding:.9rem 1rem;margin:.8rem 0;
+ border-left:3px solid currentColor;background:rgba(110,110,110,.09);min-width:0}
+.p27-journey__p42-speaker p{margin:.45rem 0;overflow-wrap:anywhere}
+.p27-journey__p42-speaker details{border-top:1px solid currentColor;padding-top:.55rem;margin-top:.65rem}
+.p27-journey__p42-speaker summary{cursor:pointer;min-height:44px;display:list-item}
+.p27-journey__p42-speaker summary:focus-visible{
+ outline:3px solid currentColor;outline-offset:2px
+}
+@media(max-width:620px){
+ .p27-journey__p42-variation{padding:.65rem}
+ .p27-journey__p42-speaker{padding:.65rem}
+ .p27-journey__p42-variation article button{width:100%}
+}
