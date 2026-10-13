@@ -1,6 +1,7 @@
 import type {StudyPrompt} from "@thiepn/study-player";
 import {normalizeP26} from "./pedagogy26";
 import type {P53Vocabulary} from "./vocabulary53-types";
+import {p53FamiliesFor} from "./vocabulary53-families";
 import {p53TravelVocabulary} from "./vocabulary53-travel";
 import {p53ServiceVocabulary} from "./vocabulary53-services";
 import {p53StudyVocabulary} from "./vocabulary53-study";
@@ -40,7 +41,7 @@ const meaningPrompt=(v:P53Vocabulary):StudyPrompt=>{
   "\nSchreibe den gesamten japanischen Satz.",
  acceptedAnswers:[normalizeP26(v.example)],displayAnswer:v.example,
  explanation:"Typischer Gebrauch: "+v.collocations.join(" / ")+". "+v.nuance+
-  " Fehlergefahr: "+v.misconception+" "+v.repair,
+  " Verwandte Ausdrücke: "+p53FamiliesFor(v.id).map(f=>f.explanation).slice(0,2).join(" ")+" Fehlergefahr: "+v.misconception+" "+v.repair,
  eventMetadata:{...c.eventMetadata,kind:"contextual-lexical-meaning",focus:"lexical-distinction"}};
 };
 function situationalPrompt(v:P53Vocabulary,kind:"production"|"return"):StudyPrompt{
@@ -51,7 +52,8 @@ function situationalPrompt(v:P53Vocabulary,kind:"production"|"return"):StudyProm
  prompt:t.situation+"\nNutze "+v.written+" in einem passenden vollständigen japanischen Satz, ohne die frühere Beispielaussage zu wiederholen.",
  acceptedAnswers:[normalizeP26(t.model)],displayAnswer:t.model,
  explanation:"Originales mögliches Satzmodell; weitere korrekte Formulierungen bleiben außerhalb des endlichen Abgleichs. "+
-  "Kollokationen: "+v.collocations.join(" / ")+". "+v.nuance+" "+v.repair,
+  "Kollokationen: "+v.collocations.join(" / ")+". "+v.nuance+" "+
+  p53FamiliesFor(v.id).map(f=>f.explanation).slice(0,1).join(" ")+" "+v.repair,
  eventMetadata:{...c.eventMetadata,kind:isReturn?"cross-context-lexical-return":"lexical-independent-production",
   focus:isReturn?"delayed-independent-return":"situated-active-vocabulary"}};
 }
