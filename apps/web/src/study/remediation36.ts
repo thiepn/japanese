@@ -21,6 +21,62 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p57===true){
+    const kind=prompt.eventMetadata?.kind;
+    const focus=prompt.eventMetadata?.focus;
+    const questionKind=prompt.eventMetadata?.questionKind;
+    if(focus==="delayed-independent-return")return {
+      title:"Neue schriftliche Situation nach echtem Lernabstand",
+      promptSpecificGoal:"Der neue P57-Kontext hat andere Personen, Zeiten oder "
+       +"Bedingungen. Verwende keine alte Modellmail. Eine FSRS-Karte wird nur "
+       +"durch eine bestehende unabhängig bewertete StudyPlayer-Antwort fällig; "
+       +"ungespeicherte Entwürfe erzeugen keine Benotung.",
+      lessonStage:"practice",action:"Neue Originalnachricht unabhängig schreiben"
+    };
+    if(kind==="message-error-revision")return {
+      title:"Konkrete falsche Information im Entwurf berichtigen",
+      promptSpecificGoal:"Vergleiche alle Nachrichten, besonders spätere Korrekturen. "
+       +"Überarbeite nur nach belegten Daten, lasse bestätigte Bedingungen bestehen "
+       +"und passe die Höflichkeit an die Rolle des Empfängers an.",
+      lessonStage:"write",action:"Originalen fehlerhaften Entwurf selbstständig korrigieren"
+    };
+    if(kind==="multi-message-written-followup")return {
+      title:"Neue Rückmeldung ändert deine bisherige Nachricht",
+      promptSpecificGoal:"Lies die neueste Antwort nicht als bloße Wiederholung. "
+       +"Eine Bitte, Absage, Kapazitätsgrenze oder Prüfung kann den Entwurf verändern. "
+       +"Antworte unter Beibehaltung der noch gültigen alten Bedingungen.",
+      lessonStage:"write",action:"Unerwartete Originalnachricht angemessen beantworten"
+    };
+    if(kind==="functional-original-writing")return {
+      title:"Eigene zweckmäßige Nachricht mit Empfänger, Absicht und Status",
+      promptSpecificGoal:"Verfasse selbst zwei passende japanische Sätze, die Anlass, "
+       +"Wunsch, Rückfrage oder Bestätigung deutlich machen. Bezeichne die nicht "
+       +"bewilligte Anfrage niemals als schon abgeschlossen. "
+       +"Ein exakter Musterabgleich deckt nicht alle guten Antworten ab.",
+      lessonStage:"write",action:"Im bestehenden Learn-Editor entwerfen und eigenständig revidieren"
+    };
+    if(questionKind==="chronology")return {
+      title:"Mehrere Nachrichten zeitlich und kausal verknüpfen",
+      promptSpecificGoal:"Beachte alte und neuere Angaben sowie までに, てから, 予定です "
+       +"und bereits abgeschlossene versus angekündigte Handlungen. "
+       +"Die letzte Nachricht kann einen Termin ausdrücklich ersetzen.",
+      lessonStage:"learn",action:"Die konkrete zeitliche Textfolge erneut rekonstruieren"
+    };
+    if(questionKind==="status")return {
+      title:"Angefragt, angenommen, bestätigt und erledigt unterscheiden",
+      promptSpecificGoal:"Formularsendung ist keine Teilnahmezusage, freie Räume "
+       +"sind keine abgeschlossene Buchung, gespeicherte Entwürfe keine "
+       +"Versandbestätigung und angekündigte Termine keine vollzogene Handlung.",
+      lessonStage:"learn",action:"Schriftlichen Beleg für den tatsächlichen Status finden"
+    };
+    return {
+      title:"Schriftliche Quelle, Sprecher und belegte Ursache beachten",
+      promptSpecificGoal:"Wer schrieb welche Aussage und auf welcher Grundlage? "
+       +"Behaupte keine unbelegte Genehmigung. Nutze die erhaltenen Originaltexte "
+       +"mit ihren Fristen, Rollen und korrigierten Informationen.",
+      lessonStage:"learn",action:"Japanische Originalnachrichten mit Sprecherbelegen erneut lesen"
+    };
+  }
   if(prompt?.eventMetadata?.p56===true){
     const kind=prompt.eventMetadata?.kind;
     const focus=prompt.eventMetadata?.focus;
