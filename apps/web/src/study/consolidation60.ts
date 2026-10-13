@@ -57,15 +57,15 @@ const sources=(m:P60Unit)=>"Originale verknüpfte Schrifttexte:\n"+
  m.spoken.map(s=>s.speaker+"： "+s.japanese).join("\n");
 function qPrompt(m:P60Unit,q:P60Question,i:number):StudyPrompt{
  const base=basics(m,"question-"+(i+1));
- return {...base,id:"p60-question-"+q.id,skill:"production",promptType:"typed",
-  instruction:"Originale schriftliche und gesprochene Textquellen vergleichen. Ein lesbares Transkript misst keine reale Hörleistung.",
+ return {...base,id:"p60-question-"+q.id,skill:"form_selection",promptType:"choice",
+  instruction:"Echte schriftliche und gesprochene Quellen vergleichen und die zwei original verfassten belegbaren Antworten von der beabsichtigten Fehlannahme unterscheiden. Kein automatischer Grad für eigene freie japanische Texte oder gemessenes Hörverstehen.",
   prompt:sources(m)+"\nFrage: "+q.situation,
-  choices:[q.model,q.flawed,q.alternative],
+  choices:[q.model,q.trap,q.alternative],
   acceptedAnswers:[normalizeP26(q.model),normalizeP26(q.alternative)],
   displayAnswer:q.model,explanation:q.why+" Quellenbelege: 「"+q.documentEvidence+
    "」 und 「"+q.spokenEvidence+
    "」. Weitere natürliche Japanischantworten können außerhalb der endlichen Varianten liegen.",
-  eventMetadata:{...base.eventMetadata,kind:"a2-cumulative-evidence",questionId:q.id,questionKind:q.kind}
+  eventMetadata:{...base.eventMetadata,kind:"a2-cumulative-evidence",questionId:q.id,questionKind:q.kind,nativeGradedMode:"authored-closed-choice",freeJapaneseWritingUngraded:true}
  };
 }
 export const p60ComprehensionPrompts:StudyPrompt[]=p60Units.flatMap(m=>m.questions.map((q,i)=>qPrompt(m,q,i)));
