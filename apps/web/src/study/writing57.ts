@@ -1,6 +1,6 @@
 import type {StudyPrompt} from "@thiepn/study-player";
 import {normalizeP26} from "./pedagogy26";
-import type {P57Thread,P57Question,P57Task,P57Reply,P57Revision} from "./writing57-types";
+import type {P57Thread,P57Question,P57Task} from "./writing57-types";
 import {p53ById} from "./vocabulary53";
 import {p53FamiliesFor} from "./vocabulary53-families";
 import {p57ThreadsA} from "./writing57-corpus-a";
