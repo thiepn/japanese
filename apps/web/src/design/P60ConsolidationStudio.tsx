@@ -16,13 +16,14 @@ const statusText:Record<P60HistoricalReviewSource["status"],string>={
 };
 /** UI reads original owner-authoritative evidence; every free draft remains in component memory. */
 export function P60ConsolidationStudio({
- lessons,preferredId,readyIds,historical,disabled,onPractice,onHistorical,onWriting
+ lessons,preferredId,readyIds,historical,disabled,onPractice,onHistorical,onWriting,onDirtyChange
 }:{
  lessons:readonly P60Unit[];preferredId?:string;readyIds:readonly string[];
  historical:readonly P60HistoricalReviewSource[];disabled:boolean;
  onPractice:(id:string,kind:Practice)=>void;
  onHistorical:(id:string,unitId:string)=>void;
  onWriting:(id:string)=>void;
+ onDirtyChange?:(dirty:boolean)=>void;
 }){
  const [chosen,setChosen]=useState("");
  const [step,setStep]=useState<Step>("reading");
@@ -30,6 +31,9 @@ export function P60ConsolidationStudio({
  const [mode,setMode]=useState<Kind>("question");
  const [questionIndex,setQuestionIndex]=useState(0);
  const [draft,setDraft]=useState("");
+ // Ephemeral visibility only: never send or persist actual Japanese draft text.
+ useEffect(()=>{onDirtyChange?.(Boolean(draft.trim()));return ()=>onDirtyChange?.(false);},
+  [draft,onDirtyChange]);
  const [attempt,setAttempt]=useState(false);
  const [models,setModels]=useState(false);
  const [reveal,setReveal]=useState<readonly string[]>([]);
