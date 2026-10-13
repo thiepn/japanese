@@ -189,6 +189,7 @@ export function P59PerformanceStudio({missions,preferredId,recallReadyIds,disabl
      {mode==="comprehension"?<div className="p59-performance__actions">
       {current.questions.map((v,i)=><button type="button" key={v.id}
        aria-pressed={question===i} onClick={()=>{
+        if(i!==question&&!allowDiscard())return;
         setQuestion(i);setDraft("");setAttempt(false);setShowAnswer(false);
        }}>Frage {i+1} · {v.kind}</button>)}
      </div>:null}
