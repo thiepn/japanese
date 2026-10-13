@@ -2675,16 +2675,10 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 Fälligen Abruf üben
               </button>
               <button type="button" disabled={disabled||
-                  (cue.historicalReturn&&!cue.historicalReady)||
-                  (!cue.historicalReturn&&Boolean(p52ById(cue.arcId))&&!cue.p52Ready&&!cue.due)||
-                  (Boolean(p53ById(cue.arcId))&&!cue.p53Ready&&!cue.due)||
-                  (Boolean(p54ById(cue.arcId))&&!cue.p54Ready&&!cue.due)||
-                  (Boolean(p55ById(cue.arcId))&&!cue.p55Ready&&!cue.due)||
-                  (Boolean(p56ById(cue.arcId))&&!cue.p56Ready&&!cue.due)||
-                  (Boolean(p57ById(cue.arcId))&&!cue.p57Ready&&!cue.due)||
-                  (Boolean(p58ById(cue.arcId))&&!cue.p58Ready&&!cue.due)||
-                  (Boolean(p59ById(cue.arcId))&&!cue.p59Ready&&!cue.due)||
-                  (Boolean(p60ById(cue.arcId))&&!cue.p60Ready&&!cue.due)}
+                  !(cue.historicalReturn?cue.historicalReady:
+                    (cue.due||cue.p52Ready||cue.p53Ready||cue.p54Ready||
+                     cue.p55Ready||cue.p56Ready||cue.p57Ready||cue.p58Ready||
+                     cue.p59Ready||cue.p60Ready))}
                 onClick={()=>startPractice(unitId,cue.historicalReturn?`return-id:${cue.id}`:`return:${cue.arcId}`)}>
                 Freiwillig selbstständig üben
               </button>
