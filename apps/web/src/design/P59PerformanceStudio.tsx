@@ -1,6 +1,7 @@
 import {useEffect,useRef,useState} from "react";
 import {p59Stage,p59AuthoredFeedback,p59RelatedVocabulary,p59RelatedSources,
  type P59Mission,type P59PracticeKind,type P59Line} from "../study/performance59";
+import {originalEditorialNote} from "../study/sourceEditorialR2";
 import "./p59-performance.css";
 type Kind=Exclude<P59PracticeKind,"all">;
 const registerText={casual:"Vertraut",polite:"Höflich",service:"Service"} as const;
@@ -64,6 +65,7 @@ export function P59PerformanceStudio({missions,preferredId,recallReadyIds,disabl
    }:{situation:current.revision.goal,model:current.revision.model,
      alternative:current.revision.alternative,misleading:current.revision.flawed,
      explanation:current.revision.explanation};
+ const editorial=originalEditorialNote(current.id);
  const comparison=attempt?p59AuthoredFeedback(draft,[selectedTask.model,
   selectedTask.alternative],selectedTask.misleading,selectedTask.explanation):null;
  const translate=(key:string)=>setMeaning(v=>v.includes(key)?
@@ -225,6 +227,22 @@ export function P59PerformanceStudio({missions,preferredId,recallReadyIds,disabl
       <p>{comparison.message}</p><p>{selectedTask.explanation}</p>
       {mode==="comprehension"?<details><summary>Zwei unabhängige japanische Quellenbelege</summary>
        <p lang="ja">「{q.sourceQuote}」</p><p lang="ja">「{q.dialogueQuote}」</p>
+      </details>:null}
+      {editorial?<details className="r2-source-editorial">
+       <summary>R2 · Originale Quellenkritik, Zeitfolge und Höflichkeit nach eigener Antwort</summary>
+       <h6>{editorial.title}</h6>
+       <p><strong>Schriftlicher Originalbeleg</strong></p>
+       <p lang="ja">「{editorial.writtenQuote}」</p>
+       <p>{editorial.writtenMeaning}</p>
+       <p><strong>Originale Sprecherangabe</strong></p>
+       <p lang="ja">「{editorial.spokenQuote}」</p>
+       <p>{editorial.spokenMeaning}</p>
+       <p><strong>Chronologie und Verbindlichkeit:</strong> {editorial.chronology}</p>
+       <p><strong>Höflichkeit und natürliche Formulierungen:</strong> {editorial.register}</p>
+       <p><strong>Konkretes Missverständnis:</strong> {editorial.commonMistake}</p>
+       <p><strong>Eigenständige neue Korrektur:</strong> {editorial.selfRepair}</p>
+       <small>Nur originale Unterrichtsnotiz, keine semantische Freitextbewertung,
+         keine veröffentlichte Fremdquelle und kein vorweggenommenes Delayed-Return-Modell.</small>
       </details>:null}
       <button type="button" aria-expanded={showAnswer} onClick={()=>setShowAnswer(v=>!v)}>
        {showAnswer?"Originalmodelle ausblenden":"Originalmodelle erst jetzt öffnen"}</button>
