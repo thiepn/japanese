@@ -24,6 +24,7 @@ import {p57ById,p57PromptsForThread,p57ReturnPrompts,p57ComprehensionPrompts,typ
 import {p58ById,p58PromptsForMission,p58ReturnPrompts,p58ComprehensionPrompts,type P58PracticeKind} from "./missions58";
 import {p59ById,p59PromptsForMission,p59ReturnPrompts,p59ComprehensionPrompts,type P59PracticeKind} from "./performance59";
 import {p60ById,p60PromptsForUnit,p60ReturnPrompts,p60ComprehensionPrompts,type P60PracticeKind} from "./consolidation60";
+import {historicalReturnEligibility,isHistoricalReturn} from "./returnEligibilityR2";
 import {p25Scenarios,p25Prompts,p25Lessons,p25DialoguePrompt} from "./pedagogy25";
 import {p26Missions,p26Prompts,p26Lessons,missionTurnPrompt,normalizeP26} from "./pedagogy26";
 
@@ -725,6 +726,11 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     :focus==="production"?promptsForUnit(unitId,extras).filter(p=>
       p.promptType==="typed"&&p.skill==="production")
     :promptsForUnit(unitId,extras);
+  // Every direct P40–P52 return request, including source-specific :return
+  // specialist routes, must satisfy original graded-source / FSRS evidence.
+  // Keep all other native P53–P60 gates and historical prompt IDs unchanged.
+  const eligibleRelevant=relevant.filter(p=>!isHistoricalReturn(p)||
+    historicalReturnEligibility(p,traces,events,now).eligible);
   const latest=new Map<string,StudyEvent>();
   for(const e of events){
     if(typeof e.metadata?.promptId!=="string"||(e.result!=="correct"&&e.result!=="incorrect")||e.metadata?.schedulerExcluded===true)continue;
@@ -739,7 +745,7 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     return 0;
   };
   // Do not silently substitute unrelated unit exercises for an empty specialist queue.
-  const list=source60Id||consolidation60Id||consolidation60KindId||performance59Id||performance59KindId||mission58Id||mission58KindId||writing57Id||writing57KindId||interaction56Id||interaction56KindId||listening55Id||listening55KindId||reading54Id||reading54KindId||lexicalId||lexicalKindId||transformId||transformKindId||contrastId||contrastKindId||integratedId||integratedKindId||documentId||documentKindId||connectedId||connectedKindId||listeningId||listeningKindId||readingId||readingKindId||independentId||dialogueId||branchId||branchRouteId||pragmaticId||pragmaticStepId?relevant.slice():relevant.slice().sort((a,b)=>priority(b)-priority(a));
+  const list=source60Id||consolidation60Id||consolidation60KindId||performance59Id||performance59KindId||mission58Id||mission58KindId||writing57Id||writing57KindId||interaction56Id||interaction56KindId||listening55Id||listening55KindId||reading54Id||reading54KindId||lexicalId||lexicalKindId||transformId||transformKindId||contrastId||contrastKindId||integratedId||integratedKindId||documentId||documentKindId||connectedId||connectedKindId||listeningId||listeningKindId||readingId||readingKindId||independentId||dialogueId||branchId||branchRouteId||pragmaticId||pragmaticStepId?eligibleRelevant.slice():eligibleRelevant.slice().sort((a,b)=>priority(b)-priority(a));
   // Only FSRS-issued due timestamps establish that a card is due.
   // A last-incorrect event may warrant optional remediation but does not
   // override a future FSRS due date or silently turn new prompts into "due".
