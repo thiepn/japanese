@@ -318,6 +318,7 @@ export function P60ConsolidationStudio({
      {mode==="question"?<div className="p60-consolidation__actions">
       {lesson.questions.map((x,i)=><button key={x.id} type="button"
        aria-pressed={i===questionIndex} onClick={()=>{
+        if(i!==questionIndex&&!allowDiscard())return;
         setQuestionIndex(i);setDraft("");setAttempt(false);setModels(false);
        }}>Frage {i+1}: {x.kind}</button>)}
      </div>:null}
