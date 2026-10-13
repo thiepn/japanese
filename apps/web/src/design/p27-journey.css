@@ -200,3 +200,42 @@
   .p27-journey__p40-return-item>div{grid-column:auto}
   .p27-journey__p40-return-item button{width:100%}
 }
+
+
+/* P41 — continuity is visible but remains ephemeral teaching state. */
+.p27-journey__p41-outcome{
+  border-inline-start:3px solid currentColor;padding:.55rem .8rem;
+  margin:.7rem 0;background:rgba(120,120,120,.06)
+}
+.p27-journey__p41-pivot{
+  border:1px solid currentColor;padding:.75rem;margin:.85rem 0
+}
+.p27-journey__p41-pivot p{margin:.4rem 0}
+.p27-journey__p41-pivot small{display:block;opacity:.8}
+.p27-journey__p41-history,.p27-journey__p41-completed{
+  border:1px solid currentColor;padding:.8rem;margin:1rem 0
+}
+.p27-journey__p41-history ol{padding-left:1.4rem}
+.p27-journey__p41-history li{
+  padding:.45rem 0;border-bottom:1px solid rgba(120,120,120,.32);
+  overflow-wrap:anywhere
+}
+.p27-journey__p41-history li [lang=ja]{line-height:1.7}
+.p27-journey__p41-history li small{
+  display:block;margin:.2rem 0;font-size:.85rem;opacity:.8
+}
+.p27-journey__p41-completed p{margin:.45rem 0}
+.p27-journey__p41-writing-turns{
+  display:flex;gap:.4rem;flex-wrap:wrap;margin:.6rem 0
+}
+.p27-journey__p41-writing-turns button{
+  min-height:44px;flex:1 1 9rem
+}
+.p27-journey__p41-writing-turns [aria-pressed=true]{
+  outline:2px solid currentColor;outline-offset:1px;font-weight:700
+}
+@media(max-width:540px){
+ .p27-journey__p41-history,.p27-journey__p41-completed{padding:.6rem}
+ .p27-journey__p41-writing-turns{display:grid;grid-template-columns:1fr}
+ .p27-journey__p41-writing-turns button{width:100%}
+}
