@@ -197,7 +197,12 @@ export function promptsForUnit(unitId:string,extras:readonly StudyPrompt[]=[]):S
   const seen=new Set<string>();
   return [...initialPrompts(unit),...unit.turns.map(t=>journeyTypedPrompt(unit,t)),...transferForUnit(unitId),...extras.filter(p=>p.eventMetadata?.unitId===unitId||p.eventMetadata?.sourceUnit===unitId||
       (Array.isArray(p.eventMetadata?.unitIds)&&p.eventMetadata.unitIds.includes(unitId)))]
-    .filter(p=>{if(seen.has(p.id))return false;seen.add(p.id);return true;});
+    // P52 unseen transfer must not leak into ordinary "new"/"production" practice.
+    // Dedicated return / return-due routes and native Today FSRS-due remain authoritative.
+    .filter(p=>{
+      if(p.id.startsWith("p52-return-")||seen.has(p.id))return false;
+      seen.add(p.id);return true;
+    });
 }
 export function traceIdJourney(p:StudyPrompt):string{
   return p.primaryTarget.kind+":"+p.primaryTarget.id+":"+p.skill+":"+p.cueFamily;
