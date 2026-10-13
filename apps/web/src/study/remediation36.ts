@@ -21,6 +21,63 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p54===true){
+    const kind=prompt.eventMetadata?.kind;
+    const focus=prompt.eventMetadata?.focus;
+    const questionKind=prompt.eventMetadata?.questionKind;
+    if(focus==="delayed-independent-return")return {
+      title:"Neue Lesesituation unabhängig vom vorigen Text übertragen",
+      promptSpecificGoal:"Dieser spätere P54-Fall enthält andere Personen, Daten oder Ursachen. "+
+       "Rekonstruiere erst die neue Aussage, dann formuliere auf Japanisch. "+
+       "Der alte Text steht hier nicht als Vorlage. Ein echter FSRS-Termin "+
+       "wird nur durch die vorhandene MemoryTrace belegt.",
+      lessonStage:"practice",action:"Unbekannte Originalaufgabe im vorhandenen StudyPlayer bearbeiten"
+    };
+    if(kind==="connected-reading-writing")return {
+      title:"Textverstehen von eigener Japanischproduktion unterscheiden",
+      promptSpecificGoal:"Entnimm Ursache, Reihenfolge und gesicherten Informationsstatus "+
+       "dem Originaltext, bevor du eine neue Situation formulierst. "+
+       "Neue freie Paraphrasen können richtig sein, auch wenn sie nicht "+
+       "zu den wenigen verfassten Antwortmustern passen.",
+      lessonStage:"write",action:"Originale Quelle erneut lesen und eigene Formulierung überarbeiten"
+    };
+    if(kind==="linked-lexicon")return {
+      title:"P53-Wortfamilie im tatsächlichen P54-Text wiederfinden",
+      promptSpecificGoal:"Nutze die ganze Satzumgebung statt nur die isolierte Übersetzung. "+
+       "Prüfe die passende Partikel, die Wortverbindung und die konkrete "+
+       "Aussage im Originalabsatz.",
+      lessonStage:"learn",action:"Textstelle und P53-Kollokation miteinander vergleichen"
+    };
+    if(questionKind==="chronology")return {
+      title:"Zeitliche Reihenfolge aus mehreren Absätzen rekonstruieren",
+      promptSpecificGoal:"Markiere vorher, nachher, Frist und die verschiedenen Daten. "+
+       "Eine angekündigte Absicht ist keine vollzogene Handlung. "+
+       "Achte auf 〜てから, 〜前に, 〜までに und spätere Planänderungen.",
+      lessonStage:"learn",action:"Absätze in eine belegbare Ereignisfolge bringen"
+    };
+    if(questionKind==="cause")return {
+      title:"Tatsächlichen Grund statt bloßer Begleitumstände erklären",
+      promptSpecificGoal:"Suche den ausdrücklich genannten Grund im Text, "+
+       "nicht eine plausible Vermutung. Prüfe insbesondere ので, ため, "+
+       "から und kausale Informationen aus verschiedenen Absätzen.",
+      lessonStage:"learn",action:"Japanische Ursache am Originalbeleg wiederfinden"
+    };
+    if(questionKind==="speaker"||questionKind==="inference")return {
+      title:"Sprecherquelle, bestätigte Information und Schlussfolgerung trennen",
+      promptSpecificGoal:"Wer sagt was? Ist etwas nur geplant, gehört oder "+
+       "belegt? Stelle keine bestätigte Genehmigung oder Erledigung aus "+
+       "einer bloßen Vermutung her. Vergleiche dazu mehrere Textstellen.",
+      lessonStage:"learn",action:"Sprecherrollen und Status der Originalinformationen markieren"
+    };
+    return {
+      title:"Nachprüfbare Antwort am Originaltext belegen",
+      promptSpecificGoal:"Lies die konkrete japanische Textstelle und "+
+       "behalte Details wie Ort, Zahl, Tag und Einschränkung bei. "+
+       "Der native Antwortvergleich besitzt nur authored Muster "+
+       "und ist keine freie semantische Sprachbewertung.",
+      lessonStage:"learn",action:"Japanischen Beleg ohne freie Ergänzungen erneut lesen"
+    };
+  }
   if(prompt?.eventMetadata?.p53===true){
     const domain=prompt.eventMetadata.domain;
     const focus=prompt.eventMetadata.focus;
