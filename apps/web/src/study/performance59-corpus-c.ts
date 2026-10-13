@@ -156,6 +156,33 @@ const raw:readonly P59Compact[]=[
 ["担当","内容を確認しました。時間は正しいですが、問い合わせ先も書いてから公開してください。","Verantwortliche: Zeit geprüft; vor Publikation Kontaktmöglichkeit ergänzen.","Passe letzten zusätzlichen Schritt an.","ご確認ありがとうございます。問い合わせ先を追加し、もう一度内容を確認してから公開します。","承知しました。連絡先を記載します。","連絡先を入れずに公開します。","Neuere konkrete Bedingung."],
 ["時間を直したから、連絡先なしで広場のポスターを公開してもいいです。","Korrigiere alten Ort und fehlenden Kontakt.","会場はホールです。問い合わせ先を追加し、最終確認してから公開します。","まだ公開せず、最後の指示を反映します。","Sachstand ohne fiktive Veröffentlichung."],
 ["Neuer Stadtteilmarkt: Alt 8–14 Uhr auf Platz, aktuell 9–12 Uhr in Schule, Verantwortliche verlangt Telefonnummer vor Freigabe.","新しい会場は学校で、時間は九時から正午です。電話番号を加えてから確認をお願いします。","まだ公開しません。最後の修正をします。","広場で八時から行います。","Neue Veranstaltung und Frist."],
-"使える施設 ≠ 公開してよい案内; jede Korrektur hat eigene Freigabe.",["henkou","koukai","kakunin"]]
+"使える施設 ≠ 公開してよい案内; jede Korrektur hat eigene Freigabe.",["henkou","koukai","kakunin"]],
+["volunteer-name-list","出席表を直してから送る","p26:library-project","ボランティア活動","polite",
+"Ein kleiner Verein muss mit mehreren Antworten arbeiten, ohne sensible Teilnehmerlisten voreilig weiterzugeben.",
+"Zugesagte Anwesenheit, telefonische Änderung, private Liste und nachträgliche Autorisierung trennen",
+[
+["ボランティアの予定","土曜日の午前九時から、図書館で本の整理をします。手伝える方は木曜日までに返事をしてください。","Einsatzplan: Samstag ab 9 Uhr Bücher sortieren, Antwort bis Donnerstag."],
+["名簿の扱い","参加者の名前と連絡先は担当者だけが確認してください。個人の情報を誰でも見られる場所に出さないでください。","Datenschutzhinweis: Namen/Kontakt nur Verantwortliche; keine öffentliche Liste."],
+["人数について","作業する部屋には八人まで入れます。参加希望者が多い場合は、ほかの時間を用意します。","Raumkapazität acht; bei mehr Interessierten Ersatzzeiten anbieten."]],
+[
+["リナ","十人から返事が来ましたが、そのうち二人は欠席です。名簿にはまだ十人の名前が入っています。","Rina: Zehn Antworten, davon zwei Absagen, Liste noch mit zehn."],
+["ケン","じゃあ、名簿を直してから担当者に見せよう。全員にそのまま送るのはよくないね。","Ken: Liste korrigieren, nur verantwortlicher Person zeigen."]],
+[
+["担当者","参加できる八人で部屋の定員と合っています。名簿は私にだけ送ってください。","Leitung: Acht Zusagen passen; Liste nur an mich."],
+["リナ","修正した表は保存しました。もうメールで送っても大丈夫ですか。","Rina: Liste korrigiert gespeichert, fragt nach Versand."],
+["担当者","人数と欠席者の名前をもう一度確認してから送ってください。","Leitung: Vor Versand Acht/Zwei und Namen überprüfen."],
+["ケン","わかった。保存しただけなので、送信したとはまだ言えないね。","Ken: Bis jetzt nur gespeichert, nicht versandt."]],
+[
+["status","名簿はもう担当者に送られましたか。","いいえ、まだ保存しただけです。","いいえ、最後の確認が必要です。","はい、直したので送信済みです。","Speichern ist kein Senden.","担当者だけが確認してください","保存しただけなので"],
+["evidence","参加する予定の人は何人ですか。","八人です。","十人のうち二人が欠席なので八人です。","十人全員です。","Antworten und Zusagen unterscheiden.","そのうち二人は欠席です","参加できる八人"],
+["chronology","名簿を送る前に何をしますか。","欠席者と人数を確認します。","名前と人数をもう一度見直します。","公開リンクを作ります。","Neuere verantwortliche Instruktion.","個人の情報を誰でも見られる場所に出さないで","もう一度確認してから送ってください"]
+],
+["Wähle eine zweckmäßige Lösung.","八人の参加と二人の欠席を確認し、名簿を担当者にだけ送ります。","個人情報が公開されないようにしてから連絡します。","十人の名簿を誰でも見られる場所に出します。","Personenbezogene Daten minimieren."],
+["Verfasse zwei bis drei höfliche japanische Sätze als Zwischenstand ohne Namen.","十人から返事があり、そのうち二人は欠席です。参加予定は八人ですが、名簿はまだ送信していません。内容を確認してから担当者にだけ共有します。","八人の参加予定を確認しました。個人情報は公開せず、担当者に送ります。","十人全員が参加すると公開しました。","Anzahl, Status und Zugriff differenzieren."],
+["担当者","今朝、一人が体調不良で欠席すると連絡しました。参加は七人になりました。表を更新してから送ってください。","Leitung: Eine weitere Person heute krank abgesagt; nur sieben, Liste aktualisieren.","Reagiere auf neue Zahl und Aktualisierung.","ご連絡ありがとうございます。参加予定を七人に直し、欠席者を確認してから送ります。","承知しました。新しい人数で表を作り直します。","八人のまま送信します。","Neue Quelle ersetzt alte Zahl."],
+["参加予定は八人と聞いたので、そのまま名簿を公開しました。","Korrigiere neue Zahl und fehlende Freigabe.","最新の参加予定は七人です。名簿を修正し、担当者にだけ送ります。","まだ送っていないので、先に人数を確認します。","Doppelte Korrektur."],
+["Neue Jugendarbeit: 12 Antworten, 3 Absagen, danach weitere 2 Absagen; Teilnehmerliste nur Teamleitung, noch nicht gesendet.","最初は九人が参加予定でしたが、さらに二人が欠席となり、今は七人です。名簿は担当者だけに送ります。","人数を確認し、公開せずに共有します。","十二人全員の名前を公開します。","Neue Zahlen und Datenschutz."],
+"返事をくれた人数 ≠ 参加決定人数; 保存 ≠ 送信; 共有先は個人情報の条件.",["sanka","kakunin","kyouyuu"]]
+
 ];
 export const p59MissionsC=raw.map(authoredP59Compact);
