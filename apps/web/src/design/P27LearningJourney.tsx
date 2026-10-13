@@ -1066,16 +1066,19 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
           {rewriteStage!=="draft"?<>
             <div className="p27-journey__note">
               <strong>Orientierung zur Korrektur</strong>
-              <p>{p44WritingCase?(p44WritingStep==="reply"?p44WritingCase.followupWhy:p44WritingCase.nuance):
+              <p>{p45WritingTurn?p45WritingTurn.why:
+                p44WritingCase?(p44WritingStep==="reply"?p44WritingCase.followupWhy:p44WritingCase.nuance):
                 p43WritingDetail?p43WritingDetail.why:p40WritingTurn?p40WritingTurn.why:
                 p39Chosen?p39Chosen.rule:unit.writing.reflection}</p>
-              {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase?
+              {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn?
                 <p><span lang="ja">{unit.writing.features.join(" · ")}</span></p>:null}
               <details><summary>Originales Beispiel vergleichen</summary>
-                <p lang="ja">{p44WritingCase?(p44WritingStep==="reply"?p44WritingCase.followupModel:p44WritingCase.model):
+                <p lang="ja">{p45WritingTurn?p45WritingTurn.model:
+                  p44WritingCase?(p44WritingStep==="reply"?p44WritingCase.followupModel:p44WritingCase.model):
                   p43WritingDetail?p43WritingDetail.model:p40WritingTurn?p40WritingTurn.model:
                   p39Chosen?p39Chosen.model:unit.writing.reference}</p>
-                {p44WritingCase?<p lang="ja">{p44WritingStep==="reply"?
+                {p45WritingTurn?<p lang="ja">{p45WritingTurn.alternative}</p>:
+                  p44WritingCase?<p lang="ja">{p44WritingStep==="reply"?
                   p44WritingCase.followupAlternative:p44WritingCase.alternative}</p>:
                   p43WritingDetail?<p lang="ja">{p43WritingDetail.alternative}</p>:
                   p40WritingTurn?<p lang="ja">{p40WritingTurn.alternative}</p>:
@@ -1086,7 +1089,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               aria-keyshortcuts="Control+Enter Meta+Enter"
               onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
                 e.preventDefault();if(rewrite.trim()&&!busy){
-                  setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase?[]:unit.writing.features));setRewriteStage("compare");
+                  setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase||p45WritingTurn?[]:unit.writing.features));setRewriteStage("compare");
                 }
               }}}
               onChange={e=>{
@@ -1095,14 +1098,21 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <div className="p27-journey__actions">
               <button type="button" onClick={()=>recognize("rewrite")}>Überarbeitung diktieren</button>
               <button type="button" disabled={!rewrite.trim()} onClick={()=>{
-                setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase?[]:unit.writing.features));setRewriteStage("compare");
+                setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase||p45WritingTurn?[]:unit.writing.features));setRewriteStage("compare");
               }}>Versionen vergleichen</button>
             </div>
           </>:null}
           {rewriteStage==="compare"&&report?<div className="p27-journey__note" role="status">
             <strong>Zeichenbasierte Beobachtungen, keine Sprachbewertung</strong>
             <p>{report.oldLength} → {report.newLength} Zeichen. Geändert: {report.changed?"ja":"nein"}</p>
-            {p44WritingCase?<div className="p27-journey__p44-feedback">
+            {p45WritingTurn?<div className="p27-journey__p45-comparison">
+              <strong>Originalbezogener Mustervergleich – keine Bewertung beliebigen Japanischs</strong>
+              <p>{p45Feedback(rewrite,p45WritingTurn).message}</p>
+              <p>{p45WritingTurn.continuity}</p>
+              {p45Feedback(rewrite,p45WritingTurn).kind==="unassessed"?<small>
+                Andere korrekt formulierte Antworten können existieren und bleiben unbewertet.
+              </small>:null}
+            </div>:p44WritingCase?<div className="p27-journey__p44-feedback">
               <strong>Kontextgebundener Mustervergleich, keine universelle Sprachnote</strong>
               <p>{p44AuthoredFeedback(rewrite,
                 p44WritingStep==="reply"?
@@ -1134,7 +1144,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <p>Nicht erkannt: {report.missing.join(" · ")||"keine"}</p>
               <ul>{grammarReflection(unit,rewrite).map((note,i)=><li key={i}>{note}</li>)}</ul>
             </>}
-            {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase?
+            {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn?
               <div className="p27-journey__revision">
               <strong>Überarbeitete Partikeln und Formen</strong>
               <p>Neue Partikeln: {describeP29Revision(draft,rewrite,unit).addedParticles.join(" · ")||"keine"}</p>
@@ -1197,7 +1207,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <strong> nicht überfällig</strong>. Freiwilliges Vorziehen kann FSRS aktualisieren.</p>
             {p40ReturnCueStatus.map(cue=><div key={cue.id} className="p27-journey__p40-return-item">
               <div><strong>{p40UnitArcs.find(arc=>arc.id===cue.arcId)?.title??
-                p43SceneById(cue.arcId)?.title??p44ById(cue.arcId)?.title??"Gesprächstransfer"}</strong>
+                p43SceneById(cue.arcId)?.title??p44ById(cue.arcId)?.title??
+                p45ById(cue.arcId)?.title??"Gesprächstransfer"}</strong>
                 <small>{cue.due?"Jetzt laut FSRS fällig":
                   cue.planned?"Für einen späteren FSRS-Termin eingeplant":
                   "Noch kein FSRS-Termin vorhanden"}</small></div>
