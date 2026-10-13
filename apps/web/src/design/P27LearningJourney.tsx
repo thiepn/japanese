@@ -173,6 +173,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const profile=progress.find(p=>p.id===unitId);
   const recommended=recommendedJourneyUnit(progress);
   const recommendedUnit=journeyUnit(recommended);
+  // Resume only from actual owner-scoped graded StudyEvents, never from an
+  // invented course-completion ledger or previously unsent Japanese drafts.
+  const lastWorked=progress.filter(item=>Boolean(item.lastPracticedAt))
+    .sort((a,b)=>(b.lastPracticedAt??"").localeCompare(a.lastPracticedAt??""))[0];
+  const lastWorkedUnit=lastWorked?journeyUnits.find(item=>item.id===lastWorked.id):undefined;
   const learningLinks=lexicalLinksForUnit(unitId);
   const pragmatics=p29RegisterExampleForUnit(unitId);
   const transformation=transformationForUnit(unitId);
@@ -502,8 +507,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     if(!evidence)return [];
     const validIds=new Set(journeyUnits.map(unit=>unit.id));
     return p60HistoricalSources("*",extraJourneyPrompts,
-      evidence.events,evidence.traces,traceIdJourney)
-      .filter(item=>validIds.has(item.unitId));
+      evidence.events,evidence.traces,traceIdJourney,Date.now(),validIds);
   },[evidence]);
   const p60RecallReadyIds=useMemo(()=>{
     if(!evidence)return [];
@@ -606,7 +610,19 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     }
   },[unitId,nodeId,showTranslation,turn.id]);
   useEffect(()=>()=>microphone.current?.stop(),[]);
-  function selectUnit(id:string){setUnitId(id);setStage("learn");}
+  function confirmUnsentWriting():boolean{
+    // A native confirmation preserves the current component in place on cancel.
+    // No private Japanese prose is written into localStorage/sessionStorage or
+    // any second persistence system.
+    if(stage!=="write"||(!draft.trim()&&!rewrite.trim()))return true;
+    return typeof window!=="undefined"&&window.confirm(
+      "Du hast einen noch nicht abgeschlossenen japanischen Entwurf. Beim Wechsel geht dieser ungespeicherte Text verloren. Entwurf verwerfen und wechseln?");
+  }
+  function selectUnit(id:string,next:JourneyStage="learn"):boolean{
+    if(!journeyUnits.some(item=>item.id===id))return false;
+    if(id!==unitId&&!confirmUnsentWriting())return false;
+    setUnitId(id);setStage(next);return true;
+  }
   function chooseP40Writing(arcId:string,turnIndex?:number){
     setP53WritingId("");setP54WritingId("");setP55WritingId("");setP56WritingId("");setP57WritingId("");setP58WritingId("");setP59WritingId("");setP60WritingId("");
     setP40WritingArcId(arcId);setP39WritingId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");setP51WritingId("");setP52WritingId("");setP53WritingId("");setP54WritingId("");setP55WritingId("");setP56WritingId("");setP57WritingId("");setP58WritingId("");setP59WritingId("");setP60WritingId("");
@@ -1046,10 +1062,19 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     <div className="p27-journey__next">
       <div><strong>Empfohlene nächste Einheit</strong><p>{loading?"Lernverlauf laden …":recommendedUnit.title}</p></div>
       <button type="button" disabled={loading||disabled} onClick={()=>{
-        selectUnit(recommended);
-        if((progress.find(p=>p.id===recommended)?.due??0)>0)setStage("practice");
+        selectUnit(recommended,(progress.find(p=>p.id===recommended)?.due??0)>0?"practice":"learn");
       }}>Empfehlung öffnen</button>
     </div>
+    {lastWorkedUnit&&!loading?<div className="p27-journey__return-navigation">
+      <strong>Zuletzt tatsächlich geübte Originaleinheit</strong>
+      <p>{lastWorkedUnit.title} · {lastWorked?.lastPracticedAt?
+       new Date(lastWorked.lastPracticedAt).toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"}):""}</p>
+      <button type="button" onClick={()=>selectUnit(lastWorkedUnit.id,"learn")}>
+        Zu dieser Originaleinheit zurückkehren
+      </button>
+      <small>Aus deinen vorhandenen bewerteten StudyEvents rekonstruiert;
+        ungesendete Entwürfe werden nicht gespeichert oder vorgetäuscht.</small>
+    </div>:null}
     {loadError?<p role="status">{loadError}</p>:null}
     <div className="p27-journey__layout">
       <aside className="p27-journey__sidebar">
@@ -1364,7 +1389,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 onJourneyPractice(lesson.units[0]!,`consolidation60-kind:${lesson.id}:${kind}`);
             }}
             onHistorical={(promptId,originalUnitId)=>{
-              if(p60Historical.some(item=>item.id===promptId&&item.unitId===originalUnitId))
+              if(p60Historical.some(item=>item.id===promptId&&item.unitIds.includes(originalUnitId)))
                 onJourneyPractice(originalUnitId,`source60:${promptId}`);
             }}
             onWriting={chooseP60Writing}
@@ -2524,17 +2549,13 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 <small>{item.due} fällige Karten</small></div>
               <button type="button" disabled={disabled}
                 onClick={()=>onJourneyPractice(item.unitId,"review")}>Jetzt wiederholen</button>
-              <button type="button" onClick={()=>{
-                setUnitId(item.unitId);setStage("practice");
-              }}>Einheit ansehen</button>
+              <button type="button" onClick={()=>selectUnit(item.unitId,"practice")}>Einheit ansehen</button>
             </div>)}
           </div>:nearestReturn?<div className="p27-journey__return-navigation">
             <strong>Nächste bereits geplante Wiederholung</strong>
             <p>{journeyUnit(nearestReturn.unitId).title} ·
               {new Date(nearestReturn.nextDueAt!).toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"})}</p>
-            <button type="button" disabled={disabled} onClick={()=>{
-              setUnitId(nearestReturn.unitId);setStage("practice");
-            }}>Einheit für später ansehen</button>
+            <button type="button" disabled={disabled} onClick={()=>selectUnit(nearestReturn.unitId,"practice")}>Einheit für später ansehen</button>
           </div>:null}
           {recallPlan?<section className="p27-journey__recall" aria-label="Geplante FSRS-Wiederholung">
             <h5>Später wieder abrufen · tatsächliche FSRS-Termine</h5>
