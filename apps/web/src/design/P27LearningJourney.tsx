@@ -105,6 +105,12 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
 }){
   const owner=getDevelopmentAccountId();
   const currentOwner=useRef(owner);currentOwner.current=owner;
+  const dirtySpecialistDrafts=useRef(new Set<string>());
+  // Only flags live in component memory; never persist actual learner prose.
+  function reportSpecialistDraft(id:string,dirty:boolean){
+    if(dirty)dirtySpecialistDrafts.current.add(id);
+    else dirtySpecialistDrafts.current.delete(id);
+  }
   const [unitId,setUnitId]=useState(journeyUnits[0]!.id);
   const [level,setLevel]=useState<"all"|"A1"|"A2">("all");
   const [query,setQuery]=useState("");
@@ -614,9 +620,14 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     // A native confirmation preserves the current component in place on cancel.
     // No private Japanese prose is written into localStorage/sessionStorage or
     // any second persistence system.
-    if(stage!=="write"||(!draft.trim()&&!rewrite.trim()))return true;
+    if((stage!=="write"||(!draft.trim()&&!rewrite.trim()))&&
+       dirtySpecialistDrafts.current.size===0)return true;
     return typeof window!=="undefined"&&window.confirm(
       "Du hast einen noch nicht abgeschlossenen japanischen Entwurf. Beim Wechsel geht dieser ungespeicherte Text verloren. Entwurf verwerfen und wechseln?");
+  }
+  function startPractice(id:string,focus:JourneyPractice){
+    if(!confirmUnsentWriting())return;
+    onJourneyPractice(id,focus);
   }
   function selectUnit(id:string,next:JourneyStage="learn"):boolean{
     if(!journeyUnits.some(item=>item.id===id))return false;
@@ -1165,7 +1176,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <p><span lang="ja">{contrast.preferred}</span> / <span lang="ja">{contrast.alternative}</span></p>
             <details><summary>Warum die Formen sich unterscheiden</summary><p>{contrast.why}</p></details>
             <button type="button" disabled={disabled}
-              onClick={()=>onJourneyPractice(unitId,"grammar")}>Grammatik und Register aktiv entscheiden</button>
+              onClick={()=>startPractice(unitId,"grammar")}>Grammatik und Register aktiv entscheiden</button>
           </div>:null}
           {p32Contrast&&p32Question?<div className="p27-journey__p32-explorer">
             <h5>Partikel, Bedeutung und Register aktiv unterscheiden</h5>
@@ -1216,7 +1227,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               </article>;
             })}
             <button type="button" disabled={disabled}
-              onClick={()=>onJourneyPractice(unitId,"transfer")}>
+              onClick={()=>startPractice(unitId,"transfer")}>
               Themenübergreifende Aufgaben selbst abrufen
             </button>
           </section>:null}
@@ -1237,7 +1248,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <small>Unbewerteter Vergleich mit Originalbeispielen, kein FSRS-Nachweis.</small>
             </div>:null}
             <div className="p27-journey__actions">
-              <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"grammar")}>
+              <button type="button" disabled={disabled} onClick={()=>startPractice(unitId,"grammar")}>
                 Selbstständig unterscheiden</button>
               <button type="button" onClick={()=>{setStage("write");setP39WritingId(p39Priority.id);}}>
                 Diese Situation schriftlich überarbeiten</button>
@@ -1271,7 +1282,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Fehlannahme, praktische Überarbeitung und späterer Transfer
               laufen über die vorhandene Lernarchitektur.</p>
             <button type="button" disabled={disabled}
-              onClick={()=>onJourneyPractice(p51Recommended.units[0]!,
+              onClick={()=>startPractice(p51Recommended.units[0]!,
                 `contrast-kind:${p51Recommended.id}:meaning`)}>
               Grammatikbedeutung im StudyPlayer abrufen
             </button>
@@ -1284,7 +1295,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               lesen, danach eine neue gesprochene Information beachten,
               schriftlich reagieren und spätere andere Fakten übertragen.</p>
             <button type="button" disabled={disabled}
-              onClick={()=>onJourneyPractice(p50Recommended.units[0]!,
+              onClick={()=>startPractice(p50Recommended.units[0]!,
                 `integrated-kind:${p50Recommended.id}:comprehension`)}>
               Kombinierte Quelle und Textfragen im StudyPlayer bearbeiten
             </button>
@@ -1297,7 +1308,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Anweisung, Bedingung oder Ausnahme erschließen und selbst auf
               Japanisch handeln.</p>
             <button type="button" disabled={disabled}
-              onClick={()=>onJourneyPractice(p49Recommended.units[0]!,
+              onClick={()=>startPractice(p49Recommended.units[0]!,
                 `document-kind:${p49Recommended.id}:comprehension`)}>
               Dokumentfragen unabhängig im StudyPlayer bearbeiten
             </button>
@@ -1310,7 +1321,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Quelle und Zeitpunkt unterscheiden, eigene Antworten begründen
               und eine spätere andere Situation bewältigen.</p>
             <button type="button" disabled={disabled}
-              onClick={()=>onJourneyPractice(p48Recommended.units[0]!,
+              onClick={()=>startPractice(p48Recommended.units[0]!,
                 `connected-kind:${p48Recommended.id}:comprehension`)}>
               Drei unabhängige Quellenfragen bearbeiten
             </button>
@@ -1323,7 +1334,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               erst hören, dann Fragen beantworten und Transkript oder Textbeleg einblenden.
               Keine vorgetäuschte menschliche Sprecheraufnahme oder Audioprüfung.</p>
             <button type="button" disabled={disabled}
-              onClick={()=>onJourneyPractice(p47Recommended.units[0]!,
+              onClick={()=>startPractice(p47Recommended.units[0]!,
                 `listening-kind:${p47Recommended.id}:comprehension`)}>
               Nachgehörte Fragen textgestützt im StudyPlayer bearbeiten
             </button>
@@ -1337,7 +1348,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Die Originalstelle bleibt im Leseunterricht verfügbar;
               spätere Transferfragen verändern die Situation.</p>
             <button type="button" disabled={disabled}
-              onClick={()=>onJourneyPractice(p46Recommended.units[0]!,
+              onClick={()=>startPractice(p46Recommended.units[0]!,
                 `reading-kind:${p46Recommended.id}:comprehension`)}>
               Textfragen unabhängig im StudyPlayer bearbeiten
             </button>
@@ -1354,7 +1365,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 Ohne Auswahlliste selbst antworten
               </button>
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,`independent:${p45Recommended.id}`)}>
+                onClick={()=>startPractice(unitId,`independent:${p45Recommended.id}`)}>
                 Vier unabhängige StudyPlayer-Züge üben
               </button>
             </div>
@@ -1371,7 +1382,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 Sozialen Gesprächskontrast ansehen
               </button>
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,`pragmatic:${p44Recommended.id}`)}>
+                onClick={()=>startPractice(unitId,`pragmatic:${p44Recommended.id}`)}>
                 Ohne Beispiel selbst antworten
               </button>
             </div>
@@ -1384,7 +1395,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Die angezeigten Beispiele sind unbewertet.</p>
             <button type="button" onClick={()=>setStage("conversation")}>Situation ausprobieren</button>
             <button type="button" disabled={disabled}
-              onClick={()=>onJourneyPractice(unitId,`branch:${p43Recommended.id}`)}>
+              onClick={()=>startPractice(unitId,`branch:${p43Recommended.id}`)}>
               Entscheidung unabhängig abrufen
             </button>
           </section>:null}
@@ -1399,27 +1410,29 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               {p40Recommended.turns.length} zusammenhängende Gesprächszüge öffnen
             </button>
           </section>:null}
-          <P60ConsolidationStudio key={"p60:"+owner} lessons={p60Units}
+          <P60ConsolidationStudio key={"p60:"+owner+":"+unitId}
+            onDirtyChange={(dirty)=>reportSpecialistDraft("p60",dirty)} lessons={p60Units}
             preferredId={p60Recommended?.id} readyIds={p60RecallReadyIds}
             historical={p60Historical} disabled={disabled}
             onPractice={(lessonId,kind)=>{
               const lesson=p60ById(lessonId);
               if(lesson&&(kind!=="return"||p60RecallReadyIds.includes(lessonId)))
-                onJourneyPractice(lesson.units[0]!,`consolidation60-kind:${lesson.id}:${kind}`);
+                startPractice(lesson.units[0]!,`consolidation60-kind:${lesson.id}:${kind}`);
             }}
             onHistorical={(promptId,originalUnitId)=>{
               if(p60Historical.some(item=>item.id===promptId&&item.unitIds.includes(originalUnitId)))
-                onJourneyPractice(originalUnitId,`source60:${promptId}`);
+                startPractice(originalUnitId,`source60:${promptId}`);
             }}
             onWriting={chooseP60Writing}
           />
-          <P59PerformanceStudio key={"p59:"+owner} missions={p59Missions}
+          <P59PerformanceStudio key={"p59:"+owner+":"+unitId}
+            onDirtyChange={(dirty)=>reportSpecialistDraft("p59",dirty)} missions={p59Missions}
             preferredId={p59Recommended?.id} recallReadyIds={p59RecallReadyIds}
             disabled={disabled}
             onPractice={(missionId,kind)=>{
               const mission=p59ById(missionId);
               if(mission&&(kind!=="return"||p59RecallReadyIds.includes(missionId)))
-                onJourneyPractice(mission.units[0]!,`performance59-kind:${mission.id}:${kind}`);
+                startPractice(mission.units[0]!,`performance59-kind:${mission.id}:${kind}`);
             }}
             onWriting={chooseP59Writing}
             onRelated={(missionId,kind)=>{
@@ -1427,26 +1440,27 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               if(!mission)return;
               const related=p59RelatedSources(mission);
               if(kind==="integrated"&&related.integrated)
-                onJourneyPractice(related.integrated.units[0]!,`mission58-kind:${related.integrated.id}:comprehension`);
+                startPractice(related.integrated.units[0]!,`mission58-kind:${related.integrated.id}:comprehension`);
               if(kind==="writing"&&related.writing)
-                onJourneyPractice(related.writing.units[0]!,`writing57-kind:${related.writing.id}:comprehension`);
+                startPractice(related.writing.units[0]!,`writing57-kind:${related.writing.id}:comprehension`);
               if(kind==="interaction"&&related.interaction)
-                onJourneyPractice(related.interaction.units[0]!,`interaction56-kind:${related.interaction.id}:decision`);
+                startPractice(related.interaction.units[0]!,`interaction56-kind:${related.interaction.id}:decision`);
               if(kind==="listening"&&related.listening)
-                onJourneyPractice(related.listening.units[0]!,`listening55-kind:${related.listening.id}:comprehension`);
+                startPractice(related.listening.units[0]!,`listening55-kind:${related.listening.id}:comprehension`);
               if(kind==="reading"&&related.reading)
-                onJourneyPractice(related.reading.units[0]!,`reading54-kind:${related.reading.id}:comprehension`);
+                startPractice(related.reading.units[0]!,`reading54-kind:${related.reading.id}:comprehension`);
               if(kind==="document"&&related.document)
-                onJourneyPractice(related.document.units[0]!,`document-kind:${related.document.id}:comprehension`);
+                startPractice(related.document.units[0]!,`document-kind:${related.document.id}:comprehension`);
             }}
           />
-          <P58MissionsStudio key={"p58:"+owner} missions={p58Missions}
+          <P58MissionsStudio key={"p58:"+owner+":"+unitId}
+            onDirtyChange={(dirty)=>reportSpecialistDraft("p58",dirty)} missions={p58Missions}
             preferredId={p58Recommended?.id} recallReadyIds={p58RecallReadyIds}
             disabled={disabled}
             onPractice={(missionId,kind)=>{
               const mission=p58ById(missionId);
               if(mission&&(kind!=="return"||p58RecallReadyIds.includes(missionId)))
-                onJourneyPractice(mission.units[0]!,`mission58-kind:${mission.id}:${kind}`);
+                startPractice(mission.units[0]!,`mission58-kind:${mission.id}:${kind}`);
             }}
             onWriting={chooseP58Writing}
             onRelated={(missionId,kind)=>{
@@ -1454,19 +1468,19 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               if(!mission)return;
               const related=p58RelatedSource(mission);
               if(kind==="reading"&&related.reading)
-                onJourneyPractice(related.reading.units[0]!,`reading54-kind:${related.reading.id}:comprehension`);
+                startPractice(related.reading.units[0]!,`reading54-kind:${related.reading.id}:comprehension`);
               if(kind==="listening"&&related.listening)
-                onJourneyPractice(related.listening.units[0]!,`listening55-kind:${related.listening.id}:comprehension`);
+                startPractice(related.listening.units[0]!,`listening55-kind:${related.listening.id}:comprehension`);
               if(kind==="writing"&&related.writing)
-                onJourneyPractice(related.writing.units[0]!,`writing57-kind:${related.writing.id}:comprehension`);
+                startPractice(related.writing.units[0]!,`writing57-kind:${related.writing.id}:comprehension`);
               if(kind==="document"&&related.document)
-                onJourneyPractice(related.document.units[0]!,`document-kind:${related.document.id}:comprehension`);
+                startPractice(related.document.units[0]!,`document-kind:${related.document.id}:comprehension`);
               if(kind==="interaction"&&related.interaction)
-                onJourneyPractice(related.interaction.units[0]!,`interaction56-kind:${related.interaction.id}:decision`);
+                startPractice(related.interaction.units[0]!,`interaction56-kind:${related.interaction.id}:decision`);
               if(kind==="conversation"&&related.conversation)
-                onJourneyPractice(related.conversation.unitIds[0]!,`branch:${related.conversation.id}`);
+                startPractice(related.conversation.unitIds[0]!,`branch:${related.conversation.id}`);
               if(kind==="independence"&&related.independence)
-                onJourneyPractice(related.independence.units[0]!,`independent:${related.independence.id}`);
+                startPractice(related.independence.units[0]!,`independent:${related.independence.id}`);
             }}
           />
           <P57WritingStudio key={"p57:"+owner} threads={p57Threads}
@@ -1475,7 +1489,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             onPractice={(threadId,kind)=>{
               const thread=p57ById(threadId);
               if(thread&&(kind!=="return"||p57RecallReadyIds.includes(threadId)))
-                onJourneyPractice(thread.units[0]!,`writing57-kind:${thread.id}:${kind}`);
+                startPractice(thread.units[0]!,`writing57-kind:${thread.id}:${kind}`);
             }}
             onWriting={chooseP57Writing}
           />
@@ -1485,7 +1499,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             onPractice={(sceneId,kind)=>{
               const scene=p56ById(sceneId);
               if(scene&&(kind!=="return"||p56RecallReadyIds.includes(sceneId)))
-                onJourneyPractice(scene.units[0]!,`interaction56-kind:${scene.id}:${kind}`);
+                startPractice(scene.units[0]!,`interaction56-kind:${scene.id}:${kind}`);
             }}
             onWriting={chooseP56Writing}
           />
@@ -1495,7 +1509,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             onPractice={(sceneId,kind)=>{
               const scene=p55ById(sceneId);
               if(scene&&(kind!=="return"||p55RecallReadyIds.includes(sceneId)))
-                onJourneyPractice(scene.units[0]!,`listening55-kind:${scene.id}:${kind}`);
+                startPractice(scene.units[0]!,`listening55-kind:${scene.id}:${kind}`);
             }}
             onWriting={chooseP55Writing}
           />
@@ -1505,7 +1519,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             onPractice={(readingId,kind)=>{
               const reading=p54ById(readingId);
               if(reading&&(kind!=="return"||p54RecallReadyIds.includes(readingId)))
-                onJourneyPractice(reading.units[0]!,`reading54-kind:${reading.id}:${kind}`);
+                startPractice(reading.units[0]!,`reading54-kind:${reading.id}:${kind}`);
             }}
             onWriting={chooseP54Writing}
           />
@@ -1514,7 +1528,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             onPractice={(wordId,kind)=>{
               const v=p53ById(wordId);
               if(v&&(kind!=="return"||p53RecallReadyIds.includes(v.id)))
-                onJourneyPractice(v.units[0]!,`lexical-kind:${v.id}:${kind}`);
+                startPractice(v.units[0]!,`lexical-kind:${v.id}:${kind}`);
             }}
             onWriting={chooseP53Writing}
           />
@@ -1523,7 +1537,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             onPractice={(taskId,kind)=>{
               const t=p52ById(taskId);
               if(t&&(kind!=="return"||p52RecallReadyIds.includes(t.id)))
-                onJourneyPractice(t.units[0]!,`transform-kind:${t.id}:${kind}`);
+                startPractice(t.units[0]!,`transform-kind:${t.id}:${kind}`);
             }}
             onWriting={chooseP52Writing}
           />
@@ -1531,7 +1545,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             preferredId={p51Recommended?.id} disabled={disabled}
             onPractice={(contrastId,kind)=>{
               const contrast=p51ById(contrastId);
-              if(contrast)onJourneyPractice(contrast.units[0]!,
+              if(contrast)startPractice(contrast.units[0]!,
                 `contrast-kind:${contrast.id}:${kind}`);
             }}
             onWriting={chooseP51Writing}
@@ -1540,7 +1554,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             preferredId={p50Recommended?.id} disabled={disabled}
             onPractice={(missionId,kind)=>{
               const source=p50ById(missionId);
-              if(source)onJourneyPractice(source.units[0]!,
+              if(source)startPractice(source.units[0]!,
                 `integrated-kind:${source.id}:${kind}`);
             }}
             onWriting={chooseP50Writing}
@@ -1549,7 +1563,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             preferredId={p49Recommended?.id} disabled={disabled}
             onPractice={(documentId,kind)=>{
               const target=p49ById(documentId);
-              if(target)onJourneyPractice(target.units[0]!,
+              if(target)startPractice(target.units[0]!,
                 `document-kind:${target.id}:${kind}`);
             }}
             onWriting={chooseP49Writing}
@@ -1558,7 +1572,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             preferredId={p48Recommended?.id} disabled={disabled}
             onPractice={(caseId,kind)=>{
               const source=p48ById(caseId);
-              if(source)onJourneyPractice(source.units[0]!,
+              if(source)startPractice(source.units[0]!,
                 `connected-kind:${source.id}:${kind}`);
             }}
             onWriting={chooseP48Writing}
@@ -1567,7 +1581,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             preferredId={p47Recommended?.id} disabled={disabled}
             onPractice={(sceneId,kind)=>{
               const source=p47ById(sceneId);
-              if(source)onJourneyPractice(source.units[0]!,
+              if(source)startPractice(source.units[0]!,
                 `listening-kind:${source.id}:${kind}`);
             }}
             onWriting={chooseP47Writing}
@@ -1577,7 +1591,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             disabled={disabled}
             onPractice={(readingId,kind)=>{
               const target=p46ById(readingId);
-              if(target)onJourneyPractice(target.units[0]!,
+              if(target)startPractice(target.units[0]!,
                 `reading-kind:${target.id}:${kind}`);
             }}
             onWriting={chooseP46Writing}
@@ -1600,20 +1614,20 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
           {p45UnitChallenges.length?<P45IndependentConversation
             key={unitId+":"+owner} challenges={p45UnitChallenges}
             preferredId={p45Recommended?.id} disabled={disabled}
-            onPractice={id=>onJourneyPractice(unitId,`independent:${id}`)}
+            onPractice={id=>startPractice(unitId,`independent:${id}`)}
             onWriting={chooseP45Writing}
           />:null}
           {p44UnitCases.length?<P44PragmaticsStudy key={unitId+":"+owner}
             cases={p44UnitCases} preferredId={p44Recommended?.id} disabled={disabled}
             onPractice={(caseId,step:undefined|P44PracticeStep)=>
-              onJourneyPractice(unitId,step?
+              startPractice(unitId,step?
                 `pragmatic-step:${caseId}:${step}`:`pragmatic:${caseId}`)}
             onWriting={chooseP44Writing}
           />:null}
           {p43UnitScenes.length?<P43BranchConversation key={unitId+":"+owner}
             scenes={p43UnitScenes} preferredId={p43Recommended?.id} disabled={disabled}
             onIndependent={(sceneId,route)=>
-              onJourneyPractice(unitId,route?`branch-route:${sceneId}:${route}`:`branch:${sceneId}`)}
+              startPractice(unitId,route?`branch-route:${sceneId}:${route}`:`branch:${sceneId}`)}
             onWriting={chooseP43Writing}
           />:null}
           {p40ActiveArc&&p40CurrentTurn?<section className="p27-journey__p40-dialogue"
@@ -1713,7 +1727,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             </div>:null}
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,`dialogue:${p40ActiveArc.id}`)}>
+                onClick={()=>startPractice(unitId,`dialogue:${p40ActiveArc.id}`)}>
                 {p40ActiveArc.turns.length} Schritte im StudyPlayer selbstständig beantworten
               </button>
               <button type="button" onClick={()=>chooseP40Writing(p40ActiveArc.id)}>
@@ -1799,8 +1813,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <P33RolePractice key={unit.id+":"+owner} unitId={unit.id} owner={owner}
               disabled={disabled} onReviewed={()=>setReload(n=>n+1)}
               dueCount={recallPlan?.dueNow.length??0}
-              onReview={()=>onJourneyPractice(unitId,"review")}
-              onGrammar={()=>onJourneyPractice(unitId,"grammar")}
+              onReview={()=>startPractice(unitId,"review")}
+              onGrammar={()=>startPractice(unitId,"grammar")}
               traces={evidence?.traces??[]}
               onRoleDue={scenarioId=>onRoleDuePractice(unitId,scenarioId)}
               onCorrectionDue={scenarioId=>onCorrectionDuePractice(unitId,scenarioId)}/>
@@ -1825,7 +1839,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <small>Im StudyPlayer sind zwei sinnvolle japanische Formulierungen hinterlegt.</small>
             </div>)}
             <button type="button" disabled={disabled}
-              onClick={()=>onJourneyPractice(unitId,"transfer")}>
+              onClick={()=>startPractice(unitId,"transfer")}>
               Situationswechsel selbstständig üben
             </button>
           </section>:null}
@@ -1840,11 +1854,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               und FSRS bleiben alleinige autoritative Auswerter.</p>
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,`consolidation60-kind:${p60WritingLesson.id}:writing`)}>
+                onClick={()=>startPractice(unitId,`consolidation60-kind:${p60WritingLesson.id}:writing`)}>
                 Originalen eigenständigen StudyPlayer-Schreibprompt öffnen
               </button>
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,`consolidation60-kind:${p60WritingLesson.id}:revision`)}>
+                onClick={()=>startPractice(unitId,`consolidation60-kind:${p60WritingLesson.id}:revision`)}>
                 Mehrteilige Fehlannahme im StudyPlayer korrigieren
               </button>
               <button type="button" onClick={()=>setP60WritingId("")}>Reguläre Schreibaufgabe wählen</button>
@@ -1863,11 +1877,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Autorität über echte geplante Wiederholungen.</p>
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,`performance59-kind:${p59WritingMission.id}:writing`)}>
+                onClick={()=>startPractice(unitId,`performance59-kind:${p59WritingMission.id}:writing`)}>
                 Originalen unabhängigen Schreibprompt üben
               </button>
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,`performance59-kind:${p59WritingMission.id}:revision`)}>
+                onClick={()=>startPractice(unitId,`performance59-kind:${p59WritingMission.id}:revision`)}>
                 Quellengebundene Reparatur üben
               </button>
               <button type="button" onClick={()=>setP59WritingId("")}>Zur regulären Aufgabe</button>
@@ -1885,11 +1899,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Autorität für eine FSRS-Wiederholung.</p>
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,`mission58-kind:${p58WritingMission.id}:writing`)}>
+                onClick={()=>startPractice(unitId,`mission58-kind:${p58WritingMission.id}:writing`)}>
                 Native unabhängige Schreibaufgabe
               </button>
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,`mission58-kind:${p58WritingMission.id}:repair`)}>
+                onClick={()=>startPractice(unitId,`mission58-kind:${p58WritingMission.id}:repair`)}>
                 Native Quellenkorrektur
               </button>
               <button type="button" onClick={()=>setP58WritingId("")}>Reguläre Aufgabe wählen</button>
@@ -1906,11 +1920,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               einen separaten unabhängig bewerteten Abruf und FSRS.</p>
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,`writing57-kind:${p57WritingThread.id}:compose`)}>
+                onClick={()=>startPractice(unitId,`writing57-kind:${p57WritingThread.id}:compose`)}>
                 Unabhängig im StudyPlayer schreiben
               </button>
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,`writing57-kind:${p57WritingThread.id}:revision`)}>
+                onClick={()=>startPractice(unitId,`writing57-kind:${p57WritingThread.id}:revision`)}>
                 Originalen Korrekturauftrag üben
               </button>
               <button type="button" onClick={()=>setP57WritingId("")}>Reguläre Aufgabe wählen</button>
@@ -1927,7 +1941,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               kann die ursprüngliche FSRS-Lernplanung aktualisieren.</p>
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,`interaction56-kind:${p56WritingScene.id}:production`)}>
+                onClick={()=>startPractice(unitId,`interaction56-kind:${p56WritingScene.id}:production`)}>
                 Gesprächsantwort im StudyPlayer bearbeiten
               </button>
               <button type="button" onClick={()=>setP56WritingId("")}>Reguläre Aufgabe wählen</button>
@@ -1944,7 +1958,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               keine FSRS-Beherrschung erfunden.</p>
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,`listening55-kind:${p55WritingScene.id}:response`)}>
+                onClick={()=>startPractice(unitId,`listening55-kind:${p55WritingScene.id}:response`)}>
                 Originalen Antwortauftrag im StudyPlayer versuchen
               </button>
               <button type="button" onClick={()=>setP55WritingId("")}>Reguläre Aufgabe wählen</button>
@@ -1961,7 +1975,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               StudyPlayer-Antwort.</p>
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,`reading54-kind:${p54WritingReading.id}:writing`)}>
+                onClick={()=>startPractice(unitId,`reading54-kind:${p54WritingReading.id}:writing`)}>
                 Kontext unabhängig im StudyPlayer schreiben
               </button>
               <button type="button" onClick={()=>setP54WritingId("")}>Standard-Schreibaufgabe wählen</button>
@@ -1978,7 +1992,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               zu keiner FSRS-Note und enthält keinen gespeicherten Volltext.</p>
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,`lexical-kind:${p53WritingWord.id}:production`)}>
+                onClick={()=>startPractice(unitId,`lexical-kind:${p53WritingWord.id}:production`)}>
                 Eigenständigen Gebrauch im StudyPlayer üben
               </button>
               <button type="button" onClick={()=>setP53WritingId("")}>Reguläre Aufgabe wählen</button>
@@ -1994,7 +2008,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Nur die folgende unabhängige StudyPlayer-Antwort nutzt die normale native Planung.</p>
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,`transform-kind:${p52WritingTask.id}:production`)}>
+                onClick={()=>startPractice(unitId,`transform-kind:${p52WritingTask.id}:production`)}>
                 Originale Transformation im StudyPlayer üben
               </button>
               <button type="button" onClick={()=>setP52WritingId("")}>Reguläre Schreibaufgabe wählen</button>
@@ -2011,7 +2025,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Nur unabhängige StudyPlayer-Antworten nutzen die native FSRS-Instanz.</p>
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,
+                onClick={()=>startPractice(unitId,
                   `contrast-kind:${p51WritingContrast.id}:production`)}>
                 Eigenständige Grammatikproduktion im StudyPlayer
               </button>
@@ -2028,7 +2042,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               einer unabhängigen FSRS-Erfolgswertung.</p>
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,
+                onClick={()=>startPractice(unitId,
                   `integrated-kind:${p50WritingMission.id}:writing`)}>
                 Eigenständig im StudyPlayer schreiben
               </button>
@@ -2047,7 +2061,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Lesehilfe ist nicht automatisch eine FSRS-Erfolgswertung.</p>
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,
+                onClick={()=>startPractice(unitId,
                   `document-kind:${p49WritingDocument.id}:writing`)}>
                 Unabhängig im StudyPlayer beantworten
               </button>
@@ -2066,7 +2080,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               können einen echten FSRS-Lernnachweis erzeugen.</p>
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,
+                onClick={()=>startPractice(unitId,
                   `connected-kind:${p48WritingCase.id}:writing`)}>
                 Eigenständig im StudyPlayer schreiben
               </button>
@@ -2085,7 +2099,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Antworten erzeugen keine FSRS-Erfolge.</p>
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,
+                onClick={()=>startPractice(unitId,
                   `listening-kind:${p47WritingScene.id}:response`)}>
                 Im StudyPlayer eigenständig formulieren
               </button>
@@ -2102,7 +2116,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Dein lokaler Vergleich ist keine FSRS-Bewertung.</p>
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(unitId,
+                onClick={()=>startPractice(unitId,
                   `reading-kind:${p46WritingPassage.id}:writing`)}>
                 Ohne Beispiel im StudyPlayer schreiben
               </button>
@@ -2135,7 +2149,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <p><strong>Kontextänderung:</strong> {p45WritingChallenge.unexpected}</p>
             </div>:null}
             <button type="button" disabled={disabled||!p45WritingChallenge}
-              onClick={()=>p45WritingChallenge&&onJourneyPractice(unitId,
+              onClick={()=>p45WritingChallenge&&startPractice(unitId,
                 `independent:${p45WritingChallenge.id}`)}>
               Alle vier Züge unabhängig im StudyPlayer beantworten
             </button>
@@ -2169,7 +2183,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 <span lang="ja">{p44WritingStep==="reply"?p44WritingCase.followupMisstep:p44WritingCase.misleading}</span></p>
             </div>:null}
             <button type="button" disabled={disabled||!p44WritingCase}
-              onClick={()=>p44WritingCase&&onJourneyPractice(unitId,
+              onClick={()=>p44WritingCase&&startPractice(unitId,
                 `pragmatic-step:${p44WritingCase.id}:${p44WritingStep}`)}>
               Diese Antwort im StudyPlayer unabhängig schreiben
             </button>
@@ -2201,7 +2215,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <p><strong>Missverständlicher Satz:</strong> <span lang="ja">{p43WritingDetail.misstep}</span></p>
             </div>:null}
             <button type="button" disabled={disabled||!p43WritingScene}
-              onClick={()=>p43WritingScene&&onJourneyPractice(unitId,
+              onClick={()=>p43WritingScene&&startPractice(unitId,
                 `branch-route:${p43WritingScene.id}:${p43WritingRoute}`)}>
               Diesen Gesprächszweig unabhängig beantworten
             </button>
@@ -2239,7 +2253,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 {(p41ArcById(p40WritingArc.id)??p42ArcById(p40WritingArc.id))?.outcome}</p>:null}
             </div>:null}
             <button type="button" disabled={disabled}
-              onClick={()=>onJourneyPractice(unitId,"production")}>
+              onClick={()=>startPractice(unitId,"production")}>
               Weitere unabhängige Schreibaufgaben im StudyPlayer
             </button>
           </section>:null}
@@ -2257,7 +2271,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             </div>
             {p39Chosen?<p>Problematischer Ausgangssatz: <span lang="ja">{p39Chosen.distractors[0]?.form}</span>.
               Formuliere diesen Satz für die vorgegebene Absicht neu.</p>:null}
-            <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"production")}>
+            <button type="button" disabled={disabled} onClick={()=>startPractice(unitId,"production")}>
               Unabhängige Schreibkorrekturen im StudyPlayer</button>
           </section>:null}
           <p>{p60WritingLesson?p60WritingLesson.writing.situation:
@@ -2567,7 +2581,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <div><strong>{journeyUnit(item.unitId).title}</strong>
                 <small>{item.due} fällige Karten</small></div>
               <button type="button" disabled={disabled}
-                onClick={()=>onJourneyPractice(item.unitId,"review")}>Jetzt wiederholen</button>
+                onClick={()=>startPractice(item.unitId,"review")}>Jetzt wiederholen</button>
               <button type="button" onClick={()=>selectUnit(item.unitId,"practice")}>Einheit ansehen</button>
             </div>)}
           </div>:nearestReturn?<div className="p27-journey__return-navigation">
@@ -2589,7 +2603,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             {recallPlan.recentlyReviewed>0?<p>{recallPlan.recentlyReviewed} geübte Abrufe innerhalb der letzten {recallPlan.recentWindowMinutes} Minuten.
               Für noch nicht fällige Inhalte ist kein sofortiger erneuter FSRS-Abruf erforderlich.</p>:null}
             <button type="button" disabled={disabled||recallPlan.dueNow.length===0}
-              onClick={()=>onJourneyPractice(unitId,"review")}>Fällige Karten jetzt wiederholen</button>
+              onClick={()=>startPractice(unitId,"review")}>Fällige Karten jetzt wiederholen</button>
           </section>:null}
           {p40ReturnCueStatus.length?<section className="p27-journey__p40-return"
             aria-label="Gesprächsinhalte in neuem Kontext wieder abrufen">
@@ -2615,7 +2629,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                   cue.planned?"Für einen späteren FSRS-Termin eingeplant":
                   "Noch kein FSRS-Termin vorhanden"}</small></div>
               <button type="button" disabled={disabled||!cue.due}
-                onClick={()=>onJourneyPractice(unitId,`return-due:${cue.arcId}`)}>
+                onClick={()=>startPractice(unitId,`return-due:${cue.arcId}`)}>
                 Fälligen Abruf üben
               </button>
               <button type="button" disabled={disabled||(Boolean(p52ById(cue.arcId))&&!cue.p52Ready&&!cue.due)||
@@ -2627,7 +2641,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                   (Boolean(p58ById(cue.arcId))&&!cue.p58Ready&&!cue.due)||
                   (Boolean(p59ById(cue.arcId))&&!cue.p59Ready&&!cue.due)||
                   (Boolean(p60ById(cue.arcId))&&!cue.p60Ready&&!cue.due)}
-                onClick={()=>onJourneyPractice(unitId,`return:${cue.arcId}`)}>
+                onClick={()=>startPractice(unitId,`return:${cue.arcId}`)}>
                 Freiwillig selbstständig üben
               </button>
             </div>)}
@@ -2639,21 +2653,21 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <p>Erste Begegnung mit noch nicht unabhängig bewerteten oder
                 eingeplanten Aufgaben. Nicht als überfällig bezeichnet.</p>
               <button type="button" disabled={disabled||!(profile?.unseen)}
-                onClick={()=>onJourneyPractice(unitId,"new")}>Neu lernen</button>
+                onClick={()=>startPractice(unitId,"new")}>Neu lernen</button>
             </section>
             <section>
               <strong>{profile?.retry??0} zuletzt fehlerhaft</strong>
               <p>Freiwillige erneute Übung nach einem bewerteten Fehler.
                 Dies kann einen zukünftigen FSRS-Termin vorziehen.</p>
               <button type="button" disabled={disabled||!(profile?.retry)}
-                onClick={()=>onJourneyPractice(unitId,"retry")}>Fehler üben</button>
+                onClick={()=>startPractice(unitId,"retry")}>Fehler üben</button>
             </section>
             <section>
               <strong>{profile?.due??0} laut FSRS fällig</strong>
               <p>Nur Karten, deren festgelegter FSRS-Wiederholungstermin
                 bereits erreicht wurde.</p>
               <button type="button" disabled={disabled||!(profile?.due)}
-                onClick={()=>onJourneyPractice(unitId,"review")}>Jetzt wiederholen</button>
+                onClick={()=>startPractice(unitId,"review")}>Jetzt wiederholen</button>
             </section>
           </div>
           {mistakes.length>0?<section className="p27-journey__mistakes" aria-labelledby="p35-mistakes-title">
@@ -2697,9 +2711,9 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 <small>{area.practiced} von {area.total} Übungscues bisher versucht</small>
                 <button type="button" disabled={disabled} onClick={()=>{
                   if(area.area==="sentence"){setStage("build");return;}
-                  if(area.area==="grammar"){onJourneyPractice(unitId,"grammar");return;}
-                  if(area.area==="dialogue"){onJourneyPractice(unitId,"production");return;}
-                  onJourneyPractice(unitId,"transfer");
+                  if(area.area==="grammar"){startPractice(unitId,"grammar");return;}
+                  if(area.area==="dialogue"){startPractice(unitId,"production");return;}
+                  startPractice(unitId,"transfer");
                 }}>
                   {area.area==="sentence"?"Satzbau gezielt üben":
                   area.area==="grammar"?"Grammatikkontraste üben":
@@ -2715,10 +2729,10 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               disabled={disabled} onClick={()=>{
                 if(action.focus==="review"){
                   const target=progress.find(p=>p.id===action.unitId);
-                  onJourneyPractice(action.unitId,(target?.due??0)>0?"review":"retry");
+                  startPractice(action.unitId,(target?.due??0)>0?"review":"retry");
                   return;
                 }
-                if(action.focus==="transfer"){onJourneyPractice(action.unitId,"transfer");return;}
+                if(action.focus==="transfer"){startPractice(action.unitId,"transfer");return;}
                 if(action.unitId!==unitId)selectUnit(action.unitId);
                 setStage(action.focus==="sentence"?"build":"conversation");
               }}>
@@ -2732,11 +2746,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <small>{link.first} ({link.firstMeaning}) · {link.second} ({link.secondMeaning})</small>
             </article>)}
             <button type="button" disabled={disabled}
-              onClick={()=>onJourneyPractice(unitId,"transfer")}>Verknüpften Wortschatz im StudyPlayer abrufen</button>
+              onClick={()=>startPractice(unitId,"transfer")}>Verknüpften Wortschatz im StudyPlayer abrufen</button>
           </div>:null}
           <div className="p27-journey__actions">
-            <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"transfer")}>Transfer in neue Situationen</button>
-            <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"register")}>Höflichkeit & Register</button>
+            <button type="button" disabled={disabled} onClick={()=>startPractice(unitId,"transfer")}>Transfer in neue Situationen</button>
+            <button type="button" disabled={disabled} onClick={()=>startPractice(unitId,"register")}>Höflichkeit & Register</button>
             <button type="button" disabled={disabled} onClick={()=>onSourcePractice(unit.source,unit.sourceId,"context")}>Weitere Übungen zu diesem Thema</button>
           </div>
           <button type="button" onClick={()=>selectUnit(journeyUnits[(journeyUnits.indexOf(unit)+1)%journeyUnits.length]!.id)}>
