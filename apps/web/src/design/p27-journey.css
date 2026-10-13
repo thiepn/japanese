@@ -352,3 +352,53 @@
  .p27-journey__p44-picker button,.p27-journey__p44-step-choice button{width:100%}
  .p27-journey__p44-options{grid-template-columns:minmax(0,1fr)}
 }
+
+
+/* P45: original gradually unscaffolded writing conversations. */
+.p27-journey__p45,.p27-journey__p45-intro,.p27-journey__p45-writing{
+ min-width:0;border:1px solid currentColor;padding:1rem;margin:1rem 0
+}
+.p27-journey__p45 h4,.p27-journey__p45-intro h4,
+.p27-journey__p45-writing h5{font-size:1.08rem;margin:.3rem 0 .65rem}
+.p27-journey__p45-picker,.p27-journey__p45-support,
+.p27-journey__p45-turn-select{
+ display:flex;flex-wrap:wrap;gap:.5rem;margin:.75rem 0
+}
+.p27-journey__p45-picker button{flex:1 1 12rem;min-height:44px;text-align:left}
+.p27-journey__p45-support button,
+.p27-journey__p45-turn-select button{flex:1 1 8rem;min-height:44px}
+.p27-journey__p45-picker [aria-pressed=true],
+.p27-journey__p45-support [aria-pressed=true],
+.p27-journey__p45-turn-select [aria-pressed=true]{
+ outline:2px solid currentColor;outline-offset:1px;font-weight:700
+}
+.p27-journey__p45-history,.p27-journey__p45-turn,
+.p27-journey__p45-finished{
+ padding:.8rem;margin:.8rem 0;border-top:1px solid currentColor
+}
+.p27-journey__p45-history ol{padding-left:1.3rem}
+.p27-journey__p45-history li{padding:.45rem 0;border-bottom:1px solid rgba(120,120,120,.3)}
+.p27-journey__p45-history p{margin:.4rem 0;overflow-wrap:anywhere}
+.p27-journey__p45-history small{display:block;opacity:.8}
+.p27-journey__p45-turn textarea{display:block;width:100%;max-width:100%;
+ min-height:5.5rem;padding:.6rem;line-height:1.65;box-sizing:border-box}
+.p27-journey__p45-hint,.p27-journey__p45-writing-context,
+.p27-journey__p45-comparison,.p27-journey__p45-comparison,
+.p27-journey__p45-finished{
+ background:rgba(120,120,120,.075);padding:.75rem;margin:.65rem 0;
+ border-left:3px solid currentColor;overflow-wrap:anywhere
+}
+.p27-journey__p45-hint small{display:block;margin-top:.35rem;opacity:.85}
+.p27-journey__p45-turn button{min-height:44px}
+.p27-journey__p45 button:focus-visible,
+.p27-journey__p45-intro button:focus-visible,
+.p27-journey__p45-writing button:focus-visible{
+ outline:3px solid currentColor;outline-offset:2px
+}
+@media(max-width:620px){
+ .p27-journey__p45,.p27-journey__p45-intro,.p27-journey__p45-writing{padding:.65rem}
+ .p27-journey__p45-picker,.p27-journey__p45-support,
+ .p27-journey__p45-turn-select{display:grid;grid-template-columns:minmax(0,1fr)}
+ .p27-journey__p45-picker button,.p27-journey__p45-support button,
+ .p27-journey__p45-turn-select button{width:100%}
+}
