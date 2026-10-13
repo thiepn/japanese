@@ -149,10 +149,10 @@ export function P60ConsolidationStudio({
     {catalog?"Originalquellenverzeichnis schließen":"Alle originalen P40–P59 Übungsquellen entdecken"}
    </button>
    <button type="button" disabled={!due.length} onClick={()=>{
-    setCatalog(true);setScope("all");setReviewOnly("due");setShowMore(15);
+    setCatalog(true);setScope("all");setPhase("all");setSelectedTrack("all");setReviewOnly("due");setShowMore(15);
    }}>Fällige ursprüngliche Karten finden</button>
    <button type="button" disabled={!mistakes.length} onClick={()=>{
-    setCatalog(true);setScope("all");setReviewOnly("needs-repair");setShowMore(15);
+    setCatalog(true);setScope("all");setPhase("all");setSelectedTrack("all");setReviewOnly("needs-repair");setShowMore(15);
    }}>Frühere Fehler gezielt aufrufen</button>
   </div>
   {catalog?<section className="p60-consolidation__history">
@@ -384,10 +384,10 @@ export function P60ConsolidationStudio({
       A2-Lektionen abzuschließen ist keine automatische CEFR- oder JLPT-Zertifizierung.</p>
      <div className="p60-consolidation__actions">
       <button type="button" onClick={()=>{
-       setCatalog(true);setReviewOnly("needs-repair");setScope("all");
+       setCatalog(true);setReviewOnly("needs-repair");setScope("all");setSelectedTrack("all");setPhase("all");
       }}>Gezielt Fehler aus P40–P59 nacharbeiten</button>
       <button type="button" onClick={()=>{
-       setCatalog(true);setReviewOnly("due");setScope("all");
+       setCatalog(true);setReviewOnly("due");setScope("all");setSelectedTrack("all");setPhase("all");
       }}>Heute fällige Originalkarten aufrufen</button>
       <button type="button" onClick={()=>{
        const nextIndex=lessons.findIndex(x=>x.id===lesson.id)+1;
