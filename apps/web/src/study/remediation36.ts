@@ -21,6 +21,53 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p52===true){
+    const kind=prompt.eventMetadata.kind;
+    const domain=prompt.eventMetadata.domain;
+    if(prompt.eventMetadata.focus==="delayed-independent-return")return {
+      title:"Unbekannten japanischen Satz erst vom Kontext her planen",
+      promptSpecificGoal:"Diese Aufgabe verändert tatsächlich Sprecher, Gegenstand oder Ziel. "+
+        "Lies den neuen Ausgangssatz und entscheide vor dem Schreiben, "+
+        "welche Aussage erhalten bleiben oder bewusst geändert werden soll. "+
+        "Ein FSRS-Termin stammt ausschließlich aus der vorhandenen MemoryTrace.",
+      lessonStage:"practice",action:"Neuen Originalfall im bestehenden StudyPlayer bearbeiten"
+    };
+    if(kind==="independent-transformation")return {
+      title:"Grammatik auf neue Sachverhalte übertragen",
+      promptSpecificGoal:"Übertrage die Regel nicht nur Wort für Wort. "+
+        "Prüfe die Rollen, die neu eingeführte Zeit und die geforderte Satzfunktion. "+
+        "Unbekannte freie Paraphrasen sind nicht automatisch sprachlich falsch.",
+      lessonStage:"write",action:"Eigenen japanischen vollständigen Satz überarbeiten"
+    };
+    if(domain==="evidence")return {
+      title:"Bericht, persönliche Einschätzung und sichtbare Vermutung",
+      promptSpecificGoal:"Frage, wer die Information behauptet, ob sie beobachtet "+
+        "oder nur gehört wurde und wie sicher sie ist. "+
+        "〜そうです nach Grundform ist nicht dasselbe wie 〜そうです aus dem sichtbaren Eindruck.",
+      lessonStage:"learn",action:"Japanischen Ausgangssatz und Evidenzquelle vergleichen"
+    };
+    if(domain==="register"||domain==="perspective"||domain==="voice")return {
+      title:"Sprecherrolle, Höflichkeit und Handelndenbezug",
+      promptSpecificGoal:"Bestimme, wer spricht, wer die Handlung ausführt "+
+        "und wer betroffen ist. Eine Bitte, ein Befehl, ein empfangener "+
+        "Gefallen und ein passiver Bericht haben unterschiedliche Blickwinkel.",
+      lessonStage:"learn",action:"Rollen im Original und in der gewünschten Umformung markieren"
+    };
+    if(domain==="chronology"||domain==="aspect"||domain==="condition")return {
+      title:"Reihenfolge, Zustand und Bedingung nicht verwechseln",
+      promptSpecificGoal:"Prüfe, ob eine Handlung vorher, nachher oder gleichzeitig "+
+        "stattfindet und ob die Folge sicher, hypothetisch oder unerwartet ist. "+
+        "Achte besonders auf 〜てから, 〜前に, 〜ている, 〜たら und 〜ても.",
+      lessonStage:"learn",action:"Zeitachse und Bedeutungsänderung rekonstruieren"
+    };
+    return {
+      title:"Sinn der vollständigen Satztransformation überprüfen",
+      promptSpecificGoal:"Vergleiche Ausgangssatz und Kommunikationsziel: "+
+        "Nur ausdrücklich verlangte Fakten oder Bewertungen ändern. "+
+        "Der native StudyPlayer vergleicht verfasste Antworten, keine beliebigen freien Paraphrasen.",
+      lessonStage:"learn",action:"Drei originale Modelle erst nach eigenem Versuch vergleichen"
+    };
+  }
   if(prompt?.eventMetadata?.p51===true){
     const kind=prompt.eventMetadata.kind;
     const domain=prompt.eventMetadata.domain;
