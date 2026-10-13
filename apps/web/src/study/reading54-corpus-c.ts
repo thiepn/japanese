@@ -62,7 +62,7 @@ const authored:readonly P54RawReading[]=[
  ["木曜日の天気予報では、土曜日は晴れると言っていました。そこで、学校は運動会を予定どおり行うと発表しました。家族はみんな楽しみにしていました。","Der Wetterbericht am Donnerstag sagte für Samstag Sonne voraus. Daher kündigte die Schule an, den Sporttag wie geplant abzuhalten. Die Familien freuten sich darauf."],
  ["しかし、金曜日の夕方になって予報が変わりました。土曜日は強い雨が降るかもしれないということです。先生たちは安全について相談し、運動会を日曜日に延期すると決めました。","Am Freitagabend änderte sich die Prognose: Samstag könnte starker Regen kommen. Die Lehrkräfte berieten über Sicherheit und entschieden, den Sporttag auf Sonntag zu verschieben."],
  ["金曜日の午後七時に新しい予定が公開されました。土曜日の朝には本当に雨が降りましたが、それは延期を決めた後のことです。日曜日は晴れて、無事に運動会ができました。","Freitag um 19 Uhr wurde der neue Plan veröffentlicht. Samstagmorgen regnete es tatsächlich, jedoch nach dem Verschiebungsbeschluss. Sonntag war sonnig und der Sporttag fand statt."]
- ],words:["yotei","enki","koukai","anzin","kimeru"],grammar:"と言っていました / かもしれない / と決めました / 後のこと",contrast:"Die Verschiebung wurde vor tatsächlichem Samstagregen beschlossen.",
+ ],words:["yotei","enki","koukai","kimeru"],grammar:"と言っていました / かもしれない / と決めました / 後のこと",contrast:"Die Verschiebung wurde vor tatsächlichem Samstagregen beschlossen.",
  questions:[
  ["chronology","運動会を延期すると決めたのはいつですか。","金曜日の夕方です。","金曜日に予報が変わった後です。","土曜日に雨が降った後です。","Entscheidung Freitag vor Samstagregen.","金曜日の夕方になって予報が変わりました"],
  ["cause","なぜ運動会を日曜日に延期しましたか。","強い雨の可能性があり、安全を考えたからです。","土曜日に強い雨が降るかもしれなかったからです。","木曜日に雨が降ったからです。","Änderung beruht auf Risiko, nicht beobachteten Samstagregen.","安全について相談し、運動会を日曜日に延期する"],
