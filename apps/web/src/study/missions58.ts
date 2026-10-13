@@ -5,6 +5,10 @@ import {p53FamiliesFor} from "./vocabulary53-families";
 import {p54ById} from "./reading54";
 import {p55ById} from "./listening55";
 import {p57ById} from "./writing57";
+import {p49ForUnit} from "./documents49";
+import {p56ForUnit} from "./interaction56";
+import {p43ForUnit} from "./dialogue43";
+import {p45ForUnit} from "./independence45";
 import type {P58Mission,P58Question,P58Task} from "./missions58-types";
 import {p58MissionsA} from "./missions58-corpus-a";
 import {p58MissionsB} from "./missions58-corpus-b";
@@ -30,7 +34,12 @@ export function p58Progression(id:string):{stage:number;focus:string}{
 export function p58RelatedSource(m:P58Mission){
  const reading=p54ById(m.reading54Id),listening=p55ById(m.listening55Id),
   writing=p57ById(m.writing57Id);
- return {reading,listening,writing};
+  // Distinct earlier curricular examples for transfer, never the same timeline.
+  const document=p49ForUnit(m.units[0]??"")[0];
+  const interaction=p56ForUnit(m.units[0]??"")[0];
+  const conversation=p43ForUnit(m.units[0]??"")[0];
+  const independence=p45ForUnit(m.units[0]??"")[0];
+ return {reading,listening,writing,document,interaction,conversation,independence};
 }
 export function p58RelatedWords(m:P58Mission){
  const sources=[m.notice.japanese,m.message.japanese,...m.spoken.map(t=>t.japanese)];
