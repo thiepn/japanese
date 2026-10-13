@@ -540,7 +540,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
       return (Number.isFinite(due)&&due<=now)||gradedOld.has(q.id);
     }).map(u=>u.id);
   },[evidence]);
-  const p40ReturnCueStatus=[...p60ReturnPrompts,...p59ReturnPrompts,...p58ReturnPrompts,...p57ReturnPrompts,...p56ReturnPrompts,...p55ReturnPrompts,...p54ReturnPrompts,...p53ReturnPrompts,...p52ReturnPrompts,...p51ReturnPrompts,...p50ReturnPrompts,...p49ReturnPrompts,...p48ReturnPrompts,...p47ReturnPrompts,...p46ReturnPrompts,...p45ReturnPrompts,...p44ReturnPrompts,...p43ReturnPrompts,...p42ReturnPrompts,...p41ReturnPrompts,...p40ReturnPrompts].filter(p=>
+  const p40ReturnCueStatus=useMemo(()=>[...p60ReturnPrompts,...p59ReturnPrompts,...p58ReturnPrompts,...p57ReturnPrompts,...p56ReturnPrompts,...p55ReturnPrompts,...p54ReturnPrompts,...p53ReturnPrompts,...p52ReturnPrompts,...p51ReturnPrompts,...p50ReturnPrompts,...p49ReturnPrompts,...p48ReturnPrompts,...p47ReturnPrompts,...p46ReturnPrompts,...p45ReturnPrompts,...p44ReturnPrompts,...p43ReturnPrompts,...p42ReturnPrompts,...p41ReturnPrompts,...p40ReturnPrompts].filter(p=>
     Array.isArray(p.eventMetadata?.unitIds)&&p.eventMetadata.unitIds.includes(unitId))
     .map(prompt=>{
       const historicalReturn=isHistoricalReturn(prompt);
@@ -564,7 +564,9 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
         p58Ready:prompt.eventMetadata?.p58===true&&p58RecallReadyIds.includes(String(prompt.eventMetadata?.missionId)),
         p59Ready:prompt.eventMetadata?.p59===true&&p59RecallReadyIds.includes(String(prompt.eventMetadata?.missionId)),
         p60Ready:prompt.eventMetadata?.p60===true&&p60RecallReadyIds.includes(String(prompt.eventMetadata?.sourceUnit))};
-    });
+    }),[unitId,owner,evidence,p52RecallReadyIds,p53RecallReadyIds,p54RecallReadyIds,
+      p55RecallReadyIds,p56RecallReadyIds,p57RecallReadyIds,p58RecallReadyIds,
+      p59RecallReadyIds,p60RecallReadyIds]);
   const reviewCatalog=useMemo(()=>promptsForUnit(unitId,extraJourneyPrompts),[unitId]);
   const nextActions=useMemo(()=>evidence?
     recommendP29Actions(unitId,progress,evidence.events,evidence.traces):[],
