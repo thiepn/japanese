@@ -7,7 +7,7 @@ const genres:Record<P55Genre,string>={
  service:"Kundenkontakt",meeting:"Besprechung",interview:"Interview",
  instructions:"Anweisung",conversation:"Gespräch"
 };
-const labels={speaker:"Sprecher",chronology:"Ablauf",cause:"Grund",inference:"Folgerung",intention:"Absicht"} as const;
+const labels={evidence:"Textdetail",speaker:"Sprecher",chronology:"Ablauf",cause:"Grund",inference:"Folgerung",intention:"Absicht"} as const;
 const speeds=[0.7,0.85,1] as const;
 /** Native P47-style device TTS, not native recorded audio or audio assessment. */
 export function P55ListeningStudio({scenes,preferredId,recallReadyIds,disabled,onPractice,onWriting}:{
