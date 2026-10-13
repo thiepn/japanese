@@ -155,7 +155,7 @@ export function P56InteractionStudio({scenes,preferredId,recallReadyIds,disabled
       <button type="button" disabled={!draft.trim()} onClick={()=>setAttempted(true)}>
        Nach eigener Antwort mit Originalvarianten vergleichen
       </button>
-      <button type="button" disabled={disabled} onClick={()=>onPractice(current.id,branch)}>
+      <button type="button" disabled={disabled} onClick={()=>{if(branch)onPractice(current.id,branch)}}>
        Genau diesen Gesprächszweig im StudyPlayer üben
       </button>
      </div>
