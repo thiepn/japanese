@@ -156,6 +156,33 @@ const raw:readonly P59Compact[]=[
 ["施設担当","申し訳ありません。明日の設備点検のため、センターの開場は午後二時半になります。交流会の終了は三時半のままです。","Zentrumsleitung: Wegen Wartung Einlass nun 14:30, Ende 15:30 unverändert.","Neue letzte Änderung in unabhängiger öffentlicher Antwort integrieren.","ご連絡ありがとうございます。開始は二時半から、終了は三時半のままとして案内を修正します。人数と写真の許可も引き続き確認します。","承知しました。開始時間を変更し、確認後に新しい案内を出します。","二時から四時までのままで案内します。","Neue letzte Uhrzeit ersetzt vorherige."],
 ["最初のお知らせのとおり駅前で二時から行い、二十四人を入れて写真も自由に公開します。","Revidiere Ort, aktualisierte Startzeit, zulässige Teilnehmerzahl und Medienfreigabe.","会場は市民センターで、開始は午後二時半、終了は三時半です。定員は十八人なので参加を確認し、写真は許可なしで公開しません。","新しい時間と場所に直し、担当者の確認を受けてから案内します。","Cumulative evidenzgebundene Korrektur."],
 ["Völlig neuer Fall: Sprachbibliothekstreffen zuerst Montag 17–19 Uhr Rathaus für alle angekündigt, Rathaus geschlossen, Schulraum genehmigt 17:30–18:30 für 12, 17 Anmeldungen, Audioaufnahmen nicht freigegeben.","場所は学校の部屋に変更され、時間は五時半から六時半までです。定員は十二人なので、参加を個別に確認します。録音は許可なしで公開しません。","最新の会場、時間、人数、許可を確認してから案内します。","十七人全員が市役所で夜七時まで参加し、録音も自由です。","Alle Dimensionen in wirklich neuer Situation."],
-"予定した・申し込んだ・許可が出た・公開した・参加が決まった は五つの異なる状態.",["kyoka","sanka","kakunin"]]
+"予定した・申し込んだ・許可が出た・公開した・参加が決まった は五つの異なる状態.",["kyoka","sanka","kakunin"]],
+["library-outreach-final","新しい参加案内を自分で直す","p26:library-project","地域と学びの総合","polite",
+"Ein Sprachhilfeprojekt muss Ort, Termin, eingeschränkte Teilnahme, personenbezogene Daten und eine allerletzte Rückmeldung gleichzeitig verantworten.",
+"Quellenhierarchie, bestätigte Zeit, Platzstatus, Schriftproduktion und Privatsphäre vollständig zusammenführen",
+[
+["最初の交流会案内","来週の土曜日に新しく来た学生のための町の案内会を開きます。午前十時から、駅前の二階の部屋です。申し込みは木曜日までにお願いします。","Ursprüngliche Einladung: Samstag 10 Uhr, Bahnhofshaus im zweiten Stock, Anmeldung bis Donnerstag."],
+["会場と交通の新情報","駅前の建物はエレベーター点検で利用できません。図書館の一階なら利用できる可能性がありますが、担当者の使用許可が必要です。東口から歩いて十五分ほどです。","Neuer Sachstand: Bahnhofshaus wegen Fahrstuhlwartung nicht verfügbar; Bibliothek Erdgeschoss nur nach Genehmigung, 15 Minuten Fußweg vom Osteingang."],
+["申し込みとプライバシー","部屋の定員は十二人です。フォームを送っただけでは参加できると決まりません。名簿は担当者だけに共有し、写真を公開する時は本人の許可も確認してください。","Teilnahme und Privatsphäre: Maximal zwölf, Formular keine Zusage, Liste nur Leitung, Fotos nur mit Einwilligung."]],
+[
+["ユウ","十五人から申し込みが来たよ。でも全員に確認メールを送ったわけじゃないし、古い駅前の会場を伝えた人もいる。","Yu: 15 Anträge erhalten, Bestätigungen und Ortskorrektur noch unvollständig."],
+["ミナ","許可を待ってから案内を直そう。名簿も写真も誰でも見られるようにはしないでね。","Mina: Vor Freigabe neuen Hinweis, Listen und Fotos nicht öffentlich."]],
+[
+["図書館の担当","一階の部屋を使う許可が出ました。ただし、土曜日の十一時から午後一時までです。定員は十二人です。","Bibliothek: EG genehmigt, Samstag 11–13 Uhr, zwölf Plätze."],
+["ユウ","十五人に申し込みがあるのですが、全員に参加確認をしてもいいでしょうか。","Yu: Darf ich allen fünfzehn zusagen?"],
+["図書館の担当","いいえ。申し込み順に十二人まで確認し、ほかの方には次回をご案内ください。写真の許可も忘れないでください。","Bibliothek: Nur zwölf in Anmeldereihenfolge, übrigen nächste Gelegenheit, Fotogenehmigungen beachten."],
+["ミナ","会場と時間を直し、確認が取れた人にだけ新しい案内を送りましょう。","Mina: Aktualisierte Nachricht nur an wirklich bestätigte Personen."]],
+[
+["chronology","正式な会場と時間は何ですか。","土曜日の十一時から午後一時まで、図書館の一階です。","図書館の一階で十一時から一時までです。","駅前の二階で十時からです。","Ältere Einladung durch zuständige Auskunft ersetzt.","駅前の二階の部屋です","十一時から午後一時までです"],
+["status","十五人全員の参加が決まっていますか。","いいえ、定員は十二人で確認が必要です。","いいえ、申し込みの順番を調べます。","はい、申し込んだので全員参加できます。","Antrag ist keine Zusage.","フォームを送っただけでは参加できると決まりません","申し込み順に十二人まで"],
+["evidence","名簿と写真を公開する時の注意は何ですか。","名簿は担当者だけに共有し、写真は本人の許可が必要です。","個人情報を外へ出さず、写真の許可を確認します。","名簿も写真も自由に公開できます。","Teilnehmerdaten und Bildrechte getrennt.","名簿は担当者だけに共有し","写真の許可も忘れないでください"]
+],
+["Formuliere selbst die sichere gesamte Vorgehensweise.","まず申し込み順に十二人まで確認します。新しい会場と時間を伝え、残りの人には次回を案内します。名簿は担当者だけに共有し、写真は許可なく公開しません。","場所、日時、定員、写真の許可を確認してから案内します。","十五人全員を古い会場で確定し、写真を公開します。","Fünf unabhängige Bedingungen korrekt."],
+["Schreibe mindestens vier vollständige japanische Sätze als höfliche neue Nachricht für Teilnehmende.","最初の案内から会場と時間が変更になりました。来週の土曜日は午前十一時から午後一時まで、図書館の一階で行います。定員は十二人ですので、参加について申し込み順に確認のご連絡をします。古い駅前の案内は使用しないでください。写真は本人の許可を確認するまで公開しません。","以前の会場と時間を訂正します。参加が決まった方には個別にお知らせします。名簿は公開しません。","駅前で十五人全員が参加でき、写真も自由に公開できます。","Lange natürliche eigenständige Mitteilung mit belegten Einschränkungen."],
+["図書館の担当","申し訳ありません。設備点検のため、その日は一階の部屋を正午までしか使えません。十一時開始のままで、終了だけ正午に訂正してください。","Bibliothek: Wegen Wartung Raum nur bis 12 Uhr; Beginn 11 Uhr unverändert, nur Ende ändern.","Reagiere auf letzte autoritative Änderung ohne andere Regeln zu verwerfen.","ご連絡ありがとうございます。十一時開始のままで、終了を正午に訂正します。定員は十二人で、参加の確認と写真の許可も引き続き守ります。","承知しました。終了時間だけ変え、確認後に新しい案内を送ります。","終了も一時のままで案内します。","Aktuellste verbindliche Frist."],
+["前の案内どおり駅前で十時から一時まで行い、十五人全員を入れて写真も公開します。","Repariere Ort, Beginn, Ende, Zahl und Medienrecht gemeinsam.","案内会は土曜日の十一時から正午まで、図書館の一階で行います。定員は十二人で、参加は申し込み順に確認します。名簿と写真は許可なく公開しません。","新しい時間と場所に直して、確認した人へ個別に案内します。","Cumulative Quellenkorrektur."],
+["Ungesehener neuer Langfall: Sprachgruppe ursprünglich Rathaus Montag 17–19 Uhr ohne Grenze, Gebäude geschlossen, Schulraum Dienstag 17:30–18:30 genehmigt, später Ende 18 Uhr, 19 Anträge auf 10 Plätze, Audio nur mit Einwilligung.","交流会は火曜日の五時半から六時まで学校で行います。定員は十人なので、申し込みを確認してから案内します。録音は許可なく公開しません。","古い市役所の案内を訂正し、人数と録音の許可を確認します。","市役所で十九人全員を入れて録音を公開します。","Neuer Ort, Tag, Zeit, Medium und Rangfolge."],
+"古い案内・使用許可・参加人数・名簿の権限・写真の同意・直前の終了変更 sind unabhängige Sachverhalte.",["kyoka","sanka","henkou"]]
+
 ];
 export const p59MissionsE=raw.map(authoredP59Compact);
