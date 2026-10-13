@@ -37,6 +37,7 @@ export function P60ConsolidationStudio({
  const [catalog,setCatalog]=useState(false);
  const [reviewOnly,setReviewOnly]=useState<"all"|"due"|"needs-repair"|"unseen">("all");
  const [phase,setPhase]=useState("all");
+ const [selectedTrack,setSelectedTrack]=useState("all");
  const [scope,setScope]=useState<"unit"|"all">("unit");
  const [search,setSearch]=useState("");
  const [showMore,setShowMore]=useState(15);
@@ -74,6 +75,8 @@ export function P60ConsolidationStudio({
  const filtered=historical.filter(item=>
   (scope==="all"||item.unitId===lesson.units[0])&&
   (phase==="all"||String(item.phase)===phase)&&
+  (selectedTrack==="all"||p60CourseTracks.some(track=>track.id===selectedTrack&&
+     (track.phases as readonly number[]).includes(item.phase)))&&
   (reviewOnly==="all"||item.status===reviewOnly)&&
   [item.title,item.instruction,item.id].join(" ").toLocaleLowerCase()
    .includes(search.trim().toLocaleLowerCase()));
@@ -163,6 +166,12 @@ export function P60ConsolidationStudio({
       <option value="all">Alle Originaleinheiten</option>
      </select>
     </label>
+    <label>Lernpfad
+     <select value={selectedTrack} onChange={e=>{setSelectedTrack(e.target.value);setShowMore(15)}}>
+      <option value="all">Alle sechs Wege</option>
+      {p60CourseTracks.map(track=><option key={track.id} value={track.id}>{track.title}</option>)}
+     </select>
+    </label>
     <label>Originalphase
      <select value={phase} onChange={e=>{setPhase(e.target.value);setShowMore(15)}}>
       <option value="all">P40–P59 zusammen</option>
@@ -217,7 +226,7 @@ export function P60ConsolidationStudio({
       <div className="p60-consolidation__actions">
        <button type="button" disabled={!items.length} onClick={()=>{
         setCatalog(true);setScope("all");setReviewOnly("all");
-        setPhase(String(items[0]!.phase));setShowMore(15);
+        setPhase("all");setSelectedTrack(track.id);setShowMore(15);
        }}>Originalquellen öffnen</button>
        <button type="button" disabled={!candidate||disabled}
         onClick={()=>{if(candidate)onHistorical(candidate.id,candidate.unitId)}}>
