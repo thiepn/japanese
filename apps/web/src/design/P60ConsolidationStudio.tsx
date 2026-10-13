@@ -94,13 +94,20 @@ export function P60ConsolidationStudio({
   x.status==="needs-repair"||x.status==="due");
  const stepIndex=steps.findIndex(s=>s[0]===step);
  const toggle=(key:string)=>setReveal(old=>old.includes(key)?old.filter(v=>v!==key):[...old,key]);
+ function allowDiscard():boolean{
+  if(!draft.trim())return true;
+  return typeof window!=="undefined"&&window.confirm(
+   "Eine noch nicht abgeschlossene japanische Antwort würde beim Wechsel verworfen. Diese Eingabe wurde nicht gespeichert. Trotzdem wechseln?");
+ }
  function choose(id:string){
+  if(id!==lesson.id&&!allowDiscard())return;
   stop();setChosen(id);setStep("reading");setSourceDisclosure(null);setMode("question");setQuestionIndex(0);
   setDraft("");setAttempt(false);setModels(false);
   setReveal([]);setSpoken(false);setShowVocabulary(false);
   setSearch("");setShowMore(15);setTtsStatus("");
  }
  function taskMode(next:Kind){
+  if(next!==mode&&!allowDiscard())return;
   setMode(next);setDraft("");setAttempt(false);setModels(false);
  }
  function next(){setStep(steps[Math.min(steps.length-1,stepIndex+1)]![0]);}
