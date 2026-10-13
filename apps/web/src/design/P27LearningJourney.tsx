@@ -149,7 +149,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     .map(prompt=>{
       const trace=evidence?.traces.find(t=>t.id===traceIdJourney(prompt));
       const when=trace?Date.parse(trace.card.due):NaN;
-      return {id:prompt.id,planned:Boolean(trace&&Number.isFinite(when)),
+      return {id:prompt.id,arcId:String(prompt.eventMetadata?.arcId),
+        planned:Boolean(trace&&Number.isFinite(when)),
         due:Boolean(trace&&Number.isFinite(when)&&when<=Date.now())};
     });
   const reviewCatalog=useMemo(()=>promptsForUnit(unitId,extraJourneyPrompts),[unitId]);
@@ -811,6 +812,28 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Für noch nicht fällige Inhalte ist kein sofortiger erneuter FSRS-Abruf erforderlich.</p>:null}
             <button type="button" disabled={disabled||recallPlan.dueNow.length===0}
               onClick={()=>onJourneyPractice(unitId,"review")}>Fällige Karten jetzt wiederholen</button>
+          </section>:null}
+          {p40ReturnCueStatus.length?<section className="p27-journey__p40-return"
+            aria-label="Gesprächsinhalte in neuem Kontext wieder abrufen">
+            <h5>Später ohne Dialogvorlage wieder abrufen</h5>
+            <p>Jeder Fall hat eine zusätzliche, anders formulierte Alltagsaufgabe.
+              Nur nach einem unabhängigen ersten Abruf erzeugt die bestehende
+              FSRS-Karte einen zukünftigen Termin. Ohne Termin ist die Übung
+              <strong> nicht überfällig</strong>. Freiwilliges Vorziehen kann FSRS aktualisieren.</p>
+            {p40ReturnCueStatus.map(cue=><div key={cue.id} className="p27-journey__p40-return-item">
+              <div><strong>{p40UnitArcs.find(arc=>arc.id===cue.arcId)?.title??"Gesprächstransfer"}</strong>
+                <small>{cue.due?"Jetzt laut FSRS fällig":
+                  cue.planned?"Für einen späteren FSRS-Termin eingeplant":
+                  "Noch kein FSRS-Termin vorhanden"}</small></div>
+              <button type="button" disabled={disabled||!cue.due}
+                onClick={()=>onJourneyPractice(unitId,`return-due:${cue.arcId}`)}>
+                Fälligen Abruf üben
+              </button>
+              <button type="button" disabled={disabled}
+                onClick={()=>onJourneyPractice(unitId,`return:${cue.arcId}`)}>
+                Freiwillig selbstständig üben
+              </button>
+            </div>)}
           </section>:null}
           <p>Heute fällige Karten, letzte Fehler und neue Situationen werden aus demselben bestehenden Lernverlauf ermittelt.</p>
           <div className="p27-journey__practice-paths" aria-label="Drei unterschiedliche Lernwege">
