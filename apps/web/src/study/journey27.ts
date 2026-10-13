@@ -3,7 +3,7 @@ import type {MemoryTrace} from "@thiepn/scheduler";
 import type {StudyLesson,StudyPrompt,StudyStep} from "@thiepn/study-player";
 import {pedagogyScenarios,pedagogyPrompts,pedagogyLessons} from "./pedagogy23";
 import {conversationForScenario,p24ReviewPrompts,dialoguePrompt,productionTasks} from "./pedagogy24";
-import {p40DialogueById,p40PromptsForArc} from "./dialogue40";
+import {p40DialogueById,p40PromptsForArc,p40ReturnPrompts} from "./dialogue40";
 import {p25Scenarios,p25Prompts,p25Lessons,p25DialoguePrompt} from "./pedagogy25";
 import {p26Missions,p26Prompts,p26Lessons,missionTurnPrompt,normalizeP26} from "./pedagogy26";
 
@@ -12,7 +12,7 @@ import {p26Missions,p26Prompts,p26Lessons,missionTurnPrompt,normalizeP26} from "
  */
 export type JourneySource="p23"|"p25"|"p26";
 export type JourneyStage="learn"|"build"|"conversation"|"write"|"practice";
-export type JourneyPractice="review"|"retry"|"new"|"transfer"|"register"|"grammar"|"production"|`dialogue:${string}`;
+export type JourneyPractice="review"|"retry"|"new"|"transfer"|"register"|"grammar"|"production"|`dialogue:${string}`|`return:${string}`|`return-due:${string}`;
 export interface JourneyWord{form:string;reading:string;meaning:string;example:string;}
 export interface JourneyOption{
   japanese:string;meaning:string;valid:boolean;explanation:string;next?:string|null;
@@ -252,7 +252,13 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
   const dialogueId=focus.startsWith("dialogue:")?focus.slice("dialogue:".length):"";
   const dialogueArc=dialogueId?p40DialogueById(dialogueId):undefined;
   const dialogueCues=dialogueArc?.units.includes(unitId)?p40PromptsForArc(dialogueId):[];
+  const returnId=focus.startsWith("return-due:")?focus.slice("return-due:".length):
+    focus.startsWith("return:")?focus.slice("return:".length):"";
+  const returnArc=returnId?p40DialogueById(returnId):undefined;
+  const returnCue=returnArc?.units.includes(unitId)?
+    p40ReturnPrompts.filter(p=>p.eventMetadata?.arcId===returnId):[];
   const relevant=dialogueId?dialogueCues
+    :returnId?returnCue
     :focus==="register"?[...pragmatic,...relatedRegister]
     :focus==="transfer"?[
       ...transferForUnit(unitId),
@@ -288,7 +294,7 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     const trace=known.get(traceIdJourney(p));
     return Boolean(trace&&Number.isFinite(Date.parse(trace.card.due))&&Date.parse(trace.card.due)<=now);
   };
-  const selected=focus==="review"?list.filter(scheduledDue)
+  const selected=(focus==="review"||focus.startsWith("return-due:"))?list.filter(scheduledDue)
     :focus==="retry"?list.filter(p=>latest.get(p.id)?.result==="incorrect")
     :focus==="new"?list.filter(p=>!known.has(traceIdJourney(p))&&!latest.has(p.id))
     :list;
