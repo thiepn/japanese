@@ -21,6 +21,54 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p50===true){
+    const reason=prompt.eventMetadata.questionKind;
+    const focus=prompt.eventMetadata.focus;
+    if(focus==="delayed-independent-return")return {
+      title:"Gelerntes ohne alte Originalfakten übertragen",
+      promptSpecificGoal:"Die spätere Aufgabe besitzt andere Daten und keine Originalquelle. "+
+        "Identifiziere eine neue gültige Zeit, Ortsangabe, Einschränkung oder "+
+        "Unsicherheit, bevor du selbst schreibst. Nur eine reale FSRS-Fälligkeit ist fällig.",
+      lessonStage:"practice",action:"Neuen Kontext eigenständig im ursprünglichen StudyPlayer lösen"
+    };
+    if(focus==="integrated-source-writing")return {
+      title:"Schriftlichen Plan und gesprochene Aktualisierung verbinden",
+      promptSpecificGoal:"Schreibe nicht die erste alte Angabe ab. "+
+        "Vergleiche Zweck und Gültigkeit der schriftlichen Mitteilung "+
+        "mit der gesprochenen Korrektur oder bestätigten Bedingung. "+
+        "Freies Japanisch hat keine allgemeine semantische Automatikbewertung.",
+      lessonStage:"write",action:"Eigene Reaktion mit Quellenbezug überarbeiten"
+    };
+    if(prompt.eventMetadata.kind==="cross-modal-context-word")return {
+      title:"Ein japanisches Wort in seiner Originalquelle abrufen",
+      promptSpecificGoal:"Bestimme anhand der kurzen schriftlichen oder gesprochenen "+
+        "Belegstelle, ob es um einen Ausfall, eine Korrektur, eine Frist oder "+
+        "eine noch offene Entscheidung geht.",
+      lessonStage:"learn",action:"Die zugehörige Originalquelle erneut lesen bzw. anhören"
+    };
+    if(reason==="correction")return {
+      title:"Gedruckte Angabe und gesprochenen neuen Stand abgleichen",
+      promptSpecificGoal:"Lies die ursprüngliche Zahl, den Ort oder Gegenstand. "+
+        "Höre anschließend でも, 変更, では oder そのまま. "+
+        "Ersetze ausschließlich ausdrücklich geänderte Elemente.",
+      lessonStage:"learn",action:"Originalbelege für frühere und gültige Information gegenüberstellen"
+    };
+    if(reason==="inference")return {
+      title:"Gewissheit, Voraussetzung und mögliche Folgen unterscheiden",
+      promptSpecificGoal:"Achte auf まだ, 予定, かもしれません, "+
+        "場合, だけ und höfliche Vorschläge. "+
+        "Ein angebotener Termin, eine vermutete Sperrung oder eine mögliche "+
+        "Abfahrt ist nicht automatisch eine verbindliche Zusage.",
+      lessonStage:"learn",action:"Gelesenen und gesprochenen Beleg für den Schluss auswählen"
+    };
+    return {
+      title:"Einen genauen Fakt aus beiden Modalitäten identifizieren",
+      promptSpecificGoal:"Prüfe, welche Quelle Uhrzeit, Menge, Person oder "+
+        "Bedingung ausdrücklich nennt. Trenne vergleichbare, aber "+
+        "unterschiedliche Zahlen wie Treffzeit und Veranstaltungsbeginn.",
+      lessonStage:"learn",action:"Gezielten Satz wiederholen und schriftlichen Wert prüfen"
+    };
+  }
   if(prompt?.eventMetadata?.p49===true){
     const kind=prompt.eventMetadata.questionKind;
     const focus=prompt.eventMetadata.focus;
