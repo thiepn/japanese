@@ -67,7 +67,7 @@ export const p56DecisionPrompts:StudyPrompt[]=p56Scenes.map(s=>{
 });
 export const p56RoutePrompts:StudyPrompt[]=p56Scenes.flatMap(s=>
  (["direct","alternate","repair"] as const).map(k=>{
-  const b=base(s,"route-"+k),mis=k==="repair",route=mis?undefined:s.routes[k];
+  const b=base(s,"route-"+k),mis=k==="repair",route=k==="repair"?undefined:s.routes[k];
   const opening=mis?s.mistake.misleading:route!.opening;
   const partner=mis?s.mistake.partner:route!.partner;
   const task=mis?s.mistake.repairGoal:route!.nextGoal;
