@@ -938,6 +938,23 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Situationswechsel selbstständig üben
             </button>
           </section>:null}
+          {p46WritingPassage?<section className="p27-journey__p46-writing-selection"
+            aria-label="Aus dem Lesetext einen eigenen Satz verfassen">
+            <h5>Originaler Lesetext · eigene Erklärung</h5>
+            <p><strong>{p46WritingPassage.title}</strong> · {p46WritingPassage.level}</p>
+            <p>{p46WritingPassage.writing.situation}</p>
+            <p>Verknüpfe die Informationen der Passage. Im bereits bestehenden Editor
+              bleibt die Musterlösung bis zur Überarbeitungsphase verborgen.
+              Dein lokaler Vergleich ist keine FSRS-Bewertung.</p>
+            <div className="p27-journey__actions">
+              <button type="button" disabled={disabled}
+                onClick={()=>onJourneyPractice(unitId,
+                  `reading-kind:${p46WritingPassage.id}:writing`)}>
+                Ohne Beispiel im StudyPlayer schreiben
+              </button>
+              <button type="button" onClick={()=>setP46WritingId("")}>Standardaufgabe wählen</button>
+            </div>
+          </section>:null}
           {p45UnitChallenges.length?<section className="p27-journey__p45-writing"
             aria-label="Gesprächsantwort in ursprünglichem Schreibeditor überarbeiten">
             <h5>Einen Gesprächszug ohne Vorlage schreiben</h5>
@@ -1077,11 +1094,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <p>Wähle einen Kontext; eine zuletzt verfehlte Lernkarte wird bevorzugt vorgeschlagen.
               Dein Entwurf bleibt im bestehenden Schreibfeld und wird nicht automatisch sprachlich bewertet.</p>
             <div className="p27-journey__p39-picker" role="group" aria-label="Schreibsituation">
-              <button type="button" aria-pressed={!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn}
-                onClick={()=>{setP39WritingId("");setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
+              <button type="button" aria-pressed={!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage}
+                onClick={()=>{setP39WritingId("");setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
                 Reguläres Lernziel</button>
               {p39UnitCases.map(c=><button key={c.id} type="button" aria-pressed={p39Chosen?.id===c.id}
-                onClick={()=>{setP39WritingId(c.id);setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
+                onClick={()=>{setP39WritingId(c.id);setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
                 {c.title}{p39Priority?.id===c.id?" · Vorschlag":""}</button>)}
             </div>
             {p39Chosen?<p>Problematischer Ausgangssatz: <span lang="ja">{p39Chosen.distractors[0]?.form}</span>.
@@ -1089,7 +1106,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"production")}>
               Unabhängige Schreibkorrekturen im StudyPlayer</button>
           </section>:null}
-          <p>{p45WritingTurn?p45WritingTurn.goal:
+          <p>{p46WritingPassage?p46WritingPassage.writing.situation:
+            p45WritingTurn?p45WritingTurn.goal:
             p44WritingCase?p44WritingTask:p43WritingDetail?p43WritingDetail.intention:
             p40WritingTurn?p40WritingTurn.intention:
             p39Chosen?p39Chosen.situation:unit.writing.task}</p>
