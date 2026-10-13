@@ -589,7 +589,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   function chooseP55Writing(id:string){
     const scene=p55ById(id);
     if(!scene)return;
-    setUnitId(scene.units[0]!);setP55WritingId(scene.id);
+    setUnitId(scene.units[0]!);setP55WritingId(scene.id);setP56WritingId("");
     setP54WritingId("");setP53WritingId("");setP52WritingId("");
     setP51WritingId("");setP50WritingId("");setP49WritingId("");
     setP48WritingId("");setP47WritingId("");setP46WritingId("");
@@ -655,6 +655,13 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
         ...(kind==="response"?{turnId:turn.id}:{}),
         ...(kind==="rewrite"&&p39Chosen?{p39:true,authoredCaseId:p39Chosen.id,
           sourceContextId:"p39:repair:"+p39Chosen.id}:{}),
+        ...(kind==="rewrite"&&p56WritingScene?{
+          p56:true,authoredSceneId:p56WritingScene.id,
+          sourceContextId:"p56:interaction:"+p56WritingScene.id,
+          register:p56WritingScene.register,guidedRewrite:true,
+          conversationSimulated:true,liveConversationAssessment:false,
+          rawTextStored:false,schedulerExcluded:true
+        }:{}),
         ...(kind==="rewrite"&&p55WritingScene?{
           p55:true,authoredSceneId:p55WritingScene.id,
           sourceContextId:"p55:listening:"+p55WritingScene.id,
@@ -1466,6 +1473,23 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Situationswechsel selbstständig üben
             </button>
           </section>:null}
+          {p56WritingScene?<section className="p27-journey__p51-writing-selection"
+            aria-label="Selbstständige Gesprächsantwort nach unerwarteter Rückfrage schriftlich überarbeiten">
+            <h5>Eigene spontane A2-Reaktion schreiben und überarbeiten</h5>
+            <p><strong>{p56WritingScene.title}</strong> · {p56WritingScene.setting}</p>
+            <p><strong>Andere unabhängige Gesprächssituation:</strong> {p56WritingScene.production.situation}</p>
+            <p>Der Lernentwurf nutzt ausschließlich den bisherigen lokalen Learn-Schreibeditor.
+              Die Revision ist unbenotet und wird ohne privaten Rohtext oder Audio
+              als bestehendes StudyEvent erfasst. Nur unabhängiger StudyPlayer
+              kann die ursprüngliche FSRS-Lernplanung aktualisieren.</p>
+            <div className="p27-journey__actions">
+              <button type="button" disabled={disabled}
+                onClick={()=>onJourneyPractice(unitId,`interaction56-kind:${p56WritingScene.id}:production`)}>
+                Gesprächsantwort im StudyPlayer bearbeiten
+              </button>
+              <button type="button" onClick={()=>setP56WritingId("")}>Reguläre Aufgabe wählen</button>
+            </div>
+          </section>:null}
           {p55WritingScene?<section className="p27-journey__p51-writing-selection"
             aria-label="Nach dem japanischen Hördialog eigenständig schreiben und überarbeiten">
             <h5>A2 Hörsituationen in eigene Sprechabsicht und schriftliche Revision übertragen</h5>
@@ -1781,7 +1805,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <p>Wähle einen Kontext; eine zuletzt verfehlte Lernkarte wird bevorzugt vorgeschlagen.
               Dein Entwurf bleibt im bestehenden Schreibfeld und wird nicht automatisch sprachlich bewertet.</p>
             <div className="p27-journey__p39-picker" role="group" aria-label="Schreibsituation">
-              <button type="button" aria-pressed={!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase&&!p49WritingDocument&&!p50WritingMission&&!p51WritingContrast&&!p52WritingTask&&!p53WritingWord&&!p54WritingReading&&!p55WritingScene}
+              <button type="button" aria-pressed={!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase&&!p49WritingDocument&&!p50WritingMission&&!p51WritingContrast&&!p52WritingTask&&!p53WritingWord&&!p54WritingReading&&!p55WritingScene&&!p56WritingScene}
                 onClick={()=>{setP39WritingId("");setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");setP51WritingId("");setP52WritingId("");setP53WritingId("");setP54WritingId("");setP55WritingId("");setP56WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
                 Reguläres Lernziel</button>
               {p39UnitCases.map(c=><button key={c.id} type="button" aria-pressed={p39Chosen?.id===c.id}
@@ -1793,7 +1817,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"production")}>
               Unabhängige Schreibkorrekturen im StudyPlayer</button>
           </section>:null}
-          <p>{p55WritingScene?p55WritingScene.response.situation:
+          <p>{p56WritingScene?p56WritingScene.production.situation:
+            p55WritingScene?p55WritingScene.response.situation:
             p54WritingReading?p54WritingReading.writing.situation:
             p53WritingWord?p53WritingWord.production.situation:
             p52WritingTask?(p52WritingTask.production.scene+" "+p52WritingTask.production.goal):
@@ -1828,7 +1853,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
           {rewriteStage!=="draft"?<>
             <div className="p27-journey__note">
               <strong>Orientierung zur Korrektur</strong>
-              <p>{p55WritingScene?p55WritingScene.response.why:
+              <p>{p56WritingScene?p56WritingScene.production.explanation:
+                p55WritingScene?p55WritingScene.response.why:
                 p54WritingReading?p54WritingReading.writing.why:
                 p53WritingWord?(p53WritingWord.nuance+" "+p53WritingWord.repair):
                 p52WritingTask?p52WritingTask.production.why:
@@ -1842,10 +1868,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 p44WritingCase?(p44WritingStep==="reply"?p44WritingCase.followupWhy:p44WritingCase.nuance):
                 p43WritingDetail?p43WritingDetail.why:p40WritingTurn?p40WritingTurn.why:
                 p39Chosen?p39Chosen.rule:unit.writing.reflection}</p>
-              {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase&&!p49WritingDocument&&!p50WritingMission&&!p51WritingContrast&&!p52WritingTask&&!p53WritingWord&&!p54WritingReading&&!p55WritingScene?
+              {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase&&!p49WritingDocument&&!p50WritingMission&&!p51WritingContrast&&!p52WritingTask&&!p53WritingWord&&!p54WritingReading&&!p55WritingScene&&!p56WritingScene?
                 <p><span lang="ja">{unit.writing.features.join(" · ")}</span></p>:null}
               <details><summary>Originales Beispiel vergleichen</summary>
-                <p lang="ja">{p55WritingScene?p55WritingScene.response.model:
+                <p lang="ja">{p56WritingScene?p56WritingScene.production.model:
+                  p55WritingScene?p55WritingScene.response.model:
                   p54WritingReading?p54WritingReading.writing.model:
                   p53WritingWord?p53WritingWord.production.model:
                   p52WritingTask?p52WritingTask.production.model:
@@ -1859,7 +1886,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                   p44WritingCase?(p44WritingStep==="reply"?p44WritingCase.followupModel:p44WritingCase.model):
                   p43WritingDetail?p43WritingDetail.model:p40WritingTurn?p40WritingTurn.model:
                   p39Chosen?p39Chosen.model:unit.writing.reference}</p>
-                {p55WritingScene?<p lang="ja">{p55WritingScene.response.alternative}</p>:
+                {p56WritingScene?<p lang="ja">{p56WritingScene.production.alternative}</p>:
+                  p55WritingScene?<p lang="ja">{p55WritingScene.response.alternative}</p>:
                   p54WritingReading?<p lang="ja">{p54WritingReading.writing.alternative}</p>:
                   p52WritingTask?<p lang="ja">{p52WritingTask.production.alternative}</p>:
                   p51WritingContrast?<p lang="ja">{p51WritingContrast.production.alternative}</p>:
@@ -1880,7 +1908,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               aria-keyshortcuts="Control+Enter Meta+Enter"
               onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
                 e.preventDefault();if(rewrite.trim()&&!busy){
-                  setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase||p45WritingTurn||p46WritingPassage||p47WritingScene||p48WritingCase||p49WritingDocument||p50WritingMission||p51WritingContrast||p52WritingTask||p53WritingWord||p54WritingReading||p55WritingScene?[]:unit.writing.features));setRewriteStage("compare");
+                  setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase||p45WritingTurn||p46WritingPassage||p47WritingScene||p48WritingCase||p49WritingDocument||p50WritingMission||p51WritingContrast||p52WritingTask||p53WritingWord||p54WritingReading||p55WritingScene||p56WritingScene?[]:unit.writing.features));setRewriteStage("compare");
                 }
               }}}
               onChange={e=>{
@@ -1889,14 +1917,22 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <div className="p27-journey__actions">
               <button type="button" onClick={()=>recognize("rewrite")}>Überarbeitung diktieren</button>
               <button type="button" disabled={!rewrite.trim()} onClick={()=>{
-                setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase||p45WritingTurn||p46WritingPassage||p47WritingScene||p48WritingCase||p49WritingDocument||p50WritingMission||p51WritingContrast||p52WritingTask||p53WritingWord||p54WritingReading||p55WritingScene?[]:unit.writing.features));setRewriteStage("compare");
+                setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase||p45WritingTurn||p46WritingPassage||p47WritingScene||p48WritingCase||p49WritingDocument||p50WritingMission||p51WritingContrast||p52WritingTask||p53WritingWord||p54WritingReading||p55WritingScene||p56WritingScene?[]:unit.writing.features));setRewriteStage("compare");
               }}>Versionen vergleichen</button>
             </div>
           </>:null}
           {rewriteStage==="compare"&&report?<div className="p27-journey__note" role="status">
             <strong>Zeichenbasierte Beobachtungen, keine Sprachbewertung</strong>
             <p>{report.oldLength} → {report.newLength} Zeichen. Geändert: {report.changed?"ja":"nein"}</p>
-            {p55WritingScene?<div className="p27-journey__p51-comparison-feedback">
+            {p56WritingScene?<div className="p27-journey__p51-comparison-feedback">
+              <strong>Pragmatischer A2-Selbstvergleich, keine Live-Sprachbenotung</strong>
+              <p>{p56Compare(rewrite,
+                [p56WritingScene.production.model,p56WritingScene.production.alternative],
+                p56WritingScene.production.misleading,
+                p56WritingScene.production.explanation).message}</p>
+              <p>{p56WritingScene.nuance}</p>
+              <small>Andere mögliche natürliche japanische Antworten bleiben unbewertet.</small>
+            </div>:p55WritingScene?<div className="p27-journey__p51-comparison-feedback">
               <strong>Gesprochene Absicht und schriftliche Revision – keine Sprechbewertung</strong>
               <p>{p55AuthoredFeedback(rewrite,
                 [p55WritingScene.response.model,p55WritingScene.response.alternative],
@@ -2012,7 +2048,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <p>Nicht erkannt: {report.missing.join(" · ")||"keine"}</p>
               <ul>{grammarReflection(unit,rewrite).map((note,i)=><li key={i}>{note}</li>)}</ul>
             </>}
-            {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase&&!p49WritingDocument&&!p50WritingMission&&!p51WritingContrast&&!p52WritingTask&&!p53WritingWord&&!p54WritingReading&&!p55WritingScene?
+            {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase&&!p49WritingDocument&&!p50WritingMission&&!p51WritingContrast&&!p52WritingTask&&!p53WritingWord&&!p54WritingReading&&!p55WritingScene&&!p56WritingScene?
               <div className="p27-journey__revision">
               <strong>Überarbeitete Partikeln und Formen</strong>
               <p>Neue Partikeln: {describeP29Revision(draft,rewrite,unit).addedParticles.join(" · ")||"keine"}</p>
