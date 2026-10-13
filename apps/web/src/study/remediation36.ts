@@ -21,6 +21,42 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p48===true){
+    const q=prompt.eventMetadata.questionKind;
+    const focus=prompt.eventMetadata.focus;
+    if(focus==="delayed-independent-return")return {
+      title:"In einer unbekannten Situation unabhängig handeln",
+      promptSpecificGoal:"Diese neue Übung hat andere Zeiten, Orte, Rollen oder Voraussetzungen. "+
+        "Übernimm keine alten Fakten nur deshalb, weil die Kommunikationsabsicht ähnlich ist. "+
+        "Fälligkeit stammt allein aus bestehenden FSRS-MemoryTraces.",
+      lessonStage:"practice",action:"Nur reale fällige oder klar freiwillige Wiederholung öffnen"
+    };
+    if(focus==="source-supported-writing")return {
+      title:"Verbindlichen Endstand aus drei Originalquellen formulieren",
+      promptSpecificGoal:"Trenne erste Angabe, spätere Korrektur und unabhängig geltende Regel. "+
+        "Notiere die Schlussfolgerung, ohne eine hypothetische Möglichkeit als sichere Tatsache auszugeben.",
+      lessonStage:"write",action:"Quellengebundenen Text im bisherigen Schreibeditor überarbeiten"
+    };
+    if(q==="reconcile")return {
+      title:"Welche Aussage gilt zuletzt – und für welchen Teil?",
+      promptSpecificGoal:"Vergleiche die drei Quellen chronologisch. Eine Korrektur kann nur "+
+        "Raum, Uhrzeit, Gegenstand oder Teilprogramm betreffen. Behalte die anderen bestätigten Angaben.",
+      lessonStage:"learn",action:"Quelle, Zeitpunkt und Geltungsbereich erneut gegenüberstellen"
+    };
+    if(q==="inference")return {
+      title:"Eine Folgerung aus mehreren Aussagen erklären",
+      promptSpecificGoal:"Prüfe die Bedingungen und zeitlichen Grenzen. Unterscheide "+
+        "was direkt gesagt ist, was daraus folgt und was trotz widersprüchlich klingender Angaben offenbleibt.",
+      lessonStage:"learn",action:"Originalbelege für die eigene Schlussfolgerung vergleichen"
+    };
+    return {
+      title:"Die stützenden Originalquellen und ihre Rolle identifizieren",
+      promptSpecificGoal:"Entscheide, ob eine Quelle eine verbindliche Änderung, "+
+        "einen älteren Plan, eine allgemeine Regel, persönliche Meinung oder noch unsichere Prognose enthält. "+
+        "Die Schlussfolgerung braucht passende Quellen und darf keine erfundene Sicherheit behaupten.",
+      lessonStage:"learn",action:"Quellenbelege und konkrete Formulierungen erneut lesen"
+    };
+  }
   if(prompt?.eventMetadata?.p47===true){
     const focus=prompt.eventMetadata.focus;
     const kind=prompt.eventMetadata.questionKind;
