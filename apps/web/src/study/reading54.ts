@@ -13,6 +13,18 @@ export type {P54Reading,P54Question,P54QuestionKind,P54Genre} from "./reading54-
 export const p54Readings:readonly P54Reading[]=[
  ...p54ReadingsA,...p54ReadingsB,...p54ReadingsC,...p54ReadingsD,...p54ReadingsE
 ];
+export function p54Progression(id:string):{stage:number;label:string;focus:string}{
+ const index=p54Readings.findIndex(r=>r.id===id);
+ if(index<0)return {stage:0,label:"Nicht gefunden",focus:""};
+ if(index<7)return {stage:1,label:"Alltagsinformationen verbinden",
+  focus:"Drei zusammenhängende Absätze mit Ursache, Zeitpunkt und einfachem Ergebnis"};
+ if(index<21)return {stage:2,label:"Mehrere Aussagen unterscheiden",
+  focus:"Verschiedene Sprecher, geänderte Planung und nicht bestätigte Informationen"};
+ if(index<28)return {stage:3,label:"Vergleichen und begründen",
+  focus:"Daten vergleichen, Bedingungen und Ergebnisse über mehrere Textabschnitte verfolgen"};
+ return {stage:4,label:"Mehrabsätzige Quellenintegration",
+  focus:"Vier längere Absätze, konkurrierende Quellen, Grenzen der Aussage und unabhängige Folgerung"};
+}
 export const p54ById=(id:string):P54Reading|undefined=>p54Readings.find(r=>r.id===id);
 export const p54ForUnit=(id:string):P54Reading[]=>p54Readings.filter(r=>r.units.includes(id));
 
