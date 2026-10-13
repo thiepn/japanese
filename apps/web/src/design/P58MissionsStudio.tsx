@@ -7,7 +7,7 @@ export function P58MissionsStudio({missions,preferredId,recallReadyIds,disabled,
  onPractice,onWriting,onRelated}:{
  missions:readonly P58Mission[];preferredId?:string;recallReadyIds:readonly string[];
  disabled:boolean;onPractice:(id:string,kind:Kind)=>void;
- onWriting:(id:string)=>void;onRelated:(id:string,kind:"reading"|"listening"|"writing")=>void;
+ onWriting:(id:string)=>void;onRelated:(id:string,kind:"reading"|"listening"|"writing"|"document"|"interaction"|"conversation"|"independence")=>void;
 }){
  const [selected,setSelected]=useState("");
  const [search,setSearch]=useState("");
@@ -210,12 +210,12 @@ export function P58MissionsStudio({missions,preferredId,recallReadyIds,disabled,
       Eigene Antwort im ursprünglichen mehrstufigen Learn-Editor überarbeiten</button>
     </section>
     <section>
-     <h5>5 · Vorgeschaltete Originalmaterialien aus P54, P55 und P57</h5>
-     <p>Diese drei historischen Texte sind ausdrücklich
+     <h5>5 · Quellen- und Interaktionsübungen aus P43–P57</h5>
+     <p>Diese früheren Texte und Gesprächsübungen sind ausdrücklich
        <strong> unabhängige Lernbeispiele</strong>, keine weiteren Meldungen
        desselben Ereignisses. Sie trainieren den Transfer ähnlicher Strukturen.</p>
      <button type="button" aria-expanded={relatedOpen} onClick={()=>setRelatedOpen(x=>!x)}>
-      {relatedOpen?"Querverweise verbergen":"Drei passende Originalübungen anzeigen"}</button>
+      {relatedOpen?"Querverweise verbergen":"Passende Originalübungen aus älteren Phasen anzeigen"}</button>
      {relatedOpen?<div className="p58-missions__actions">
       {related.reading?<button type="button" disabled={disabled}
        onClick={()=>onRelated(current.id,"reading")}>P54 Lesen: {related.reading.title}</button>:null}
@@ -223,6 +223,14 @@ export function P58MissionsStudio({missions,preferredId,recallReadyIds,disabled,
        onClick={()=>onRelated(current.id,"listening")}>P55 Hören: {related.listening.title}</button>:null}
       {related.writing?<button type="button" disabled={disabled}
        onClick={()=>onRelated(current.id,"writing")}>P57 Schreiben: {related.writing.title}</button>:null}
+      {related.document?<button type="button" disabled={disabled}
+       onClick={()=>onRelated(current.id,"document")}>P49 Dokument: {related.document.title}</button>:null}
+      {related.interaction?<button type="button" disabled={disabled}
+       onClick={()=>onRelated(current.id,"interaction")}>P56 Gespräch: {related.interaction.title}</button>:null}
+      {related.conversation?<button type="button" disabled={disabled}
+       onClick={()=>onRelated(current.id,"conversation")}>P43 Dialog: {related.conversation.title}</button>:null}
+      {related.independence?<button type="button" disabled={disabled}
+       onClick={()=>onRelated(current.id,"independence")}>P45 Eigenständig: {related.independence.title}</button>:null}
      </div>:null}
      <p>{words.length} P53-Wortverweise, davon {words.filter(w=>w.attested).length}
        wörtlich in den neuen Originalquellen belegt.</p>
