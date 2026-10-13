@@ -357,6 +357,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   useEffect(()=>()=>microphone.current?.stop(),[]);
   function selectUnit(id:string){setUnitId(id);setStage("learn");}
   function chooseP40Writing(arcId:string,turnIndex?:number){
+    setP53WritingId("");
     setP40WritingArcId(arcId);setP39WritingId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");setP51WritingId("");setP52WritingId("");setP53WritingId("");
     const target=p41ArcById(arcId)??p42ArcById(arcId);
     setP40WritingTurnIndex(turnIndex??(target?target.pivotTurn-1:1));
@@ -440,7 +441,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     const contrast=p51ById(contrastId);
     if(!contrast)return;
     setUnitId(contrast.units[0]!);
-    setP51WritingId(contrast.id);
+    setP51WritingId(contrast.id);setP52WritingId("");setP53WritingId("");
     setP40WritingArcId("");setP39WritingId("");setP43WritingSceneId("");
     setP44WritingId("");setP45WritingId("");setP46WritingId("");
     setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");
@@ -451,7 +452,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     const t=p52ById(taskId);
     if(!t)return;
     setUnitId(t.units[0]!);
-    setP52WritingId(t.id);
+    setP52WritingId(t.id);setP53WritingId("");
     setP51WritingId("");setP50WritingId("");setP49WritingId("");
     setP48WritingId("");setP47WritingId("");setP46WritingId("");
     setP45WritingId("");setP44WritingId("");setP43WritingSceneId("");
