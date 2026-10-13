@@ -21,6 +21,50 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p49===true){
+    const kind=prompt.eventMetadata.questionKind;
+    const focus=prompt.eventMetadata.focus;
+    if(focus==="delayed-independent-return")return {
+      title:"Andere Angaben in einem neuen Alltagsdokument selbst anwenden",
+      promptSpecificGoal:"Die neue Situation verändert Gültigkeit, Datum, Gebühr, "+
+        "Ausnahme oder Gegenstand. Übernimm keine alte Zahl oder Bedingung. "+
+        "Eine Wiederholung ist nur bei echtem FSRS-Termin fällig.",
+      lessonStage:"practice",action:"Freiwilligen oder tatsächlich fälligen Transfer bearbeiten"
+    };
+    if(focus==="document-supported-writing")return {
+      title:"Dokumentzweck in einen eigenen japanischen Satz übertragen",
+      promptSpecificGoal:"Wähle eine kommunikative Reaktion, die zur Dokumentart passt: "+
+        "um Erlaubnis bitten, einen Termin bestätigen, sich anmelden oder um Hilfe fragen. "+
+        "Trenne belegte Bedingungen von eigenen Vermutungen.",
+      lessonStage:"write",action:"Originalbeispiel erst nach eigener Entwurfsrevision vergleichen"
+    };
+    if(prompt.eventMetadata.kind==="linked-lexicon")return {
+      title:"Wort aus dem tatsächlichen Dokumentgebrauch abrufen",
+      promptSpecificGoal:"Lies die konkrete Formulierung und beachte, ob das Wort "+
+        "eine Frist, einen Preisaufschlag, eine Berechtigung oder eine Ausnahme markiert. "+
+        "Die Schriftform ist nur ein Teil der funktionalen Bedeutung.",
+      lessonStage:"learn",action:"Dokument und Wortbeleg wieder ansehen"
+    };
+    if(kind==="condition")return {
+      title:"Bedingung und Geltungsbereich prüfen",
+      promptSpecificGoal:"Achte auf だけ, まで, 以降, 場合, 必要 und Verneinungen. "+
+        "Eine Ausnahme kann nur eine Uhrzeit, Wochentagsgruppe, Ware oder Person betreffen.",
+      lessonStage:"learn",action:"Exakte Stelle für die Bedingung finden"
+    };
+    if(kind==="inference")return {
+      title:"Aus dem Originaldokument nur belegbare Folgen schließen",
+      promptSpecificGoal:"Verwechsle Offen- und Einlasszeit, Ticketpreis und Gebühr, "+
+        "Anmeldung und Zusage, Gültigkeit und bloße Möglichkeit nicht. "+
+        "Wenn das Dokument eine Garantie nicht nennt, erfinde keine.",
+      lessonStage:"learn",action:"Textbeleg und Reichweite der Schlussfolgerung prüfen"
+    };
+    return {
+      title:"Konkretes Datum, Zeitfenster oder Merkmal lokalisieren",
+      promptSpecificGoal:"Suche den Wert genau neben seinem Etikett. "+
+        "Mehrere Zahlen in Menüs, Tickets und Fahrplänen gehören zu verschiedenen Funktionen.",
+      lessonStage:"learn",action:"Dokumentstelle und Etikett noch einmal lesen"
+    };
+  }
   if(prompt?.eventMetadata?.p48===true){
     const q=prompt.eventMetadata.questionKind;
     const focus=prompt.eventMetadata.focus;
