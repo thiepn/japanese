@@ -629,6 +629,10 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     if(!confirmUnsentWriting())return;
     onJourneyPractice(id,focus);
   }
+  function startSourcePractice(source:JourneySource,id:string,mode:SourceMode){
+    if(!confirmUnsentWriting())return;
+    onSourcePractice(source,id,mode);
+  }
   function selectUnit(id:string,next:JourneyStage="learn"):boolean{
     if(!journeyUnits.some(item=>item.id===id))return false;
     if(id!==unitId&&!confirmUnsentWriting())return false;
@@ -1601,7 +1605,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <strong lang="ja">{w.form}</strong><small lang="ja">{w.reading}</small>
             <span>{w.meaning}</span><small lang="ja">{w.example}</small></div>)}</div>
           <div className="p27-journey__actions">
-            <button type="button" disabled={disabled} onClick={()=>onSourcePractice(unit.source,unit.sourceId,"core")}>Originale Grundlagen üben</button>
+            <button type="button" disabled={disabled} onClick={()=>startSourcePractice(unit.source,unit.sourceId,"core")}>Originale Grundlagen üben</button>
             <button type="button" onClick={()=>setStage("build")}>Weiter zum Satzbau</button>
           </div>
         </section>:null}
@@ -2733,7 +2737,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                   return;
                 }
                 if(action.focus==="transfer"){startPractice(action.unitId,"transfer");return;}
-                if(action.unitId!==unitId)selectUnit(action.unitId);
+                if(action.unitId!==unitId&&!selectUnit(action.unitId))return;
                 setStage(action.focus==="sentence"?"build":"conversation");
               }}>
               <strong>{action.label}</strong><small>{action.reason}</small>
@@ -2751,7 +2755,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
           <div className="p27-journey__actions">
             <button type="button" disabled={disabled} onClick={()=>startPractice(unitId,"transfer")}>Transfer in neue Situationen</button>
             <button type="button" disabled={disabled} onClick={()=>startPractice(unitId,"register")}>Höflichkeit & Register</button>
-            <button type="button" disabled={disabled} onClick={()=>onSourcePractice(unit.source,unit.sourceId,"context")}>Weitere Übungen zu diesem Thema</button>
+            <button type="button" disabled={disabled} onClick={()=>startSourcePractice(unit.source,unit.sourceId,"context")}>Weitere Übungen zu diesem Thema</button>
           </div>
           <button type="button" onClick={()=>selectUnit(journeyUnits[(journeyUnits.indexOf(unit)+1)%journeyUnits.length]!.id)}>
             Nächste Einheit öffnen</button>
