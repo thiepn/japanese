@@ -6,10 +6,11 @@ type Kind=Exclude<P59PracticeKind,"all">;
 const registerText={casual:"Vertraut",polite:"Höflich",service:"Service"} as const;
 /** Source-specific teaching UI only. The original StudyPlayer alone grades and updates FSRS. */
 export function P59PerformanceStudio({missions,preferredId,recallReadyIds,disabled,
- onPractice,onWriting,onRelated}:{
+ onPractice,onWriting,onRelated,onDirtyChange}:{
  missions:readonly P59Mission[];preferredId?:string;recallReadyIds:readonly string[];
  disabled:boolean;onPractice:(id:string,kind:Kind)=>void;onWriting:(id:string)=>void;
  onRelated:(id:string,kind:"integrated"|"writing"|"interaction"|"listening"|"reading"|"document")=>void;
+ onDirtyChange?:(dirty:boolean)=>void;
 }){
  const [selected,setSelected]=useState("");
  const [query,setQuery]=useState("");
@@ -17,6 +18,9 @@ export function P59PerformanceStudio({missions,preferredId,recallReadyIds,disabl
  const [mode,setMode]=useState<"comprehension"|"strategy"|"writing"|"reply"|"revision">("comprehension");
  const [question,setQuestion]=useState(0);
  const [draft,setDraft]=useState("");
+ // Ephemeral visibility only: never send or persist actual Japanese draft text.
+ useEffect(()=>{onDirtyChange?.(Boolean(draft.trim()));return ()=>onDirtyChange?.(false);},
+  [draft,onDirtyChange]);
  const [attempt,setAttempt]=useState(false);
  const [showAnswer,setShowAnswer]=useState(false);
  const [meaning,setMeaning]=useState<readonly string[]>([]);
