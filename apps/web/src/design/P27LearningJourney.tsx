@@ -454,6 +454,12 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
         ...(kind==="response"?{turnId:turn.id}:{}),
         ...(kind==="rewrite"&&p39Chosen?{p39:true,authoredCaseId:p39Chosen.id,
           sourceContextId:"p39:repair:"+p39Chosen.id}:{}),
+        ...(kind==="rewrite"&&p52WritingTask?{
+          p52:true,authoredTransformationId:p52WritingTask.id,
+          sourceContextId:"p52:transformation:"+p52WritingTask.id,
+          grammarDomain:p52WritingTask.domain,operation:p52WritingTask.mode,
+          guidedRewrite:true
+        }:{}),
         ...(kind==="rewrite"&&p51WritingContrast?{
           p51:true,authoredContrastId:p51WritingContrast.id,
           sourceContextId:"p51:contrast:"+p51WritingContrast.id,
@@ -1203,6 +1209,22 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               Situationswechsel selbstständig üben
             </button>
           </section>:null}
+          {p52WritingTask?<section className="p27-journey__p51-writing-selection"
+            aria-label="Neue grammatische Satztransformation schreiben und revidieren">
+            <h5>Eigene A2-Satzumformung im vorhandenen Schreibeditor</h5>
+            <p><strong>{p52WritingTask.title}</strong> · {p52WritingTask.role}</p>
+            <p lang="ja">{p52WritingTask.production.input}</p>
+            <p><strong>Neue Aufgabe:</strong> {p52WritingTask.production.scene} {p52WritingTask.production.goal}</p>
+            <p>Dieses Schreiben ist unbenotet und aus der FSRS-Bewertung ausgeschlossen.
+              Nur die folgende unabhängige StudyPlayer-Antwort nutzt die normale native Planung.</p>
+            <div className="p27-journey__actions">
+              <button type="button" disabled={disabled}
+                onClick={()=>onJourneyPractice(unitId,`transform-kind:${p52WritingTask.id}:production`)}>
+                Originale Transformation im StudyPlayer üben
+              </button>
+              <button type="button" onClick={()=>setP52WritingId("")}>Reguläre Schreibaufgabe wählen</button>
+            </div>
+          </section>:null}
           {p51WritingContrast?<section className="p27-journey__p51-writing-selection"
             aria-label="A2 grammatische Form im eigenen Kontext überarbeiten">
             <h5>Grammatik aus der Situation heraus schriftlich verwenden</h5>
@@ -1451,7 +1473,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <p>Wähle einen Kontext; eine zuletzt verfehlte Lernkarte wird bevorzugt vorgeschlagen.
               Dein Entwurf bleibt im bestehenden Schreibfeld und wird nicht automatisch sprachlich bewertet.</p>
             <div className="p27-journey__p39-picker" role="group" aria-label="Schreibsituation">
-              <button type="button" aria-pressed={!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase&&!p49WritingDocument&&!p50WritingMission&&!p51WritingContrast}
+              <button type="button" aria-pressed={!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase&&!p49WritingDocument&&!p50WritingMission&&!p51WritingContrast&&!p52WritingTask}
                 onClick={()=>{setP39WritingId("");setP40WritingArcId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");setP51WritingId("");setP52WritingId("");setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);}}>
                 Reguläres Lernziel</button>
               {p39UnitCases.map(c=><button key={c.id} type="button" aria-pressed={p39Chosen?.id===c.id}
@@ -1463,7 +1485,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <button type="button" disabled={disabled} onClick={()=>onJourneyPractice(unitId,"production")}>
               Unabhängige Schreibkorrekturen im StudyPlayer</button>
           </section>:null}
-          <p>{p51WritingContrast?p51WritingContrast.production.situation:
+          <p>{p52WritingTask?(p52WritingTask.production.scene+" "+p52WritingTask.production.goal):
+            p51WritingContrast?p51WritingContrast.production.situation:
             p50WritingMission?p50WritingMission.writing.instruction:
             p49WritingDocument?p49WritingDocument.writing.instruction:
             p48WritingCase?p48WritingCase.writing.instruction:
@@ -1494,7 +1517,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
           {rewriteStage!=="draft"?<>
             <div className="p27-journey__note">
               <strong>Orientierung zur Korrektur</strong>
-              <p>{p51WritingContrast?p51WritingContrast.production.feedback:
+              <p>{p52WritingTask?p52WritingTask.production.why:
+                p51WritingContrast?p51WritingContrast.production.feedback:
                 p50WritingMission?p50WritingMission.writing.feedback:
                 p49WritingDocument?p49WritingDocument.writing.explanation:
                 p48WritingCase?p48WritingCase.writing.feedback:
@@ -1504,10 +1528,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 p44WritingCase?(p44WritingStep==="reply"?p44WritingCase.followupWhy:p44WritingCase.nuance):
                 p43WritingDetail?p43WritingDetail.why:p40WritingTurn?p40WritingTurn.why:
                 p39Chosen?p39Chosen.rule:unit.writing.reflection}</p>
-              {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase&&!p49WritingDocument&&!p50WritingMission&&!p51WritingContrast?
+              {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase&&!p49WritingDocument&&!p50WritingMission&&!p51WritingContrast&&!p52WritingTask?
                 <p><span lang="ja">{unit.writing.features.join(" · ")}</span></p>:null}
               <details><summary>Originales Beispiel vergleichen</summary>
-                <p lang="ja">{p51WritingContrast?p51WritingContrast.production.model:
+                <p lang="ja">{p52WritingTask?p52WritingTask.production.model:
+                  p51WritingContrast?p51WritingContrast.production.model:
                   p50WritingMission?p50WritingMission.writing.model:
                   p49WritingDocument?p49WritingDocument.writing.model:
                   p48WritingCase?p48WritingCase.writing.model:
@@ -1517,7 +1542,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                   p44WritingCase?(p44WritingStep==="reply"?p44WritingCase.followupModel:p44WritingCase.model):
                   p43WritingDetail?p43WritingDetail.model:p40WritingTurn?p40WritingTurn.model:
                   p39Chosen?p39Chosen.model:unit.writing.reference}</p>
-                {p51WritingContrast?<p lang="ja">{p51WritingContrast.production.alternative}</p>:
+                {p52WritingTask?<p lang="ja">{p52WritingTask.production.alternative}</p>:
+                  p51WritingContrast?<p lang="ja">{p51WritingContrast.production.alternative}</p>:
                   p50WritingMission?<p lang="ja">{p50WritingMission.writing.alternative}</p>:
                   p49WritingDocument?<p lang="ja">{p49WritingDocument.writing.alternative}</p>:
                   p48WritingCase?<p lang="ja">{p48WritingCase.writing.alternative}</p>:
@@ -1535,7 +1561,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               aria-keyshortcuts="Control+Enter Meta+Enter"
               onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"){
                 e.preventDefault();if(rewrite.trim()&&!busy){
-                  setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase||p45WritingTurn||p46WritingPassage||p47WritingScene||p48WritingCase||p49WritingDocument||p50WritingMission||p51WritingContrast?[]:unit.writing.features));setRewriteStage("compare");
+                  setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase||p45WritingTurn||p46WritingPassage||p47WritingScene||p48WritingCase||p49WritingDocument||p50WritingMission||p51WritingContrast||p52WritingTask?[]:unit.writing.features));setRewriteStage("compare");
                 }
               }}}
               onChange={e=>{
@@ -1544,14 +1570,21 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <div className="p27-journey__actions">
               <button type="button" onClick={()=>recognize("rewrite")}>Überarbeitung diktieren</button>
               <button type="button" disabled={!rewrite.trim()} onClick={()=>{
-                setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase||p45WritingTurn||p46WritingPassage||p47WritingScene||p48WritingCase||p49WritingDocument||p50WritingMission||p51WritingContrast?[]:unit.writing.features));setRewriteStage("compare");
+                setReport(compareWriting(draft,rewrite,p39Chosen||p40WritingTurn||p43WritingDetail||p44WritingCase||p45WritingTurn||p46WritingPassage||p47WritingScene||p48WritingCase||p49WritingDocument||p50WritingMission||p51WritingContrast||p52WritingTask?[]:unit.writing.features));setRewriteStage("compare");
               }}>Versionen vergleichen</button>
             </div>
           </>:null}
           {rewriteStage==="compare"&&report?<div className="p27-journey__note" role="status">
             <strong>Zeichenbasierte Beobachtungen, keine Sprachbewertung</strong>
             <p>{report.oldLength} → {report.newLength} Zeichen. Geändert: {report.changed?"ja":"nein"}</p>
-            {p51WritingContrast?<div className="p27-journey__p51-comparison-feedback">
+            {p52WritingTask?<div className="p27-journey__p51-comparison-feedback">
+              <strong>Originalmodell-Abgleich, keine allgemeine automatische Bewertung</strong>
+              <p>{p52Compare(rewrite,[p52WritingTask.production.model,
+                p52WritingTask.production.alternative],
+                p52WritingTask.wrong,p52WritingTask.repair).message}</p>
+              <p>{p52WritingTask.production.why}</p>
+              <small>Nur verfasste Modellformen können als solche erkannt werden.</small>
+            </div>:p51WritingContrast?<div className="p27-journey__p51-comparison-feedback">
               <strong>Grammatische Sprecherabsicht – begrenzter Originalbeispielvergleich</strong>
               <p>{p51AuthoredComparison(rewrite,
                 [p51WritingContrast.production.model,p51WritingContrast.production.alternative],
@@ -1639,7 +1672,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               <p>Nicht erkannt: {report.missing.join(" · ")||"keine"}</p>
               <ul>{grammarReflection(unit,rewrite).map((note,i)=><li key={i}>{note}</li>)}</ul>
             </>}
-            {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase&&!p49WritingDocument&&!p50WritingMission&&!p51WritingContrast?
+            {!p39Chosen&&!p40WritingTurn&&!p43WritingDetail&&!p44WritingCase&&!p45WritingTurn&&!p46WritingPassage&&!p47WritingScene&&!p48WritingCase&&!p49WritingDocument&&!p50WritingMission&&!p51WritingContrast&&!p52WritingTask?
               <div className="p27-journey__revision">
               <strong>Überarbeitete Partikeln und Formen</strong>
               <p>Neue Partikeln: {describeP29Revision(draft,rewrite,unit).addedParticles.join(" · ")||"keine"}</p>
