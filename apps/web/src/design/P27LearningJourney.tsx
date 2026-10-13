@@ -537,6 +537,18 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               </button>
             </article>)}
           </section>:null}
+          {p43Recommended?<section className="p27-journey__p43-intro" aria-label="Gespräch mit Entscheidungen">
+            <h4>Deine Entscheidung verändert den Gesprächsverlauf</h4>
+            <p><strong>{p43Recommended.title}</strong> — {p43Recommended.goal}</p>
+            <p>Zwei passende Lösungen führen zu anderen Gesprächsverläufen.
+              Eine dritte Antwort verursacht ein konkretes Missverständnis.
+              Die angezeigten Beispiele sind unbewertet.</p>
+            <button type="button" onClick={()=>setStage("conversation")}>Situation ausprobieren</button>
+            <button type="button" disabled={disabled}
+              onClick={()=>onJourneyPractice(unitId,`branch:${p43Recommended.id}`)}>
+              Entscheidung unabhängig abrufen
+            </button>
+          </section>:null}
           {p40Recommended?<section className="p27-journey__p40-guidance">
             <h4>Mehrere Antworten im selben Gespräch</h4>
             <p>Über {p40Recommended.turns.length} Gesprächszüge bleiben Ziel, Bedeutung
@@ -563,6 +575,12 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
         </section>:null}
         {stage==="conversation"?<section className="p27-journey__panel">
           <h4>Mehrstufiger Dialog</h4>
+          {p43UnitScenes.length?<P43BranchConversation key={unitId+":"+owner}
+            scenes={p43UnitScenes} preferredId={p43Recommended?.id} disabled={disabled}
+            onIndependent={(sceneId,route)=>
+              onJourneyPractice(unitId,route?`branch-route:${sceneId}:${route}`:`branch:${sceneId}`)}
+            onWriting={chooseP43Writing}
+          />:null}
           {p40ActiveArc&&p40CurrentTurn?<section className="p27-journey__p40-dialogue"
             aria-label={"Originales Gespräch mit "+p40ActiveArc.turns.length+" Schritten"}>
             <h5>{p40ActiveArc.turns.length} Gesprächszüge — Bedeutung beibehalten</h5>
