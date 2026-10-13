@@ -333,7 +333,12 @@ export function P60ConsolidationStudio({
        onClick={()=>onPractice(lesson.id,mode==="question"?"comprehension":
         mode==="strategy"?"strategy":mode==="writing"?"writing":
         mode==="followup"?"followup":"revision")}>
-       Originalen StudyPlayer für diese Aufgabe öffnen</button>
+       {mode==="question"?"Belegfrage im nativen StudyPlayer beantworten":
+        "Quellenrichtige Originalantworten im nativen StudyPlayer auswählen"}</button>
+      <small>Dein frei verfasster japanischer Text bleibt unbenotet. Der
+       native StudyPlayer prüft bei längeren Schreib-, Korrektur- und
+       Antwortaufgaben ausschließlich original verfasste Antwortoptionen,
+       nicht die semantische Qualität deiner eigenen Formulierung.</small>
      </div>
      {comparison?<div className="p60-consolidation__feedback" role="status">
       <strong>{comparison.kind==="model"?"Originales Modell getroffen":
