@@ -3,6 +3,7 @@ import type {MemoryTrace} from "@thiepn/scheduler";
 import type {StudyLesson,StudyPrompt,StudyStep} from "@thiepn/study-player";
 import {pedagogyScenarios,pedagogyPrompts,pedagogyLessons} from "./pedagogy23";
 import {conversationForScenario,p24ReviewPrompts,dialoguePrompt,productionTasks} from "./pedagogy24";
+import {p40DialogueById,p40PromptsForArc} from "./dialogue40";
 import {p25Scenarios,p25Prompts,p25Lessons,p25DialoguePrompt} from "./pedagogy25";
 import {p26Missions,p26Prompts,p26Lessons,missionTurnPrompt,normalizeP26} from "./pedagogy26";
 
@@ -11,7 +12,7 @@ import {p26Missions,p26Prompts,p26Lessons,missionTurnPrompt,normalizeP26} from "
  */
 export type JourneySource="p23"|"p25"|"p26";
 export type JourneyStage="learn"|"build"|"conversation"|"write"|"practice";
-export type JourneyPractice="review"|"retry"|"new"|"transfer"|"register"|"grammar"|"production";
+export type JourneyPractice="review"|"retry"|"new"|"transfer"|"register"|"grammar"|"production"|`dialogue:${string}`;
 export interface JourneyWord{form:string;reading:string;meaning:string;example:string;}
 export interface JourneyOption{
   japanese:string;meaning:string;valid:boolean;explanation:string;next?:string|null;
@@ -248,7 +249,11 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     return p.eventMetadata?.kind==="register-contrast"&&Array.isArray(ids)&&ids.includes(unitId);
   });
   const relatedRegister=transferForUnit(unitId).filter(p=>/register|polite|tone|Höflich|Einladungston/.test(p.id+" "+p.instruction));
-  const relevant=focus==="register"?[...pragmatic,...relatedRegister]
+  const dialogueId=focus.startsWith("dialogue:")?focus.slice("dialogue:".length):"";
+  const dialogueArc=dialogueId?p40DialogueById(dialogueId):undefined;
+  const dialogueCues=dialogueArc?.units.includes(unitId)?p40PromptsForArc(dialogueId):[];
+  const relevant=dialogueId?dialogueCues
+    :focus==="register"?[...pragmatic,...relatedRegister]
     :focus==="transfer"?[
       ...transferForUnit(unitId),
       ...extras.filter(p=>(p.eventMetadata?.kind==="linked-lexicon"||
@@ -275,7 +280,7 @@ export function journeySession(unitId:string,focus:JourneyPractice,traces:readon
     return 0;
   };
   // Do not silently substitute unrelated unit exercises for an empty specialist queue.
-  const list=relevant.slice().sort((a,b)=>priority(b)-priority(a));
+  const list=dialogueId?relevant.slice():relevant.slice().sort((a,b)=>priority(b)-priority(a));
   // Only FSRS-issued due timestamps establish that a card is due.
   // A last-incorrect event may warrant optional remediation but does not
   // override a future FSRS due date or silently turn new prompts into "due".
