@@ -62,7 +62,7 @@ const raw:readonly P60RawUnit[]=[
 ["タク","では、私の十一時開始もまだ決まっていないのですね。","Taku: Beginn 11 Uhr noch nicht bestätigt?"],
 ["店長","そうです。今日の夕方までにお知らせします。","Leitung: Ja, Rückmeldung heute Abend."]],
 [["status","十一時からの勤務は確定しましたか。","いいえ、店長が確認中です。","いいえ、まだ許可がありません。","はい、友達が来るかもしれないので確定です。","Mögliche Kollegin keine Genehmigung.","許可が出るまで変更は確定しません","今確認しています"],
-["chronology","いつまでに返事をもらう予定ですか。","今日の夕方までです。","今日の夕方に返事が来る予定です。","来週の夜です。","Explizite Rückmeldefrist.","二日前までに店長に相談","今日の夕方までにお知らせします"]],
+["chronology","いつまでに返事をもらう予定ですか。","今日の夕方までです。","今日の夕方に返事が来る予定です。","来週の夜です。","Zwei unterschiedliche Fristen: Der schriftliche Zweitageshinweis begrenzt den Änderungsantrag; die tatsächlich erwartete Antwort nennt nur der Vorgesetzte im späteren Gespräch.","二日前までに店長に相談","今日の夕方までにお知らせします"]],
 ["Choose responsible next step.","店長の確認を待ってから、新しい勤務時間をみんなに知らせます。","まだ決まっていないと関係者に伝えます。","十一時に決定したとみんなに送ります。","Keine Vorabzusage."],
 ["Write polite multi-sentence change request.","木曜日は授業があるため、十一時から勤務したいです。朝の担当についてミキさんと相談中ですが、まだ決まっていません。変更できるかご確認をお願いします。","木曜日の開始時間について相談したいです。ご連絡をお待ちしています。","木曜日は十一時からと決定しました。","Anfrage versus Zusage."],
 ["店長","確認できました。ミキさんが九時から十一時まで、あなたが十一時から二時まで働いてください。","Leitung: Bestätigt Vertretung 9–11, du 11–14.","Accept genuinely approved arrangement.","ありがとうございます。木曜日は十一時から二時まで勤務します。ミキさんにも連絡します。","承知しました。新しい時間を確認しました。","まだ許可がないので何も言えません。","Status hat sich nun geändert."],
