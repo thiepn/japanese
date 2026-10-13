@@ -1255,6 +1255,14 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 onJourneyPractice(related.listening.units[0]!,`listening55-kind:${related.listening.id}:comprehension`);
               if(kind==="writing"&&related.writing)
                 onJourneyPractice(related.writing.units[0]!,`writing57-kind:${related.writing.id}:comprehension`);
+              if(kind==="document"&&related.document)
+                onJourneyPractice(related.document.units[0]!,`document-kind:${related.document.id}:comprehension`);
+              if(kind==="interaction"&&related.interaction)
+                onJourneyPractice(related.interaction.units[0]!,`interaction56-kind:${related.interaction.id}:decision`);
+              if(kind==="conversation"&&related.conversation)
+                onJourneyPractice(related.conversation.unitIds[0]!,`branch:${related.conversation.id}`);
+              if(kind==="independence"&&related.independence)
+                onJourneyPractice(related.independence.units[0]!,`independent:${related.independence.id}`);
             }}
           />
           <P57WritingStudio key={"p57:"+owner} threads={p57Threads}
