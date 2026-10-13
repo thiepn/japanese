@@ -490,12 +490,13 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
           </section>:null}
           {p40Recommended?<section className="p27-journey__p40-guidance">
             <h4>Mehrere Antworten im selben Gespräch</h4>
-            <p>Gesprächspartner, Ziel und Höflichkeit bleiben über drei Schritte
-              erhalten. Du entscheidest nicht nur über einzelne Wörter.</p>
+            <p>Über {p40Recommended.turns.length} Gesprächszüge bleiben Ziel, Bedeutung
+              und höfliche Reaktionen zusammenhängend. Ein unerwarteter Hinweis
+              verändert einen Teil des Plans, nicht das gesamte Gespräch.</p>
             <p><strong>{p40Recommended.title}</strong> — {p40Recommended.setting}</p>
             <button type="button" onClick={()=>{setP40ArcId(p40Recommended.id);setP40TurnIndex(0);
               setP40Choice("");setStage("conversation");}}>
-              Gespräch mit drei zusammenhängenden Zügen öffnen
+              {p40Recommended.turns.length} zusammenhängende Gesprächszüge öffnen
             </button>
           </section>:null}
           <h4>Wörter in Sätzen</h4>
@@ -514,8 +515,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
         {stage==="conversation"?<section className="p27-journey__panel">
           <h4>Mehrstufiger Dialog</h4>
           {p40ActiveArc&&p40CurrentTurn?<section className="p27-journey__p40-dialogue"
-            aria-label="Originales Gespräch mit drei Schritten">
-            <h5>Drei Gesprächszüge — Bedeutung beibehalten</h5>
+            aria-label={"Originales Gespräch mit "+p40ActiveArc.turns.length+" Schritten"}>
+            <h5>{p40ActiveArc.turns.length} Gesprächszüge — Bedeutung beibehalten</h5>
             <p>Diese geführte Gegenüberstellung ist <strong>unbewertet</strong>.
               Die Antworten der Gesprächspartner sind vorgegeben. Die getrennten
               StudyPlayer-Aufgaben prüfen anschließend ohne eingeblendete Lösung.</p>
@@ -526,10 +527,18 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 {arc.title}</button>)}
             </div>
             <p>{p40ActiveArc.setting}</p>
+            {p41ActiveArc?<p className="p27-journey__p41-outcome">
+              <strong>Ziel der Unterhaltung:</strong> {p41ActiveArc.outcome} · {p41ActiveArc.level}
+            </p>:null}
             <article aria-label={"Gesprächsschritt "+p40CurrentTurn.number}>
               <strong>Schritt {p40CurrentTurn.number} von {p40ActiveArc.turns.length}</strong>
               <p><strong>Gesprächspartner:</strong> <span lang="ja">{p40CurrentTurn.partner}</span></p>
               <p><strong>Dein Ziel:</strong> {p40CurrentTurn.intention}</p>
+              {p41ActiveArc?.pivotTurn===p40CurrentTurn.number?<div className="p27-journey__p41-pivot">
+                <strong>Neue Information: passe nur den betroffenen Teil des bisherigen Plans an.</strong>
+                <p>{p41ActiveArc.turns[p40TurnIndex]?.shift}</p>
+                <small>Gegenstand, Tag, Preis oder Ort können wechseln; andere Zusagen bleiben gültig.</small>
+              </div>:null}
               <div className="p27-journey__p40-options" role="group" aria-label="Antwort im Verlauf auswählen">
                 {[p40CurrentTurn.misstep,p40CurrentTurn.model,p40CurrentTurn.alternative].map(form=>
                   <button key={form} type="button" lang="ja" aria-pressed={p40Choice===form}
@@ -554,10 +563,10 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled}
                 onClick={()=>onJourneyPractice(unitId,`dialogue:${p40ActiveArc.id}`)}>
-                Alle drei Schritte ohne Lösung im StudyPlayer bearbeiten
+                {p40ActiveArc.turns.length} Schritte im StudyPlayer selbstständig beantworten
               </button>
               <button type="button" onClick={()=>chooseP40Writing(p40ActiveArc.id)}>
-                Zweiten Zug selbst schriftlich korrigieren
+                {p41ActiveArc?"Den Planwechsel":"Den zweiten Zug"} schriftlich korrigieren
               </button>
             </div>
           </section>:null}
@@ -671,19 +680,31 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
           </section>:null}
           {p40UnitArcs.length?<section className="p27-journey__p40-writing" aria-label="Zusammenhängendes Gespräch schriftlich korrigieren">
             <h5>Antwort aus einem Gespräch korrigieren</h5>
-            <p>Wähle einen vollständigen Gesprächskontext. Schreibe im bestehenden
-              Textfeld eine passende Antwort auf die zweite Rückfrage.
-              Erst nach deinem ersten Entwurf erscheint die Musterantwort.</p>
+            <p>Wähle einen Gesprächskontext. Überarbeite die entscheidende Antwort
+              nach dem unerwarteten Hinweis. Bei P41 kannst du auch andere Züge auswählen.
+              Die Musterantwort erscheint erst im vorhandenen Überarbeitungsablauf.</p>
             <div className="p27-journey__p40-arcs" role="group" aria-label="Gespräch für Schreibaufgabe wählen">
               {p40UnitArcs.map(arc=><button key={arc.id} type="button"
                 aria-pressed={p40WritingArc?.id===arc.id} onClick={()=>chooseP40Writing(arc.id)}>
                 {arc.title}</button>)}
             </div>
             {p40WritingArc&&p40WritingTurn?<div className="p27-journey__p40-context">
+              {p41ArcById(p40WritingArc.id)?<div className="p27-journey__p41-writing-turns"
+                role="group" aria-label="Gesprächszug zur schriftlichen Korrektur auswählen">
+                {p40WritingArc.turns.slice(1).map((item,i)=><button key={item.id}
+                  type="button" aria-pressed={p40WritingTurnIndex===i+1}
+                  onClick={()=>chooseP40Writing(p40WritingArc.id,i+1)}>
+                  Schritt {item.number}{p41ArcById(p40WritingArc.id)?.pivotTurn===item.number?" · Planwechsel":""}
+                </button>)}
+              </div>:null}
+              {p40WritingTurnIndex>0?<p><strong>Vorherige Ziele:</strong>{" "}
+                {p40WritingArc.turns.slice(0,p40WritingTurnIndex).map(t=>t.intention).join(" → ")}</p>:null}
               <p><strong>Bisheriger Verlauf:</strong> {p40WritingArc.setting}</p>
               <p><strong>Gesprächspartner:</strong> <span lang="ja">{p40WritingTurn.partner}</span></p>
               <p><strong>Fehlerhafter Satz:</strong> <span lang="ja">{p40WritingTurn.misstep}</span></p>
               <p><strong>Absicht:</strong> {p40WritingTurn.intention}</p>
+              {p41ArcById(p40WritingArc.id)?<p><strong>Gesprächsziel:</strong>{" "}
+                {p41ArcById(p40WritingArc.id)?.outcome}</p>:null}
             </div>:null}
             <button type="button" disabled={disabled}
               onClick={()=>onJourneyPractice(unitId,"production")}>
