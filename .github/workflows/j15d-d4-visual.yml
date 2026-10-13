@@ -1,15 +1,6 @@
 name: J15D D4 Visual Regression
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'apps/web/src/**'
-      - 'scripts/j15d-*'
-      - 'tests/e2e/j15d-*'
-      - 'docs/J15D*'
-      - 'package.json'
-      - '.github/workflows/j15d-d4-visual.yml'
   workflow_dispatch:
 
 permissions:
