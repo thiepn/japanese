@@ -21,6 +21,48 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p46===true){
+    const focus=prompt.eventMetadata.focus;
+    const questionKind=prompt.eventMetadata.questionKind;
+    if(focus==="delayed-independent-return")return {
+      title:"In einem ungesehenen Zusammenhang selbst formulieren",
+      promptSpecificGoal:"Bestimme erneut, was in der neuen Situation gilt, statt Zahlen, "+
+        "Orte oder Gründe aus dem alten Text zu übernehmen. Der Text ist nicht die Lösung "+
+        "einer unabhängigen neuen Transferaufgabe.",
+      lessonStage:"practice",action:"Tatsächlich fälligen oder freiwilligen Transfer öffnen"
+    };
+    if(prompt.eventMetadata.kind==="linked-lexicon")return {
+      title:"Ein Lesewort aus dem Satz wiederfinden",
+      promptSpecificGoal:"Erinnere dich an die Bedeutung und den konkreten Satzbeleg, "+
+        "nicht nur an die isolierte Schreibweise. Der Beispieltext erklärt die Verwendung.",
+      lessonStage:"learn",action:"Beleg im Lesetext ansehen"
+    };
+    if(focus==="reading-independent-writing")return {
+      title:"Textinformation in einen eigenen japanischen Satz übertragen",
+      promptSpecificGoal:"Beschreibe nur, was die Passage wirklich sagt. "+
+        "Trenne gegebenen Fakt, Ursache und eigene Schlussfolgerung. "+
+        "Andere korrekte Formulierungen können neben den verfassten Mustern bestehen.",
+      lessonStage:"write",action:"Lesebeleg im Schreibeditor überarbeiten"
+    };
+    if(questionKind==="inference")return {
+      title:"Schlussfolgerung aus mindestens zwei Textinformationen ableiten",
+      promptSpecificGoal:"Suche Ursache und Folge oder alte und neue Angabe im selben Text. "+
+        "Stelle die Schlussfolgerung nicht als direkt zitierten Fakt dar, wenn sie erschlossen werden muss.",
+      lessonStage:"learn",action:"Text und Beleg für eine Inferenz erneut lesen"
+    };
+    if(questionKind==="purpose")return {
+      title:"Absicht des Hinweises aus dem Text erklären",
+      promptSpecificGoal:"Prüfe, warum die Nachricht geschrieben wurde und welche Handlung "+
+        "von Lesenden erwartet wird. Unterscheide Hintergrundinformation von Anweisung.",
+      lessonStage:"learn",action:"Textabsicht mit belegbarer Passage vergleichen"
+    };
+    return {
+      title:"Das exakte Textdetail finden, statt eine alte Information zu raten",
+      promptSpecificGoal:"Lies den Abschnitt mit Zeit, Ort, Menge oder Bedingung. "+
+        "Eine spätere Korrektur im Text kann eine frühere Angabe ersetzen.",
+      lessonStage:"learn",action:"Originalstelle vor erneuter Antwort lesen"
+    };
+  }
   if(prompt?.eventMetadata?.p45===true){
     const number=Number(prompt.eventMetadata.turnNumber);
     const isReturn=prompt.eventMetadata.focus==="delayed-independent-return";
