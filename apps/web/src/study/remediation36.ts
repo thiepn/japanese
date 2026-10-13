@@ -21,6 +21,65 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p58===true){
+    const kind=prompt.eventMetadata?.kind;
+    const focus=prompt.eventMetadata?.focus;
+    const questionKind=prompt.eventMetadata?.questionKind;
+    if(focus==="delayed-independent-return")return {
+      title:"Neue Mehrquellenaufgabe nach echtem Lernabstand lösen",
+      promptSpecificGoal:"Dies ist eine wirklich andere A2-Lebenssituation. "
+       +"Verwende nicht den alten Antworttext, sondern ermittle Absicht, "
+       +"aktuellen Beleg und noch offene Handlungen. Ein geöffnetes Transkript "
+       +"oder eine unbenotete Antwort löst keine neue FSRS-Fälligkeit aus.",
+      lessonStage:"practice",action:"Unbekannte Originalmission im nativen StudyPlayer bearbeiten"
+    };
+    if(kind==="cross-source-misconception-repair")return {
+      title:"Konkrete falsche Aussage anhand mehrerer Quellen reparieren",
+      promptSpecificGoal:"Berichtige nicht nur ein Schlagwort. Prüfe Zeitpunkt, "
+       +"Sprecherrolle, die zunächst schriftliche Angabe und später mündlich "
+       +"bestätigte oder geänderte Bedingung. Ein geplanter Termin ist nicht "
+       +"automatisch eine abgeschlossene Handlung.",
+      lessonStage:"write",action:"Eigene Korrektur mit Beleg schreiben"
+    };
+    if(kind==="multi-source-followup-response")return {
+      title:"Unerwartete Zusatzinformation verändert die nächste Reaktion",
+      promptSpecificGoal:"Fasse die ursprüngliche Lage zusammen, prüfe die "
+       +"neue Aussage des Gegenübers und antworte nur mit gesichertem Status. "
+       +"Achte auf Kapazität, Ausnahme, Genehmigung, Zeit oder neue Kosten.",
+      lessonStage:"conversation",action:"Die neue eigenständige japanische Antwort formulieren"
+    };
+    if(kind==="independent-integrated-writing")return {
+      title:"Schriftliche Reaktion mit mindestens zwei Quellen gestalten",
+      promptSpecificGoal:"Verbinde konkrete Angaben aus Aushang, Nachricht und "
+       +"mündlicher Information zu einer zweckmäßigen originalen japanischen "
+       +"Mitteilung. Passe das Register der Zielperson an, ohne eine "
+       +"unbestätigte Buchung oder bereits abgeschlossene Handlung zu erfinden. "
+       +"Der endliche Antwortabgleich prüft keine offenen Texte umfassend.",
+      lessonStage:"write",action:"Den ursprünglichen mehrstufigen Learn-Schreibeditor nutzen"
+    };
+    if(kind==="cross-modal-pragmatic-choice")return {
+      title:"Zwei passende Antworten, eine konkrete Überinterpretation",
+      promptSpecificGoal:"Die zwei originalen korrekten Möglichkeiten verfolgen "
+       +"denselben belegten Sachstand. Die andere Alternative verwechselt "
+       +"typischerweise Antrag, Planung, Bestätigung oder Ausnahme mit Abschluss.",
+      lessonStage:"learn",action:"Originalen Sachstand vor der Entscheidung rekonstruieren"
+    };
+    if(questionKind==="chronology")return {
+      title:"Erst schriftliche Information, dann spätere gesprochenen Korrekturen",
+      promptSpecificGoal:"Überlege, was beim ersten Aushang galt, was die Nachricht "
+       +"nur vermutet und was die letzten Sprecher tatsächlich bestätigen. "
+       +"Ordne 予定です, までに, てから und bereits abgeschlossene Aktionen.",
+      lessonStage:"learn",action:"Mehrere Originalbelege zeitlich vergleichen"
+    };
+    return {
+      title:"Zwei unabhängige Originalquellen mit Sprecher und Beleg verbinden",
+      promptSpecificGoal:"Verwechsele die ursprüngliche Nachricht nicht mit der "
+       +"späteren Bestätigung. Das normale StudyPlayer-Transkript ist bewusst "
+       +"lesbar und beweist keine real gemessene Audioverständnisleistung. "
+       +"Belege und Ausnahmen kontrollieren.",
+      lessonStage:"learn",action:"Aushang, Nachricht und gesprochene Originalzeilen vergleichen"
+    };
+  }
   if(prompt?.eventMetadata?.p57===true){
     const kind=prompt.eventMetadata?.kind;
     const focus=prompt.eventMetadata?.focus;
