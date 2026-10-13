@@ -699,3 +699,107 @@
  .p27-journey__p48-evidence-select{display:grid;grid-template-columns:1fr}
  .p27-journey__p48-japanese{font-size:1.02rem;line-height:1.9}
 }
+
+
+/* P49 first-party Japanese practical document literacy in the original Learn shell. */
+.p27-journey__p49,.p27-journey__p49-intro,.p27-journey__p49-writing-selection{
+ min-width:0;border:1px solid currentColor;margin:1rem 0;padding:1rem
+}
+.p27-journey__p49 h4,.p27-journey__p49-intro h4,
+.p27-journey__p49-writing-selection h5{font-size:1.1rem;margin:.25rem 0 .7rem}
+.p27-journey__p49-filters{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ align-items:end;gap:.45rem .7rem;margin:.85rem 0
+}
+.p27-journey__p49-filters label{font-size:.86rem}
+.p27-journey__p49-filters input,.p27-journey__p49-filters select{
+ box-sizing:border-box;min-height:44px;width:100%;max-width:100%;padding:.5rem
+}
+.p27-journey__p49-layout{
+ display:grid;grid-template-columns:minmax(10rem,13rem) minmax(0,1fr);
+ gap:1rem;align-items:start
+}
+.p27-journey__p49-catalog{
+ min-width:0;max-height:30rem;overflow-y:auto;overflow-x:hidden;
+ border-right:1px solid currentColor;padding-right:.6rem
+}
+.p27-journey__p49-catalog button{
+ display:block;width:100%;min-height:48px;text-align:left;
+ border-bottom:1px solid rgba(120,120,120,.27);
+ padding:.55rem .45rem;white-space:normal;overflow-wrap:anywhere
+}
+.p27-journey__p49-catalog button small{
+ display:block;font-size:.78rem;opacity:.78;margin-top:.2rem
+}
+.p27-journey__p49-catalog button[aria-current=page]{
+ outline:2px solid currentColor;outline-offset:-2px;font-weight:700
+}
+.p27-journey__p49-workspace{min-width:0;overflow-wrap:anywhere}
+.p27-journey__p49-workspace h5{font-size:1.06rem;margin:.55rem 0}
+.p27-journey__p49-workspace header{margin-bottom:.75rem}
+.p27-journey__p49-paper{
+ background:var(--surface,rgba(120,120,120,.055));
+ border:1px solid rgba(120,120,120,.5);
+ border-left:4px solid currentColor;
+ padding:1.1rem;margin:.65rem 0 1rem;
+ font-variant-numeric:tabular-nums;
+ overflow-wrap:anywhere
+}
+.p27-journey__p49-paper-head{
+ display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;
+ gap:.3rem .8rem;padding-bottom:.5rem;
+ border-bottom:1px solid rgba(120,120,120,.45)
+}
+.p27-journey__p49-paper-head small{font-size:.8rem;opacity:.76}
+.p27-journey__p49-blocks{font-size:1.1rem;line-height:1.93;letter-spacing:.012em}
+.p27-journey__p49-blocks p{margin:.75rem 0;white-space:pre-wrap}
+.p27-journey__p49-blocks p:last-child{margin-bottom:0}
+.p27-journey__p49-tools{display:flex;flex-wrap:wrap;gap:.5rem;
+ border-bottom:1px solid rgba(120,120,120,.45);padding-bottom:.8rem}
+.p27-journey__p49-tools>button{min-height:44px}
+.p27-journey__p49-tools>p,.p27-journey__p49-tools>dl{width:100%}
+.p27-journey__p49-tools dl{display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}
+.p27-journey__p49-tools dl>div{border:1px solid rgba(120,120,120,.45);padding:.55rem}
+.p27-journey__p49-tools dt{font-weight:700}
+.p27-journey__p49-tools dd{margin:.4rem 0 0;overflow-wrap:anywhere}
+.p27-journey__p49-comprehension,.p27-journey__p49-writing,
+.p27-journey__p49-return{border-top:1px solid rgba(120,120,120,.48);
+ margin-top:1rem;padding-top:.8rem}
+.p27-journey__p49-steps{display:flex;flex-wrap:wrap;gap:.4rem;margin:.65rem 0}
+.p27-journey__p49-steps button{flex:1 1 8rem;min-height:44px}
+.p27-journey__p49-steps button[aria-pressed=true]{
+ outline:2px solid currentColor;outline-offset:1px;font-weight:700
+}
+.p27-journey__p49-comprehension textarea{
+ display:block;box-sizing:border-box;width:100%;max-width:100%;
+ min-height:5rem;padding:.65rem;line-height:1.65
+}
+.p27-journey__p49-feedback,.p27-journey__p49-comparison{
+ border-left:3px solid currentColor;background:rgba(120,120,120,.075);
+ padding:.75rem .85rem;margin:.75rem 0;overflow-wrap:anywhere
+}
+.p27-journey__p49 button:focus-visible,
+.p27-journey__p49-intro button:focus-visible,
+.p27-journey__p49-writing-selection button:focus-visible{
+ outline:3px solid currentColor;outline-offset:2px
+}
+@media(max-width:950px){
+ .p27-journey__p49-filters{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:790px){
+ .p27-journey__p49-layout{grid-template-columns:minmax(0,1fr)}
+ .p27-journey__p49-catalog{
+  max-height:12rem;border-right:0;border-bottom:1px solid currentColor;
+  padding:0 0 .5rem
+ }
+}
+@media(max-width:560px){
+ .p27-journey__p49,.p27-journey__p49-intro,
+ .p27-journey__p49-writing-selection{padding:.6rem}
+ .p27-journey__p49-filters,
+ .p27-journey__p49-tools dl{grid-template-columns:minmax(0,1fr)}
+ .p27-journey__p49-paper{padding:.75rem}
+ .p27-journey__p49-blocks{font-size:1.04rem;line-height:1.85}
+ .p27-journey__p49-steps{display:grid;grid-template-columns:1fr}
+}
