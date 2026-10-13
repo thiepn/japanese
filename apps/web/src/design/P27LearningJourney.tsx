@@ -624,6 +624,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setUnitId(id);setStage(next);return true;
   }
   function chooseP40Writing(arcId:string,turnIndex?:number){
+    if(!confirmUnsentWriting())return;
     setP53WritingId("");setP54WritingId("");setP55WritingId("");setP56WritingId("");setP57WritingId("");setP58WritingId("");setP59WritingId("");setP60WritingId("");
     setP40WritingArcId(arcId);setP39WritingId("");setP43WritingSceneId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");setP51WritingId("");setP52WritingId("");setP53WritingId("");setP54WritingId("");setP55WritingId("");setP56WritingId("");setP57WritingId("");setP58WritingId("");setP59WritingId("");setP60WritingId("");
     const target=p41ArcById(arcId)??p42ArcById(arcId);
@@ -632,6 +633,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setStage("write");
   }
   function chooseP43Writing(sceneId:string,route:P43RouteKey){
+    if(!confirmUnsentWriting())return;
     if(!p43ForUnit(unitId).some(s=>s.id===sceneId))return;
     setP43WritingSceneId(sceneId);setP43WritingRoute(route);
     setP40WritingArcId("");setP39WritingId("");setP44WritingId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");setP51WritingId("");setP52WritingId("");setP53WritingId("");setP54WritingId("");setP55WritingId("");setP56WritingId("");setP57WritingId("");setP58WritingId("");setP59WritingId("");setP60WritingId("");
@@ -639,6 +641,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setStage("write");
   }
   function chooseP44Writing(id:string,step:"production"|"reply"){
+    if(!confirmUnsentWriting())return;
     if(!p44ForUnit(unitId).some(c=>c.id===id))return;
     setP44WritingId(id);setP44WritingStep(step);
     setP40WritingArcId("");setP39WritingId("");setP43WritingSceneId("");setP45WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");setP51WritingId("");setP52WritingId("");setP53WritingId("");setP54WritingId("");setP55WritingId("");setP56WritingId("");setP57WritingId("");setP58WritingId("");setP59WritingId("");setP60WritingId("");
@@ -646,6 +649,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setStage("write");
   }
   function chooseP45Writing(id:string,turnIndex:number){
+    if(!confirmUnsentWriting())return;
     if(!p45ForUnit(unitId).some(c=>c.id===id))return;
     setP45WritingId(id);setP45WritingIndex(turnIndex);
     setP40WritingArcId("");setP39WritingId("");setP43WritingSceneId("");setP44WritingId("");setP46WritingId("");setP47WritingId("");setP48WritingId("");setP49WritingId("");setP50WritingId("");setP51WritingId("");setP52WritingId("");setP53WritingId("");setP54WritingId("");setP55WritingId("");setP56WritingId("");setP57WritingId("");setP58WritingId("");setP59WritingId("");setP60WritingId("");
@@ -653,6 +657,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setStage("write");
   }
   function chooseP46Writing(readingId:string){
+    if(!confirmUnsentWriting())return;
     const reading=p46ById(readingId);
     if(!reading)return;
     setUnitId(reading.units[0]!);
@@ -663,6 +668,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setStage("write");
   }
   function chooseP47Writing(sceneId:string){
+    if(!confirmUnsentWriting())return;
     const scene=p47ById(sceneId);
     if(!scene)return;
     setUnitId(scene.units[0]!);
@@ -673,6 +679,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setStage("write");
   }
   function chooseP48Writing(caseId:string){
+    if(!confirmUnsentWriting())return;
     const item=p48ById(caseId);
     if(!item)return;
     setUnitId(item.units[0]!);
@@ -683,6 +690,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setStage("write");
   }
   function chooseP49Writing(documentId:string){
+    if(!confirmUnsentWriting())return;
     const doc=p49ById(documentId);
     if(!doc)return;
     setUnitId(doc.units[0]!);
@@ -694,6 +702,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setStage("write");
   }
   function chooseP50Writing(missionId:string){
+    if(!confirmUnsentWriting())return;
     const mission=p50ById(missionId);
     if(!mission)return;
     setUnitId(mission.units[0]!);
@@ -705,6 +714,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setStage("write");
   }
   function chooseP51Writing(contrastId:string){
+    if(!confirmUnsentWriting())return;
     const contrast=p51ById(contrastId);
     if(!contrast)return;
     setUnitId(contrast.units[0]!);
@@ -716,6 +726,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setStage("write");
   }
   function chooseP52Writing(taskId:string){
+    if(!confirmUnsentWriting())return;
     const t=p52ById(taskId);
     if(!t)return;
     setUnitId(t.units[0]!);
@@ -728,6 +739,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setStage("write");
   }
   function chooseP53Writing(id:string){
+    if(!confirmUnsentWriting())return;
     const v=p53ById(id);
     if(!v)return;
     setUnitId(v.units[0]!);setP53WritingId(v.id);setP54WritingId("");setP55WritingId("");setP56WritingId("");setP57WritingId("");setP58WritingId("");setP59WritingId("");setP60WritingId("");
@@ -739,6 +751,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setStage("write");
   }
   function chooseP54Writing(id:string){
+    if(!confirmUnsentWriting())return;
     const r=p54ById(id);
     if(!r)return;
     setUnitId(r.units[0]!);setP54WritingId(r.id);setP55WritingId("");setP56WritingId("");setP57WritingId("");setP58WritingId("");setP59WritingId("");setP60WritingId("");
@@ -751,6 +764,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setStage("write");
   }
   function chooseP55Writing(id:string){
+    if(!confirmUnsentWriting())return;
     const scene=p55ById(id);
     if(!scene)return;
     setUnitId(scene.units[0]!);setP55WritingId(scene.id);setP56WritingId("");setP57WritingId("");setP58WritingId("");setP59WritingId("");setP60WritingId("");
@@ -763,6 +777,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setStage("write");
   }
   function chooseP56Writing(id:string){
+    if(!confirmUnsentWriting())return;
     const scene=p56ById(id);
     if(!scene)return;
     setUnitId(scene.units[0]!);setP56WritingId(scene.id);setP57WritingId("");setP58WritingId("");setP59WritingId("");setP60WritingId("");
@@ -775,6 +790,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setStage("write");
   }
   function chooseP57Writing(id:string){
+    if(!confirmUnsentWriting())return;
     const thread=p57ById(id);
     if(!thread)return;
     setUnitId(thread.units[0]!);setP57WritingId(thread.id);setP58WritingId("");setP59WritingId("");setP60WritingId("");
@@ -788,6 +804,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setStage("write");
   }
   function chooseP58Writing(id:string){
+    if(!confirmUnsentWriting())return;
     const mission=p58ById(id);
     if(!mission)return;
     setUnitId(mission.units[0]!);setP58WritingId(mission.id);setP59WritingId("");setP60WritingId("");
@@ -801,6 +818,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setStage("write");
   }
   function chooseP59Writing(id:string){
+    if(!confirmUnsentWriting())return;
     const mission=p59ById(id);
     if(!mission)return;
     setUnitId(mission.units[0]!);setP59WritingId(mission.id);setP60WritingId("");
@@ -814,6 +832,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setStage("write");
   }
   function chooseP60Writing(id:string){
+    if(!confirmUnsentWriting())return;
     const lesson=p60ById(id);
     if(!lesson)return;
     setUnitId(lesson.units[0]!);setP59WritingId("");
