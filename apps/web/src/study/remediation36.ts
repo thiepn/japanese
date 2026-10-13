@@ -21,6 +21,55 @@ export function p36RemediationHint(id:string,prompts:readonly StudyPrompt[]):P36
   const generic=typeof focus==="string"?focusHints[focus]:undefined;
   // P40 mistakes link back to the actual conversational function without
   // disclosing the exact answer or treating a non-due error as FSRS-due.
+  if(prompt?.eventMetadata?.p53===true){
+    const domain=prompt.eventMetadata.domain;
+    const focus=prompt.eventMetadata.focus;
+    if(focus==="delayed-independent-return")return {
+      title:"Wortgebrauch im neuen Kontext statt altes Satzmuster",
+      promptSpecificGoal:"Der spätere Fall ändert bewusst Gegenstand oder Sprecherrolle. "+
+        "Prüfe die Kollokation und die kommunikative Funktion des neuen Satzes, "+
+        "nicht nur die deutsche Ein-Wort-Übersetzung. Nur ursprüngliche FSRS-Daten "+
+        "machen eine Karte wirklich fällig.",
+      lessonStage:"practice",action:"Originalen neuen Satz im bestehenden StudyPlayer produzieren"
+    };
+    if(focus==="situated-active-vocabulary")return {
+      title:"Kollokation und passende Sprecherabsicht selbst produzieren",
+      promptSpecificGoal:"Wähle eine der originalen typischen Wortverbindungen, "+
+        "beachte die Partikel und beschreibe die neue Alltagssituation in "+
+        "einem vollständigen japanischen Satz. Finite Muster sind keine "+
+        "allgemeine Bewertung korrekter freier Paraphrasen.",
+      lessonStage:"write",action:"Eigene Formulierung im ursprünglichen Schreiben-Editor revidieren"
+    };
+    if(domain==="travel"||domain==="services")return {
+      title:"Praktische japanische Begriffe im Verkehr und Kundenkontakt unterscheiden",
+      promptSpecificGoal:"Trenne beispielsweise Abfahrt von Ankunft, "+
+        "Reservierung von Bestellung, Rückgabe von Austausch "+
+        "und Bitte von bloßer Verfügbarkeit. Auch Zahlen, Register "+
+        "und Zeitpunkt müssen mit dem konkreten Auftrag zusammenpassen.",
+      lessonStage:"learn",action:"Die zwei originalen Kollokationen mit dem Kontext vergleichen"
+    };
+    if(domain==="study"||domain==="work"||domain==="digital")return {
+      title:"Wortfamilie und konkreten Arbeitsvorgang unterscheiden",
+      promptSpecificGoal:"Wurde der Text nur gespeichert oder tatsächlich gesendet? "+
+        "Hat jemand um Rat gebeten, etwas berichtet oder Ergebnisse veröffentlicht? "+
+        "Das Verb und seine Partikel zeigen unterschiedliche Arbeitsschritte.",
+      lessonStage:"learn",action:"Bedeutungsnuance und neue Handlung in der Aufgabe markieren"
+    };
+    if(domain==="home"||domain==="health")return {
+      title:"Japanisches Alltagswort aus dem passenden Bedeutungsfeld verwenden",
+      promptSpecificGoal:"Prüfe Gegenstand, Zustand und typische Wortverbindung: "+
+        "Wetterkälte versus kaltes Getränk, schmutzig werden versus reinigen "+
+        "oder Untersuchung versus Behandlung. Kein medizinisches Ergebnis erfinden.",
+      lessonStage:"learn",action:"Gebrauchssatz und konkrete Verwechslungswarnung wieder ansehen"
+    };
+    return {
+      title:"Interpersonelle japanische Wortwahl und Register prüfen",
+      promptSpecificGoal:"Wer bittet, dankt, lädt ein, lehnt ab oder berichtet eine Vermutung? "+
+        "Ähnliche Wörter haben verschiedene soziale Zwecke. "+
+        "Schreibe die gesamte situationsgerechte Äußerung, nicht nur die Vokabel.",
+      lessonStage:"learn",action:"Sprecherrolle, Nuance und Originalbeispiel erneut betrachten"
+    };
+  }
   if(prompt?.eventMetadata?.p52===true){
     const kind=prompt.eventMetadata.kind;
     const domain=prompt.eventMetadata.domain;
