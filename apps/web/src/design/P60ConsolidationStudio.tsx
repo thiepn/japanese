@@ -56,6 +56,10 @@ export function P60ConsolidationStudio({
  const speechToken=useRef(0);
  const stepHeading=useRef<HTMLHeadingElement|null>(null);
  const focusAfterStep=useRef(false);
+ // A page-lifetime VIEW locator, never learner progress or private draft storage.
+ const pageLocations=useRef(new Map<string,{
+  step:Step;mode:Kind;questionIndex:number;sourceDisclosure:boolean|null
+ }>());
  const lesson=lessons.find(x=>x.id===chosen)??lessons.find(x=>x.id===preferredId)??lessons[0];
  const stop=()=>{
   speechToken.current++;
@@ -71,6 +75,12 @@ export function P60ConsolidationStudio({
  },[lesson?.id]);
  const phaseNumbers=useMemo(()=>Array.from(new Set(historical.map(p=>p.phase)))
   .sort((a,b)=>a-b),[historical]);
+ useEffect(()=>{
+  if(focusAfterStep.current){
+   focusAfterStep.current=false;
+   stepHeading.current?.focus();
+  }
+ },[step,lesson?.id]);
  if(!lesson)return null;
  const stage=p60Stage(lesson.id),q=lesson.questions[questionIndex]??lesson.questions[0]!;
  const sourcesVisible=sourceDisclosure??stage.stage<=2;
@@ -102,12 +112,6 @@ export function P60ConsolidationStudio({
  const attempted=historical.filter(x=>x.status==="previously-practiced"||
   x.status==="needs-repair"||x.status==="due");
  const stepIndex=steps.findIndex(s=>s[0]===step);
- useEffect(()=>{
-  if(focusAfterStep.current){
-   focusAfterStep.current=false;
-   stepHeading.current?.focus();
-  }
- },[step,lesson?.id]);
  const toggle=(key:string)=>setReveal(old=>old.includes(key)?old.filter(v=>v!==key):[...old,key]);
  function allowDiscard():boolean{
   if(!draft.trim())return true;
@@ -115,8 +119,13 @@ export function P60ConsolidationStudio({
    "Eine noch nicht abgeschlossene japanische Antwort würde beim Wechsel verworfen. Diese Eingabe wurde nicht gespeichert. Trotzdem wechseln?");
  }
  function choose(id:string){
-  if(id!==lesson.id&&!allowDiscard())return;
-  stop();focusAfterStep.current=true;setChosen(id);setStep("reading");setSourceDisclosure(null);setMode("question");setQuestionIndex(0);
+  if(id===lesson.id)return; // Clicking the active lesson must never erase text.
+  if(!allowDiscard())return;
+  pageLocations.current.set(lesson.id,{step,mode,questionIndex,sourceDisclosure});
+  const place=pageLocations.current.get(id);
+  stop();focusAfterStep.current=true;setChosen(id);
+  setStep(place?.step??"reading");setSourceDisclosure(place?.sourceDisclosure??null);
+  setMode(place?.mode??"question");setQuestionIndex(place?.questionIndex??0);
   setDraft("");setAttempt(false);setModels(false);
   setReveal([]);setSpoken(false);setShowVocabulary(false);
   setSearch("");setShowMore(15);setTtsStatus("");
@@ -350,7 +359,10 @@ export function P60ConsolidationStudio({
     </div>
     <p><small>Du kannst zum vorherigen Abschnitt zurückkehren. Eigene
      ungesendete japanische Antworten bleiben beim Wechsel zwischen
-     Abschnitten dieser geöffneten Lektion im Arbeitsspeicher.</small></p>
+     Abschnitten dieser geöffneten Lektion im Arbeitsspeicher.
+     Wechselst du die Lektion, wird nach einer Verwerfen-Bestätigung
+     nur ihre aktuelle Ansichtsposition für die Dauer dieser Seite behalten,
+     nicht die japanische Eingabe.</small></p>
     {step==="reading"?<section>
      <h5 ref={stepHeading} tabIndex={-1} data-focus-step="">1 · Neue mehrteilige schriftliche Quelle</h5>
      <p>Lies die drei Originaltexte und zwei Nachrichten. Übersetzungen
