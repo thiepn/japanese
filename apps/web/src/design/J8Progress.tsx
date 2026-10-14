@@ -4,6 +4,7 @@ import {C1Portfolio} from "../study/C1Portfolio";
 import type {ImmersionProgress} from "../immerse/reader";
 import type {
   E01Progress,
+  E02Overview,
   A1MilestoneProgress,
   B1MilestoneProgress,
   B2MilestoneProgress,
@@ -21,6 +22,7 @@ import {JCartouche,JInkProgress,JPattern,JSeal} from "./index";
 
 type Props={
   e01:E01Progress;
+  e02:E02Overview;
   kana:KanaMasterySummary;
   vocab:VocabularyMasterySummary;
   conjugation:ConjugationMasterySummary;
@@ -49,7 +51,7 @@ type Skill={
 };
 
 export function J8Progress({
-  e01,kana,vocab,conjugation,grammar,sentence,lexicalFluency,milestone,b1Milestone,b2Milestone,c1Foundation,immersion,summary,course,completedToday,
+  e02,e01,kana,vocab,conjugation,grammar,sentence,lexicalFluency,milestone,b1Milestone,b2Milestone,c1Foundation,immersion,summary,course,completedToday,
 }:Props){
   const immersionReading=mean(immersion.texts.map((item)=>item.readingMastery));
   const immersionListening=mean(immersion.texts.map((item)=>item.listeningMastery));
@@ -165,6 +167,11 @@ export function J8Progress({
       <strong>A1 · First conversations · controlled evidence only</strong>
       <p>{e01.canDo}. This is practice evidence, not a verified A1 proficiency decision. Independent writing and speech are explicitly unscored.</p>
       <dl><div><dt>Guided attempts</dt><dd>{e01.answered}</dd></div><div><dt>Correct controlled answers</dt><dd>{e01.correct}</dd></div><div><dt>Unscored drafts</dt><dd>{e01.unscored}</dd></div><div><dt>Delayed controlled answers</dt><dd>{e01.delayedCorrect} / 3</dd></div><div><dt>State</dt><dd>{e01.status.replaceAll("_"," ")}</dd></div></dl>
+    </section>
+    <section className="e02-course e02-course--progress" aria-labelledby="e02-progress-title">
+      <header className="e02-course__head"><div><p className="j8-kicker">E02 · BEGINNER COMMUNICATION EVIDENCE</p><h2 id="e02-progress-title">What you have practised</h2><p>Controlled responses, independent unscored drafts and delayed checks are counted separately. These are not CEFR or acoustic scores.</p></div><strong>{e02.started}/{e02.total} scenes started</strong></header>
+      <div className="e02-evidence"><span>{e02.readyForDelay} delayed checks ready</span><span>{e02.delayedReviewed} delayed checks complete</span></div>
+      <ol className="e02-progress-list">{e02.scenes.map(item=><li key={item.id}><strong>{item.title}</strong><span>{item.completedControlled}/{item.requiredControlled} controlled correct</span><span>{item.unscoredDrafts} unscored drafts</span><span>{item.delayedCorrect}/{item.delayedTotal} delayed correct</span></li>)}</ol>
     </section>
     <section className="j8-skills" aria-labelledby="j8-skills-title">
       <header className="j8-section-head">

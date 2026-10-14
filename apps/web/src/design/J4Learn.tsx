@@ -4,6 +4,7 @@ import {AiCoach} from "../ai/AiCoach";
 import {RealWorldPerformancePanel} from "../study/RealWorldPerformancePanel";
 import type {
   E01Progress,
+  E02Overview,
   A1MilestoneProgress,
   B1MilestoneProgress,
   B2MilestoneProgress,
@@ -21,6 +22,7 @@ import {JCartouche,JInkProgress,JPattern,JSeal} from "./index";
 
 type Props={
   e01:E01Progress;onStartE01:()=>void;onStartE01Delayed:()=>void;
+  e02:E02Overview;onStartE02:(id:string)=>void;onStartE02Delayed:(id:string)=>void;
   summary:StudySummary;
   kana:KanaMasterySummary;
   vocab:VocabularyMasterySummary;
@@ -69,7 +71,7 @@ const LEVEL_ORDER=["A1","A2","B1","B2","C1"];
 
 export function J4Learn(props:Props){
   const {
-    e01,onStartE01,onStartE01Delayed,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
+    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
     milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,
     onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartAssessment,
     onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,
@@ -140,6 +142,17 @@ export function J4Learn(props:Props){
     <section className="e01-entry" aria-label="Original A1 guided conversation journey">
       <div className="e01-entry__copy"><strong>First conversations · A1 contextual learning</strong><p>{e01.canDo} · {e01.answered} guided attempts · {e01.unscored} independent draft attempts. Spoken recognition and structure-only writing never certify fluency.</p>{e01.status==="waiting"&&e01.reviewAvailableAt?<p>Delayed review opens {new Date(e01.reviewAvailableAt).toLocaleString()}.</p>:null}</div>
       <div className="e01-entry__actions"><button type="button" disabled={status==="loading"} onClick={onStartE01}>{e01.answered?"Practice again":"Start contextual lesson"}</button>{(e01.status==="ready"||e01.status==="reviewed")?<button type="button" disabled={status==="loading"} onClick={onStartE01Delayed}>Delayed transfer</button>:null}</div>
+    </section>
+    <section className="e02-course" aria-labelledby="e02-course-title">
+      <header className="e02-course__head"><div><p className="j4-kicker">E02 · ORIGINAL A1 COMMUNICATION</p><h2 id="e02-course-title">Practice Japanese in real situations</h2><p>Each original scene combines hidden-text listening, connected reading, canonical grammar, responses, unscored speaking and writing, then delayed transfer.</p></div><strong>{e02.delayedReviewed}/{e02.total} delayed checks</strong></header>
+      <ol className="e02-course__list">{e02.scenes.map((item,index)=><li className="e02-course__item" key={item.id}>
+        <div className="e02-course__number">{String(index+1).padStart(2,"0")}</div>
+        <div className="e02-course__info"><h3>{item.title}</h3><p>{item.canDo}</p><small>{item.completedControlled}/{item.requiredControlled} controlled items correct · {item.unscoredDrafts} unscored drafts · {item.state.replaceAll("_"," ")}</small>
+          {item.state==="waiting"&&item.reviewAvailableAt?<small>Delayed transfer available {new Date(item.reviewAvailableAt).toLocaleString()}</small>:null}</div>
+        <div className="e02-course__actions"><button type="button" disabled={status==="loading"} onClick={()=>onStartE02(item.id)}>{item.state==="not_started"?"Study situation":"Repeat situation"}</button>
+          {(item.state==="ready"||item.state==="reviewed")?<button className="secondary" type="button" disabled={status==="loading"} onClick={()=>onStartE02Delayed(item.id)}>Delayed transfer</button>:null}</div>
+      </li>)}</ol>
+      {e02.total===0?<p role="status">No E02 scenes are mapped to the current canonical A1 course.</p>:null}
     </section>
     <section className="j4-foundation" aria-labelledby="j4-foundation-title">
       <header>

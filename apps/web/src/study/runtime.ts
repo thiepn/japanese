@@ -22,6 +22,8 @@ import { buildNextRealWorldChainSession,buildP9QualificationSession } from "./re
 import { c1DiscoursePrompts,c1FoundationPractice } from "./c1Foundation";
 import {buildE01Journey,buildE01DelayedJourney,e01ReviewPrompts,getE01Progress,type E01Progress} from "./a1Excellence";
 export type {E01Progress} from "./a1Excellence";
+import {buildE02Journey,buildE02DelayedJourney,e02ReviewPrompts,getE02Overview,type E02Overview} from "./a1ExcellenceCourse";
+export type {E02Overview} from "./a1ExcellenceCourse";
 import { buildC1SynthesisSession } from "./c1Synthesis";
 
 export const GUEST_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
@@ -87,7 +89,7 @@ function foundationApplicationPool():StudyPrompt[]{
   return [...pronunciationPerceptionPrompts,...foundationApplicationPrompts,...vocabularyApplicationPrompts,...conjugationPrompts,...lexicalChunkPrompts,...productivePrompts,...c1DiscoursePrompts];
 }
 function allPrompts():StudyPrompt[]{
-  return [...foundationPrompts,...vocabularyMeaningPrompts,...foundationApplicationPool(),...allGrammarCoursePrompts,...e01ReviewPrompts];
+  return [...foundationPrompts,...vocabularyMeaningPrompts,...foundationApplicationPool(),...allGrammarCoursePrompts,...e01ReviewPrompts,...e02ReviewPrompts];
 }
 
 export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
@@ -116,6 +118,9 @@ export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
   return insertFirstExposureLessons(queue,byId,privatePrompts);
 }
 
+export async function buildE02Session(sceneId:string):Promise<StudyStep[]>{return buildE02Journey(sceneId);}
+export async function buildE02DelayedSession(sceneId:string):Promise<StudyStep[]>{return buildE02DelayedJourney(sceneId,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function getE02Evidence():Promise<E02Overview>{return getE02Overview(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
 export async function buildE01Session():Promise<StudyStep[]>{return buildE01Journey();}
 export async function buildE01DelayedSession():Promise<StudyStep[]>{return buildE01DelayedJourney(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
 export async function getE01Evidence():Promise<E01Progress>{return getE01Progress(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
