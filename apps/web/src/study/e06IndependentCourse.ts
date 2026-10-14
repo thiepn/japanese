@@ -403,14 +403,21 @@ function e10StageProgress(s:E06Case,a:Anchor|null,events:readonly StudyEvent[],
  return {stages,next:next?.id??null};
 }
 function e10DelayedProgress(s:E06Case,a:Anchor|null,events:readonly StudyEvent[],
- isDue:boolean):{stages:E10DelayedProgress[];next:E10DelayedId|null}{
+ eligibleSince:number,now:Date):{stages:E10DelayedProgress[];next:E10DelayedId|null}{
  if(!a)return {stages:[],next:null};
  const latest=latestById(eventsFor(s,a,events)),pre=PREFIX+s.id+"-";
- let unlocked=isDue;
+ const isEligible=Number.isFinite(eligibleSince)&&now.getTime()>=eligibleSince;
+ // Old delayed answers remain in history, but only answers recorded after the
+ // CURRENT eight-cue success boundary satisfy this exact spaced transfer.
+ const current=(key:string)=>{
+   const event=latest.get(pre+key);
+   return event&&Number.isFinite(eligibleSince)&&Date.parse(event.occurredAt)>=eligibleSince?event:null;
+ };
+ let unlocked=isEligible;
  const stages:E10DelayedProgress[]=E10_DELAYED_GROUPS.map(group=>{
-  const correct=group.keys.filter(key=>latest.get(pre+key)?.result==="correct").length;
+  const correct=group.keys.filter(key=>current(key)?.result==="correct").length;
   const complete=correct===group.keys.length;
-  const attempted=group.keys.some(key=>latest.has(pre+key));
+  const attempted=group.keys.some(key=>Boolean(current(key)));
   const status:E10DelayedProgress["status"]=!unlocked?"locked":
     complete?"complete":attempted?"started":"ready";
   if(!complete)unlocked=false;
@@ -430,11 +437,14 @@ export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06O
   const dates=ctrl.map(e=>Date.parse(e?.occurredAt??""));
   const due=correct===CONTROLLED_KEYS.length&&dates.every(Number.isFinite)?
    Math.max(...dates)+DELAY_MS:NaN;
-  const delayedCorrect=DELAYED_KEYS.filter(k=>by.get(prefix+k)?.result==="correct").length;
+  const delayedCorrect=DELAYED_KEYS.filter(k=>{
+    const event=by.get(prefix+k);
+    return event?.result==="correct"&&Number.isFinite(due)&&
+      Date.parse(event.occurredAt)>=due;
+  }).length;
   const daily=e10StageProgress(s,a,events,pr.ready);
   const controlledComplete=correct===CONTROLLED_KEYS.length&&Number.isFinite(due);
-  const delayEligible=Boolean(a&&pr.ready&&controlledComplete&&now.getTime()>=due);
-  const delayed=e10DelayedProgress(s,a,events,delayEligible);
+  const delayed=e10DelayedProgress(s,a,events,a&&pr.ready&&controlledComplete?due:NaN,now);
   // A previously completed delayed set cannot mask a *newer* source error.
   const status:E06Status=!a||!pr.ready?"needs-prerequisite":
     !controlledComplete?(!own.length?"unstarted":"learning"):
