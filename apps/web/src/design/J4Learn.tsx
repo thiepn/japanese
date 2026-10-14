@@ -6,6 +6,7 @@ import type {
   E01Progress,
   E02Overview,
   E03Overview,
+  E04Overview,
   A1MilestoneProgress,
   B1MilestoneProgress,
   B2MilestoneProgress,
@@ -25,6 +26,7 @@ type Props={
   e01:E01Progress;onStartE01:()=>void;onStartE01Delayed:()=>void;
   e02:E02Overview;onStartE02:(id:string)=>void;onStartE02Delayed:(id:string)=>void;
   e03:E03Overview;onStartE03:(id:string)=>void;onStartE03Delayed:(id:string)=>void;
+  e04:E04Overview;onStartE04:(id:string)=>void;onStartE04Delayed:(id:string)=>void;onStartE04Preview:(id:string)=>void;
   summary:StudySummary;
   kana:KanaMasterySummary;
   vocab:VocabularyMasterySummary;
@@ -73,7 +75,7 @@ const LEVEL_ORDER=["A1","A2","B1","B2","C1"];
 
 export function J4Learn(props:Props){
   const {
-    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
+    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
     milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,
     onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartAssessment,
     onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,
@@ -167,6 +169,19 @@ export function J4Learn(props:Props){
           {(scene.state==="ready"||scene.state==="reviewed")?<button type="button" className="secondary" disabled={status==="loading"} onClick={()=>onStartE03Delayed(scene.id)}>Delayed transfer</button>:null}</div>
       </li>)}</ol>
       {e03.total===0?<p role="status">The A2.1 material has no safely verified Can-do links in the current canonical course. No invented progress is offered.</p>:null}
+    </section>
+    <section className="e04-path" aria-labelledby="e04-path-title">
+      <header className="e04-path__heading"><div><p className="j4-kicker">E04 · ORIGINAL ADVANCED ELEMENTARY COMMUNICATION</p><h2 id="e04-path-title">Solve everyday problems in Japanese</h2><p>{e04.authored} original scenes authored; {e04.linked} provisionally linked to existing second-half A2 course objectives. Independent drafts are unscored and language ability is not externally certified.</p></div><strong>{e04.reviewed}/{e04.linked} delayed transfer checks completed</strong></header>
+      <ol className="e04-path__list">{e04.scenes.map((scene,index)=><li className="e04-path__item" key={scene.id}>
+        <span className="e04-path__number">{String(index+1).padStart(2,"0")}</span>
+        <div className="e04-path__copy"><h3>{scene.title}</h3><p>{scene.goal}</p><small>Provisional link: {scene.unitId} · {scene.canDo}</small><small>{scene.guidedCorrect}/{scene.guidedTotal} controlled correct · {scene.unscoredDrafts} unscored drafts · {scene.status.replaceAll("_"," ")}</small>
+          {scene.status==="waiting"&&scene.reviewAvailableAt?<small>Delayed review available {new Date(scene.reviewAvailableAt).toLocaleString()}</small>:null}</div>
+        <div className="e04-path__actions"><button type="button" disabled={status==="loading"} onClick={()=>onStartE04(scene.id)}>{scene.status==="not_started"?"Start scenario":"Practise scenario"}</button>
+          {(scene.status==="ready"||scene.status==="reviewed")?<button type="button" className="secondary" disabled={status==="loading"} onClick={()=>onStartE04Delayed(scene.id)}>Delayed transfer</button>:null}</div>
+      </li>)}</ol>
+      {e04.unmapped.length>0?<details className="e04-path__unmapped"><summary>{e04.unmapped.length} original scenes are available as unscored readings pending canonical A2 mapping</summary><p>No Can-do progress or assessment scores are assigned to these scenes.</p>
+        <ul>{e04.unmapped.map(scene=><li key={scene.id}><strong>{scene.title}</strong><button type="button" disabled={status==="loading"} onClick={()=>onStartE04Preview(scene.id)}>Open original dialogue and reading</button></li>)}</ul></details>:null}
+      {e04.linked===0?<p role="status">No sufficiently matched canonical A2.2 objectives. Original content is available above in reading-only form, without fabricated mastery.</p>:null}
     </section>
     <section className="j4-foundation" aria-labelledby="j4-foundation-title">
       <header>

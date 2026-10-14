@@ -1,0 +1,19 @@
+/* E04 content layouts reuse original editorial variables and common Study Player. */
+.e04-entry,.e04-path{border:1px solid var(--border,rgba(114,114,114,.35));padding:1rem 1.2rem;margin:1.2rem 0;background:var(--surface,transparent)}
+.e04-entry,.e04-path__heading{display:flex;justify-content:space-between;align-items:start;gap:1.1rem;flex-wrap:wrap}
+.e04-path h2{margin:.2rem 0 .6rem}.e04-path p,.e04-entry p{line-height:1.55;margin:.3rem 0}
+.e04-entry__actions,.e04-path__actions{display:flex;gap:.55rem;flex-wrap:wrap;align-items:center}
+.e04-entry button,.e04-path button{min-height:44px;max-width:100%;white-space:normal;text-align:left}
+.e04-path__heading>strong{white-space:normal;font-variant-numeric:tabular-nums}
+.e04-path__list,.e04-progress-list{list-style:none;margin:1rem 0 0;padding:0}
+.e04-path__item{display:grid;grid-template-columns:2.5rem minmax(0,1fr) auto;gap:1rem;padding:1rem 0;border-top:1px solid var(--border,rgba(114,114,114,.24))}
+.e04-path__number{opacity:.7;font-variant-numeric:tabular-nums}
+.e04-path__copy h3{font-size:1.02rem;margin:0}.e04-path__copy small{display:block;line-height:1.5;opacity:.78}
+.e04-path__unmapped{margin:.75rem 0;border:1px solid var(--border,rgba(114,114,114,.35));padding:.7rem .9rem}
+.e04-path__unmapped summary{cursor:pointer}.e04-path__unmapped ul{list-style:none;padding:0}.e04-path__unmapped li{display:flex;gap:.8rem;justify-content:space-between;align-items:center;padding:.55rem 0;flex-wrap:wrap}
+.e04-evidence{display:flex;gap:1.4rem;flex-wrap:wrap;padding:.6rem 0}
+.e04-progress-list li{display:grid;grid-template-columns:minmax(10rem,2fr) repeat(3,minmax(7rem,1fr));gap:.7rem;border-top:1px solid var(--border,rgba(114,114,114,.25));padding:.6rem 0;align-items:baseline}
+.e04-progress-list li span{opacity:.8;font-size:.87rem}
+.e04-entry button:focus-visible,.e04-path button:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+@media(max-width:760px){.e04-path__item{grid-template-columns:2rem minmax(0,1fr)}.e04-path__actions{grid-column:2}.e04-progress-list li{grid-template-columns:1fr 1fr}.e04-progress-list li strong{grid-column:1/-1}.e04-entry__actions{width:100%}}
+@media(max-width:390px){.e04-path__actions{flex-direction:column;align-items:stretch}.e04-path__actions button,.e04-entry button{width:100%}}

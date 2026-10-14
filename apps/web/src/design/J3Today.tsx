@@ -1,5 +1,5 @@
 import {useMemo} from "react";
-import type {StudySummary,E01Progress,E02Overview,E03Overview} from "../study/runtime";
+import type {StudySummary,E01Progress,E02Overview,E03Overview,E04Overview} from "../study/runtime";
 import {JCartouche,JDivider,JInkProgress,JPattern,JSeal} from "./index";
 
 type J3TodayProps={
@@ -10,6 +10,7 @@ type J3TodayProps={
   e01:E01Progress;onStartE01:()=>void;onStartE01Delayed:()=>void;
   e02:E02Overview;onStartE02:(id:string)=>void;onStartE02Delayed:(id:string)=>void;
   e03:E03Overview;onStartE03:(id:string)=>void;onStartE03Delayed:(id:string)=>void;
+  e04:E04Overview;onStartE04:(id:string)=>void;onStartE04Delayed:(id:string)=>void;
 };
 
 type RouteItem={
@@ -32,7 +33,7 @@ function japaneseDate(now=new Date()):string{
   }
 }
 
-export function J3Today({summary,completedToday,status,onStart,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed}:J3TodayProps){
+export function J3Today({summary,completedToday,status,onStart,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed}:J3TodayProps){
   const route=useMemo<RouteItem[]>(()=>[
     {id:"review",japanese:"復",label:"Review",count:summary.due,tone:"review"},
     {id:"learn",japanese:"学",label:"Learn",count:summary.newKana+summary.newVocabulary+summary.course,tone:"learn"},
@@ -125,6 +126,11 @@ export function J3Today({summary,completedToday,status,onStart,e01,onStartE01,on
       <div><p className="j3-today__eyebrow">E03 · CONTEXTUAL A2.1</p><h2>Continue connected Japanese</h2><p>{e03.started} / {e03.total} linked situations started · {e03.readyForDelay} delayed checks ready</p></div>
       <div className="e03-entry__actions">{e03.nextSceneId?<button type="button" disabled={status==="loading"} onClick={()=>onStartE03(e03.nextSceneId!)}>Continue: {e03.scenes.find(s=>s.id===e03.nextSceneId)?.title}</button>:null}
         {e03.scenes.find(s=>s.state==="ready")?<button type="button" disabled={status==="loading"} onClick={()=>onStartE03Delayed(e03.scenes.find(s=>s.state==="ready")!.id)}>Unseen transfer review</button>:null}</div>
+    </section>:null}
+    {e04.linked>0?<section className="e04-entry" aria-label="A2.2 independent communication">
+      <div><p className="j3-today__eyebrow">E04 · INDEPENDENT A2.2 PRACTICE</p><h2>Handle an everyday problem</h2><p>{e04.started}/{e04.linked} linked situations started · {e04.reviewReady} changed-context reviews ready. A2.2 placement is provisional.</p></div>
+      <div className="e04-entry__actions">{e04.nextSceneId?<button type="button" disabled={status==="loading"} onClick={()=>onStartE04(e04.nextSceneId!)}>Continue: {e04.scenes.find(s=>s.id===e04.nextSceneId)?.title}</button>:null}
+        {e04.scenes.find(s=>s.status==="ready")?<button type="button" disabled={status==="loading"} onClick={()=>onStartE04Delayed(e04.scenes.find(s=>s.status==="ready")!.id)}>Delayed transfer</button>:null}</div>
     </section>:null}
     <JDivider kind="ink" className="j3-today__divider"/>
 
