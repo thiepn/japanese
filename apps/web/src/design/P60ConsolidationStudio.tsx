@@ -2,6 +2,8 @@ import {useEffect,useMemo,useRef,useState} from "react";
 import {p60Compare,p60RelatedVocabulary,p60Stage,p60CourseTracks,
  type P60Unit,type P60PracticeKind,type P60HistoricalReviewSource} from "../study/consolidation60";
 import {originalEditorialNote} from "../study/sourceEditorialR2";
+import {r4ForP60} from "../study/extensionR4";
+import {R4IndependentDossier} from "./R4IndependentDossier";
 import {r3Continuation,r3RecommendedAction} from "../study/continuityR3";
 import "./p60-consolidation.css";
 type Practice=Exclude<P60PracticeKind,"all">;
@@ -34,9 +36,10 @@ export function P60ConsolidationStudio({
  const [mode,setMode]=useState<Kind>("question");
  const [questionIndex,setQuestionIndex]=useState(0);
  const [draft,setDraft]=useState("");
+ const [r4Dirty,setR4Dirty]=useState(false);
  // Ephemeral visibility only: never send or persist actual Japanese draft text.
- useEffect(()=>{onDirtyChange?.(Boolean(draft.trim()));return ()=>onDirtyChange?.(false);},
-  [draft,onDirtyChange]);
+ useEffect(()=>{onDirtyChange?.(Boolean(draft.trim())||r4Dirty);return ()=>onDirtyChange?.(false);},
+  [draft,r4Dirty,onDirtyChange]);
  const [attempt,setAttempt]=useState(false);
  const [models,setModels]=useState(false);
  const [reveal,setReveal]=useState<readonly string[]>([]);
@@ -95,6 +98,7 @@ export function P60ConsolidationStudio({
  const editorial=originalEditorialNote(lesson.id);
  const comparison=attempt?p60Compare(draft,[task.model,task.alternative],task.trap,task.why):null;
  const words=p60RelatedVocabulary(lesson);
+ const r4Dossier=r4ForP60(lesson.id);
  const filtered=historical.filter(item=>
   (scope==="all"||item.unitIds.includes(lesson.units[0]!))&&
   (phase==="all"||String(item.phase)===phase)&&
@@ -114,7 +118,7 @@ export function P60ConsolidationStudio({
  const stepIndex=steps.findIndex(s=>s[0]===step);
  const toggle=(key:string)=>setReveal(old=>old.includes(key)?old.filter(v=>v!==key):[...old,key]);
  function allowDiscard():boolean{
-  if(!draft.trim())return true;
+  if(!draft.trim()&&!r4Dirty)return true;
   return typeof window!=="undefined"&&window.confirm(
    "Eine noch nicht abgeschlossene japanische Antwort würde beim Wechsel verworfen. Diese Eingabe wurde nicht gespeichert. Trotzdem wechseln?");
  }
@@ -126,7 +130,7 @@ export function P60ConsolidationStudio({
   stop();focusAfterStep.current=true;setChosen(id);
   setStep(place?.step??"reading");setSourceDisclosure(place?.sourceDisclosure??null);
   setMode(place?.mode??"question");setQuestionIndex(place?.questionIndex??0);
-  setDraft("");setAttempt(false);setModels(false);
+  setDraft("");setR4Dirty(false);setAttempt(false);setModels(false);
   setReveal([]);setSpoken(false);setShowVocabulary(false);
   setSearch("");setShowMore(15);setTtsStatus("");
  }
@@ -400,6 +404,10 @@ export function P60ConsolidationStudio({
     </section>:null}
     {step==="writing"?<section>
      <h5 ref={stepHeading} tabIndex={-1} data-focus-step="">3 · Eigenständige japanische Antworten</h5>
+     {r4Dossier?<p>Diese P60-Originallektion hat zusätzlich einen unabhängigen
+      R4-Mehrquellenfall mit japanischer Schreibaufgabe, neuer Sprecherantwort
+      und einem anderen Alltagskontext. Die neue Übung steht nach der
+      gewöhnlichen Schreibaufgabe und bleibt unbenotet.</p>:null}
      <div className="p60-consolidation__actions" role="group" aria-label="Praxisarten">
       {(["question","strategy","writing","followup","revision"] as const).map(k=>
        <button key={k} type="button" aria-pressed={mode===k}
@@ -478,6 +486,14 @@ export function P60ConsolidationStudio({
      <button type="button" onClick={()=>onWriting(lesson.id)}>
       Eigene Nachricht im ursprünglichen mehrstufigen Learn-Editor weiter überarbeiten</button>
     </section>:null}
+    {r4Dossier?<div className="p60-consolidation__r4-panel" hidden={step!=="writing"}>
+     <R4IndependentDossier key={lesson.id} lessonId={lesson.id}
+      stage={stage.stage} visible={step==="writing"} disabled={disabled}
+      onDirtyChange={setR4Dirty}
+      onOriginalPractice={()=>onPractice(lesson.id,"comprehension")}
+      onOriginalWriting={()=>onWriting(lesson.id)}
+     />
+    </div>:null}
     {step==="reflection"?<section>
      <h5 ref={stepHeading} tabIndex={-1} data-focus-step="">4 · Was ist tatsächlich belegt, was braucht Wiederholung?</h5>
      <p><strong>Sprachlicher Gegensatz:</strong> {lesson.grammar}</p>
