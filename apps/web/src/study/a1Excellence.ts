@@ -9,6 +9,8 @@ const introduction=a1Course.find(({unit,canDo})=>unit.level==="A1"&&/introduc|na
 export const E01_AVAILABLE=Boolean(introduction);
 const unitId=introduction?.unit.id??"";
 const canDoId=introduction?.unit.canDoId??"";
+const originUnit=a1Course.find(({unit})=>unit.id==="a1-unit-05"&&unit.level==="A1");
+const targetFor=(id:string)=>/origin|review-recall|delayed-production/.test(id)&&originUnit?originUnit.unit.canDoId:canDoId;
 const SOURCE="thiepn-original";
 const VERSION=coreContent.version;
 const PREFIX="a1-e01-";
@@ -26,36 +28,36 @@ function card(id:string,title:string,body:string,examples:{expression:string;not
 }
 function question(id:string,stage:Stage,prompt:string,choices:string[],answer:string,explanation:string,skill:"comprehension"|"form_selection"|"listening"):StudyPrompt{
   return {
-    id:PREFIX+id,primaryTarget:{kind:"can_do",id:canDoId},skill,
+    id:PREFIX+id,primaryTarget:{kind:"can_do",id:targetFor(id)},skill,
     cueFamily:PREFIX+id,promptType:"choice",instruction:stage==="encounter"?"Listen before choosing.":stage==="understand"?"Read and understand.":"Choose the natural response.",
     prompt,promptLanguage:stage==="encounter"?"en":"ja",
     choices,acceptedAnswers:[answer],displayAnswer:answer,explanation,
     sourceId:SOURCE,contentVersion:VERSION,contextId:PREFIX+"first-conversations",languageActivity:stage==="encounter"?"listening":"reading",
-    eventMetadata:metadata(stage,{automaticAssessment:"controlled-response"})
+    eventMetadata:metadata(stage,{e01CanDoId:targetFor(id),automaticAssessment:"controlled-response"})
   };
 }
 function typed(id:string,stage:Stage,prompt:string,acceptedAnswers:string[],explanation:string):StudyPrompt{
-  return {id:PREFIX+id,primaryTarget:{kind:"can_do",id:canDoId},skill:"production",
+  return {id:PREFIX+id,primaryTarget:{kind:"can_do",id:targetFor(id)},skill:"production",
     cueFamily:PREFIX+id,promptType:"typed",instruction:"Answer in Japanese without choices.",
     prompt,promptLanguage:"en",placeholder:"日本語で答えてください",
     acceptedAnswers,displayAnswer:acceptedAnswers[0]!,explanation,answerNormalization:"japanese",
     sourceId:SOURCE,contentVersion:VERSION,contextId:PREFIX+"first-conversations",languageActivity:"writing",
-    eventMetadata:metadata(stage,{automaticAssessment:"bounded-exact-answer",notFreeProduction:true})};
+    eventMetadata:metadata(stage,{e01CanDoId:targetFor(id),automaticAssessment:"bounded-exact-answer",notFreeProduction:true})};
 }
 function listening(id:string,audio:string,options:string[],answer:string,explanation:string):StudyPrompt{
   const base=question(id,"encounter","Listen to the device Japanese voice. The words are hidden until feedback.",options,answer,explanation,"listening");
   return {...base,speechSynthesisText:audio,speechSynthesisLanguage:"ja-JP",
-    eventMetadata:metadata("encounter",{audioKind:"device-speech-synthesis",notNativeAudio:true,automaticAssessment:"controlled-listening"})};
+    eventMetadata:metadata("encounter",{e01CanDoId:targetFor(id),audioKind:"device-speech-synthesis",notNativeAudio:true,automaticAssessment:"controlled-listening"})};
 }
 function openResponse(id:string,kind:"speech"|"textarea",prompt:string,targets:string[],minimum:number):StudyPrompt{
-  const basis={id:PREFIX+id,primaryTarget:{kind:"can_do" as const,id:canDoId},skill:kind==="speech"?"production" as const:"writing_quality" as const,
+  const basis={id:PREFIX+id,primaryTarget:{kind:"can_do" as const,id:targetFor(id)},skill:kind==="speech"?"production" as const:"writing_quality" as const,
     cueFamily:PREFIX+id,contextId:PREFIX+"first-conversations",instruction:kind==="speech"?"Speak your own introduction.":"Write an original introduction.",
     prompt,promptLanguage:"en" as const,placeholder:"日本語…",acceptedAnswers:[],displayAnswer:targets.join(" / "),
     explanation:kind==="speech"?"A recognized transcript is not a pronunciation or conversational proficiency score. Compare your meaning and politeness with the model.":"This check measures only structural targets and length, not meaning, naturalness or independent A1 certification.",
     answerNormalization:"japanese" as const,requiredTerms:targets,minimumCharacters:minimum,
     languageActivity:kind==="speech"?"spoken_production" as const:"writing" as const,
     sourceId:SOURCE,contentVersion:VERSION,
-    eventMetadata:metadata("independent",{nonAuthoritative:true,schedulerExcluded:true,structuralOnly:true,accreditedCefrVerdict:false,acousticScore:false})};
+    eventMetadata:metadata("independent",{e01CanDoId:targetFor(id),nonAuthoritative:true,schedulerExcluded:true,structuralOnly:true,accreditedCefrVerdict:false,acousticScore:false})};
   return kind==="speech"?{...basis,promptType:"speech"}:{...basis,promptType:"textarea"};
 }
 const reviewSet=():StudyPrompt[]=>[
@@ -116,10 +118,10 @@ function delayedSet():StudyPrompt[]{
     question("delayed-transfer","delayed","友達：はじめまして。私はケンです。\nあなた：＿＿＿＿",["はじめまして。ミナです。よろしくお願いします。","さようなら。","これはいくらですか。"],"はじめまして。ミナです。よろしくお願いします。",
       "Return the first-meeting greeting and introduce yourself. The other choices are goodbye and a price question.","form_selection"),
     typed("delayed-production","delayed","Without looking back, give a polite model response: 'I came from Japan.'",["日本から来ました。","にほんからきました。"],"日本から来ました uses origin + から + polite past 来ました.")
-  ].map(p=>({...p,activity:"assessment",eventMetadata:metadata("delayed",{assessmentScope:"e01-delayed",automaticAssessment:"bounded-only",accreditedCefrVerdict:false})}));
+  ].map((p):StudyPrompt=>({...p,activity:"assessment" as const,eventMetadata:metadata("delayed",{e01CanDoId:p.primaryTarget.id,assessmentScope:"e01-delayed",automaticAssessment:"bounded-only",accreditedCefrVerdict:false})}));
 }
 export function getE01Progress(events:readonly StudyEvent[],now=new Date()):E01Progress{
-  const e01=events.filter(e=>e.metadata?.e01===true&&e.metadata?.e01CanDoId===canDoId&&canDoId);
+  const e01=events.filter(e=>e.metadata?.e01===true&&String(e.metadata?.promptId??"").startsWith(PREFIX)&&canDoId);
   const guided=e01.filter(e=>e.metadata?.e01Stage!=="delayed"&&e.metadata?.nonAuthoritative!==true);
   const first=new Map<string,StudyEvent>();
   for(const event of [...guided].sort((a,b)=>a.occurredAt.localeCompare(b.occurredAt))){
