@@ -32,7 +32,7 @@ type Props={
   e03:E03Overview;onStartE03:(id:string)=>void;onStartE03Delayed:(id:string)=>void;
   e04:E04Overview;onStartE04:(id:string)=>void;onStartE04Delayed:(id:string)=>void;onStartE04Preview:(id:string)=>void;
   e05:E05Evidence;onStartE05Repair:()=>void;onStartE03Preview:(id:string)=>void;onStartE02Preview:(id:string)=>void;
-  e06:E06Overview;onStartE06:(id:string)=>void;onStartE06Full:(id:string)=>void;onStartE06Delayed:(id:string)=>void;onStartE06Preview:(id:string)=>void;
+  e06:E06Overview;onStartE06:(id:string)=>void;onStartE06Full:(id:string)=>void;onStartE10Stage:(id:string,stage:import("../study/e10DailyStages").E10StageId)=>void;onStartE06Delayed:(id:string)=>void;onStartE06Preview:(id:string)=>void;
   e07:E07Journey;onOpenE07:(action:E07Action)=>void;
   summary:StudySummary;
   kana:KanaMasterySummary;
@@ -82,7 +82,7 @@ const LEVEL_ORDER=["A1","A2","B1","B2","C1"];
 
 export function J4Learn(props:Props){
   const {
-    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,onStartE06,onStartE06Full,onStartE06Delayed,onStartE06Preview,e07,onOpenE07,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
+    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,onStartE06,onStartE06Full,onStartE10Stage,onStartE06Delayed,onStartE06Preview,e07,onOpenE07,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
     milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,
     onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartAssessment,
     onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,
