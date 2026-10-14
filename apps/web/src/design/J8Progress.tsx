@@ -22,6 +22,8 @@ import type {
   StudySummary,
   VocabularyMasterySummary,
 } from "../study/runtime";
+import {E07JourneyPanel} from "./E07JourneyPanel";
+import type {E07Journey,E07Action} from "../study/e07LearningRoute";
 import {JCartouche,JInkProgress,JPattern,JSeal} from "./index";
 
 type Props={
@@ -31,6 +33,7 @@ type Props={
   e04:E04Overview;
   e05:E05Evidence;onStartE05Repair:()=>void;
   e06:E06Overview;
+  e07:E07Journey;onOpenE07:(action:E07Action)=>void;
   kana:KanaMasterySummary;
   vocab:VocabularyMasterySummary;
   conjugation:ConjugationMasterySummary;
@@ -59,7 +62,7 @@ type Skill={
 };
 
 export function J8Progress({
-  e04,e03,e02,e01,e05,e06,onStartE05Repair,kana,vocab,conjugation,grammar,sentence,lexicalFluency,milestone,b1Milestone,b2Milestone,c1Foundation,immersion,summary,course,completedToday,
+  e04,e03,e02,e01,e05,e06,e07,onOpenE07,onStartE05Repair,kana,vocab,conjugation,grammar,sentence,lexicalFluency,milestone,b1Milestone,b2Milestone,c1Foundation,immersion,summary,course,completedToday,
 }:Props){
   const immersionReading=mean(immersion.texts.map((item)=>item.readingMastery));
   const immersionListening=mean(immersion.texts.map((item)=>item.listeningMastery));
@@ -171,6 +174,9 @@ export function J8Progress({
       </div>
     </header>
 
+    <E07JourneyPanel route={e07} onActivate={onOpenE07} busy={false} variant="progress"/>
+    <details className="e07-track-list">
+      <summary>Review detailed E01–E06 controlled, unscored and delayed evidence</summary>
     <section className="e01-progress" aria-label="A1 first conversations evidence">
       <strong>A1 · First conversations · controlled evidence only</strong>
       <p>{e01.canDo}. This is practice evidence, not a verified A1 proficiency decision. Independent writing and speech are explicitly unscored.</p>
@@ -212,6 +218,7 @@ export function J8Progress({
       <ol className="e06-course__progress">{e06.cases.map(c=><li key={c.id}><strong>{c.title}</strong><span>{c.correct}/{c.required} controlled correct</span><span>{c.unscoredSpeaking+c.unscoredWriting} unscored drafts</span><span>{c.delayedCorrect}/{c.delayedRequired} delayed correct</span></li>)}</ol>
       <p>Recognition, comprehension, bounded typed recall and open production are not interchangeable. These counts are neither CEFR certification nor acoustic-pronunciation scores.</p>
     </section>
+    </details>
     <section className="j8-skills" aria-labelledby="j8-skills-title">
       <header className="j8-section-head">
         <div>

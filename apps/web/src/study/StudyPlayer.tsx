@@ -1,4 +1,5 @@
 import {useEffect,useRef,useState,type ReactNode} from "react";
+import {eligibleE07Draft,e07DraftPreference,setE07DraftPreference,saveE07Draft,readE07Draft,clearE07Draft,clearAllE07Drafts,findE07RestorableStep,E07_DRAFT_LIMIT} from "./e07DraftBuffer";
 import {getDefaultAudioProvider} from "@thiepn/audio";
 import {gradeStudyPrompt,isStudyLesson,type GradeResult,type StudyPrompt,type StudyStep} from "@thiepn/study-player";
 import {j5StudyMode,type J5StudyModeMeta} from "./j5StudyVisual";
@@ -22,9 +23,11 @@ function e06FoilCorrection(prompt:StudyPrompt,response:string):string|undefined{
   const matched=raw.find(item=>typeof item==="object"&&item!==null&&item.response===response&&typeof item.feedback==="string");
   return typeof matched?.feedback==="string"?matched.feedback:undefined;
 }
-export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[];onAnswer:(answer:StudyAnswer)=>Promise<void>|void;onComplete:()=>void;onExit:()=>void;}){
+export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{steps:StudyStep[];accountScope:string;onAnswer:(answer:StudyAnswer)=>Promise<void>|void;onComplete:()=>void;onExit:()=>void;}){
   const [index,setIndex]=useState(0);
   const [response,setResponse]=useState("");
+  const [draftEnabled,setDraftEnabled]=useState(()=>e07DraftPreference(accountScope));
+  const [draftNotice,setDraftNotice]=useState<"idle"|"saved"|"restored"|"unavailable">("idle");
   const [feedback,setFeedback]=useState<GradeResult|null>(null);
   const [saving,setSaving]=useState(false);
   const [saveError,setSaveError]=useState(false);
@@ -40,6 +43,14 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   const cueGeneration=useRef(0);
   const savingRef=useRef(false);
   const step=steps[index];
+  const restorableIndex=findE07RestorableStep(accountScope,steps);
+
+  useEffect(()=>{
+    const next=steps[index];
+    if(!next||isStudyLesson(next)||!draftEnabled||!eligibleE07Draft(next))return;
+    const saved=readE07Draft(accountScope,next);
+    if(saved){setResponse(saved);setDraftNotice("restored");}
+  },[accountScope,index,steps,draftEnabled]);
 
   function stopRecognition(){
     const recognition=recognitionRef.current;
@@ -83,11 +94,53 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   const remainingSeconds=timeLimitSeconds===undefined?null:Math.max(0,timeLimitSeconds-elapsedSeconds);
   void timerTick;
 
+  function updateResponse(value:string){
+    setResponse(value);
+    if(isStudyLesson(activeStep)||!eligibleE07Draft(activeStep)||!draftEnabled)return;
+    setDraftNotice(saveE07Draft(accountScope,activeStep,value)?"saved":"unavailable");
+  }
+
+  function changeDraftPreference(enabled:boolean){
+    if(!setE07DraftPreference(accountScope,enabled)){setDraftNotice("unavailable");return;}
+    setDraftEnabled(enabled);
+    if(!enabled){
+      if(!clearAllE07Drafts(accountScope))setDraftNotice("unavailable");
+      else setDraftNotice("idle");
+      return;
+    }
+    if(!isStudyLesson(activeStep)&&eligibleE07Draft(activeStep)&&response.trim()){
+      setDraftNotice(saveE07Draft(accountScope,activeStep,response)?"saved":"unavailable");
+    }
+  }
+
+  function clearCurrentDraft(){
+    if(isStudyLesson(activeStep)||!eligibleE07Draft(activeStep))return;
+    clearE07Draft(accountScope,activeStep);
+    setResponse("");
+    setDraftNotice("idle");
+  }
+
+  function resumeIndependentDraft(){
+    if(!draftEnabled||restorableIndex<0)return;
+    const candidate=steps[restorableIndex];
+    if(!candidate||isStudyLesson(candidate)||!eligibleE07Draft(candidate))return;
+    const saved=readE07Draft(accountScope,candidate);
+    if(!saved)return;
+    setIndex(restorableIndex);
+    setResponse(saved);
+    setFeedback(null);
+    setSaveError(false);
+    setAudioPlayed(false);
+    setDraftNotice("restored");
+    startedAt.current=performance.now();
+  }
+
   function advance(){
     audioProvider.current.stop();
     if(index+1>=steps.length){onComplete();return;}
     setIndex((value)=>value+1);
     setResponse("");
+    setDraftNotice("idle");
     setFeedback(null);
     setSaveError(false);
     setTimerTick(0);
@@ -139,7 +192,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
     recognition.continuous=false;
     recognition.onresult=(event)=>{
       const transcript=event.results[0]?.[0]?.transcript?.trim()??"";
-      if(transcript)setResponse(transcript);
+      if(transcript)updateResponse(transcript);
     };
     recognition.onerror=()=>setSpeechState("error");
     recognition.onend=()=>setSpeechState((value)=>value==="error"?value:"idle");
@@ -149,6 +202,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
 
   if(isStudyLesson(activeStep)){
     return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={false} onExit={onExit} onTheme={toggleTheme}>
+      {draftEnabled&&restorableIndex>index?<div className="e07-draft-resume" role="status"><p>Unfinished original writing or recognized speech text is saved on this device. You can resume it without submitting or grading skipped steps.</p><button type="button" onClick={resumeIndependentDraft}>Resume saved draft <span aria-hidden="true">→</span></button></div>:null}
       <div className="study-lesson j5-sheet j5-sheet--lesson">
         <div className="j5-sheet__cap">
           <span className="eyebrow">LEARN</span>
@@ -200,6 +254,8 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
         grade,
         responseTimeMs:Math.max(0,Math.round(performance.now()-startedAt.current)),
       });
+      clearE07Draft(accountScope,currentPrompt);
+      setDraftNotice("idle");
       setResponse(value);
       setFeedback(grade);
       j9SensoryFeedback(grade.result==="correct"?"success":"correction");
@@ -212,6 +268,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   }
 
   return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={Boolean(feedback)} onExit={()=>{if(!savingRef.current)onExit();}} onTheme={toggleTheme}>
+    {draftEnabled&&restorableIndex>index?<div className="e07-draft-resume" role="status"><p>Continue unfinished unscored production from this device; earlier prompts are not marked completed by this shortcut.</p><button type="button" onClick={resumeIndependentDraft}>Resume saved draft <span aria-hidden="true">→</span></button></div>:null}
     <div className={"j5-sheet j5-sheet--"+mode.mode}>
       <div className="j5-sheet__cap">
         <span className="eyebrow">{currentPrompt.instruction.toUpperCase()}</span>
@@ -259,7 +316,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
         :currentPrompt.promptType==="textarea"
           ?<form className="productive-response j5-writing" onSubmit={(event)=>{event.preventDefault();void submit();}}>
             <div className="j5-writing__paper">
-              <textarea autoFocus disabled={Boolean(feedback)||saving||interactionLocked} value={response} onChange={(event)=>setResponse(event.target.value)} placeholder={currentPrompt.placeholder??"日本語で書いてください…"} rows={7}/>
+              <textarea autoFocus disabled={Boolean(feedback)||saving||interactionLocked} value={response} onChange={(event)=>updateResponse(event.target.value)} maxLength={E07_DRAFT_LIMIT} placeholder={currentPrompt.placeholder??"日本語で書いてください…"} rows={7}/>
             </div>
             <div className="productive-response-meta">
               <span>{response.length} characters{currentPrompt.minimumCharacters?" · target "+currentPrompt.minimumCharacters+"+":""}</span>
@@ -281,10 +338,18 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
               </div>
             </div>
             :<form className="j5-typed-form" onSubmit={(event)=>{event.preventDefault();void submit();}}>
-              <input autoFocus disabled={Boolean(feedback)||saving||interactionLocked} value={response} onChange={(event)=>setResponse(event.target.value)} placeholder={currentPrompt.placeholder}/>
+              <input autoFocus disabled={Boolean(feedback)||saving||interactionLocked} value={response} onChange={(event)=>updateResponse(event.target.value)} placeholder={currentPrompt.placeholder}/>
               <button className="primary" disabled={!response.trim()||Boolean(feedback)||saving||interactionLocked} type="submit">Check</button>
             </form>}
 
+      {eligibleE07Draft(currentPrompt)&&!feedback?<div className="e07-draft-controls">
+        <label><input type="checkbox" checked={draftEnabled} onChange={event=>changeDraftPreference(event.target.checked)}/> Keep unfinished ungraded writing or recognized speech text on this device</label>
+        <p>Optional. Stored locally, unencrypted and scoped to this learner account. Not synced, not an assessment, and no audio is stored. Turning this off clears E07 drafts for this account.</p>
+        {draftEnabled&&draftNotice==="restored"?<p role="status">Your previous unsent draft was restored on this device.</p>:null}
+        {draftEnabled&&draftNotice==="saved"?<p role="status">Draft saved locally.</p>:null}
+        {draftNotice==="unavailable"?<p role="alert">This browser could not keep the draft. Copy your text before leaving.</p>:null}
+        {draftEnabled&&response.trim()?<button type="button" className="quiet-button" onClick={clearCurrentDraft}>Discard this local draft</button>:null}
+      </div>:null}
       {saveError?<p className="audio-error" role="alert">This answer was not saved on your device. Check browser storage and retry.</p>:null}
       {hasListeningCue&&!audioPlayed&&audioState!=="error"?<p className="audio-gate j5-audio-gate">Play the listening cue before answering.</p>:null}
 

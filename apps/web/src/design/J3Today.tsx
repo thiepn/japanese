@@ -1,5 +1,7 @@
 import {useMemo} from "react";
 import type {StudySummary,E01Progress,E02Overview,E03Overview,E04Overview,E05Evidence,E06Overview} from "../study/runtime";
+import {E07JourneyPanel} from "./E07JourneyPanel";
+import type {E07Journey,E07Action} from "../study/e07LearningRoute";
 import {JCartouche,JDivider,JInkProgress,JPattern,JSeal} from "./index";
 
 type J3TodayProps={
@@ -13,6 +15,7 @@ type J3TodayProps={
   e04:E04Overview;onStartE04:(id:string)=>void;onStartE04Delayed:(id:string)=>void;
   e05:E05Evidence;onStartE05Repair:()=>void;
   e06:E06Overview;onStartE06:(id:string)=>void;onStartE06Delayed:(id:string)=>void;
+  e07:E07Journey;onOpenE07:(action:E07Action)=>void;
 };
 
 type RouteItem={
@@ -35,7 +38,7 @@ function japaneseDate(now=new Date()):string{
   }
 }
 
-export function J3Today({summary,completedToday,status,onStart,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,e05,onStartE05Repair,e06,onStartE06,onStartE06Delayed}:J3TodayProps){
+export function J3Today({summary,completedToday,status,onStart,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,e05,onStartE05Repair,e06,onStartE06,onStartE06Delayed,e07,onOpenE07}:J3TodayProps){
   const route=useMemo<RouteItem[]>(()=>[
     {id:"review",japanese:"復",label:"Review",count:summary.due,tone:"review"},
     {id:"learn",japanese:"学",label:"Learn",count:summary.newKana+summary.newVocabulary+summary.course,tone:"learn"},
@@ -116,6 +119,9 @@ export function J3Today({summary,completedToday,status,onStart,e01,onStartE01,on
       </aside>
     </div>
 
+    <E07JourneyPanel route={e07} onActivate={onOpenE07} busy={status==="loading"} variant="today"/>
+    <details className="e07-track-list">
+      <summary>Browse the original E01–E06 lesson entry points</summary>
     <section className="e01-entry" aria-label="A1 first conversations practice">
       <div className="e01-entry__copy"><strong>A1 · First conversations</strong><p>Encounter → understand → discover → practice → communicate → independent response → delayed retrieval. Original dialogues; device-synthesized listening is labeled.</p></div>
       <div className="e01-entry__actions"><button type="button" disabled={status==="loading"} onClick={onStartE01}>Study first conversations</button>{(e01.status==="ready"||e01.status==="reviewed")?<button type="button" disabled={status==="loading"} onClick={onStartE01Delayed}>Delayed transfer</button>:null}</div>
@@ -144,6 +150,7 @@ export function J3Today({summary,completedToday,status,onStart,e01,onStartE01,on
       {e06.nextDelayedId?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06Delayed(e06.nextDelayedId!)}>Changed-context delayed transfer</button>:null}</div>
       {!e06.nextId&&!e06.nextDelayedId?<small>Practise listening and reading in the original source lesson first; the cumulative task will then unlock.</small>:null}
     </section>:null}
+    </details>
     <JDivider kind="ink" className="j3-today__divider"/>
 
     <section className="j3-route" aria-labelledby="j3-route-title">

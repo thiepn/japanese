@@ -170,10 +170,12 @@ function isOriginalSourceEvidence(event:StudyEvent,a:Anchor):boolean{
  return a.sourcePrompts.some(p=>p.id===raw?.promptId);
 }
 function prerequisites(a:Anchor,events:readonly StudyEvent[]):{listening:boolean;reading:boolean;ready:boolean}{
- const passing=events.filter(e=>e.result==="correct"&&isOriginalSourceEvidence(e,a));
- const listening=passing.some(e=>["listening","audio_recognition"].includes(e.skillDimension??""));
- const reading=passing.some(e=>["reading","comprehension","form_selection"].includes(e.skillDimension??""));
- // Requires successful original exposure to both oral/aural and text/form cues.
+ // A previously correct answer does not mask a more recent incorrect attempt.
+ // Only the last event for EACH of the actual original source cue IDs counts.
+ const latest=latestById(events.filter(event=>isOriginalSourceEvidence(event,a)));
+ const passing=a.sourcePrompts.filter(prompt=>latest.get(prompt.id)?.result==="correct");
+ const listening=passing.some(prompt=>["listening","audio_recognition"].includes(prompt.skill));
+ const reading=passing.some(prompt=>["reading","comprehension","form_selection"].includes(prompt.skill));
  return {listening,reading,ready:listening&&reading};
 }
 function eventsFor(s:E06Case,a:Anchor,events:readonly StudyEvent[]):StudyEvent[]{

@@ -18,14 +18,26 @@ export interface E02Overview{
   scenes:E02SceneProgress[];
   nextSceneId:string|null;
   started:number;readyForDelay:number;delayedReviewed:number;total:number;
+  authored:number;unmappedScenes:{id:string;title:string}[];
 }
 const UNIT_MAP=new Map(coreContent.courseUnits.map(unit=>[unit.id,unit]));
 const CAN_DO_MAP=new Map(coreContent.canDos.map(canDo=>[canDo.id,canDo]));
-// Fail closed: no duplicate or invented canonical identities.
+// Graded beginner scenes need real canonical source provenance and linked records.
+const grammars=new Set(coreContent.grammar.map(g=>g.id));
+const sentences=new Set(coreContent.sentences.map(s=>s.id));
+const lexemes=new Set(coreContent.lexemes.map(l=>l.id));
 export const E02_AVAILABLE_SCENES:readonly E02Scene[]=E02_SCENES.filter(scene=>{
-  const unit=UNIT_MAP.get(scene.unitId);
-  return unit?.level==="A1"&&CAN_DO_MAP.has(unit.canDoId);
+ const unit=UNIT_MAP.get(scene.unitId);
+ if(!unit||unit.level!=="A1"||!unit.sourceIds.length)return false;
+ const descriptor=CAN_DO_MAP.get(unit.canDoId);
+ return Boolean(descriptor&&descriptor.sourceIds.length&&
+  unit.grammarIds.every(id=>grammars.has(id))&&
+  unit.sentenceIds.every(id=>sentences.has(id))&&
+  unit.vocabularyIds.every(id=>lexemes.has(id)));
 });
+export const E02_UNMAPPED_SCENES=E02_SCENES
+ .filter(scene=>!E02_AVAILABLE_SCENES.some(available=>available.id===scene.id))
+ .map(scene=>({id:scene.id,title:scene.title}));
 function requireScene(id:string):E02Scene{
   const scene=E02_AVAILABLE_SCENES.find(s=>s.id===id);
   if(!scene)throw Error("E02_UNKNOWN_OR_UNMAPPED_A1_SCENE:"+id);
@@ -155,7 +167,8 @@ export function getE02Overview(events:readonly StudyEvent[],now=new Date()):E02O
   const next=scenes.find(s=>s.state==="learning")??scenes.find(s=>s.state==="not_started")??scenes.find(s=>s.state==="ready")??scenes.find(s=>s.state==="waiting");
   return {scenes,nextSceneId:next?.id??null,started:scenes.filter(s=>s.state!=="not_started").length,
     readyForDelay:scenes.filter(s=>s.state==="ready").length,
-    delayedReviewed:scenes.filter(s=>s.state==="reviewed").length,total:scenes.length};
+    delayedReviewed:scenes.filter(s=>s.state==="reviewed").length,total:scenes.length,
+    authored:E02_SCENES.length,unmappedScenes:E02_UNMAPPED_SCENES};
 }
 export function buildE02Journey(id:string):StudyStep[]{
   const scene=requireScene(id),unit=UNIT_MAP.get(scene.unitId)!;
@@ -191,4 +204,27 @@ export function buildE02DelayedJourney(id:string,events:readonly StudyEvent[],no
   if(state!=="ready"&&state!=="reviewed")throw Error("E02_DELAYED_TRANSFER_NOT_READY:"+id);
   return [lesson(scene,"delayed","Delayed A1 transfer · "+scene.title,
     "The roles and information have changed. Answer without consulting your earlier model. This is a controlled review, not a proficiency certificate."),...delayedPrompts(scene)];
+}
+
+
+/** Original A1 content without a canonical association has no scored steps. */
+export function buildE02Preview(id:string):StudyStep[]{
+ const scene=E02_SCENES.find(s=>s.id===id&&E02_UNMAPPED_SCENES.some(unmapped=>unmapped.id===id));
+ if(!scene)throw Error("E02_PREVIEW_ONLY_FOR_UNMAPPED:"+id);
+ const mk=(key:string,title:string,body:string,examples:StudyLesson["examples"]=[]):StudyLesson=>({
+  kind:"lesson",id:"e07-e02-preview-"+id+"-"+key,title,body,examples,
+  contextId:"e07-e02-preview-"+id,
+  sourceLabel:"Original THIEPN A1 · thiepn-original · ungraded pending canonical source alignment"
+ });
+ return [
+  mk("setup","A1 original conversation · "+scene.title,
+   scene.setting+" This original dialogue remains available while its source-linked A1 unit association is incomplete. No grades, progress or FSRS events will be fabricated."),
+  mk("dialogue","Meet the speakers and understand the exchange",
+   "Read the original conversation and compare the speakers' intentions.",
+   scene.dialogue.map(d=>({expression:d.ja,note:d.en}))),
+  mk("notice","Notice the language pattern",scene.notice),
+  mk("independent","Use your own information",
+   scene.writingTask+" "+scene.speakingTask+
+   " This is an ungraded reading view. No writing or speech event is submitted."),
+ ];
 }

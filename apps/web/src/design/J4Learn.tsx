@@ -22,6 +22,8 @@ import type {
   StudySummary,
   VocabularyMasterySummary,
 } from "../study/runtime";
+import {E07JourneyPanel} from "./E07JourneyPanel";
+import type {E07Journey,E07Action} from "../study/e07LearningRoute";
 import {JCartouche,JInkProgress,JPattern,JSeal} from "./index";
 
 type Props={
@@ -29,8 +31,9 @@ type Props={
   e02:E02Overview;onStartE02:(id:string)=>void;onStartE02Delayed:(id:string)=>void;
   e03:E03Overview;onStartE03:(id:string)=>void;onStartE03Delayed:(id:string)=>void;
   e04:E04Overview;onStartE04:(id:string)=>void;onStartE04Delayed:(id:string)=>void;onStartE04Preview:(id:string)=>void;
-  e05:E05Evidence;onStartE05Repair:()=>void;onStartE03Preview:(id:string)=>void;
+  e05:E05Evidence;onStartE05Repair:()=>void;onStartE03Preview:(id:string)=>void;onStartE02Preview:(id:string)=>void;
   e06:E06Overview;onStartE06:(id:string)=>void;onStartE06Delayed:(id:string)=>void;onStartE06Preview:(id:string)=>void;
+  e07:E07Journey;onOpenE07:(action:E07Action)=>void;
   summary:StudySummary;
   kana:KanaMasterySummary;
   vocab:VocabularyMasterySummary;
@@ -79,7 +82,7 @@ const LEVEL_ORDER=["A1","A2","B1","B2","C1"];
 
 export function J4Learn(props:Props){
   const {
-    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,e06,onStartE06,onStartE06Delayed,onStartE06Preview,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
+    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,onStartE06,onStartE06Delayed,onStartE06Preview,e07,onOpenE07,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
     milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,
     onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartAssessment,
     onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,
@@ -147,6 +150,9 @@ export function J4Learn(props:Props){
       </div>
     </header>
 
+    <E07JourneyPanel route={e07} onActivate={onOpenE07} busy={status==="loading"} variant="learn"/>
+    <details className="e07-track-list">
+      <summary>Browse every original A1/A2 situation, repair studio and cumulative lesson</summary>
     <section className="e01-entry" aria-label="Original A1 guided conversation journey">
       <div className="e01-entry__copy"><strong>First conversations · A1 contextual learning</strong><p>{e01.canDo} · {e01.answered} guided attempts · {e01.unscored} independent draft attempts. Spoken recognition and structure-only writing never certify fluency.</p>{e01.status==="waiting"&&e01.reviewAvailableAt?<p>Delayed review opens {new Date(e01.reviewAvailableAt).toLocaleString()}.</p>:null}</div>
       <div className="e01-entry__actions"><button type="button" disabled={status==="loading"} onClick={onStartE01}>{e01.answered?"Practice again":"Start contextual lesson"}</button>{(e01.status==="ready"||e01.status==="reviewed")?<button type="button" disabled={status==="loading"} onClick={onStartE01Delayed}>Delayed transfer</button>:null}</div>
@@ -160,7 +166,8 @@ export function J4Learn(props:Props){
         <div className="e02-course__actions"><button type="button" disabled={status==="loading"} onClick={()=>onStartE02(item.id)}>{item.state==="not_started"?"Study situation":"Repeat situation"}</button>
           {(item.state==="ready"||item.state==="reviewed")?<button className="secondary" type="button" disabled={status==="loading"} onClick={()=>onStartE02Delayed(item.id)}>Delayed transfer</button>:null}</div>
       </li>)}</ol>
-      {e02.total===0?<p role="status">No E02 scenes are mapped to the current canonical A1 course.</p>:null}
+      {e02.unmappedScenes.length>0?<details className="e07-source-only"><summary>{e02.unmappedScenes.length} original A1 conversations awaiting complete source-backed unit linkage</summary><p>These original texts have no scored prompts or fabricated Can-do evidence.</p><ul>{e02.unmappedScenes.map(s=><li key={s.id}><strong>{s.title}</strong><button type="button" disabled={status==="loading"} onClick={()=>onStartE02Preview(s.id)}>Read original conversation</button></li>)}</ul></details>:null}
+      {e02.total===0?<p role="status">No E02 scenes currently have a complete canonical A1 source link. Original lessons remain readable above without graded events.</p>:null}
     </section>
     <section className="e03-path" aria-labelledby="e03-path-title">
       <header className="e03-path__heading"><div><p className="j4-kicker">E03 · ORIGINAL A2.1 COMMUNICATION</p><h2 id="e03-path-title">Use Japanese across connected situations</h2><p>{e03.authored} original scenes authored · {e03.total} linked to an existing A2 Can-do. A2.1 placement is provisional and does not certify a CEFR level.</p></div><strong>{e03.delayedReviewed}/{e03.total} delayed transfer checks</strong></header>
@@ -210,6 +217,7 @@ export function J4Learn(props:Props){
       </li>)}</ol>
       <p>Any A2.1/A2.2 placement beyond an explicit canonical designation is provisional. Open writing and speech transcripts are not proficiency scores.</p>
     </section>
+    </details>
     <section className="j4-foundation" aria-labelledby="j4-foundation-title">
       <header>
         <span className="j4-vertical-label" aria-hidden="true" lang="ja">土台</span>
