@@ -1497,7 +1497,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
           </section>:null}
           <P60ConsolidationStudio key={"p60:"+owner+":"+unitId}
             onDirtyChange={(dirty)=>reportSpecialistDraft("p60",dirty)} lessons={p60Units}
-            preferredId={p60Recommended?.id} readyIds={p60RecallReadyIds}
+            preferredId={r4WritingContext&&p60ById(r4WritingContext)?.units.includes(unitId)?
+              r4WritingContext:p60Recommended?.id}
+            resumeWritingForId={r4WritingContext&&p60ById(r4WritingContext)?.units.includes(unitId)?
+              r4WritingContext:undefined}
+            readyIds={p60RecallReadyIds}
             historical={p60Historical} disabled={disabled}
             onPractice={(lessonId,kind)=>{
               const lesson=p60ById(lessonId);
