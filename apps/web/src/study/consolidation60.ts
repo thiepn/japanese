@@ -112,6 +112,7 @@ export const p60RevisionPrompts:StudyPrompt[]=p60Units.map(m=>{
  return {...b,id:"p60-revision-"+m.id,skill:"form_selection",promptType:"choice",
   instruction:"Eigenen Korrekturtext nur unbenotet in Learn verfassen; im nativen Review original verfasste richtige Optionen von der belegbar falschen Aussage unterscheiden.",
   prompt:sources(m)+"\nFalscher originaler Beispieltext: "+q.flawed,
+  choices:[q.model,q.flawed,q.alternative],
   acceptedAnswers:[normalizeP26(q.model),normalizeP26(q.alternative)],
   displayAnswer:q.model,explanation:q.why+" Freie sinngleiche Ausdrücke sind nicht automatisch bewertbar.",
   eventMetadata:{...b.eventMetadata,kind:"a2-cumulative-misconception-repair",nativeGradedMode:"authored-closed-choice",freeJapaneseWritingUngraded:true}
