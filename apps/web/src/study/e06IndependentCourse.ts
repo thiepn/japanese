@@ -197,6 +197,24 @@ function e08RevisionPrompt(s:E06Case,a:Anchor,x:E08Extension):StudyPrompt{
   })
  };
 }
+function e08SpeakingFollowUp(s:E06Case,a:Anchor,x:E08Extension):StudyPrompt{
+ return {
+  id:PREFIX+s.id+"-e08-roleplay",
+  primaryTarget:{kind:"can_do",id:a.canDoId},
+  skill:"production",cueFamily:PREFIX+s.id+"-e08-speech-transfer",
+  promptType:"speech",instruction:"Unscored follow-up: respond to a different person and changed practical constraint.",
+  prompt:x.revision.speakingFollowUp,promptLanguage:"en",
+  acceptedAnswers:[],displayAnswer:"Your own Japanese speech transcript; no acoustic model",
+  requiredTerms:[],minimumCharacters:s.level==="A1"?8:18,
+  explanation:"Compare the content, courtesy and practical constraints yourself. A browser transcript cannot prove correct pronunciation, semantic adequacy or CEFR level.",
+  contextId:PREFIX+s.id,sourceId:ORIGINAL,contentVersion:coreContent.version,
+  activity:"speaking",languageActivity:"spoken_interaction",
+  eventMetadata:metadata(s,a,"independent",{
+    e08:true,e08Task:"different-role-speaking",nonAuthoritative:true,
+    schedulerExcluded:true,acousticScore:false,semanticScore:false,structuralOnly:true
+  })
+ };
+}
 function e08TransferPrompts(s:E06Case,a:Anchor,x:E08Extension):StudyPrompt[]{
  const d=x.delayed;
  const common:[string,string]=[d.contrast,d.contrast];
@@ -329,6 +347,9 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
  const [listen,read,negotiate,recall,secondListen,secondRead]=controlledPrompts(s,a);
  const ext=e08ByCase.get(s.id);
  const ownEvents=eventsFor(s,a,events);
+ const recent=latestById(ownEvents);
+ const previousContextListeningIncorrect=recent.get(PREFIX+s.id+"-e08-context-listen")?.result==="incorrect";
+ const previousContextReadingIncorrect=recent.get(PREFIX+s.id+"-e08-context-read")?.result==="incorrect";
  const previousFirst=ownEvents.filter(e=>e.metadata?.promptId===PREFIX+s.id+"-write"&&e.metadata?.nonAuthoritative===true&&typeof e.metadata.learnerResponse==="string")
   .sort((x,y)=>y.occurredAt.localeCompare(x.occurredAt))[0];
  const privateFirst=typeof previousFirst?.metadata?.learnerResponse==="string"?previousFirst.metadata.learnerResponse:"";
@@ -354,10 +375,25 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
   ...(ext&&secondListen&&secondRead?[
     lesson(s,"e08-change","A second real-world problem · "+ext.focus,
       ext.why+" First listen without reading the dialogue. This is newly authored contextual teaching, not a copied lesson.",[],a),
+    ...(previousContextListeningIncorrect?[
+      lesson(s,"e08-audio-misconception","Targeted listening repair · New attempt",
+        "Your last answer to this exact audio task was incorrect. Listen for the relevant changed detail rather than recognizing one familiar word. "+
+        ext.why,[
+          {expression:"Distinction A",note:ext.evidence.reasons[0]},
+          {expression:"Distinction B",note:ext.evidence.reasons[1]}
+        ],a)
+    ]:[]),
     secondListen,
     lesson(s,"e08-dialogue","Reveal the revised conversation · Speaker intentions",
       "The characters and practical constraint have changed. Identify what each person knows and what remains uncertain.",
       ext.dialogue.map(t=>({expression:t.speaker+"： "+t.ja,note:t.en+" · "+t.intention})),a),
+    ...(previousContextReadingIncorrect?[
+      lesson(s,"e08-reading-misconception","Targeted reading repair · Separate fact from assumption",
+        "Your previous answer to this new notice did not match the source. Verify time, conditions, who made a promise and what remains unconfirmed.",[
+          {expression:"Check the first alternative",note:ext.decision.reasons[0]},
+          {expression:"Check the second alternative",note:ext.decision.reasons[1]}
+        ],a)
+    ]:[]),
     secondRead,
     lesson(s,"e08-reading","Independent practical notice · "+ext.notice.title,
       ext.notice.en+" Notice what is explicitly stated before inferring a recommendation.",
@@ -378,6 +414,7 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
       ext.revision.speakingFollowUp+" No speech transcript is an acoustic or pragmatic proficiency score.",[],a)
   ]:[]),
   open(s,a,true),
+  ...(ext?[e08SpeakingFollowUp(s,a,ext)]:[]),
   lesson(s,"revise","Review your own output",
    s.independent.revision+" The next time, respond without copying the revealed dialogue.",[],a),
   lesson(s,"spaced-return","Independent later transfer",
