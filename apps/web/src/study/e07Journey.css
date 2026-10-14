@@ -1,0 +1,25 @@
+.e07-journey{margin:1.1rem 0;padding:1rem 1.25rem;border:1px solid var(--border,rgba(115,115,115,.38));background:var(--surface,transparent)}
+.e07-journey__header{display:flex;align-items:start;justify-content:space-between;gap:1.1rem;flex-wrap:wrap}
+.e07-journey__eyebrow{font-size:.72rem;letter-spacing:.12em;font-weight:650;opacity:.78}
+.e07-journey h2{margin:.3rem 0 .45rem;font-size:clamp(1.1rem,2vw,1.45rem)}
+.e07-journey p{margin:.4rem 0;line-height:1.55}
+.e07-journey__basis{font-size:.77rem;text-transform:uppercase;letter-spacing:.08em;opacity:.7}
+.e07-journey__primary{display:flex;align-items:center;justify-content:space-between;gap:1rem;border-top:1px solid var(--border,rgba(115,115,115,.24));margin-top:.85rem;padding:1rem 0}
+.e07-journey__primary strong{display:block;font-size:1.05rem}.e07-journey small{display:block;line-height:1.45;opacity:.78}
+.e07-journey button{min-height:44px;white-space:normal;text-align:left}
+.e07-journey__summary{display:flex;gap:.4rem 1.2rem;flex-wrap:wrap;padding:.55rem 0;font-size:.84rem;border-top:1px solid var(--border,rgba(115,115,115,.21))}
+.e07-journey__other{border-top:1px solid var(--border,rgba(115,115,115,.25));margin-top:.55rem;padding-top:.6rem}
+.e07-journey__other summary,.e07-track-list summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:.5rem;font-weight:600}
+.e07-journey__other ul{list-style:none;padding:0;margin:.25rem 0}
+.e07-journey__other li{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.65rem 0;border-top:1px solid var(--border,rgba(115,115,115,.15))}
+.e07-journey__note{font-size:.82rem;opacity:.74}
+.e07-track-list{padding:0;margin:1rem 0;border-top:1px solid var(--border,rgba(115,115,115,.3))}
+.e07-track-list>summary{padding:.8rem 1rem}
+.e07-track-list>section{margin:1rem 0}
+.e07-draft-controls{padding:.8rem 0;margin:.5rem 0;border-top:1px solid var(--border,rgba(115,115,115,.3));font-size:.88rem}
+.e07-draft-controls label{display:flex;align-items:center;gap:.55rem;line-height:1.45;cursor:pointer}
+.e07-draft-controls input{width:1.15rem;height:1.15rem;flex:none}
+.e07-draft-controls p{margin:.45rem 0;opacity:.75;line-height:1.5}
+.e07-draft-controls button{min-height:44px}
+.e07-journey button:focus-visible,.e07-track-list summary:focus-visible,.e07-draft-controls button:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+@media(max-width:720px){.e07-journey{padding:.9rem}.e07-journey__primary{align-items:stretch;flex-direction:column}.e07-journey__primary button{width:100%}.e07-journey__other li{align-items:flex-start;flex-direction:column}.e07-journey__other li button{align-self:stretch}}
