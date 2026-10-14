@@ -6,7 +6,7 @@ import { ReaderPlaybackFence } from "./playbackFence";
 import { getAdaptiveImmersionRecommendation,type AdaptiveImmersionRecommendation } from "./adaptive";
 import { getAutonomyMissionProgress,type AutonomyMissionProgress } from "../study/autonomyMissions";
 import type { ReadingQuestion } from "@thiepn/content-schema";
-import type {E02Overview,E03Overview,E04Overview,E05Evidence} from "../study/runtime";
+import type {E02Overview,E03Overview,E04Overview,E05Evidence,E06Overview} from "../study/runtime";
 import {
   buildReaderText,getImmersionProgress,gradeReadingQuestion,recordListeningExposure,recordListeningSegmentReplay,recordMinedWord,
   recordReaderLookup,recordReadingExposure,recordTextCheck,
@@ -16,7 +16,7 @@ import {
 type CheckMode="reading"|"listening";
 interface SelectedToken { token:ReaderToken; sentenceId:string; }
 
-export function Immersion({e05,onStartE05Repair,onStartE03Preview,e04,onStartE04,onStartE04Preview,e03,onStartE03,e02,onStartE02,onStartE01,onStartProductionTask,onStartC1Synthesis,onOpenC1Coach}:{e05:E05Evidence;onStartE05Repair:()=>void;onStartE03Preview:(id:string)=>void;e04:E04Overview;onStartE04:(id:string)=>void;onStartE04Preview:(id:string)=>void;e03:E03Overview;onStartE03:(id:string)=>void;e02:E02Overview;onStartE02:(id:string)=>void;onStartE01:()=>void;onStartProductionTask:(taskId:string)=>void;onStartC1Synthesis:(packId:string)=>void;onOpenC1Coach:(chainId:string)=>void}){
+export function Immersion({e06,onStartE06,onStartE06Delayed,onStartE06Preview,e05,onStartE05Repair,onStartE03Preview,e04,onStartE04,onStartE04Preview,e03,onStartE03,e02,onStartE02,onStartE01,onStartProductionTask,onStartC1Synthesis,onOpenC1Coach}:{e06:E06Overview;onStartE06:(id:string)=>void;onStartE06Delayed:(id:string)=>void;onStartE06Preview:(id:string)=>void;e05:E05Evidence;onStartE05Repair:()=>void;onStartE03Preview:(id:string)=>void;e04:E04Overview;onStartE04:(id:string)=>void;onStartE04Preview:(id:string)=>void;e03:E03Overview;onStartE03:(id:string)=>void;e02:E02Overview;onStartE02:(id:string)=>void;onStartE01:()=>void;onStartProductionTask:(taskId:string)=>void;onStartC1Synthesis:(packId:string)=>void;onOpenC1Coach:(chainId:string)=>void}){
   const [progress,setProgress]=useState<ImmersionProgress|null>(null);
   const [recommendation,setRecommendation]=useState<AdaptiveImmersionRecommendation|null>(null);
   const [missions,setMissions]=useState<AutonomyMissionProgress[]>([]);
@@ -214,6 +214,12 @@ export function Immersion({e05,onStartE05Repair,onStartE03Preview,e04,onStartE04
     questionIndex={questionIndex} feedback={feedback} answerQuestion={answerQuestion} nextQuestion={nextQuestion} speakingSegment={speakingSegment} speakSegment={speakSegment}/>;
 
   return <>
+    {e06.total>0?<section className="e06-entry" aria-label="Independent A1 and A2 cumulative immersion">
+      <div><strong>Cumulative listening · Reading · Communication</strong><p>Longer original exchanges, independently authored practical readings and changed-context retrieval. Device-synthesized audio is not a native recording.</p></div>
+      <div className="e06-entry__actions">{e06.nextId?<button type="button" onClick={()=>onStartE06(e06.nextId!)}>Listen and read: {e06.cases.find(c=>c.id===e06.nextId)?.title}</button>:null}
+      {e06.nextDelayedId?<button type="button" onClick={()=>onStartE06Delayed(e06.nextDelayedId!)}>Open delayed transfer</button>:null}
+      {!e06.nextId&&e06.unlinked>0?<button type="button" onClick={()=>onStartE06Preview(e06.cases.find(c=>c.canDoId===null)!.id)}>Read original source-only case</button>:null}</div>
+    </section>:null}
     {e05.repair.pending>0?<section className="e05-panel" aria-label="Alternative original reading and listening correction"><div><strong>Retrieve in a different situation</strong><p>{e05.repair.pending} misconceptions have an original alternative question ready. Normal FSRS reviews remain authoritative.</p></div><button type="button" onClick={onStartE05Repair}>Repair a missed cue</button></section>:null}
     {e03.unmappedScenes.length>0?<section className="e05-panel" aria-label="Original ungraded A2 dialogue"><div><strong>A2 reading without an invented Can-do</strong><p>Read the original dialogue and connected passage without fabricated mastery.</p></div><button type="button" onClick={()=>onStartE03Preview(e03.unmappedScenes[0]!.id)}>Read {e03.unmappedScenes[0]!.title}</button></section>:null}
     {e04.nextSceneId||e04.unmapped.length?<section className="e04-entry" aria-label="Original A2.2 connected listening and reading">

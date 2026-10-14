@@ -16,6 +16,12 @@ interface StudyRecognition {
   onerror:(()=>void)|null;onend:(()=>void)|null;
 }
 
+function e06FoilCorrection(prompt:StudyPrompt,response:string):string|undefined{
+  const raw=prompt.eventMetadata?.e06FoilFeedback;
+  if(!Array.isArray(raw))return undefined;
+  const matched=raw.find(item=>typeof item==="object"&&item!==null&&item.response===response&&typeof item.feedback==="string");
+  return typeof matched?.feedback==="string"?matched.feedback:undefined;
+}
 export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[];onAnswer:(answer:StudyAnswer)=>Promise<void>|void;onComplete:()=>void;onExit:()=>void;}){
   const [index,setIndex]=useState(0);
   const [response,setResponse]=useState("");
@@ -176,6 +182,7 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
   }
 
   const currentPrompt=activeStep;
+  const misconceptionNote=feedback?.result==="incorrect"?e06FoilCorrection(currentPrompt,response):undefined;
   const hasListeningCue=Boolean(currentPrompt.audio||currentPrompt.speechSynthesisText);
   const answerLocked=hasListeningCue&&!audioPlayed;
   const interactionLocked=answerLocked||audioState==="playing";
@@ -294,6 +301,8 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
           {currentPrompt.audio.reading?<small lang="ja">{currentPrompt.audio.reading}</small>:null}
         </div>:null}
         {currentPrompt.explanation?<p>{currentPrompt.explanation}</p>:null}
+        {misconceptionNote?<p className="e06-correction"><strong>Why that option does not fit:</strong> {misconceptionNote}</p>:null}
+        {currentPrompt.eventMetadata?.e06===true?<p className="e06-boundary">{currentPrompt.eventMetadata.e06Stage==="delayed"?"Changed-context bounded retrieval—not formal proficiency.":currentPrompt.eventMetadata.nonAuthoritative===true?"Unscored draft: device recognition and structural checks cannot grade meaning or pronunciation.":"Controlled response: independent communication is practised separately."}</p>:null}
         {currentPrompt.eventMetadata?.e05Repair===true?<p className="e05-feedback">Changed-question correction: this answer is saved as original practice but does not alter the FSRS card for your previously missed cue. Revisit the original cue on its normal schedule.</p>:null}
         {currentPrompt.eventMetadata?.e05Repair!==true&&(currentPrompt.eventMetadata?.e01===true||currentPrompt.eventMetadata?.e02===true||currentPrompt.eventMetadata?.e03===true||currentPrompt.eventMetadata?.e04===true)?<p className="e05-feedback">{currentPrompt.promptType==="typed"?"Answer choices removed: bounded model recall.":currentPrompt.promptType==="choice"?"Guided recognition; later independent recall and delayed transfer remove the choices.":"This structural-only task does not prove pronunciation or semantic proficiency."}</p>:null}
         {(currentPrompt.promptType==="textarea"||currentPrompt.promptType==="speech")&&currentPrompt.requiredTerms?.length?<p className="productive-rubric">

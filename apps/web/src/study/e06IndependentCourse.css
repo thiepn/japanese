@@ -1,0 +1,22 @@
+/* E06 uses the existing editorial UI and original Study Player. */
+.e06-entry,.e06-course{border:1px solid var(--border,rgba(120,120,120,.32));padding:1rem 1.2rem;margin:1.2rem 0;background:var(--surface,transparent)}
+.e06-entry,.e06-course__header{display:flex;align-items:start;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.e06-entry h2,.e06-course h2{margin:.25rem 0 .6rem}
+.e06-entry p,.e06-course p{line-height:1.5;margin:.3rem 0}
+.e06-entry__actions,.e06-course__actions{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.e06-entry button,.e06-course button{min-height:44px;max-width:100%;white-space:normal;text-align:left}
+.e06-course__header>strong{font-variant-numeric:tabular-nums}
+.e06-course__cases,.e06-course__progress{list-style:none;margin:1rem 0 0;padding:0}
+.e06-course__case{display:grid;grid-template-columns:2.4rem minmax(0,1fr) minmax(10rem,auto);gap:1rem;align-items:start;border-top:1px solid var(--border,rgba(120,120,120,.23));padding:1rem 0}
+.e06-course__number{opacity:.65;font-variant-numeric:tabular-nums}
+.e06-course__info h3{font-size:1.03rem;margin:0}
+.e06-course__info small{display:block;opacity:.75;line-height:1.5}
+.e06-course__actions{max-width:15rem}
+.e06-course__actions button{width:100%}
+.e06-course__metrics{display:flex;flex-wrap:wrap;gap:.7rem 1.2rem;margin:1rem 0}
+.e06-course__progress li{display:grid;grid-template-columns:minmax(10rem,2fr) repeat(3,minmax(7rem,1fr));gap:.75rem;border-top:1px solid var(--border,rgba(120,120,120,.23));padding:.65rem 0;align-items:baseline}
+.e06-course__progress li span{font-size:.88rem;opacity:.8}
+.e06-correction,.e06-boundary{font-size:.9rem;line-height:1.5}
+.e06-course button:focus-visible,.e06-entry button:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+@media(max-width:760px){.e06-course__case{grid-template-columns:2rem minmax(0,1fr)}.e06-course__actions{grid-column:2;max-width:100%}.e06-course__progress li{grid-template-columns:1fr 1fr}.e06-course__progress li strong{grid-column:1/-1}.e06-entry__actions{width:100%}}
+@media(max-width:390px){.e06-course__actions{flex-direction:column;align-items:stretch}.e06-entry button{width:100%}}
