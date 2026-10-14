@@ -7,6 +7,7 @@ import type {
   E02Overview,
   E03Overview,
   E04Overview,
+  E05Evidence,
   A1MilestoneProgress,
   B1MilestoneProgress,
   B2MilestoneProgress,
@@ -27,6 +28,7 @@ type Props={
   e02:E02Overview;onStartE02:(id:string)=>void;onStartE02Delayed:(id:string)=>void;
   e03:E03Overview;onStartE03:(id:string)=>void;onStartE03Delayed:(id:string)=>void;
   e04:E04Overview;onStartE04:(id:string)=>void;onStartE04Delayed:(id:string)=>void;onStartE04Preview:(id:string)=>void;
+  e05:E05Evidence;onStartE05Repair:()=>void;onStartE03Preview:(id:string)=>void;
   summary:StudySummary;
   kana:KanaMasterySummary;
   vocab:VocabularyMasterySummary;
@@ -75,7 +77,7 @@ const LEVEL_ORDER=["A1","A2","B1","B2","C1"];
 
 export function J4Learn(props:Props){
   const {
-    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
+    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
     milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,
     onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartAssessment,
     onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,
@@ -160,7 +162,7 @@ export function J4Learn(props:Props){
     </section>
     <section className="e03-path" aria-labelledby="e03-path-title">
       <header className="e03-path__heading"><div><p className="j4-kicker">E03 · ORIGINAL A2.1 COMMUNICATION</p><h2 id="e03-path-title">Use Japanese across connected situations</h2><p>{e03.authored} original scenes authored · {e03.total} linked to an existing A2 Can-do. A2.1 placement is provisional and does not certify a CEFR level.</p></div><strong>{e03.delayedReviewed}/{e03.total} delayed transfer checks</strong></header>
-      {e03.unmapped.length>0?<details className="e03-path__scope"><summary>{e03.unmapped.length} original situations awaiting a verified A2 Can-do association</summary><p>{e03.unmapped.join(" · ")}. No learning or mastery events are fabricated for unlinked content.</p></details>:null}
+      {e03.unmappedScenes.length>0?<details className="e03-path__scope"><summary>{e03.unmappedScenes.length} original situations awaiting a verified A2 Can-do association</summary><p>These original texts remain reading-only, with no graded events.</p><ul>{e03.unmappedScenes.map(s=><li key={s.id}><strong>{s.title}</strong><button type="button" disabled={status==="loading"} onClick={()=>onStartE03Preview(s.id)}>Open reading</button></li>)}</ul></details>:null}
       <ol className="e03-path__list">{e03.scenes.map((scene,index)=><li key={scene.id} className="e03-path__item">
         <span className="e03-path__number">{String(index+1).padStart(2,"0")}</span>
         <div className="e03-path__copy"><h3>{scene.title}</h3><p>{scene.setting}</p><small>{scene.canDo} · {scene.unitId}</small><small>{scene.correct}/{scene.required} distinct controlled answers correct · {scene.unscoredDrafts} unscored drafts · {scene.state.replaceAll("_"," ")}</small>
@@ -182,6 +184,12 @@ export function J4Learn(props:Props){
       {e04.unmapped.length>0?<details className="e04-path__unmapped"><summary>{e04.unmapped.length} original scenes are available as unscored readings pending canonical A2 mapping</summary><p>No Can-do progress or assessment scores are assigned to these scenes.</p>
         <ul>{e04.unmapped.map(scene=><li key={scene.id}><strong>{scene.title}</strong><button type="button" disabled={status==="loading"} onClick={()=>onStartE04Preview(scene.id)}>Open original dialogue and reading</button></li>)}</ul></details>:null}
       {e04.linked===0?<p role="status">No sufficiently matched canonical A2.2 objectives. Original content is available above in reading-only form, without fabricated mastery.</p>:null}
+    </section>
+    <section className="e05-panel e05-panel--learn" aria-labelledby="e05-learn-title">
+      <header><div><p className="j4-kicker">E05 · ADAPTIVE CORRECTION</p><h2 id="e05-learn-title">Correct the distinction you missed</h2><p>Original alternative questions target misconceptions. The usual FSRS review must still be completed.</p></div><strong>{e05.repair.pending} outstanding</strong></header>
+      {e05.targets.length?<ol>{e05.targets.slice(0,6).map(t=><li key={t.promptId}><strong>{t.title}</strong><small>{t.cohort.toUpperCase()} · {t.skill} · canonical {t.canonicalId}</small></li>)}</ol>:<p>No specific repair targets are pending. Continue your normal lessons.</p>}
+      <button type="button" disabled={status==="loading"||e05.repair.pending===0} onClick={onStartE05Repair}>Practise changed-question corrections</button>
+      <details><summary>Canonical A1/A2 structure and subdivision limits</summary><p>A1 units: {e05.canonical.a1}; unsplit A2 units: {e05.canonical.unsplitA2}; explicitly labeled A2.1: {e05.canonical.explicitA21}; explicitly labeled A2.2: {e05.canonical.explicitA22}. If the source only labels A2, dividing it in halves is not a verified CEFR/JF A2.1/A2.2 mapping.</p></details>
     </section>
     <section className="j4-foundation" aria-labelledby="j4-foundation-title">
       <header>

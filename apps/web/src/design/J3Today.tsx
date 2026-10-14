@@ -1,5 +1,5 @@
 import {useMemo} from "react";
-import type {StudySummary,E01Progress,E02Overview,E03Overview,E04Overview} from "../study/runtime";
+import type {StudySummary,E01Progress,E02Overview,E03Overview,E04Overview,E05Evidence} from "../study/runtime";
 import {JCartouche,JDivider,JInkProgress,JPattern,JSeal} from "./index";
 
 type J3TodayProps={
@@ -11,6 +11,7 @@ type J3TodayProps={
   e02:E02Overview;onStartE02:(id:string)=>void;onStartE02Delayed:(id:string)=>void;
   e03:E03Overview;onStartE03:(id:string)=>void;onStartE03Delayed:(id:string)=>void;
   e04:E04Overview;onStartE04:(id:string)=>void;onStartE04Delayed:(id:string)=>void;
+  e05:E05Evidence;onStartE05Repair:()=>void;
 };
 
 type RouteItem={
@@ -33,7 +34,7 @@ function japaneseDate(now=new Date()):string{
   }
 }
 
-export function J3Today({summary,completedToday,status,onStart,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed}:J3TodayProps){
+export function J3Today({summary,completedToday,status,onStart,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,e05,onStartE05Repair}:J3TodayProps){
   const route=useMemo<RouteItem[]>(()=>[
     {id:"review",japanese:"復",label:"Review",count:summary.due,tone:"review"},
     {id:"learn",japanese:"学",label:"Learn",count:summary.newKana+summary.newVocabulary+summary.course,tone:"learn"},
@@ -131,6 +132,10 @@ export function J3Today({summary,completedToday,status,onStart,e01,onStartE01,on
       <div><p className="j3-today__eyebrow">E04 · INDEPENDENT A2.2 PRACTICE</p><h2>Handle an everyday problem</h2><p>{e04.started}/{e04.linked} linked situations started · {e04.reviewReady} changed-context reviews ready. A2.2 placement is provisional.</p></div>
       <div className="e04-entry__actions">{e04.nextSceneId?<button type="button" disabled={status==="loading"} onClick={()=>onStartE04(e04.nextSceneId!)}>Continue: {e04.scenes.find(s=>s.id===e04.nextSceneId)?.title}</button>:null}
         {e04.scenes.find(s=>s.status==="ready")?<button type="button" disabled={status==="loading"} onClick={()=>onStartE04Delayed(e04.scenes.find(s=>s.status==="ready")!.id)}>Delayed transfer</button>:null}</div>
+    </section>:null}
+    {e05.repair.pending>0?<section className="e05-panel" aria-label="Misconception correction">
+      <div><p className="j3-today__eyebrow">E05 · SPECIFIC REPAIR</p><h2>{e05.repair.pending} misunderstood original cue{e05.repair.pending===1?"":"s"}</h2><p>Practise a changed question without changing your original FSRS schedule.</p></div>
+      <button type="button" disabled={status==="loading"} onClick={onStartE05Repair}>Repair now</button>
     </section>:null}
     <JDivider kind="ink" className="j3-today__divider"/>
 

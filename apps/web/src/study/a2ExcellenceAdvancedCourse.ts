@@ -29,6 +29,16 @@ const canonicalA2=coreContent.courseUnits.filter(u=>
 const hasExplicitA22=canonicalA2.some(u=>u.level==="A2.2");
 const a22=hasExplicitA22?canonicalA2.filter(u=>u.level==="A2.2"):
   canonicalA2.slice(Math.ceil(canonicalA2.length/2));
+const grammarIds=new Set(coreContent.grammar.map(g=>g.id));
+const sentenceIds=new Set(coreContent.sentences.map(s=>s.id));
+const lexicalIds=new Set(coreContent.lexemes.map(l=>l.id));
+function canonicalUnitUsable(u:CourseUnit):boolean{
+ const canDo=byCanDo.get(u.canDoId);
+ return Boolean(canDo&&u.id&&u.sourceIds.length&&canDo.sourceIds.length
+   &&u.grammarIds.every(g=>grammarIds.has(g))
+   &&u.sentenceIds.every(s=>sentenceIds.has(s))
+   &&u.vocabularyIds.every(id=>lexicalIds.has(id)));
+}
 // The latter is ONLY an operational tentative second-half grouping,
 // not a verified JF or CEFR A2.2 classification.
 const SEMANTIC_ANCHOR_RE=/[a-z\u3040-\u30ff\u3400-\u9fff]/iu;
@@ -44,13 +54,13 @@ function associationScore(scene:E04Scene,unit:CourseUnit):number{
 }
 const occupied=new Set<string>();
 export const E04_MAPPED:readonly BoundScene[]=E04_SCENES.flatMap(scene=>{
-  const options=a22.filter(u=>!occupied.has(u.id))
+  const options=a22.filter(u=>!occupied.has(u.id)&&canonicalUnitUsable(u))
    .map(unit=>({unit,score:associationScore(scene,unit)}))
    .sort((a,b)=>b.score-a.score||a.unit.order-b.unit.order);
   const best=options[0];
   // A lexical theme match is insufficient to claim objective equivalence.
   // Keep the association visibly provisional pending curriculum audit.
-  if(!best||best.score<1)return [];
+  if(!best||best.score<2||best.score===(options[1]?.score??-1))return [];
   occupied.add(best.unit.id);
   return [{scene,unit:best.unit,canDo:byCanDo.get(best.unit.canDoId)!}];
 });

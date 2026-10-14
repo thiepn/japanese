@@ -24,10 +24,12 @@ import {buildE01Journey,buildE01DelayedJourney,e01ReviewPrompts,getE01Progress,t
 export type {E01Progress} from "./a1Excellence";
 import {buildE02Journey,buildE02DelayedJourney,e02ReviewPrompts,getE02Overview,type E02Overview} from "./a1ExcellenceCourse";
 export type {E02Overview} from "./a1ExcellenceCourse";
-import {buildE03Journey,buildE03DelayedJourney,e03ReviewPrompts,getE03Overview,type E03Overview} from "./a2ExcellenceCourse";
+import {buildE03Journey,buildE03DelayedJourney,buildE03Preview,e03ReviewPrompts,getE03Overview,type E03Overview} from "./a2ExcellenceCourse";
 export type {E03Overview} from "./a2ExcellenceCourse";
 import {buildE04Journey,buildE04Delayed,buildE04Preview,e04ReviewPrompts,getE04Overview,type E04Overview} from "./a2ExcellenceAdvancedCourse";
 export type {E04Overview} from "./a2ExcellenceAdvancedCourse";
+import {buildE05RepairJourney,getE05Evidence,type E05Evidence} from "./e05AdaptiveRecall";
+export type {E05Evidence} from "./e05AdaptiveRecall";
 import { buildC1SynthesisSession } from "./c1Synthesis";
 
 export const GUEST_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
@@ -122,10 +124,13 @@ export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
   return insertFirstExposureLessons(queue,byId,privatePrompts);
 }
 
+export async function buildE05RepairSession():Promise<StudyStep[]>{return buildE05RepairJourney(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function getE05Dashboard():Promise<E05Evidence>{return getE05Evidence(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
 export async function buildE04Session(sceneId:string):Promise<StudyStep[]>{return buildE04Journey(sceneId);}
 export async function buildE04PreviewSession(sceneId:string):Promise<StudyStep[]>{return buildE04Preview(sceneId);}
 export async function buildE04DelayedSession(sceneId:string):Promise<StudyStep[]>{return buildE04Delayed(sceneId,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
 export async function getE04Evidence():Promise<E04Overview>{return getE04Overview(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function buildE03PreviewSession(sceneId:string):Promise<StudyStep[]>{return buildE03Preview(sceneId);}
 export async function buildE03Session(sceneId:string):Promise<StudyStep[]>{return buildE03Journey(sceneId);}
 export async function buildE03DelayedSession(sceneId:string):Promise<StudyStep[]>{return buildE03DelayedJourney(sceneId,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
 export async function getE03Evidence():Promise<E03Overview>{return getE03Overview(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}

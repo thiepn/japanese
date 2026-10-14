@@ -7,6 +7,7 @@ import type {
   E02Overview,
   E03Overview,
   E04Overview,
+  E05Evidence,
   A1MilestoneProgress,
   B1MilestoneProgress,
   B2MilestoneProgress,
@@ -27,6 +28,7 @@ type Props={
   e02:E02Overview;
   e03:E03Overview;
   e04:E04Overview;
+  e05:E05Evidence;onStartE05Repair:()=>void;
   kana:KanaMasterySummary;
   vocab:VocabularyMasterySummary;
   conjugation:ConjugationMasterySummary;
@@ -55,7 +57,7 @@ type Skill={
 };
 
 export function J8Progress({
-  e04,e03,e02,e01,kana,vocab,conjugation,grammar,sentence,lexicalFluency,milestone,b1Milestone,b2Milestone,c1Foundation,immersion,summary,course,completedToday,
+  e04,e03,e02,e01,e05,onStartE05Repair,kana,vocab,conjugation,grammar,sentence,lexicalFluency,milestone,b1Milestone,b2Milestone,c1Foundation,immersion,summary,course,completedToday,
 }:Props){
   const immersionReading=mean(immersion.texts.map((item)=>item.readingMastery));
   const immersionListening=mean(immersion.texts.map((item)=>item.listeningMastery));
@@ -186,6 +188,21 @@ export function J8Progress({
       <header className="e04-path__heading"><div><p className="j8-kicker">E04 · SOURCE-OWNED A2 COMMUNICATION EVIDENCE</p><h2 id="e04-progress-title">Real practice, not a fluency percentage</h2><p>Distinct counts for guided controlled answers, independent unscored drafts and delayed changed-context responses. No validated A2.2 or spoken acoustic certification is implied.</p></div><strong>{e04.started}/{e04.linked} linked scenarios started</strong></header>
       <div className="e04-evidence"><span>{e04.reviewReady} delayed checks ready</span><span>{e04.reviewed} transfer checks complete</span><span>{e04.unmapped.length} source-only readings awaiting a Can-do association</span></div>
       <ol className="e04-progress-list">{e04.scenes.map(scene=><li key={scene.id}><strong>{scene.title}</strong><span>{scene.guidedCorrect}/{scene.guidedTotal} guided correct</span><span>{scene.unscoredDrafts} unscored drafts</span><span>{scene.delayedCorrect}/{scene.delayedTotal} delayed correct</span></li>)}</ol>
+    </section>
+    <section className="e05-panel e05-panel--progress" aria-labelledby="e05-progress-title">
+      <header><div><p className="j8-kicker">E05 · SOURCE-OWNED LEARNER EVIDENCE</p><h2 id="e05-progress-title">Listening, reading, response and original production</h2><p>Counts derive from canonical Can-do-linked StudyEvents. They do not represent a CEFR score or actual pronunciation mastery.</p></div><strong>{e05.controlled.distinctCorrect} distinct correct controlled cues</strong></header>
+      <div className="e05-stats">
+        <div><strong>{e05.controlled.listening}</strong><span>Correct listening responses</span></div>
+        <div><strong>{e05.controlled.reading}</strong><span>Correct reading/comprehension</span></div>
+        <div><strong>{e05.controlled.formSelection}</strong><span>Correct context/form selections</span></div>
+        <div><strong>{e05.controlled.typedProduction}</strong><span>Correct bounded typed responses</span></div>
+        <div><strong>{e05.unscored.writing}</strong><span>Unscored personal writing drafts</span></div>
+        <div><strong>{e05.unscored.speech}</strong><span>Unscored browser speech transcripts</span></div>
+        <div><strong>{e05.delayed.correct}/{e05.delayed.attempts}</strong><span>Correct / attempted delayed transfer</span></div>
+        <div><strong>{e05.repair.pending}</strong><span>Specific corrections awaiting practice</span></div>
+      </div>
+      {e05.repair.pending>0?<button type="button" onClick={onStartE05Repair}>Repair with different questions</button>:null}
+      <p>Listening and reading counts represent controlled responses, while independent production records drafts without semantic or acoustic scores. One new-context correction never grants mastery.</p>
     </section>
     <section className="j8-skills" aria-labelledby="j8-skills-title">
       <header className="j8-section-head">

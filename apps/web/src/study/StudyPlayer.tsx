@@ -294,6 +294,8 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
           {currentPrompt.audio.reading?<small lang="ja">{currentPrompt.audio.reading}</small>:null}
         </div>:null}
         {currentPrompt.explanation?<p>{currentPrompt.explanation}</p>:null}
+        {currentPrompt.eventMetadata?.e05Repair===true?<p className="e05-feedback">Changed-question correction: this answer is saved as original practice but does not alter the FSRS card for your previously missed cue. Revisit the original cue on its normal schedule.</p>:null}
+        {currentPrompt.eventMetadata?.e05Repair!==true&&(currentPrompt.eventMetadata?.e01===true||currentPrompt.eventMetadata?.e02===true||currentPrompt.eventMetadata?.e03===true||currentPrompt.eventMetadata?.e04===true)?<p className="e05-feedback">{currentPrompt.promptType==="typed"?"Answer choices removed: bounded model recall.":currentPrompt.promptType==="choice"?"Guided recognition; later independent recall and delayed transfer remove the choices.":"This structural-only task does not prove pronunciation or semantic proficiency."}</p>:null}
         {(currentPrompt.promptType==="textarea"||currentPrompt.promptType==="speech")&&currentPrompt.requiredTerms?.length?<p className="productive-rubric">
           Structural check: include at least 60% of these targets: {currentPrompt.requiredTerms.join(" · ")}. This is not a full semantic or pronunciation score.
         </p>:null}
