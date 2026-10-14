@@ -1,0 +1,22 @@
+.r4-independent{border:1px solid var(--border-color,#8886);padding:1rem;min-width:0;margin-block:1.2rem}
+.r4-independent__eyebrow{font-size:.79rem;letter-spacing:.045em;opacity:.75}
+.r4-independent header h5{font-size:1.18rem;margin:.3rem 0}
+.r4-independent header p{line-height:1.65}
+.r4-independent__stages{display:flex;gap:1.4rem;flex-wrap:wrap;padding-inline-start:1.5rem;font-size:.86rem;line-height:1.5}
+.r4-independent__section{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border-color,#8885)}
+.r4-independent h6{font-size:1.02rem;margin:.35rem 0 .75rem}
+.r4-independent__source{border-inline-start:3px solid var(--border-color,#8889);padding:.65rem .8rem;margin:.65rem 0}
+.r4-independent__source small{display:block;opacity:.75}
+.r4-independent__source p[lang=ja]{font-size:1.1rem;line-height:1.9;overflow-wrap:anywhere}
+.r4-independent__actions{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin:.7rem 0}
+.r4-independent__actions button,.r4-independent__section>button{min-height:44px;white-space:normal}
+.r4-independent label{font-size:.88rem;font-weight:600;display:block;margin-block:.65rem .3rem}
+.r4-independent textarea{width:100%;max-width:100%;box-sizing:border-box;padding:.7rem;font-size:1.09rem;line-height:1.85}
+.r4-independent__feedback{padding:.8rem;border:1px solid var(--border-color,#8889);margin-block:.8rem;overflow-wrap:anywhere}
+.r4-independent__feedback ul{line-height:1.7}
+.r4-independent__feedback p[lang=ja],.r4-independent__examples p[lang=ja]{font-size:1.06rem;line-height:1.85}
+.r4-independent__speech{margin:.8rem 0}
+.r4-independent__speech>strong{font-size:.87rem}
+.r4-independent button:focus-visible,.r4-independent textarea:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+.p60-consolidation__r4-panel[hidden]{display:none!important}
+@media(max-width:600px){.r4-independent{padding:.6rem}.r4-independent__actions{display:grid;grid-template-columns:minmax(0,1fr)}.r4-independent__actions button,.r4-independent__section>button{width:100%;min-height:48px}.r4-independent__stages{display:block}}
