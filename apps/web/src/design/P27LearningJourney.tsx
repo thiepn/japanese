@@ -57,6 +57,7 @@ import {P59PerformanceStudio} from "./P59PerformanceStudio";
 import {p60Prompts,p60ComprehensionPrompts,p60ReturnPrompts,p60Units,p60ForUnit,p60ById,p60Compare,p60HistoricalSources} from "../study/consolidation60";
 import {historicalReturnEligibility,isHistoricalReturn} from "../study/returnEligibilityR2";
 import {P60ConsolidationStudio} from "./P60ConsolidationStudio";
+import {r4ForP60} from "../study/extensionR4";
 import {p28NewSentencePrompts} from "../study/sentence28";
 import {p29AdditionalPrompts,p29LexicalPrompts,lexicalLinksForUnit,recommendP29Actions} from "../study/depth29";
 import {describeP29Revision,p29RegisterExampleForUnit} from "../study/revision29";
@@ -167,6 +168,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const [p58WritingId,setP58WritingId]=useState("");
   const [p59WritingId,setP59WritingId]=useState("");
   const [p60WritingId,setP60WritingId]=useState("");
+  const [r4WritingContext,setR4WritingContext]=useState("");
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
   const [voiceStatus,setVoiceStatus]=useState("");
@@ -257,6 +259,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const p58WritingMission=p58ById(p58WritingId);
   const p59WritingMission=p59ById(p59WritingId);
   const p60WritingLesson=p60ById(p60WritingId);
+  const r4WritingCase=p60WritingLesson&&r4WritingContext===p60WritingLesson.id?
+    r4ForP60(p60WritingLesson.id):undefined;
   const p50WritingMission=p50ById(p50WritingId);
   const p49WritingDocument=p49ById(p49WritingId);
   const p48WritingCase=p48ById(p48WritingId);
@@ -877,12 +881,13 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
     setStage("write");
   }
-  function chooseP60Writing(id:string){
+  function chooseP60Writing(id:string,fromR4=false){
     if(!confirmUnsentWriting())return;
     const lesson=p60ById(id);
     if(!lesson)return;
     setUnitId(lesson.units[0]!);setP59WritingId("");
-    setP60WritingId(lesson.id);setP58WritingId("");setP57WritingId("");
+    setP60WritingId(lesson.id);setR4WritingContext(fromR4?lesson.id:"");
+    setP58WritingId("");setP57WritingId("");
     setP56WritingId("");setP55WritingId("");setP54WritingId("");
     setP53WritingId("");setP52WritingId("");setP51WritingId("");
     setP50WritingId("");setP49WritingId("");setP48WritingId("");
@@ -1897,7 +1902,22 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             aria-label="Eigenständige P60-Konsolidierungsnachricht schreiben und revidieren">
             <h5>P60 · Zusammenhängende japanische Nachricht überarbeiten</h5>
             <p><strong>{p60WritingLesson.title}</strong> · {p60WritingLesson.goal}</p>
-            <p><strong>Originale Schreibaufgabe:</strong> {p60WritingLesson.writing.situation}</p>
+            {r4WritingCase?<div className="p27-journey__p51-comparison-feedback">
+              <strong>R4 · Originaler Zusatzfall aus dieser P60-Lektion</strong>
+              <p lang="ja">{r4WritingCase.title}</p>
+              <p><strong>Eigenständiger Originalauftrag:</strong> {r4WritingCase.task}</p>
+              {r4WritingCase.reading.map((line,i)=><div key={i}>
+                <small>{line.role}</small><p lang="ja">{line.ja}</p>
+                <details><summary>Deutsche Quellenbedeutung</summary>{line.de}</details>
+              </div>)}
+              {r4WritingCase.spoken.map((line,i)=><div key={i}>
+                <small>{line.role}</small><p lang="ja">{line.ja}</p>
+                <details><summary>Deutsche Gesprächsbedeutung</summary>{line.de}</details>
+              </div>)}
+              <p><strong>Zu prüfender Denkfehler:</strong> {r4WritingCase.misconception}</p>
+              <small>Der vorhandene Learn-Editor bleibt unbenotet. Diese Quellen
+                werden nicht in eine neue FSRS-Karte umgewandelt.</small>
+            </div>:<p><strong>Originale Schreibaufgabe:</strong> {p60WritingLesson.writing.situation}</p>}
             <p>Der erste Entwurf und die eigene Überarbeitung verwenden den
               ursprünglichen unbenoteten Learn-Editor. Private Textentwürfe
               werden hier nicht dauerhaft gespeichert. Original-StudyPlayer
@@ -1911,7 +1931,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 onClick={()=>startPractice(unitId,`consolidation60-kind:${p60WritingLesson.id}:revision`)}>
                 Mehrteilige Fehlannahme im StudyPlayer korrigieren
               </button>
-              <button type="button" onClick={()=>setP60WritingId("")}>Reguläre Schreibaufgabe wählen</button>
+              <button type="button" onClick={()=>{if(confirmUnsentWriting()){setP60WritingId("");setR4WritingContext("");setDraft("");setRewrite("");setRewriteStage("draft");}}}>Reguläre Schreibaufgabe wählen</button>
             </div>
           </section>:null}
           {p59WritingMission?<section className="p27-journey__p51-writing-selection"
@@ -2324,7 +2344,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <button type="button" disabled={disabled} onClick={()=>startPractice(unitId,"production")}>
               Unabhängige Schreibkorrekturen im StudyPlayer</button>
           </section>:null}
-          <p>{p60WritingLesson?p60WritingLesson.writing.situation:
+          <p>{r4WritingCase?r4WritingCase.task:
+            p60WritingLesson?p60WritingLesson.writing.situation:
             p59WritingMission?p59WritingMission.write.situation:
             p58WritingMission?p58WritingMission.write.situation:
             p57WritingThread?p57WritingThread.compose.situation:
@@ -2447,7 +2468,19 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
           {rewriteStage==="compare"&&report?<div className="p27-journey__note" role="status">
             <strong>Zeichenbasierte Beobachtungen, keine Sprachbewertung</strong>
             <p>{report.oldLength} → {report.newLength} Zeichen. Geändert: {report.changed?"ja":"nein"}</p>
-            {p60WritingLesson?<div className="p27-journey__p51-comparison-feedback">
+            {r4WritingCase?<div className="p27-journey__p51-comparison-feedback">
+              <strong>R4 · Quellenüberarbeitung ohne freie Textbenotung</strong>
+              <p>{r4WritingCase.misconception}</p>
+              <ul>{r4WritingCase.selfCheck.map(x=><li key={x}>{x}</li>)}</ul>
+              <details><summary>Quellenbelege und originale Vergleichsantworten nach eigener Überarbeitung</summary>
+                {r4WritingCase.evidence.map((e,i)=><div key={i}>
+                  <p lang="ja">「{e.quote}」</p><p>{e.meaning}</p>
+                </div>)}
+                {r4WritingCase.models.map((m,i)=><p key={i} lang="ja">{m}</p>)}
+                <p>Unbelegte Aussage: <span lang="ja">{r4WritingCase.trap}</span></p>
+              </details>
+              <small>Zeichenbasierte Textänderung ist kein semantisches Urteil über offene Antworten.</small>
+            </div>:p60WritingLesson?<div className="p27-journey__p51-comparison-feedback">
               <strong>P60 · Quellengebundener eigenständiger Entwurf ohne automatische Freitextnote</strong>
               <p>{p60Compare(rewrite,
                 [p60WritingLesson.writing.model,p60WritingLesson.writing.alternative],
