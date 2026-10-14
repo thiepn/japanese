@@ -109,6 +109,12 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const owner=getDevelopmentAccountId();
   const currentOwner=useRef(owner);currentOwner.current=owner;
   const dirtySpecialistDrafts=useRef(new Set<string>());
+  // Single-use, user-initiated handoff only: source draft never enters
+  // localStorage, sessionStorage, network, study events or an extra ledger.
+  const pendingR4Handoff=useRef<null|{
+    owner:string;unitId:string;draft:string
+  }>(null);
+  const previousOwner=useRef(owner);
   // Only flags live in component memory; never persist actual learner prose.
   function reportSpecialistDraft(id:string,dirty:boolean){
     if(dirty)dirtySpecialistDrafts.current.add(id);
@@ -624,7 +630,16 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setP59WritingId(prev=>p59ById(prev)?.units.includes(unitId)?prev:"");
     setP60WritingId(prev=>p60ById(prev)?.units.includes(unitId)?prev:"");
     setP40GuidedHistory([]);setP40GuidedFinished(false);
-    setError("");setDraft("");setRewrite("");
+    const transferred=pendingR4Handoff.current;
+    const draftToCarry=transferred&&transferred.owner===owner&&
+      transferred.unitId===unitId?transferred.draft:"";
+    pendingR4Handoff.current=null;
+    if(previousOwner.current!==owner){
+      setR4WritingContext("");setR4WritingStage("first");
+      dirtySpecialistDrafts.current.clear();
+    }
+    previousOwner.current=owner;
+    setError("");setDraft(draftToCarry);setRewrite("");
     setRewriteStage("draft");setReport(null);setSaved(false);setVoiceStatus("");
     started.current=performance.now();
   },[unitId,owner]);
@@ -897,6 +912,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     }else if(!confirmUnsentWriting())return;
     const lesson=p60ById(id);
     if(!lesson)return;
+    pendingR4Handoff.current=fromR4&&lesson.units[0]!==unitId?
+      {owner,unitId:lesson.units[0]!,draft:initialDraft}:null;
     setUnitId(lesson.units[0]!);setP59WritingId("");
     setP60WritingId(lesson.id);setR4WritingContext(fromR4?lesson.id:"");
     setR4WritingStage(r4Stage);
