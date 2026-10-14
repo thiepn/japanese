@@ -531,8 +531,8 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     if(!evidence)return [];
     const validIds=new Set(journeyUnits.map(unit=>unit.id));
     return p60HistoricalSources("*",extraJourneyPrompts,
-      evidence.events,evidence.traces,traceIdJourney,Date.now(),validIds);
-  },[evidence]);
+      evidence.events,evidence.traces,traceIdJourney,Date.now(),validIds,owner);
+  },[evidence,owner]);
   const p60RecallReadyIds=useMemo(()=>{
     if(!evidence)return [];
     const now=Date.now(),aged=now-86400000;
