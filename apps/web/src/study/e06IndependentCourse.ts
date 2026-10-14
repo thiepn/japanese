@@ -528,7 +528,7 @@ export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06O
   nextId:next?.id??null,nextDelayedId:cases.find(c=>c.status==="ready")?.id??null};
 }
 function previewLessons(s:E06Case):StudyLesson[]{
- const ext=e08ByCase.get(s.id),depth=E09_BY_CASE.get(s.id);
+ const ext=e08ByCase.get(s.id),depth=E09_BY_CASE.get(s.id),micro=E11_BY_CASE.get(s.id);
  return [
   lesson(s,"preview-intro","Original cumulative communication · "+s.title,
    s.setting+" "+s.objective+" No verified canonical Can-do is linked to this capstone. Review the original situation without graded events."),
@@ -551,6 +551,18 @@ function previewLessons(s:E06Case):StudyLesson[]{
       "These original notes are source-only while the canonical Can-do association remains unresolved.",
       [...depth.grammar.map(g=>({expression:g.expression,note:g.role+" · Avoid: "+g.misconception})),
        ...depth.vocabulary.map(v=>({expression:v.ja,note:v.meaning+" · "+v.contrast}))])
+  ]:[]),
+  ...(micro?[
+    lesson(s,"e11-preview-dialogue","E11 source-only practice · "+micro.goal,
+      "Original dialogue and written source remain available. Without a verified Can-do link no scored prompts are created. "+
+      micro.setting,
+      micro.turns.map(v=>({expression:v.speaker+"： "+v.ja,note:v.en+" · "+v.intent}))),
+    lesson(s,"e11-preview-reading",micro.reading.title,micro.reading.en,
+      [{expression:micro.reading.ja,note:micro.reading.en}]),
+    lesson(s,"e11-preview-grammar","Precision in practical Japanese",
+      micro.pragmaticDecision+" "+micro.grammar.function+" Avoid: "+micro.grammar.mistake,
+      [...micro.vocabulary.map(v=>({expression:v.expression,note:v.meaning+" · "+v.contrast})),
+       {expression:micro.grammar.pattern,note:micro.grammar.function}])
   ]:[]),
   lesson(s,"preview-revision","Independent self-revision",
    s.independent.writing+" "+s.independent.speaking+" "+s.independent.revision)
@@ -765,6 +777,29 @@ export function buildE06DailyStage(id:string,stageId:E10StageId,events:readonly 
      "The next section uses actual saved StudyEvents; an unfinished session does not record invented completion. "+
      "Audio is device-synthesized, and independent drafts/speech are never semantic or acoustic grades.",[],a),
    ...full.slice(start,end)
+ ];
+}
+
+/**
+ * An optional short native listening/reading lesson. It is NOT a new review
+ * engine or required prerequisite and cannot add CEFR mastery or FSRS cards.
+ * Full original lessons preserve all historical teaching and the E11 material.
+ */
+export function buildE11OptionalSession(id:string,events:readonly StudyEvent[]):StudyStep[]{
+ const {s,anchor:a}=getLinked(id);
+ if(!E11_BY_CASE.has(id))throw Error("E11_ORIGINAL_TRANSFER_NOT_AUTHORED:"+id);
+ if(!prerequisites(a,events).ready)throw Error("E11_SOURCE_LESSON_FIRST:"+id);
+ const full=buildE06Journey(id,events),prefix=PREFIX+s.id+"-";
+ const first=full.findIndex(step=>isStudyLesson(step)&&step.id===prefix+"e11-setup");
+ const last=full.findIndex((step,i)=>i>first&&isStudyLesson(step)&&step.id===prefix+"production");
+ if(first<0||last<=first)throw Error("E11_NATIVE_MICRO_LESSON_BOUNDARY_MISSING:"+id);
+ return [
+  lesson(s,"e11-optional-intro","Extra practice · "+s.title,
+   "One original conversational misunderstanding and a separate everyday notice. "+
+   "Answers offer specific correction, but are optional and deliberately excluded "+
+   "from the authoritative eight-prompt controlled gate and FSRS schedule. "+
+   "Audio is synthesized on your device.",[],a),
+  ...full.slice(first,last)
  ];
 }
 export function buildE06NextDailyStage(id:string,events:readonly StudyEvent[]):StudyStep[]{
