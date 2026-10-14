@@ -27,7 +27,7 @@ export function P60ConsolidationStudio({
  onPractice:(id:string,kind:Practice)=>void;
  onHistorical:(id:string,unitId:string)=>void;
  onDueReview:(unitId:string)=>void;
- onWriting:(id:string)=>void;
+ onWriting:(id:string,fromR4?:boolean)=>void;
  onDirtyChange?:(dirty:boolean)=>void;
 }){
  const [chosen,setChosen]=useState("");
@@ -118,8 +118,8 @@ export function P60ConsolidationStudio({
   x.status==="needs-repair"||x.status==="due");
  const stepIndex=steps.findIndex(s=>s[0]===step);
  const toggle=(key:string)=>setReveal(old=>old.includes(key)?old.filter(v=>v!==key):[...old,key]);
- function allowDiscard():boolean{
-  if(!draft.trim()&&!r4Dirty)return true;
+ function allowDiscard(includeR4=true):boolean{
+  if(!draft.trim()&&(!includeR4||!r4Dirty))return true;
   return typeof window!=="undefined"&&window.confirm(
    "Eine noch nicht abgeschlossene japanische Antwort würde beim Wechsel verworfen. Diese Eingabe wurde nicht gespeichert. Trotzdem wechseln?");
  }
@@ -136,7 +136,7 @@ export function P60ConsolidationStudio({
   setSearch("");setShowMore(15);setTtsStatus("");
  }
  function taskMode(next:Kind){
-  if(next!==mode&&!allowDiscard())return;
+  if(next!==mode&&!allowDiscard(false))return;
   setMode(next);setDraft("");setAttempt(false);setModels(false);
  }
  function goStep(id:Step,focusHeading=false){
@@ -424,7 +424,7 @@ export function P60ConsolidationStudio({
      {mode==="question"?<div className="p60-consolidation__actions">
       {lesson.questions.map((x,i)=><button key={x.id} type="button"
        aria-pressed={i===questionIndex} onClick={()=>{
-        if(i!==questionIndex&&!allowDiscard())return;
+        if(i!==questionIndex&&!allowDiscard(false))return;
         setQuestionIndex(i);setDraft("");setAttempt(false);setModels(false);
        }}>Frage {i+1}: {x.kind}</button>)}
      </div>:null}
@@ -498,7 +498,7 @@ export function P60ConsolidationStudio({
       stage={stage.stage} visible={step==="writing"} disabled={disabled}
       onDirtyChange={setR4Dirty}
       onOriginalPractice={()=>onPractice(lesson.id,"comprehension")}
-      onOriginalWriting={()=>onWriting(lesson.id)}
+      onOriginalWriting={()=>onWriting(lesson.id,true)}
      />
     </div>:null}
     {step==="reflection"?<section>
