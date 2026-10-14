@@ -1,5 +1,5 @@
 import type {StudyEvent} from "@thiepn/domain";
-import type {StudyLesson,StudyPrompt,StudyStep} from "@thiepn/study-player";
+import {isStudyLesson,type StudyLesson,type StudyPrompt,type StudyStep} from "@thiepn/study-player";
 import {coreContent} from "../coreContent";
 import {grammarContext,grammarLessons} from "./grammarCourse";
 import {E02_AVAILABLE_SCENES,e02ReviewPrompts} from "./a1ExcellenceCourse";
@@ -564,6 +564,44 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
    s.independent.revision+" The next time, respond without copying the revealed dialogue.",[],a),
   lesson(s,"spaced-return","Independent later transfer",
    "The eight source-bound controlled prompts share the existing FSRS authority. Only after all eight latest results are correct and at least twenty hours have passed do seven different-context delayed tasks become available. Free writing and transcripts are unscored even when revised.",[],a)
+ ];
+}
+/**
+ * E09 continuation is a VIEW into the SAME native session, not another engine.
+ * Uses original account-owned StudyEvents to choose a lesson boundary and
+ * NEVER grades, marks as complete, schedules or inserts phantom prior steps.
+ */
+export function buildE06ContinuationJourney(id:string,events:readonly StudyEvent[]):StudyStep[]{
+ const {s,anchor:a}=getLinked(id);
+ const full=buildE06Journey(id,events);
+ const recent=latestById(eventsFor(s,a,events));
+ const pre=PREFIX+s.id+"-";
+ const correct=(keys:readonly string[])=>keys.every(k=>recent.get(pre+k)?.result==="correct");
+ const original=["listen","read","negotiate","recall"];
+ const second=[...original,"e08-context-listen","e08-context-read"];
+ const third=[...second,"e09-dialogue-listen","e09-notice-read"];
+ const hasFirst=eventsFor(s,a,events).some(e=>e.metadata?.promptId===pre+"write"&&e.metadata?.nonAuthoritative===true);
+ const hasSecond=eventsFor(s,a,events).some(e=>e.metadata?.promptId===pre+"e08-second-draft"&&e.metadata?.nonAuthoritative===true);
+ const hasThirdResponse=eventsFor(s,a,events).some(e=>e.metadata?.promptId===pre+"e09-original-response"&&e.metadata?.nonAuthoritative===true);
+ let lessonKey:string|null=null;
+ let reason="";
+ if(correct(third)){
+   if(!hasFirst){lessonKey="production";reason="All eight controlled tasks have source-backed correct answers; continue with your independent first draft.";}
+   else if(!hasSecond){lessonKey="e08-revision-coach";reason="Your first draft is recorded. Compare it and produce a changed second draft without automatic semantic grading.";}
+   else if(!hasThirdResponse){lessonKey="e09-independent";reason="Both drafts are recorded. Apply what you learnt to another audience and a genuinely different problem.";}
+   else {lessonKey="e09-followup";reason="Bounded answers and written transfer are already recorded. Continue unscored speaking and self-reflection.";}
+ }else if(correct(second)){
+   lessonKey="e09-setup";reason="Previous E06/E08 bounded cues are correct. Continue with a third independently authored listening and reading situation.";
+ }else if(correct(original)){
+   lessonKey="e08-change";reason="The original guided source cues are correct. Continue with a different conversation rather than replaying the first model.";
+ }
+ if(!lessonKey)return full;
+ const at=full.findIndex(step=>isStudyLesson(step)&&step.id===pre+lessonKey);
+ if(at<=0)return full;
+ return [
+  lesson(s,"e09-resume","Continue from your last source-backed learning stage",
+   reason+" This does not award new credit to skipped earlier screens. Your original StudyEvents and FSRS remain authoritative. Open the full lesson from Learn whenever you want the earlier context.",[],a),
+  ...full.slice(at)
  ];
 }
 export function buildE06Delayed(id:string,events:readonly StudyEvent[],now=new Date()):StudyStep[]{
