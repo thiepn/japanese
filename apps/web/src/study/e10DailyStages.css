@@ -1,0 +1,12 @@
+/* E10 compact stage drill-down, in the original editorial learner surfaces. */
+.e10-stage-list{margin:.7rem 0;border-top:1px solid var(--border,rgba(120,120,120,.3));padding-top:.35rem}
+.e10-stage-list>summary{cursor:pointer;font-size:.88rem;font-weight:650;line-height:1.4;min-height:44px;display:flex;align-items:center}
+.e10-stage-list>summary:focus-visible,.e10-stage-list button:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+.e10-stage-list ol{list-style:none;margin:.25rem 0;padding:0}
+.e10-stage-list li{display:flex;align-items:center;justify-content:space-between;gap:.7rem;border-top:1px solid var(--border,rgba(120,120,120,.19));padding:.7rem 0}
+.e10-stage-list li>div{min-width:0;flex:1}
+.e10-stage-list strong{font-size:.89rem}
+.e10-stage-list small{display:block;line-height:1.5;opacity:.75}
+.e10-stage-list button{min-height:44px;min-width:9rem;white-space:normal}
+.e10-stage-list button:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:740px){.e10-stage-list li{align-items:stretch;flex-direction:column}.e10-stage-list button{width:100%}}

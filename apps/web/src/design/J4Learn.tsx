@@ -207,12 +207,23 @@ export function J4Learn(props:Props){
         <div className="e06-course__info"><h3>{c.title}</h3><p>{c.objective}</p><small>{c.level} · {c.anchorCohort.toUpperCase()} source {c.anchorSceneId}{c.canonicalUnitId?" · "+c.canonicalUnitId:" · unlinked original reading"}</small>
           <small>{c.sourceListening?"Listening source done":"Original listening needed"} · {c.sourceReading?"Text/form source done":"Original text/form needed"}</small>
           {c.canDoId?<><small>{c.correct}/{c.required} controlled correct · E08 {c.contextProblemsCorrect}/2 · E09 {c.e09Correct}/{c.e09Required} third-context correct · {c.delayedCorrect}/{c.delayedRequired} delayed correct</small>
-          <small>Writing: {c.firstDraftSubmitted?"first draft recorded":"first draft pending"} → {c.revisedDraftSubmitted?"revised draft recorded":"revision pending"} · {c.unscoredWriting} unscored written responses · {c.unscoredSpeaking} unscored speech transcripts</small></>:<small>No verified Can-do link: original teaching preview only, never graded</small>}
+          <small>Writing: {c.firstDraftSubmitted?"first draft recorded":"first draft pending"} → {c.revisedDraftSubmitted?"revised draft recorded":"revision pending"} · {c.unscoredWriting} unscored written responses · {c.unscoredSpeaking} unscored speech transcripts</small>
+          <small>Next short lesson: {c.dailyStages.find(stage=>stage.id===c.nextDailyStage)?.title??"No new required stage"}</small></>:<small>No verified Can-do link: original teaching preview only, never graded</small>}
+          {c.canDoId&&c.dailyStages.length>0?<details className="e10-stage-list">
+            <summary>Eight short lessons · choose a source-supported stage</summary>
+            <ol>{c.dailyStages.map((stage,index)=><li key={stage.id}>
+              <div><strong>{index+1}. {stage.title}</strong><small>{stage.purpose}</small>
+                <small>{stage.kind==="optional"?"Optional speaking · can be skipped":stage.kind==="unscored"?"Unscored production · submitted text, not correctness":"Bounded answers"} · {stage.answered}/{stage.required} · {stage.status.replaceAll("_"," ")}</small></div>
+              <button type="button" disabled={status==="loading"||stage.status==="locked"} onClick={()=>onStartE10Stage(c.id,stage.id)}>
+                {stage.status==="locked"?"Finish earlier lesson":stage.status==="complete"?"Review this stage":"Open short lesson"}
+              </button>
+            </li>)}</ol>
+          </details>:null}
           {c.status==="waiting"&&c.availableAt?<small>Delayed recall opens {new Date(c.availableAt).toLocaleString()}</small>:null}</div>
         <div className="e06-course__actions">
           {c.status==="needs-prerequisite"&&c.canDoId?<button type="button" disabled={status==="loading"} onClick={()=>{if(c.anchorCohort==="e02")onStartE02(c.anchorSceneId);else if(c.anchorCohort==="e03")onStartE03(c.anchorSceneId);else onStartE04(c.anchorSceneId);}}>Practise original source</button>:null}
           {!c.canDoId?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06Preview(c.id)}>Read original case</button>:null}
-          {c.prerequisiteReady?<><button type="button" disabled={status==="loading"} onClick={()=>onStartE06(c.id)}>{c.firstDraftSubmitted&&!c.revisedDraftSubmitted?"Continue second draft":c.status==="unstarted"?"Begin capstone":"Continue from saved evidence"}</button>
+          {c.prerequisiteReady?<><button type="button" disabled={status==="loading"} onClick={()=>onStartE06(c.id)}>{c.firstDraftSubmitted&&!c.revisedDraftSubmitted?"Continue second draft":c.nextDailyStage?"Continue: "+(c.dailyStages.find(s=>s.id===c.nextDailyStage)?.title??"short lesson"):"Read completion guidance"}</button>
           {(c.attempts>0||c.firstDraftSubmitted||c.revisedDraftSubmitted)?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06Full(c.id)}>Review full original lesson</button>:null}</>:null}
           {(c.status==="ready"||c.status==="reviewed")?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06Delayed(c.id)}>Delayed transfer</button>:null}
         </div>
