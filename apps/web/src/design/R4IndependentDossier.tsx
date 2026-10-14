@@ -1,5 +1,6 @@
 import {useEffect,useRef,useState} from "react";
 import {r4ForP60,type R4Line} from "../study/extensionR4";
+import {r5RepairForR4} from "../study/sourceRepairsR5";
 import "./r4-independent.css";
 /** Optional, author-only ungraded independent A2 work.
  * Mounted for the full selected lesson even when its P60 step is hidden,
@@ -15,6 +16,7 @@ export function R4IndependentDossier({
  onOriginalWriting:(text:string,stage:"first"|"reply"|"transfer")=>void;
 }){
  const dossier=r4ForP60(lessonId);
+ const r5Repair=dossier?r5RepairForR4(dossier.id):undefined;
  const [sourceOpen,setSourceOpen]=useState(stage<=2);
  const [transcriptOpen,setTranscriptOpen]=useState(false);
  const [reveals,setReveals]=useState<readonly string[]>([]);
@@ -158,6 +160,20 @@ export function R4IndependentDossier({
       </div>
       {revisionAttempt?<div className="r4-independent__feedback" role="status">
        <strong>Zweite Fassung selbstständig erstellt · keine automatische Japanischbewertung</strong>
+       {r5Repair?<details className="r4-independent__editorial">
+        <summary>R5 · Beleg, fehlerhafte Schlussfolgerung und Höflichkeit genau unterscheiden</summary>
+        <p><strong>Unbelegte Aussage:</strong></p>
+        <p lang="ja">{r5Repair.wrongJapanese}</p>
+        <p>{r5Repair.wrongGerman}</p>
+        <p><strong>Quellengerechter Gegenbeleg:</strong></p>
+        <p lang="ja">{r5Repair.groundedJapanese}</p>
+        <p>{r5Repair.groundedGerman}</p>
+        <p><strong>Warum:</strong> {r5Repair.sourceDistinction}</p>
+        <p><strong>Angemessene Sprache:</strong> {r5Repair.registerContrast}</p>
+        <p><strong>Neue eigenständige Reparaturaufgabe:</strong> {r5Repair.independentRepairTask}</p>
+        <small>Originaler redaktioneller Lernhinweis, kein Urteil über deinen freien Text.
+         Die zwei verfassten Modellantworten kannst du gesondert anzeigen.</small>
+       </details>:null}
        <p>Prüfe die neue Fassung gegenüber den zitierten Quellen, dem Adressaten
         ({dossier.register==="polite"?"höfliche Nachricht":"vertrauliche Nachricht"})
         und dieser spezifischen Fehlannahme: {dossier.misconception}</p>
