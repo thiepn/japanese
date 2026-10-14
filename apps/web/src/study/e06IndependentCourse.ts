@@ -6,6 +6,7 @@ import {E02_AVAILABLE_SCENES,e02ReviewPrompts} from "./a1ExcellenceCourse";
 import {E03_MAPPED,e03ReviewPrompts} from "./a2ExcellenceCourse";
 import {E04_MAPPED,e04ReviewPrompts} from "./a2ExcellenceAdvancedCourse";
 import {E06_CASES,type E06Case} from "./e06IndependentCases";
+import {e08ByCase,type E08Extension} from "./e08ContextExtensions";
 
 const PREFIX="e06-cumulative-";
 const ORIGINAL="thiepn-original";
@@ -22,6 +23,7 @@ export interface E06CaseProgress {
  canDoId:string|null;canonicalUnitId:string|null;canDo:string|null;
  status:E06Status;sourceListening:boolean;sourceReading:boolean;prerequisiteReady:boolean;
  correct:number;required:number;attempts:number;unscoredWriting:number;unscoredSpeaking:number;
+ firstDraftSubmitted:boolean;revisedDraftSubmitted:boolean;contextProblemsCorrect:number;
  delayedCorrect:number;delayedRequired:number;availableAt?:string;
 }
 export interface E06Overview {
@@ -142,13 +144,94 @@ function open(s:E06Case,a:Anchor,speech:boolean):StudyPrompt{
    independentCompetenceVerified:false,acousticScore:false,structuralOnly:true})};
  return speech?{...base,promptType:"speech"}:{...base,promptType:"textarea"};
 }
+function e08Choice(s:E06Case,a:Anchor,key:string,
+  question:string,answer:string,foils:readonly [string,string],
+  reasons:readonly [string,string],audio?:string,delayed=false):StudyPrompt{
+ return {
+  ...choice(s,a,key,delayed?"delayed":"understand",question,answer,foils,reasons,
+    audio?"listening":"comprehension",audio),
+  instruction:audio?
+   "E08: Listen to a different conversation before reading its transcript.":
+   "E08: Read the independently authored notice. Distinguish stated facts from assumptions.",
+  eventMetadata:metadata(s,a,delayed?"delayed":"understand",{
+    e08:true,e08Task:key,e08SourceScene:s.anchor.sceneId,
+    e06Task:"controlled",e06FoilFeedback:[
+      {response:foils[0],feedback:reasons[0]},
+      {response:foils[1],feedback:reasons[1]}
+    ],
+    ...(audio?{audioKind:"device-speech-synthesis",nativeRecording:false}:{})
+  })
+ };
+}
+function e08ContextPrompts(s:E06Case,a:Anchor,x:E08Extension):StudyPrompt[]{
+ const dialogue=x.dialogue.map(t=>t.speaker+"： "+t.ja).join(" ");
+ return [
+  e08Choice(s,a,"e08-context-listen",x.evidence.question,x.evidence.answer,
+    x.evidence.foils,x.evidence.reasons,dialogue),
+  e08Choice(s,a,"e08-context-read",x.notice.ja+"\n\n"+x.decision.question,x.decision.answer,
+    x.decision.foils,x.decision.reasons)
+ ];
+}
+function e08RevisionPrompt(s:E06Case,a:Anchor,x:E08Extension):StudyPrompt{
+ const baseId=PREFIX+s.id+"-write";
+ return {
+  id:PREFIX+s.id+"-e08-second-draft",
+  primaryTarget:{kind:"can_do",id:a.canDoId},
+  skill:"writing_quality",cueFamily:PREFIX+s.id+"-e08-revision",
+  promptType:"textarea",instruction:"SECOND DRAFT · Rewrite the same response after checking its facts, audience and politeness.",
+  prompt:x.revision.secondDraftTask+"\nAudience: "+x.revision.audience+
+    "\nRevision checks:\n"+x.revision.contentChecks.map(([key,test])=>key+" — "+test).join("\n"),
+  promptLanguage:"en",placeholder:"二回目の文を書いてください…",
+  acceptedAnswers:[],displayAnswer:"Private revision draft · no automatic model answer",
+  requiredTerms:[],minimumCharacters:s.level==="A1"?20:45,
+  explanation:"This is a learner-owned revision, not an automatically validated Japanese essay. "+
+    x.revision.modelPitfall+" "+x.revision.politeness,
+  answerNormalization:"japanese",sourceId:ORIGINAL,contentVersion:coreContent.version,
+  contextId:PREFIX+s.id,activity:"writing",languageActivity:"writing",
+  eventMetadata:metadata(s,a,"independent",{
+    e08:true,e08DraftStage:"revision",e08RevisionOf:baseId,
+    e08RevisionChecks:x.revision.contentChecks.map(([heading,question,fix])=>({heading,question,fix})),
+    e08Task:"independent-second-draft",nonAuthoritative:true,
+    schedulerExcluded:true,structuralOnly:true,semanticScore:false,
+    accreditedCefrVerdict:false
+  })
+ };
+}
+function e08SpeakingFollowUp(s:E06Case,a:Anchor,x:E08Extension):StudyPrompt{
+ return {
+  id:PREFIX+s.id+"-e08-roleplay",
+  primaryTarget:{kind:"can_do",id:a.canDoId},
+  skill:"production",cueFamily:PREFIX+s.id+"-e08-speech-transfer",
+  promptType:"speech",instruction:"Unscored follow-up: respond to a different person and changed practical constraint.",
+  prompt:x.revision.speakingFollowUp,promptLanguage:"en",
+  acceptedAnswers:[],displayAnswer:"Your own Japanese speech transcript; no acoustic model",
+  requiredTerms:[],minimumCharacters:s.level==="A1"?8:18,
+  explanation:"Compare the content, courtesy and practical constraints yourself. A browser transcript cannot prove correct pronunciation, semantic adequacy or CEFR level.",
+  contextId:PREFIX+s.id,sourceId:ORIGINAL,contentVersion:coreContent.version,
+  activity:"speaking",languageActivity:"spoken_interaction",
+  eventMetadata:metadata(s,a,"independent",{
+    e08:true,e08Task:"different-role-speaking",nonAuthoritative:true,
+    schedulerExcluded:true,acousticScore:false,semanticScore:false,structuralOnly:true
+  })
+ };
+}
+function e08TransferPrompts(s:E06Case,a:Anchor,x:E08Extension):StudyPrompt[]{
+ const d=x.delayed;
+ const common:[string,string]=[d.contrast,d.contrast];
+ return [
+  e08Choice(s,a,"e08-delayed-listen",d.question,d.answer,d.foils,common,d.spoken,true),
+  e08Choice(s,a,"e08-delayed-read",d.reading+"\n\n"+d.readingQuestion,
+    d.readingAnswer,d.readingFoils,common,undefined,true)
+ ];
+}
 function controlledPrompts(s:E06Case,a:Anchor):StudyPrompt[]{
  const audio=s.turns.map(t=>t.speaker+"： "+t.ja).join(" ");
  return [
   choice(s,a,"listen","encounter",s.listen.question,s.listen.answer,s.listen.wrong,s.listen.feedback,"listening",audio),
   choice(s,a,"read","understand",s.reading.ja+"\n\n"+s.read.question,s.read.answer,s.read.wrong,s.read.feedback,"comprehension"),
   choice(s,a,"negotiate","communicate",s.negotiate.question,s.negotiate.answer,s.negotiate.wrong,s.negotiate.feedback,"form_selection"),
-  typed(s,a,"recall","recall",s.recall.question,s.recall.answers,s.recall.correction)
+  typed(s,a,"recall","recall",s.recall.question,s.recall.answers,s.recall.correction),
+  ...(e08ByCase.has(s.id)?e08ContextPrompts(s,a,e08ByCase.get(s.id)!):[])
  ];
 }
 function transferPrompts(s:E06Case,a:Anchor):StudyPrompt[]{
@@ -156,12 +239,13 @@ function transferPrompts(s:E06Case,a:Anchor):StudyPrompt[]{
  return [
   choice(s,a,"delayed-listen","delayed",t.question,t.answer,t.wrong,feedback,"listening",t.audio),
   choice(s,a,"delayed-read","delayed",t.reading+"\n\n"+t.readQuestion,t.readAnswer,t.readWrong,feedback,"comprehension"),
-  typed(s,a,"delayed-recall","delayed",t.freeQuestion,t.freeAnswers,t.correction)
+  typed(s,a,"delayed-recall","delayed",t.freeQuestion,t.freeAnswers,t.correction),
+  ...(e08ByCase.has(s.id)?e08TransferPrompts(s,a,e08ByCase.get(s.id)!):[])
  ];
 }
 export const e06ReviewPrompts:StudyPrompt[]=E06_LINKED_CASES.flatMap(s=>controlledPrompts(s,anchorOf(s)!));
-const CONTROLLED_KEYS=["listen","read","negotiate","recall"];
-const DELAYED_KEYS=["delayed-listen","delayed-read","delayed-recall"];
+const CONTROLLED_KEYS=["listen","read","negotiate","recall","e08-context-listen","e08-context-read"];
+const DELAYED_KEYS=["delayed-listen","delayed-read","delayed-recall","e08-delayed-listen","e08-delayed-read"];
 function isOriginalSourceEvidence(event:StudyEvent,a:Anchor):boolean{
  const raw=event.metadata;
  if(event.primaryTarget?.kind!=="can_do"||event.primaryTarget.id!==a.canDoId)return false;
@@ -216,6 +300,9 @@ export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06O
    attempts:own.filter(e=>e.metadata?.e06Stage!=="delayed"&&e.metadata?.nonAuthoritative!==true).length,
    unscoredWriting:own.filter(e=>e.metadata?.nonAuthoritative===true&&e.responseMode==="textarea").length,
    unscoredSpeaking:own.filter(e=>e.metadata?.nonAuthoritative===true&&e.responseMode==="speech").length,
+   firstDraftSubmitted:own.some(e=>e.metadata?.promptId===prefix+"write"&&e.metadata?.nonAuthoritative===true),
+   revisedDraftSubmitted:own.some(e=>e.metadata?.promptId===prefix+"e08-second-draft"&&e.metadata?.nonAuthoritative===true),
+   contextProblemsCorrect:["e08-context-listen","e08-context-read"].filter(k=>by.get(prefix+k)?.result==="correct").length,
    delayedCorrect,delayedRequired:DELAYED_KEYS.length,
    ...(Number.isFinite(due)?{availableAt:new Date(due).toISOString()}: {})
   } satisfies E06CaseProgress;
@@ -231,6 +318,7 @@ export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06O
   nextId:next?.id??null,nextDelayedId:cases.find(c=>c.status==="ready")?.id??null};
 }
 function previewLessons(s:E06Case):StudyLesson[]{
+ const ext=e08ByCase.get(s.id);
  return [
   lesson(s,"preview-intro","Original cumulative communication · "+s.title,
    s.setting+" "+s.objective+" No verified canonical Can-do is linked to this capstone. Review the original situation without graded events."),
@@ -239,6 +327,11 @@ function previewLessons(s:E06Case):StudyLesson[]{
    s.turns.map(t=>({expression:t.speaker+"： "+t.ja,note:t.en+" · "+t.purpose}))),
   lesson(s,"preview-text",s.reading.title,s.reading.en,
    [{expression:s.reading.ja,note:s.reading.en}]),
+  ...(ext?[
+   lesson(s,"preview-e08","An unfamiliar continuation · "+ext.focus,ext.why+" "+ext.culture,ext.dialogue.map(t=>({expression:t.speaker+"： "+t.ja,note:t.en+" · "+t.intention}))),
+   lesson(s,"preview-e08-reading",ext.notice.title,ext.notice.en,[{expression:ext.notice.ja,note:ext.notice.en}]),
+   lesson(s,"preview-e08-revision","A second draft · Self-directed",ext.revision.task+" "+ext.revision.secondDraftTask+" "+ext.revision.modelPitfall)
+  ]:[]),
   lesson(s,"preview-revision","Independent self-revision",
    s.independent.writing+" "+s.independent.speaking+" "+s.independent.revision)
  ];
@@ -251,7 +344,15 @@ export function buildE06Preview(id:string):StudyStep[]{
 export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudyStep[]{
  const {s,anchor:a}=getLinked(id);
  if(!prerequisites(a,events).ready)throw Error("E06_SOURCE_LISTENING_AND_TEXT_NOT_YET_PRACTISED:"+id);
- const [listen,read,negotiate,recall]=controlledPrompts(s,a);
+ const [listen,read,negotiate,recall,secondListen,secondRead]=controlledPrompts(s,a);
+ const ext=e08ByCase.get(s.id);
+ const ownEvents=eventsFor(s,a,events);
+ const recent=latestById(ownEvents);
+ const previousContextListeningIncorrect=recent.get(PREFIX+s.id+"-e08-context-listen")?.result==="incorrect";
+ const previousContextReadingIncorrect=recent.get(PREFIX+s.id+"-e08-context-read")?.result==="incorrect";
+ const previousFirst=ownEvents.filter(e=>e.metadata?.promptId===PREFIX+s.id+"-write"&&e.metadata?.nonAuthoritative===true&&typeof e.metadata.learnerResponse==="string")
+  .sort((x,y)=>y.occurredAt.localeCompare(x.occurredAt))[0];
+ const privateFirst=typeof previousFirst?.metadata?.learnerResponse==="string"?previousFirst.metadata.learnerResponse:"";
  const unit=unitById.get(a.unitId)!;
  const grammar=unit.grammarIds.slice(0,3).map(id=>grammarLessons[grammarContext(id)])
   .filter((l):l is StudyLesson=>Boolean(l));
@@ -271,13 +372,53 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
   lesson(s,"interact","Negotiate · Less prompting",
    "Use the interlocutor's actual constraint. Choose one appropriate response, then produce a full Japanese expression without options.",[],a),
   negotiate,recall,
+  ...(ext&&secondListen&&secondRead?[
+    lesson(s,"e08-change","A second real-world problem · "+ext.focus,
+      ext.why+" First listen without reading the dialogue. This is newly authored contextual teaching, not a copied lesson.",[],a),
+    ...(previousContextListeningIncorrect?[
+      lesson(s,"e08-audio-misconception","Targeted listening repair · New attempt",
+        "Your last answer to this exact audio task was incorrect. Listen for the relevant changed detail rather than recognizing one familiar word. "+
+        ext.why,[
+          {expression:"Distinction A",note:ext.evidence.reasons[0]},
+          {expression:"Distinction B",note:ext.evidence.reasons[1]}
+        ],a)
+    ]:[]),
+    secondListen,
+    lesson(s,"e08-dialogue","Reveal the revised conversation · Speaker intentions",
+      "The characters and practical constraint have changed. Identify what each person knows and what remains uncertain.",
+      ext.dialogue.map(t=>({expression:t.speaker+"： "+t.ja,note:t.en+" · "+t.intention})),a),
+    ...(previousContextReadingIncorrect?[
+      lesson(s,"e08-reading-misconception","Targeted reading repair · Separate fact from assumption",
+        "Your previous answer to this new notice did not match the source. Verify time, conditions, who made a promise and what remains unconfirmed.",[
+          {expression:"Check the first alternative",note:ext.decision.reasons[0]},
+          {expression:"Check the second alternative",note:ext.decision.reasons[1]}
+        ],a)
+    ]:[]),
+    secondRead,
+    lesson(s,"e08-reading","Independent practical notice · "+ext.notice.title,
+      ext.notice.en+" Notice what is explicitly stated before inferring a recommendation.",
+      [{expression:ext.notice.ja,note:ext.notice.en}],a),
+    lesson(s,"e08-pragmatics","Grammar in use · Evidence and cultural appropriateness",
+      ext.why+" "+ext.culture+" "+ext.revision.modelPitfall,[],a)
+   ]:[]),
   lesson(s,"production","Own the exchange · Independent writing and speaking",
    "Your original text and transcript are stored as unscored drafts only. Evaluate politeness, meaning and revision with the provided guidance; no synthetic pronunciation grade.",[],a),
-  open(s,a,false),open(s,a,true),
+  open(s,a,false),
+  ...(ext?[
+    lesson(s,"e08-revision-coach","Revise deliberately · First draft → Second draft",
+      ext.revision.task+" Read the first draft against these content, audience and politeness checks. "+ext.revision.politeness,
+      [...ext.revision.contentChecks.map(([name,question,fix])=>({expression:name+" · "+question,note:fix})),
+       ...(privateFirst?[{expression:"Your prior submitted first draft (private)",note:privateFirst}]:[])],a),
+    e08RevisionPrompt(s,a,ext),
+    lesson(s,"e08-oral-transfer","Speak without reading the model",
+      ext.revision.speakingFollowUp+" No speech transcript is an acoustic or pragmatic proficiency score.",[],a)
+  ]:[]),
+  open(s,a,true),
+  ...(ext?[e08SpeakingFollowUp(s,a,ext)]:[]),
   lesson(s,"revise","Review your own output",
    s.independent.revision+" The next time, respond without copying the revealed dialogue.",[],a),
   lesson(s,"spaced-return","Independent later transfer",
-   "The four bounded prompts join your existing FSRS queue. After all four are answered correctly, a different three-task listening/reading/production set unlocks after twenty hours. Independent free-form drafts never establish CEFR level.",[],a)
+   "The original controlled prompts and two new different-context items use the existing FSRS authority. After six distinct controlled items are correct, five different delayed tasks unlock after at least twenty hours. Both writing drafts and speech transcripts remain unscored.",[],a)
  ];
 }
 export function buildE06Delayed(id:string,events:readonly StudyEvent[],now=new Date()):StudyStep[]{
