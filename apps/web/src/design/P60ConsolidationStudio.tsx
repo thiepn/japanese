@@ -54,6 +54,8 @@ export function P60ConsolidationStudio({
  const [ttsStatus,setTtsStatus]=useState("");
  const [ttsBusy,setTtsBusy]=useState(false);
  const speechToken=useRef(0);
+ const stepHeading=useRef<HTMLHeadingElement|null>(null);
+ const focusAfterStep=useRef(false);
  const lesson=lessons.find(x=>x.id===chosen)??lessons.find(x=>x.id===preferredId)??lessons[0];
  const stop=()=>{
   speechToken.current++;
@@ -100,6 +102,12 @@ export function P60ConsolidationStudio({
  const attempted=historical.filter(x=>x.status==="previously-practiced"||
   x.status==="needs-repair"||x.status==="due");
  const stepIndex=steps.findIndex(s=>s[0]===step);
+ useEffect(()=>{
+  if(focusAfterStep.current){
+   focusAfterStep.current=false;
+   stepHeading.current?.focus();
+  }
+ },[step,lesson?.id]);
  const toggle=(key:string)=>setReveal(old=>old.includes(key)?old.filter(v=>v!==key):[...old,key]);
  function allowDiscard():boolean{
   if(!draft.trim())return true;
@@ -108,7 +116,7 @@ export function P60ConsolidationStudio({
  }
  function choose(id:string){
   if(id!==lesson.id&&!allowDiscard())return;
-  stop();setChosen(id);setStep("reading");setSourceDisclosure(null);setMode("question");setQuestionIndex(0);
+  stop();focusAfterStep.current=true;setChosen(id);setStep("reading");setSourceDisclosure(null);setMode("question");setQuestionIndex(0);
   setDraft("");setAttempt(false);setModels(false);
   setReveal([]);setSpoken(false);setShowVocabulary(false);
   setSearch("");setShowMore(15);setTtsStatus("");
@@ -117,7 +125,14 @@ export function P60ConsolidationStudio({
   if(next!==mode&&!allowDiscard())return;
   setMode(next);setDraft("");setAttempt(false);setModels(false);
  }
- function next(){setStep(steps[Math.min(steps.length-1,stepIndex+1)]![0]);}
+ function goStep(id:Step,focusHeading=false){
+  if(id===step)return;
+  if(step==="speaking")stop();
+  focusAfterStep.current=focusHeading;
+  setStep(id);
+ }
+ function next(){goStep(steps[Math.min(steps.length-1,stepIndex+1)]![0],true);}
+ function previous(){goStep(steps[Math.max(0,stepIndex-1)]![0],true);}
  function play(from=0){
   if(typeof window==="undefined"||!("speechSynthesis" in window)||
     typeof SpeechSynthesisUtterance==="undefined"){
@@ -310,12 +325,34 @@ export function P60ConsolidationStudio({
     <small>A2-Fokus · Stufe {stage.stage}/4 · {stage.label}</small>
     <h5 lang="ja">{lesson.title}</h5>
     <p><strong>Lernziel:</strong> {lesson.goal}</p>
-    <div className="p60-consolidation__actions" role="group" aria-label="Vier Teile dieser Lernlektion">
+    <div className="p60-consolidation__actions" role="group"
+     aria-label="Vier Teile dieser Lernlektion; Pfeiltasten wechseln den aktiven Abschnitt"
+     onKeyDown={e=>{
+      if(e.key!=="ArrowRight"&&e.key!=="ArrowLeft")return;
+      if(!(e.target instanceof HTMLButtonElement))return;
+      e.preventDefault();
+      const from=steps.findIndex(([id])=>id===step);
+      const target=Math.max(0,Math.min(steps.length-1,from+(e.key==="ArrowRight"?1:-1)));
+      goStep(steps[target]![0]);
+      e.currentTarget.querySelectorAll("button")[target]?.focus();
+     }}>
      {steps.map(([id,title])=><button key={id} type="button"
-      aria-pressed={id===step} onClick={()=>{stop();setStep(id)}}>{title}</button>)}
+      aria-current={id===step?"step":undefined}
+      aria-pressed={id===step} onClick={()=>goStep(id)}>{title}</button>)}
     </div>
+    <div className="p60-consolidation__step-actions" role="group"
+     aria-label="Lernschritte fortsetzen">
+     <button type="button" disabled={stepIndex===0} onClick={previous}>
+      Vorheriger Lernschritt</button>
+     <span aria-live="polite">Abschnitt {stepIndex+1} von {steps.length} · {steps[stepIndex]?.[1]}</span>
+     <button type="button" disabled={stepIndex===steps.length-1} onClick={next}>
+      Nächster Lernschritt</button>
+    </div>
+    <p><small>Du kannst zum vorherigen Abschnitt zurückkehren. Eigene
+     ungesendete japanische Antworten bleiben beim Wechsel zwischen
+     Abschnitten dieser geöffneten Lektion im Arbeitsspeicher.</small></p>
     {step==="reading"?<section>
-     <h5>1 · Neue mehrteilige schriftliche Quelle</h5>
+     <h5 ref={stepHeading} tabIndex={-1} data-focus-step="">1 · Neue mehrteilige schriftliche Quelle</h5>
      <p>Lies die drei Originaltexte und zwei Nachrichten. Übersetzungen
       sind optional. Kennzeichne selbst, wer etwas vorschlägt und wer
       eine Änderung bestätigt.</p>
@@ -331,10 +368,9 @@ export function P60ConsolidationStudio({
       <h5>Zwei neue Nachrichten</h5>
       {lesson.messages.map((x,i)=>source(x,"message"+i))}
      </div>:null}
-     <button type="button" onClick={next}>Zum Gespräch und Hören</button>
     </section>:null}
     {step==="speaking"?<section>
-     <h5>2 · Hören und situationsgerecht reagieren</h5>
+     <h5 ref={stepHeading} tabIndex={-1} data-focus-step="">2 · Hören und situationsgerecht reagieren</h5>
      <p>Das Gerät kann drei japanische Äußerungen synthetisch vorlesen.
       Dabei können verschiedene Sprecher dieselbe Computerstimme haben.
       Das Transkript wird erst auf Wunsch sichtbar.</p>
@@ -349,10 +385,9 @@ export function P60ConsolidationStudio({
       {source(x,"spoken"+i)}
       <button type="button" onClick={()=>play(i)}>Ab diesem Sprecher hören</button>
      </div>):null}
-     <button type="button" onClick={next}>Zum eigenen Schreiben</button>
     </section>:null}
     {step==="writing"?<section>
-     <h5>3 · Eigenständige japanische Antworten</h5>
+     <h5 ref={stepHeading} tabIndex={-1} data-focus-step="">3 · Eigenständige japanische Antworten</h5>
      <div className="p60-consolidation__actions" role="group" aria-label="Praxisarten">
       {(["question","strategy","writing","followup","revision"] as const).map(k=>
        <button key={k} type="button" aria-pressed={mode===k}
@@ -430,10 +465,9 @@ export function P60ConsolidationStudio({
      </div>:null}
      <button type="button" onClick={()=>onWriting(lesson.id)}>
       Eigene Nachricht im ursprünglichen mehrstufigen Learn-Editor weiter überarbeiten</button>
-     <button type="button" onClick={next}>Zum eigenständigen Review</button>
     </section>:null}
     {step==="reflection"?<section>
-     <h5>4 · Was ist tatsächlich belegt, was braucht Wiederholung?</h5>
+     <h5 ref={stepHeading} tabIndex={-1} data-focus-step="">4 · Was ist tatsächlich belegt, was braucht Wiederholung?</h5>
      <p><strong>Sprachlicher Gegensatz:</strong> {lesson.grammar}</p>
      <p>{words.length} P53-Originalwortfamilien, davon {words.filter(w=>w.attested).length}
       genaue Schreibformen in diesen neuen Originalquellen belegt.</p>
