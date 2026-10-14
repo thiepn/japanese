@@ -3,7 +3,7 @@
  * Deliberately separate from the authoritative StudyEvent/FSRS persistence.
  * Not synced, not encrypted, never stores recorded voice or graded answers.
  */
-import type {StudyPrompt} from "@thiepn/study-player";
+import {isStudyLesson,type StudyPrompt,type StudyStep} from "@thiepn/study-player";
 const PREFIX="thiepn-japanese-e07-original-draft-v1";
 const PREFERENCE="thiepn-japanese-e07-keep-drafts";
 const MAX=9000;
@@ -66,5 +66,10 @@ export function clearAllE07Drafts(owner:string):boolean{
   keys.forEach(k=>store.removeItem(k));
   return true;
  }catch{return false;}
+}
+/** Explicitly resume a saved original unscored response without inventing grades for preceding steps. */
+export function findE07RestorableStep(owner:string,steps:readonly StudyStep[]):number{
+ if(!e07DraftPreference(owner))return -1;
+ return steps.findIndex(step=>!isStudyLesson(step)&&eligibleE07Draft(step)&&Boolean(readE07Draft(owner,step).trim()));
 }
 export const E07_DRAFT_LIMIT=MAX;

@@ -1,5 +1,5 @@
 import {useEffect,useRef,useState,type ReactNode} from "react";
-import {eligibleE07Draft,e07DraftPreference,setE07DraftPreference,saveE07Draft,readE07Draft,clearE07Draft,clearAllE07Drafts,E07_DRAFT_LIMIT} from "./e07DraftBuffer";
+import {eligibleE07Draft,e07DraftPreference,setE07DraftPreference,saveE07Draft,readE07Draft,clearE07Draft,clearAllE07Drafts,findE07RestorableStep,E07_DRAFT_LIMIT} from "./e07DraftBuffer";
 import {getDefaultAudioProvider} from "@thiepn/audio";
 import {gradeStudyPrompt,isStudyLesson,type GradeResult,type StudyPrompt,type StudyStep} from "@thiepn/study-player";
 import {j5StudyMode,type J5StudyModeMeta} from "./j5StudyVisual";
@@ -43,6 +43,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
   const cueGeneration=useRef(0);
   const savingRef=useRef(false);
   const step=steps[index];
+  const restorableIndex=findE07RestorableStep(accountScope,steps);
 
   useEffect(()=>{
     const next=steps[index];
@@ -119,6 +120,21 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
     setDraftNotice("idle");
   }
 
+  function resumeIndependentDraft(){
+    if(!draftEnabled||restorableIndex<0)return;
+    const candidate=steps[restorableIndex];
+    if(!candidate||isStudyLesson(candidate)||!eligibleE07Draft(candidate))return;
+    const saved=readE07Draft(accountScope,candidate);
+    if(!saved)return;
+    setIndex(restorableIndex);
+    setResponse(saved);
+    setFeedback(null);
+    setSaveError(false);
+    setAudioPlayed(false);
+    setDraftNotice("restored");
+    startedAt.current=performance.now();
+  }
+
   function advance(){
     audioProvider.current.stop();
     if(index+1>=steps.length){onComplete();return;}
@@ -186,6 +202,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
 
   if(isStudyLesson(activeStep)){
     return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={false} onExit={onExit} onTheme={toggleTheme}>
+      {draftEnabled&&restorableIndex>index?<div className="e07-draft-resume" role="status"><p>Unfinished original writing or recognized speech text is saved on this device. You can resume it without submitting or grading skipped steps.</p><button type="button" onClick={resumeIndependentDraft}>Resume saved draft <span aria-hidden="true">→</span></button></div>:null}
       <div className="study-lesson j5-sheet j5-sheet--lesson">
         <div className="j5-sheet__cap">
           <span className="eyebrow">LEARN</span>
@@ -251,6 +268,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
   }
 
   return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={Boolean(feedback)} onExit={()=>{if(!savingRef.current)onExit();}} onTheme={toggleTheme}>
+    {draftEnabled&&restorableIndex>index?<div className="e07-draft-resume" role="status"><p>Continue unfinished unscored production from this device; earlier prompts are not marked completed by this shortcut.</p><button type="button" onClick={resumeIndependentDraft}>Resume saved draft <span aria-hidden="true">→</span></button></div>:null}
     <div className={"j5-sheet j5-sheet--"+mode.mode}>
       <div className="j5-sheet__cap">
         <span className="eyebrow">{currentPrompt.instruction.toUpperCase()}</span>
