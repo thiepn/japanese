@@ -343,7 +343,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
                 {Array.isArray(currentPrompt.eventMetadata?.e08RevisionChecks)?currentPrompt.eventMetadata.e08RevisionChecks.map((item,i)=>{
                   if(!item||typeof item!=="object"||typeof item.question!=="string"||typeof item.heading!=="string")return null;
                   const key=String(i);
-                  return <label key={key}><input type="checkbox" checked={e08Checks.includes(key)} onChange={(event)=>setE08Checks(old=>event.target.checked?[...old,key]:old.filter(v=>v!==key))}/>
+                  return <label key={key}><input type="checkbox" checked={e08Checks.includes(key)} onChange={(event)=>{const checked=event.target.checked;setE08Checks(old=>checked?[...old,key]:old.filter(v=>v!==key));}}/>
                     <span><strong>{item.heading}</strong> {item.question}{typeof item.fix==="string"?<small>{item.fix}</small>:null}</span></label>;
                 }):null}
               </div>

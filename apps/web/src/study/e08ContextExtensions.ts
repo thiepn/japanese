@@ -127,7 +127,7 @@ export const E08_EXTENSIONS:readonly E08Extension[]=[
  why:"A booking email documents what was agreed; it does not automatically grant a remedy not mentioned.",
  culture:"In service interactions a specific polite request for verification is usually more useful than a broad accusation.",
  dialogue:[
- {speaker:"受付",ja:"本日は一泊で、お部屋は禁煙ではないお部屋ですね。",en:"Our record says one night and a non-nonsmoking room.",intention:"Read back the system's recorded reservation."},
+ {speaker:"受付",ja:"ご予約は一泊で、喫煙可能なお部屋ですね。",en:"Our record shows a one-night stay in a smoking room.",intention:"Read back the system's recorded reservation."},
  {speaker:"客",ja:"メールには二泊で禁煙室と書いてあります。こちらを確認していただけますか。",en:"The email says two nights in a nonsmoking room. Could you check it?",intention:"Reference exact documentary evidence."},
  {speaker:"受付",ja:"申し訳ありません。日数が一泊になっていました。二泊に直します。",en:"I'm sorry. The length was recorded as one night. I'll correct it to two.",intention:"Acknowledge and address one confirmed error."},
  {speaker:"客",ja:"ありがとうございます。禁煙室についても確認をお願いします。",en:"Thank you. Please also check the nonsmoking room.",intention:"Do not treat the second discrepancy as automatically fixed."},
