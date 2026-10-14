@@ -113,6 +113,10 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     else dirtySpecialistDrafts.current.delete(id);
   }
   const [unitId,setUnitId]=useState(journeyUnits[0]!.id);
+  // Navigation-only page-lifetime position for the current Account.
+  // No grades, raw draft content or resume achievements are stored.
+  const viewedStages=useRef(new Map<string,JourneyStage>());
+  useEffect(()=>{viewedStages.current.clear();},[owner]);
   const [level,setLevel]=useState<"all"|"A1"|"A2">("all");
   const [query,setQuery]=useState("");
   const [stage,setStage]=useState<JourneyStage>("learn");
@@ -654,10 +658,16 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     if(!confirmUnsentWriting())return;
     onCorrectionDuePractice(id,scenarioId);
   }
-  function selectUnit(id:string,next:JourneyStage="learn"):boolean{
+  function selectUnit(id:string,next?:JourneyStage):boolean{
     if(!journeyUnits.some(item=>item.id===id))return false;
-    if(id!==unitId&&!confirmUnsentWriting())return false;
-    setUnitId(id);setStage(next);return true;
+    if(id===unitId){
+      if(next)setStage(next);
+      return true; // A second click on the current unit must not reset its stage.
+    }
+    if(!confirmUnsentWriting())return false;
+    viewedStages.current.set(unitId,stage);
+    const destination=next??viewedStages.current.get(id)??"learn";
+    setUnitId(id);setStage(destination);return true;
   }
   function chooseP40Writing(arcId:string,turnIndex?:number){
     if(!confirmUnsentWriting())return;
@@ -1114,22 +1124,33 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
       <h2 id="p27-title">Japanisch im Zusammenhang lernen</h2>
       <p>18 Originaleinheiten mit fünf verbundenen Lernschritten; jetzt mit vertieftem Satzbau, neuen Themenübergängen und angeleiteten Wiederholungen.</p>
     </header>
-    <div className="p27-journey__next">
-      <div><strong>Empfohlene nächste Einheit</strong><p>{loading?"Lernverlauf laden …":recommendedUnit.title}</p></div>
+    <section className="p27-journey__continuation" aria-label="Japanischen Lernweg fortsetzen">
+     <h3>Weiterlernen · derselbe ursprüngliche Lernverlauf</h3>
+     <p>Öffne die zuletzt tatsächlich geübte Einheit oder eine nächste Originalaufgabe.
+      Nur eine vorhandene FSRS-Fälligkeit startet die echte Wiederholung.
+      Ein gewählter Lernschritt wird während dieser geöffneten Seite gemerkt;
+      eigene ungesendete Sätze werden nie gespeichert.</p>
+     <div className="p27-journey__continuation-actions">
+      {dueUnits[0]?<button type="button" disabled={disabled||loading}
+       onClick={()=>startPractice(dueUnits[0]!.unitId,"review")}>
+       <strong>Jetzt laut FSRS fällig · {dueUnits[0]!.due}</strong>
+       <span>{journeyUnit(dueUnits[0]!.unitId).title}</span>
+      </button>:null}
+      {lastWorkedUnit&&!loading?<button type="button"
+       onClick={()=>selectUnit(lastWorkedUnit.id)}>
+       <strong>Zuletzt tatsächlich geübt</strong>
+       <span>{lastWorkedUnit.title}</span>
+       <small>{lastWorked?.lastPracticedAt?
+        new Date(lastWorked.lastPracticedAt).toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"}):""}</small>
+      </button>:null}
       <button type="button" disabled={loading||disabled} onClick={()=>{
-        selectUnit(recommended,(progress.find(p=>p.id===recommended)?.due??0)>0?"practice":"learn");
-      }}>Empfehlung öffnen</button>
-    </div>
-    {lastWorkedUnit&&!loading?<div className="p27-journey__return-navigation">
-      <strong>Zuletzt tatsächlich geübte Originaleinheit</strong>
-      <p>{lastWorkedUnit.title} · {lastWorked?.lastPracticedAt?
-       new Date(lastWorked.lastPracticedAt).toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"}):""}</p>
-      <button type="button" onClick={()=>selectUnit(lastWorkedUnit.id,"learn")}>
-        Zu dieser Originaleinheit zurückkehren
+       selectUnit(recommended,(progress.find(p=>p.id===recommended)?.due??0)>0?"practice":"learn");
+      }}>
+       <strong>Empfohlene ursprüngliche Einheit</strong>
+       <span>{loading?"Lernverlauf laden …":recommendedUnit.title}</span>
       </button>
-      <small>Aus deinen vorhandenen bewerteten StudyEvents rekonstruiert;
-        ungesendete Entwürfe werden nicht gespeichert oder vorgetäuscht.</small>
-    </div>:null}
+     </div>
+    </section>
     {loadError?<p role="status">{loadError}</p>:null}
     <div className="p27-journey__layout">
       <aside className="p27-journey__sidebar">
