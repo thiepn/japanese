@@ -77,3 +77,7 @@
  .p60-consolidation__lessons{grid-template-columns:minmax(0,1fr);max-height:22rem}
  .p60-consolidation__lessons>button{width:100%;min-height:52px}
 }
+
+.p60-consolidation__r4-panel{scroll-margin-block-start:1rem;min-width:0}
+.p60-consolidation__r4-panel:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+.p60-consolidation__lessons small{overflow-wrap:anywhere}
