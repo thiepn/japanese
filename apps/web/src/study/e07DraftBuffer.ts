@@ -57,4 +57,14 @@ export function clearE07Draft(owner:string,prompt:StudyPrompt):void{
  if(!owner||!eligibleE07Draft(prompt))return;
  try{safeStorage()?.removeItem(scopedKey(owner,prompt));}catch{/* Private mode or restricted storage */ }
 }
+export function clearAllE07Drafts(owner:string):boolean{
+ try{
+  const store=safeStorage();if(!store)return false;
+  const scoped=PREFIX+":"+ownerKey(owner)+":";
+  const keys:string[]=[];
+  for(let i=0;i<store.length;i++){const k=store.key(i);if(k?.startsWith(scoped))keys.push(k);}
+  keys.forEach(k=>store.removeItem(k));
+  return true;
+ }catch{return false;}
+}
 export const E07_DRAFT_LIMIT=MAX;
