@@ -9,6 +9,7 @@ import {E06_CASES,type E06Case} from "./e06IndependentCases";
 import {e08ByCase,type E08Extension} from "./e08ContextExtensions";
 import {E09_BY_CASE,type E09CaseDepth} from "./e09CommunicationDepth";
 import {e09RepairCueFor,type E09RepairCue} from "./e09MisconceptionRepairs";
+import {E10_DAILY_STAGES,E10_DELAYED_GROUPS,e10StageById,type E10StageId,type E10StageProgress,type E10DelayedId,type E10DelayedProgress} from "./e10DailyStages";
 
 const PREFIX="e06-cumulative-";
 const ORIGINAL="thiepn-original";
@@ -28,6 +29,8 @@ export interface E06CaseProgress {
  firstDraftSubmitted:boolean;revisedDraftSubmitted:boolean;contextProblemsCorrect:number;
  e09Correct:number;e09Required:number;e09DelayedCorrect:number;e09DelayedRequired:number;
  delayedCorrect:number;delayedRequired:number;availableAt?:string;
+ dailyStages:E10StageProgress[];nextDailyStage:E10StageId|null;
+ delayedStages:E10DelayedProgress[];nextDelayedStage:E10DelayedId|null;
 }
 export interface E06Overview {
  cases:E06CaseProgress[];total:number;linked:number;prerequisiteReady:number;
@@ -367,6 +370,83 @@ function latestById(events:readonly StudyEvent[]):Map<string,StudyEvent>{
  }
  return out;
 }
+/**
+ * Derive stage completion exclusively from the ORIGINAL prompt IDs and this
+ * account's StudyEvents. Textarea/speech stages count submission, not a grade.
+ * Optional speaking never prevents next-stage access.
+ */
+function e10StageProgress(s:E06Case,a:Anchor|null,events:readonly StudyEvent[],
+ sourceReady:boolean):{stages:E10StageProgress[];next:E10StageId|null}{
+ if(!a)return {stages:[],next:null};
+ const own=eventsFor(s,a,events),latest=latestById(own),prefix=PREFIX+s.id+"-";
+ let unlocked=sourceReady;
+ const stages:E10StageProgress[]=E10_DAILY_STAGES.map(stage=>{
+   const submitted=stage.keys.filter(key=>{
+     const e=latest.get(prefix+key);
+     return stage.kind==="controlled"?e?.result==="correct":
+       Boolean(e&&e.metadata?.nonAuthoritative===true);
+   }).length;
+   const attempted=stage.keys.some(key=>latest.has(prefix+key));
+   const complete=submitted===stage.keys.length;
+   const status:E10StageProgress["status"]=!unlocked?"locked":
+     complete?"complete":attempted?"started":"ready";
+   // Original source progression: fail closed if the current controlled or
+   // unscored work is incomplete. Role-play is optional, not a gate.
+   if(stage.kind!=="optional"&&!complete)unlocked=false;
+   return {id:stage.id,title:stage.label,purpose:stage.purpose,
+     kind:stage.kind,status,answered:submitted,required:stage.keys.length};
+ });
+ // When optional role-play is ready, prefer the later independent writing;
+ // students may still select speech explicitly from Learn.
+ const next=stages.find(p=>p.kind!=="optional"&&["ready","started"].includes(p.status))
+   // An untouched optional speaking section stays discoverable in Learn; it
+   // must not keep reappearing as mandatory daily work.
+   ??stages.find(p=>p.kind==="optional"&&p.status==="started");
+ return {stages,next:next?.id??null};
+}
+function e10DelayedProgress(s:E06Case,a:Anchor|null,events:readonly StudyEvent[],
+ eligibleSince:number,now:Date):{stages:E10DelayedProgress[];next:E10DelayedId|null}{
+ if(!a)return {stages:[],next:null};
+ const latest=latestById(eventsFor(s,a,events)),pre=PREFIX+s.id+"-";
+ const isEligible=Number.isFinite(eligibleSince)&&now.getTime()>=eligibleSince;
+ // Old delayed answers remain in history, but only answers recorded after the
+ // CURRENT eight-cue success boundary satisfy this exact spaced transfer.
+ const current=(key:string)=>{
+   const event=latest.get(pre+key);
+   return event&&Number.isFinite(eligibleSince)&&Date.parse(event.occurredAt)>=eligibleSince?event:null;
+ };
+ let unlocked=isEligible;
+ const stages:E10DelayedProgress[]=E10_DELAYED_GROUPS.map(group=>{
+  const correct=group.keys.filter(key=>current(key)?.result==="correct").length;
+  const complete=correct===group.keys.length;
+  const attempted=group.keys.some(key=>Boolean(current(key)));
+  const status:E10DelayedProgress["status"]=!unlocked?"locked":
+    complete?"complete":attempted?"started":"ready";
+  if(!complete)unlocked=false;
+  return {id:group.id,title:group.label,purpose:group.purpose,status,
+    correct,required:group.keys.length};
+ });
+ const next=stages.find(p=>["started","ready"].includes(p.status));
+ return {stages,next:next?.id??null};
+}
+/**
+ * For each required original cue use the FIRST successful submission AFTER its
+ * most recent failure. Ordinary later correct FSRS retrieval does not postpone
+ * transfer forever. A newer incorrect answer reopens that cue's requirement.
+ * No extra clock/store is introduced; this is replayed from real StudyEvents.
+ */
+function controlledReadyAt(own:readonly StudyEvent[],prefix:string):number{
+ const completedAt=CONTROLLED_KEYS.map(key=>{
+  const answers=own.filter(e=>e.metadata?.promptId===prefix+key)
+    .filter(e=>Number.isFinite(Date.parse(e.occurredAt)))
+    .sort((a,b)=>Date.parse(a.occurredAt)-Date.parse(b.occurredAt));
+  const lastFailure=answers.filter(e=>e.result==="incorrect"||e.result==="partial"||e.result==="revealed").at(-1);
+  const boundary=lastFailure?Date.parse(lastFailure.occurredAt):Number.NEGATIVE_INFINITY;
+  const success=answers.find(e=>e.result==="correct"&&Date.parse(e.occurredAt)>boundary);
+  return success?Date.parse(success.occurredAt):NaN;
+ });
+ return completedAt.every(Number.isFinite)?Math.max(...completedAt):NaN;
+}
 export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06Overview{
  const cases=E06_CASES.map(s=>{
   const a=anchorOf(s),pr=a?prerequisites(a,events):{listening:false,reading:false,ready:false};
@@ -374,12 +454,20 @@ export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06O
   const by=latestById(own),prefix=PREFIX+s.id+"-";
   const ctrl=CONTROLLED_KEYS.map(k=>by.get(prefix+k));
   const correct=ctrl.filter(e=>e?.result==="correct").length;
-  const dates=ctrl.map(e=>Date.parse(e?.occurredAt??""));
-  const due=correct===CONTROLLED_KEYS.length&&dates.every(Number.isFinite)?
-   Math.max(...dates)+DELAY_MS:NaN;
-  const delayedCorrect=DELAYED_KEYS.filter(k=>by.get(prefix+k)?.result==="correct").length;
-  const status:E06Status=!a||!pr.ready?"needs-prerequisite":delayedCorrect===DELAYED_KEYS.length?
-    "reviewed":!own.length?"unstarted":!Number.isFinite(due)?"learning":
+  const firstComplete=correct===CONTROLLED_KEYS.length?controlledReadyAt(own,prefix):NaN;
+  const due=Number.isFinite(firstComplete)?firstComplete+DELAY_MS:NaN;
+  const delayedCorrect=DELAYED_KEYS.filter(k=>{
+    const event=by.get(prefix+k);
+    return event?.result==="correct"&&Number.isFinite(due)&&
+      Date.parse(event.occurredAt)>=due;
+  }).length;
+  const daily=e10StageProgress(s,a,events,pr.ready);
+  const controlledComplete=correct===CONTROLLED_KEYS.length&&Number.isFinite(due);
+  const delayed=e10DelayedProgress(s,a,events,a&&pr.ready&&controlledComplete?due:NaN,now);
+  // A previously completed delayed set cannot mask a *newer* source error.
+  const status:E06Status=!a||!pr.ready?"needs-prerequisite":
+    !controlledComplete?(!own.length?"unstarted":"learning"):
+    delayedCorrect===DELAYED_KEYS.length?"reviewed":
     now.getTime()<due?"waiting":"ready";
   return {
    id:s.id,title:s.title,objective:s.objective,level:s.level,
@@ -397,11 +485,13 @@ export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06O
    e09Required:2,
    e09DelayedCorrect:["e09-delayed-listen","e09-delayed-read"].filter(k=>by.get(prefix+k)?.result==="correct").length,
    e09DelayedRequired:2,
+   dailyStages:daily.stages,nextDailyStage:daily.next,
+   delayedStages:delayed.stages,nextDelayedStage:delayed.next,
    delayedCorrect,delayedRequired:DELAYED_KEYS.length,
    ...(Number.isFinite(due)?{availableAt:new Date(due).toISOString()}: {})
   } satisfies E06CaseProgress;
  });
- const next=cases.find(c=>c.status==="learning")??cases.find(c=>c.status==="unstarted");
+ const next=cases.find(c=>c.prerequisiteReady&&c.nextDailyStage!==null)??cases.find(c=>c.status==="unstarted"&&c.prerequisiteReady);
  return {cases,total:cases.length,linked:cases.filter(c=>c.canDoId!==null).length,
   prerequisiteReady:cases.filter(c=>c.prerequisiteReady).length,
   active:cases.filter(c=>c.status==="learning").length,
@@ -603,6 +693,74 @@ export function buildE06ContinuationJourney(id:string,events:readonly StudyEvent
    reason+" This does not award new credit to skipped earlier screens. Your original StudyEvents and FSRS remain authoritative. Open the full lesson from Learn whenever you want the earlier context.",[],a),
   ...full.slice(at)
  ];
+}
+/**
+ * Slice the existing cumulative lesson; no prompt IDs or grading change.
+ * A section starts at its original authored lesson boundary and stops BEFORE
+ * the next stage. Explicit stage selection respects the actual source events.
+ */
+export function buildE06DailyStage(id:string,stageId:E10StageId,events:readonly StudyEvent[]):StudyStep[]{
+ const {s,anchor:a}=getLinked(id);
+ const stage=e10StageById(stageId);
+ if(!stage)throw Error("E10_UNKNOWN_DAILY_STAGE:"+stageId);
+ const progress=e10StageProgress(s,a,events,prerequisites(a,events).ready)
+   .stages.find(p=>p.id===stageId);
+ if(!progress||progress.status==="locked")throw Error("E10_STAGE_SOURCE_OR_PRIOR_STEP_NOT_READY:"+id+":"+stageId);
+ const full=buildE06Journey(id,events);
+ const base=PREFIX+s.id+"-";
+ const start=full.findIndex(step=>isStudyLesson(step)&&step.id===base+stage.start);
+ const end=stage.end===null?full.length:full.findIndex((step,i)=>
+   i>start&&isStudyLesson(step)&&step.id===base+stage.end);
+ if(start<0||end<0||end<=start)throw Error("E10_MISSING_ORIGINAL_STAGE_BOUNDARY:"+id+":"+stageId);
+ return [
+   lesson(s,"e10-"+stage.id+"-intro",stage.label+" · "+s.title,
+     stage.purpose+" Today's section reuses the original lesson, source identity and prompts. "+
+     "The next section uses actual saved StudyEvents; an unfinished session does not record invented completion. "+
+     "Audio is device-synthesized, and independent drafts/speech are never semantic or acoustic grades.",[],a),
+   ...full.slice(start,end)
+ ];
+}
+export function buildE06NextDailyStage(id:string,events:readonly StudyEvent[]):StudyStep[]{
+ const {s,anchor:a}=getLinked(id);
+ const summary=e10StageProgress(s,a,events,prerequisites(a,events).ready);
+ if(summary.next)return buildE06DailyStage(id,summary.next,events);
+ if(!prerequisites(a,events).ready)throw Error("E10_SOURCE_PREREQUISITES_MISSING:"+id);
+ return [
+  lesson(s,"e10-no-work","Cumulative communication · no new bounded work due",
+   "All required E10 short sections already have the relevant original saved evidence. "+
+   "Your existing FSRS reviews and the twenty-hour delayed transfer remain separate. "+
+   "Open the full original lesson from Learn to revisit dialogue, reading and grammar.",[],a)
+ ];
+}
+/** Original delayed responses, exposed in short blocks without resetting spacing. */
+export function buildE06DelayedStage(id:string,stageId:E10DelayedId,
+ events:readonly StudyEvent[],now=new Date()):StudyStep[]{
+ const {s,anchor:a}=getLinked(id);
+ const group=E10_DELAYED_GROUPS.find(x=>x.id===stageId);
+ if(!group)throw Error("E10_UNKNOWN_DELAYED_GROUP:"+stageId);
+ const progress=getE06Overview(events,now).cases.find(c=>c.id===id);
+ const status=progress?.delayedStages.find(x=>x.id===stageId)?.status;
+ if(!status||status==="locked")throw Error("E10_DELAYED_SOURCE_OR_EARLIER_GROUP_NOT_READY:"+id+":"+stageId);
+ const original=transferPrompts(s,a);
+ const block=group.keys.map(k=>original.find(p=>p.id===PREFIX+s.id+"-"+k));
+ if(block.some(p=>!p))throw Error("E10_MISSING_ORIGINAL_DELAYED_PROMPT:"+id+":"+stageId);
+ return [
+  lesson(s,"e10-delayed-"+stageId,group.label+" · "+s.title,
+   group.purpose+" This small session uses the same original graded prompts, "+
+   "latest StudyEvents and existing FSRS. No new clock or mastery certificate is created.",[],a),
+  ...block.filter((p):p is StudyPrompt=>Boolean(p))
+ ];
+}
+export function buildE06NextDelayedStage(id:string,events:readonly StudyEvent[],now=new Date()):StudyStep[]{
+ const {s,anchor:a}=getLinked(id);
+ const progress=getE06Overview(events,now).cases.find(c=>c.id===id);
+ if(progress?.nextDelayedStage)return buildE06DelayedStage(id,progress.nextDelayedStage,events,now);
+ if(progress?.status==="reviewed")return [
+  lesson(s,"e10-delayed-complete","All delayed communication checks have recorded correct answers",
+   "The original seven changed-context checks have saved evidence. Continue your "+
+   "existing FSRS reviews or open a full original teaching session from Learn; no additional graded work is invented.",[],a)
+ ];
+ throw Error("E10_DELAYED_SPACING_OR_EARLIER_GROUP_NOT_READY:"+id+":"+a.unitId);
 }
 export function buildE06Delayed(id:string,events:readonly StudyEvent[],now=new Date()):StudyStep[]{
  const {s,anchor:a}=getLinked(id);
