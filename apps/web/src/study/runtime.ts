@@ -136,8 +136,16 @@ function allPrompts():StudyPrompt[]{
 }
 
 export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
-  const [traces,events,privateSet,privateSentences]=await Promise.all([listMemoryTraces(DEVELOPMENT_ACCOUNT_ID),listStudyEvents(DEVELOPMENT_ACCOUNT_ID),buildPrivateVocabularyPrompts(),buildPrivateSentencePrompts()]);
-  const byId=new Map(traces.map((trace)=>[trace.id,trace]));
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const [traces,events,privateSet,privateSentences]=await Promise.all([
+    listMemoryTraces(owner),listStudyEvents(owner),
+    buildPrivateVocabularyPrompts(),buildPrivateSentencePrompts()
+  ]);
+  if(DEVELOPMENT_ACCOUNT_ID!==owner)throw new Error("TODAY_WORKSPACE_CHANGED");
+  // Never build a mixed-owner due queue from stale asynchronous Account records.
+  const ownTraces=traces.filter(trace=>trace.userId===owner);
+  const ownEvents=events.filter(event=>event.userId===owner);
+  const byId=new Map(ownTraces.map((trace)=>[trace.id,trace]));
   const traceIds=new Set(byId.keys());
   const privatePrompts=[...privateSet.meaning,...privateSet.application,...privateSentences];
   const all=[...allPrompts(),...privatePrompts];
@@ -148,7 +156,7 @@ export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
   const unseenVocabulary=[...vocabularyMeaningPrompts,...privateSet.meaning].filter((prompt)=>!byId.has(traceIdFor(prompt)));
   const readyApplication=[...foundationApplicationPool(),...privateSet.application,...privateSentences].filter((prompt)=>!byId.has(traceIdFor(prompt))&&isApplicationPromptReady(prompt,traceIds));
   const readyCourse=selectNewCoursePrompts(traceIds,COURSE_ITEMS_PER_SESSION);
-  const mined=pendingMinedVocabulary(events,privateSet.meaning).slice(0,2);
+  const mined=pendingMinedVocabulary(ownEvents,privateSet.meaning).slice(0,2);
   const queue:StudyPrompt[]=[];
 
   addUnique(queue,due);
@@ -302,9 +310,12 @@ export async function getC1FoundationAssessmentProgress():Promise<MilestoneAsses
 // Derive the daily counter from durable, account-scoped events. React component
 // state must never be the authority for progress displayed after a reload.
 export async function getCompletedTodayCount(now=new Date()):Promise<number>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
   const today=now.toDateString();
-  const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
+  const events=await listStudyEvents(owner);
+  if(DEVELOPMENT_ACCOUNT_ID!==owner)throw new Error("TODAY_WORKSPACE_CHANGED");
   return events.filter((event)=>{
+    if(event.userId!==owner||event.metadata?.schedulerExcluded===true)return false;
     if(event.result!=="correct"&&event.result!=="incorrect")return false;
     const occurredAt=new Date(event.occurredAt);
     return !Number.isNaN(occurredAt.getTime())&&occurredAt.toDateString()===today;
@@ -312,8 +323,12 @@ export async function getCompletedTodayCount(now=new Date()):Promise<number>{
 }
 
 export async function getStudySummary(now=new Date()):Promise<StudySummary>{
-  const [traces,privateSet,privateSentences]=await Promise.all([listMemoryTraces(DEVELOPMENT_ACCOUNT_ID),buildPrivateVocabularyPrompts(),buildPrivateSentencePrompts()]);
-  const byId=new Map(traces.map((trace)=>[trace.id,trace]));
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const [traces,privateSet,privateSentences]=await Promise.all([
+    listMemoryTraces(owner),buildPrivateVocabularyPrompts(),buildPrivateSentencePrompts()
+  ]);
+  if(DEVELOPMENT_ACCOUNT_ID!==owner)throw new Error("TODAY_WORKSPACE_CHANGED");
+  const byId=new Map(traces.filter(trace=>trace.userId===owner).map(trace=>[trace.id,trace]));
   const traceIds=new Set(byId.keys());
   const privatePrompts=[...privateSet.meaning,...privateSet.application,...privateSentences];
   const all=[...allPrompts(),...privatePrompts];
