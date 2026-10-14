@@ -208,7 +208,7 @@ export function J4Learn(props:Props){
           <small>{c.sourceListening?"Listening source done":"Original listening needed"} · {c.sourceReading?"Text/form source done":"Original text/form needed"}</small>
           {c.canDoId?<><small>{c.correct}/{c.required} controlled correct · E08 {c.contextProblemsCorrect}/2 · E09 {c.e09Correct}/{c.e09Required} third-context correct · {c.delayedCorrect}/{c.delayedRequired} delayed correct</small>
           <small>Writing: {c.firstDraftSubmitted?"first draft recorded":"first draft pending"} → {c.revisedDraftSubmitted?"revised draft recorded":"revision pending"} · {c.unscoredWriting} unscored written responses · {c.unscoredSpeaking} unscored speech transcripts</small>
-          <small>Next short lesson: {c.dailyStages.find(stage=>stage.id===c.nextDailyStage)?.title??"No new required stage"}</small></>:<small>No verified Can-do link: original teaching preview only, never graded</small>}
+          <small>Next short lesson: {c.dailyStages.find(stage=>stage.id===c.nextDailyStage)?.title??"No new required stage"} · E11 optional: {Number(c.e11ListeningPractised)+Number(c.e11ReadingPractised)}/2 context attempts, {c.e11WritingSubmitted?"writing submitted":"writing not submitted"}</small></>:<small>No verified Can-do link: original teaching preview only, never graded</small>}
           {c.canDoId&&c.dailyStages.length>0?<details className="e10-stage-list">
             <summary>Eight short lessons · choose a source-supported stage</summary>
             <ol>{c.dailyStages.map((stage,index)=><li key={stage.id}>

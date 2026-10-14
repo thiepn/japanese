@@ -28,6 +28,7 @@ export interface E06CaseProgress {
  status:E06Status;sourceListening:boolean;sourceReading:boolean;prerequisiteReady:boolean;
  correct:number;required:number;attempts:number;unscoredWriting:number;unscoredSpeaking:number;
  firstDraftSubmitted:boolean;revisedDraftSubmitted:boolean;contextProblemsCorrect:number;
+ e11ListeningPractised:boolean;e11ReadingPractised:boolean;e11WritingSubmitted:boolean;
  e09Correct:number;e09Required:number;e09DelayedCorrect:number;e09DelayedRequired:number;
  delayedCorrect:number;delayedRequired:number;availableAt?:string;
  dailyStages:E10StageProgress[];nextDailyStage:E10StageId|null;
@@ -524,6 +525,9 @@ export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06O
    attempts:own.filter(e=>e.metadata?.e06Stage!=="delayed"&&e.metadata?.nonAuthoritative!==true).length,
    unscoredWriting:own.filter(e=>e.metadata?.nonAuthoritative===true&&e.responseMode==="textarea").length,
    unscoredSpeaking:own.filter(e=>e.metadata?.nonAuthoritative===true&&e.responseMode==="speech").length,
+   e11ListeningPractised:own.some(e=>e.metadata?.promptId===prefix+"e11-micro-listening"&&e.metadata?.e11===true&&e.metadata?.nonAuthoritative===true),
+   e11ReadingPractised:own.some(e=>e.metadata?.promptId===prefix+"e11-micro-reading"&&e.metadata?.e11===true&&e.metadata?.nonAuthoritative===true),
+   e11WritingSubmitted:own.some(e=>e.metadata?.promptId===prefix+"e11-original-letter"&&e.metadata?.e11===true&&e.metadata?.nonAuthoritative===true),
    firstDraftSubmitted:own.some(e=>e.metadata?.promptId===prefix+"write"&&e.metadata?.nonAuthoritative===true),
    revisedDraftSubmitted:own.some(e=>e.metadata?.promptId===prefix+"e08-second-draft"&&e.metadata?.nonAuthoritative===true),
    contextProblemsCorrect:["e08-context-listen","e08-context-read"].filter(k=>by.get(prefix+k)?.result==="correct").length,
