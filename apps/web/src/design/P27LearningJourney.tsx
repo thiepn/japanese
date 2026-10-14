@@ -944,7 +944,9 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
           sourceContextId:"p39:repair:"+p39Chosen.id}:{}),
         ...(kind==="rewrite"&&p60WritingLesson?{
           p60:true,authoredLessonId:p60WritingLesson.id,
-          sourceContextId:"p60:unit:"+p60WritingLesson.id,
+          sourceContextId:r4WritingCase?
+            "p60:r4:supplement:"+r4WritingCase.id:"p60:unit:"+p60WritingLesson.id,
+          ...(r4WritingCase?{r4Supplementary:true,authoredSupplementaryId:r4WritingCase.id}:{}),
           cumulativeA2:true,multisourceWriting:true,
           freeWritingSemanticallyGraded:false,recordedNativeAudio:false,
           rawTextStored:false,schedulerExcluded:true
@@ -1925,11 +1927,11 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <div className="p27-journey__actions">
               <button type="button" disabled={disabled}
                 onClick={()=>startPractice(unitId,`consolidation60-kind:${p60WritingLesson.id}:writing`)}>
-                Originalen eigenständigen StudyPlayer-Schreibprompt öffnen
+                Originalen P60-Schreibprompt öffnen (nicht den unbenoteten R4-Zusatzfall)
               </button>
               <button type="button" disabled={disabled}
                 onClick={()=>startPractice(unitId,`consolidation60-kind:${p60WritingLesson.id}:revision`)}>
-                Mehrteilige Fehlannahme im StudyPlayer korrigieren
+                Originale P60-Fehlannahme im StudyPlayer korrigieren
               </button>
               <button type="button" onClick={()=>{if(confirmUnsentWriting()){setP60WritingId("");setR4WritingContext("");setDraft("");setRewrite("");setRewriteStage("draft");}}}>Reguläre Schreibaufgabe wählen</button>
             </div>
