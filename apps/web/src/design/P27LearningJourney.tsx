@@ -58,6 +58,7 @@ import {p60Prompts,p60ComprehensionPrompts,p60ReturnPrompts,p60Units,p60ForUnit,
 import {historicalReturnEligibility,isHistoricalReturn} from "../study/returnEligibilityR2";
 import {P60ConsolidationStudio} from "./P60ConsolidationStudio";
 import {r4ForP60} from "../study/extensionR4";
+import {r5RepairForR4} from "../study/sourceRepairsR5";
 import {p28NewSentencePrompts} from "../study/sentence28";
 import {p29AdditionalPrompts,p29LexicalPrompts,lexicalLinksForUnit,recommendP29Actions} from "../study/depth29";
 import {describeP29Revision,p29RegisterExampleForUnit} from "../study/revision29";
@@ -262,6 +263,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const p60WritingLesson=p60ById(p60WritingId);
   const r4WritingCase=p60WritingLesson&&r4WritingContext===p60WritingLesson.id?
     r4ForP60(p60WritingLesson.id):undefined;
+  const r5WritingRepair=r4WritingCase?r5RepairForR4(r4WritingCase.id):undefined;
   const p50WritingMission=p50ById(p50WritingId);
   const p49WritingDocument=p49ById(p49WritingId);
   const p48WritingCase=p48ById(p48WritingId);
@@ -1938,6 +1940,9 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                 <details><summary>Deutsche Bedeutung</summary>
                   {r4WritingCase.newMessage.de}</details>
               </div>:null}
+              {r4WritingStage==="transfer"?<p>Die folgenden Quellen gehören zum früheren
+                Ausgangsfall und sind kein Beleg für die neue Transfersituation.
+                Berücksichtige jetzt ausschließlich die neue Falllage.</p>:null}
               {r4WritingCase.reading.map((line,i)=><div key={i}>
                 <small>{line.role}</small><p lang="ja">{line.ja}</p>
                 <details><summary>Deutsche Quellenbedeutung</summary>{line.de}</details>
@@ -2524,6 +2529,18 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                   r4WritingCase.transfer.trap
                 }</span></p>
               </details>
+              {r5WritingRepair?<details>
+                <summary>R5 · Originale schriftliche Gegenüberstellung und passende Höflichkeit</summary>
+                <p><strong>Unbelegte Aussage:</strong></p>
+                <p lang="ja">{r5WritingRepair.wrongJapanese}</p>
+                <p>{r5WritingRepair.wrongGerman}</p>
+                <p><strong>Belegte Präzisierung:</strong></p>
+                <p lang="ja">{r5WritingRepair.groundedJapanese}</p>
+                <p>{r5WritingRepair.groundedGerman}</p>
+                <p>{r5WritingRepair.sourceDistinction}</p>
+                <p>{r5WritingRepair.registerContrast}</p>
+                <p><strong>Eigenständige weitere Revision:</strong> {r5WritingRepair.independentRepairTask}</p>
+              </details>:null}
               <small>Zeichenbasierte Textänderung ist kein semantisches Urteil über offene Antworten.</small>
             </div>:p60WritingLesson?<div className="p27-journey__p51-comparison-feedback">
               <strong>P60 · Quellengebundener eigenständiger Entwurf ohne automatische Freitextnote</strong>
