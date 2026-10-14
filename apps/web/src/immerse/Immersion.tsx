@@ -15,7 +15,7 @@ import {
 type CheckMode="reading"|"listening";
 interface SelectedToken { token:ReaderToken; sentenceId:string; }
 
-export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coach}:{onStartProductionTask:(taskId:string)=>void;onStartC1Synthesis:(packId:string)=>void;onOpenC1Coach:(chainId:string)=>void}){
+export function Immersion({onStartE01,onStartProductionTask,onStartC1Synthesis,onOpenC1Coach}:{onStartE01:()=>void;onStartProductionTask:(taskId:string)=>void;onStartC1Synthesis:(packId:string)=>void;onOpenC1Coach:(chainId:string)=>void}){
   const [progress,setProgress]=useState<ImmersionProgress|null>(null);
   const [recommendation,setRecommendation]=useState<AdaptiveImmersionRecommendation|null>(null);
   const [missions,setMissions]=useState<AutonomyMissionProgress[]>([]);
@@ -212,7 +212,9 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
     listeningPlayed={listeningPlayed} speaking={speaking} speak={speak} audioError={audioError} checkMode={checkMode} startCheck={startCheck}
     questionIndex={questionIndex} feedback={feedback} answerQuestion={answerQuestion} nextQuestion={nextQuestion} speakingSegment={speakingSegment} speakSegment={speakSegment}/>;
 
-  return <J6ImmersionHome
+  return <>
+    <section className="e01-entry" aria-label="A1 contextual listening journey"><div className="e01-entry__copy"><strong>First conversations · Listening to communication</strong><p>Start with an original Japanese dialogue before revealing text. Device Japanese speech is synthetic, never presented as licensed native recording.</p></div><div className="e01-entry__actions"><button type="button" onClick={onStartE01}>Start A1 dialogue</button></div></section>
+    <J6ImmersionHome
     progress={progress}
     recommendation={recommendation}
     missions={missions}
@@ -223,5 +225,6 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
     onOpenC1Coach={onOpenC1Coach}
     preferredNativeSet={preferredNativeSet}
     onPreferredNativeSet={setPreferredNativeSet}
-  />;
+  />
+  </>;
 }
