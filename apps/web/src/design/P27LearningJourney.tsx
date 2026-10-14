@@ -1448,6 +1448,10 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
               if(p60Historical.some(item=>item.id===promptId&&item.unitIds.includes(originalUnitId)))
                 startPractice(originalUnitId,`source60:${promptId}`);
             }}
+            onDueReview={(originalUnitId)=>{
+              if(p60Historical.some(item=>item.unitIds.includes(originalUnitId)&&item.status==="due"))
+                startPractice(originalUnitId,"review");
+            }}
             onWriting={chooseP60Writing}
           />
           <P59PerformanceStudio key={"p59:"+owner+":"+unitId}
