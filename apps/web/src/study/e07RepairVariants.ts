@@ -52,7 +52,7 @@ export const E07_REPAIR_VARIANTS:readonly E07RepairVariant[]=[
  {cohort:"e04",scene:"community-noise",situation:"A neighbor needs to ask for reduced noise during early morning hours.",contrast:"A bounded, respectful request works better than an unqualified accusation.",
  question:"朝六時の大きな音が気になります。どの言い方がいいですか。",correct:"朝七時までは音を小さくしていただけませんか。",foils:["今すぐ全部やめろ。","どんな音でも大好きです。"],feedback:"The request specifies a reasonable time window and avoids a confrontational command."},
  {cohort:"e04",scene:"club-project",situation:"A team wants to publish a flyer containing an image with unconfirmed rights.",contrast:"Copyright permission must precede publication; an unfinished check is not approval.",
- question:"写真の使用許可がまだ不明です。いつ公開できますか。",correct:"確認して許可を得てから",foils:["確認する前に","関係ありません"],feedback:"Publication must wait until permission has been verified."}
+ question:"写真の使用許可がまだ不明です。いつ公開できますか。",correct:"確認して許可を得てから",foils:["確認する前に","関係ありません"],feedback:"Publication must wait until permission has been verified."},
  {cohort:"e02",scene:"origin",situation:"A new employee moved to Fukuoka from Canada.",contrast:"Place + から describes where the person came from; に can identify Fukuoka as the new destination.",
  question:"ケンはカナダから福岡に来ました。出身地はどこですか。",correct:"カナダ",foils:["福岡","東京"],feedback:"Canada is the point of origin, while Fukuoka is where Ken arrived."},
  {cohort:"e02",scene:"time",situation:"A class runs from ten in the morning until noon.",contrast:"The clock time after まで is the end, not the beginning.",
