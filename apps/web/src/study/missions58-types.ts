@@ -1,7 +1,7 @@
 /** First-party original multi-source A2 practical missions, no learner progress store. */
 export type P58RawLine=readonly [speaker:string,japanese:string,german:string];
 export type P58RawQuestion=readonly [
- kind:"cross-source"|"chronology"|"evidence"|"intention",
+ kind:"cross-source"|"chronology"|"evidence"|"intention"|"status"|"reason",
  question:string,model:string,alternative:string,misleading:string,why:string,
  evidenceA:string,evidenceB:string
 ];
