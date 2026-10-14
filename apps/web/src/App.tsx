@@ -16,6 +16,7 @@ import "./study/a2ExcellenceE04.css";
 import "./study/e05AdaptiveRecall.css";
 import "./study/e07Journey.css";
 import "./study/e10DailyStages.css";
+import "./study/e11Practice.css";
 import "./study/e08Revision.css";
 import {deriveE07Journey,type E07Action} from "./study/e07LearningRoute";
 import "./study/e06IndependentCourse.css";

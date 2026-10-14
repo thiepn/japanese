@@ -97,6 +97,8 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
   const e08FirstIndex=steps.findIndex(item=>!isStudyLesson(item)&&item.eventMetadata?.e06===true&&item.promptType==="textarea"&&item.id.endsWith("-write"));
   const e08Revision=!isStudyLesson(activeStep)&&activeStep.eventMetadata?.e08DraftStage==="revision";
   const e08Unchanged=e08Revision&&Boolean(e08DraftReference.trim())&&response.trim()===e08DraftReference.trim();
+  const e11OptionalWriting=!isStudyLesson(activeStep)&&activeStep.eventMetadata?.e11Task==="independent-letter";
+  const e11OptionalPractice=!isStudyLesson(activeStep)&&activeStep.eventMetadata?.e11===true&&activeStep.eventMetadata?.nonAuthoritative===true;
   const mode=j5StudyMode(activeStep);
   const timeLimitSeconds=!isStudyLesson(activeStep)?activeStep.timeLimitSeconds:undefined;
   const elapsedSeconds=Math.max(0,Math.floor((performance.now()-startedAt.current)/1000));
@@ -333,6 +335,18 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         ><span className="j5-choice-index" aria-hidden="true">{index+1}</span><span>{choice}</span></button>)}</div>
         :currentPrompt.promptType==="textarea"
           ?<form className="productive-response j5-writing" onSubmit={(event)=>{event.preventDefault();void submit();}}>
+            {e11OptionalWriting?<section className="e11-self-review" aria-label="Independent Japanese writing self-review">
+              <h2>Write for your audience, then revise</h2>
+              <p>Recipient: {String(currentPrompt.eventMetadata?.e11Audience??"the stated real-world reader")}. These optional checks are questions to ask yourself, not automatic assessments.</p>
+              {Array.isArray(currentPrompt.eventMetadata?.e11WritingChecks)?currentPrompt.eventMetadata.e11WritingChecks.map((item,i)=>{
+                if(!item||typeof item!=="object"||typeof item.question!=="string"||typeof item.heading!=="string")return null;
+                const key="e11-"+i;
+                return <label key={key}><input type="checkbox" checked={e08Checks.includes(key)}
+                  onChange={(event)=>{const checked=event.target.checked;setE08Checks(old=>checked?[...old,key]:old.filter(v=>v!==key));}}/>
+                  <span><strong>{item.heading}</strong> {item.question}{typeof item.repair==="string"?<small>{item.repair}</small>:null}</span></label>;
+              }):null}
+              <small>Ticking a box confirms only that you reviewed the question. It does not verify grammar, meaning, politeness or level.</small>
+            </section>:null}
             {e08Revision?<div className="e08-revision" aria-label="Compare and revise your Japanese writing">
               <h2>Second draft · compare before sending</h2>
               {e08DraftReference?<div className="e08-revision__previous"><strong>First draft · your own Japanese</strong><pre lang="ja">{e08DraftReference}</pre>
@@ -354,8 +368,9 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
             </div>
             <div className="productive-response-meta">
               <span>{response.length} characters{currentPrompt.minimumCharacters?" · target "+currentPrompt.minimumCharacters+"+":""}</span>
-              <button className="primary" disabled={!response.trim()||Boolean(feedback)||saving||interactionLocked||(e08Revision&&(!e08DraftReference.trim()||e08Unchanged))} type="submit">{e08Revision?"Record unscored second draft":"Check structure"}</button>
+              <button className="primary" disabled={!response.trim()||Boolean(feedback)||saving||interactionLocked||(e08Revision&&(!e08DraftReference.trim()||e08Unchanged))} type="submit">{e08Revision?"Record unscored second draft":e11OptionalWriting?"Record unscored E11 writing":currentPrompt.eventMetadata?.nonAuthoritative===true?"Record unscored writing":"Check structure"}</button>
             </div>
+            {e11OptionalWriting?<button type="button" className="quiet-button e11-skip" disabled={saving||interactionLocked} onClick={advance}>Skip optional writing without grading</button>:null}
           </form>
           :currentPrompt.promptType==="speech"
             ?<div className="speech-response j5-speaking">
@@ -376,6 +391,10 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
               <button className="primary" disabled={!response.trim()||Boolean(feedback)||saving||interactionLocked} type="submit">Check</button>
             </form>}
 
+      {e11OptionalPractice&&!feedback&&currentPrompt.promptType==="choice"?<div className="e11-optional-note">
+        <p>Additional original context. Your choice is stored as unscored practice only and does not satisfy the eight required FSRS cues.</p>
+        <button type="button" className="quiet-button" onClick={advance}>Skip optional context without grading</button>
+      </div>:null}
       {eligibleE07Draft(currentPrompt)&&!feedback?<div className="e07-draft-controls">
         <label><input type="checkbox" checked={draftEnabled} onChange={event=>changeDraftPreference(event.target.checked)}/> Keep unfinished ungraded writing or recognized speech text on this device</label>
         <p>Optional. Stored locally, unencrypted and scoped to this learner account. Not synced, not an assessment, and no audio is stored. Turning this off clears E07 drafts for this account.</p>
@@ -391,8 +410,8 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         <div className="j5-feedback__head">
           <span className="j5-feedback__seal" aria-hidden="true">{feedback.result==="correct"?"正":"直"}</span>
           <div>
-            <small>{currentPrompt.eventMetadata?.nonAuthoritative===true?"STRUCTURAL SELF-CHECK":feedback.result==="correct"?"RETRIEVED":"CORRECTION"}</small>
-            <strong>{currentPrompt.eventMetadata?.nonAuthoritative===true?"Draft recorded · not proficiency scored":feedback.result==="correct"?"Correct":"Answer: "+feedback.expectedAnswer}</strong>
+            <small>{currentPrompt.eventMetadata?.nonAuthoritative===true?(currentPrompt.promptType==="choice"?"UNSCORED CONTEXT CHECK":"UNSCORED RESPONSE"):feedback.result==="correct"?"RETRIEVED":"CORRECTION"}</small>
+            <strong>{currentPrompt.eventMetadata?.nonAuthoritative===true?(currentPrompt.promptType==="choice"?(feedback.result==="correct"?"Context matched · not a mastery grade":"Recheck the new context · not an FSRS grade"):"Response recorded · no language grade"):feedback.result==="correct"?"Correct":"Answer: "+feedback.expectedAnswer}</strong>
           </div>
         </div>
         {currentPrompt.audio?<div className="audio-reveal j5-audio-reveal">
@@ -401,7 +420,8 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         </div>:null}
         {currentPrompt.explanation?<p>{currentPrompt.explanation}</p>:null}
         {misconceptionNote?<p className="e06-correction"><strong>Why that option does not fit:</strong> {misconceptionNote}</p>:null}
-        {currentPrompt.eventMetadata?.e06===true?<p className="e06-boundary">{currentPrompt.eventMetadata.e06Stage==="delayed"?"Changed-context bounded retrieval—not formal proficiency.":currentPrompt.eventMetadata.nonAuthoritative===true?"Unscored draft: device recognition and structural checks cannot grade meaning or pronunciation.":"Controlled response: independent communication is practised separately."}</p>:null}
+        {currentPrompt.eventMetadata?.e11===true&&currentPrompt.eventMetadata?.nonAuthoritative===true?<p className="e11-practice-disclaimer">E11 practice is independent of the eight required source-linked prompts. A recorded attempt, even with a correct bounded answer, is not Japanese proficiency or FSRS mastery.</p>:null}
+        {currentPrompt.eventMetadata?.e06===true?<p className="e06-boundary">{currentPrompt.eventMetadata.e06Stage==="delayed"?"Changed-context bounded retrieval—not formal proficiency.":currentPrompt.eventMetadata.nonAuthoritative===true?(currentPrompt.promptType==="choice"?"Optional comprehension evidence only: no original FSRS or CEFR award.":"Unscored response: device recognition and structural checks cannot grade meaning or pronunciation."):"Controlled response: independent communication is practised separately."}</p>:null}
         {currentPrompt.eventMetadata?.e05Repair===true?<p className="e05-feedback">Changed-question correction: this answer is saved as original practice but does not alter the FSRS card for your previously missed cue. Revisit the original cue on its normal schedule.</p>:null}
         {currentPrompt.eventMetadata?.e05Repair!==true&&(currentPrompt.eventMetadata?.e01===true||currentPrompt.eventMetadata?.e02===true||currentPrompt.eventMetadata?.e03===true||currentPrompt.eventMetadata?.e04===true)?<p className="e05-feedback">{currentPrompt.promptType==="typed"?"Answer choices removed: bounded model recall.":currentPrompt.promptType==="choice"?"Guided recognition; later independent recall and delayed transfer remove the choices.":"This structural-only task does not prove pronunciation or semantic proficiency."}</p>:null}
         {(currentPrompt.promptType==="textarea"||currentPrompt.promptType==="speech")&&currentPrompt.requiredTerms?.length?<p className="productive-rubric">
