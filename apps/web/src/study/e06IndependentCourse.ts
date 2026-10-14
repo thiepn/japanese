@@ -9,6 +9,7 @@ import {E06_CASES,type E06Case} from "./e06IndependentCases";
 import {e08ByCase,type E08Extension} from "./e08ContextExtensions";
 import {E09_BY_CASE,type E09CaseDepth} from "./e09CommunicationDepth";
 import {e09RepairCueFor,type E09RepairCue} from "./e09MisconceptionRepairs";
+import {E11_BY_CASE,type E11PracticalTransfer} from "./e11PracticalTransfer";
 import {E10_DAILY_STAGES,E10_DELAYED_GROUPS,e10StageById,type E10StageId,type E10StageProgress,type E10DelayedId,type E10DelayedProgress} from "./e10DailyStages";
 
 const PREFIX="e06-cumulative-";
@@ -294,6 +295,7 @@ function e09RepairPrompt(s:E06Case,a:Anchor,cue:E09RepairCue):StudyPrompt{
  };
 }
 function e09UnscoredTransfer(s:E06Case,a:Anchor,d:E09CaseDepth):StudyPrompt{
+ const micro=E11_BY_CASE.get(s.id);
  return {
   id:PREFIX+s.id+"-e09-original-response",
   primaryTarget:{kind:"can_do",id:a.canDoId},skill:"writing_quality",
@@ -310,9 +312,33 @@ function e09UnscoredTransfer(s:E06Case,a:Anchor,d:E09CaseDepth):StudyPrompt{
   activity:"writing",languageActivity:"writing",
   eventMetadata:metadata(s,a,"independent",{
     e09:true,e09Task:"independent-written-transfer",
+    ...(micro?{e11:true,e11Audience:micro.writingAudience,
+      e11WritingChecks:micro.writingRevision.map(([heading,question,repair])=>({heading,question,repair})),
+      e11PragmaticDecision:micro.pragmaticDecision}:{}),
     nonAuthoritative:true,schedulerExcluded:true,semanticScore:false,
     structuralOnly:true,accreditedCefrVerdict:false
   })
+ };
+}
+
+/* Optional original source-linked transfer: these prompts are not graded for FSRS. */
+function e11Practice(s:E06Case,a:Anchor,t:E11PracticalTransfer,mode:"listening"|"reading"):StudyPrompt{
+ const x=mode==="listening"?t.listening:t.readingQuestion,spoken=mode==="listening";
+ const key="e11-micro-"+mode;
+ const original=choice(s,a,key,"understand",
+    spoken?x.question:t.reading.ja+"\n\n"+x.question,x.answer,x.wrong,x.wrongWhy,
+    spoken?"listening":"comprehension",
+    spoken?t.turns.map(v=>v.speaker+"： "+v.ja).join(" "):undefined);
+ return {...original,instruction:spoken?"Optional new spoken context; device speech synthesis, not native audio.":
+    "Optional original reading: answer only from this new written notice.",
+   explanation:t.grammar.function+" Watch out: "+t.grammar.mistake,
+   eventMetadata:metadata(s,a,"understand",{
+    e11:true,e11CaseId:s.id,e11Task:key,nonAuthoritative:true,schedulerExcluded:true,
+    e11OriginalCanDo:a.canDoId,
+    e06FoilFeedback:[{response:x.wrong[0],feedback:x.wrongWhy[0]},
+      {response:x.wrong[1],feedback:x.wrongWhy[1]}],
+    ...(spoken?{audioKind:"device-speech-synthesis",nativeRecording:false}:{})
+   })
  };
 }
 function controlledPrompts(s:E06Case,a:Anchor):StudyPrompt[]{
@@ -539,7 +565,7 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
  const {s,anchor:a}=getLinked(id);
  if(!prerequisites(a,events).ready)throw Error("E06_SOURCE_LISTENING_AND_TEXT_NOT_YET_PRACTISED:"+id);
  const [listen,read,negotiate,recall,secondListen,secondRead,thirdListen,thirdRead]=controlledPrompts(s,a);
- const ext=e08ByCase.get(s.id),depth=E09_BY_CASE.get(s.id);
+ const ext=e08ByCase.get(s.id),depth=E09_BY_CASE.get(s.id),micro=E11_BY_CASE.get(s.id);
  const ownEvents=eventsFor(s,a,events);
  const recent=latestById(ownEvents);
  const previousContextListeningIncorrect=recent.get(PREFIX+s.id+"-e08-context-listen")?.result==="incorrect";
@@ -628,6 +654,21 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
      "Read each construction in context. The explanation names the conversational function and a common misleading interpretation.",
      depth.grammar.map(g=>({expression:g.expression,note:g.role+" · Common mistake: "+g.misconception})),a)
    ]:[]),
+  ...(micro?[
+   lesson(s,"e11-setup","A new practical clarification · "+micro.goal,
+      micro.setting+" Optional source-linked practice. No CEFR score is assigned.",[],a),
+   e11Practice(s,a,micro,"listening"),
+   lesson(s,"e11-dialogue","Reveal the conversational intentions",
+      "First listen, then compare what was confirmed, proposed and still unknown.",
+      micro.turns.map(v=>({expression:v.speaker+"： "+v.ja,note:v.en+" · "+v.intent})),a),
+   e11Practice(s,a,micro,"reading"),
+   lesson(s,"e11-notice",micro.reading.title,micro.reading.en,
+      [{expression:micro.reading.ja,note:micro.reading.en}],a),
+   lesson(s,"e11-contrasts","Precise grammar, vocabulary and register",
+      micro.pragmaticDecision+" "+micro.grammar.function+" Common misreading: "+micro.grammar.mistake,
+      [...micro.vocabulary.map(v=>({expression:v.expression,note:v.meaning+" · "+v.contrast})),
+       {expression:micro.grammar.pattern,note:micro.grammar.function}],a)
+  ]:[]),
   lesson(s,"production","Own the exchange · Independent writing and speaking",
    "Your original text and transcript are stored as unscored drafts only. Evaluate politeness, meaning and revision with the provided guidance; no synthetic pronunciation grade.",[],a),
   open(s,a,false),
@@ -646,9 +687,15 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
     lesson(s,"e09-independent","New audience · Reuse the language, not the old facts",
       depth.production.newAudience+" · "+depth.production.firstProblem+" "+depth.production.revisionFocus,
       depth.production.selfCheck.map((check,i)=>({expression:"Self-check "+(i+1),note:check})),a),
+    ...(micro?[
+      lesson(s,"e11-writing-guide","New audience · Write and explicitly revise",
+        "Audience: "+micro.writingAudience+". "+micro.pragmaticDecision+
+        " Compare your response with these non-graded checks.",
+        micro.writingRevision.map(([name,question,repair])=>({expression:name+" · "+question,note:repair})),a)
+    ]:[]),
     e09UnscoredTransfer(s,a,depth),
     lesson(s,"e09-followup","Different-role speaking · Self-directed",
-      depth.production.followUp+" This is a speaking practice suggestion; do not infer an acoustic or CEFR score.",[],a)
+      depth.production.followUp+" "+(micro?.spokenChallenge??"")+" This is a speaking practice suggestion; do not infer an acoustic or CEFR score.",[],a)
   ]:[]),
   lesson(s,"revise","Review your own output",
    s.independent.revision+" The next time, respond without copying the revealed dialogue.",[],a),
