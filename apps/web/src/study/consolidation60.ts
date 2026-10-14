@@ -150,11 +150,19 @@ export interface P60HistoricalReviewSource{
 export function p60HistoricalSources(
  unitId:string,prompts:readonly StudyPrompt[],events:readonly StudyEvent[],
  traces:readonly MemoryTrace[],traceId:(p:StudyPrompt)=>string,now=Date.now(),
- knownUnitIds?:ReadonlySet<string>
+ knownUnitIds?:ReadonlySet<string>,ownerId?:string
 ):P60HistoricalReviewSource[]{
- const map=new Map(traces.map(t=>[t.id,t]));
+ // An explicit Account identity or one unambiguous owner is required.
+ // A future source-discovery caller must not accidentally show another
+ // owner's graded events or MemoryTrace-based FSRS due dates.
+ const owners=new Set([...events.map(e=>e.userId),...traces.map(t=>t.userId)]);
+ const owner=ownerId??(owners.size===1?[...owners][0]:undefined);
+ if(!owner)return [];
+ const scopedEvents=events.filter(e=>e.userId===owner);
+ const scopedTraces=traces.filter(t=>t.userId===owner);
+ const map=new Map(scopedTraces.map(t=>[t.id,t]));
  const last=new Map<string,StudyEvent>();
- for(const e of events){
+ for(const e of scopedEvents){
   const id=e.metadata?.promptId;
   if(typeof id!=="string"||(e.result!=="correct"&&e.result!=="incorrect")||
    e.metadata?.schedulerExcluded===true)continue;
