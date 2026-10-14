@@ -8,6 +8,7 @@ import type {
   E03Overview,
   E04Overview,
   E05Evidence,
+  E06Overview,
   A1MilestoneProgress,
   B1MilestoneProgress,
   B2MilestoneProgress,
@@ -29,6 +30,7 @@ type Props={
   e03:E03Overview;onStartE03:(id:string)=>void;onStartE03Delayed:(id:string)=>void;
   e04:E04Overview;onStartE04:(id:string)=>void;onStartE04Delayed:(id:string)=>void;onStartE04Preview:(id:string)=>void;
   e05:E05Evidence;onStartE05Repair:()=>void;onStartE03Preview:(id:string)=>void;
+  e06:E06Overview;onStartE06:(id:string)=>void;onStartE06Delayed:(id:string)=>void;onStartE06Preview:(id:string)=>void;
   summary:StudySummary;
   kana:KanaMasterySummary;
   vocab:VocabularyMasterySummary;
@@ -77,7 +79,7 @@ const LEVEL_ORDER=["A1","A2","B1","B2","C1"];
 
 export function J4Learn(props:Props){
   const {
-    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
+    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,e06,onStartE06,onStartE06Delayed,onStartE06Preview,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
     milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,
     onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartAssessment,
     onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,
@@ -190,6 +192,23 @@ export function J4Learn(props:Props){
       {e05.targets.length?<ol>{e05.targets.slice(0,6).map(t=><li key={t.promptId}><strong>{t.title}</strong><small>{t.cohort.toUpperCase()} · {t.skill} · canonical {t.canonicalId}</small></li>)}</ol>:<p>No specific repair targets are pending. Continue your normal lessons.</p>}
       <button type="button" disabled={status==="loading"||e05.repair.pending===0} onClick={onStartE05Repair}>Practise changed-question corrections</button>
       <details><summary>Canonical A1/A2 structure and subdivision limits</summary><p>A1 units: {e05.canonical.a1}; unsplit A2 units: {e05.canonical.unsplitA2}; explicitly labeled A2.1: {e05.canonical.explicitA21}; explicitly labeled A2.2: {e05.canonical.explicitA22}. If the source only labels A2, dividing it in halves is not a verified CEFR/JF A2.1/A2.2 mapping.</p></details>
+    </section>
+    <section className="e06-course" aria-labelledby="e06-course-title">
+      <header className="e06-course__header"><div><p className="j4-kicker">E06 · ORIGINAL INDEPENDENT A1/A2</p><h2 id="e06-course-title">Communicate across everyday situations</h2><p>Seven original extended scenarios with listening, connected reading, negotiated responses, independent drafts, and cumulative delayed transfer.</p></div><strong>{e06.reviewed}/{e06.total} delayed sets</strong></header>
+      <ol className="e06-course__cases">{e06.cases.map((c,i)=><li key={c.id} className="e06-course__case">
+        <span className="e06-course__number">{String(i+1).padStart(2,"0")}</span>
+        <div className="e06-course__info"><h3>{c.title}</h3><p>{c.objective}</p><small>{c.level} · {c.anchorCohort.toUpperCase()} source {c.anchorSceneId}{c.canonicalUnitId?" · "+c.canonicalUnitId:" · unlinked original reading"}</small>
+          <small>{c.sourceListening?"Listening source done":"Original listening needed"} · {c.sourceReading?"Text/form source done":"Original text/form needed"}</small>
+          {c.canDoId?<small>{c.correct}/{c.required} controlled correct · {c.unscoredWriting+c.unscoredSpeaking} unscored drafts · {c.delayedCorrect}/{c.delayedRequired} delayed correct</small>:<small>No verified Can-do link: preview only, never graded</small>}
+          {c.status==="waiting"&&c.availableAt?<small>Delayed recall opens {new Date(c.availableAt).toLocaleString()}</small>:null}</div>
+        <div className="e06-course__actions">
+          {c.status==="needs-prerequisite"&&c.canDoId?<button type="button" disabled={status==="loading"} onClick={()=>{if(c.anchorCohort==="e02")onStartE02(c.anchorSceneId);else if(c.anchorCohort==="e03")onStartE03(c.anchorSceneId);else onStartE04(c.anchorSceneId);}}>Practise original source</button>:null}
+          {!c.canDoId?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06Preview(c.id)}>Read original case</button>:null}
+          {c.prerequisiteReady?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06(c.id)}>{c.status==="unstarted"?"Begin capstone":"Repeat capstone"}</button>:null}
+          {(c.status==="ready"||c.status==="reviewed")?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06Delayed(c.id)}>Delayed transfer</button>:null}
+        </div>
+      </li>)}</ol>
+      <p>Any A2.1/A2.2 placement beyond an explicit canonical designation is provisional. Open writing and speech transcripts are not proficiency scores.</p>
     </section>
     <section className="j4-foundation" aria-labelledby="j4-foundation-title">
       <header>

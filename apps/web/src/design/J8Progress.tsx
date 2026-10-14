@@ -8,6 +8,7 @@ import type {
   E03Overview,
   E04Overview,
   E05Evidence,
+  E06Overview,
   A1MilestoneProgress,
   B1MilestoneProgress,
   B2MilestoneProgress,
@@ -29,6 +30,7 @@ type Props={
   e03:E03Overview;
   e04:E04Overview;
   e05:E05Evidence;onStartE05Repair:()=>void;
+  e06:E06Overview;
   kana:KanaMasterySummary;
   vocab:VocabularyMasterySummary;
   conjugation:ConjugationMasterySummary;
@@ -57,7 +59,7 @@ type Skill={
 };
 
 export function J8Progress({
-  e04,e03,e02,e01,e05,onStartE05Repair,kana,vocab,conjugation,grammar,sentence,lexicalFluency,milestone,b1Milestone,b2Milestone,c1Foundation,immersion,summary,course,completedToday,
+  e04,e03,e02,e01,e05,e06,onStartE05Repair,kana,vocab,conjugation,grammar,sentence,lexicalFluency,milestone,b1Milestone,b2Milestone,c1Foundation,immersion,summary,course,completedToday,
 }:Props){
   const immersionReading=mean(immersion.texts.map((item)=>item.readingMastery));
   const immersionListening=mean(immersion.texts.map((item)=>item.listeningMastery));
@@ -203,6 +205,12 @@ export function J8Progress({
       </div>
       {e05.repair.pending>0?<button type="button" onClick={onStartE05Repair}>Repair with different questions</button>:null}
       <p>Listening and reading counts represent controlled responses, while independent production records drafts without semantic or acoustic scores. One new-context correction never grants mastery.</p>
+    </section>
+    <section className="e06-course e06-course--progress" aria-labelledby="e06-progress-title">
+      <header className="e06-course__header"><div><p className="j8-kicker">E06 · ORIGINAL CUMULATIVE EVIDENCE</p><h2 id="e06-progress-title">Independent communication practice</h2><p>Account-scoped StudyEvents linked to existing canonical Can-dos. No duplicate learner-state authority.</p></div><strong>{e06.reviewed} delayed sets complete</strong></header>
+      <div className="e06-course__metrics"><span>{e06.linked}/{e06.total} linked</span><span>{e06.prerequisiteReady} prerequisites satisfied</span><span>{e06.active} learning</span><span>{e06.waiting} waiting</span><span>{e06.ready} delayed due</span><span>{e06.unlinked} ungraded previews</span></div>
+      <ol className="e06-course__progress">{e06.cases.map(c=><li key={c.id}><strong>{c.title}</strong><span>{c.correct}/{c.required} controlled correct</span><span>{c.unscoredSpeaking+c.unscoredWriting} unscored drafts</span><span>{c.delayedCorrect}/{c.delayedRequired} delayed correct</span></li>)}</ol>
+      <p>Recognition, comprehension, bounded typed recall and open production are not interchangeable. These counts are neither CEFR certification nor acoustic-pronunciation scores.</p>
     </section>
     <section className="j8-skills" aria-labelledby="j8-skills-title">
       <header className="j8-section-head">
