@@ -2,6 +2,7 @@ import {useEffect,useMemo,useRef,useState} from "react";
 import {p60Compare,p60RelatedVocabulary,p60Stage,p60CourseTracks,
  type P60Unit,type P60PracticeKind,type P60HistoricalReviewSource} from "../study/consolidation60";
 import {originalEditorialNote} from "../study/sourceEditorialR2";
+import {r3Continuation,r3RecommendedAction} from "../study/continuityR3";
 import "./p60-consolidation.css";
 type Practice=Exclude<P60PracticeKind,"all">;
 type Step="reading"|"speaking"|"writing"|"reflection";
@@ -17,12 +18,13 @@ const statusText:Record<P60HistoricalReviewSource["status"],string>={
 };
 /** UI reads original owner-authoritative evidence; every free draft remains in component memory. */
 export function P60ConsolidationStudio({
- lessons,preferredId,readyIds,historical,disabled,onPractice,onHistorical,onWriting,onDirtyChange
+ lessons,preferredId,readyIds,historical,disabled,onPractice,onHistorical,onDueReview,onWriting,onDirtyChange
 }:{
  lessons:readonly P60Unit[];preferredId?:string;readyIds:readonly string[];
  historical:readonly P60HistoricalReviewSource[];disabled:boolean;
  onPractice:(id:string,kind:Practice)=>void;
  onHistorical:(id:string,unitId:string)=>void;
+ onDueReview:(unitId:string)=>void;
  onWriting:(id:string)=>void;
  onDirtyChange?:(dirty:boolean)=>void;
 }){
@@ -41,6 +43,7 @@ export function P60ConsolidationStudio({
  const [spoken,setSpoken]=useState(false);
  const [showVocabulary,setShowVocabulary]=useState(false);
  const [catalog,setCatalog]=useState(false);
+ const [showAllTracks,setShowAllTracks]=useState(false);
  const [reviewOnly,setReviewOnly]=useState<"all"|"due"|"needs-repair"|"unseen">("all");
  const [phase,setPhase]=useState("all");
  const [selectedTrack,setSelectedTrack]=useState("all");
@@ -90,6 +93,8 @@ export function P60ConsolidationStudio({
    .includes(search.trim().toLocaleLowerCase()));
  const shownLessons=lessons.filter(x=>[x.title,x.domain,x.goal].join(" ")
   .toLocaleLowerCase().includes(lessonFilter.trim().toLocaleLowerCase()));
+ const continuation=r3Continuation(historical,lesson.units[0]!);
+ const suggested=r3RecommendedAction(continuation);
  const due=historical.filter(x=>x.status==="due");
  const mistakes=historical.filter(x=>x.status==="needs-repair");
  const attempted=historical.filter(x=>x.status==="previously-practiced"||
@@ -168,6 +173,36 @@ export function P60ConsolidationStudio({
     setCatalog(true);setScope("all");setPhase("all");setSelectedTrack("all");setReviewOnly("needs-repair");setShowMore(15);
    }}>Frühere Fehler gezielt aufrufen</button>
   </div>
+  <section className="p60-consolidation__flow" aria-labelledby="r3-flow-title">
+   <h5 id="r3-flow-title">Weiterlernen mit echten Originalquellen · vier sinnvolle Schritte</h5>
+   <p>Dieses Angebot ordnet dieselben P40–P59-Originalfragen und vorhandenen
+    ownergebundenen FSRS-Daten, nicht eine zweite Bewertung oder Kursabschlusszahl.
+    Lernende können alle Schritte unabhängig voneinander öffnen.</p>
+   {suggested?.promptId?<p role="status"><strong>Aktueller Lernhinweis:</strong>
+    {suggested.title} · {suggested.explanation}</p>:<p>Keine originalen Übungen
+    dieser vier Kategorien für diese ausgewählte Einheit gefunden.
+    Du kannst die vollständige Originalquellensuche öffnen.</p>}
+   <div className="p60-consolidation__flow-grid">
+    {continuation.map(item=><article key={item.skill}>
+     <h6>{item.title}</h6>
+     <p>{item.aim}</p>
+     {item.promptId?<small>P{item.phase} · {item.status==="due"?"FSRS jetzt fällig":
+       item.status==="needs-repair"?"Letzte Antwort falsch":
+       item.status==="unseen"?"Noch nicht bewertet":"Früher bearbeitet"}</small>:null}
+     <p>{item.explanation}</p>
+     {item.skill==="review"?
+      <button type="button" disabled={disabled||!item.unitId||!item.promptId}
+       onClick={()=>{if(item.unitId&&item.promptId)onDueReview(item.unitId)}}>
+       Echte FSRS-fällige Karten dieser Einheit
+      </button>:
+      <button type="button" disabled={disabled||!item.promptId||!item.unitId}
+       onClick={()=>{if(item.promptId&&item.unitId)onHistorical(item.promptId,item.unitId)}}>
+       Originale {item.skill==="source"?"Quellfrage":
+        item.skill==="conversation"?"Gesprächsübung":"Mitteilungsübung"} öffnen
+      </button>}
+    </article>)}
+   </div>
+  </section>
   {catalog?<section className="p60-consolidation__history">
    <h5>Original-Lernquellen und aktuelle echte Reviewergebnisse</h5>
    <p>Die Auswahl öffnet <strong>die tatsächliche frühere StudyPrompt-ID</strong>.
@@ -219,7 +254,15 @@ export function P60ConsolidationStudio({
    {filtered.length>showMore?<button type="button" onClick={()=>setShowMore(n=>n+20)}>Weitere ursprüngliche Quellen</button>:null}
    {!filtered.length?<p>Keine entsprechende belegte Originalquelle in dieser Auswahl.</p>:null}
   </section>:null}
-  <section className="p60-consolidation__tracks" aria-label="Kohärenter Originalkurs-Lernpfad P40 bis P60">
+  <div className="p60-consolidation__actions">
+   <button type="button" aria-expanded={showAllTracks}
+    onClick={()=>setShowAllTracks(v=>!v)}>
+    {showAllTracks?"Sechs ausführliche Lernpfade schließen":
+     "Alle sechs Original-Lernpfade für weitere Themen öffnen"}
+   </button>
+  </div>
+  {showAllTracks?<section className="p60-consolidation__tracks"
+   aria-label="Sechs optionale Original-Lernpfade P40 bis P59">
    <h5>Zusammenhängender Kursweg · original P40–P59 nachlernen</h5>
    <p>Die folgenden sechs Bereiche sind Navigation nach tatsächlichen
     Originalquellen. Bearbeitete Übungsfragen sind keine als bestanden
@@ -250,7 +293,7 @@ export function P60ConsolidationStudio({
      </div>;
     })}
    </div>
-  </section>
+  </section>:null}
   <div className="p60-consolidation__layout">
    <nav className="p60-consolidation__lessons" aria-label="20 originale A2-Konsolidierungslektionen">
     <label htmlFor="p60-search">Neue P60-Lektion finden</label>
