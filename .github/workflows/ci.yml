@@ -27,6 +27,8 @@ jobs:
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm test
+      - name: A1 recall and real conversation graph regressions
+        run: node --experimental-strip-types --test apps/web/src/communication/a1-review.test.mjs apps/web/src/communication/a1-roleplay-graph.test.mjs
       - run: pnpm validate:content
       - name: Validate P10 native candidate queue
         run: pnpm native:p10:preview

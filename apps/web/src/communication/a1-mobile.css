@@ -1,0 +1,46 @@
+.a1-mobile-actions,.a1-choice-grid,.a1-step-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,12rem),1fr));gap:.65rem;margin:1rem 0}
+.a1-mobile-actions label,.a1-choice-grid label{display:flex;align-items:center;gap:.65rem;padding:.8rem;border:1px solid currentColor;border-radius:.35rem;min-height:2.75rem;cursor:pointer}
+.a1-mobile-actions input,.a1-choice-grid input{accent-color:currentColor}
+.a1-mobile-actions button,.a1-choice-grid button,.a1-step-actions button{min-height:2.75rem}
+.a1-lesson-shell{max-width:55rem;margin-inline:auto}
+.a1-lesson-shell nav{display:flex;flex-wrap:wrap;gap:.5rem;margin-block:.75rem}
+.a1-lesson-shell nav button{min-height:2.75rem;flex:1 1 9rem}
+.a1-lesson-shell nav button[aria-current="step"]{outline:2px solid currentColor;outline-offset:2px;font-weight:700}
+.a1-lesson-shell input:not([type="checkbox"]):not([type="radio"]),.a1-recall-shell input:not([type="checkbox"]):not([type="radio"]){max-width:100%;min-height:2.75rem}
+.a1-lesson-shell button,.a1-recall-shell button{min-height:2.75rem;margin:.2rem}
+.a1-lesson-shell progress{display:block;width:100%;max-width:36rem;margin-block:.8rem}
+.a1-recall-shell{max-width:55rem;margin-inline:auto}
+.a1-recall-shell fieldset{min-width:0}
+@media(max-width:600px){.a1-lesson-shell,.a1-recall-shell{padding-inline:.75rem}.a1-lesson-shell nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.a1-lesson-shell nav button{min-width:0;overflow-wrap:anywhere}.a1-recall-shell fieldset label{display:flex;align-items:center;gap:.5rem;margin:.35rem 0}.a1-choice-grid{grid-template-columns:1fr}.a1-lesson-shell h3[lang="ja"],.a1-recall-shell h3[lang="ja"]{font-size:clamp(1.6rem,9vw,3rem);overflow-wrap:anywhere}}
+
+.a1-dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:.85rem;margin:1rem 0}
+.a1-dashboard-grid article{display:flex;flex-direction:column;gap:.4rem;border:1px solid currentColor;padding:1rem;border-radius:.35rem;min-width:0}
+.a1-dashboard-grid article strong{font-size:1.35rem;font-variant-numeric:tabular-nums}
+.a1-dashboard-grid progress{width:100%}
+.a1-dashboard-links{display:flex;flex-wrap:wrap;gap:.7rem;margin:1rem 0}
+.a1-dashboard-links a{display:inline-flex;align-items:center;min-height:2.75rem;padding:.55rem .8rem;border:1px solid currentColor;border-radius:.3rem}
+.a1-roleplay-shell{max-width:55rem;margin-inline:auto}
+.a1-roleplay-shell select{min-height:2.75rem;max-width:100%}
+.a1-roleplay-shell button{min-height:2.75rem}
+.a1-roleplay-shell .a1-choice-grid button{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:.3rem;padding:.8rem;white-space:normal;overflow-wrap:anywhere}
+.a1-roleplay-shell progress{display:block;width:100%}
+@media(max-width:600px){.a1-dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.a1-dashboard-grid article strong{font-size:1.05rem}.a1-dashboard-links{display:grid;grid-template-columns:1fr}.a1-roleplay-shell{padding-inline:.75rem}}
+@media(max-width:350px){.a1-dashboard-grid{grid-template-columns:1fr}}
+
+/* A1 practice: high-contrast feedback without relying on color alone. */
+.a1-feedback{border:2px solid currentColor;border-radius:.3rem;padding:1rem;margin-block:1rem;overflow-wrap:anywhere}
+.a1-feedback strong{display:block;margin-bottom:.5rem}
+.a1-feedback button{min-height:2.75rem;white-space:normal;text-align:left}
+.a1-roleplay-shell .a1-choice-grid button:focus-visible,
+.a1-dashboard-links button:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+.a1-roleplay-shell .a1-choice-grid button[aria-pressed="true"]{outline:2px solid currentColor;outline-offset:1px;font-weight:700}
+.a1-roleplay-shell fieldset:disabled{opacity:.8}
+.a1-roleplay-shell [role="alert"],.a1-recall-shell [role="alert"]{border-left:3px solid currentColor;padding-inline:.75rem}
+.a1-dashboard-links button{min-height:2.75rem;padding:.6rem .8rem;white-space:normal;text-align:left}
+@media(max-width:600px){
+ .a1-roleplay-shell select{width:100%}
+ .a1-roleplay-shell .a1-choice-grid button{width:100%;min-height:3.25rem}
+ .a1-roleplay-shell .a1-feedback button{width:100%;margin-block:.3rem}
+ .a1-dashboard-links button{width:100%}
+}
+@media(prefers-reduced-motion:reduce){.a1-roleplay-shell *,.a1-recall-shell *{scroll-behavior:auto!important;transition:none!important}}

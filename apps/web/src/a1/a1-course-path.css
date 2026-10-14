@@ -1,0 +1,14 @@
+.a1-course-path{max-width:74rem;margin:2rem auto;padding:clamp(1rem,2vw,1.5rem);border-top:2px solid currentColor}
+.a1-course-path h2{font-size:clamp(1.4rem,3vw,2rem);margin-block:.4rem}
+.a1-course-path__modules{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:.8rem;margin-block:1rem;align-items:start}
+.a1-course-path__module{min-width:0;border:1px solid currentColor;border-radius:.2rem;padding:.8rem}
+.a1-course-path__module summary{cursor:pointer;font-weight:700;min-height:2.75rem;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.45rem}
+.a1-course-path__list{padding-left:1.6rem;margin:1rem 0}
+.a1-course-path__list li{margin:.8rem 0}
+.a1-course-path__list article{padding:.75rem .5rem;min-width:0;border-bottom:1px solid currentColor}
+.a1-course-path__heading{display:flex;flex-wrap:wrap;gap:.4rem .8rem;align-items:baseline;justify-content:space-between}
+.a1-course-path__heading h3{font-size:1.08rem;margin:0}
+.a1-course-path__actions{display:flex;flex-wrap:wrap;gap:.45rem}
+.a1-course-path__actions button{min-height:2.75rem;padding:.5rem .7rem;white-space:normal;text-align:left;border:1px solid currentColor;border-radius:.15rem;overflow-wrap:anywhere}
+.a1-course-path__actions button:focus-visible,.a1-course-path__module summary:focus-visible{outline:3px solid currentColor;outline-offset:2px}
+@media(max-width:600px){.a1-course-path__modules{grid-template-columns:1fr}.a1-course-path__module summary{display:block}.a1-course-path__module summary small{display:block;margin-top:.3rem}.a1-course-path__actions{display:grid;grid-template-columns:1fr}.a1-course-path__actions button{width:100%}}
