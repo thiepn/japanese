@@ -1,0 +1,19 @@
+/* A2.1 continues the existing restrained editorial UI; no new dashboard or progress store. */
+.e03-entry,.e03-path{border:1px solid var(--border,rgba(116,116,116,.35));padding:1.1rem 1.2rem;margin:1.15rem 0;background:var(--surface,transparent)}
+.e03-entry,.e03-path__heading{display:flex;justify-content:space-between;align-items:start;gap:1rem;flex-wrap:wrap}
+.e03-entry h2,.e03-path h2{margin:.2rem 0 .65rem}.e03-entry p,.e03-path p{line-height:1.55;margin:.4rem 0}
+.e03-entry__actions,.e03-path__actions{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+.e03-entry button,.e03-path button{min-height:44px;white-space:normal;text-align:left;max-width:100%}
+.e03-path__heading>strong{white-space:nowrap;font-variant-numeric:tabular-nums}
+.e03-path__scope{margin:1rem 0;padding:.65rem .8rem;border:1px solid var(--border,rgba(116,116,116,.35))}
+.e03-path__scope summary{cursor:pointer}
+.e03-path__list,.e03-progress-list{list-style:none;margin:1rem 0 0;padding:0}
+.e03-path__item{display:grid;grid-template-columns:2.5rem minmax(0,1fr) auto;align-items:start;gap:1rem;border-top:1px solid var(--border,rgba(116,116,116,.22));padding:1rem 0}
+.e03-path__number{opacity:.68;font-variant-numeric:tabular-nums}
+.e03-path__copy h3{font-size:1.03rem;margin:0}.e03-path__copy small{display:block;line-height:1.55;opacity:.78}
+.e03-progress-metrics{display:flex;gap:1.5rem;flex-wrap:wrap;padding:.6rem 0}
+.e03-progress-list li{display:grid;grid-template-columns:minmax(10rem,2fr) repeat(3,minmax(7rem,1fr));gap:.7rem;align-items:baseline;border-top:1px solid var(--border,rgba(116,116,116,.22));padding:.6rem 0}
+.e03-progress-list li span{font-size:.88rem;opacity:.85}
+.e03-entry button:focus-visible,.e03-path button:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+@media(max-width:760px){.e03-path__item{grid-template-columns:2rem minmax(0,1fr)}.e03-path__actions{grid-column:2}.e03-progress-list li{grid-template-columns:1fr 1fr}.e03-progress-list li strong{grid-column:1/-1}}
+@media(max-width:390px){.e03-entry__actions{width:100%}.e03-path__actions{flex-direction:column;align-items:stretch}.e03-entry button,.e03-path button{width:100%}}

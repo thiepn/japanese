@@ -5,6 +5,7 @@ import {RealWorldPerformancePanel} from "../study/RealWorldPerformancePanel";
 import type {
   E01Progress,
   E02Overview,
+  E03Overview,
   A1MilestoneProgress,
   B1MilestoneProgress,
   B2MilestoneProgress,
@@ -23,6 +24,7 @@ import {JCartouche,JInkProgress,JPattern,JSeal} from "./index";
 type Props={
   e01:E01Progress;onStartE01:()=>void;onStartE01Delayed:()=>void;
   e02:E02Overview;onStartE02:(id:string)=>void;onStartE02Delayed:(id:string)=>void;
+  e03:E03Overview;onStartE03:(id:string)=>void;onStartE03Delayed:(id:string)=>void;
   summary:StudySummary;
   kana:KanaMasterySummary;
   vocab:VocabularyMasterySummary;
@@ -71,7 +73,7 @@ const LEVEL_ORDER=["A1","A2","B1","B2","C1"];
 
 export function J4Learn(props:Props){
   const {
-    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
+    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
     milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,
     onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartAssessment,
     onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,
@@ -153,6 +155,18 @@ export function J4Learn(props:Props){
           {(item.state==="ready"||item.state==="reviewed")?<button className="secondary" type="button" disabled={status==="loading"} onClick={()=>onStartE02Delayed(item.id)}>Delayed transfer</button>:null}</div>
       </li>)}</ol>
       {e02.total===0?<p role="status">No E02 scenes are mapped to the current canonical A1 course.</p>:null}
+    </section>
+    <section className="e03-path" aria-labelledby="e03-path-title">
+      <header className="e03-path__heading"><div><p className="j4-kicker">E03 · ORIGINAL A2.1 COMMUNICATION</p><h2 id="e03-path-title">Use Japanese across connected situations</h2><p>{e03.authored} original scenes authored · {e03.total} linked to an existing A2 Can-do. A2.1 placement is provisional and does not certify a CEFR level.</p></div><strong>{e03.delayedReviewed}/{e03.total} delayed transfer checks</strong></header>
+      {e03.unmapped.length>0?<details className="e03-path__scope"><summary>{e03.unmapped.length} original situations awaiting a verified A2 Can-do association</summary><p>{e03.unmapped.join(" · ")}. No learning or mastery events are fabricated for unlinked content.</p></details>:null}
+      <ol className="e03-path__list">{e03.scenes.map((scene,index)=><li key={scene.id} className="e03-path__item">
+        <span className="e03-path__number">{String(index+1).padStart(2,"0")}</span>
+        <div className="e03-path__copy"><h3>{scene.title}</h3><p>{scene.setting}</p><small>{scene.canDo} · {scene.unitId}</small><small>{scene.correct}/{scene.required} distinct controlled answers correct · {scene.unscoredDrafts} unscored drafts · {scene.state.replaceAll("_"," ")}</small>
+          {scene.state==="waiting"&&scene.reviewAvailableAt?<small>Delayed transfer opens {new Date(scene.reviewAvailableAt).toLocaleString()}</small>:null}</div>
+        <div className="e03-path__actions"><button type="button" disabled={status==="loading"} onClick={()=>onStartE03(scene.id)}>{scene.state==="not_started"?"Start situation":"Practise situation"}</button>
+          {(scene.state==="ready"||scene.state==="reviewed")?<button type="button" className="secondary" disabled={status==="loading"} onClick={()=>onStartE03Delayed(scene.id)}>Delayed transfer</button>:null}</div>
+      </li>)}</ol>
+      {e03.total===0?<p role="status">The A2.1 material has no safely verified Can-do links in the current canonical course. No invented progress is offered.</p>:null}
     </section>
     <section className="j4-foundation" aria-labelledby="j4-foundation-title">
       <header>
