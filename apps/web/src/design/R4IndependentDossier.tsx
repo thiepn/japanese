@@ -20,6 +20,8 @@ export function R4IndependentDossier({
  const [draft,setDraft]=useState("");
  const [attempted,setAttempted]=useState(false);
  const [showModels,setShowModels]=useState(false);
+ const [revisionDraft,setRevisionDraft]=useState("");
+ const [revisionAttempt,setRevisionAttempt]=useState(false);
  const [replyDraft,setReplyDraft]=useState("");
  const [replyAttempt,setReplyAttempt]=useState(false);
  const [showReplies,setShowReplies]=useState(false);
@@ -30,9 +32,9 @@ export function R4IndependentDossier({
  const voiceToken=useRef(0);
  // Upward communication is a boolean only. We never write or transmit prose.
  useEffect(()=>{
-  onDirtyChange(Boolean(draft.trim()||replyDraft.trim()||transferDraft.trim()));
+  onDirtyChange(Boolean(draft.trim()||revisionDraft.trim()||replyDraft.trim()||transferDraft.trim()));
   return ()=>onDirtyChange(false);
- },[draft,replyDraft,transferDraft,onDirtyChange]);
+ },[draft,revisionDraft,replyDraft,transferDraft,onDirtyChange]);
  useEffect(()=>{
   if(visible)return;
   voiceToken.current+=1;
@@ -90,7 +92,8 @@ export function R4IndependentDossier({
   </header>
   <ol className="r4-independent__stages" aria-label="Drei eigenständige Versuche">
    <li>Schriftliche und gesprochene Quellen abgleichen</li>
-   <li>Nach neuer Aussage korrigieren</li>
+   <li>Erste eigene Nachricht anhand zweier Belege überarbeiten</li>
+   <li>Auf eine neue Aussage reagieren</li>
    <li>Andere Alltagssituation unabhängig lösen</li>
   </ol>
   <div className="r4-independent__section">
@@ -117,7 +120,8 @@ export function R4IndependentDossier({
    <p><strong>Aufgabe:</strong> {dossier.task}</p>
    <label htmlFor={"r4-draft-"+dossier.id}>Deine eigene mehrteilige japanische Mitteilung (unbenotet)</label>
    <textarea id={"r4-draft-"+dossier.id} lang="ja" rows={6} value={draft}
-    onChange={e=>{setDraft(e.target.value);setAttempted(false);setShowModels(false)}}
+    onChange={e=>{setDraft(e.target.value);setAttempted(false);setShowModels(false);
+     setRevisionAttempt(false);}}
     aria-keyshortcuts="Control+Enter Meta+Enter"
     onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"&&draft.trim()){
      e.preventDefault();setAttempted(true);
@@ -134,17 +138,41 @@ export function R4IndependentDossier({
     </div>)}
     <ul>{dossier.selfCheck.map(x=><li key={x}>{x}</li>)}</ul>
     <p><strong>Konkreter möglicher Denkfehler:</strong> {dossier.misconception}</p>
-    <button type="button" aria-expanded={showModels}
-     onClick={()=>setShowModels(v=>!v)}>{showModels?"Modelle verbergen":
-      "Zwei original verfasste japanische Vergleichsbeispiele öffnen"}</button>
-    {showModels?<div className="r4-independent__examples">
-     {dossier.models.map((m,i)=><p lang="ja" key={i}>{m}</p>)}
-     <p>Zu vermeidende Fehlbehauptung: <span lang="ja">{dossier.trap}</span></p>
-    </div>:null}
+    <div className="r4-independent__revision">
+      <label htmlFor={"r5-rewrite-"+dossier.id}>
+       Überarbeite die eigene erste japanische Nachricht anhand der gerade gezeigten Belege.
+       Welche konkrete Behauptung muss genauer oder vorsichtiger werden?
+      </label>
+      <textarea id={"r5-rewrite-"+dossier.id} lang="ja" rows={6}
+       value={revisionDraft} onChange={e=>{
+        setRevisionDraft(e.target.value);setRevisionAttempt(false);setShowModels(false);
+       }}/>
+      <div className="r4-independent__actions">
+       <button type="button" disabled={!revisionDraft.trim()||
+        revisionDraft.trim()===draft.trim()} onClick={()=>setRevisionAttempt(true)}>
+        Eigenständig überarbeitete zweite Fassung festhalten
+       </button>
+       <small>Die zweite Version muss sich vom ersten Text unterscheiden.
+        Das ist nur eine Bearbeitungsbedingung, keine Sprachbewertung.</small>
+      </div>
+      {revisionAttempt?<div className="r4-independent__feedback" role="status">
+       <strong>Zweite Fassung selbstständig erstellt · keine automatische Japanischbewertung</strong>
+       <p>Prüfe die neue Fassung gegenüber den zitierten Quellen, dem Adressaten
+        ({dossier.register==="polite"?"höfliche Nachricht":"vertrauliche Nachricht"})
+        und dieser spezifischen Fehlannahme: {dossier.misconception}</p>
+       <button type="button" aria-expanded={showModels}
+        onClick={()=>setShowModels(v=>!v)}>{showModels?"Modelle verbergen":
+         "Zwei original verfasste japanische Vergleichsbeispiele öffnen"}</button>
+       {showModels?<div className="r4-independent__examples">
+        {dossier.models.map((m,i)=><p lang="ja" key={i}>{m}</p>)}
+        <p>Zu vermeidende Fehlbehauptung: <span lang="ja">{dossier.trap}</span></p>
+       </div>:null}
+      </div>:null}
+    </div>
    </div>:null}
   </div>
-  {attempted?<div className="r4-independent__section">
-   <h6>2 · Eine neue Aussage verändert den Sachverhalt</h6>
+  {revisionAttempt?<div className="r4-independent__section">
+   <h6>3 · Eine neue Aussage verändert den Sachverhalt</h6>
    {lang(dossier.newMessage,"new-message")}
    <p><strong>Neue Aufgabe:</strong> {dossier.followupTask}</p>
    <label htmlFor={"r4-repair-"+dossier.id}>Eigenständige neue japanische Reaktion</label>
@@ -163,7 +191,7 @@ export function R4IndependentDossier({
    </div>:null}
   </div>:null}
   {replyAttempt?<div className="r4-independent__section">
-   <h6>3 · Anderer, erst jetzt gezeigter Kontext</h6>
+   <h6>4 · Anderer, erst jetzt gezeigter Kontext</h6>
    <p>{dossier.transfer.scenario}</p>
    <p><strong>Eigenständige Aufgabe:</strong> {dossier.transfer.task}</p>
    <label htmlFor={"r4-transfer-"+dossier.id}>Japanische Lösung für den anderen Alltag (unbenotet)</label>
@@ -191,6 +219,8 @@ export function R4IndependentDossier({
   <small>Diese zusätzliche Originalaufgabe ist nicht als zeitversetzte FSRS-Rückkehr
    geplant. Der neue Kontext wird erst nach deiner zweiten Antwort sichtbar,
    aber dadurch wird kein Reviewtermin, Abschluss oder Kompetenznachweis erstellt.
+   Die zweite eigene Fassung wird ausschließlich mit authored Quellenhinweisen
+   verglichen, nicht automatisch benotet.
    Unvollendeter Text existiert nur im Speicher dieser geöffneten Seite.</small>
  </section>;
 }
