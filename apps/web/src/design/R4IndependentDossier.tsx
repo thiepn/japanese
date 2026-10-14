@@ -135,7 +135,8 @@ export function R4IndependentDossier({
    <label htmlFor={"r4-draft-"+dossier.id}>Deine eigene mehrteilige japanische Mitteilung (unbenotet)</label>
    <textarea id={"r4-draft-"+dossier.id} lang="ja" rows={6} value={draft}
     onChange={e=>{setDraft(e.target.value);setAttempted(false);setShowModels(false);
-     setRevisionAttempt(false);setReplyDraft("");setReplyAttempt(false);
+     setRevisionDraft("");setRevisionAttempt(false);setShowModels(false);
+     setReplyDraft("");setReplyAttempt(false);
      setShowReplies(false);setTransferDraft("");setTransferAttempt(false);
      setShowTransferModels(false);}}
     aria-keyshortcuts="Control+Enter Meta+Enter"
