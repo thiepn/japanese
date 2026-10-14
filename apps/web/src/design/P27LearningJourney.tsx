@@ -2550,7 +2550,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
                   r4WritingCase.transfer.trap
                 }</span></p>
               </details>
-              {r5WritingRepair?<details>
+              {r5WritingRepair&&r4WritingStage!=="first"?<details>
                 <summary>R5 · Originale schriftliche Gegenüberstellung und passende Höflichkeit</summary>
                 <p><strong>Unbelegte Aussage:</strong></p>
                 <p lang="ja">{r5WritingRepair.wrongJapanese}</p>
