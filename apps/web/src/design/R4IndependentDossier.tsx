@@ -184,20 +184,7 @@ export function R4IndependentDossier({
       </div>
       {revisionAttempt?<div className="r4-independent__feedback" role="status">
        <strong>Zweite Fassung selbstständig erstellt · keine automatische Japanischbewertung</strong>
-       {r5Repair?<details className="r4-independent__editorial">
-        <summary>R5 · Beleg, fehlerhafte Schlussfolgerung und Höflichkeit genau unterscheiden</summary>
-        <p><strong>Unbelegte Aussage:</strong></p>
-        <p lang="ja">{r5Repair.wrongJapanese}</p>
-        <p>{r5Repair.wrongGerman}</p>
-        <p><strong>Quellengerechter Gegenbeleg:</strong></p>
-        <p lang="ja">{r5Repair.groundedJapanese}</p>
-        <p>{r5Repair.groundedGerman}</p>
-        <p><strong>Warum:</strong> {r5Repair.sourceDistinction}</p>
-        <p><strong>Angemessene Sprache:</strong> {r5Repair.registerContrast}</p>
-        <p><strong>Neue eigenständige Reparaturaufgabe:</strong> {r5Repair.independentRepairTask}</p>
-        <small>Originaler redaktioneller Lernhinweis, kein Urteil über deinen freien Text.
-         Die zwei verfassten Modellantworten kannst du gesondert anzeigen.</small>
-       </details>:null}
+
        <p>Prüfe die neue Fassung gegenüber den zitierten Quellen, dem Adressaten
         ({dossier.register==="polite"?"höfliche Nachricht":"vertrauliche Nachricht"})
         und dieser spezifischen Fehlannahme: {dossier.misconception}</p>
@@ -230,6 +217,20 @@ export function R4IndependentDossier({
     "Neue Antwort festhalten und Korrekturerklärung lesen")}
    {replyAttempt?<div className="r4-independent__feedback" role="status">
     <p><strong>Quellenbezogene Reparatur:</strong> {dossier.followupRepair}</p>
+       {r5Repair?<details className="r4-independent__editorial">
+        <summary>R5 · Jetzt auch die neue Sprecherinformation quellenrichtig einordnen</summary>
+        <p><strong>Unbelegte Aussage:</strong></p>
+        <p lang="ja">{r5Repair.wrongJapanese}</p>
+        <p>{r5Repair.wrongGerman}</p>
+        <p><strong>Quellengerechter Gegenbeleg:</strong></p>
+        <p lang="ja">{r5Repair.groundedJapanese}</p>
+        <p>{r5Repair.groundedGerman}</p>
+        <p><strong>Warum:</strong> {r5Repair.sourceDistinction}</p>
+        <p><strong>Angemessene Sprache:</strong> {r5Repair.registerContrast}</p>
+        <p><strong>Neue eigenständige Reparaturaufgabe:</strong> {r5Repair.independentRepairTask}</p>
+        <small>Originaler redaktioneller Lernhinweis, kein Urteil über deinen freien Text.
+         Die zwei verfassten Modellantworten kannst du gesondert anzeigen.</small>
+       </details>:null}
     <button type="button" aria-expanded={showReplies} onClick={()=>setShowReplies(v=>!v)}>
      {showReplies?"Antwortmodelle verbergen":"Zwei alternative neue Antworten vergleichen"}</button>
     {showReplies?<div className="r4-independent__examples">
