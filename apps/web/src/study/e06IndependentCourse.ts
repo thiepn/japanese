@@ -399,7 +399,9 @@ function e10StageProgress(s:E06Case,a:Anchor|null,events:readonly StudyEvent[],
  // When optional role-play is ready, prefer the later independent writing;
  // students may still select speech explicitly from Learn.
  const next=stages.find(p=>p.kind!=="optional"&&["ready","started"].includes(p.status))
-   ??stages.find(p=>p.kind==="optional"&&["ready","started"].includes(p.status));
+   // An untouched optional speaking section stays discoverable in Learn; it
+   // must not keep reappearing as mandatory daily work.
+   ??stages.find(p=>p.kind==="optional"&&p.status==="started");
  return {stages,next:next?.id??null};
 }
 function e10DelayedProgress(s:E06Case,a:Anchor|null,events:readonly StudyEvent[],

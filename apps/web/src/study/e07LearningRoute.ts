@@ -43,6 +43,15 @@ export function deriveE07Journey({
  if(thirdContext)options.push(action("e06","resume","Continue the third original communication context",
    "Listen to new speakers, compare an independent notice and use the original source-linked grammar contrasts before writing for a different audience.",
    thirdContext.title+" · E09 "+thirdContext.e09Correct+"/"+thirdContext.e09Required+" contextual answers correct",97,thirdContext.id));
+ const nextShort=e06.cases.find(c=>c.canDoId!==null&&c.prerequisiteReady&&c.nextDailyStage!==null);
+ if(nextShort){
+   const section=nextShort.dailyStages.find(stage=>stage.id===nextShort.nextDailyStage);
+   if(section)options.push(action("e06","resume","Continue a short Japanese lesson · "+section.title,
+     section.purpose+" Original StudyEvents determine the stage; skipped lesson screens never grant credit.",
+     nextShort.title+" · "+section.answered+"/"+section.required+
+       (section.kind==="controlled"?" source-linked correct answers":" unscored submissions"),
+     102,nextShort.id));
+ }
  const active6=e06.cases.find(c=>c.status==="learning");
  if(active6)options.push(action("e06","resume","Continue cumulative communication","Reconnect listening, source reading, negotiation and independent response practice.",active6.title+" · previously started",95,active6.id));
  const active4=e04.scenes.find(s=>s.status==="learning");

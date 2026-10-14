@@ -234,7 +234,7 @@ export function J4Learn(props:Props){
           {c.status==="needs-prerequisite"&&c.canDoId?<button type="button" disabled={status==="loading"} onClick={()=>{if(c.anchorCohort==="e02")onStartE02(c.anchorSceneId);else if(c.anchorCohort==="e03")onStartE03(c.anchorSceneId);else onStartE04(c.anchorSceneId);}}>Practise original source</button>:null}
           {!c.canDoId?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06Preview(c.id)}>Read original case</button>:null}
           {c.prerequisiteReady?<><button type="button" disabled={status==="loading"} onClick={()=>onStartE06(c.id)}>{c.firstDraftSubmitted&&!c.revisedDraftSubmitted?"Continue second draft":c.nextDailyStage?"Continue: "+(c.dailyStages.find(s=>s.id===c.nextDailyStage)?.title??"short lesson"):"Read completion guidance"}</button>
-          {(c.attempts>0||c.firstDraftSubmitted||c.revisedDraftSubmitted)?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06Full(c.id)}>Review full original lesson</button>:null}</>:null}
+          <button type="button" disabled={status==="loading"} onClick={()=>onStartE06Full(c.id)}>Review full original lesson</button></>:null}
           {(c.status==="ready"||c.status==="reviewed")?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06Delayed(c.id)}>{c.nextDelayedStage?"Next delayed group: "+(c.delayedStages.find(s=>s.id===c.nextDelayedStage)?.title??"review"):"Delayed set completed"}</button>:null}
           {(c.status==="ready"||c.status==="reviewed")&&c.delayedCorrect>0?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06FullDelayed(c.id)}>Review all seven delayed questions</button>:null}
         </div>
