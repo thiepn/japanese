@@ -33,6 +33,17 @@ export function R4IndependentDossier({
  const [showTransferModels,setShowTransferModels]=useState(false);
  const [speechStatus,setSpeechStatus]=useState("");
  const voiceToken=useRef(0);
+ const nextFocus=useRef<"revision"|"followup"|"transfer"|null>(null);
+ const revisionHeading=useRef<HTMLHeadingElement|null>(null);
+ const followupHeading=useRef<HTMLHeadingElement|null>(null);
+ const transferHeading=useRef<HTMLHeadingElement|null>(null);
+ useEffect(()=>{
+  const target=nextFocus.current;
+  if(!target)return;
+  const heading=target==="revision"?revisionHeading.current:
+   target==="followup"?followupHeading.current:transferHeading.current;
+  if(heading){nextFocus.current=null;heading.focus();}
+ },[attempted,revisionAttempt,replyAttempt]);
  // Upward communication is a boolean only. We never write or transmit prose.
  useEffect(()=>{
   onDirtyChange(Boolean(draft.trim()||revisionDraft.trim()||replyDraft.trim()||transferDraft.trim()));
@@ -129,15 +140,17 @@ export function R4IndependentDossier({
      setShowTransferModels(false);}}
     aria-keyshortcuts="Control+Enter Meta+Enter"
     onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"&&draft.trim()){
-     e.preventDefault();setAttempted(true);
+     e.preventDefault();nextFocus.current="revision";setAttempted(true);
     }}}/>
    <div className="r4-independent__actions">
-    {actions(Boolean(draft.trim()),()=>setAttempted(true),"Eigene Antwort festhalten und Quellenhinweise öffnen")}
+    {actions(Boolean(draft.trim()),()=>{nextFocus.current="revision";setAttempted(true)},
+   "Eigene Antwort festhalten und Quellenhinweise öffnen")}
     <button type="button" disabled={disabled} onClick={onOriginalPractice}>
      Originale P60-Belegfrage im StudyPlayer üben</button>
    </div>
    {attempted?<div className="r4-independent__feedback" role="status">
-    <strong>Belegbasierte Selbstprüfung, keine automatische Note</strong>
+    <h6 ref={revisionHeading} tabIndex={-1}>Belegbasierte Selbstprüfung und unabhängige zweite Fassung</h6>
+    <strong>Keine automatische Note</strong>
     {dossier.evidence.map((e,i)=><div key={i}>
      <p lang="ja">「{e.quote}」</p><p>{e.meaning}</p>
     </div>)}
@@ -149,6 +162,11 @@ export function R4IndependentDossier({
        Welche konkrete Behauptung muss genauer oder vorsichtiger werden?
       </label>
       <textarea id={"r5-rewrite-"+dossier.id} lang="ja" rows={6}
+       aria-keyshortcuts="Control+Enter Meta+Enter"
+       onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&
+        e.key==="Enter"&&revisionDraft.trim()!==draft.trim()&&revisionDraft.trim()){
+         e.preventDefault();nextFocus.current="followup";setRevisionAttempt(true);
+       }}}
        value={revisionDraft} onChange={e=>{
         setRevisionDraft(e.target.value);setRevisionAttempt(false);setShowModels(false);
         setReplyDraft("");setReplyAttempt(false);setShowReplies(false);
@@ -156,7 +174,9 @@ export function R4IndependentDossier({
        }}/>
       <div className="r4-independent__actions">
        <button type="button" disabled={!revisionDraft.trim()||
-        revisionDraft.trim()===draft.trim()} onClick={()=>setRevisionAttempt(true)}>
+        revisionDraft.trim()===draft.trim()} onClick={()=>{
+         nextFocus.current="followup";setRevisionAttempt(true)
+        }}>
         Eigenständig überarbeitete zweite Fassung festhalten
        </button>
        <small>Die zweite Version muss sich vom ersten Text unterscheiden.
@@ -193,14 +213,20 @@ export function R4IndependentDossier({
    </div>:null}
   </div>
   {revisionAttempt?<div className="r4-independent__section">
-   <h6>3 · Eine neue Aussage verändert den Sachverhalt</h6>
+   <h6 ref={followupHeading} tabIndex={-1}>3 · Eine neue Aussage verändert den Sachverhalt</h6>
    {lang(dossier.newMessage,"new-message")}
    <p><strong>Neue Aufgabe:</strong> {dossier.followupTask}</p>
    <label htmlFor={"r4-repair-"+dossier.id}>Eigenständige neue japanische Reaktion</label>
-   <textarea id={"r4-repair-"+dossier.id} lang="ja" rows={5} value={replyDraft}
+   <textarea id={"r4-repair-"+dossier.id} lang="ja" rows={5}
+    aria-keyshortcuts="Control+Enter Meta+Enter"
+    onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&
+     e.key==="Enter"&&replyDraft.trim()){
+      e.preventDefault();nextFocus.current="transfer";setReplyAttempt(true);
+    }}}
+    value={replyDraft}
     onChange={e=>{setReplyDraft(e.target.value);setReplyAttempt(false);setShowReplies(false);
      setTransferDraft("");setTransferAttempt(false);setShowTransferModels(false)}}/>
-   {actions(Boolean(replyDraft.trim()),()=>setReplyAttempt(true),
+   {actions(Boolean(replyDraft.trim()),()=>{nextFocus.current="transfer";setReplyAttempt(true)},
     "Neue Antwort festhalten und Korrekturerklärung lesen")}
    {replyAttempt?<div className="r4-independent__feedback" role="status">
     <p><strong>Quellenbezogene Reparatur:</strong> {dossier.followupRepair}</p>
@@ -213,11 +239,17 @@ export function R4IndependentDossier({
    </div>:null}
   </div>:null}
   {replyAttempt?<div className="r4-independent__section">
-   <h6>4 · Anderer, erst jetzt gezeigter Kontext</h6>
+   <h6 ref={transferHeading} tabIndex={-1}>4 · Anderer, erst jetzt gezeigter Kontext</h6>
    <p>{dossier.transfer.scenario}</p>
    <p><strong>Eigenständige Aufgabe:</strong> {dossier.transfer.task}</p>
    <label htmlFor={"r4-transfer-"+dossier.id}>Japanische Lösung für den anderen Alltag (unbenotet)</label>
-   <textarea id={"r4-transfer-"+dossier.id} lang="ja" rows={5} value={transferDraft}
+   <textarea id={"r4-transfer-"+dossier.id} lang="ja" rows={5}
+    aria-keyshortcuts="Control+Enter Meta+Enter"
+    onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&
+     e.key==="Enter"&&transferDraft.trim()){
+      e.preventDefault();setTransferAttempt(true);
+    }}}
+    value={transferDraft}
     onChange={e=>{setTransferDraft(e.target.value);setTransferAttempt(false);
      setShowTransferModels(false)}}/>
    {actions(Boolean(transferDraft.trim()),()=>setTransferAttempt(true),
