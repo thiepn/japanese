@@ -8,6 +8,7 @@ import {E04_MAPPED,e04ReviewPrompts} from "./a2ExcellenceAdvancedCourse";
 import {E06_CASES,type E06Case} from "./e06IndependentCases";
 import {e08ByCase,type E08Extension} from "./e08ContextExtensions";
 import {E09_BY_CASE,type E09CaseDepth} from "./e09CommunicationDepth";
+import {e09RepairCueFor,type E09RepairCue} from "./e09MisconceptionRepairs";
 
 const PREFIX="e06-cumulative-";
 const ORIGINAL="thiepn-original";
@@ -265,6 +266,30 @@ function e09TransferPrompts(s:E06Case,a:Anchor,d:E09CaseDepth):StudyPrompt[]{
    t.readAnswer,t.readWrong,t.readWhy,undefined,true)
  ];
 }
+function e09RepairPrompt(s:E06Case,a:Anchor,cue:E09RepairCue):StudyPrompt{
+ const isListening=cue.skill==="listening";
+ const correctCue="e09-"+(isListening?"dialogue-listen":"notice-read");
+ const key="e09-repair-"+cue.skill;
+ const base=choice(s,a,key,"understand",isListening?cue.question:cue.japanese+"\n\n"+cue.question,
+    cue.answer,cue.wrong,cue.reasons,
+    isListening?"listening":"comprehension",isListening?cue.japanese:undefined);
+ return {
+   ...base,
+   instruction:"Correct a specific E09 misunderstanding using an unfamiliar but related example.",
+   explanation:cue.explanation,
+   eventMetadata:metadata(s,a,"understand",{
+     e09Repair:true,e09OriginalPromptId:PREFIX+s.id+"-"+correctCue,
+     e09CaseId:s.id,e09RepairSkill:cue.skill,
+     e06FoilFeedback:[
+       {response:cue.wrong[0],feedback:cue.reasons[0]},
+       {response:cue.wrong[1],feedback:cue.reasons[1]}
+     ],
+     schedulerExcluded:true,nonAuthoritative:true,
+     accreditedCefrVerdict:false,
+     ...(isListening?{audioKind:"device-speech-synthesis",nativeRecording:false}:{})
+   })
+ };
+}
 function e09UnscoredTransfer(s:E06Case,a:Anchor,d:E09CaseDepth):StudyPrompt{
  return {
   id:PREFIX+s.id+"-e09-original-response",
@@ -429,6 +454,8 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
  const recent=latestById(ownEvents);
  const previousContextListeningIncorrect=recent.get(PREFIX+s.id+"-e08-context-listen")?.result==="incorrect";
  const previousContextReadingIncorrect=recent.get(PREFIX+s.id+"-e08-context-read")?.result==="incorrect";
+ const previousE09ListeningIncorrect=recent.get(PREFIX+s.id+"-e09-dialogue-listen")?.result==="incorrect";
+ const previousE09ReadingIncorrect=recent.get(PREFIX+s.id+"-e09-notice-read")?.result==="incorrect";
  const previousFirst=ownEvents.filter(e=>e.metadata?.promptId===PREFIX+s.id+"-write"&&e.metadata?.nonAuthoritative===true&&typeof e.metadata.learnerResponse==="string")
   .sort((x,y)=>y.occurredAt.localeCompare(x.occurredAt))[0];
  const privateFirst=typeof previousFirst?.metadata?.learnerResponse==="string"?previousFirst.metadata.learnerResponse:"";
@@ -484,10 +511,22 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
     lesson(s,"e09-setup","Independent transfer · "+depth.title,
      depth.communicativeGoal+" Listen for the new problem before reading the dialogue. "+
      "You must distinguish an explicit confirmation from an assumption.",[],a),
+    ...(previousE09ListeningIncorrect&&e09RepairCueFor(s.id,"listening")?[
+      lesson(s,"e09-listening-repair","New speakers · Repair the missed listening distinction",
+       "Your latest E09 dialogue response missed a specific distinction. First compare the two alternatives in a new short situation; this corrective answer will not alter FSRS mastery.",
+       depth.grammar.slice(0,2).map(g=>({expression:g.expression,note:g.misconception})),a),
+      e09RepairPrompt(s,a,e09RepairCueFor(s.id,"listening")!)
+    ]:[]),
     thirdListen,
     lesson(s,"e09-conversation","Interpret the third original conversation",
      "Track who knows which facts, what remains unsettled and which request actually helps.",
      depth.speakers.map(t=>({expression:t.name+"： "+t.ja,note:t.meaning+" · Communicative intent: "+t.intention})),a),
+    ...(previousE09ReadingIncorrect&&e09RepairCueFor(s.id,"reading")?[
+      lesson(s,"e09-reading-repair","Changed notice · Repair the mistaken inference",
+       "Your latest E09 source-notice answer did not match the written evidence. Read another original notice, then return to the original. This alternate response is practice, not new mastery.",
+       depth.vocabulary.slice(0,2).map(v=>({expression:v.ja,note:v.contrast})),a),
+      e09RepairPrompt(s,a,e09RepairCueFor(s.id,"reading")!)
+    ]:[]),
     thirdRead,
     lesson(s,"e09-notice","Connected original source · "+depth.reading.title,
      "Compare the real notice with the dialogue. "+depth.reading.meaning,
