@@ -93,7 +93,7 @@ export function R4IndependentDossier({
     anderer Kontext fordern begründete Änderungen. <strong>Keine</strong> automatische
     Freitextprüfung, kein FSRS-Termin und kein A2-Zertifikat.</p>
   </header>
-  <ol className="r4-independent__stages" aria-label="Drei eigenständige Versuche">
+  <ol className="r4-independent__stages" aria-label="Vier aufeinander folgende unabhängige Aufgaben">
    <li>Schriftliche und gesprochene Quellen abgleichen</li>
    <li>Erste eigene Nachricht anhand zweier Belege überarbeiten</li>
    <li>Auf eine neue Aussage reagieren</li>
@@ -124,7 +124,9 @@ export function R4IndependentDossier({
    <label htmlFor={"r4-draft-"+dossier.id}>Deine eigene mehrteilige japanische Mitteilung (unbenotet)</label>
    <textarea id={"r4-draft-"+dossier.id} lang="ja" rows={6} value={draft}
     onChange={e=>{setDraft(e.target.value);setAttempted(false);setShowModels(false);
-     setRevisionAttempt(false);}}
+     setRevisionAttempt(false);setReplyDraft("");setReplyAttempt(false);
+     setShowReplies(false);setTransferDraft("");setTransferAttempt(false);
+     setShowTransferModels(false);}}
     aria-keyshortcuts="Control+Enter Meta+Enter"
     onKeyDown={e=>{if(!e.nativeEvent.isComposing&&(e.ctrlKey||e.metaKey)&&e.key==="Enter"&&draft.trim()){
      e.preventDefault();setAttempted(true);
@@ -149,6 +151,8 @@ export function R4IndependentDossier({
       <textarea id={"r5-rewrite-"+dossier.id} lang="ja" rows={6}
        value={revisionDraft} onChange={e=>{
         setRevisionDraft(e.target.value);setRevisionAttempt(false);setShowModels(false);
+        setReplyDraft("");setReplyAttempt(false);setShowReplies(false);
+        setTransferDraft("");setTransferAttempt(false);setShowTransferModels(false);
        }}/>
       <div className="r4-independent__actions">
        <button type="button" disabled={!revisionDraft.trim()||
@@ -194,7 +198,8 @@ export function R4IndependentDossier({
    <p><strong>Neue Aufgabe:</strong> {dossier.followupTask}</p>
    <label htmlFor={"r4-repair-"+dossier.id}>Eigenständige neue japanische Reaktion</label>
    <textarea id={"r4-repair-"+dossier.id} lang="ja" rows={5} value={replyDraft}
-    onChange={e=>{setReplyDraft(e.target.value);setReplyAttempt(false);setShowReplies(false)}}/>
+    onChange={e=>{setReplyDraft(e.target.value);setReplyAttempt(false);setShowReplies(false);
+     setTransferDraft("");setTransferAttempt(false);setShowTransferModels(false)}}/>
    {actions(Boolean(replyDraft.trim()),()=>setReplyAttempt(true),
     "Neue Antwort festhalten und Korrekturerklärung lesen")}
    {replyAttempt?<div className="r4-independent__feedback" role="status">
@@ -244,7 +249,8 @@ export function R4IndependentDossier({
    </button>:null}
   </div>
   <small>Diese zusätzliche Originalaufgabe ist nicht als zeitversetzte FSRS-Rückkehr
-   geplant. Der neue Kontext wird erst nach deiner zweiten Antwort sichtbar,
+   geplant. Der neue Kontext wird erst nach eigener Quellenrevision und
+   einer Antwort auf die neue Sprecherinformation sichtbar,
    aber dadurch wird kein Reviewtermin, Abschluss oder Kompetenznachweis erstellt.
    Die zweite eigene Fassung wird ausschließlich mit authored Quellenhinweisen
    verglichen, nicht automatisch benotet.
