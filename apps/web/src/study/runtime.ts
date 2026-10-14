@@ -139,7 +139,7 @@ export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
   const owner=DEVELOPMENT_ACCOUNT_ID;
   const [traces,events,privateSet,privateSentences]=await Promise.all([
     listMemoryTraces(owner),listStudyEvents(owner),
-    buildPrivateVocabularyPrompts(),buildPrivateSentencePrompts()
+    buildPrivateVocabularyPrompts(owner),buildPrivateSentencePrompts(owner)
   ]);
   if(DEVELOPMENT_ACCOUNT_ID!==owner)throw new Error("TODAY_WORKSPACE_CHANGED");
   // Never build a mixed-owner due queue from stale asynchronous Account records.
@@ -325,7 +325,7 @@ export async function getCompletedTodayCount(now=new Date()):Promise<number>{
 export async function getStudySummary(now=new Date()):Promise<StudySummary>{
   const owner=DEVELOPMENT_ACCOUNT_ID;
   const [traces,privateSet,privateSentences]=await Promise.all([
-    listMemoryTraces(owner),buildPrivateVocabularyPrompts(),buildPrivateSentencePrompts()
+    listMemoryTraces(owner),buildPrivateVocabularyPrompts(owner),buildPrivateSentencePrompts(owner)
   ]);
   if(DEVELOPMENT_ACCOUNT_ID!==owner)throw new Error("TODAY_WORKSPACE_CHANGED");
   const byId=new Map(traces.filter(trace=>trace.userId===owner).map(trace=>[trace.id,trace]));
@@ -374,7 +374,10 @@ export async function getKanaMasterySummary():Promise<KanaMasterySummary>{
 }
 
 export async function getVocabularyMasterySummary():Promise<VocabularyMasterySummary>{
-  const [events,privateSet]=await Promise.all([listStudyEvents(DEVELOPMENT_ACCOUNT_ID),buildPrivateVocabularyPrompts()]);
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const [loaded,privateSet]=await Promise.all([listStudyEvents(owner),buildPrivateVocabularyPrompts(owner)]);
+  if(DEVELOPMENT_ACCOUNT_ID!==owner)throw new Error("TODAY_WORKSPACE_CHANGED");
+  const events=loaded.filter(e=>e.userId===owner);
   const state=replayStudyEvents(events);
   const expected=uniqueSkillPrompts([...vocabularyMeaningPrompts,...vocabularyApplicationPrompts,...privateSet.meaning,...privateSet.application]);
   const meaning=expected.filter((prompt)=>prompt.skill==="meaning_recognition");
@@ -430,7 +433,10 @@ export async function getGrammarMasterySummary():Promise<GrammarMasterySummary>{
 }
 
 export async function getSentenceMasterySummary():Promise<SentenceMasterySummary>{
-  const [events,privateSentences]=await Promise.all([listStudyEvents(DEVELOPMENT_ACCOUNT_ID),buildPrivateSentencePrompts()]);
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const [loaded,privateSentences]=await Promise.all([listStudyEvents(owner),buildPrivateSentencePrompts(owner)]);
+  if(DEVELOPMENT_ACCOUNT_ID!==owner)throw new Error("TODAY_WORKSPACE_CHANGED");
+  const events=loaded.filter(e=>e.userId===owner);
   const state=replayStudyEvents(events);
   const expected=uniqueSkillPrompts([...allGrammarCoursePrompts.filter((prompt)=>prompt.primaryTarget.kind==="sentence"),...privateSentences]);
   const comprehension=expected.filter((prompt)=>prompt.skill==="comprehension");
