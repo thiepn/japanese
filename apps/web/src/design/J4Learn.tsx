@@ -32,7 +32,7 @@ type Props={
   e03:E03Overview;onStartE03:(id:string)=>void;onStartE03Delayed:(id:string)=>void;
   e04:E04Overview;onStartE04:(id:string)=>void;onStartE04Delayed:(id:string)=>void;onStartE04Preview:(id:string)=>void;
   e05:E05Evidence;onStartE05Repair:()=>void;onStartE03Preview:(id:string)=>void;onStartE02Preview:(id:string)=>void;
-  e06:E06Overview;onStartE06:(id:string)=>void;onStartE06Full:(id:string)=>void;onStartE10Stage:(id:string,stage:import("../study/e10DailyStages").E10StageId)=>void;onStartE06Delayed:(id:string)=>void;onStartE06Preview:(id:string)=>void;
+  e06:E06Overview;onStartE06:(id:string)=>void;onStartE06Full:(id:string)=>void;onStartE10Stage:(id:string,stage:import("../study/e10DailyStages").E10StageId)=>void;onStartE10DelayedStage:(id:string,stage:import("../study/e10DailyStages").E10DelayedId)=>void;onStartE06FullDelayed:(id:string)=>void;onStartE06Delayed:(id:string)=>void;onStartE06Preview:(id:string)=>void;
   e07:E07Journey;onOpenE07:(action:E07Action)=>void;
   summary:StudySummary;
   kana:KanaMasterySummary;
@@ -82,7 +82,7 @@ const LEVEL_ORDER=["A1","A2","B1","B2","C1"];
 
 export function J4Learn(props:Props){
   const {
-    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,onStartE06,onStartE06Full,onStartE10Stage,onStartE06Delayed,onStartE06Preview,e07,onOpenE07,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
+    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,onStartE06,onStartE06Full,onStartE10Stage,onStartE06Delayed,onStartE10DelayedStage,onStartE06FullDelayed,onStartE06Preview,e07,onOpenE07,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
     milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,
     onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartAssessment,
     onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,
@@ -219,13 +219,24 @@ export function J4Learn(props:Props){
               </button>
             </li>)}</ol>
           </details>:null}
+          {c.canDoId&&c.delayedStages.length>0?<details className="e10-stage-list">
+            <summary>Three short delayed groups · original twenty-hour gate</summary>
+            <ol>{c.delayedStages.map((stage,i)=><li key={stage.id}>
+              <div><strong>{i+1}. {stage.title}</strong><small>{stage.purpose}</small>
+                <small>{stage.correct}/{stage.required} bounded correct · {stage.status}</small></div>
+              <button type="button" disabled={status==="loading"||stage.status==="locked"} onClick={()=>onStartE10DelayedStage(c.id,stage.id)}>
+                {stage.status==="locked"?"Wait for source or prior group":stage.status==="complete"?"Review group":"Open delayed group"}
+              </button>
+            </li>)}</ol>
+          </details>:null}
           {c.status==="waiting"&&c.availableAt?<small>Delayed recall opens {new Date(c.availableAt).toLocaleString()}</small>:null}</div>
         <div className="e06-course__actions">
           {c.status==="needs-prerequisite"&&c.canDoId?<button type="button" disabled={status==="loading"} onClick={()=>{if(c.anchorCohort==="e02")onStartE02(c.anchorSceneId);else if(c.anchorCohort==="e03")onStartE03(c.anchorSceneId);else onStartE04(c.anchorSceneId);}}>Practise original source</button>:null}
           {!c.canDoId?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06Preview(c.id)}>Read original case</button>:null}
           {c.prerequisiteReady?<><button type="button" disabled={status==="loading"} onClick={()=>onStartE06(c.id)}>{c.firstDraftSubmitted&&!c.revisedDraftSubmitted?"Continue second draft":c.nextDailyStage?"Continue: "+(c.dailyStages.find(s=>s.id===c.nextDailyStage)?.title??"short lesson"):"Read completion guidance"}</button>
           {(c.attempts>0||c.firstDraftSubmitted||c.revisedDraftSubmitted)?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06Full(c.id)}>Review full original lesson</button>:null}</>:null}
-          {(c.status==="ready"||c.status==="reviewed")?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06Delayed(c.id)}>Delayed transfer</button>:null}
+          {(c.status==="ready"||c.status==="reviewed")?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06Delayed(c.id)}>{c.nextDelayedStage?"Next delayed group: "+(c.delayedStages.find(s=>s.id===c.nextDelayedStage)?.title??"review"):"Delayed set completed"}</button>:null}
+          {(c.status==="ready"||c.status==="reviewed")&&c.delayedCorrect>0?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06FullDelayed(c.id)}>Review all seven delayed questions</button>:null}
         </div>
       </li>)}</ol>
       <p>New-context comprehension uses the original Can-do's verified source identity; no new canonical identifiers were invented. Additional A2.1/A2.2 placement remains provisional, and open writing or speech transcripts are not semantic or acoustic proficiency scores.</p>
