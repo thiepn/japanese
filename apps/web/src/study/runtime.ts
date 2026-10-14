@@ -20,6 +20,8 @@ import { productivePracticeSession,productiveTaskSession,productivePrompts } fro
 import { lexicalChunkLessons,lexicalChunkMeaningPrompts,lexicalChunkActivePrompts,lexicalChunkTransferPrompts,lexicalChunkPrompts,lexicalFluencySession } from "./lexicalFluency";
 import { buildNextRealWorldChainSession,buildP9QualificationSession } from "./realWorldPerformance";
 import { c1DiscoursePrompts,c1FoundationPractice } from "./c1Foundation";
+import {buildE01Journey,buildE01DelayedJourney,e01ReviewPrompts,getE01Progress,type E01Progress} from "./a1Excellence";
+export type {E01Progress} from "./a1Excellence";
 import { buildC1SynthesisSession } from "./c1Synthesis";
 
 export const GUEST_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
@@ -85,7 +87,7 @@ function foundationApplicationPool():StudyPrompt[]{
   return [...pronunciationPerceptionPrompts,...foundationApplicationPrompts,...vocabularyApplicationPrompts,...conjugationPrompts,...lexicalChunkPrompts,...productivePrompts,...c1DiscoursePrompts];
 }
 function allPrompts():StudyPrompt[]{
-  return [...foundationPrompts,...vocabularyMeaningPrompts,...foundationApplicationPool(),...allGrammarCoursePrompts];
+  return [...foundationPrompts,...vocabularyMeaningPrompts,...foundationApplicationPool(),...allGrammarCoursePrompts,...e01ReviewPrompts];
 }
 
 export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
@@ -113,6 +115,10 @@ export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
   if(queue.length<MAX_QUEUE_SIZE)addUnique(queue,due.slice(0,MAX_QUEUE_SIZE));
   return insertFirstExposureLessons(queue,byId,privatePrompts);
 }
+
+export async function buildE01Session():Promise<StudyStep[]>{return buildE01Journey();}
+export async function buildE01DelayedSession():Promise<StudyStep[]>{return buildE01DelayedJourney(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function getE01Evidence():Promise<E01Progress>{return getE01Progress(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
 
 export async function buildCourseUnitSession(unitId:string):Promise<StudyStep[]>{
   return courseUnitSession(unitId);
@@ -356,7 +362,9 @@ export function recordStudyAnswer(input:{prompt:StudyPrompt;response:string;resu
     const now=new Date().toISOString();
     const base=existing??scheduler.create({id:traceId,userId:accountId,entity:input.prompt.primaryTarget,skillDimension:input.prompt.skill,cueFamily:input.prompt.cueFamily},now);
     const event=createStudyEvent({id:crypto.randomUUID(),userId:accountId,deviceId:DEVELOPMENT_DEVICE_ID,prompt:input.prompt,response:input.response,occurredAt:now,responseTimeMs:input.responseTimeMs,baseRevision:base.revision});
-    const trace=input.prompt.eventMetadata?.schedulerExcluded===true?undefined:scheduler.review(base,{grade:gradeFor(input.result),reviewedAt:now});
+    const nonAuthoritative=input.prompt.eventMetadata?.nonAuthoritative===true;
+    if(nonAuthoritative){event.result="skipped";event.metadata={...event.metadata,structuralResult:input.result,nonAuthoritative:true};}
+    const trace=nonAuthoritative||input.prompt.eventMetadata?.schedulerExcluded===true?undefined:scheduler.review(base,{grade:gradeFor(input.result),reviewedAt:now});
     await saveStudyReview(event,trace);
   });
   pendingReviews.set(key,attempt);

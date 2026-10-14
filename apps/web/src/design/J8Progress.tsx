@@ -3,6 +3,7 @@ import {B2Portfolio} from "../study/B2Portfolio";
 import {C1Portfolio} from "../study/C1Portfolio";
 import type {ImmersionProgress} from "../immerse/reader";
 import type {
+  E01Progress,
   A1MilestoneProgress,
   B1MilestoneProgress,
   B2MilestoneProgress,
@@ -19,6 +20,7 @@ import type {
 import {JCartouche,JInkProgress,JPattern,JSeal} from "./index";
 
 type Props={
+  e01:E01Progress;
   kana:KanaMasterySummary;
   vocab:VocabularyMasterySummary;
   conjugation:ConjugationMasterySummary;
@@ -47,7 +49,7 @@ type Skill={
 };
 
 export function J8Progress({
-  kana,vocab,conjugation,grammar,sentence,lexicalFluency,milestone,b1Milestone,b2Milestone,c1Foundation,immersion,summary,course,completedToday,
+  e01,kana,vocab,conjugation,grammar,sentence,lexicalFluency,milestone,b1Milestone,b2Milestone,c1Foundation,immersion,summary,course,completedToday,
 }:Props){
   const immersionReading=mean(immersion.texts.map((item)=>item.readingMastery));
   const immersionListening=mean(immersion.texts.map((item)=>item.listeningMastery));
@@ -159,6 +161,11 @@ export function J8Progress({
       </div>
     </header>
 
+    <section className="e01-progress" aria-label="A1 first conversations evidence">
+      <strong>A1 · First conversations · controlled evidence only</strong>
+      <p>{e01.canDo}. This is practice evidence, not a verified A1 proficiency decision. Independent writing and speech are explicitly unscored.</p>
+      <dl><div><dt>Guided attempts</dt><dd>{e01.answered}</dd></div><div><dt>Correct controlled answers</dt><dd>{e01.correct}</dd></div><div><dt>Unscored drafts</dt><dd>{e01.unscored}</dd></div><div><dt>Delayed controlled answers</dt><dd>{e01.delayedCorrect} / 3</dd></div><div><dt>State</dt><dd>{e01.status.replaceAll("_"," ")}</dd></div></dl>
+    </section>
     <section className="j8-skills" aria-labelledby="j8-skills-title">
       <header className="j8-section-head">
         <div>

@@ -3,6 +3,7 @@ import {AdaptiveRemediation} from "../study/AdaptiveRemediation";
 import {AiCoach} from "../ai/AiCoach";
 import {RealWorldPerformancePanel} from "../study/RealWorldPerformancePanel";
 import type {
+  E01Progress,
   A1MilestoneProgress,
   B1MilestoneProgress,
   B2MilestoneProgress,
@@ -19,6 +20,7 @@ import type {
 import {JCartouche,JInkProgress,JPattern,JSeal} from "./index";
 
 type Props={
+  e01:E01Progress;onStartE01:()=>void;onStartE01Delayed:()=>void;
   summary:StudySummary;
   kana:KanaMasterySummary;
   vocab:VocabularyMasterySummary;
@@ -67,7 +69,7 @@ const LEVEL_ORDER=["A1","A2","B1","B2","C1"];
 
 export function J4Learn(props:Props){
   const {
-    summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
+    e01,onStartE01,onStartE01Delayed,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
     milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,
     onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartAssessment,
     onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,
@@ -135,6 +137,10 @@ export function J4Learn(props:Props){
       </div>
     </header>
 
+    <section className="e01-entry" aria-label="Original A1 guided conversation journey">
+      <div className="e01-entry__copy"><strong>First conversations · A1 contextual learning</strong><p>{e01.canDo} · {e01.answered} guided attempts · {e01.unscored} independent draft attempts. Spoken recognition and structure-only writing never certify fluency.</p>{e01.status==="waiting"&&e01.reviewAvailableAt?<p>Delayed review opens {new Date(e01.reviewAvailableAt).toLocaleString()}.</p>:null}</div>
+      <div className="e01-entry__actions"><button type="button" disabled={status==="loading"} onClick={onStartE01}>{e01.answered?"Practice again":"Start contextual lesson"}</button>{(e01.status==="ready"||e01.status==="reviewed")?<button type="button" disabled={status==="loading"} onClick={onStartE01Delayed}>Delayed transfer</button>:null}</div>
+    </section>
     <section className="j4-foundation" aria-labelledby="j4-foundation-title">
       <header>
         <span className="j4-vertical-label" aria-hidden="true" lang="ja">土台</span>

@@ -285,8 +285,8 @@ export function StudyPlayer({steps,onAnswer,onComplete,onExit}:{steps:StudyStep[
         <div className="j5-feedback__head">
           <span className="j5-feedback__seal" aria-hidden="true">{feedback.result==="correct"?"正":"直"}</span>
           <div>
-            <small>{feedback.result==="correct"?"RETRIEVED":"CORRECTION"}</small>
-            <strong>{feedback.result==="correct"?"Correct":"Answer: "+feedback.expectedAnswer}</strong>
+            <small>{currentPrompt.eventMetadata?.nonAuthoritative===true?"STRUCTURAL SELF-CHECK":feedback.result==="correct"?"RETRIEVED":"CORRECTION"}</small>
+            <strong>{currentPrompt.eventMetadata?.nonAuthoritative===true?"Draft recorded · not proficiency scored":feedback.result==="correct"?"Correct":"Answer: "+feedback.expectedAnswer}</strong>
           </div>
         </div>
         {currentPrompt.audio?<div className="audio-reveal j5-audio-reveal">

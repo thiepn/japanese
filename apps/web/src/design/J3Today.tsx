@@ -1,5 +1,5 @@
 import {useMemo} from "react";
-import type {StudySummary} from "../study/runtime";
+import type {StudySummary,E01Progress} from "../study/runtime";
 import {JCartouche,JDivider,JInkProgress,JPattern,JSeal} from "./index";
 
 type J3TodayProps={
@@ -7,6 +7,7 @@ type J3TodayProps={
   completedToday:number;
   status:string;
   onStart:()=>void;
+  e01:E01Progress;onStartE01:()=>void;onStartE01Delayed:()=>void;
 };
 
 type RouteItem={
@@ -29,7 +30,7 @@ function japaneseDate(now=new Date()):string{
   }
 }
 
-export function J3Today({summary,completedToday,status,onStart}:J3TodayProps){
+export function J3Today({summary,completedToday,status,onStart,e01,onStartE01,onStartE01Delayed}:J3TodayProps){
   const route=useMemo<RouteItem[]>(()=>[
     {id:"review",japanese:"復",label:"Review",count:summary.due,tone:"review"},
     {id:"learn",japanese:"学",label:"Learn",count:summary.newKana+summary.newVocabulary+summary.course,tone:"learn"},
@@ -110,6 +111,10 @@ export function J3Today({summary,completedToday,status,onStart}:J3TodayProps){
       </aside>
     </div>
 
+    <section className="e01-entry" aria-label="A1 first conversations practice">
+      <div className="e01-entry__copy"><strong>A1 · First conversations</strong><p>Encounter → understand → discover → practice → communicate → independent response → delayed retrieval. Original dialogues; device-synthesized listening is labeled.</p></div>
+      <div className="e01-entry__actions"><button type="button" disabled={status==="loading"} onClick={onStartE01}>Study first conversations</button>{(e01.status==="ready"||e01.status==="reviewed")?<button type="button" disabled={status==="loading"} onClick={onStartE01Delayed}>Delayed transfer</button>:null}</div>
+    </section>
     <JDivider kind="ink" className="j3-today__divider"/>
 
     <section className="j3-route" aria-labelledby="j3-route-title">
