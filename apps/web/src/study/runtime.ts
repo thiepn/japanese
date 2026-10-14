@@ -22,7 +22,7 @@ import { buildNextRealWorldChainSession,buildP9QualificationSession } from "./re
 import { c1DiscoursePrompts,c1FoundationPractice } from "./c1Foundation";
 import {buildE01Journey,buildE01DelayedJourney,e01ReviewPrompts,getE01Progress,type E01Progress} from "./a1Excellence";
 export type {E01Progress} from "./a1Excellence";
-import {buildE02Journey,buildE02DelayedJourney,e02ReviewPrompts,getE02Overview,type E02Overview} from "./a1ExcellenceCourse";
+import {buildE02Journey,buildE02DelayedJourney,buildE02Preview,e02ReviewPrompts,getE02Overview,type E02Overview} from "./a1ExcellenceCourse";
 export type {E02Overview} from "./a1ExcellenceCourse";
 import {buildE03Journey,buildE03DelayedJourney,buildE03Preview,e03ReviewPrompts,getE03Overview,type E03Overview} from "./a2ExcellenceCourse";
 export type {E03Overview} from "./a2ExcellenceCourse";
@@ -140,6 +140,7 @@ export async function buildE03PreviewSession(sceneId:string):Promise<StudyStep[]
 export async function buildE03Session(sceneId:string):Promise<StudyStep[]>{return buildE03Journey(sceneId);}
 export async function buildE03DelayedSession(sceneId:string):Promise<StudyStep[]>{return buildE03DelayedJourney(sceneId,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
 export async function getE03Evidence():Promise<E03Overview>{return getE03Overview(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function buildE02PreviewSession(sceneId:string):Promise<StudyStep[]>{return buildE02Preview(sceneId);}
 export async function buildE02Session(sceneId:string):Promise<StudyStep[]>{return buildE02Journey(sceneId);}
 export async function buildE02DelayedSession(sceneId:string):Promise<StudyStep[]>{return buildE02DelayedJourney(sceneId,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
 export async function getE02Evidence():Promise<E02Overview>{return getE02Overview(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}

@@ -56,6 +56,8 @@ export function deriveE07Journey({
  if(next4)options.push(action("e04","study","Solve an A2 everyday problem","Read conditions, negotiate politely and explain a reasoned decision.",next4.title+" · provisional A2 subdivision",62,next4.id));
  const blocked6=e06.cases.find(c=>c.canDoId!==null&&!c.prerequisiteReady);
  if(blocked6)options.push(action(blocked6.anchorCohort,"source","Practise the original source first","Answer its existing listening and reading/form questions before attempting cumulative work.",blocked6.title+" · prerequisites are not yet met",56,blocked6.anchorSceneId));
+ const unlinked2=e02.unmappedScenes[0];
+ if(unlinked2)options.push(action("e02","reading","Read an original A1 conversation","Original source material stays accessible while its canonical association is unresolved.",unlinked2.title+" · ungraded A1 reading",38,unlinked2.id));
  const unlinked=e03.unmappedScenes[0];
  if(unlinked)options.push(action("e03","reading","Read an original A2 conversation","No unsupported Can-do, grade or proficiency evidence will be created.",unlinked.title+" · ungraded source reading",36,unlinked.id));
  const unlinked4=e04.unmapped[0];
@@ -74,7 +76,7 @@ export function deriveE07Journey({
   alternatives:unique.slice(1,5),
   sourceA1:e02.total+(e01.unitId?1:0),
   sourceA2:e03.total+e04.linked,
-  unlinkedOriginal:e03.unmappedScenes.length+e04.unmapped.length+e06.unlinked,
+  unlinkedOriginal:e02.unmappedScenes.length+e03.unmappedScenes.length+e04.unmapped.length+e06.unlinked,
   delayedReady:delayedCount,correctionsPending:e05.repair.pending,
   explanation:"This order is a UI recommendation computed from existing StudyEvents, Can-do associations and FSRS review projections. It does not alter scheduling or grant mastery."
  };
