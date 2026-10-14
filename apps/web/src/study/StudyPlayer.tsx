@@ -28,6 +28,8 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
   const [response,setResponse]=useState("");
   const [draftEnabled,setDraftEnabled]=useState(()=>e07DraftPreference(accountScope));
   const [draftNotice,setDraftNotice]=useState<"idle"|"saved"|"restored"|"unavailable">("idle");
+  const [e08FirstDraft,setE08FirstDraft]=useState("");
+  const [e08Checks,setE08Checks]=useState<string[]>([]);
   const [feedback,setFeedback]=useState<GradeResult|null>(null);
   const [saving,setSaving]=useState(false);
   const [saveError,setSaveError]=useState(false);
@@ -88,6 +90,13 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
   if(!step)return null;
 
   const activeStep=step;
+  const e08StoredDraft=steps.filter(isStudyLesson).flatMap(item=>item.examples??[])
+    .find(item=>item.expression==="Your prior submitted first draft (private)")?.note??"";
+  const e08DraftReference=e08FirstDraft||e08StoredDraft;
+  const e08RevisionIndex=steps.findIndex(item=>!isStudyLesson(item)&&item.eventMetadata?.e08DraftStage==="revision");
+  const e08FirstIndex=steps.findIndex(item=>!isStudyLesson(item)&&item.eventMetadata?.e06===true&&item.promptType==="textarea"&&item.id.endsWith("-write"));
+  const e08Revision=!isStudyLesson(activeStep)&&activeStep.eventMetadata?.e08DraftStage==="revision";
+  const e08Unchanged=e08Revision&&Boolean(e08DraftReference.trim())&&response.trim()===e08DraftReference.trim();
   const mode=j5StudyMode(activeStep);
   const timeLimitSeconds=!isStudyLesson(activeStep)?activeStep.timeLimitSeconds:undefined;
   const elapsedSeconds=Math.max(0,Math.floor((performance.now()-startedAt.current)/1000));
@@ -137,6 +146,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
 
   function advance(){
     audioProvider.current.stop();
+    setE08Checks([]);
     if(index+1>=steps.length){onComplete();return;}
     setIndex((value)=>value+1);
     setResponse("");
@@ -203,6 +213,10 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
   if(isStudyLesson(activeStep)){
     return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={false} onExit={onExit} onTheme={toggleTheme}>
       {draftEnabled&&restorableIndex>index?<div className="e07-draft-resume" role="status"><p>Unfinished original writing or recognized speech text is saved on this device. You can resume it without submitting or grading skipped steps.</p><button type="button" onClick={resumeIndependentDraft}>Resume saved draft <span aria-hidden="true">→</span></button></div>:null}
+      {e08StoredDraft&&e08RevisionIndex>index?<div className="e08-return" role="status">
+        <div><strong>Your first draft is already recorded</strong><p>Resume the revision directly. Earlier questions will not be marked completed again.</p></div>
+        <button type="button" onClick={()=>{setIndex(e08RevisionIndex);setResponse("");setFeedback(null);setSaveError(false);setE08Checks([]);startedAt.current=performance.now();}}>Continue second draft</button>
+      </div>:null}
       <div className="study-lesson j5-sheet j5-sheet--lesson">
         <div className="j5-sheet__cap">
           <span className="eyebrow">LEARN</span>
@@ -243,6 +257,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
 
   async function submit(value=response){
     if(!value.trim()||feedback||savingRef.current||interactionLocked)return;
+    if(e08Revision&&(!e08DraftReference.trim()||value.trim()===e08DraftReference.trim()))return;
     const grade=gradeStudyPrompt(currentPrompt,value);
     setSaving(true);
     savingRef.current=true;
@@ -254,6 +269,9 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         grade,
         responseTimeMs:Math.max(0,Math.round(performance.now()-startedAt.current)),
       });
+      if(currentPrompt.eventMetadata?.e06===true&&currentPrompt.promptType==="textarea"&&currentPrompt.id.endsWith("-write")){
+        setE08FirstDraft(value);
+      }
       clearE07Draft(accountScope,currentPrompt);
       setDraftNotice("idle");
       setResponse(value);
@@ -315,12 +333,28 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         ><span className="j5-choice-index" aria-hidden="true">{index+1}</span><span>{choice}</span></button>)}</div>
         :currentPrompt.promptType==="textarea"
           ?<form className="productive-response j5-writing" onSubmit={(event)=>{event.preventDefault();void submit();}}>
+            {e08Revision?<div className="e08-revision" aria-label="Compare and revise your Japanese writing">
+              <h2>Second draft · compare before sending</h2>
+              {e08DraftReference?<div className="e08-revision__previous"><strong>First draft · your own Japanese</strong><pre lang="ja">{e08DraftReference}</pre>
+                <button type="button" className="quiet-button" disabled={Boolean(feedback)||saving} onClick={()=>updateResponse(e08DraftReference)}>Use as starting text</button></div>
+              :<div className="e08-revision__previous"><p role="status">A submitted first draft is required before this revision can be compared. Return to the first draft instead of creating a fake revision.</p>
+                {e08FirstIndex>=0?<button type="button" onClick={()=>{setIndex(e08FirstIndex);setFeedback(null);setResponse("");setE08Checks([]);}}>Return to first draft</button>:null}</div>}
+              <div className="e08-revision__checks"><p>Use these questions as self-review, not automatic correctness marks:</p>
+                {Array.isArray(currentPrompt.eventMetadata?.e08RevisionChecks)?currentPrompt.eventMetadata.e08RevisionChecks.map((item,i)=>{
+                  if(!item||typeof item!=="object"||typeof item.question!=="string"||typeof item.heading!=="string")return null;
+                  const key=String(i);
+                  return <label key={key}><input type="checkbox" checked={e08Checks.includes(key)} onChange={(event)=>setE08Checks(old=>event.target.checked?[...old,key]:old.filter(v=>v!==key))}/>
+                    <span><strong>{item.heading}</strong> {item.question}{typeof item.fix==="string"?<small>{item.fix}</small>:null}</span></label>;
+                }):null}
+              </div>
+              {e08Unchanged?<p role="status">Your two drafts are identical. Revise at least one detail before submitting; changed text is not proof of linguistic accuracy.</p>:null}
+            </div>:null}
             <div className="j5-writing__paper">
               <textarea autoFocus disabled={Boolean(feedback)||saving||interactionLocked} value={response} onChange={(event)=>updateResponse(event.target.value)} maxLength={E07_DRAFT_LIMIT} placeholder={currentPrompt.placeholder??"日本語で書いてください…"} rows={7}/>
             </div>
             <div className="productive-response-meta">
               <span>{response.length} characters{currentPrompt.minimumCharacters?" · target "+currentPrompt.minimumCharacters+"+":""}</span>
-              <button className="primary" disabled={!response.trim()||Boolean(feedback)||saving||interactionLocked} type="submit">Check structure</button>
+              <button className="primary" disabled={!response.trim()||Boolean(feedback)||saving||interactionLocked||(e08Revision&&(!e08DraftReference.trim()||e08Unchanged))} type="submit">{e08Revision?"Record unscored second draft":"Check structure"}</button>
             </div>
           </form>
           :currentPrompt.promptType==="speech"
