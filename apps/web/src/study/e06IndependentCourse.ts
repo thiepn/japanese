@@ -1,0 +1,290 @@
+import type {StudyEvent} from "@thiepn/domain";
+import type {StudyLesson,StudyPrompt,StudyStep} from "@thiepn/study-player";
+import {coreContent} from "../coreContent";
+import {grammarContext,grammarLessons} from "./grammarCourse";
+import {E02_AVAILABLE_SCENES,e02ReviewPrompts} from "./a1ExcellenceCourse";
+import {E03_MAPPED,e03ReviewPrompts} from "./a2ExcellenceCourse";
+import {E04_MAPPED,e04ReviewPrompts} from "./a2ExcellenceAdvancedCourse";
+import {E06_CASES,type E06Case} from "./e06IndependentCases";
+
+const PREFIX="e06-cumulative-";
+const ORIGINAL="thiepn-original";
+const DELAY_MS=20*60*60*1000;
+type Cohort=E06Case["anchor"]["cohort"];
+type Stage="encounter"|"understand"|"communicate"|"recall"|"independent"|"delayed";
+export type E06Status="unstarted"|"needs-prerequisite"|"learning"|"waiting"|"ready"|"reviewed";
+interface Anchor {
+  unitId:string;canDoId:string;canDo:string;cohort:Cohort;sceneId:string;
+  sourcePrompts:readonly StudyPrompt[];
+}
+export interface E06CaseProgress {
+ id:string;title:string;objective:string;level:"A1"|"A2";anchorCohort:Cohort;anchorSceneId:string;
+ canDoId:string|null;canonicalUnitId:string|null;canDo:string|null;
+ status:E06Status;sourceListening:boolean;sourceReading:boolean;prerequisiteReady:boolean;
+ correct:number;required:number;attempts:number;unscoredWriting:number;unscoredSpeaking:number;
+ delayedCorrect:number;delayedRequired:number;availableAt?:string;
+}
+export interface E06Overview {
+ cases:E06CaseProgress[];total:number;linked:number;prerequisiteReady:number;
+ active:number;waiting:number;ready:number;reviewed:number;unlinked:number;
+ nextId:string|null;nextDelayedId:string|null;
+}
+const unitById=new Map(coreContent.courseUnits.map(u=>[u.id,u]));
+const canDoById=new Map(coreContent.canDos.map(c=>[c.id,c]));
+const canonicalA1=new Map(E02_AVAILABLE_SCENES.map(s=>[s.id,s.unitId]));
+const e03ByScene=new Map(E03_MAPPED.map(b=>[b.scene.id,b.unit.id]));
+const e04ByScene=new Map(E04_MAPPED.map(b=>[b.scene.id,b.unit.id]));
+const promptsByCohort:Record<Cohort,readonly StudyPrompt[]>={
+  e02:e02ReviewPrompts,e03:e03ReviewPrompts,e04:e04ReviewPrompts
+};
+function anchorOf(s:E06Case):Anchor|null{
+ const {cohort,sceneId}=s.anchor;
+ const unitId=cohort==="e02"?canonicalA1.get(sceneId):cohort==="e03"?e03ByScene.get(sceneId):e04ByScene.get(sceneId);
+ if(!unitId)return null;
+ const unit=unitById.get(unitId);
+ if(!unit||!unit.sourceIds.length)return null;
+ const canDo=canDoById.get(unit.canDoId);
+ if(!canDo||!canDo.sourceIds.length)return null;
+ if(s.level==="A1"&&unit.level!=="A1")return null;
+ if(s.level==="A2"&&!["A2","A2.1","A2.2"].includes(unit.level))return null;
+ const sourcePrompts=promptsByCohort[cohort].filter(p=>
+  p.primaryTarget.kind==="can_do"&&p.primaryTarget.id===canDo.id&&
+  p.eventMetadata?.[cohort+"SceneId"]===sceneId&&
+  p.eventMetadata?.[cohort+"UnitId"]===unitId);
+ if(!sourcePrompts.length)return null;
+ return {unitId:unit.id,canDoId:canDo.id,canDo:canDo.statement,cohort,sceneId,sourcePrompts};
+}
+export const E06_LINKED_CASES=E06_CASES.filter(s=>anchorOf(s)!==null);
+export const E06_UNLINKED_CASES=E06_CASES.filter(s=>anchorOf(s)===null)
+ .map(s=>({id:s.id,title:s.title,level:s.level,anchor:s.anchor}));
+function getCase(id:string):E06Case{
+ const c=E06_CASES.find(s=>s.id===id);
+ if(!c)throw Error("E06_UNKNOWN_CASE:"+id);
+ return c;
+}
+function getLinked(id:string):{s:E06Case;anchor:Anchor}{
+ const s=getCase(id),anchor=anchorOf(s);
+ if(!anchor)throw Error("E06_NO_VERIFIED_CAN_DO_LINK:"+id);
+ return {s,anchor};
+}
+function lesson(s:E06Case,key:string,title:string,body:string,
+ examples:StudyLesson["examples"]=[],a?:Anchor):StudyLesson{
+ return {kind:"lesson",id:PREFIX+s.id+"-"+key,title,body,examples,
+  contextId:PREFIX+s.id,sourceLabel:a?
+  "Original THIEPN communication · "+ORIGINAL+" · linked source "+a.unitId+" (alignment inherited; no new certification)":
+  "Original THIEPN reading only · "+ORIGINAL+" · no validated canonical Can-do",
+  ...(a?{facts:[{label:"Existing Can-do used for practice",value:a.canDo}]}:{})};
+}
+function metadata(s:E06Case,a:Anchor,stage:Stage,extra:Record<string,unknown>={}):Record<string,unknown>{
+ return {e06:true,e06CaseId:s.id,e06Stage:stage,e06SourceCohort:a.cohort,
+  e06SourceSceneId:a.sceneId,e06UnitId:a.unitId,e06CanDoId:a.canDoId,
+  originalSourceId:ORIGINAL,explicitLevel:s.level==="A1"?"A1":"A2 (provisional A2.1/A2.2 instructional position)",
+  accreditedCefrVerdict:false,...extra};
+}
+function shuffled(answer:string,wrong:readonly [string,string],seed:number):string[]{
+ const result=[...wrong];result.splice(seed%3,0,answer);return result;
+}
+function choice(s:E06Case,a:Anchor,key:string,stage:Stage,question:string,answer:string,
+ wrong:readonly [string,string],wrongExplanations:readonly [string,string],
+ skill:"listening"|"comprehension"|"form_selection",audio?:string):StudyPrompt{
+ return {id:PREFIX+s.id+"-"+key,primaryTarget:{kind:"can_do",id:a.canDoId},
+  skill,cueFamily:PREFIX+s.id+"-"+key,promptType:"choice",
+  instruction:audio?"Listen without reading Japanese first.":"Answer using the current situation, not a previous model.",
+  prompt:question,promptLanguage:audio?"en":"ja",
+  choices:shuffled(answer,wrong,s.id.length+key.length),
+  acceptedAnswers:[answer],displayAnswer:answer,
+  explanation:"Look for who does what, when, and under which condition. "+(
+   stage==="delayed"?s.transfer.correction:stage==="encounter"?"Compare the spoken information with the options.":"Use details from the original dialogue or notice."),
+  speechSynthesisText:audio,speechSynthesisLanguage:audio?"ja-JP":undefined,
+  sourceId:ORIGINAL,contentVersion:coreContent.version,contextId:PREFIX+s.id,
+  languageActivity:audio?"listening":"reading",
+  activity:stage==="delayed"?"assessment":"review",
+  eventMetadata:metadata(s,a,stage,{
+   e06Task:"controlled",e06FoilFeedback:[
+     {response:wrong[0],feedback:wrongExplanations[0]},
+     {response:wrong[1],feedback:wrongExplanations[1]}
+   ],
+   ...(audio?{audioKind:"device-speech-synthesis",nativeRecording:false}:{})
+  })};
+}
+function typed(s:E06Case,a:Anchor,key:string,stage:Stage,
+ question:string,answers:readonly string[],correction:string):StudyPrompt{
+ return {id:PREFIX+s.id+"-"+key,primaryTarget:{kind:"can_do",id:a.canDoId},
+  skill:"production",cueFamily:PREFIX+s.id+"-"+key,promptType:"typed",
+  instruction:"Produce a bounded original Japanese expression without choices.",
+  prompt:question,promptLanguage:"en",placeholder:"日本語で入力してください",
+  acceptedAnswers:[...answers],displayAnswer:answers[0]??"",explanation:correction,
+  answerNormalization:"japanese",sourceId:ORIGINAL,contentVersion:coreContent.version,
+  contextId:PREFIX+s.id,activity:stage==="delayed"?"assessment":"review",
+  languageActivity:"writing",eventMetadata:metadata(s,a,stage,{
+   e06Task:"bounded-typed",notFreeWritingAssessment:true})};
+}
+function open(s:E06Case,a:Anchor,speech:boolean):StudyPrompt{
+ const spec=speech?s.independent.speaking:s.independent.writing;
+ const terms=speech?s.independent.speakingChecks:s.independent.writingChecks;
+ const base={
+  id:PREFIX+s.id+(speech?"-speak":"-write"),
+  primaryTarget:{kind:"can_do" as const,id:a.canDoId},
+  skill:speech?"production" as const:"writing_quality" as const,
+  cueFamily:PREFIX+s.id+(speech?"-speech-draft":"-writing-draft"),
+  prompt:spec,promptLanguage:"en" as const,
+  instruction:speech?"Role-play in your own words. The transcript is not pronunciation grading.":
+   "Write a connected response using your own facts, reasons and a polite request.",
+  placeholder:"自分の日本語で答えてください",
+  acceptedAnswers:[],displayAnswer:terms.join(" / "),requiredTerms:[...terms],minimumCharacters:s.level==="A1"?15:35,
+  explanation:"Self-revision: "+s.independent.revision+
+   " Automated checks detect structural features only. Meaning, adequacy, naturalness and pronunciation are not graded.",
+  answerNormalization:"japanese" as const,contextId:PREFIX+s.id,
+  sourceId:ORIGINAL,contentVersion:coreContent.version,
+  languageActivity:speech?"spoken_production" as const:"writing" as const,
+  activity:speech?"speaking" as const:"writing" as const,
+  eventMetadata:metadata(s,a,"independent",{nonAuthoritative:true,schedulerExcluded:true,
+   independentCompetenceVerified:false,acousticScore:false,structuralOnly:true})};
+ return speech?{...base,promptType:"speech"}:{...base,promptType:"textarea"};
+}
+function controlledPrompts(s:E06Case,a:Anchor):StudyPrompt[]{
+ const audio=s.turns.map(t=>t.speaker+"： "+t.ja).join(" ");
+ return [
+  choice(s,a,"listen","encounter",s.listen.question,s.listen.answer,s.listen.wrong,s.listen.feedback,"listening",audio),
+  choice(s,a,"read","understand",s.reading.ja+"\n\n"+s.read.question,s.read.answer,s.read.wrong,s.read.feedback,"comprehension"),
+  choice(s,a,"negotiate","communicate",s.negotiate.question,s.negotiate.answer,s.negotiate.wrong,s.negotiate.feedback,"form_selection"),
+  typed(s,a,"recall","recall",s.recall.question,s.recall.answers,s.recall.correction)
+ ];
+}
+function transferPrompts(s:E06Case,a:Anchor):StudyPrompt[]{
+ const t=s.transfer,feedback:[t.correction,t.correction] as const;
+ return [
+  choice(s,a,"delayed-listen","delayed",t.question,t.answer,t.wrong,feedback,"listening",t.audio),
+  choice(s,a,"delayed-read","delayed",t.reading+"\n\n"+t.readQuestion,t.readAnswer,t.readWrong,feedback,"comprehension"),
+  typed(s,a,"delayed-recall","delayed",t.freeQuestion,t.freeAnswers,t.correction)
+ ];
+}
+export const e06ReviewPrompts:StudyPrompt[]=E06_LINKED_CASES.flatMap(s=>controlledPrompts(s,anchorOf(s)!));
+const CONTROLLED_KEYS=["listen","read","negotiate","recall"];
+const DELAYED_KEYS=["delayed-listen","delayed-read","delayed-recall"];
+function isOriginalSourceEvidence(event:StudyEvent,a:Anchor):boolean{
+ const raw=event.metadata;
+ if(event.primaryTarget?.kind!=="can_do"||event.primaryTarget.id!==a.canDoId)return false;
+ if(raw?.[a.cohort]!==true||raw?.[a.cohort+"SceneId"]!==a.sceneId||raw?.[a.cohort+"UnitId"]!==a.unitId)return false;
+ if(raw?.e05Repair===true||raw?.e06===true||raw?.nonAuthoritative===true)return false;
+ return a.sourcePrompts.some(p=>p.id===raw?.promptId);
+}
+function prerequisites(a:Anchor,events:readonly StudyEvent[]):{listening:boolean;reading:boolean;ready:boolean}{
+ const passing=events.filter(e=>e.result==="correct"&&isOriginalSourceEvidence(e,a));
+ const listening=passing.some(e=>["listening","audio_recognition"].includes(e.skillDimension??""));
+ const reading=passing.some(e=>["reading","comprehension","form_selection"].includes(e.skillDimension??""));
+ // Requires successful original exposure to both oral/aural and text/form cues.
+ return {listening,reading,ready:listening&&reading};
+}
+function eventsFor(s:E06Case,a:Anchor,events:readonly StudyEvent[]):StudyEvent[]{
+ return events.filter(e=>e.metadata?.e06===true&&e.metadata.e06CaseId===s.id&&
+  e.metadata.e06UnitId===a.unitId&&e.primaryTarget?.kind==="can_do"&&
+  e.primaryTarget.id===a.canDoId);
+}
+function latestById(events:readonly StudyEvent[]):Map<string,StudyEvent>{
+ const out=new Map<string,StudyEvent>();
+ for(const event of events){
+  const key=typeof event.metadata?.promptId==="string"?event.metadata.promptId:"";
+  if(!key)continue;
+  const old=out.get(key);
+  if(!old||Date.parse(event.occurredAt)>Date.parse(old.occurredAt))out.set(key,event);
+ }
+ return out;
+}
+export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06Overview{
+ const cases=E06_CASES.map(s=>{
+  const a=anchorOf(s),pr=a?prerequisites(a,events):{listening:false,reading:false,ready:false};
+  const own=a?eventsFor(s,a,events):[];
+  const by=latestById(own),prefix=PREFIX+s.id+"-";
+  const ctrl=CONTROLLED_KEYS.map(k=>by.get(prefix+k));
+  const correct=ctrl.filter(e=>e?.result==="correct").length;
+  const dates=ctrl.map(e=>Date.parse(e?.occurredAt??""));
+  const due=correct===CONTROLLED_KEYS.length&&dates.every(Number.isFinite)?
+   Math.max(...dates)+DELAY_MS:NaN;
+  const delayedCorrect=DELAYED_KEYS.filter(k=>by.get(prefix+k)?.result==="correct").length;
+  const status:E06Status=!a||!pr.ready?"needs-prerequisite":delayedCorrect===DELAYED_KEYS.length?
+    "reviewed":!own.length?"unstarted":!Number.isFinite(due)?"learning":
+    now.getTime()<due?"waiting":"ready";
+  return {
+   id:s.id,title:s.title,objective:s.objective,level:s.level,
+   anchorCohort:s.anchor.cohort,anchorSceneId:s.anchor.sceneId,
+   canDoId:a?.canDoId??null,canonicalUnitId:a?.unitId??null,canDo:a?.canDo??null,
+   status,sourceListening:pr.listening,sourceReading:pr.reading,prerequisiteReady:pr.ready,
+   correct,required:CONTROLLED_KEYS.length,
+   attempts:own.filter(e=>e.metadata?.e06Stage!=="delayed"&&e.metadata?.nonAuthoritative!==true).length,
+   unscoredWriting:own.filter(e=>e.metadata?.nonAuthoritative===true&&e.responseMode==="textarea").length,
+   unscoredSpeaking:own.filter(e=>e.metadata?.nonAuthoritative===true&&e.responseMode==="speech").length,
+   delayedCorrect,delayedRequired:DELAYED_KEYS.length,
+   ...(Number.isFinite(due)?{availableAt:new Date(due).toISOString()}: {})
+  } satisfies E06CaseProgress;
+ });
+ const next=cases.find(c=>c.status==="learning")??cases.find(c=>c.status==="unstarted");
+ return {cases,total:cases.length,linked:cases.filter(c=>c.canDoId!==null).length,
+  prerequisiteReady:cases.filter(c=>c.prerequisiteReady).length,
+  active:cases.filter(c=>c.status==="learning").length,
+  waiting:cases.filter(c=>c.status==="waiting").length,
+  ready:cases.filter(c=>c.status==="ready").length,
+  reviewed:cases.filter(c=>c.status==="reviewed").length,
+  unlinked:cases.filter(c=>c.canDoId===null).length,
+  nextId:next?.id??null,nextDelayedId:cases.find(c=>c.status==="ready")?.id??null};
+}
+function previewLessons(s:E06Case):StudyLesson[]{
+ return [
+  lesson(s,"preview-intro","Original cumulative communication · "+s.title,
+   s.setting+" "+s.objective+" No verified canonical Can-do is linked to this capstone. Review the original situation without graded events."),
+  lesson(s,"preview-dialogue","Dialogue and speaker intentions",
+   "Read the original multi-turn exchange. Independent answers and other source skills cannot be graded here.",
+   s.turns.map(t=>({expression:t.speaker+"： "+t.ja,note:t.en+" · "+t.purpose}))),
+  lesson(s,"preview-text",s.reading.title,s.reading.en,
+   [{expression:s.reading.ja,note:s.reading.en}]),
+  lesson(s,"preview-revision","Independent self-revision",
+   s.independent.writing+" "+s.independent.speaking+" "+s.independent.revision)
+ ];
+}
+export function buildE06Preview(id:string):StudyStep[]{
+ const s=getCase(id);
+ if(anchorOf(s))throw Error("E06_PREVIEW_ONLY_FOR_UNLINKED:"+id);
+ return previewLessons(s);
+}
+export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudyStep[]{
+ const {s,anchor:a}=getLinked(id);
+ if(!prerequisites(a,events).ready)throw Error("E06_SOURCE_LISTENING_AND_TEXT_NOT_YET_PRACTISED:"+id);
+ const [listen,read,negotiate,recall]=controlledPrompts(s,a);
+ const unit=unitById.get(a.unitId)!;
+ const grammar=unit.grammarIds.slice(0,3).map(id=>grammarLessons[grammarContext(id)])
+  .filter((l):l is StudyLesson=>Boolean(l));
+ return [
+  lesson(s,"set-up","Cumulative A1/A2 · "+s.title,
+   "Goal: "+s.objective+". "+s.setting+
+   " You have already answered a listening and reading/form task in its original lesson. Now use those skills in a longer exchange; audio uses device synthesis, not a native recording.",[],a),
+  listen,
+  lesson(s,"dialogue","Encounter · Check the dialogue",
+   "Reveal the conversation only after the audio answer. Check each speaker's intention before reading the translation.",
+   s.turns.map(t=>({expression:t.speaker+"： "+t.ja,note:t.en+" · Speaker goal: "+t.purpose})),a),
+  read,
+  lesson(s,"notice","Connected source reading · "+s.reading.title,
+   "Check the new notice's conditions and compare them with the dialogue. You cannot infer unstated outcomes.",
+   [{expression:s.reading.ja,note:s.reading.en}],a),
+  ...grammar,
+  lesson(s,"interact","Negotiate · Less prompting",
+   "Use the interlocutor's actual constraint. Choose one appropriate response, then produce a full Japanese expression without options.",[],a),
+  negotiate,recall,
+  lesson(s,"production","Own the exchange · Independent writing and speaking",
+   "Your original text and transcript are stored as unscored drafts only. Evaluate politeness, meaning and revision with the provided guidance; no synthetic pronunciation grade.",[],a),
+  open(s,a,false),open(s,a,true),
+  lesson(s,"revise","Review your own output",
+   s.independent.revision+" The next time, respond without copying the revealed dialogue.",[],a),
+  lesson(s,"spaced-return","Independent later transfer",
+   "The four bounded prompts join your existing FSRS queue. After all four are answered correctly, a different three-task listening/reading/production set unlocks after twenty hours. Independent free-form drafts never establish CEFR level.",[],a)
+ ];
+}
+export function buildE06Delayed(id:string,events:readonly StudyEvent[],now=new Date()):StudyStep[]{
+ const {s,anchor:a}=getLinked(id);
+ const progress=getE06Overview(events,now).cases.find(c=>c.id===id);
+ if(progress?.status!=="ready"&&progress?.status!=="reviewed")throw Error("E06_DELAYED_NOT_READY:"+id);
+ return [
+  lesson(s,"delayed-intro","Cumulative transfer · "+s.title,
+   "The details and task constraints have changed. Listen to the new spoken situation, read its separate notice, and retrieve a new expression without answer choices. Scores remain bounded original StudyEvents.",[],a),
+  ...transferPrompts(s,a)
+ ];
+}
