@@ -27,7 +27,8 @@ export function P60ConsolidationStudio({
  onPractice:(id:string,kind:Practice)=>void;
  onHistorical:(id:string,unitId:string)=>void;
  onDueReview:(unitId:string)=>void;
- onWriting:(id:string,fromR4?:boolean)=>void;
+ onWriting:(id:string,fromR4?:boolean,initialDraft?:string,
+  stage?:"first"|"reply"|"transfer")=>void;
  onDirtyChange?:(dirty:boolean)=>void;
 }){
  const [chosen,setChosen]=useState("");
@@ -498,7 +499,7 @@ export function P60ConsolidationStudio({
       stage={stage.stage} visible={step==="writing"} disabled={disabled}
       onDirtyChange={setR4Dirty}
       onOriginalPractice={()=>onPractice(lesson.id,"comprehension")}
-      onOriginalWriting={()=>onWriting(lesson.id,true)}
+      onOriginalWriting={(text,kind)=>onWriting(lesson.id,true,text,kind)}
      />
     </div>:null}
     {step==="reflection"?<section>
