@@ -295,7 +295,6 @@ function e09RepairPrompt(s:E06Case,a:Anchor,cue:E09RepairCue):StudyPrompt{
  };
 }
 function e09UnscoredTransfer(s:E06Case,a:Anchor,d:E09CaseDepth):StudyPrompt{
- const micro=E11_BY_CASE.get(s.id);
  return {
   id:PREFIX+s.id+"-e09-original-response",
   primaryTarget:{kind:"can_do",id:a.canDoId},skill:"writing_quality",
@@ -312,9 +311,6 @@ function e09UnscoredTransfer(s:E06Case,a:Anchor,d:E09CaseDepth):StudyPrompt{
   activity:"writing",languageActivity:"writing",
   eventMetadata:metadata(s,a,"independent",{
     e09:true,e09Task:"independent-written-transfer",
-    ...(micro?{e11:true,e11Audience:micro.writingAudience,
-      e11WritingChecks:micro.writingRevision.map(([heading,question,repair])=>({heading,question,repair})),
-      e11PragmaticDecision:micro.pragmaticDecision}:{}),
     nonAuthoritative:true,schedulerExcluded:true,semanticScore:false,
     structuralOnly:true,accreditedCefrVerdict:false
   })
@@ -322,6 +318,30 @@ function e09UnscoredTransfer(s:E06Case,a:Anchor,d:E09CaseDepth):StudyPrompt{
 }
 
 /* Optional original source-linked transfer: these prompts are not graded for FSRS. */
+function e11IndependentWriting(s:E06Case,a:Anchor,t:E11PracticalTransfer):StudyPrompt{
+ return {
+  id:PREFIX+s.id+"-e11-original-letter",
+  primaryTarget:{kind:"can_do",id:a.canDoId},
+  skill:"writing_quality",cueFamily:PREFIX+s.id+"-e11-letter",
+  promptType:"textarea",instruction:"Optional independent Japanese message · unscored self-revision",
+  prompt:"Write to: "+t.writingAudience+"\nSituation: "+t.setting+
+   "\nWhat you must communicate: "+t.pragmaticDecision+
+   "\nUse the original audience/fact/politeness checklist to revise your message.",
+  promptLanguage:"en",placeholder:"自分の日本語で書いてください…",
+  acceptedAnswers:[],displayAnswer:"Your own independent message; no automatic language grade",
+  requiredTerms:[],minimumCharacters:s.level==="A1"?20:40,
+  explanation:"Review audience and factual accuracy yourself. "+t.grammar.function+
+    " Avoid: "+t.grammar.mistake,
+  sourceId:ORIGINAL,contentVersion:coreContent.version,contextId:PREFIX+s.id,
+  activity:"writing",languageActivity:"writing",
+  eventMetadata:metadata(s,a,"independent",{
+   e11:true,e11CaseId:s.id,e11Task:"independent-letter",e11Audience:t.writingAudience,
+   e11WritingChecks:t.writingRevision.map(([heading,question,repair])=>({heading,question,repair})),
+   nonAuthoritative:true,schedulerExcluded:true,semanticScore:false,
+   structuralOnly:true,accreditedCefrVerdict:false
+  })
+ };
+}
 function e11Practice(s:E06Case,a:Anchor,t:E11PracticalTransfer,mode:"listening"|"reading"):StudyPrompt{
  const x=mode==="listening"?t.listening:t.readingQuestion,spoken=mode==="listening";
  const key="e11-micro-"+mode;
@@ -679,7 +699,14 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
    lesson(s,"e11-contrasts","Precise grammar, vocabulary and register",
       micro.pragmaticDecision+" "+micro.grammar.function+" Common misreading: "+micro.grammar.mistake,
       [...micro.vocabulary.map(v=>({expression:v.expression,note:v.meaning+" · "+v.contrast})),
-       {expression:micro.grammar.pattern,note:micro.grammar.function}],a)
+       {expression:micro.grammar.pattern,note:micro.grammar.function}],a),
+   lesson(s,"e11-letter-coach","Write to the actual recipient · Revise deliberately",
+     "Audience: "+micro.writingAudience+". "+micro.pragmaticDecision+
+     " These prompts help you review, not certify, your own Japanese.",
+     micro.writingRevision.map(([heading,question,repair])=>({expression:heading+" · "+question,note:repair})),a),
+   e11IndependentWriting(s,a,micro),
+   lesson(s,"e11-speaking-prep","Prepare a considerate spoken follow-up",
+     micro.spokenChallenge+" Practice aloud without submitting audio or claiming pronunciation mastery.",[],a)
   ]:[]),
   lesson(s,"production","Own the exchange · Independent writing and speaking",
    "Your original text and transcript are stored as unscored drafts only. Evaluate politeness, meaning and revision with the provided guidance; no synthetic pronunciation grade.",[],a),
@@ -699,12 +726,6 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
     lesson(s,"e09-independent","New audience · Reuse the language, not the old facts",
       depth.production.newAudience+" · "+depth.production.firstProblem+" "+depth.production.revisionFocus,
       depth.production.selfCheck.map((check,i)=>({expression:"Self-check "+(i+1),note:check})),a),
-    ...(micro?[
-      lesson(s,"e11-writing-guide","New audience · Write and explicitly revise",
-        "Audience: "+micro.writingAudience+". "+micro.pragmaticDecision+
-        " Compare your response with these non-graded checks.",
-        micro.writingRevision.map(([name,question,repair])=>({expression:name+" · "+question,note:repair})),a)
-    ]:[]),
     e09UnscoredTransfer(s,a,depth),
     lesson(s,"e09-followup","Different-role speaking · Self-directed",
       depth.production.followUp+" "+(micro?.spokenChallenge??"")+" This is a speaking practice suggestion; do not infer an acoustic or CEFR score.",[],a)
