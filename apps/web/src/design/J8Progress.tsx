@@ -5,6 +5,7 @@ import type {ImmersionProgress} from "../immerse/reader";
 import type {
   E01Progress,
   E02Overview,
+  E03Overview,
   A1MilestoneProgress,
   B1MilestoneProgress,
   B2MilestoneProgress,
@@ -23,6 +24,7 @@ import {JCartouche,JInkProgress,JPattern,JSeal} from "./index";
 type Props={
   e01:E01Progress;
   e02:E02Overview;
+  e03:E03Overview;
   kana:KanaMasterySummary;
   vocab:VocabularyMasterySummary;
   conjugation:ConjugationMasterySummary;
@@ -51,7 +53,7 @@ type Skill={
 };
 
 export function J8Progress({
-  e02,e01,kana,vocab,conjugation,grammar,sentence,lexicalFluency,milestone,b1Milestone,b2Milestone,c1Foundation,immersion,summary,course,completedToday,
+  e03,e02,e01,kana,vocab,conjugation,grammar,sentence,lexicalFluency,milestone,b1Milestone,b2Milestone,c1Foundation,immersion,summary,course,completedToday,
 }:Props){
   const immersionReading=mean(immersion.texts.map((item)=>item.readingMastery));
   const immersionListening=mean(immersion.texts.map((item)=>item.listeningMastery));
@@ -172,6 +174,11 @@ export function J8Progress({
       <header className="e02-course__head"><div><p className="j8-kicker">E02 · BEGINNER COMMUNICATION EVIDENCE</p><h2 id="e02-progress-title">What you have practised</h2><p>Controlled responses, independent unscored drafts and delayed checks are counted separately. These are not CEFR or acoustic scores.</p></div><strong>{e02.started}/{e02.total} scenes started</strong></header>
       <div className="e02-evidence"><span>{e02.readyForDelay} delayed checks ready</span><span>{e02.delayedReviewed} delayed checks complete</span></div>
       <ol className="e02-progress-list">{e02.scenes.map(item=><li key={item.id}><strong>{item.title}</strong><span>{item.completedControlled}/{item.requiredControlled} controlled correct</span><span>{item.unscoredDrafts} unscored drafts</span><span>{item.delayedCorrect}/{item.delayedTotal} delayed correct</span></li>)}</ol>
+    </section>
+    <section className="e03-path e03-path--progress" aria-labelledby="e03-progress-title">
+      <header className="e03-path__heading"><div><p className="j8-kicker">E03 · ORIGINAL A2.1 EVIDENCE</p><h2 id="e03-progress-title">Connected communication practice</h2><p>Original controlled answers are distinct from structural-only drafts and new-context delayed evidence. Neither is externally validated CEFR proficiency.</p></div><strong>{e03.started}/{e03.total} scenes started</strong></header>
+      <div className="e03-progress-metrics"><span>{e03.readyForDelay} transfer reviews ready</span><span>{e03.delayedReviewed} transfer reviews complete</span><span>{e03.unmapped.length} awaiting canonical association</span></div>
+      <ol className="e03-progress-list">{e03.scenes.map(scene=><li key={scene.id}><strong>{scene.title}</strong><span>{scene.correct}/{scene.required} controlled correct</span><span>{scene.unscoredDrafts} unscored drafts</span><span>{scene.delayedCorrect}/{scene.delayedTotal} delayed correct</span></li>)}</ol>
     </section>
     <section className="j8-skills" aria-labelledby="j8-skills-title">
       <header className="j8-section-head">

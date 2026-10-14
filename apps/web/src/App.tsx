@@ -11,6 +11,7 @@ import { AUTHENTIC_GUEST_ACCOUNT_ID,setAuthenticAccountId } from "./immerse/auth
 import { StudyPlayer,type StudyAnswer } from "./study/StudyPlayer";
 import "./study/a1Excellence.css";
 import "./study/a1ExcellenceE02.css";
+import "./study/a2ExcellenceE03.css";
 import { StudySessionFence } from "./study/sessionFence";
 import { DashboardRefreshGuard } from "./study/dashboardRefreshGuard";
 import { AccountWorkspaceLease,attachWorkspaceWithLease,type WorkspaceLease } from "./study/accountWorkspaceLease";
@@ -21,8 +22,8 @@ import { J7Library } from "./design/J7Library";
 import { J8Progress } from "./design/J8Progress";
 import { createJapaneseLanguageDashboardPublisher } from "./languageDashboard";
 import {
-  buildA1MilestoneSession,buildE01Session,buildE01DelayedSession,getE01Evidence,buildE02Session,buildE02DelayedSession,getE02Evidence,buildB1MilestoneSession,buildB2MilestoneSession,buildC1FoundationPractice,buildC1FoundationSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildP13C1SynthesisSession,buildP9RealWorldChainSession,buildP9RealWorldQualificationSession,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getC1FoundationAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getCompletedTodayCount,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,GUEST_ACCOUNT_ID,getDevelopmentAccountId,setDevelopmentAccountId,
-  type E01Progress,type E02Overview,type A1MilestoneProgress,type B1MilestoneProgress,type B2MilestoneProgress,type C1FoundationProgress,type ConjugationMasterySummary,type CourseUnitProgress,type GrammarMasterySummary,type KanaMasterySummary,type LexicalFluencySummary,type SentenceMasterySummary,type StudySummary,type VocabularyMasterySummary
+  buildA1MilestoneSession,buildE01Session,buildE01DelayedSession,getE01Evidence,buildE02Session,buildE02DelayedSession,getE02Evidence,buildE03Session,buildE03DelayedSession,getE03Evidence,buildB1MilestoneSession,buildB2MilestoneSession,buildC1FoundationPractice,buildC1FoundationSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildP13C1SynthesisSession,buildP9RealWorldChainSession,buildP9RealWorldQualificationSession,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getC1FoundationAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getCompletedTodayCount,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,GUEST_ACCOUNT_ID,getDevelopmentAccountId,setDevelopmentAccountId,
+  type E01Progress,type E02Overview,type E03Overview,type A1MilestoneProgress,type B1MilestoneProgress,type B2MilestoneProgress,type C1FoundationProgress,type ConjugationMasterySummary,type CourseUnitProgress,type GrammarMasterySummary,type KanaMasterySummary,type LexicalFluencySummary,type SentenceMasterySummary,type StudySummary,type VocabularyMasterySummary
 } from "./study/runtime";
 
 type Surface=J2Surface;
@@ -92,6 +93,7 @@ export function App(){
   const [milestone,setMilestone]=useState<A1MilestoneProgress>(EMPTY_MILESTONE);
   const [e01,setE01]=useState<E01Progress>({status:"not_started",answered:0,correct:0,unscored:0,stages:[],canDo:"A1 introductory exchange",unitId:"",delayedCorrect:0});
   const [e02,setE02]=useState<E02Overview>({scenes:[],nextSceneId:null,started:0,readyForDelay:0,delayedReviewed:0,total:0});
+  const [e03,setE03]=useState<E03Overview>({scenes:[],nextSceneId:null,started:0,readyForDelay:0,delayedReviewed:0,total:0,authored:10,unmapped:[]});
   const [b1Milestone,setB1Milestone]=useState<B1MilestoneProgress>(EMPTY_B1_MILESTONE);
   const [b2Milestone,setB2Milestone]=useState<B2MilestoneProgress>(EMPTY_B2_MILESTONE);
   const [c1Foundation,setC1Foundation]=useState<C1FoundationProgress>(EMPTY_C1_FOUNDATION);
@@ -127,6 +129,7 @@ export function App(){
     setMilestone(EMPTY_MILESTONE);
     setE01({status:"not_started",answered:0,correct:0,unscored:0,stages:[],canDo:"A1 introductory exchange",unitId:"",delayedCorrect:0});
     setE02({scenes:[],nextSceneId:null,started:0,readyForDelay:0,delayedReviewed:0,total:0});
+    setE03({scenes:[],nextSceneId:null,started:0,readyForDelay:0,delayedReviewed:0,total:0,authored:10,unmapped:[]});
     setB1Milestone(EMPTY_B1_MILESTONE);
     setB2Milestone(EMPTY_B2_MILESTONE);
     setC1Foundation(EMPTY_C1_FOUNDATION);
@@ -260,10 +263,10 @@ export function App(){
       workspaceId,
       getDevelopmentAccountId,
       ()=>Promise.all([
-        getStudySummary(),getKanaMasterySummary(),getVocabularyMasterySummary(),getConjugationMasterySummary(),getGrammarMasterySummary(),getSentenceMasterySummary(),getLexicalFluencySummary(),getCourseProgress(),getA1MilestoneAssessmentProgress(),getB1MilestoneAssessmentProgress(),getB2MilestoneAssessmentProgress(),getC1FoundationAssessmentProgress(),getImmersionProgress(),getCompletedTodayCount(),getE01Evidence(),getE02Evidence()
+        getStudySummary(),getKanaMasterySummary(),getVocabularyMasterySummary(),getConjugationMasterySummary(),getGrammarMasterySummary(),getSentenceMasterySummary(),getLexicalFluencySummary(),getCourseProgress(),getA1MilestoneAssessmentProgress(),getB1MilestoneAssessmentProgress(),getB2MilestoneAssessmentProgress(),getC1FoundationAssessmentProgress(),getImmersionProgress(),getCompletedTodayCount(),getE01Evidence(),getE02Evidence(),getE03Evidence()
       ]),
-      ([nextSummary,nextKana,nextVocab,nextConjugation,nextGrammar,nextSentence,nextLexicalFluency,nextCourse,nextMilestone,nextB1Milestone,nextB2Milestone,nextC1Foundation,nextImmersion,nextCompletedToday,nextE01,nextE02])=>{
-        setSummary(nextSummary);setKanaMastery(nextKana);setVocabMastery(nextVocab);setConjugationMastery(nextConjugation);setGrammarMastery(nextGrammar);setSentenceMastery(nextSentence);setLexicalFluency(nextLexicalFluency);setCourseProgress(nextCourse);setMilestone(nextMilestone);setB1Milestone(nextB1Milestone);setB2Milestone(nextB2Milestone);setC1Foundation(nextC1Foundation);setImmersion(nextImmersion);setCompletedToday(nextCompletedToday);setE01(nextE01);setE02(nextE02);
+      ([nextSummary,nextKana,nextVocab,nextConjugation,nextGrammar,nextSentence,nextLexicalFluency,nextCourse,nextMilestone,nextB1Milestone,nextB2Milestone,nextC1Foundation,nextImmersion,nextCompletedToday,nextE01,nextE02,nextE03])=>{
+        setSummary(nextSummary);setKanaMastery(nextKana);setVocabMastery(nextVocab);setConjugationMastery(nextConjugation);setGrammarMastery(nextGrammar);setSentenceMastery(nextSentence);setLexicalFluency(nextLexicalFluency);setCourseProgress(nextCourse);setMilestone(nextMilestone);setB1Milestone(nextB1Milestone);setB2Milestone(nextB2Milestone);setC1Foundation(nextC1Foundation);setImmersion(nextImmersion);setCompletedToday(nextCompletedToday);setE01(nextE01);setE02(nextE02);setE03(nextE03);
       },
     );
   }
@@ -351,6 +354,8 @@ export function App(){
   }
 
   const startStudy=()=>loadStudySession(()=>buildTodayQueue());
+  const startE03=(id:string)=>loadStudySession(()=>buildE03Session(id));
+  const startE03Delayed=(id:string)=>loadStudySession(()=>buildE03DelayedSession(id));
   const startE02=(id:string)=>loadStudySession(()=>buildE02Session(id));
   const startE02Delayed=(id:string)=>loadStudySession(()=>buildE02DelayedSession(id));
   const startE01=()=>loadStudySession(()=>buildE01Session());
@@ -424,10 +429,10 @@ export function App(){
         {diagnosticsMode
           ?<Suspense fallback={<p className="j2-account-status" role="status">Opening technical workspace…</p>}><J11Diagnostics key={getDevelopmentAccountId()} onExit={()=>navigateSurface(surface)} accountStatus={account.status} accountConnected={accountConnected}/></Suspense>
           :<>
-            {surface==="Today"&&<J3Today e02={e02} onStartE02={(id)=>void startE02(id)} onStartE02Delayed={(id)=>void startE02Delayed(id)} summary={summary} completedToday={completedToday} status={sessionStatus} e01={e01} onStartE01={()=>void startE01()} onStartE01Delayed={()=>void startE01Delayed()} onStart={()=>void startStudy()}/>}
-            {surface==="Learn"&&<J4Learn e02={e02} onStartE02={(id)=>void startE02(id)} onStartE02Delayed={(id)=>void startE02Delayed(id)} e01={e01} onStartE01={()=>void startE01()} onStartE01Delayed={()=>void startE01Delayed()} summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} onPreferredCoachChainApplied={()=>setPreferredCoachChain(null)} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>}
-            {surface==="Immerse"&&<Immersion key={getDevelopmentAccountId()} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE01={()=>void startE01()} onStartProductionTask={(taskId)=>void startProductiveTask(taskId)} onStartC1Synthesis={(packId)=>void startC1Synthesis(packId)} onOpenC1Coach={(chainId)=>{setPreferredCoachChain(chainId);setSurface("Learn");}}/>}
-            {surface==="Progress"&&<J8Progress e02={e02} e01={e01} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} immersion={immersion} summary={summary} course={courseProgress} completedToday={completedToday}/>}
+            {surface==="Today"&&<J3Today e03={e03} onStartE03={(id)=>void startE03(id)} onStartE03Delayed={(id)=>void startE03Delayed(id)} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE02Delayed={(id)=>void startE02Delayed(id)} summary={summary} completedToday={completedToday} status={sessionStatus} e01={e01} onStartE01={()=>void startE01()} onStartE01Delayed={()=>void startE01Delayed()} onStart={()=>void startStudy()}/>}
+            {surface==="Learn"&&<J4Learn e03={e03} onStartE03={(id)=>void startE03(id)} onStartE03Delayed={(id)=>void startE03Delayed(id)} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE02Delayed={(id)=>void startE02Delayed(id)} e01={e01} onStartE01={()=>void startE01()} onStartE01Delayed={()=>void startE01Delayed()} summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} onPreferredCoachChainApplied={()=>setPreferredCoachChain(null)} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>}
+            {surface==="Immerse"&&<Immersion key={getDevelopmentAccountId()} e03={e03} onStartE03={(id)=>void startE03(id)} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE01={()=>void startE01()} onStartProductionTask={(taskId)=>void startProductiveTask(taskId)} onStartC1Synthesis={(packId)=>void startC1Synthesis(packId)} onOpenC1Coach={(chainId)=>{setPreferredCoachChain(chainId);setSurface("Learn");}}/>}
+            {surface==="Progress"&&<J8Progress e03={e03} e02={e02} e01={e01} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} immersion={immersion} summary={summary} course={courseProgress} completedToday={completedToday}/>}
             {surface==="Library"&&<J7Library query={query} setQuery={(value)=>{setLibraryStatus("loading");setResults([]);setQuery(value);}} results={results} status={libraryStatus}/>}
           </>}
       </J2AppShell>}
