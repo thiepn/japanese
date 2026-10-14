@@ -20,9 +20,10 @@ const statusText:Record<P60HistoricalReviewSource["status"],string>={
 };
 /** UI reads original owner-authoritative evidence; every free draft remains in component memory. */
 export function P60ConsolidationStudio({
- lessons,preferredId,readyIds,historical,disabled,onPractice,onHistorical,onDueReview,onWriting,onDirtyChange
+ lessons,preferredId,resumeWritingForId,readyIds,historical,disabled,onPractice,onHistorical,onDueReview,onWriting,onDirtyChange
 }:{
- lessons:readonly P60Unit[];preferredId?:string;readyIds:readonly string[];
+ lessons:readonly P60Unit[];preferredId?:string;resumeWritingForId?:string;
+ readyIds:readonly string[];
  historical:readonly P60HistoricalReviewSource[];disabled:boolean;
  onPractice:(id:string,kind:Practice)=>void;
  onHistorical:(id:string,unitId:string)=>void;
@@ -32,7 +33,7 @@ export function P60ConsolidationStudio({
  onDirtyChange?:(dirty:boolean)=>void;
 }){
  const [chosen,setChosen]=useState("");
- const [step,setStep]=useState<Step>("reading");
+ const [step,setStep]=useState<Step>(resumeWritingForId&&resumeWritingForId===preferredId?"writing":"reading");
  const [sourceDisclosure,setSourceDisclosure]=useState<boolean|null>(null);
  const [mode,setMode]=useState<Kind>("question");
  const [questionIndex,setQuestionIndex]=useState(0);
