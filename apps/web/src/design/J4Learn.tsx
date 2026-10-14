@@ -32,7 +32,7 @@ type Props={
   e03:E03Overview;onStartE03:(id:string)=>void;onStartE03Delayed:(id:string)=>void;
   e04:E04Overview;onStartE04:(id:string)=>void;onStartE04Delayed:(id:string)=>void;onStartE04Preview:(id:string)=>void;
   e05:E05Evidence;onStartE05Repair:()=>void;onStartE03Preview:(id:string)=>void;onStartE02Preview:(id:string)=>void;
-  e06:E06Overview;onStartE06:(id:string)=>void;onStartE06Full:(id:string)=>void;onStartE10Stage:(id:string,stage:import("../study/e10DailyStages").E10StageId)=>void;onStartE10DelayedStage:(id:string,stage:import("../study/e10DailyStages").E10DelayedId)=>void;onStartE06FullDelayed:(id:string)=>void;onStartE06Delayed:(id:string)=>void;onStartE06Preview:(id:string)=>void;
+  e06:E06Overview;onStartE06:(id:string)=>void;onStartE06Full:(id:string)=>void;onStartE11Micro:(id:string)=>void;onStartE10Stage:(id:string,stage:import("../study/e10DailyStages").E10StageId)=>void;onStartE10DelayedStage:(id:string,stage:import("../study/e10DailyStages").E10DelayedId)=>void;onStartE06FullDelayed:(id:string)=>void;onStartE06Delayed:(id:string)=>void;onStartE06Preview:(id:string)=>void;
   e07:E07Journey;onOpenE07:(action:E07Action)=>void;
   summary:StudySummary;
   kana:KanaMasterySummary;
@@ -82,7 +82,7 @@ const LEVEL_ORDER=["A1","A2","B1","B2","C1"];
 
 export function J4Learn(props:Props){
   const {
-    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,onStartE06,onStartE06Full,onStartE10Stage,onStartE06Delayed,onStartE10DelayedStage,onStartE06FullDelayed,onStartE06Preview,e07,onOpenE07,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
+    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,onStartE06,onStartE06Full,onStartE11Micro,onStartE10Stage,onStartE06Delayed,onStartE10DelayedStage,onStartE06FullDelayed,onStartE06Preview,e07,onOpenE07,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
     milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,
     onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartAssessment,
     onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,
@@ -201,14 +201,14 @@ export function J4Learn(props:Props){
       <details><summary>Canonical A1/A2 structure and subdivision limits</summary><p>A1 units: {e05.canonical.a1}; unsplit A2 units: {e05.canonical.unsplitA2}; explicitly labeled A2.1: {e05.canonical.explicitA21}; explicitly labeled A2.2: {e05.canonical.explicitA22}. If the source only labels A2, dividing it in halves is not a verified CEFR/JF A2.1/A2.2 mapping.</p></details>
     </section>
     <section className="e06-course" aria-labelledby="e06-course-title">
-      <header className="e06-course__header"><div><p className="j4-kicker">E06 · ORIGINAL INDEPENDENT A1/A2</p><h2 id="e06-course-title">Communicate across everyday situations</h2><p>Seven linked cumulative cases now connect three distinct original dialogue/reading contexts, source-aware grammar and vocabulary, eight bounded retrieval questions, two-draft independent writing and seven changed-context delayed tasks. Open production remains unscored.</p></div><strong>{e06.reviewed}/{e06.total} delayed sets</strong></header>
+      <header className="e06-course__header"><div><p className="j4-kicker">E06 · ORIGINAL INDEPENDENT A1/A2</p><h2 id="e06-course-title">Communicate across everyday situations</h2><p>Seven source-linked cases retain their eight controlled FSRS cues, seven delayed-transfer prompts and two-draft writing. E11 adds independently authored optional mini-dialogues, practical readings and precise contrastive grammar without extending required short lessons or claiming new mastery.</p></div><strong>{e06.reviewed}/{e06.total} delayed sets</strong></header>
       <ol className="e06-course__cases">{e06.cases.map((c,i)=><li key={c.id} className="e06-course__case">
         <span className="e06-course__number">{String(i+1).padStart(2,"0")}</span>
         <div className="e06-course__info"><h3>{c.title}</h3><p>{c.objective}</p><small>{c.level} · {c.anchorCohort.toUpperCase()} source {c.anchorSceneId}{c.canonicalUnitId?" · "+c.canonicalUnitId:" · unlinked original reading"}</small>
           <small>{c.sourceListening?"Listening source done":"Original listening needed"} · {c.sourceReading?"Text/form source done":"Original text/form needed"}</small>
           {c.canDoId?<><small>{c.correct}/{c.required} controlled correct · E08 {c.contextProblemsCorrect}/2 · E09 {c.e09Correct}/{c.e09Required} third-context correct · {c.delayedCorrect}/{c.delayedRequired} delayed correct</small>
           <small>Writing: {c.firstDraftSubmitted?"first draft recorded":"first draft pending"} → {c.revisedDraftSubmitted?"revised draft recorded":"revision pending"} · {c.unscoredWriting} unscored written responses · {c.unscoredSpeaking} unscored speech transcripts</small>
-          <small>Next short lesson: {c.dailyStages.find(stage=>stage.id===c.nextDailyStage)?.title??"No new required stage"}</small></>:<small>No verified Can-do link: original teaching preview only, never graded</small>}
+          <small>Next short lesson: {c.dailyStages.find(stage=>stage.id===c.nextDailyStage)?.title??"No new required stage"} · E11 optional: {Number(c.e11ListeningPractised)+Number(c.e11ReadingPractised)}/2 context attempts, {c.e11WritingSubmitted?"writing submitted":"writing not submitted"}</small></>:<small>No verified Can-do link: original teaching preview only, never graded</small>}
           {c.canDoId&&c.dailyStages.length>0?<details className="e10-stage-list">
             <summary>Eight short lessons · choose a source-supported stage</summary>
             <ol>{c.dailyStages.map((stage,index)=><li key={stage.id}>
@@ -234,7 +234,8 @@ export function J4Learn(props:Props){
           {c.status==="needs-prerequisite"&&c.canDoId?<button type="button" disabled={status==="loading"} onClick={()=>{if(c.anchorCohort==="e02")onStartE02(c.anchorSceneId);else if(c.anchorCohort==="e03")onStartE03(c.anchorSceneId);else onStartE04(c.anchorSceneId);}}>Practise original source</button>:null}
           {!c.canDoId?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06Preview(c.id)}>Read original case</button>:null}
           {c.prerequisiteReady?<><button type="button" disabled={status==="loading"} onClick={()=>onStartE06(c.id)}>{c.firstDraftSubmitted&&!c.revisedDraftSubmitted?"Continue second draft":c.nextDailyStage?"Continue: "+(c.dailyStages.find(s=>s.id===c.nextDailyStage)?.title??"short lesson"):"Read completion guidance"}</button>
-          <button type="button" disabled={status==="loading"} onClick={()=>onStartE06Full(c.id)}>Review full original lesson</button></>:null}
+          <button type="button" disabled={status==="loading"} onClick={()=>onStartE06Full(c.id)}>Review full original lesson</button>
+          <button type="button" disabled={status==="loading"} onClick={()=>onStartE11Micro(c.id)}>E11 · Optional listening + reading</button></>:null}
           {(c.status==="ready"||c.status==="reviewed")?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06Delayed(c.id)}>{c.nextDelayedStage?"Next delayed group: "+(c.delayedStages.find(s=>s.id===c.nextDelayedStage)?.title??"review"):"Delayed set completed"}</button>:null}
           {(c.status==="ready"||c.status==="reviewed")&&c.delayedCorrect>0?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06FullDelayed(c.id)}>Review all seven delayed questions</button>:null}
         </div>

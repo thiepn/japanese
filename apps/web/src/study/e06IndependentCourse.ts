@@ -9,6 +9,7 @@ import {E06_CASES,type E06Case} from "./e06IndependentCases";
 import {e08ByCase,type E08Extension} from "./e08ContextExtensions";
 import {E09_BY_CASE,type E09CaseDepth} from "./e09CommunicationDepth";
 import {e09RepairCueFor,type E09RepairCue} from "./e09MisconceptionRepairs";
+import {E11_BY_CASE,type E11PracticalTransfer} from "./e11PracticalTransfer";
 import {E10_DAILY_STAGES,E10_DELAYED_GROUPS,e10StageById,type E10StageId,type E10StageProgress,type E10DelayedId,type E10DelayedProgress} from "./e10DailyStages";
 
 const PREFIX="e06-cumulative-";
@@ -27,6 +28,7 @@ export interface E06CaseProgress {
  status:E06Status;sourceListening:boolean;sourceReading:boolean;prerequisiteReady:boolean;
  correct:number;required:number;attempts:number;unscoredWriting:number;unscoredSpeaking:number;
  firstDraftSubmitted:boolean;revisedDraftSubmitted:boolean;contextProblemsCorrect:number;
+ e11ListeningPractised:boolean;e11ReadingPractised:boolean;e11WritingSubmitted:boolean;
  e09Correct:number;e09Required:number;e09DelayedCorrect:number;e09DelayedRequired:number;
  delayedCorrect:number;delayedRequired:number;availableAt?:string;
  dailyStages:E10StageProgress[];nextDailyStage:E10StageId|null;
@@ -315,6 +317,51 @@ function e09UnscoredTransfer(s:E06Case,a:Anchor,d:E09CaseDepth):StudyPrompt{
   })
  };
 }
+
+/* Optional original source-linked transfer: these prompts are not graded for FSRS. */
+function e11IndependentWriting(s:E06Case,a:Anchor,t:E11PracticalTransfer):StudyPrompt{
+ return {
+  id:PREFIX+s.id+"-e11-original-letter",
+  primaryTarget:{kind:"can_do",id:a.canDoId},
+  skill:"writing_quality",cueFamily:PREFIX+s.id+"-e11-letter",
+  promptType:"textarea",instruction:"Optional independent Japanese message · unscored self-revision",
+  prompt:"Write to: "+t.writingAudience+"\nSituation: "+t.setting+
+   "\nWhat you must communicate: "+t.pragmaticDecision+
+   "\nUse the original audience/fact/politeness checklist to revise your message.",
+  promptLanguage:"en",placeholder:"自分の日本語で書いてください…",
+  acceptedAnswers:[],displayAnswer:"Your own independent message; no automatic language grade",
+  requiredTerms:[],minimumCharacters:s.level==="A1"?20:40,
+  explanation:"Review audience and factual accuracy yourself. "+t.grammar.function+
+    " Avoid: "+t.grammar.mistake,
+  sourceId:ORIGINAL,contentVersion:coreContent.version,contextId:PREFIX+s.id,
+  activity:"writing",languageActivity:"writing",
+  eventMetadata:metadata(s,a,"independent",{
+   e11:true,e11CaseId:s.id,e11Task:"independent-letter",e11Audience:t.writingAudience,
+   e11WritingChecks:t.writingRevision.map(([heading,question,repair])=>({heading,question,repair})),
+   nonAuthoritative:true,schedulerExcluded:true,semanticScore:false,
+   structuralOnly:true,accreditedCefrVerdict:false
+  })
+ };
+}
+function e11Practice(s:E06Case,a:Anchor,t:E11PracticalTransfer,mode:"listening"|"reading"):StudyPrompt{
+ const x=mode==="listening"?t.listening:t.readingQuestion,spoken=mode==="listening";
+ const key="e11-micro-"+mode;
+ const original=choice(s,a,key,"understand",
+    spoken?x.question:t.reading.ja+"\n\n"+x.question,x.answer,x.wrong,x.wrongWhy,
+    spoken?"listening":"comprehension",
+    spoken?t.turns.map(v=>v.speaker+"： "+v.ja).join(" "):undefined);
+ return {...original,instruction:spoken?"Optional new spoken context; device speech synthesis, not native audio.":
+    "Optional original reading: answer only from this new written notice.",
+   explanation:t.grammar.function+" Watch out: "+t.grammar.mistake,
+   eventMetadata:metadata(s,a,"understand",{
+    e11:true,e11CaseId:s.id,e11Task:key,nonAuthoritative:true,schedulerExcluded:true,
+    e11OriginalCanDo:a.canDoId,
+    e06FoilFeedback:[{response:x.wrong[0],feedback:x.wrongWhy[0]},
+      {response:x.wrong[1],feedback:x.wrongWhy[1]}],
+    ...(spoken?{audioKind:"device-speech-synthesis",nativeRecording:false}:{})
+   })
+ };
+}
 function controlledPrompts(s:E06Case,a:Anchor):StudyPrompt[]{
  const audio=s.turns.map(t=>t.speaker+"： "+t.ja).join(" ");
  return [
@@ -478,6 +525,9 @@ export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06O
    attempts:own.filter(e=>e.metadata?.e06Stage!=="delayed"&&e.metadata?.nonAuthoritative!==true).length,
    unscoredWriting:own.filter(e=>e.metadata?.nonAuthoritative===true&&e.responseMode==="textarea").length,
    unscoredSpeaking:own.filter(e=>e.metadata?.nonAuthoritative===true&&e.responseMode==="speech").length,
+   e11ListeningPractised:own.some(e=>e.metadata?.promptId===prefix+"e11-micro-listening"&&e.metadata?.e11===true&&e.metadata?.nonAuthoritative===true),
+   e11ReadingPractised:own.some(e=>e.metadata?.promptId===prefix+"e11-micro-reading"&&e.metadata?.e11===true&&e.metadata?.nonAuthoritative===true),
+   e11WritingSubmitted:own.some(e=>e.metadata?.promptId===prefix+"e11-original-letter"&&e.metadata?.e11===true&&e.metadata?.nonAuthoritative===true),
    firstDraftSubmitted:own.some(e=>e.metadata?.promptId===prefix+"write"&&e.metadata?.nonAuthoritative===true),
    revisedDraftSubmitted:own.some(e=>e.metadata?.promptId===prefix+"e08-second-draft"&&e.metadata?.nonAuthoritative===true),
    contextProblemsCorrect:["e08-context-listen","e08-context-read"].filter(k=>by.get(prefix+k)?.result==="correct").length,
@@ -502,7 +552,7 @@ export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06O
   nextId:next?.id??null,nextDelayedId:cases.find(c=>c.status==="ready")?.id??null};
 }
 function previewLessons(s:E06Case):StudyLesson[]{
- const ext=e08ByCase.get(s.id),depth=E09_BY_CASE.get(s.id);
+ const ext=e08ByCase.get(s.id),depth=E09_BY_CASE.get(s.id),micro=E11_BY_CASE.get(s.id);
  return [
   lesson(s,"preview-intro","Original cumulative communication · "+s.title,
    s.setting+" "+s.objective+" No verified canonical Can-do is linked to this capstone. Review the original situation without graded events."),
@@ -526,6 +576,18 @@ function previewLessons(s:E06Case):StudyLesson[]{
       [...depth.grammar.map(g=>({expression:g.expression,note:g.role+" · Avoid: "+g.misconception})),
        ...depth.vocabulary.map(v=>({expression:v.ja,note:v.meaning+" · "+v.contrast}))])
   ]:[]),
+  ...(micro?[
+    lesson(s,"e11-preview-dialogue","E11 source-only practice · "+micro.goal,
+      "Original dialogue and written source remain available. Without a verified Can-do link no scored prompts are created. "+
+      micro.setting,
+      micro.turns.map(v=>({expression:v.speaker+"： "+v.ja,note:v.en+" · "+v.intent}))),
+    lesson(s,"e11-preview-reading",micro.reading.title,micro.reading.en,
+      [{expression:micro.reading.ja,note:micro.reading.en}]),
+    lesson(s,"e11-preview-grammar","Precision in practical Japanese",
+      micro.pragmaticDecision+" "+micro.grammar.function+" Avoid: "+micro.grammar.mistake,
+      [...micro.vocabulary.map(v=>({expression:v.expression,note:v.meaning+" · "+v.contrast})),
+       {expression:micro.grammar.pattern,note:micro.grammar.function}])
+  ]:[]),
   lesson(s,"preview-revision","Independent self-revision",
    s.independent.writing+" "+s.independent.speaking+" "+s.independent.revision)
  ];
@@ -539,7 +601,7 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
  const {s,anchor:a}=getLinked(id);
  if(!prerequisites(a,events).ready)throw Error("E06_SOURCE_LISTENING_AND_TEXT_NOT_YET_PRACTISED:"+id);
  const [listen,read,negotiate,recall,secondListen,secondRead,thirdListen,thirdRead]=controlledPrompts(s,a);
- const ext=e08ByCase.get(s.id),depth=E09_BY_CASE.get(s.id);
+ const ext=e08ByCase.get(s.id),depth=E09_BY_CASE.get(s.id),micro=E11_BY_CASE.get(s.id);
  const ownEvents=eventsFor(s,a,events);
  const recent=latestById(ownEvents);
  const previousContextListeningIncorrect=recent.get(PREFIX+s.id+"-e08-context-listen")?.result==="incorrect";
@@ -628,6 +690,28 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
      "Read each construction in context. The explanation names the conversational function and a common misleading interpretation.",
      depth.grammar.map(g=>({expression:g.expression,note:g.role+" · Common mistake: "+g.misconception})),a)
    ]:[]),
+  ...(micro?[
+   lesson(s,"e11-setup","A new practical clarification · "+micro.goal,
+      micro.setting+" Optional source-linked practice. No CEFR score is assigned.",[],a),
+   e11Practice(s,a,micro,"listening"),
+   lesson(s,"e11-dialogue","Reveal the conversational intentions",
+      "First listen, then compare what was confirmed, proposed and still unknown.",
+      micro.turns.map(v=>({expression:v.speaker+"： "+v.ja,note:v.en+" · "+v.intent})),a),
+   e11Practice(s,a,micro,"reading"),
+   lesson(s,"e11-notice",micro.reading.title,micro.reading.en,
+      [{expression:micro.reading.ja,note:micro.reading.en}],a),
+   lesson(s,"e11-contrasts","Precise grammar, vocabulary and register",
+      micro.pragmaticDecision+" "+micro.grammar.function+" Common misreading: "+micro.grammar.mistake,
+      [...micro.vocabulary.map(v=>({expression:v.expression,note:v.meaning+" · "+v.contrast})),
+       {expression:micro.grammar.pattern,note:micro.grammar.function}],a),
+   lesson(s,"e11-letter-coach","Write to the actual recipient · Revise deliberately",
+     "Audience: "+micro.writingAudience+". "+micro.pragmaticDecision+
+     " These prompts help you review, not certify, your own Japanese.",
+     micro.writingRevision.map(([heading,question,repair])=>({expression:heading+" · "+question,note:repair})),a),
+   e11IndependentWriting(s,a,micro),
+   lesson(s,"e11-speaking-prep","Prepare a considerate spoken follow-up",
+     micro.spokenChallenge+" Practice aloud without submitting audio or claiming pronunciation mastery.",[],a)
+  ]:[]),
   lesson(s,"production","Own the exchange · Independent writing and speaking",
    "Your original text and transcript are stored as unscored drafts only. Evaluate politeness, meaning and revision with the provided guidance; no synthetic pronunciation grade.",[],a),
   open(s,a,false),
@@ -648,7 +732,7 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
       depth.production.selfCheck.map((check,i)=>({expression:"Self-check "+(i+1),note:check})),a),
     e09UnscoredTransfer(s,a,depth),
     lesson(s,"e09-followup","Different-role speaking · Self-directed",
-      depth.production.followUp+" This is a speaking practice suggestion; do not infer an acoustic or CEFR score.",[],a)
+      depth.production.followUp+" "+(micro?.spokenChallenge??"")+" This is a speaking practice suggestion; do not infer an acoustic or CEFR score.",[],a)
   ]:[]),
   lesson(s,"revise","Review your own output",
    s.independent.revision+" The next time, respond without copying the revealed dialogue.",[],a),
@@ -718,6 +802,29 @@ export function buildE06DailyStage(id:string,stageId:E10StageId,events:readonly 
      "The next section uses actual saved StudyEvents; an unfinished session does not record invented completion. "+
      "Audio is device-synthesized, and independent drafts/speech are never semantic or acoustic grades.",[],a),
    ...full.slice(start,end)
+ ];
+}
+
+/**
+ * An optional short native listening/reading lesson. It is NOT a new review
+ * engine or required prerequisite and cannot add CEFR mastery or FSRS cards.
+ * Full original lessons preserve all historical teaching and the E11 material.
+ */
+export function buildE11OptionalSession(id:string,events:readonly StudyEvent[]):StudyStep[]{
+ const {s,anchor:a}=getLinked(id);
+ if(!E11_BY_CASE.has(id))throw Error("E11_ORIGINAL_TRANSFER_NOT_AUTHORED:"+id);
+ if(!prerequisites(a,events).ready)throw Error("E11_SOURCE_LESSON_FIRST:"+id);
+ const full=buildE06Journey(id,events),prefix=PREFIX+s.id+"-";
+ const first=full.findIndex(step=>isStudyLesson(step)&&step.id===prefix+"e11-setup");
+ const last=full.findIndex((step,i)=>i>first&&isStudyLesson(step)&&step.id===prefix+"production");
+ if(first<0||last<=first)throw Error("E11_NATIVE_MICRO_LESSON_BOUNDARY_MISSING:"+id);
+ return [
+  lesson(s,"e11-optional-intro","Extra practice · "+s.title,
+   "One original conversational misunderstanding and a separate everyday notice. "+
+   "Answers offer specific correction, but are optional and deliberately excluded "+
+   "from the authoritative eight-prompt controlled gate and FSRS schedule. "+
+   "Audio is synthesized on your device.",[],a),
+  ...full.slice(first,last)
  ];
 }
 export function buildE06NextDailyStage(id:string,events:readonly StudyEvent[]):StudyStep[]{
