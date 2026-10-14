@@ -5,6 +5,7 @@ import {e01ReviewPrompts} from "./a1Excellence";
 import {e02ReviewPrompts} from "./a1ExcellenceCourse";
 import {e03ReviewPrompts} from "./a2ExcellenceCourse";
 import {e04ReviewPrompts} from "./a2ExcellenceAdvancedCourse";
+import {selectE07RepairVariant} from "./e07RepairVariants";
 
 /** Original alternative items: a failed cue is not re-used as its own corrective test. */
 interface RepairItem {
@@ -142,19 +143,22 @@ function lesson(id:string,title:string,body:string,examples:StudyLesson["example
  return {kind:"lesson",id:"e05-repair-"+id,title,body,
    contextId:"e05-repair-"+id,examples,sourceLabel:"THIEPN original correction · source-linked review"};
 }
-function newQuestion(item:RepairItem,target:RepairTarget):StudyPrompt{
+function newQuestion(item:RepairItem,target:RepairTarget,failedRepairs:number):StudyPrompt{
  const old=byPromptId.get(target.promptId)!;
- const key="e05-repair-"+target.cohort+"-"+target.scene+"-"+target.promptId;
+ const variant=selectE07RepairVariant(target.cohort,target.scene,failedRepairs);
+ const key="e05-repair-"+target.cohort+"-"+target.scene+"-"+target.promptId+(variant?"-e07-variant-"+failedRepairs:"");
  return {id:key,primaryTarget:old.primaryTarget,skill:item.mode,cueFamily:key,
- promptType:"choice",instruction:"Apply the distinction to a different situation. No answer is shown.",
- prompt:item.question,promptLanguage:"ja",
- choices:[item.foils[0],item.correct,item.foils[1]],
- acceptedAnswers:[item.correct],displayAnswer:item.correct,explanation:item.why,
+ promptType:"choice",instruction:variant?"After an unsuccessful correction, retrieve the contrast in a genuinely changed context.":"Apply the distinction to a different situation. No answer is shown.",
+ prompt:variant?.question??item.question,promptLanguage:"ja",
+ choices:variant?[variant.foils[1],variant.correct,variant.foils[0]]:[item.foils[0],item.correct,item.foils[1]],
+ acceptedAnswers:[variant?.correct??item.correct],displayAnswer:variant?.correct??item.correct,
+ explanation:variant?.feedback??item.why,
  sourceId:"thiepn-original",contentVersion:coreContent.version,
  contextId:"e05-repair-"+target.cohort+"-"+target.scene,
  activity:"review",languageActivity:"reading",
  eventMetadata:{e05Repair:true,e05RepairFor:target.promptId,e05Cohort:target.cohort,
    e05SceneId:target.scene,e05SourcePromptId:old.id,
+   e07ChangedContextAttempt:variant?failedRepairs:0,e07SourceSituation:variant?.situation,
    e05UnitId:old.eventMetadata?.e04UnitId??old.eventMetadata?.e03UnitId??old.eventMetadata?.e02UnitId??old.eventMetadata?.e01UnitId,
    e05SourceCanDoId:old.primaryTarget.id,
    // Never set e02/e03/e04: those histories must NOT count repair
@@ -171,10 +175,14 @@ export function buildE05RepairJourney(events:readonly StudyEvent[],limit=4):Stud
   const item=repairItem(target.cohort,target.scene);
   const original=byPromptId.get(target.promptId);
   if(!item||!original)continue;
+  const failedRepairs=events.filter(e=>e.metadata?.e05Repair===true&&e.metadata.e05RepairFor===target.promptId&&e.result==="incorrect").length;
+  const changed=selectE07RepairVariant(target.cohort,target.scene,failedRepairs);
   steps.push(lesson(target.promptId,"Correct the specific misunderstanding · "+item.title,
-   "Your latest controlled answer on this cue was incorrect. Review the distinction, then answer a different item without the original choices. A correct repair is evidence of correction practice, not mastery. The original prompt must still be retrieved through its normal FSRS schedule.",
-   [{expression:item.contrast,note:"Key distinction"},{expression:original.displayAnswer,note:"Original accepted model · "+(original.explanation??"Read its context carefully.")}]));
-  steps.push(newQuestion(item,target));
+   "A correct repair is evidence of correction practice, not mastery. The original prompt remains scheduled in FSRS. "+
+   (changed?"Your previous correction also failed. Apply the same distinction to a different person, time or practical constraint.":"Your latest controlled answer on this cue was incorrect. First compare the forms; then answer a separate question without copying the original."),
+   [{expression:item.contrast,note:"Source distinction"},{expression:original.displayAnswer,note:"Original accepted model · "+(original.explanation??"Read its context carefully.")},
+     ...(changed?[{expression:changed.situation,note:"New-context background · "+changed.contrast}]:[])]));
+  steps.push(newQuestion(item,target,failedRepairs));
  }
  return steps;
 }

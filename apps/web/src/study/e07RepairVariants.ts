@@ -57,5 +57,5 @@ export const E07_REPAIR_VARIANTS:readonly E07RepairVariant[]=[
 export function selectE07RepairVariant(cohort:E07RepairVariant["cohort"],scene:string,failedRepairs:number):E07RepairVariant|undefined{
  if(failedRepairs<1)return undefined;
  const matches=E07_REPAIR_VARIANTS.filter(v=>v.cohort===cohort&&v.scene===scene);
- return matches[(failedRepairs-1)%matches.length];
+ return matches.length?matches[(failedRepairs-1)%matches.length]:undefined;
 }
