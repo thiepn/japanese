@@ -58,6 +58,7 @@ export function P60ConsolidationStudio({
  const [ttsBusy,setTtsBusy]=useState(false);
  const speechToken=useRef(0);
  const stepHeading=useRef<HTMLHeadingElement|null>(null);
+ const r4Anchor=useRef<HTMLDivElement|null>(null);
  const focusAfterStep=useRef(false);
  // A page-lifetime VIEW locator, never learner progress or private draft storage.
  const pageLocations=useRef(new Map<string,{
@@ -332,6 +333,7 @@ export function P60ConsolidationStudio({
      <small>Stufe {p60Stage(entry.id).stage}/4 · {entry.domain}</small>
      <strong lang="ja">{lessons.indexOf(entry)+1}. {entry.title}</strong>
      <small>{entry.goal}</small>
+     {r4ForP60(entry.id)?<small>R4 · Originaler unabhängiger Mehrquellenfall</small>:null}
     </button>)}
    </nav>
    <article className="p60-consolidation__workspace">
@@ -408,6 +410,10 @@ export function P60ConsolidationStudio({
       R4-Mehrquellenfall mit japanischer Schreibaufgabe, neuer Sprecherantwort
       und einem anderen Alltagskontext. Die neue Übung steht nach der
       gewöhnlichen Schreibaufgabe und bleibt unbenotet.</p>:null}
+     {r4Dossier?<button type="button" onClick={()=>{
+       r4Anchor.current?.scrollIntoView({block:"start"});
+       r4Anchor.current?.focus();
+      }}>Zum eigenständigen originalen R4-Zusatzfall springen</button>:null}
      <div className="p60-consolidation__actions" role="group" aria-label="Praxisarten">
       {(["question","strategy","writing","followup","revision"] as const).map(k=>
        <button key={k} type="button" aria-pressed={mode===k}
@@ -486,7 +492,8 @@ export function P60ConsolidationStudio({
      <button type="button" onClick={()=>onWriting(lesson.id)}>
       Eigene Nachricht im ursprünglichen mehrstufigen Learn-Editor weiter überarbeiten</button>
     </section>:null}
-    {r4Dossier?<div className="p60-consolidation__r4-panel" hidden={step!=="writing"}>
+    {r4Dossier?<div className="p60-consolidation__r4-panel" hidden={step!=="writing"}
+     ref={r4Anchor} tabIndex={-1} aria-label={"Originale A2-Vertiefung: "+r4Dossier.title}>
      <R4IndependentDossier key={lesson.id} lessonId={lesson.id}
       stage={stage.stage} visible={step==="writing"} disabled={disabled}
       onDirtyChange={setR4Dirty}
