@@ -60,6 +60,10 @@ const byPromptId=new Map(allReviewPrompts.map(p=>[p.id,p]));
 const units=new Map(coreContent.courseUnits.map(unit=>[unit.id,unit]));
 const canDos=new Set(coreContent.canDos.map(canDo=>canDo.id));
 function originalCohort(event:StudyEvent):RepairItem["cohort"]|null{
+  if(event.metadata?.e05Repair===true){
+    const c=event.metadata.e05Cohort;
+    return c==="e01"||c==="e02"||c==="e03"||c==="e04"?c:null;
+  }
   if(event.metadata?.e04===true)return "e04";
   if(event.metadata?.e03===true)return "e03";
   if(event.metadata?.e02===true)return "e02";
@@ -67,14 +71,19 @@ function originalCohort(event:StudyEvent):RepairItem["cohort"]|null{
   return null;
 }
 function sceneId(event:StudyEvent):string{
-  for(const key of ["e04SceneId","e03SceneId","e02SceneId"]){const value=event.metadata?.[key];if(typeof value==="string")return value;}
+  for(const key of ["e05SceneId","e04SceneId","e03SceneId","e02SceneId"]){const value=event.metadata?.[key];if(typeof value==="string")return value;}
   return "";
 }
 function isCanonical(event:StudyEvent):boolean{
  if(event.primaryTarget?.kind!=="can_do"||!canDos.has(event.primaryTarget.id))return false;
- const unitId=event.metadata?.e04UnitId??event.metadata?.e03UnitId??event.metadata?.e02UnitId??event.metadata?.e01UnitId;
+ const unitId=event.metadata?.e05UnitId??event.metadata?.e04UnitId??event.metadata?.e03UnitId??event.metadata?.e02UnitId??event.metadata?.e01UnitId;
  if(typeof unitId!=="string")return false;
- return units.get(unitId)?.canDoId===event.primaryTarget.id;
+ if(units.get(unitId)?.canDoId===event.primaryTarget.id)return true;
+ // E01 origin prompts legitimately use the pre-existing origin Can-do
+ // but the original introduction unit remains the event's e01UnitId.
+ return (event.metadata?.e01===true||event.metadata?.e05Cohort==="e01")
+   &&(event.metadata.e01CanDoId===event.primaryTarget.id||event.metadata.e05SourceCanDoId===event.primaryTarget.id)
+   &&coreContent.courseUnits.some(u=>u.level==="A1"&&u.canDoId===event.primaryTarget!.id);
 }
 function later(a:string,b:string):boolean{return Date.parse(a)>Date.parse(b);}
 function relevant(events:readonly StudyEvent[]):StudyEvent[]{
@@ -146,10 +155,11 @@ function newQuestion(item:RepairItem,target:RepairTarget):StudyPrompt{
  activity:"review",languageActivity:"reading",
  eventMetadata:{e05Repair:true,e05RepairFor:target.promptId,e05Cohort:target.cohort,
    e05SceneId:target.scene,e05SourcePromptId:old.id,
-   ...(target.cohort==="e02"?{e02:true,e02SceneId:target.scene,e02UnitId:old.eventMetadata?.e02UnitId}:
-   target.cohort==="e03"?{e03:true,e03SceneId:target.scene,e03UnitId:old.eventMetadata?.e03UnitId}:
-   target.cohort==="e04"?{e04:true,e04SceneId:target.scene,e04UnitId:old.eventMetadata?.e04UnitId}:
-   {e01:true,e01UnitId:old.eventMetadata?.e01UnitId}),
+   e05UnitId:old.eventMetadata?.e04UnitId??old.eventMetadata?.e03UnitId??old.eventMetadata?.e02UnitId??old.eventMetadata?.e01UnitId,
+   e05SourceCanDoId:old.primaryTarget.id,
+   // Never set e02/e03/e04: those histories must NOT count repair
+   // attempts as lesson attempts or delayed competence.
+   ...(target.cohort==="e01"?{e01CanDoId:old.primaryTarget.id}:{}),
    schedulerExcluded:true,nonAuthoritative:false,assessmentKind:"targeted-repair-only",
    accreditedCefrVerdict:false}};
 }

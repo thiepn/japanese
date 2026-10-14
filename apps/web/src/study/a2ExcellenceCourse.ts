@@ -17,7 +17,7 @@ export interface E03SceneProgress {
 }
 export interface E03Overview {
  scenes:E03SceneProgress[];nextSceneId:string|null;started:number;readyForDelay:number;
- delayedReviewed:number;total:number;authored:number;unmapped:string[];
+ delayedReviewed:number;total:number;authored:number;unmapped:string[];unmappedScenes:{id:string;title:string}[];
 }
 
 // There is no independently verified A2.1 subdivision in the canonical P4
@@ -28,7 +28,17 @@ const a2=coreContent.courseUnits
  .filter(u=>(u.level==="A2"||u.level==="A2.1")&&byCanDo.has(u.canDoId))
  .sort((a,b)=>a.order-b.order);
 const a21=a2.some(u=>u.level==="A2.1")?a2.filter(u=>u.level==="A2.1"):
- a2.slice(0,Math.max(1,Math.ceil(a2.length/2))); // provisional curricular first half, not a formal CEFR subdivision
+ a2.slice(0,Math.max(1,Math.ceil(a2.length/2))); // tentative A2 sequencing only; not certified A2.1
+const grammarIds=new Set(coreContent.grammar.map(g=>g.id));
+const sentenceIds=new Set(coreContent.sentences.map(s=>s.id));
+const lexicalIds=new Set(coreContent.lexemes.map(l=>l.id));
+function canonicalUnitUsable(u:CourseUnit):boolean{
+ const canDo=byCanDo.get(u.canDoId);
+ return Boolean(canDo&&u.id&&u.sourceIds.length&&canDo.sourceIds.length
+   &&u.grammarIds.every(g=>grammarIds.has(g))
+   &&u.sentenceIds.every(s=>sentenceIds.has(s))
+   &&u.vocabularyIds.every(id=>lexicalIds.has(id)));
+}
 function tokenMatches(text:string,term:string):boolean{
  const safe=term.trim().toLowerCase();
  if(!safe)return false;
@@ -42,15 +52,17 @@ function matchScore(scene:E03Scene,unit:CourseUnit):number{
 }
 const taken=new Set<string>();
 export const E03_MAPPED:readonly BoundScene[]=E03_SCENES.flatMap(scene=>{
- const options=a21.filter(unit=>!taken.has(unit.id))
+ const options=a21.filter(unit=>!taken.has(unit.id)&&canonicalUnitUsable(unit))
    .map(unit=>({unit,score:matchScore(scene,unit)}))
    .sort((a,b)=>b.score-a.score||a.unit.order-b.unit.order);
  const selected=options[0];
- if(!selected||selected.score<1)return [];
+ // One shared topic word or a tied match is not a verified communicative objective.
+ if(!selected||selected.score<2||selected.score===(options[1]?.score??-1))return [];
  taken.add(selected.unit.id);
  return [{scene,unit:selected.unit,canDo:byCanDo.get(selected.unit.canDoId)!}];
 });
-export const E03_UNMAPPED=E03_SCENES.filter(scene=>!E03_MAPPED.some(b=>b.scene.id===scene.id)).map(scene=>scene.title);
+export const E03_UNMAPPED_SCENES=E03_SCENES.filter(scene=>!E03_MAPPED.some(b=>b.scene.id===scene.id)).map(scene=>({id:scene.id,title:scene.title}));
+export const E03_UNMAPPED=E03_UNMAPPED_SCENES.map(scene=>scene.title);
 function bound(id:string):BoundScene {
  const item=E03_MAPPED.find(b=>b.scene.id===id);
  if(!item)throw Error("E03_A2_CAN_DO_UNMAPPED:"+id);
@@ -176,7 +188,7 @@ export function getE03Overview(events:readonly StudyEvent[],now=new Date()):E03O
  const next=scenes.find(x=>x.state==="learning")??scenes.find(x=>x.state==="not_started")??scenes.find(x=>x.state==="ready");
  return {scenes,nextSceneId:next?.id??null,started:scenes.filter(x=>x.state!=="not_started").length,
   readyForDelay:scenes.filter(x=>x.state==="ready").length,delayedReviewed:scenes.filter(x=>x.state==="reviewed").length,
-  total:scenes.length,authored:E03_SCENES.length,unmapped:E03_UNMAPPED};
+  total:scenes.length,authored:E03_SCENES.length,unmapped:E03_UNMAPPED,unmappedScenes:E03_UNMAPPED_SCENES};
 }
 export function buildE03Journey(id:string):StudyStep[]{
  const b=bound(id),s=b.scene;
@@ -217,4 +229,22 @@ export function buildE03DelayedJourney(id:string,events:readonly StudyEvent[],no
  return [lesson(b,"transfer","Delayed transfer · "+b.scene.title,
   "Answer changed-situation listening, connected reading and model recall without the previous example. This is controlled review only."),
   ...delayed(b)];
+}
+
+/** Original E03 reading-only fallback: no prompt, study event or invented association. */
+export function buildE03Preview(id:string):StudyStep[]{
+ const scene=E03_SCENES.find(s=>s.id===id&&E03_UNMAPPED_SCENES.some(x=>x.id===id));
+ if(!scene)throw Error("E03_PREVIEW_REQUIRES_UNMAPPED_SCENE:"+id);
+ const contextId="a2-e03-preview-"+id;
+ const mk=(key:string,title:string,body:string,examples:StudyLesson["examples"]=[]):StudyLesson=>({
+  kind:"lesson",id:contextId+"-"+key,contextId,title,body,examples,
+  sourceLabel:"Original THIEPN E03 · thiepn-original · no Can-do association or graded events"
+ });
+ return [
+  mk("situation","A2-oriented original · "+scene.title,scene.setting+" "+scene.objective+" The course source does not yet substantiate a precise Can-do link; this reading-only journey records no scored evidence."),
+  mk("dialogue","Dialogue · Observe the negotiation",scene.notice,scene.dialogue.map(t=>({expression:t.speaker+"： "+t.ja,note:t.en}))),
+  mk("text","Connected reading",scene.read.en,[{expression:scene.read.ja,note:scene.read.en}]),
+  mk("terms","Language to notice","Original explanatory vocabulary; no automatic proficiency score.",scene.vocabulary.map(v=>({expression:v.ja,note:v.en}))),
+  mk("independent","Independent practice · Self-directed",scene.writing+" "+scene.speaking+" Write or say your answer outside this unscored preview until the canonical association can be verified.")
+ ];
 }
