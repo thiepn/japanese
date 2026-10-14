@@ -11,7 +11,8 @@ export function R4IndependentDossier({
 }:{
  lessonId:string;stage:number;visible:boolean;disabled:boolean;
  onDirtyChange:(dirty:boolean)=>void;
- onOriginalPractice:()=>void;onOriginalWriting:()=>void;
+ onOriginalPractice:()=>void;
+ onOriginalWriting:(text:string,stage:"first"|"reply"|"transfer")=>void;
 }){
  const dossier=r4ForP60(lessonId);
  const [sourceOpen,setSourceOpen]=useState(stage<=2);
@@ -213,8 +214,18 @@ export function R4IndependentDossier({
    </div>:null}
   </div>:null}
   <div className="r4-independent__actions">
-   <button type="button" onClick={onOriginalWriting}>
-    Diese Situation im ursprünglichen Learn-Editor unabhängig überarbeiten</button>
+   <button type="button" disabled={!revisionDraft.trim()&&!draft.trim()}
+    onClick={()=>onOriginalWriting(revisionDraft.trim()||draft,"first")}>
+    Eigenen ersten oder überarbeiteten Text im Original-Learn-Editor fortsetzen
+   </button>
+   {replyAttempt?<button type="button" disabled={!replyDraft.trim()}
+    onClick={()=>onOriginalWriting(replyDraft,"reply")}>
+    Antwort auf die geänderte Nachricht im Learn-Editor weiter überarbeiten
+   </button>:null}
+   {transferAttempt?<button type="button" disabled={!transferDraft.trim()}
+    onClick={()=>onOriginalWriting(transferDraft,"transfer")}>
+    Neue Kontextaufgabe mit deinem Text im Learn-Editor weiterführen
+   </button>:null}
   </div>
   <small>Diese zusätzliche Originalaufgabe ist nicht als zeitversetzte FSRS-Rückkehr
    geplant. Der neue Kontext wird erst nach deiner zweiten Antwort sichtbar,
