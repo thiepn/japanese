@@ -53,6 +53,22 @@ export const E07_REPAIR_VARIANTS:readonly E07RepairVariant[]=[
  question:"朝六時の大きな音が気になります。どの言い方がいいですか。",correct:"朝七時までは音を小さくしていただけませんか。",foils:["今すぐ全部やめろ。","どんな音でも大好きです。"],feedback:"The request specifies a reasonable time window and avoids a confrontational command."},
  {cohort:"e04",scene:"club-project",situation:"A team wants to publish a flyer containing an image with unconfirmed rights.",contrast:"Copyright permission must precede publication; an unfinished check is not approval.",
  question:"写真の使用許可がまだ不明です。いつ公開できますか。",correct:"確認して許可を得てから",foils:["確認する前に","関係ありません"],feedback:"Publication must wait until permission has been verified."}
+ {cohort:"e02",scene:"origin",situation:"A new employee moved to Fukuoka from Canada.",contrast:"Place + から describes where the person came from; に can identify Fukuoka as the new destination.",
+ question:"ケンはカナダから福岡に来ました。出身地はどこですか。",correct:"カナダ",foils:["福岡","東京"],feedback:"Canada is the point of origin, while Fukuoka is where Ken arrived."},
+ {cohort:"e02",scene:"time",situation:"A class runs from ten in the morning until noon.",contrast:"The clock time after まで is the end, not the beginning.",
+ question:"授業は午前十時から正午までです。終わるのはいつですか。",correct:"正午",foils:["午前十時","午後十時"],feedback:"正午 means noon. The start at ten is not the finishing time."},
+ {cohort:"e02",scene:"food",situation:"At a stall, a customer asks for one bottle of water.",contrast:"The particle を marks the requested item.",
+ question:"店員：何を買いますか。　客：＿＿＿",correct:"水を一本ください。",foils:["水で学校にいます。","水から来ました。"],feedback:"水を一本ください asks for one bottle of water rather than talking about location or origin."},
+ {cohort:"e03",scene:"weekend-invitation",situation:"Friends planned a park outing, but a strong wind makes an indoor activity preferable.",contrast:"The contingency, not the default plan, applies under the stated weather condition.",
+ question:"風が強かったら博物館に行きます。風が強いです。どこに行きますか。",correct:"博物館",foils:["公園","プール"],feedback:"The strong-wind condition activates the museum plan."},
+ {cohort:"e03",scene:"restaurant-adjustment",situation:"A diner chooses a salad instead of a sandwich that contains egg.",contrast:"The final 〜にします phrase communicates the choice, not the unavailable or refused dish.",
+ question:"サンドイッチには卵が入っています。客：じゃあ、サラダにします。何を選びましたか。",correct:"サラダ",foils:["サンドイッチ","卵"],feedback:"The customer explicitly chooses salad after hearing about egg in the sandwich."},
+ {cohort:"e03",scene:"weather-and-plans",situation:"A traveler hears that afternoon trains may be delayed.",contrast:"〜かもしれません reports a risk; it does not confirm that the delay has already occurred.",
+ question:"午後の電車は遅れるかもしれません。正しい説明は？",correct:"遅れる可能性があります。",foils:["すでに全部遅れています。","必ず早く着きます。"],feedback:"The sentence reports possibility, not confirmed delay or guaranteed early arrival."},
+ {cohort:"e04",scene:"hotel-reservation",situation:"The booking says two nights but a clerk's system shows one.",contrast:"A polite correction cites the reservation email, rather than guessing what the hotel will offer.",
+ question:"受付：一泊の予約ですね。メール：『二泊』。何と言いますか。",correct:"メールでは二泊です。確認していただけますか。",foils:["はい、一泊でいいです。","今すぐ必ず返金してください。"],feedback:"The email supports the two-night booking. Ask for verification before assuming a remedy."},
+ {cohort:"e04",scene:"store-return",situation:"A newly purchased device fails; the customer wants to ask about repair instead of demanding money immediately.",contrast:"〜について相談したい expresses a request to discuss an option, not a guaranteed entitlement.",
+ question:"買った機器が動きません。修理できるか聞きたいです。どう言いますか。",correct:"修理について相談したいです。",foils:["必ず無料でもう一台ください。","昨日、修理しました。"],feedback:"The customer requests a repair discussion; the alternatives assert an unsupported demand or past repair."},
 ];
 export function selectE07RepairVariant(cohort:E07RepairVariant["cohort"],scene:string,failedRepairs:number):E07RepairVariant|undefined{
  if(failedRepairs<1)return undefined;

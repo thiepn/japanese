@@ -26,8 +26,8 @@ export function E07JourneyPanel({route,onActivate,busy,variant}:Props){
    <div className="e07-journey__summary" aria-label="Source-based learning status">
      <span>{route.delayedReady} delayed checks ready</span>
      <span>{route.correctionsPending} corrections pending</span>
-     <span>{route.sourceA1} original A1 units</span>
-     <span>{route.sourceA2} provisionally linked A2 units</span>
+     <span>{route.sourceA1} source-linked A1 journeys</span>
+     <span>{route.sourceA2} provisionally linked A2 scenes</span>
    </div>
    {route.alternatives.length>0?<details className="e07-journey__other">
      <summary>Choose a different source-backed activity ({route.alternatives.length})</summary>
