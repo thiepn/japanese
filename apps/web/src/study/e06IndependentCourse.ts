@@ -190,6 +190,7 @@ function e08RevisionPrompt(s:E06Case,a:Anchor,x:E08Extension):StudyPrompt{
   contextId:PREFIX+s.id,activity:"writing",languageActivity:"writing",
   eventMetadata:metadata(s,a,"independent",{
     e08:true,e08DraftStage:"revision",e08RevisionOf:baseId,
+    e08RevisionChecks:x.revision.contentChecks.map(([heading,question,fix])=>({heading,question,fix})),
     e08Task:"independent-second-draft",nonAuthoritative:true,
     schedulerExcluded:true,structuralOnly:true,semanticScore:false,
     accreditedCefrVerdict:false
