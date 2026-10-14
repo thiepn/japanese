@@ -9,7 +9,7 @@ import {E06_CASES,type E06Case} from "./e06IndependentCases";
 import {e08ByCase,type E08Extension} from "./e08ContextExtensions";
 import {E09_BY_CASE,type E09CaseDepth} from "./e09CommunicationDepth";
 import {e09RepairCueFor,type E09RepairCue} from "./e09MisconceptionRepairs";
-import {E10_DAILY_STAGES,e10StageById,type E10StageId,type E10StageProgress} from "./e10DailyStages";
+import {E10_DAILY_STAGES,E10_DELAYED_GROUPS,e10StageById,type E10StageId,type E10StageProgress,type E10DelayedId,type E10DelayedProgress} from "./e10DailyStages";
 
 const PREFIX="e06-cumulative-";
 const ORIGINAL="thiepn-original";
@@ -30,6 +30,7 @@ export interface E06CaseProgress {
  e09Correct:number;e09Required:number;e09DelayedCorrect:number;e09DelayedRequired:number;
  delayedCorrect:number;delayedRequired:number;availableAt?:string;
  dailyStages:E10StageProgress[];nextDailyStage:E10StageId|null;
+ delayedStages:E10DelayedProgress[];nextDelayedStage:E10DelayedId|null;
 }
 export interface E06Overview {
  cases:E06CaseProgress[];total:number;linked:number;prerequisiteReady:number;
@@ -401,6 +402,24 @@ function e10StageProgress(s:E06Case,a:Anchor|null,events:readonly StudyEvent[],
    ??stages.find(p=>p.kind==="optional"&&["ready","started"].includes(p.status));
  return {stages,next:next?.id??null};
 }
+function e10DelayedProgress(s:E06Case,a:Anchor|null,events:readonly StudyEvent[],
+ isDue:boolean):{stages:E10DelayedProgress[];next:E10DelayedId|null}{
+ if(!a)return {stages:[],next:null};
+ const latest=latestById(eventsFor(s,a,events)),pre=PREFIX+s.id+"-";
+ let unlocked=isDue;
+ const stages:E10DelayedProgress[]=E10_DELAYED_GROUPS.map(group=>{
+  const correct=group.keys.filter(key=>latest.get(pre+key)?.result==="correct").length;
+  const complete=correct===group.keys.length;
+  const attempted=group.keys.some(key=>latest.has(pre+key));
+  const status:E10DelayedProgress["status"]=!unlocked?"locked":
+    complete?"complete":attempted?"started":"ready";
+  if(!complete)unlocked=false;
+  return {id:group.id,title:group.label,purpose:group.purpose,status,
+    correct,required:group.keys.length};
+ });
+ const next=stages.find(p=>["started","ready"].includes(p.status));
+ return {stages,next:next?.id??null};
+}
 export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06Overview{
  const cases=E06_CASES.map(s=>{
   const a=anchorOf(s),pr=a?prerequisites(a,events):{listening:false,reading:false,ready:false};
@@ -413,8 +432,13 @@ export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06O
    Math.max(...dates)+DELAY_MS:NaN;
   const delayedCorrect=DELAYED_KEYS.filter(k=>by.get(prefix+k)?.result==="correct").length;
   const daily=e10StageProgress(s,a,events,pr.ready);
-  const status:E06Status=!a||!pr.ready?"needs-prerequisite":delayedCorrect===DELAYED_KEYS.length?
-    "reviewed":!own.length?"unstarted":!Number.isFinite(due)?"learning":
+  const controlledComplete=correct===CONTROLLED_KEYS.length&&Number.isFinite(due);
+  const delayEligible=Boolean(a&&pr.ready&&controlledComplete&&now.getTime()>=due);
+  const delayed=e10DelayedProgress(s,a,events,delayEligible);
+  // A previously completed delayed set cannot mask a *newer* source error.
+  const status:E06Status=!a||!pr.ready?"needs-prerequisite":
+    !controlledComplete?(!own.length?"unstarted":"learning"):
+    delayedCorrect===DELAYED_KEYS.length?"reviewed":
     now.getTime()<due?"waiting":"ready";
   return {
    id:s.id,title:s.title,objective:s.objective,level:s.level,
@@ -433,11 +457,12 @@ export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06O
    e09DelayedCorrect:["e09-delayed-listen","e09-delayed-read"].filter(k=>by.get(prefix+k)?.result==="correct").length,
    e09DelayedRequired:2,
    dailyStages:daily.stages,nextDailyStage:daily.next,
+   delayedStages:delayed.stages,nextDelayedStage:delayed.next,
    delayedCorrect,delayedRequired:DELAYED_KEYS.length,
    ...(Number.isFinite(due)?{availableAt:new Date(due).toISOString()}: {})
   } satisfies E06CaseProgress;
  });
- const next=cases.find(c=>c.status==="learning")??cases.find(c=>c.status==="unstarted");
+ const next=cases.find(c=>c.prerequisiteReady&&c.nextDailyStage!==null)??cases.find(c=>c.status==="unstarted"&&c.prerequisiteReady);
  return {cases,total:cases.length,linked:cases.filter(c=>c.canDoId!==null).length,
   prerequisiteReady:cases.filter(c=>c.prerequisiteReady).length,
   active:cases.filter(c=>c.status==="learning").length,
@@ -677,6 +702,36 @@ export function buildE06NextDailyStage(id:string,events:readonly StudyEvent[]):S
    "Your existing FSRS reviews and the twenty-hour delayed transfer remain separate. "+
    "Open the full original lesson from Learn to revisit dialogue, reading and grammar.",[],a)
  ];
+}
+/** Original delayed responses, exposed in short blocks without resetting spacing. */
+export function buildE06DelayedStage(id:string,stageId:E10DelayedId,
+ events:readonly StudyEvent[],now=new Date()):StudyStep[]{
+ const {s,anchor:a}=getLinked(id);
+ const group=E10_DELAYED_GROUPS.find(x=>x.id===stageId);
+ if(!group)throw Error("E10_UNKNOWN_DELAYED_GROUP:"+stageId);
+ const progress=getE06Overview(events,now).cases.find(c=>c.id===id);
+ const status=progress?.delayedStages.find(x=>x.id===stageId)?.status;
+ if(!status||status==="locked")throw Error("E10_DELAYED_SOURCE_OR_EARLIER_GROUP_NOT_READY:"+id+":"+stageId);
+ const original=transferPrompts(s,a);
+ const block=group.keys.map(k=>original.find(p=>p.id===PREFIX+s.id+"-"+k));
+ if(block.some(p=>!p))throw Error("E10_MISSING_ORIGINAL_DELAYED_PROMPT:"+id+":"+stageId);
+ return [
+  lesson(s,"e10-delayed-"+stageId,group.label+" · "+s.title,
+   group.purpose+" This small session uses the same original graded prompts, "+
+   "latest StudyEvents and existing FSRS. No new clock or mastery certificate is created.",[],a),
+  ...block.filter((p):p is StudyPrompt=>Boolean(p))
+ ];
+}
+export function buildE06NextDelayedStage(id:string,events:readonly StudyEvent[],now=new Date()):StudyStep[]{
+ const {s,anchor:a}=getLinked(id);
+ const progress=getE06Overview(events,now).cases.find(c=>c.id===id);
+ if(progress?.nextDelayedStage)return buildE06DelayedStage(id,progress.nextDelayedStage,events,now);
+ if(progress?.status==="reviewed")return [
+  lesson(s,"e10-delayed-complete","All delayed communication checks have recorded correct answers",
+   "The original seven changed-context checks have saved evidence. Continue your "+
+   "existing FSRS reviews or open a full original teaching session from Learn; no additional graded work is invented.",[],a)
+ ];
+ throw Error("E10_DELAYED_SPACING_OR_EARLIER_GROUP_NOT_READY:"+id+":"+a.unitId);
 }
 export function buildE06Delayed(id:string,events:readonly StudyEvent[],now=new Date()):StudyStep[]{
  const {s,anchor:a}=getLinked(id);
