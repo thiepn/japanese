@@ -145,7 +145,7 @@ export function J3Today({summary,completedToday,status,onStart,e01,onStartE01,on
       <button type="button" disabled={status==="loading"} onClick={onStartE05Repair}>Repair now</button>
     </section>:null}
     {e06.total>0?<section className="e06-entry" aria-label="Cumulative independent Japanese">
-      <div><p className="j3-today__eyebrow">E06 · CUMULATIVE COMMUNICATION</p><h2>Use Japanese across situations</h2><p>{e06.prerequisiteReady}/{e06.total} cases have original source listening and reading/form evidence · {e06.reviewed} delayed transfer sets complete</p></div>
+      <div><p className="j3-today__eyebrow">E06 · CUMULATIVE COMMUNICATION</p><h2>Use Japanese across situations</h2><p>{e06.prerequisiteReady}/{e06.total} cases have original source listening and reading/form evidence · {e06.cases.filter(c=>c.firstDraftSubmitted&&!c.revisedDraftSubmitted).length} revisions waiting · {e06.reviewed} delayed sets complete</p></div>
       <div className="e06-entry__actions">{e06.nextId?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06(e06.nextId!)}>Continue: {e06.cases.find(c=>c.id===e06.nextId)?.title}</button>:null}
       {e06.nextDelayedId?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06Delayed(e06.nextDelayedId!)}>Changed-context delayed transfer</button>:null}</div>
       {!e06.nextId&&!e06.nextDelayedId?<small>Practise listening and reading in the original source lesson first; the cumulative task will then unlock.</small>:null}

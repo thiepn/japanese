@@ -35,6 +35,10 @@ export function deriveE07Journey({
  if(delayed2)options.push(action("e02","delayed","Return to original A1 communication","Work on a delayed, changed-context beginner exchange.",delayed2.title+" · delayed transfer due",108,delayed2.id));
  if(e01.status==="ready")options.push(action("e01","delayed","Recall your first conversation","Return after the waiting window and retrieve the conversation independently.","E01 delayed check ready",106));
  if(e05.repair.pending>0)options.push(action("e05","repair","Repair a specific misunderstanding","Study a contrasting explanation, then answer a different Japanese question. This never awards mastery.",e05.repair.pending+" targeted original cues to correct",100));
+ const needsSecondDraft=e06.cases.find(c=>c.canDoId!==null&&c.prerequisiteReady&&c.firstDraftSubmitted&&!c.revisedDraftSubmitted);
+ if(needsSecondDraft)options.push(action("e06","resume","Revise your first Japanese draft",
+   "Compare your original writing with its content, audience and politeness checklist. Submit a distinctly changed second draft; neither is automatically graded for meaning.",
+   needsSecondDraft.title+" · first draft submitted; revision not yet submitted",103,needsSecondDraft.id));
  const active6=e06.cases.find(c=>c.status==="learning");
  if(active6)options.push(action("e06","resume","Continue cumulative communication","Reconnect listening, source reading, negotiation and independent response practice.",active6.title+" · previously started",95,active6.id));
  const active4=e04.scenes.find(s=>s.status==="learning");
@@ -78,6 +82,6 @@ export function deriveE07Journey({
   sourceA2:e03.total+e04.linked,
   unlinkedOriginal:e02.unmappedScenes.length+e03.unmappedScenes.length+e04.unmapped.length+e06.unlinked,
   delayedReady:delayedCount,correctionsPending:e05.repair.pending,
-  explanation:"This order is a UI recommendation computed from existing StudyEvents, Can-do associations and FSRS review projections. It does not alter scheduling or grant mastery."
+  explanation:"This order is a UI recommendation computed from original account-owned StudyEvents, Can-do associations and FSRS review projections. First and second drafts are unscored, and A2.1/A2.2 thematic placement is not independently certified."
  };
 }

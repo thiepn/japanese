@@ -201,21 +201,22 @@ export function J4Learn(props:Props){
       <details><summary>Canonical A1/A2 structure and subdivision limits</summary><p>A1 units: {e05.canonical.a1}; unsplit A2 units: {e05.canonical.unsplitA2}; explicitly labeled A2.1: {e05.canonical.explicitA21}; explicitly labeled A2.2: {e05.canonical.explicitA22}. If the source only labels A2, dividing it in halves is not a verified CEFR/JF A2.1/A2.2 mapping.</p></details>
     </section>
     <section className="e06-course" aria-labelledby="e06-course-title">
-      <header className="e06-course__header"><div><p className="j4-kicker">E06 · ORIGINAL INDEPENDENT A1/A2</p><h2 id="e06-course-title">Communicate across everyday situations</h2><p>Seven original extended scenarios with listening, connected reading, negotiated responses, independent drafts, and cumulative delayed transfer.</p></div><strong>{e06.reviewed}/{e06.total} delayed sets</strong></header>
+      <header className="e06-course__header"><div><p className="j4-kicker">E06 · ORIGINAL INDEPENDENT A1/A2</p><h2 id="e06-course-title">Communicate across everyday situations</h2><p>Seven source-linked cumulative scenarios now include a second original multi-turn exchange and practical notice, six bounded retrieval items, a first draft and an explicitly revised second draft, then five different-context delayed tasks. Writing remains unscored.</p></div><strong>{e06.reviewed}/{e06.total} delayed sets</strong></header>
       <ol className="e06-course__cases">{e06.cases.map((c,i)=><li key={c.id} className="e06-course__case">
         <span className="e06-course__number">{String(i+1).padStart(2,"0")}</span>
         <div className="e06-course__info"><h3>{c.title}</h3><p>{c.objective}</p><small>{c.level} · {c.anchorCohort.toUpperCase()} source {c.anchorSceneId}{c.canonicalUnitId?" · "+c.canonicalUnitId:" · unlinked original reading"}</small>
           <small>{c.sourceListening?"Listening source done":"Original listening needed"} · {c.sourceReading?"Text/form source done":"Original text/form needed"}</small>
-          {c.canDoId?<small>{c.correct}/{c.required} controlled correct · {c.unscoredWriting+c.unscoredSpeaking} unscored drafts · {c.delayedCorrect}/{c.delayedRequired} delayed correct</small>:<small>No verified Can-do link: preview only, never graded</small>}
+          {c.canDoId?<><small>{c.correct}/{c.required} controlled correct · {c.contextProblemsCorrect}/2 changed-context correct · {c.delayedCorrect}/{c.delayedRequired} delayed correct</small>
+          <small>Writing: {c.firstDraftSubmitted?"first draft recorded":"first draft pending"} → {c.revisedDraftSubmitted?"revised draft recorded":"revision pending"} · {c.unscoredSpeaking} unscored speech transcripts</small></>:<small>No verified Can-do link: original teaching preview only, never graded</small>}
           {c.status==="waiting"&&c.availableAt?<small>Delayed recall opens {new Date(c.availableAt).toLocaleString()}</small>:null}</div>
         <div className="e06-course__actions">
           {c.status==="needs-prerequisite"&&c.canDoId?<button type="button" disabled={status==="loading"} onClick={()=>{if(c.anchorCohort==="e02")onStartE02(c.anchorSceneId);else if(c.anchorCohort==="e03")onStartE03(c.anchorSceneId);else onStartE04(c.anchorSceneId);}}>Practise original source</button>:null}
           {!c.canDoId?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06Preview(c.id)}>Read original case</button>:null}
-          {c.prerequisiteReady?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06(c.id)}>{c.status==="unstarted"?"Begin capstone":"Repeat capstone"}</button>:null}
+          {c.prerequisiteReady?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06(c.id)}>{c.firstDraftSubmitted&&!c.revisedDraftSubmitted?"Continue second draft":c.status==="unstarted"?"Begin capstone":"Continue capstone"}</button>:null}
           {(c.status==="ready"||c.status==="reviewed")?<button type="button" disabled={status==="loading"} onClick={()=>onStartE06Delayed(c.id)}>Delayed transfer</button>:null}
         </div>
       </li>)}</ol>
-      <p>Any A2.1/A2.2 placement beyond an explicit canonical designation is provisional. Open writing and speech transcripts are not proficiency scores.</p>
+      <p>New-context comprehension uses the original Can-do's verified source identity; no new canonical identifiers were invented. Additional A2.1/A2.2 placement remains provisional, and open writing or speech transcripts are not semantic or acoustic proficiency scores.</p>
     </section>
     </details>
     <section className="j4-foundation" aria-labelledby="j4-foundation-title">
