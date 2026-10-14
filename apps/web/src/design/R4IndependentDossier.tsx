@@ -82,9 +82,10 @@ export function R4IndependentDossier({
    <p className="r4-independent__eyebrow">R4 · Eigenständig mehrteilige Quellen übertragen</p>
    <h5 lang="ja">{dossier.title}</h5>
    <p>{dossier.purpose}</p>
+   <p><strong>Adressat und Register:</strong> {dossier.register==="polite"?"Höfliche です／ます-Formen für institutionelle Kommunikation":"Natürliche vertraute Formulierungen für Bekannte"}</p>
    <p>Originaler Zusatzfall zur vorhandenen P60-Lektion. Verfasse zuerst
     eigene japanische Texte. Zwei zusätzliche Sprecherbeiträge und ein
-    anderer Kontext fordern begründete Änderungen. **Keine** automatische
+    anderer Kontext fordern begründete Änderungen. <strong>Keine</strong> automatische
     Freitextprüfung, kein FSRS-Termin und kein A2-Zertifikat.</p>
   </header>
   <ol className="r4-independent__stages" aria-label="Drei eigenständige Versuche">
