@@ -39,6 +39,10 @@ export function deriveE07Journey({
  if(needsSecondDraft)options.push(action("e06","resume","Revise your first Japanese draft",
    "Compare your original writing with its content, audience and politeness checklist. Submit a distinctly changed second draft; neither is automatically graded for meaning.",
    needsSecondDraft.title+" · first draft submitted; revision not yet submitted",103,needsSecondDraft.id));
+ const thirdContext=e06.cases.find(c=>c.canDoId!==null&&c.prerequisiteReady&&c.e09Correct<c.e09Required&&c.correct>=6);
+ if(thirdContext)options.push(action("e06","resume","Continue the third original communication context",
+   "Listen to new speakers, compare an independent notice and use the original source-linked grammar contrasts before writing for a different audience.",
+   thirdContext.title+" · E09 "+thirdContext.e09Correct+"/"+thirdContext.e09Required+" contextual answers correct",97,thirdContext.id));
  const active6=e06.cases.find(c=>c.status==="learning");
  if(active6)options.push(action("e06","resume","Continue cumulative communication","Reconnect listening, source reading, negotiation and independent response practice.",active6.title+" · previously started",95,active6.id));
  const active4=e04.scenes.find(s=>s.status==="learning");
@@ -82,6 +86,6 @@ export function deriveE07Journey({
   sourceA2:e03.total+e04.linked,
   unlinkedOriginal:e02.unmappedScenes.length+e03.unmappedScenes.length+e04.unmapped.length+e06.unlinked,
   delayedReady:delayedCount,correctionsPending:e05.repair.pending,
-  explanation:"This order is a UI recommendation computed from original account-owned StudyEvents, Can-do associations and FSRS review projections. First and second drafts are unscored, and A2.1/A2.2 thematic placement is not independently certified."
+  explanation:"This route derives from original account-owned StudyEvents, verified Can-do links and FSRS. E09 comprehension prompts are bounded, while first/second drafts, third-context writing and speech remain unscored. A2.1/A2.2 thematic placement is not official certification."
  };
 }

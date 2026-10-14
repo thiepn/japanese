@@ -220,7 +220,7 @@ export function Immersion({e07,onOpenE07,e06,onStartE06,onStartE06Delayed,onStar
     <details className="e07-track-list">
       <summary>Browse the original conversation and ungraded reading collections</summary>
     {e06.total>0?<section className="e06-entry" aria-label="Independent A1 and A2 cumulative immersion">
-      <div><strong>Cumulative listening · Reading · Communication</strong><p>Longer original exchanges, independently authored practical readings and changed-context retrieval. Device-synthesized audio is not a native recording.</p></div>
+      <div><strong>Cumulative listening · Reading · Communication</strong><p>Three original conversations per linked case, separate practical notices, meaningful lexical and grammar contrasts, independent writing and delayed cross-situation retrieval. Device synthesis is not a native recording.</p></div>
       <div className="e06-entry__actions">{e06.nextId?<button type="button" onClick={()=>onStartE06(e06.nextId!)}>Listen and read: {e06.cases.find(c=>c.id===e06.nextId)?.title}</button>:null}
       {e06.nextDelayedId?<button type="button" onClick={()=>onStartE06Delayed(e06.nextDelayedId!)}>Open delayed transfer</button>:null}
       {!e06.nextId&&e06.unlinked>0?<button type="button" onClick={()=>onStartE06Preview(e06.cases.find(c=>c.canDoId===null)!.id)}>Read original source-only case</button>:null}</div>

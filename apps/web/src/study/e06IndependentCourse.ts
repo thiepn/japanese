@@ -1,5 +1,5 @@
 import type {StudyEvent} from "@thiepn/domain";
-import type {StudyLesson,StudyPrompt,StudyStep} from "@thiepn/study-player";
+import {isStudyLesson,type StudyLesson,type StudyPrompt,type StudyStep} from "@thiepn/study-player";
 import {coreContent} from "../coreContent";
 import {grammarContext,grammarLessons} from "./grammarCourse";
 import {E02_AVAILABLE_SCENES,e02ReviewPrompts} from "./a1ExcellenceCourse";
@@ -7,6 +7,8 @@ import {E03_MAPPED,e03ReviewPrompts} from "./a2ExcellenceCourse";
 import {E04_MAPPED,e04ReviewPrompts} from "./a2ExcellenceAdvancedCourse";
 import {E06_CASES,type E06Case} from "./e06IndependentCases";
 import {e08ByCase,type E08Extension} from "./e08ContextExtensions";
+import {E09_BY_CASE,type E09CaseDepth} from "./e09CommunicationDepth";
+import {e09RepairCueFor,type E09RepairCue} from "./e09MisconceptionRepairs";
 
 const PREFIX="e06-cumulative-";
 const ORIGINAL="thiepn-original";
@@ -24,6 +26,7 @@ export interface E06CaseProgress {
  status:E06Status;sourceListening:boolean;sourceReading:boolean;prerequisiteReady:boolean;
  correct:number;required:number;attempts:number;unscoredWriting:number;unscoredSpeaking:number;
  firstDraftSubmitted:boolean;revisedDraftSubmitted:boolean;contextProblemsCorrect:number;
+ e09Correct:number;e09Required:number;e09DelayedCorrect:number;e09DelayedRequired:number;
  delayedCorrect:number;delayedRequired:number;availableAt?:string;
 }
 export interface E06Overview {
@@ -224,6 +227,91 @@ function e08TransferPrompts(s:E06Case,a:Anchor,x:E08Extension):StudyPrompt[]{
     d.readingAnswer,d.readingFoils,common,undefined,true)
  ];
 }
+function e09Choice(s:E06Case,a:Anchor,key:string,question:string,correct:string,foils:readonly [string,string],
+ reasons:readonly [string,string],audio?:string,delayed=false):StudyPrompt{
+ const stage=delayed?"delayed":"understand";
+ const original=choice(s,a,key,stage,question,correct,foils,reasons,
+  audio?"listening":"comprehension",audio);
+ return {
+  ...original,
+  instruction:audio?
+   "E09 · Listen to the new multi-speaker Japanese situation. The transcript is revealed after your response.":
+   "E09 · Use only what the independent written source actually confirms.",
+  explanation:"Context-dependent comprehension. Correct detail: "+correct+
+    ". "+(delayed?"Unseen transfer uses different speakers and facts.":"Compare the source and the assumption in the distractor."),
+  eventMetadata:metadata(s,a,stage,{
+   e09:true,e09CaseId:s.id,e09Task:key,
+   e06Task:"controlled",e06FoilFeedback:[
+    {response:foils[0],feedback:reasons[0]},
+    {response:foils[1],feedback:reasons[1]}
+   ],
+   ...(audio?{audioKind:"device-speech-synthesis",nativeRecording:false}:{})
+  })
+ };
+}
+function e09ContextPrompts(s:E06Case,a:Anchor,d:E09CaseDepth):StudyPrompt[]{
+ const dialogue=d.speakers.map(t=>t.name+"： "+t.ja).join(" ");
+ return [
+  e09Choice(s,a,"e09-dialogue-listen",d.listening.question,d.listening.answer,
+   d.listening.wrong,d.listening.why,dialogue),
+  e09Choice(s,a,"e09-notice-read",d.reading.ja+"\n\n"+d.readingCheck.question,
+   d.readingCheck.answer,d.readingCheck.wrong,d.readingCheck.why)
+ ];
+}
+function e09TransferPrompts(s:E06Case,a:Anchor,d:E09CaseDepth):StudyPrompt[]{
+ const t=d.delayed;
+ return [
+  e09Choice(s,a,"e09-delayed-listen",t.question,t.answer,t.wrong,t.why,t.speech,true),
+  e09Choice(s,a,"e09-delayed-read",t.notice+"\n\n"+t.readQuestion,
+   t.readAnswer,t.readWrong,t.readWhy,undefined,true)
+ ];
+}
+function e09RepairPrompt(s:E06Case,a:Anchor,cue:E09RepairCue):StudyPrompt{
+ const isListening=cue.skill==="listening";
+ const correctCue="e09-"+(isListening?"dialogue-listen":"notice-read");
+ const key="e09-repair-"+cue.skill;
+ const base=choice(s,a,key,"understand",isListening?cue.question:cue.japanese+"\n\n"+cue.question,
+    cue.answer,cue.wrong,cue.reasons,
+    isListening?"listening":"comprehension",isListening?cue.japanese:undefined);
+ return {
+   ...base,
+   instruction:"Correct a specific E09 misunderstanding using an unfamiliar but related example.",
+   explanation:cue.explanation,
+   eventMetadata:metadata(s,a,"understand",{
+     e09Repair:true,e09OriginalPromptId:PREFIX+s.id+"-"+correctCue,
+     e09CaseId:s.id,e09RepairSkill:cue.skill,
+     e06FoilFeedback:[
+       {response:cue.wrong[0],feedback:cue.reasons[0]},
+       {response:cue.wrong[1],feedback:cue.reasons[1]}
+     ],
+     schedulerExcluded:true,nonAuthoritative:true,
+     accreditedCefrVerdict:false,
+     ...(isListening?{audioKind:"device-speech-synthesis",nativeRecording:false}:{})
+   })
+ };
+}
+function e09UnscoredTransfer(s:E06Case,a:Anchor,d:E09CaseDepth):StudyPrompt{
+ return {
+  id:PREFIX+s.id+"-e09-original-response",
+  primaryTarget:{kind:"can_do",id:a.canDoId},skill:"writing_quality",
+  cueFamily:PREFIX+s.id+"-e09-written-transfer",promptType:"textarea",
+  instruction:"Independent different-person writing · no semantic auto-grade",
+  prompt:d.production.firstProblem+"\nWrite for: "+d.production.newAudience+
+   "\nBefore submitting, check:\n"+d.production.selfCheck.join("\n"),
+  promptLanguage:"en",placeholder:"自分の日本語で伝えてください…",
+  acceptedAnswers:[],displayAnswer:"Your own original response; content is self-reviewed",
+  requiredTerms:[],minimumCharacters:s.level==="A1"?20:45,
+  explanation:"Original self-check and revision: "+d.production.revisionFocus+
+   " Automated length, term or transcription checks do not establish naturalness or comprehension.",
+  sourceId:ORIGINAL,contentVersion:coreContent.version,contextId:PREFIX+s.id,
+  activity:"writing",languageActivity:"writing",
+  eventMetadata:metadata(s,a,"independent",{
+    e09:true,e09Task:"independent-written-transfer",
+    nonAuthoritative:true,schedulerExcluded:true,semanticScore:false,
+    structuralOnly:true,accreditedCefrVerdict:false
+  })
+ };
+}
 function controlledPrompts(s:E06Case,a:Anchor):StudyPrompt[]{
  const audio=s.turns.map(t=>t.speaker+"： "+t.ja).join(" ");
  return [
@@ -231,7 +319,8 @@ function controlledPrompts(s:E06Case,a:Anchor):StudyPrompt[]{
   choice(s,a,"read","understand",s.reading.ja+"\n\n"+s.read.question,s.read.answer,s.read.wrong,s.read.feedback,"comprehension"),
   choice(s,a,"negotiate","communicate",s.negotiate.question,s.negotiate.answer,s.negotiate.wrong,s.negotiate.feedback,"form_selection"),
   typed(s,a,"recall","recall",s.recall.question,s.recall.answers,s.recall.correction),
-  ...(e08ByCase.has(s.id)?e08ContextPrompts(s,a,e08ByCase.get(s.id)!):[])
+  ...(e08ByCase.has(s.id)?e08ContextPrompts(s,a,e08ByCase.get(s.id)!):[]),
+  ...(E09_BY_CASE.has(s.id)?e09ContextPrompts(s,a,E09_BY_CASE.get(s.id)!):[])
  ];
 }
 function transferPrompts(s:E06Case,a:Anchor):StudyPrompt[]{
@@ -240,12 +329,13 @@ function transferPrompts(s:E06Case,a:Anchor):StudyPrompt[]{
   choice(s,a,"delayed-listen","delayed",t.question,t.answer,t.wrong,feedback,"listening",t.audio),
   choice(s,a,"delayed-read","delayed",t.reading+"\n\n"+t.readQuestion,t.readAnswer,t.readWrong,feedback,"comprehension"),
   typed(s,a,"delayed-recall","delayed",t.freeQuestion,t.freeAnswers,t.correction),
-  ...(e08ByCase.has(s.id)?e08TransferPrompts(s,a,e08ByCase.get(s.id)!):[])
+  ...(e08ByCase.has(s.id)?e08TransferPrompts(s,a,e08ByCase.get(s.id)!):[]),
+  ...(E09_BY_CASE.has(s.id)?e09TransferPrompts(s,a,E09_BY_CASE.get(s.id)!):[])
  ];
 }
 export const e06ReviewPrompts:StudyPrompt[]=E06_LINKED_CASES.flatMap(s=>controlledPrompts(s,anchorOf(s)!));
-const CONTROLLED_KEYS=["listen","read","negotiate","recall","e08-context-listen","e08-context-read"];
-const DELAYED_KEYS=["delayed-listen","delayed-read","delayed-recall","e08-delayed-listen","e08-delayed-read"];
+const CONTROLLED_KEYS=["listen","read","negotiate","recall","e08-context-listen","e08-context-read","e09-dialogue-listen","e09-notice-read"];
+const DELAYED_KEYS=["delayed-listen","delayed-read","delayed-recall","e08-delayed-listen","e08-delayed-read","e09-delayed-listen","e09-delayed-read"];
 function isOriginalSourceEvidence(event:StudyEvent,a:Anchor):boolean{
  const raw=event.metadata;
  if(event.primaryTarget?.kind!=="can_do"||event.primaryTarget.id!==a.canDoId)return false;
@@ -303,6 +393,10 @@ export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06O
    firstDraftSubmitted:own.some(e=>e.metadata?.promptId===prefix+"write"&&e.metadata?.nonAuthoritative===true),
    revisedDraftSubmitted:own.some(e=>e.metadata?.promptId===prefix+"e08-second-draft"&&e.metadata?.nonAuthoritative===true),
    contextProblemsCorrect:["e08-context-listen","e08-context-read"].filter(k=>by.get(prefix+k)?.result==="correct").length,
+   e09Correct:["e09-dialogue-listen","e09-notice-read"].filter(k=>by.get(prefix+k)?.result==="correct").length,
+   e09Required:2,
+   e09DelayedCorrect:["e09-delayed-listen","e09-delayed-read"].filter(k=>by.get(prefix+k)?.result==="correct").length,
+   e09DelayedRequired:2,
    delayedCorrect,delayedRequired:DELAYED_KEYS.length,
    ...(Number.isFinite(due)?{availableAt:new Date(due).toISOString()}: {})
   } satisfies E06CaseProgress;
@@ -318,7 +412,7 @@ export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06O
   nextId:next?.id??null,nextDelayedId:cases.find(c=>c.status==="ready")?.id??null};
 }
 function previewLessons(s:E06Case):StudyLesson[]{
- const ext=e08ByCase.get(s.id);
+ const ext=e08ByCase.get(s.id),depth=E09_BY_CASE.get(s.id);
  return [
   lesson(s,"preview-intro","Original cumulative communication · "+s.title,
    s.setting+" "+s.objective+" No verified canonical Can-do is linked to this capstone. Review the original situation without graded events."),
@@ -332,6 +426,16 @@ function previewLessons(s:E06Case):StudyLesson[]{
    lesson(s,"preview-e08-reading",ext.notice.title,ext.notice.en,[{expression:ext.notice.ja,note:ext.notice.en}]),
    lesson(s,"preview-e08-revision","A second draft · Self-directed",ext.revision.task+" "+ext.revision.secondDraftTask+" "+ext.revision.modelPitfall)
   ]:[]),
+  ...(depth?[
+   lesson(s,"preview-e09-dialogue","E09 · "+depth.title,depth.communicativeGoal,
+      depth.speakers.map(t=>({expression:t.name+"： "+t.ja,note:t.meaning+" · "+t.intention}))),
+   lesson(s,"preview-e09-reading",depth.reading.title,depth.reading.meaning,
+      [{expression:depth.reading.ja,note:depth.reading.meaning}]),
+   lesson(s,"preview-e09-grammar","Grammar and vocabulary in context",
+      "These original notes are source-only while the canonical Can-do association remains unresolved.",
+      [...depth.grammar.map(g=>({expression:g.expression,note:g.role+" · Avoid: "+g.misconception})),
+       ...depth.vocabulary.map(v=>({expression:v.ja,note:v.meaning+" · "+v.contrast}))])
+  ]:[]),
   lesson(s,"preview-revision","Independent self-revision",
    s.independent.writing+" "+s.independent.speaking+" "+s.independent.revision)
  ];
@@ -344,12 +448,14 @@ export function buildE06Preview(id:string):StudyStep[]{
 export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudyStep[]{
  const {s,anchor:a}=getLinked(id);
  if(!prerequisites(a,events).ready)throw Error("E06_SOURCE_LISTENING_AND_TEXT_NOT_YET_PRACTISED:"+id);
- const [listen,read,negotiate,recall,secondListen,secondRead]=controlledPrompts(s,a);
- const ext=e08ByCase.get(s.id);
+ const [listen,read,negotiate,recall,secondListen,secondRead,thirdListen,thirdRead]=controlledPrompts(s,a);
+ const ext=e08ByCase.get(s.id),depth=E09_BY_CASE.get(s.id);
  const ownEvents=eventsFor(s,a,events);
  const recent=latestById(ownEvents);
  const previousContextListeningIncorrect=recent.get(PREFIX+s.id+"-e08-context-listen")?.result==="incorrect";
  const previousContextReadingIncorrect=recent.get(PREFIX+s.id+"-e08-context-read")?.result==="incorrect";
+ const previousE09ListeningIncorrect=recent.get(PREFIX+s.id+"-e09-dialogue-listen")?.result==="incorrect";
+ const previousE09ReadingIncorrect=recent.get(PREFIX+s.id+"-e09-notice-read")?.result==="incorrect";
  const previousFirst=ownEvents.filter(e=>e.metadata?.promptId===PREFIX+s.id+"-write"&&e.metadata?.nonAuthoritative===true&&typeof e.metadata.learnerResponse==="string")
   .sort((x,y)=>y.occurredAt.localeCompare(x.occurredAt))[0];
  const privateFirst=typeof previousFirst?.metadata?.learnerResponse==="string"?previousFirst.metadata.learnerResponse:"";
@@ -401,6 +507,37 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
     lesson(s,"e08-pragmatics","Grammar in use · Evidence and cultural appropriateness",
       ext.why+" "+ext.culture+" "+ext.revision.modelPitfall,[],a)
    ]:[]),
+  ...(depth&&thirdListen&&thirdRead?[
+    lesson(s,"e09-setup","Independent transfer · "+depth.title,
+     depth.communicativeGoal+" Listen for the new problem before reading the dialogue. "+
+     "You must distinguish an explicit confirmation from an assumption.",[],a),
+    ...(previousE09ListeningIncorrect&&e09RepairCueFor(s.id,"listening")?[
+      lesson(s,"e09-listening-repair","New speakers · Repair the missed listening distinction",
+       "Your latest E09 dialogue response missed a specific distinction. First compare the two alternatives in a new short situation; this corrective answer will not alter FSRS mastery.",
+       depth.grammar.slice(0,2).map(g=>({expression:g.expression,note:g.misconception})),a),
+      e09RepairPrompt(s,a,e09RepairCueFor(s.id,"listening")!)
+    ]:[]),
+    thirdListen,
+    lesson(s,"e09-conversation","Interpret the third original conversation",
+     "Track who knows which facts, what remains unsettled and which request actually helps.",
+     depth.speakers.map(t=>({expression:t.name+"： "+t.ja,note:t.meaning+" · Communicative intent: "+t.intention})),a),
+    ...(previousE09ReadingIncorrect&&e09RepairCueFor(s.id,"reading")?[
+      lesson(s,"e09-reading-repair","Changed notice · Repair the mistaken inference",
+       "Your latest E09 source-notice answer did not match the written evidence. Read another original notice, then return to the original. This alternate response is practice, not new mastery.",
+       depth.vocabulary.slice(0,2).map(v=>({expression:v.ja,note:v.contrast})),a),
+      e09RepairPrompt(s,a,e09RepairCueFor(s.id,"reading")!)
+    ]:[]),
+    thirdRead,
+    lesson(s,"e09-notice","Connected original source · "+depth.reading.title,
+     "Compare the real notice with the dialogue. "+depth.reading.meaning,
+     [{expression:depth.reading.ja,note:depth.reading.meaning}],a),
+    lesson(s,"e09-vocabulary","Words and lexical contrasts that change the situation",
+     "Contrast each pair in this particular situation, not as interchangeable translations.",
+     depth.vocabulary.map(v=>({expression:v.ja,note:v.meaning+" · Contrast: "+v.contrast})),a),
+    lesson(s,"e09-grammar","Pragmatic grammar · Meaning before pattern matching",
+     "Read each construction in context. The explanation names the conversational function and a common misleading interpretation.",
+     depth.grammar.map(g=>({expression:g.expression,note:g.role+" · Common mistake: "+g.misconception})),a)
+   ]:[]),
   lesson(s,"production","Own the exchange · Independent writing and speaking",
    "Your original text and transcript are stored as unscored drafts only. Evaluate politeness, meaning and revision with the provided guidance; no synthetic pronunciation grade.",[],a),
   open(s,a,false),
@@ -415,10 +552,56 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
   ]:[]),
   open(s,a,true),
   ...(ext?[e08SpeakingFollowUp(s,a,ext)]:[]),
+  ...(depth?[
+    lesson(s,"e09-independent","New audience · Reuse the language, not the old facts",
+      depth.production.newAudience+" · "+depth.production.firstProblem+" "+depth.production.revisionFocus,
+      depth.production.selfCheck.map((check,i)=>({expression:"Self-check "+(i+1),note:check})),a),
+    e09UnscoredTransfer(s,a,depth),
+    lesson(s,"e09-followup","Different-role speaking · Self-directed",
+      depth.production.followUp+" This is a speaking practice suggestion; do not infer an acoustic or CEFR score.",[],a)
+  ]:[]),
   lesson(s,"revise","Review your own output",
    s.independent.revision+" The next time, respond without copying the revealed dialogue.",[],a),
   lesson(s,"spaced-return","Independent later transfer",
-   "The original controlled prompts and two new different-context items use the existing FSRS authority. After six distinct controlled items are correct, five different delayed tasks unlock after at least twenty hours. Both writing drafts and speech transcripts remain unscored.",[],a)
+   "The eight source-bound controlled prompts share the existing FSRS authority. Only after all eight latest results are correct and at least twenty hours have passed do seven different-context delayed tasks become available. Free writing and transcripts are unscored even when revised.",[],a)
+ ];
+}
+/**
+ * E09 continuation is a VIEW into the SAME native session, not another engine.
+ * Uses original account-owned StudyEvents to choose a lesson boundary and
+ * NEVER grades, marks as complete, schedules or inserts phantom prior steps.
+ */
+export function buildE06ContinuationJourney(id:string,events:readonly StudyEvent[]):StudyStep[]{
+ const {s,anchor:a}=getLinked(id);
+ const full=buildE06Journey(id,events);
+ const recent=latestById(eventsFor(s,a,events));
+ const pre=PREFIX+s.id+"-";
+ const correct=(keys:readonly string[])=>keys.every(k=>recent.get(pre+k)?.result==="correct");
+ const original=["listen","read","negotiate","recall"];
+ const second=[...original,"e08-context-listen","e08-context-read"];
+ const third=[...second,"e09-dialogue-listen","e09-notice-read"];
+ const hasFirst=eventsFor(s,a,events).some(e=>e.metadata?.promptId===pre+"write"&&e.metadata?.nonAuthoritative===true);
+ const hasSecond=eventsFor(s,a,events).some(e=>e.metadata?.promptId===pre+"e08-second-draft"&&e.metadata?.nonAuthoritative===true);
+ const hasThirdResponse=eventsFor(s,a,events).some(e=>e.metadata?.promptId===pre+"e09-original-response"&&e.metadata?.nonAuthoritative===true);
+ let lessonKey:string|null=null;
+ let reason="";
+ if(correct(third)){
+   if(!hasFirst){lessonKey="production";reason="All eight controlled tasks have source-backed correct answers; continue with your independent first draft.";}
+   else if(!hasSecond){lessonKey="e08-revision-coach";reason="Your first draft is recorded. Compare it and produce a changed second draft without automatic semantic grading.";}
+   else if(!hasThirdResponse){lessonKey="e09-independent";reason="Both drafts are recorded. Apply what you learnt to another audience and a genuinely different problem.";}
+   else {lessonKey="e09-followup";reason="Bounded answers and written transfer are already recorded. Continue unscored speaking and self-reflection.";}
+ }else if(correct(second)){
+   lessonKey="e09-setup";reason="Previous E06/E08 bounded cues are correct. Continue with a third independently authored listening and reading situation.";
+ }else if(correct(original)){
+   lessonKey="e08-change";reason="The original guided source cues are correct. Continue with a different conversation rather than replaying the first model.";
+ }
+ if(!lessonKey)return full;
+ const at=full.findIndex(step=>isStudyLesson(step)&&step.id===pre+lessonKey);
+ if(at<=0)return full;
+ return [
+  lesson(s,"e09-resume","Continue from your last source-backed learning stage",
+   reason+" This does not award new credit to skipped earlier screens. Your original StudyEvents and FSRS remain authoritative. Open the full lesson from Learn whenever you want the earlier context.",[],a),
+  ...full.slice(at)
  ];
 }
 export function buildE06Delayed(id:string,events:readonly StudyEvent[],now=new Date()):StudyStep[]{

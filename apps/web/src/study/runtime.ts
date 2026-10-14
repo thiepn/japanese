@@ -30,7 +30,7 @@ import {buildE04Journey,buildE04Delayed,buildE04Preview,e04ReviewPrompts,getE04O
 export type {E04Overview} from "./a2ExcellenceAdvancedCourse";
 import {buildE05RepairJourney,getE05Evidence,type E05Evidence} from "./e05AdaptiveRecall";
 export type {E05Evidence} from "./e05AdaptiveRecall";
-import {buildE06Journey,buildE06Preview,buildE06Delayed,getE06Overview,e06ReviewPrompts,type E06Overview} from "./e06IndependentCourse";
+import {buildE06Journey,buildE06ContinuationJourney,buildE06Preview,buildE06Delayed,getE06Overview,e06ReviewPrompts,type E06Overview} from "./e06IndependentCourse";
 export type {E06Overview} from "./e06IndependentCourse";
 import { buildC1SynthesisSession } from "./c1Synthesis";
 
@@ -126,7 +126,8 @@ export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
   return insertFirstExposureLessons(queue,byId,privatePrompts);
 }
 
-export async function buildE06Session(id:string):Promise<StudyStep[]>{return buildE06Journey(id,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function buildE06Session(id:string):Promise<StudyStep[]>{return buildE06ContinuationJourney(id,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function buildE06FullSession(id:string):Promise<StudyStep[]>{return buildE06Journey(id,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
 export async function buildE06PreviewSession(id:string):Promise<StudyStep[]>{return buildE06Preview(id);}
 export async function buildE06DelayedSession(id:string):Promise<StudyStep[]>{return buildE06Delayed(id,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
 export async function getE06Evidence():Promise<E06Overview>{return getE06Overview(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
