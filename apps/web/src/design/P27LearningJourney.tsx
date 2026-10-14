@@ -169,6 +169,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   const [p59WritingId,setP59WritingId]=useState("");
   const [p60WritingId,setP60WritingId]=useState("");
   const [r4WritingContext,setR4WritingContext]=useState("");
+  const [r4WritingStage,setR4WritingStage]=useState<"first"|"reply"|"transfer">("first");
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
   const [voiceStatus,setVoiceStatus]=useState("");
@@ -881,12 +882,14 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
     setStage("write");
   }
-  function chooseP60Writing(id:string,fromR4=false){
+  function chooseP60Writing(id:string,fromR4=false,initialDraft="",
+    r4Stage:"first"|"reply"|"transfer"="first"){
     if(!confirmUnsentWriting())return;
     const lesson=p60ById(id);
     if(!lesson)return;
     setUnitId(lesson.units[0]!);setP59WritingId("");
     setP60WritingId(lesson.id);setR4WritingContext(fromR4?lesson.id:"");
+    setR4WritingStage(r4Stage);
     setP58WritingId("");setP57WritingId("");
     setP56WritingId("");setP55WritingId("");setP54WritingId("");
     setP53WritingId("");setP52WritingId("");setP51WritingId("");
@@ -894,7 +897,7 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
     setP47WritingId("");setP46WritingId("");setP45WritingId("");
     setP44WritingId("");setP43WritingSceneId("");setP40WritingArcId("");
     setP39WritingId("");
-    setDraft("");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
+    setDraft(fromR4?initialDraft:"");setRewrite("");setRewriteStage("draft");setReport(null);setSaved(false);
     setStage("write");
   }
   function resetDialogue(){
@@ -945,8 +948,10 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
         ...(kind==="rewrite"&&p60WritingLesson?{
           p60:true,authoredLessonId:p60WritingLesson.id,
           sourceContextId:r4WritingCase?
-            "p60:r4:supplement:"+r4WritingCase.id:"p60:unit:"+p60WritingLesson.id,
-          ...(r4WritingCase?{r4Supplementary:true,authoredSupplementaryId:r4WritingCase.id}:{}),
+            "p60:r4:supplement:"+r4WritingCase.id+":"+r4WritingStage:
+            "p60:unit:"+p60WritingLesson.id,
+          ...(r4WritingCase?{r4Supplementary:true,authoredSupplementaryId:r4WritingCase.id,
+            r4SupplementaryStage:r4WritingStage}:{}),
           cumulativeA2:true,multisourceWriting:true,
           freeWritingSemanticallyGraded:false,recordedNativeAudio:false,
           rawTextStored:false,schedulerExcluded:true
@@ -1907,7 +1912,24 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             {r4WritingCase?<div className="p27-journey__p51-comparison-feedback">
               <strong>R4 · Originaler Zusatzfall aus dieser P60-Lektion</strong>
               <p lang="ja">{r4WritingCase.title}</p>
-              <p><strong>Eigenständiger Originalauftrag:</strong> {r4WritingCase.task}</p>
+              <p><strong>Fortgesetzter R4-Arbeitsschritt:</strong> {
+                r4WritingStage==="first"?"Erster mehrteiliger Quellenentwurf":
+                r4WritingStage==="reply"?"Antwort auf neue Sprecherinformation":
+                "Unabhängige neue Kontextaufgabe"
+              }</p>
+              <p><strong>Originale Aufgabenstellung:</strong> {
+                r4WritingStage==="first"?r4WritingCase.task:
+                r4WritingStage==="reply"?r4WritingCase.followupTask:
+                r4WritingCase.transfer.task
+              }</p>
+              {r4WritingStage==="transfer"?<p><strong>Andere Originalfalllage:</strong> {
+                r4WritingCase.transfer.scenario
+              }</p>:null}
+              {r4WritingStage==="reply"?<div><strong>Neue Originalnachricht:</strong>
+                <p lang="ja">{r4WritingCase.newMessage.ja}</p>
+                <details><summary>Deutsche Bedeutung</summary>
+                  {r4WritingCase.newMessage.de}</details>
+              </div>:null}
               {r4WritingCase.reading.map((line,i)=><div key={i}>
                 <small>{line.role}</small><p lang="ja">{line.ja}</p>
                 <details><summary>Deutsche Quellenbedeutung</summary>{line.de}</details>
@@ -2346,7 +2368,10 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <button type="button" disabled={disabled} onClick={()=>startPractice(unitId,"production")}>
               Unabhängige Schreibkorrekturen im StudyPlayer</button>
           </section>:null}
-          <p>{r4WritingCase?r4WritingCase.task:
+          <p>{r4WritingCase?
+            (r4WritingStage==="first"?r4WritingCase.task:
+             r4WritingStage==="reply"?r4WritingCase.followupTask:
+             r4WritingCase.transfer.task):
             p60WritingLesson?p60WritingLesson.writing.situation:
             p59WritingMission?p59WritingMission.write.situation:
             p58WritingMission?p58WritingMission.write.situation:
@@ -2472,14 +2497,24 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
             <p>{report.oldLength} → {report.newLength} Zeichen. Geändert: {report.changed?"ja":"nein"}</p>
             {r4WritingCase?<div className="p27-journey__p51-comparison-feedback">
               <strong>R4 · Quellenüberarbeitung ohne freie Textbenotung</strong>
-              <p>{r4WritingCase.misconception}</p>
-              <ul>{r4WritingCase.selfCheck.map(x=><li key={x}>{x}</li>)}</ul>
+              <p>{r4WritingStage==="first"?r4WritingCase.misconception:
+                r4WritingStage==="reply"?r4WritingCase.followupRepair:
+                r4WritingCase.transfer.why}</p>
+              {r4WritingStage==="first"?<ul>{
+                r4WritingCase.selfCheck.map(x=><li key={x}>{x}</li>)
+              }</ul>:null}
               <details><summary>Quellenbelege und originale Vergleichsantworten nach eigener Überarbeitung</summary>
                 {r4WritingCase.evidence.map((e,i)=><div key={i}>
                   <p lang="ja">「{e.quote}」</p><p>{e.meaning}</p>
                 </div>)}
-                {r4WritingCase.models.map((m,i)=><p key={i} lang="ja">{m}</p>)}
-                <p>Unbelegte Aussage: <span lang="ja">{r4WritingCase.trap}</span></p>
+                {(r4WritingStage==="first"?r4WritingCase.models:
+                   r4WritingStage==="reply"?r4WritingCase.followupModels:
+                   r4WritingCase.transfer.models).map((m,i)=><p key={i} lang="ja">{m}</p>)}
+                <p>Unbelegte Aussage: <span lang="ja">{
+                  r4WritingStage==="first"?r4WritingCase.trap:
+                  r4WritingStage==="reply"?r4WritingCase.followupTrap:
+                  r4WritingCase.transfer.trap
+                }</span></p>
               </details>
               <small>Zeichenbasierte Textänderung ist kein semantisches Urteil über offene Antworten.</small>
             </div>:p60WritingLesson?<div className="p27-journey__p51-comparison-feedback">
