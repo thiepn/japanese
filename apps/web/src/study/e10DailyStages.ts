@@ -23,3 +23,16 @@ export interface E10StageProgress{
 export function e10StageById(id:string){
  return E10_DAILY_STAGES.find(s=>s.id===id);
 }
+
+
+/** Delayed transfer preserves each existing E06/E08/E09 prompt ID. */
+export const E10_DELAYED_GROUPS=[
+ {id:"original-change",label:"First changed situation",purpose:"New people, new listening and reading, plus bounded Japanese recall.",keys:["delayed-listen","delayed-read","delayed-recall"]},
+ {id:"second-change",label:"Second changed situation",purpose:"Read and listen to the independently authored E08 transfer scenario.",keys:["e08-delayed-listen","e08-delayed-read"]},
+ {id:"third-change",label:"Third changed situation",purpose:"Distinguish another everyday problem and its written constraints.",keys:["e09-delayed-listen","e09-delayed-read"]}
+] as const;
+export type E10DelayedId=(typeof E10_DELAYED_GROUPS)[number]["id"];
+export interface E10DelayedProgress{
+ id:E10DelayedId;title:string;purpose:string;
+ status:E10StageStatus;correct:number;required:number;
+}
