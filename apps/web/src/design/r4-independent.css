@@ -20,3 +20,18 @@
 .r4-independent button:focus-visible,.r4-independent textarea:focus-visible{outline:3px solid currentColor;outline-offset:3px}
 .p60-consolidation__r4-panel[hidden]{display:none!important}
 @media(max-width:600px){.r4-independent{padding:.6rem}.r4-independent__actions{display:grid;grid-template-columns:minmax(0,1fr)}.r4-independent__actions button,.r4-independent__section>button{width:100%;min-height:48px}.r4-independent__stages{display:block}}
+
+/* R5: four meaningful independent writing steps, explicit original corrections. */
+.r4-independent__revision{margin-block:1rem;border-top:1px solid var(--border-color,#8886);padding-top:.85rem}
+.r4-independent__revision label{line-height:1.6}
+.r4-independent__revision textarea{min-height:9rem}
+.r4-independent__editorial{margin-block:.8rem;padding:.65rem .8rem;border:1px solid var(--border-color,#8885)}
+.r4-independent__editorial summary{cursor:pointer;line-height:1.55;font-weight:600}
+.r4-independent__editorial p{line-height:1.65}
+.r4-independent__editorial p[lang=ja]{line-height:1.95;font-size:1.08rem;overflow-wrap:anywhere}
+.r4-independent h6:focus-visible,.r4-independent__editorial summary:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+.r4-independent__feedback :is(p,li){overflow-wrap:anywhere}
+@media(max-width:600px){
+ .r4-independent__revision,.r4-independent__editorial{padding:.6rem}
+ .r4-independent__revision textarea{font-size:1rem}
+}
