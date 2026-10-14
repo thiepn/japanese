@@ -1027,3 +1027,14 @@
  .p27-journey__p51-pair{grid-template-columns:minmax(0,1fr)}
  .p27-journey__p51-pair strong[lang=ja]{font-size:1.16rem}
 }
+
+/* R3: one owner-evidence continuation surface in place of duplicate entry boxes. */
+.p27-journey__continuation{border:1px solid rgba(125,125,125,.55);padding:.8rem 1rem;margin-block:.9rem 1.15rem;min-width:0}
+.p27-journey__continuation h3{font-size:1.03rem;line-height:1.5;margin:.1rem 0 .35rem}
+.p27-journey__continuation p{font-size:.89rem;line-height:1.55;margin:.25rem 0 .7rem}
+.p27-journey__continuation-actions{display:flex;flex-wrap:wrap;gap:.55rem}
+.p27-journey__continuation-actions>button{flex:1 1 13rem;display:grid;gap:.25rem;align-content:center;text-align:left;min-height:52px;padding:.7rem .8rem;white-space:normal;overflow-wrap:anywhere;border:1px solid rgba(125,125,125,.5)}
+.p27-journey__continuation-actions strong{font-size:.88rem}
+.p27-journey__continuation-actions span,.p27-journey__continuation-actions small{font-size:.84rem;line-height:1.5}
+.p27-journey__continuation button:focus-visible{outline:3px solid currentColor;outline-offset:2px}
+@media(max-width:600px){.p27-journey__continuation{padding:.65rem}.p27-journey__continuation-actions{display:grid;grid-template-columns:minmax(0,1fr)}.p27-journey__continuation-actions>button{width:100%;min-height:48px}}
