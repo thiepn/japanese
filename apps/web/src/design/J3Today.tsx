@@ -1,5 +1,5 @@
 import {useMemo} from "react";
-import type {StudySummary,E01Progress} from "../study/runtime";
+import type {StudySummary,E01Progress,E02Overview} from "../study/runtime";
 import {JCartouche,JDivider,JInkProgress,JPattern,JSeal} from "./index";
 
 type J3TodayProps={
@@ -8,6 +8,7 @@ type J3TodayProps={
   status:string;
   onStart:()=>void;
   e01:E01Progress;onStartE01:()=>void;onStartE01Delayed:()=>void;
+  e02:E02Overview;onStartE02:(id:string)=>void;onStartE02Delayed:(id:string)=>void;
 };
 
 type RouteItem={
@@ -30,7 +31,7 @@ function japaneseDate(now=new Date()):string{
   }
 }
 
-export function J3Today({summary,completedToday,status,onStart,e01,onStartE01,onStartE01Delayed}:J3TodayProps){
+export function J3Today({summary,completedToday,status,onStart,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed}:J3TodayProps){
   const route=useMemo<RouteItem[]>(()=>[
     {id:"review",japanese:"復",label:"Review",count:summary.due,tone:"review"},
     {id:"learn",japanese:"学",label:"Learn",count:summary.newKana+summary.newVocabulary+summary.course,tone:"learn"},
@@ -115,6 +116,10 @@ export function J3Today({summary,completedToday,status,onStart,e01,onStartE01,on
       <div className="e01-entry__copy"><strong>A1 · First conversations</strong><p>Encounter → understand → discover → practice → communicate → independent response → delayed retrieval. Original dialogues; device-synthesized listening is labeled.</p></div>
       <div className="e01-entry__actions"><button type="button" disabled={status==="loading"} onClick={onStartE01}>Study first conversations</button>{(e01.status==="ready"||e01.status==="reviewed")?<button type="button" disabled={status==="loading"} onClick={onStartE01Delayed}>Delayed transfer</button>:null}</div>
     </section>
+    {e02.total>0?<section className="e02-entry" aria-label="A1 situational learning">
+      <div><p className="j3-today__eyebrow">E02 · SITUATIONAL A1</p><h2>Use Japanese in daily life</h2><p>{e02.started} / {e02.total} situations started · {e02.delayedReviewed} delayed checks completed</p></div>
+      <div className="e02-entry__actions">{e02.nextSceneId?<button type="button" disabled={status==="loading"} onClick={()=>onStartE02(e02.nextSceneId!)}>Continue: {e02.scenes.find(s=>s.id===e02.nextSceneId)?.title}</button>:null}{e02.scenes.find(s=>s.state==="ready")?<button type="button" disabled={status==="loading"} onClick={()=>onStartE02Delayed(e02.scenes.find(s=>s.state==="ready")!.id)}>Review a changed situation</button>:null}</div>
+    </section>:null}
     <JDivider kind="ink" className="j3-today__divider"/>
 
     <section className="j3-route" aria-labelledby="j3-route-title">

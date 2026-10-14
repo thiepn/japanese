@@ -6,6 +6,7 @@ import { ReaderPlaybackFence } from "./playbackFence";
 import { getAdaptiveImmersionRecommendation,type AdaptiveImmersionRecommendation } from "./adaptive";
 import { getAutonomyMissionProgress,type AutonomyMissionProgress } from "../study/autonomyMissions";
 import type { ReadingQuestion } from "@thiepn/content-schema";
+import type {E02Overview} from "../study/runtime";
 import {
   buildReaderText,getImmersionProgress,gradeReadingQuestion,recordListeningExposure,recordListeningSegmentReplay,recordMinedWord,
   recordReaderLookup,recordReadingExposure,recordTextCheck,
@@ -15,7 +16,7 @@ import {
 type CheckMode="reading"|"listening";
 interface SelectedToken { token:ReaderToken; sentenceId:string; }
 
-export function Immersion({onStartE01,onStartProductionTask,onStartC1Synthesis,onOpenC1Coach}:{onStartE01:()=>void;onStartProductionTask:(taskId:string)=>void;onStartC1Synthesis:(packId:string)=>void;onOpenC1Coach:(chainId:string)=>void}){
+export function Immersion({e02,onStartE02,onStartE01,onStartProductionTask,onStartC1Synthesis,onOpenC1Coach}:{e02:E02Overview;onStartE02:(id:string)=>void;onStartE01:()=>void;onStartProductionTask:(taskId:string)=>void;onStartC1Synthesis:(packId:string)=>void;onOpenC1Coach:(chainId:string)=>void}){
   const [progress,setProgress]=useState<ImmersionProgress|null>(null);
   const [recommendation,setRecommendation]=useState<AdaptiveImmersionRecommendation|null>(null);
   const [missions,setMissions]=useState<AutonomyMissionProgress[]>([]);
@@ -213,6 +214,7 @@ export function Immersion({onStartE01,onStartProductionTask,onStartC1Synthesis,o
     questionIndex={questionIndex} feedback={feedback} answerQuestion={answerQuestion} nextQuestion={nextQuestion} speakingSegment={speakingSegment} speakSegment={speakSegment}/>;
 
   return <>
+    {e02.nextSceneId?<section className="e02-entry" aria-label="A1 original dialogue and listening path"><div><strong>Original beginner dialogues</strong><p>Listen first, then read, explore grammar and respond without a script. Synthetic device speech is identified, not claimed as native audio.</p></div><div className="e02-entry__actions"><button type="button" onClick={()=>onStartE02(e02.nextSceneId!)}>Open: {e02.scenes.find(s=>s.id===e02.nextSceneId)?.title}</button></div></section>:null}
     <section className="e01-entry" aria-label="A1 contextual listening journey"><div className="e01-entry__copy"><strong>First conversations · Listening to communication</strong><p>Start with an original Japanese dialogue before revealing text. Device Japanese speech is synthetic, never presented as licensed native recording.</p></div><div className="e01-entry__actions"><button type="button" onClick={onStartE01}>Start A1 dialogue</button></div></section>
     <J6ImmersionHome
     progress={progress}
