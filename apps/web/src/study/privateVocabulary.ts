@@ -10,8 +10,9 @@ export interface PrivateVocabularyPromptSet {
   records:PrivateVocabularyRecord[];
 }
 
-export async function buildPrivateVocabularyPrompts():Promise<PrivateVocabularyPromptSet>{
-  const records=(await listPrivateVocabulary(AUTHENTIC_ACCOUNT_ID)).sort((a,b)=>a.createdAt.localeCompare(b.createdAt));
+export async function buildPrivateVocabularyPrompts(accountId=AUTHENTIC_ACCOUNT_ID):Promise<PrivateVocabularyPromptSet>{
+  const records=(await listPrivateVocabulary(accountId)).filter(r=>r.accountId===accountId)
+    .sort((a,b)=>a.createdAt.localeCompare(b.createdAt));
   const canonicalDistractors=coreContent.lexemes.slice(0,40).map((lexeme)=>senseForLexeme(lexeme).glosses.join(" / "));
   const meaning=records.map((record,index)=>makeMeaningPrompt(record,index,records,canonicalDistractors));
   const application=records.flatMap((record)=>[
