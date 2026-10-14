@@ -429,6 +429,24 @@ function e10DelayedProgress(s:E06Case,a:Anchor|null,events:readonly StudyEvent[]
  const next=stages.find(p=>["started","ready"].includes(p.status));
  return {stages,next:next?.id??null};
 }
+/**
+ * For each required original cue use the FIRST successful submission AFTER its
+ * most recent failure. Ordinary later correct FSRS retrieval does not postpone
+ * transfer forever. A newer incorrect answer reopens that cue's requirement.
+ * No extra clock/store is introduced; this is replayed from real StudyEvents.
+ */
+function controlledReadyAt(own:readonly StudyEvent[],prefix:string):number{
+ const completedAt=CONTROLLED_KEYS.map(key=>{
+  const answers=own.filter(e=>e.metadata?.promptId===prefix+key)
+    .filter(e=>Number.isFinite(Date.parse(e.occurredAt)))
+    .sort((a,b)=>Date.parse(a.occurredAt)-Date.parse(b.occurredAt));
+  const lastFailure=answers.filter(e=>e.result==="incorrect"||e.result==="partial"||e.result==="revealed").at(-1);
+  const boundary=lastFailure?Date.parse(lastFailure.occurredAt):Number.NEGATIVE_INFINITY;
+  const success=answers.find(e=>e.result==="correct"&&Date.parse(e.occurredAt)>boundary);
+  return success?Date.parse(success.occurredAt):NaN;
+ });
+ return completedAt.every(Number.isFinite)?Math.max(...completedAt):NaN;
+}
 export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06Overview{
  const cases=E06_CASES.map(s=>{
   const a=anchorOf(s),pr=a?prerequisites(a,events):{listening:false,reading:false,ready:false};
@@ -436,9 +454,8 @@ export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06O
   const by=latestById(own),prefix=PREFIX+s.id+"-";
   const ctrl=CONTROLLED_KEYS.map(k=>by.get(prefix+k));
   const correct=ctrl.filter(e=>e?.result==="correct").length;
-  const dates=ctrl.map(e=>Date.parse(e?.occurredAt??""));
-  const due=correct===CONTROLLED_KEYS.length&&dates.every(Number.isFinite)?
-   Math.max(...dates)+DELAY_MS:NaN;
+  const firstComplete=correct===CONTROLLED_KEYS.length?controlledReadyAt(own,prefix):NaN;
+  const due=Number.isFinite(firstComplete)?firstComplete+DELAY_MS:NaN;
   const delayedCorrect=DELAYED_KEYS.filter(k=>{
     const event=by.get(prefix+k);
     return event?.result==="correct"&&Number.isFinite(due)&&
