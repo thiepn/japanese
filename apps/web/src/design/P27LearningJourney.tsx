@@ -884,7 +884,15 @@ export function P27LearningJourney({disabled,onSourcePractice,onJourneyPractice,
   }
   function chooseP60Writing(id:string,fromR4=false,initialDraft="",
     r4Stage:"first"|"reply"|"transfer"="first"){
-    if(!confirmUnsentWriting())return;
+    // User explicitly selects one current R4 draft to take to the original
+    // Learn editor. Explain that other local drafts will not be transferred;
+    // do not misdescribe the selected text as lost or persist it.
+    if(fromR4){
+      if(!initialDraft.trim())return;
+      if(typeof window==="undefined"||!window.confirm(
+        "Der ausgewählte japanische Text wird in den bestehenden Learn-Editor übernommen. Andere ungesendete Antworten dieses Falls bleiben nicht erhalten. Fortfahren?"
+      ))return;
+    }else if(!confirmUnsentWriting())return;
     const lesson=p60ById(id);
     if(!lesson)return;
     setUnitId(lesson.units[0]!);setP59WritingId("");
