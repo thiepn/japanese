@@ -2,8 +2,9 @@ import { listPrivateSentences } from "@thiepn/local-db";
 import type { StudyPrompt } from "@thiepn/study-player";
 import { AUTHENTIC_ACCOUNT_ID } from "../immerse/authentic";
 
-export async function buildPrivateSentencePrompts():Promise<StudyPrompt[]>{
-  const records=(await listPrivateSentences(AUTHENTIC_ACCOUNT_ID)).sort((a,b)=>a.createdAt.localeCompare(b.createdAt));
+export async function buildPrivateSentencePrompts(accountId=AUTHENTIC_ACCOUNT_ID):Promise<StudyPrompt[]>{
+  const records=(await listPrivateSentences(accountId)).filter(r=>r.accountId===accountId)
+    .sort((a,b)=>a.createdAt.localeCompare(b.createdAt));
   return records.flatMap((record,index)=>[
     {
       id:"private-sentence-understand-"+record.id,
