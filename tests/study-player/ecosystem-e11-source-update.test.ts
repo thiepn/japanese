@@ -12,6 +12,12 @@ describe("Ecosystem J1 original updated notices",()=>{
    expect(item.compare.length).toBeGreaterThan(40);
    expect(item.limit.length).toBeGreaterThan(45);
    expect(item.authority).toBe("original-unscored-update");
+   expect(item.decision.question.length).toBeGreaterThan(15);
+   expect(item.decision.answer.length).toBeGreaterThan(5);
+   expect(item.decision.wrong).toHaveLength(2);
+   expect(item.decision.why).toHaveLength(2);
+   expect(new Set([item.decision.answer,...item.decision.wrong]).size).toBe(3);
+   expect(item.decision.why.every(why=>why.length>30)).toBe(true);
    expect(e11SourceUpdate(item.caseId)).toBe(item);
   }
   expect(e11SourceUpdate("nonexistent")).toBeNull();
