@@ -105,7 +105,7 @@ function choice(s:E06Case,a:Anchor,key:string,stage:Stage,question:string,answer
   acceptedAnswers:[answer],displayAnswer:answer,
   explanation:"Look for who does what, when, and under which condition. "+(
    stage==="delayed"?s.transfer.correction:stage==="encounter"?"Compare the spoken information with the options.":"Use details from the original dialogue or notice."),
-  speechSynthesisText:audio,speechSynthesisLanguage:audio?"ja-JP":undefined,
+  ...(audio?{speechSynthesisText:audio,speechSynthesisLanguage:"ja-JP"}:{}),
   sourceId:ORIGINAL,contentVersion:coreContent.version,contextId:PREFIX+s.id,
   languageActivity:audio?"listening":"reading",
   activity:stage==="delayed"?"assessment":"review",
