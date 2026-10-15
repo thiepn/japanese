@@ -89,6 +89,7 @@ jobs:
           CI: ""
         run: >-
           pnpm exec playwright test
+          tests/e2e/e12q-on-demand-requests.spec.ts
           tests/e2e/j4-learning-journey.spec.ts
           tests/e2e/j5-study-focus.spec.ts
           tests/e2e/e12-learner-writing.spec.ts
