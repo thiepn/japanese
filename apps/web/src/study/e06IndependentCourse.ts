@@ -353,8 +353,8 @@ function e12RevisedWriting(s:E06Case,a:Anchor,t:E11PracticalTransfer):StudyPromp
   id:PREFIX+s.id+"-e12-revised-letter",
   cueFamily:PREFIX+s.id+"-e12-letter-revision",
   instruction:"Optional second draft · revise your own Japanese, without automatic language grading",
-  prompt:"Write a revised message for: "+t.writingAudience+"\\nRecheck this situation: "+t.setting+
-   "\\nResolve: "+t.pragmaticDecision+"\\nChange the text where necessary; ticking review questions is not a correctness verdict.",
+  prompt:"Write a revised message for: "+t.writingAudience+"\nRecheck this situation: "+t.setting+
+   "\nResolve: "+t.pragmaticDecision+"\nChange the text where necessary; ticking review questions is not a correctness verdict.",
   explanation:"You revised your own original message. Compare what changed in audience, facts and politeness; no semantic or CEFR score is assigned. "+t.grammar.function,
   eventMetadata:{...first.eventMetadata,e12:true,e11Task:"revised-letter",e12DraftStage:"revision"}
  };
