@@ -17,7 +17,7 @@ export interface E07Journey {
  explanation:string;
 }
 const action=(origin:E07Origin,kind:E07ActionKind,label:string,description:string,basis:string,priority:number,targetId?:string):E07Action=>({
- key:[origin,kind,targetId??"none"].join(":"),origin,kind,label,description,basis,priority,targetId
+ key:[origin,kind,targetId??"none"].join(":"),origin,kind,label,description,basis,priority,...(targetId?{targetId}:{})
 });
 export function deriveE07Journey({
  summary,e01,e02,e03,e04,e05,e06
