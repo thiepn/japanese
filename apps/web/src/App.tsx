@@ -5,10 +5,10 @@ import { claimGuestWorkspace } from "@thiepn/local-db";
 import type { SearchResult } from "@thiepn/search";
 import { isStudyLesson,type StudyStep } from "@thiepn/study-player";
 import { searchLocalJapanese } from "./content";
-import { Immersion } from "./immerse/Immersion";
+
 import { getImmersionProgress,type ImmersionProgress } from "./immerse/reader";
 import { AUTHENTIC_GUEST_ACCOUNT_ID,setAuthenticAccountId } from "./immerse/authentic";
-import { StudyPlayer,type StudyAnswer } from "./study/StudyPlayer";
+import type { StudyAnswer } from "./study/StudyPlayer";
 import "./study/a1Excellence.css";
 import "./study/a1ExcellenceE02.css";
 import "./study/a2ExcellenceE03.css";
@@ -25,9 +25,9 @@ import { DashboardRefreshGuard } from "./study/dashboardRefreshGuard";
 import { AccountWorkspaceLease,attachWorkspaceWithLease,type WorkspaceLease } from "./study/accountWorkspaceLease";
 import { J2AppShell,type J2Surface } from "./design/J2AppShell";
 import { J3Today } from "./design/J3Today";
-import { J4Learn } from "./design/J4Learn";
-import { J7Library } from "./design/J7Library";
-import { J8Progress } from "./design/J8Progress";
+
+
+
 import { createJapaneseLanguageDashboardPublisher } from "./languageDashboard";
 import {
   buildA1MilestoneSession,buildE01Session,buildE01DelayedSession,getE01Evidence,buildE02Session,buildE02DelayedSession,getE02Evidence,buildE03Session,buildE03DelayedSession,getE03Evidence,buildE04Session,buildE04DelayedSession,buildE04PreviewSession,getE04Evidence,buildE03PreviewSession,buildE02PreviewSession,buildE05RepairSession,getE05Dashboard,buildE06Session,buildE06FullSession,buildE11MicroSession,buildE10DailyStageSession,buildE06PreviewSession,buildE06DelayedSession,buildE10DelayedStageSession,buildE06FullDelayedSession,getE06Evidence,buildB1MilestoneSession,buildB2MilestoneSession,buildC1FoundationPractice,buildC1FoundationSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildP13C1SynthesisSession,buildP9RealWorldChainSession,buildP9RealWorldQualificationSession,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getC1FoundationAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getCompletedTodayCount,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,GUEST_ACCOUNT_ID,getDevelopmentAccountId,setDevelopmentAccountId,
@@ -81,6 +81,13 @@ const ANONYMOUS_AUTH:AuthContext={
   permissions:new Set<string>()
 };
 
+// Each destination below is imported only when the learner opens that surface.
+// This is a real initial-request boundary, not an eager preload or budget exception.
+const J4Learn=lazy(()=>import("./design/J4Learn").then(m=>({default:m.J4Learn})));
+const Immersion=lazy(()=>import("./immerse/Immersion").then(m=>({default:m.Immersion})));
+const J7Library=lazy(()=>import("./design/J7Library").then(m=>({default:m.J7Library})));
+const J8Progress=lazy(()=>import("./design/J8Progress").then(m=>({default:m.J8Progress})));
+const StudyPlayer=lazy(()=>import("./study/StudyPlayer").then(m=>({default:m.StudyPlayer})));
 const J11Diagnostics=lazy(()=>import("./design/J11Diagnostics").then((module)=>({default:module.J11Diagnostics})));
 
 export function App(){
@@ -456,7 +463,7 @@ export function App(){
   return <>
     <a className="skip-link" href="#main-content">Skip to main content</a>
     {session
-      ?<main className="j5-study-shell" id="main-content" tabIndex={-1}><StudyPlayer steps={session} accountScope={getDevelopmentAccountId()} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></main>
+      ?<main className="j5-study-shell" id="main-content" tabIndex={-1}><Suspense fallback={<p role="status">Preparing your study session…</p>}><StudyPlayer steps={session} accountScope={getDevelopmentAccountId()} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></Suspense></main>
       :<J2AppShell
         surface={surface}
         onSurfaceChange={navigateSurface}
@@ -469,13 +476,13 @@ export function App(){
       >
         {diagnosticsMode
           ?<Suspense fallback={<p className="j2-account-status" role="status">Opening technical workspace…</p>}><J11Diagnostics key={getDevelopmentAccountId()} onExit={()=>navigateSurface(surface)} accountStatus={account.status} accountConnected={accountConnected}/></Suspense>
-          :<>
+          :<Suspense fallback={<main id="main-content" role="main"><p role="status">Opening Japanese section…</p></main>}>
             {surface==="Today"&&<J3Today e07={e07} onOpenE07={openE07Action} e06={e06} onStartE06={(id)=>void startE06(id)} onStartE11Micro={(id)=>void startE11Micro(id)} onStartE06Delayed={(id)=>void startE06Delayed(id)} e05={e05} onStartE05Repair={()=>void startE05Repair()} e04={e04} onStartE04={(id)=>void startE04(id)} onStartE04Delayed={(id)=>void startE04Delayed(id)} e03={e03} onStartE03={(id)=>void startE03(id)} onStartE03Delayed={(id)=>void startE03Delayed(id)} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE02Delayed={(id)=>void startE02Delayed(id)} summary={summary} completedToday={completedToday} status={sessionStatus} e01={e01} onStartE01={()=>void startE01()} onStartE01Delayed={()=>void startE01Delayed()} onStart={()=>void startStudy()}/>}
             {surface==="Learn"&&<J4Learn e07={e07} onOpenE07={openE07Action} e06={e06} onStartE06={(id)=>void startE06(id)} onStartE06Full={(id)=>void startE06Full(id)} onStartE11Micro={(id)=>void startE11Micro(id)} onStartE10Stage={(id,stage)=>void startE10Stage(id,stage)} onStartE06Delayed={(id)=>void startE06Delayed(id)} onStartE06FullDelayed={(id)=>void startE06FullDelayed(id)} onStartE10DelayedStage={(id,stage)=>void startE10DelayedStage(id,stage)} onStartE06Preview={(id)=>void startE06Preview(id)} e05={e05} onStartE05Repair={()=>void startE05Repair()} onStartE03Preview={(id)=>void startE03Preview(id)} onStartE02Preview={(id)=>void startE02Preview(id)} e04={e04} onStartE04={(id)=>void startE04(id)} onStartE04Delayed={(id)=>void startE04Delayed(id)} onStartE04Preview={(id)=>void startE04Preview(id)} e03={e03} onStartE03={(id)=>void startE03(id)} onStartE03Delayed={(id)=>void startE03Delayed(id)} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE02Delayed={(id)=>void startE02Delayed(id)} e01={e01} onStartE01={()=>void startE01()} onStartE01Delayed={()=>void startE01Delayed()} summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} onPreferredCoachChainApplied={()=>setPreferredCoachChain(null)} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>}
             {surface==="Immerse"&&<Immersion key={getDevelopmentAccountId()} e07={e07} onOpenE07={openE07Action} e06={e06} onStartE06={(id)=>void startE06(id)} onStartE11Micro={(id)=>void startE11Micro(id)} onStartE06Delayed={(id)=>void startE06Delayed(id)} onStartE06Preview={(id)=>void startE06Preview(id)} e05={e05} onStartE05Repair={()=>void startE05Repair()} onStartE03Preview={(id)=>void startE03Preview(id)} e04={e04} onStartE04={(id)=>void startE04(id)} onStartE04Preview={(id)=>void startE04Preview(id)} e03={e03} onStartE03={(id)=>void startE03(id)} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE01={()=>void startE01()} onStartProductionTask={(taskId)=>void startProductiveTask(taskId)} onStartC1Synthesis={(packId)=>void startC1Synthesis(packId)} onOpenC1Coach={(chainId)=>{setPreferredCoachChain(chainId);setSurface("Learn");}}/>}
             {surface==="Progress"&&<J8Progress e07={e07} onOpenE07={openE07Action} e06={e06} e05={e05} onStartE05Repair={()=>void startE05Repair()} e04={e04} e03={e03} e02={e02} e01={e01} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} immersion={immersion} summary={summary} course={courseProgress} completedToday={completedToday}/>}
             {surface==="Library"&&<J7Library query={query} setQuery={(value)=>{setLibraryStatus("loading");setResults([]);setQuery(value);}} results={results} status={libraryStatus}/>}
-          </>}
+          </Suspense>}
       </J2AppShell>}
   </>;
 }
