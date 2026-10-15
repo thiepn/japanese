@@ -1,4 +1,6 @@
 import "fake-indexeddb/auto";
+import {mkdirSync,writeFileSync} from "node:fs";
+import {resolve} from "node:path";
 import {describe,expect,it} from "vitest";
 import {createStudyEvent,isStudyLesson,type StudyPrompt} from "../../packages/study-player/src/index";
 import {listMemoryTraces,listStudyEvents,saveStudyEvent} from "../../packages/local-db/src/index";
@@ -49,6 +51,14 @@ function ownerEvent(prompt:StudyPrompt,userId:string,id:string,response:string,m
 describe("E12 native optional writing, event identity, and account continuity",()=>{
  it("preserves source gating, original IDs and unscored revision outside FSRS",()=>{
   const source=originalPrerequisites("e12-proof-source");
+  // Chromium consumes this synthetic fixture on the same isolated Actions runner.
+  // There is no application fixture route, production database, or learner data.
+  const guest="00000000-0000-4000-8000-000000000001";
+  const browserSource=originalPrerequisites(guest);
+  mkdirSync(resolve("artifacts"),{recursive:true});
+  writeFileSync(resolve("artifacts/e12-browser-seed.json"),JSON.stringify({
+    guest,caseId:browserSource.id,events:browserSource.events
+  }),"utf8");
   const steps=buildE11OptionalSession(source.id,source.events);
   const first=promptBySuffix(steps,"-e11-original-letter");
   const revised=promptBySuffix(steps,"-e12-revised-letter");
