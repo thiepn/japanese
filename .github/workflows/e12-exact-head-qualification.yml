@@ -46,4 +46,4 @@ jobs:
       - name: Desktop/mobile Learn and Study Player smoke
         env:
           CI: ""
-        run: pnpm exec playwright test tests/e2e/j4-learning-journey.spec.ts tests/e2e/j5-study-focus.spec.ts --project=desktop-chromium --project=android-mobile --project=compact-mobile --workers=2
+        run: pnpm exec playwright test tests/e2e/j4-learning-journey.spec.ts tests/e2e/j5-study-focus.spec.ts tests/e2e/e12-learner-writing.spec.ts --project=desktop-chromium --project=android-mobile --project=compact-mobile --workers=2
