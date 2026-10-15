@@ -1,4 +1,3 @@
-import "../design/j5.css";
 import "./e11Practice.css";
 import "./e08Revision.css";
 import {useEffect,useRef,useState,type ReactNode} from "react";
