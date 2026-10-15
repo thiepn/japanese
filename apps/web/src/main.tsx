@@ -1,7 +1,7 @@
-import { StrictMode } from "react";
+import { StrictMode,Suspense,lazy } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
-import { J1VisualSandbox } from "./design/J1VisualSandbox";
+
 import {resolveJ10Season} from "./design/j10Season";
 import {syncJ12ThemeColor} from "./design/j12Pwa";
 import {applyJTheme,readJTheme} from "./design/j14Theme";
@@ -40,8 +40,10 @@ const loadExhibition=()=>{void import("./design/J13ExhibitionRuntime");};
 if(exhibitionQuery.matches)loadExhibition();
 else exhibitionQuery.addEventListener("change",(event)=>{if(event.matches)loadExhibition();},{once:true});
 
+// Visual QA tools are never fetched by the normal learner entry.
+const J1VisualSandbox=lazy(()=>import("./design/J1VisualSandbox").then(m=>({default:m.J1VisualSandbox})));
 const visualQa=new URLSearchParams(window.location.search).get("visual-qa")==="j1";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>{visualQa?<J1VisualSandbox/>:<App />}</StrictMode>,
+  <StrictMode>{visualQa?<Suspense fallback={<main role="main"><p role="status">Opening visual QA…</p></main>}><J1VisualSandbox/></Suspense>:<App />}</StrictMode>,
 );
