@@ -603,17 +603,17 @@ function readStoredPendingLogin():PendingJapaneseLogin|null {
   return null;
 }
 
-function markConnectIntent(): void {
+export function markConnectIntent(): void {
   for(const storage of availableLoginStores()){
     try{storage.setItem(JAPANESE_CONNECT_INTENT_KEY,"1");}catch{}
   }
 }
-function hasConnectIntent(): boolean {
+export function hasConnectIntent(): boolean {
   return availableLoginStores().some(storage=>{
     try{return storage.getItem(JAPANESE_CONNECT_INTENT_KEY)==="1";}catch{return false;}
   });
 }
-function clearConnectIntent(): void {
+export function clearConnectIntent(): void {
   for(const storage of availableLoginStores()){
     try{storage.removeItem(JAPANESE_CONNECT_INTENT_KEY);}catch{}
   }

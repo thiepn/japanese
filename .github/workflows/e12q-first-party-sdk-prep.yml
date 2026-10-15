@@ -1,0 +1,55 @@
+name: E12Q First-party Account Adapter Preparation
+
+on:
+  push:
+    branches:
+      - fix/e12q-first-party-account-sdk-adapter
+
+permissions:
+  contents: read
+
+concurrency:
+  group: japanese-e12q-first-party-sdk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  adapter-and-web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      VITE_PUBLIC_BASE: /japanese/
+    steps:
+      - name: Checkout exact candidate without persisted credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Report source provenance
+        run: |
+          git rev-parse HEAD
+          git status --short
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - name: Install existing Japanese dependencies (no private Account checkout)
+        run: pnpm install --no-frozen-lockfile
+      - name: Focused canonical auth, race and first-party adapter tests
+        run: >-
+          pnpm exec vitest run
+          tests/platform/j37-first-party-sdk-adapter.test.ts
+          tests/platform/j18-auth-recovery.test.ts
+          tests/platform/j16d-oauth-callback.test.ts
+          tests/platform/j16f-workspace-races.test.ts
+          tests/platform/p22-account-connect-recovery.test.ts
+      - name: Existing auth, web and monorepo typecheck
+        run: pnpm typecheck
+      - name: Actual browser bundle and unchanged P22 entry budget
+        run: |
+          pnpm --filter @thiepn/japanese-web build
+          node scripts/p22-bundle-budget.mjs
+      - name: Preserve hard release-authority boundary
+        run: |
+          echo "Adapter preparation only. No registered Japanese OAuth client or Account SDK package installation."
+          echo "Real two-account OAuth, physical PWA, cloud sync and independent human approval are NOT_TESTED/BLOCKED."
