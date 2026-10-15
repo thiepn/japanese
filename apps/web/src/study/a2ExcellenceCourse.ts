@@ -193,6 +193,7 @@ export function getE03Overview(events:readonly StudyEvent[],now=new Date()):E03O
 export function buildE03Journey(id:string):StudyStep[]{
  const b=bound(id),s=b.scene;
  const [hearGist,hearDetail,readGist,readDetail,reply,recall]=main(b);
+ if(!hearGist||!hearDetail||!readGist||!readDetail||!reply||!recall)throw Error("E03_MISSING_ORIGINAL_CONTROLLED_PROMPT:"+id);
  const lessons=b.unit.grammarIds.slice(0,4).map(g=>grammarLessons[grammarContext(g)]).filter((step):step is StudyLesson=>Boolean(step));
  const linked=new Set(b.unit.vocabularyIds);
  const vocab=s.vocabulary.map(v=>{
