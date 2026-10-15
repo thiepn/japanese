@@ -11,7 +11,7 @@ export interface E08Extension {
  evidence:{question:string;answer:string;foils:readonly [string,string];reasons:readonly [string,string]};
  decision:{question:string;answer:string;foils:readonly [string,string];reasons:readonly [string,string]};
  revision:{
-  task:string;audience:string;contentChecks:readonly [string,string,string];
+  task:string;audience:string;contentChecks:readonly [string,string,string][];
   modelPitfall:string;politeness:string;secondDraftTask:string;
   speakingFollowUp:string;
  };
