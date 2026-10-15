@@ -28,7 +28,7 @@ export interface E06CaseProgress {
  status:E06Status;sourceListening:boolean;sourceReading:boolean;prerequisiteReady:boolean;
  correct:number;required:number;attempts:number;unscoredWriting:number;unscoredSpeaking:number;
  firstDraftSubmitted:boolean;revisedDraftSubmitted:boolean;contextProblemsCorrect:number;
- e11ListeningPractised:boolean;e11ReadingPractised:boolean;e11WritingSubmitted:boolean;
+ e11ListeningPractised:boolean;e11ReadingPractised:boolean;e11WritingSubmitted:boolean;e12RevisedWritingSubmitted:boolean;
  e09Correct:number;e09Required:number;e09DelayedCorrect:number;e09DelayedRequired:number;
  delayedCorrect:number;delayedRequired:number;availableAt?:string;
  dailyStages:E10StageProgress[];nextDailyStage:E10StageId|null;
@@ -343,6 +343,22 @@ function e11IndependentWriting(s:E06Case,a:Anchor,t:E11PracticalTransfer):StudyP
   })
  };
 }
+/**
+ * Second learner-owned E11 draft, never a new graded cue.
+ * Retains the original case/Can-do authority while using a distinct response ID.
+ */
+function e12RevisedWriting(s:E06Case,a:Anchor,t:E11PracticalTransfer):StudyPrompt{
+ const first=e11IndependentWriting(s,a,t);
+ return {...first,
+  id:PREFIX+s.id+"-e12-revised-letter",
+  cueFamily:PREFIX+s.id+"-e12-letter-revision",
+  instruction:"Optional second draft · revise your own Japanese, without automatic language grading",
+  prompt:"Write a revised message for: "+t.writingAudience+"\\nRecheck this situation: "+t.setting+
+   "\\nResolve: "+t.pragmaticDecision+"\\nChange the text where necessary; ticking review questions is not a correctness verdict.",
+  explanation:"You revised your own original message. Compare what changed in audience, facts and politeness; no semantic or CEFR score is assigned. "+t.grammar.function,
+  eventMetadata:{...first.eventMetadata,e12:true,e11Task:"revised-letter",e12DraftStage:"revision"}
+ };
+}
 function e11Practice(s:E06Case,a:Anchor,t:E11PracticalTransfer,mode:"listening"|"reading"):StudyPrompt{
  const x=mode==="listening"?t.listening:t.readingQuestion,spoken=mode==="listening";
  const key="e11-micro-"+mode;
@@ -528,6 +544,7 @@ export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06O
    e11ListeningPractised:own.some(e=>e.metadata?.promptId===prefix+"e11-micro-listening"&&e.metadata?.e11===true&&e.metadata?.nonAuthoritative===true),
    e11ReadingPractised:own.some(e=>e.metadata?.promptId===prefix+"e11-micro-reading"&&e.metadata?.e11===true&&e.metadata?.nonAuthoritative===true),
    e11WritingSubmitted:own.some(e=>e.metadata?.promptId===prefix+"e11-original-letter"&&e.metadata?.e11===true&&e.metadata?.nonAuthoritative===true),
+   e12RevisedWritingSubmitted:own.some(e=>e.metadata?.promptId===prefix+"e12-revised-letter"&&e.metadata?.e12===true&&e.metadata?.nonAuthoritative===true),
    firstDraftSubmitted:own.some(e=>e.metadata?.promptId===prefix+"write"&&e.metadata?.nonAuthoritative===true),
    revisedDraftSubmitted:own.some(e=>e.metadata?.promptId===prefix+"e08-second-draft"&&e.metadata?.nonAuthoritative===true),
    contextProblemsCorrect:["e08-context-listen","e08-context-read"].filter(k=>by.get(prefix+k)?.result==="correct").length,
@@ -611,6 +628,13 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
  const previousFirst=ownEvents.filter(e=>e.metadata?.promptId===PREFIX+s.id+"-write"&&e.metadata?.nonAuthoritative===true&&typeof e.metadata.learnerResponse==="string")
   .sort((x,y)=>y.occurredAt.localeCompare(x.occurredAt))[0];
  const privateFirst=typeof previousFirst?.metadata?.learnerResponse==="string"?previousFirst.metadata.learnerResponse:"";
+ // Only first drafts from this original case, its canonical source and the active
+ // account's StudyEvents may be shown during optional E12 revision.
+ const previousE11=ownEvents.filter(e=>e.metadata?.promptId===PREFIX+s.id+"-e11-original-letter"&&
+   e.metadata?.e11===true&&e.metadata?.nonAuthoritative===true&&
+   typeof e.metadata.learnerResponse==="string")
+  .sort((x,y)=>y.occurredAt.localeCompare(x.occurredAt))[0];
+ const privateE11=typeof previousE11?.metadata?.learnerResponse==="string"?previousE11.metadata.learnerResponse:"";
  const unit=unitById.get(a.unitId)!;
  const grammar=unit.grammarIds.slice(0,3).map(id=>grammarLessons[grammarContext(id)])
   .filter((l):l is StudyLesson=>Boolean(l));
@@ -709,6 +733,11 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
      " These prompts help you review, not certify, your own Japanese.",
      micro.writingRevision.map(([heading,question,repair])=>({expression:heading+" · "+question,note:repair})),a),
    e11IndependentWriting(s,a,micro),
+   lesson(s,"e12-revision-coach","Revise the message, not just the checklist",
+     "Write a second independent version for the same recipient. Compare factual constraints, intent and register with your own first message. A textual change does not certify correct Japanese.",
+     [...micro.writingRevision.map(([heading,question,repair])=>({expression:heading+" · "+question,note:repair})),
+       ...(privateE11?[{expression:"Your prior E11 first draft (private)",note:privateE11}]:[])],a),
+   e12RevisedWriting(s,a,micro),
    lesson(s,"e11-speaking-prep","Prepare a considerate spoken follow-up",
      micro.spokenChallenge+" Practice aloud without submitting audio or claiming pronunciation mastery.",[],a)
   ]:[]),
