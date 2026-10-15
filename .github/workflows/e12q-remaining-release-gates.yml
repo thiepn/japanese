@@ -56,9 +56,14 @@ jobs:
         if: always() && steps.install.outcome == 'success'
         continue-on-error: true
         run: pnpm build
+      - name: Independently compile the actual web candidate (no release-budget waiver)
+        id: webbuild
+        if: always() && steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm --filter @thiepn/japanese-web build
       - name: Install Chromium
         id: chromium
-        if: always() && steps.build.outcome == 'success'
+        if: always() && steps.webbuild.outcome == 'success'
         continue-on-error: true
         run: pnpm exec playwright install --with-deps chromium
       - name: PWA offline, keyboard accessibility, account UI, field-resume and E12 browser matrix
@@ -70,6 +75,7 @@ jobs:
         run: >-
           pnpm exec playwright test
           tests/e2e/e12-learner-writing.spec.ts
+          tests/e2e/e12-offline-revision.spec.ts
           tests/e2e/j20-device-recovery.spec.ts
           tests/e2e/j22-accessibility.spec.ts
           tests/e2e/pwa.spec.ts
@@ -86,14 +92,16 @@ jobs:
           FULLTESTS: ${{ steps.fulltests.outcome }}
           CONTENT: ${{ steps.content.outcome }}
           BUILD: ${{ steps.build.outcome }}
+          WEBBUILD: ${{ steps.webbuild.outcome }}
           BROWSER: ${{ steps.browser.outcome }}
         run: |
           echo "Full monorepo typecheck: $FULLTYPES"
           echo "All Vitest tests: $FULLTESTS"
           echo "Canonical source validation: $CONTENT"
-          echo "Full build: $BUILD"
+          echo "Full release budget and build audit: $BUILD"
+          echo "Standalone built web candidate (browser test only): $WEBBUILD"
           echo "Chromium selected release matrix: $BROWSER"
-          if [ "$FULLTYPES" != success ] || [ "$FULLTESTS" != success ] || [ "$CONTENT" != success ] || [ "$BUILD" != success ] || [ "$BROWSER" != success ]; then
+          if [ "$FULLTYPES" != success ] || [ "$FULLTESTS" != success ] || [ "$CONTENT" != success ] || [ "$BUILD" != success ] || [ "$WEBBUILD" != success ] || [ "$BROWSER" != success ]; then
             echo "One or more executed gates failed or was not tested; release remains BLOCKED."
             exit 1
           fi
