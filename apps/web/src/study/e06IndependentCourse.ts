@@ -9,7 +9,7 @@ import {E06_CASES,type E06Case} from "./e06IndependentCases";
 import {e08ByCase,type E08Extension} from "./e08ContextExtensions";
 import {E09_BY_CASE,type E09CaseDepth} from "./e09CommunicationDepth";
 import {e09RepairCueFor,type E09RepairCue} from "./e09MisconceptionRepairs";
-import {E11_BY_CASE,e11SourceUpdate,type E11PracticalTransfer} from "./e11PracticalTransfer";
+import {E11_BY_CASE,e11SourceUpdate,type E11PracticalTransfer,type E11SourceUpdate} from "./e11PracticalTransfer";
 import {E10_DAILY_STAGES,E10_DELAYED_GROUPS,e10StageById,type E10StageId,type E10StageProgress,type E10DelayedId,type E10DelayedProgress} from "./e10DailyStages";
 
 const PREFIX="e06-cumulative-";
@@ -327,6 +327,7 @@ function e11IndependentWriting(s:E06Case,a:Anchor,t:E11PracticalTransfer):StudyP
   promptType:"textarea",instruction:"Optional independent Japanese message · unscored self-revision",
   prompt:"Write to: "+t.writingAudience+"\nSituation: "+t.setting+
    "\nWhat you must communicate: "+t.pragmaticDecision+
+   "\nUpdated written information: "+(e11SourceUpdate(s.id)?.ja??"No later notice.")+
    "\nUse the original audience/fact/politeness checklist to revise your message.",
   promptLanguage:"en",placeholder:"自分の日本語で書いてください…",
   acceptedAnswers:[],displayAnswer:"Your own independent message; no automatic language grade",
@@ -354,7 +355,8 @@ function e12RevisedWriting(s:E06Case,a:Anchor,t:E11PracticalTransfer):StudyPromp
   cueFamily:PREFIX+s.id+"-e12-letter-revision",
   instruction:"Optional second draft · revise your own Japanese, without automatic language grading",
   prompt:"Write a revised message for: "+t.writingAudience+"\nRecheck this situation: "+t.setting+
-   "\nResolve: "+t.pragmaticDecision+"\nChange the text where necessary; ticking review questions is not a correctness verdict.",
+   "\nResolve: "+t.pragmaticDecision+
+   "\nReview the later source update: "+(e11SourceUpdate(s.id)?.ja??"No later notice.")+"\nChange the text where necessary; ticking review questions is not a correctness verdict.",
   explanation:"You revised your own original message. Compare what changed in audience, facts and politeness; no semantic or CEFR score is assigned. "+t.grammar.function,
   eventMetadata:{...first.eventMetadata,e12:true,e11Task:"revised-letter",e12DraftStage:"revision"}
  };
@@ -378,6 +380,25 @@ function e11Practice(s:E06Case,a:Anchor,t:E11PracticalTransfer,mode:"listening"|
    })
  };
 }
+/** Read the changed factual notice with the original unscored E11 Study Player. */
+function e11UpdatedNoticePractice(s:E06Case,a:Anchor,u:E11SourceUpdate):StudyPrompt{
+ const d=u.decision;
+ const prompt=choice(s,a,"e11-update-read","understand",
+  u.ja+"\n\n"+d.question,d.answer,d.wrong,d.why,"comprehension");
+ return {...prompt,
+  instruction:"Compare the original notice and a subsequent message. This optional source-repair choice cannot confer CEFR mastery.",
+  explanation:"Original source comparison: "+u.compare+" "+u.limit,
+  eventMetadata:metadata(s,a,"understand",{
+   e11:true,e11CaseId:s.id,e11Task:"e11-update-read",
+   nonAuthoritative:true,schedulerExcluded:true,semanticScore:false,
+   e11OriginalCanDo:a.canDoId,e06FoilFeedback:[
+    {response:d.wrong[0],feedback:d.why[0]},
+    {response:d.wrong[1],feedback:d.why[1]}
+   ]
+  })
+ };
+}
+
 function controlledPrompts(s:E06Case,a:Anchor):StudyPrompt[]{
  const audio=s.turns.map(t=>t.speaker+"： "+t.ja).join(" ");
  return [
@@ -731,7 +752,8 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
    e11Practice(s,a,micro,"reading"),
    lesson(s,"e11-notice",micro.reading.title,micro.reading.en,
       [{expression:micro.reading.ja,note:micro.reading.en}],a),
-   ...(e11SourceUpdate(s.id)?[lesson(s,"e11-later-update","A later original message: adjust your interpretation",
+   ...(e11SourceUpdate(s.id)?[e11UpdatedNoticePractice(s,a,e11SourceUpdate(s.id)!),
+    lesson(s,"e11-later-update","A later original message: adjust your interpretation",
       "Read the original notice before its later update. Identify what actually changed and what remains unresolved; do not count this self-check as a proficiency grade.",
       [{expression:e11SourceUpdate(s.id)!.ja,note:e11SourceUpdate(s.id)!.en},
        {expression:"Which part changed?",note:e11SourceUpdate(s.id)!.compare},
