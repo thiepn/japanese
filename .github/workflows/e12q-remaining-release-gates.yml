@@ -1,0 +1,100 @@
+name: E12Q Remaining Release Gates
+
+on:
+  push:
+    branches:
+      - fix/e12q-remaining-release-gates
+
+permissions:
+  contents: read
+
+concurrency:
+  group: japanese-e12q-remaining-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  full-and-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      VITE_PUBLIC_BASE: /japanese/
+    steps:
+      - name: Exact child checkout, no persisted credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify actual head and worktree
+        run: |
+          git rev-parse HEAD
+          git status --short
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - name: Install workspace dependencies
+        id: install
+        run: pnpm install --no-frozen-lockfile
+      - name: Full monorepo TypeScript
+        id: fulltypes
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm typecheck
+      - name: All Vitest unit/integration tests
+        id: fulltests
+        if: always() && steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm test
+      - name: Canonical source validation
+        id: content
+        if: always() && steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm validate:content
+      - name: Full monorepo build and native build audits
+        id: build
+        if: always() && steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm build
+      - name: Install Chromium
+        id: chromium
+        if: always() && steps.build.outcome == 'success'
+        continue-on-error: true
+        run: pnpm exec playwright install --with-deps chromium
+      - name: PWA offline, keyboard accessibility, account UI, field-resume and E12 browser matrix
+        id: browser
+        if: always() && steps.chromium.outcome == 'success'
+        continue-on-error: true
+        env:
+          CI: ""
+        run: >-
+          pnpm exec playwright test
+          tests/e2e/e12-learner-writing.spec.ts
+          tests/e2e/j20-device-recovery.spec.ts
+          tests/e2e/j22-accessibility.spec.ts
+          tests/e2e/pwa.spec.ts
+          tests/e2e/j17-account-panel.spec.ts
+          tests/e2e/j36-offline-field-resume.spec.ts
+          --project=desktop-chromium
+          --project=android-mobile
+          --project=compact-mobile
+          --workers=2
+      - name: Transparent acceptance summary - never grant release authority
+        if: always()
+        env:
+          FULLTYPES: ${{ steps.fulltypes.outcome }}
+          FULLTESTS: ${{ steps.fulltests.outcome }}
+          CONTENT: ${{ steps.content.outcome }}
+          BUILD: ${{ steps.build.outcome }}
+          BROWSER: ${{ steps.browser.outcome }}
+        run: |
+          echo "Full monorepo typecheck: $FULLTYPES"
+          echo "All Vitest tests: $FULLTESTS"
+          echo "Canonical source validation: $CONTENT"
+          echo "Full build: $BUILD"
+          echo "Chromium selected release matrix: $BROWSER"
+          if [ "$FULLTYPES" != success ] || [ "$FULLTESTS" != success ] || [ "$CONTENT" != success ] || [ "$BUILD" != success ] || [ "$BROWSER" != success ]; then
+            echo "One or more executed gates failed or was not tested; release remains BLOCKED."
+            exit 1
+          fi
+          echo "AUTOMATED CHECKS PASSED. Real OAuth, physical device and independent Japanese/source-rights signoffs remain NOT_TESTED."
