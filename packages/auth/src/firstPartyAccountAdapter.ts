@@ -1,5 +1,8 @@
+import { createClient } from "@supabase/supabase-js";
 import {
+  JAPANESE_APP_SLUG,
   JAPANESE_CALLBACK_URL,
+  THIEPN_ACCOUNT_PUBLISHABLE_KEY,
   JAPANESE_HOME_PATH,
   THIEPN_ACCOUNT_SUPABASE_URL,
   clearConnectIntent,
@@ -50,6 +53,37 @@ export interface FirstPartyBrowserSso {
 export interface FirstPartyJapaneseConnectionPort {
   isConnected(bearer: string): Promise<boolean>;
   connect(bearer: string): Promise<void>;
+}
+
+/**
+ * Reuse the existing Account connection RLS/RPC contract, not a new database.
+ * Each operation binds a single already-verified SDK bearer for its lifetime.
+ * Account derives the owner server-side; this client never supplies user IDs.
+ */
+export function createJapaneseFirstPartyConnectionPort(): FirstPartyJapaneseConnectionPort {
+  const clientFor = (bearer: string) => {
+    if (!bearer) throw new Error("ACCOUNT_TOKEN_UNAVAILABLE");
+    return createClient(THIEPN_ACCOUNT_SUPABASE_URL, THIEPN_ACCOUNT_PUBLISHABLE_KEY, {
+      accessToken: async () => bearer,
+    });
+  };
+  return {
+    async isConnected(bearer) {
+      const response = await clientFor(bearer)
+        .from("account_app_connections")
+        .select("status")
+        .eq("app_slug", JAPANESE_APP_SLUG)
+        .maybeSingle();
+      if (response.error) throw response.error;
+      return response.data?.status === "connected" || response.data?.status === "limited";
+    },
+    async connect(bearer) {
+      const response = await clientFor(bearer).rpc("connect_thiepn_app", {
+        p_app_slug: JAPANESE_APP_SLUG,
+      });
+      if (response.error) throw response.error;
+    },
+  };
 }
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
