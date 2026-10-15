@@ -1,0 +1,125 @@
+name: E12Q Remaining Release Gates
+
+on:
+  push:
+    branches:
+      - fix/e12q-p22-genuine-route-loading
+
+permissions:
+  contents: read
+
+concurrency:
+  group: japanese-e12q-remaining-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  full-and-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      VITE_PUBLIC_BASE: /japanese/
+    steps:
+      - name: Exact child checkout, no persisted credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify actual head and worktree
+        run: |
+          git rev-parse HEAD
+          git status --short
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - name: Install workspace dependencies
+        id: install
+        run: pnpm install --no-frozen-lockfile
+      - name: Full monorepo TypeScript
+        id: fulltypes
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm typecheck
+      - name: All Vitest unit/integration tests
+        id: fulltests
+        if: always() && steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm test
+      - name: Canonical source validation
+        id: content
+        if: always() && steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm validate:content
+      - name: Full monorepo build and native build audits
+        id: build
+        if: always() && steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm build
+      - name: Measure real initial-entry and linked CSS gzip without changing P22
+        if: always() && steps.install.outcome == 'success'
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from "node:fs";
+          import path from "node:path";
+          import { gzipSync } from "node:zlib";
+          const dir="apps/web/dist";
+          const html=fs.readFileSync(path.join(dir,"index.html"),"utf8");
+          const entry=html.match(/<script[^>]+type=["']module["'][^>]+src=["']([^"']+)["']/i)?.[1];
+          if (!entry) throw Error("P22_BUNDLE_ENTRY_MISSING");
+          const measure=(p)=>gzipSync(fs.readFileSync(path.join(dir,p.replace(/^\\/japanese\\//,"").replace(/^\\//,"")))).byteLength;
+          const css=[...html.matchAll(/<link[^>]+rel=["']stylesheet["'][^>]+href=["']([^"']+)["']/gi)].map(x=>x[1]);
+          console.log(JSON.stringify({entry,entryGzipBytes:measure(entry),cssGzipBytes:css.reduce((n,x)=>n+measure(x),0),entryBudget:512000,cssBudget:40960},null,2));
+          NODE
+      - name: Independently compile the actual web candidate (no release-budget waiver)
+        id: webbuild
+        if: always() && steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm --filter @thiepn/japanese-web build
+      - name: Install Chromium
+        id: chromium
+        if: always() && steps.webbuild.outcome == 'success'
+        continue-on-error: true
+        run: pnpm exec playwright install --with-deps chromium
+      - name: PWA offline, keyboard accessibility, account UI, field-resume and E12 browser matrix
+        id: browser
+        if: always() && steps.chromium.outcome == 'success'
+        continue-on-error: true
+        env:
+          CI: ""
+        run: >-
+          pnpm exec playwright test
+          tests/e2e/j4-learning-journey.spec.ts
+          tests/e2e/j5-study-focus.spec.ts
+          tests/e2e/e12-learner-writing.spec.ts
+          tests/e2e/e12-offline-revision.spec.ts
+          tests/e2e/j20-device-recovery.spec.ts
+          tests/e2e/j22-accessibility.spec.ts
+          tests/e2e/pwa.spec.ts
+          tests/e2e/j17-account-panel.spec.ts
+          tests/e2e/j36-offline-field-resume.spec.ts
+          --project=desktop-chromium
+          --project=android-mobile
+          --project=compact-mobile
+          --workers=2
+      - name: Transparent acceptance summary - never grant release authority
+        if: always()
+        env:
+          FULLTYPES: ${{ steps.fulltypes.outcome }}
+          FULLTESTS: ${{ steps.fulltests.outcome }}
+          CONTENT: ${{ steps.content.outcome }}
+          BUILD: ${{ steps.build.outcome }}
+          WEBBUILD: ${{ steps.webbuild.outcome }}
+          BROWSER: ${{ steps.browser.outcome }}
+        run: |
+          echo "Full monorepo typecheck: $FULLTYPES"
+          echo "All Vitest tests: $FULLTESTS"
+          echo "Canonical source validation: $CONTENT"
+          echo "Full release budget and build audit: $BUILD"
+          echo "Standalone built web candidate (browser test only): $WEBBUILD"
+          echo "Chromium selected release matrix: $BROWSER"
+          if [ "$FULLTYPES" != success ] || [ "$FULLTESTS" != success ] || [ "$CONTENT" != success ] || [ "$BUILD" != success ] || [ "$WEBBUILD" != success ] || [ "$BROWSER" != success ]; then
+            echo "One or more executed gates failed or was not tested; release remains BLOCKED."
+            exit 1
+          fi
+          echo "AUTOMATED CHECKS PASSED. Real OAuth, physical device and independent Japanese/source-rights signoffs remain NOT_TESTED."
