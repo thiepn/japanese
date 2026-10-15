@@ -1,0 +1,49 @@
+name: E12 Exact Source Qualification
+
+on:
+  push:
+    branches:
+      - fix/e12-executed-qualification-and-proven-defects
+
+permissions:
+  contents: read
+
+concurrency:
+  group: japanese-e12-qualification
+  cancel-in-progress: true
+
+jobs:
+  focused-source-and-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      VITE_PUBLIC_BASE: /japanese/
+    steps:
+      - name: Exact source checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Report immutable commit
+        run: |
+          git rev-parse HEAD
+          git status --short
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - name: Install exact workspace dependencies
+        run: pnpm install --no-frozen-lockfile
+      - name: E12 original-source and persistence tests
+        run: pnpm exec vitest run tests/study-player/e12-draft-continuity.test.ts tests/local-db/study-event.test.ts
+      - name: Actual web TypeScript
+        run: pnpm --filter @thiepn/japanese-web typecheck
+      - name: Actual web application build
+        run: pnpm --filter @thiepn/japanese-web build
+      - name: Install Chromium browser
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Desktop/mobile Learn and Study Player smoke
+        env:
+          CI: ""
+        run: pnpm exec playwright test tests/e2e/j4-learning-journey.spec.ts tests/e2e/j5-study-focus.spec.ts --project=desktop-chromium --project=android-mobile --project=compact-mobile --workers=2
