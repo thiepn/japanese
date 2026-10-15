@@ -67,7 +67,7 @@ jobs:
           const html=fs.readFileSync(path.join(dir,"index.html"),"utf8");
           const entry=html.match(/<script[^>]+type=["']module["'][^>]+src=["']([^"']+)["']/i)?.[1];
           if (!entry) throw Error("P22_BUNDLE_ENTRY_MISSING");
-          const measure=(p)=>gzipSync(fs.readFileSync(path.join(dir,p.replace(/^\\/japanese\\//,"").replace(/^\\//,"")))).byteLength;
+          const measure=(p)=>gzipSync(fs.readFileSync(path.join(dir,p.startsWith("/japanese/")?p.slice("/japanese/".length):p.startsWith("/")?p.slice(1):p))).byteLength;
           const css=[...html.matchAll(/<link[^>]+rel=["']stylesheet["'][^>]+href=["']([^"']+)["']/gi)].map(x=>x[1]);
           console.log(JSON.stringify({entry,entryGzipBytes:measure(entry),cssGzipBytes:css.reduce((n,x)=>n+measure(x),0),entryBudget:512000,cssBudget:40960},null,2));
           NODE
