@@ -9,10 +9,10 @@ import "./styles.css";
 import "./design/j1.css";
 import "./design/j2.css";
 import "./design/j3.css";
-import "./design/j4.css";
-import "./design/j5.css";
-import "./design/j6.css";
-import "./design/j7.css";
+
+
+
+
 import "./design/j8.css";
 import "./design/j9.css";
 import "./design/j10.css";
