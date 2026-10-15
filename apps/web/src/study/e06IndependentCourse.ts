@@ -390,7 +390,7 @@ function controlledPrompts(s:E06Case,a:Anchor):StudyPrompt[]{
  ];
 }
 function transferPrompts(s:E06Case,a:Anchor):StudyPrompt[]{
- const t=s.transfer,feedback:[t.correction,t.correction] as const;
+ const t=s.transfer,feedback=[t.correction,t.correction] as const;
  return [
   choice(s,a,"delayed-listen","delayed",t.question,t.answer,t.wrong,feedback,"listening",t.audio),
   choice(s,a,"delayed-read","delayed",t.reading+"\n\n"+t.readQuestion,t.readAnswer,t.readWrong,feedback,"comprehension"),
