@@ -141,7 +141,7 @@ export function getE05Evidence(events:readonly StudyEvent[]):E05Evidence{
 }
 function lesson(id:string,title:string,body:string,examples:StudyLesson["examples"]):StudyLesson{
  return {kind:"lesson",id:"e05-repair-"+id,title,body,
-   contextId:"e05-repair-"+id,examples,sourceLabel:"THIEPN original correction · source-linked review"};
+   contextId:"e05-repair-"+id,...(examples?{examples}:{}),sourceLabel:"THIEPN original correction · source-linked review"};
 }
 function newQuestion(item:RepairItem,target:RepairTarget,failedRepairs:number):StudyPrompt{
  const old=byPromptId.get(target.promptId)!;
