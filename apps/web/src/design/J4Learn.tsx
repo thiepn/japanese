@@ -1,3 +1,5 @@
+import "./j4.css";
+import "../study/e10DailyStages.css";
 import {useMemo} from "react";
 import {AdaptiveRemediation} from "../study/AdaptiveRemediation";
 import {AiCoach} from "../ai/AiCoach";
