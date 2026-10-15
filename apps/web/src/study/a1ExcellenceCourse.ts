@@ -178,6 +178,7 @@ export function buildE02Journey(id:string):StudyStep[]{
     .map(g=>grammarLessons[grammarContext(g)])
     .filter((item):item is StudyLesson=>Boolean(item));
   const [hear,read,reply,recall]=mainPrompts(scene);
+  if(!hear||!read||!reply||!recall)throw Error("E02_MISSING_ORIGINAL_CONTROLLED_PROMPT:"+id);
   const canDo=CAN_DO_MAP.get(unit.canDoId)!.statement;
   return [
     lesson(scene,"setup","A1 · "+scene.title,
