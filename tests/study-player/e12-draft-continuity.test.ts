@@ -2,7 +2,7 @@ import "fake-indexeddb/auto";
 import {describe,expect,it} from "vitest";
 import {createStudyEvent,isStudyLesson,type StudyPrompt} from "../../packages/study-player/src/index";
 import {listMemoryTraces,listStudyEvents,saveStudyEvent} from "../../packages/local-db/src/index";
-import {E02_AVAILABLE_SCENES,e02ReviewPrompts} from "../../apps/web/src/study/a1ExcellenceCourse";
+import {e02ReviewPrompts} from "../../apps/web/src/study/a1ExcellenceCourse";
 import {e03ReviewPrompts} from "../../apps/web/src/study/a2ExcellenceCourse";
 import {e04ReviewPrompts} from "../../apps/web/src/study/a2ExcellenceAdvancedCourse";
 import {E06_LINKED_CASES,buildE11OptionalSession,getE06Overview} from "../../apps/web/src/study/e06IndependentCourse";
@@ -62,7 +62,7 @@ describe("E12 native optional writing, event identity, and account continuity",(
   expect(steps.findIndex(s=>s.id===first.id)).toBeLessThan(steps.findIndex(s=>s.id===revised.id));
   expect(getE06Overview(source.events).cases.find(x=>x.id===source.id)).toMatchObject({
    correct:0,e11WritingSubmitted:false,e12RevisedWritingSubmitted:false});
-  expect(()=>buildE11OptionalSession(source.id,[])).toThrow("E06_SOURCE_LISTENING_AND_TEXT_NOT_YET_PRACTISED");
+  expect(()=>buildE11OptionalSession(source.id,[])).toThrow("E11_SOURCE_LESSON_FIRST");
  });
  it("restores only the same account's saved E11 original and independently counts E12",async()=>{
   const alpha="e12-qualified-alpha",beta="e12-qualified-beta";
