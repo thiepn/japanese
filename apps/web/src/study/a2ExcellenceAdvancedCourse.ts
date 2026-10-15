@@ -236,6 +236,7 @@ export function buildE04Preview(id:string):StudyStep[]{
 export function buildE04Journey(id:string):StudyStep[]{
  const b=getBound(id),s=b.scene;
  const [listenGist,listenDetail,readGist,readEvidence,respond,retrieve]=guided(b);
+ if(!listenGist||!listenDetail||!readGist||!readEvidence||!respond||!retrieve)throw Error("E04_MISSING_ORIGINAL_CONTROLLED_PROMPT:"+id);
  const canonicalLessons=b.unit.grammarIds.slice(0,5)
   .map(id=>grammarLessons[grammarContext(id)]).filter((x):x is StudyLesson=>Boolean(x));
  return [
