@@ -618,6 +618,9 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
  const {s,anchor:a}=getLinked(id);
  if(!prerequisites(a,events).ready)throw Error("E06_SOURCE_LISTENING_AND_TEXT_NOT_YET_PRACTISED:"+id);
  const [listen,read,negotiate,recall,secondListen,secondRead,thirdListen,thirdRead]=controlledPrompts(s,a);
+ if(!listen||!read||!negotiate||!recall)throw Error("E06_MISSING_ORIGINAL_CONTROLLED_PROMPT:"+id);
+ if(e08ByCase.has(s.id)&&(!secondListen||!secondRead))throw Error("E06_MISSING_E08_CONTROLLED_PROMPT:"+id);
+ if(E09_BY_CASE.has(s.id)&&(!thirdListen||!thirdRead))throw Error("E06_MISSING_E09_CONTROLLED_PROMPT:"+id);
  const ext=e08ByCase.get(s.id),depth=E09_BY_CASE.get(s.id),micro=E11_BY_CASE.get(s.id);
  const ownEvents=eventsFor(s,a,events);
  const recent=latestById(ownEvents);
