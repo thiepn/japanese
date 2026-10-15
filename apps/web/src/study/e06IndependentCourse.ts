@@ -9,7 +9,7 @@ import {E06_CASES,type E06Case} from "./e06IndependentCases";
 import {e08ByCase,type E08Extension} from "./e08ContextExtensions";
 import {E09_BY_CASE,type E09CaseDepth} from "./e09CommunicationDepth";
 import {e09RepairCueFor,type E09RepairCue} from "./e09MisconceptionRepairs";
-import {E11_BY_CASE,type E11PracticalTransfer} from "./e11PracticalTransfer";
+import {E11_BY_CASE,e11SourceUpdate,type E11PracticalTransfer} from "./e11PracticalTransfer";
 import {E10_DAILY_STAGES,E10_DELAYED_GROUPS,e10StageById,type E10StageId,type E10StageProgress,type E10DelayedId,type E10DelayedProgress} from "./e10DailyStages";
 
 const PREFIX="e06-cumulative-";
@@ -600,6 +600,10 @@ function previewLessons(s:E06Case):StudyLesson[]{
       micro.turns.map(v=>({expression:v.speaker+"： "+v.ja,note:v.en+" · "+v.intent}))),
     lesson(s,"e11-preview-reading",micro.reading.title,micro.reading.en,
       [{expression:micro.reading.ja,note:micro.reading.en}]),
+    ...(e11SourceUpdate(s.id)?[lesson(s,"e11-preview-update","Later message: one fact has changed",
+      e11SourceUpdate(s.id)!.compare,
+      [{expression:e11SourceUpdate(s.id)!.ja,note:e11SourceUpdate(s.id)!.en},
+       {expression:"Unresolved or unchanged",note:e11SourceUpdate(s.id)!.limit}])]:[]),
     lesson(s,"e11-preview-grammar","Precision in practical Japanese",
       micro.pragmaticDecision+" "+micro.grammar.function+" Avoid: "+micro.grammar.mistake,
       [...micro.vocabulary.map(v=>({expression:v.expression,note:v.meaning+" · "+v.contrast})),
@@ -727,6 +731,11 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
    e11Practice(s,a,micro,"reading"),
    lesson(s,"e11-notice",micro.reading.title,micro.reading.en,
       [{expression:micro.reading.ja,note:micro.reading.en}],a),
+   ...(e11SourceUpdate(s.id)?[lesson(s,"e11-later-update","A later original message: adjust your interpretation",
+      "Read the original notice before its later update. Identify what actually changed and what remains unresolved; do not count this self-check as a proficiency grade.",
+      [{expression:e11SourceUpdate(s.id)!.ja,note:e11SourceUpdate(s.id)!.en},
+       {expression:"Which part changed?",note:e11SourceUpdate(s.id)!.compare},
+       {expression:"What must not be assumed?",note:e11SourceUpdate(s.id)!.limit}],a)]:[]),
    lesson(s,"e11-contrasts","Precise grammar, vocabulary and register",
       micro.pragmaticDecision+" "+micro.grammar.function+" Common misreading: "+micro.grammar.mistake,
       [...micro.vocabulary.map(v=>({expression:v.expression,note:v.meaning+" · "+v.contrast})),
