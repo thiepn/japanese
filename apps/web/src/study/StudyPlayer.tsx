@@ -1,3 +1,6 @@
+import "../design/j5.css";
+import "./e11Practice.css";
+import "./e08Revision.css";
 import {useEffect,useRef,useState,type ReactNode} from "react";
 import {eligibleE07Draft,e07DraftPreference,setE07DraftPreference,saveE07Draft,readE07Draft,clearE07Draft,clearAllE07Drafts,findE07RestorableStep,E07_DRAFT_LIMIT} from "./e07DraftBuffer";
 import {getDefaultAudioProvider} from "@thiepn/audio";
