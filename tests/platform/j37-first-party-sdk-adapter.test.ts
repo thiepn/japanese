@@ -48,7 +48,7 @@ function harness(initial: FirstPartyIdentity = { status: "signed-out" }) {
       emit({ status: "signed-out" });
       return identity;
     }),
-    completeCallback: vi.fn(async () => { emit(signedIn(A)); return identity; }),
+    completeCallback: vi.fn(async (_location: Pick<Location, "href" | "hash">) => { emit(signedIn(A)); return identity; }),
     verify: vi.fn(async () => identity),
     getAccessToken: vi.fn(async () => identity.status === "signed-in" ? "test-only-token" : null),
     subscribe: vi.fn((listener: (state: FirstPartyIdentity) => void) => {
