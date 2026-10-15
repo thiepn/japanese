@@ -12,7 +12,7 @@ export interface E11PracticalTransfer {
  listening:{question:string;answer:string;wrong:readonly [string,string];wrongWhy:readonly [string,string]};
  readingQuestion:{question:string;answer:string;wrong:readonly [string,string];wrongWhy:readonly [string,string]};
  pragmaticDecision:string;writingAudience:string;
- writingRevision:readonly [string,string,string]; // skill, question, suggested revision
+ writingRevision:readonly [string,string,string][]; // skill, question, suggested revision
  spokenChallenge:string;
 }
 export const E11_TRANSFER:readonly E11PracticalTransfer[]=[
