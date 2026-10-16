@@ -66,6 +66,7 @@ function anchorOf(s:E06Case):Anchor|null{
  if(!sourcePrompts.length)return null;
  return {unitId:unit.id,canDoId:canDo.id,canDo:canDo.statement,cohort,sceneId,sourcePrompts};
 }
+assertE11ResponseMissionSources();
 export const E06_LINKED_CASES=E06_CASES.filter(s=>anchorOf(s)!==null);
 export const E06_UNLINKED_CASES=E06_CASES.filter(s=>anchorOf(s)===null)
  .map(s=>({id:s.id,title:s.title,level:s.level,anchor:s.anchor}));
@@ -401,7 +402,7 @@ function e11ResponseChoice(s:E06Case,a:Anchor,t:E11PracticalTransfer,
   explanation:"Original conversational intention: "+correct.intent+" "+
     t.grammar.function+" Contrast: "+t.grammar.mistake+
     " This supplied-line choice does not measure independent speaking or CEFR.",
-  activity:"practice",
+  activity:"review",
   languageActivity:"spoken_interaction",
   eventMetadata:metadata(s,a,"communicate",{
    e11:true,e11CaseId:s.id,e11Task:key,e11RoleResponse:true,
