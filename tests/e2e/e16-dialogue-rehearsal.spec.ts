@@ -77,7 +77,7 @@ test("E16 teaches the complete original source exchange turn by turn and hands o
   await expect(lab).toContainText("Source-owned response question");
   await lab.getByRole("button",{name:"Previous speaker"}).click();
   await expect(lab.getByText("Original turn 1 of 5")).toBeVisible();
-  await lab.getByRole("button",{name:"Original accompanying notice and communication caution"}).click();
+  await lab.locator(".e16-studio__notice summary").click();
   await expect(lab.getByText("Practical action:")).toBeVisible();
   await lab.getByRole("button",{name:"Continue to saved listening, replies and writing"}).click();
   const player=page.locator("main.j5-study-shell");
@@ -149,7 +149,7 @@ test("E16 whole-source audio playback is interruptible and speaks original turns
   await expect.poll(async()=>page.evaluate(()=>
     (window as unknown as {__e16AudioRates:number[]}).__e16AudioRates.at(-1)
   )).toBe(.78);
-  await expect(lab).toContainText("Audio is not recorded.");
+  await expect(lab).toContainText("Device synthesized audio is not an original native-speaker recording");
 });
 
 test("E16 speaker, reveal and handoff controls remain visible in Android and compact mobile",async({page},testInfo)=>{
