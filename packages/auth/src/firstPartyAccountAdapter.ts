@@ -121,6 +121,7 @@ export function createJapaneseFirstPartySdkAdapter(options: {
   let current: AuthContext = ANONYMOUS;
   let revision = 0;
   let lastKey = "anonymous:";
+  let callbackFlight: Promise<AuthContext> | null = null;
   const listeners = new Set<(context: AuthContext) => void>();
 
   const publish = (identity: FirstPartyIdentity): AuthContext => {
@@ -138,7 +139,11 @@ export function createJapaneseFirstPartySdkAdapter(options: {
   sso.subscribe(publish);
 
   async function verified(): Promise<AuthContext> {
-    return publish(await sso.verify());
+    const startedAt = revision;
+    const verifiedIdentity = await sso.verify();
+    // Another verified owner/sign-out event may have arrived during an
+    // in-flight /user request. Never republish a stale result over it.
+    return startedAt === revision ? publish(verifiedIdentity) : current;
   }
 
   async function verifiedBearer(): Promise<{ token: string; accountId: string; epoch: number }> {
@@ -171,21 +176,34 @@ export function createJapaneseFirstPartySdkAdapter(options: {
   }
 
   async function refresh(): Promise<AuthContext> {
+    // Duplicate React effects, focus refresh and route re-entry must join
+    // exactly one callback. The Account SDK owns its PKCE state and exchange.
+    if (callbackFlight) return callbackFlight;
     if (typeof window !== "undefined") {
       const callback = new URL(JAPANESE_CALLBACK_URL);
       if (window.location.origin === callback.origin &&
           window.location.pathname === callback.pathname) {
-        try {
-          return publish(await sso.completeCallback(window.location));
-        } finally {
-          // Remove one-use code/state from browser history after the SDK has
-          // consumed them, including cancelled/invalid responses.
-          window.history.replaceState(null, "", JAPANESE_HOME_PATH);
-        }
+        const startedAt = revision;
+        const attempt = (async () => {
+          try {
+            const identity = await sso.completeCallback(window.location);
+            return startedAt === revision ? publish(identity) : current;
+          } finally {
+            // The one-use code, state and error fields are never retained in
+            // the address bar; no PKCE verifier is copied between PWA/Chrome.
+            window.history.replaceState(null, "", JAPANESE_HOME_PATH);
+          }
+        })();
+        callbackFlight = attempt;
+        try { return await attempt; }
+        finally { if (callbackFlight === attempt) callbackFlight = null; }
       }
     }
+    const startedAt = revision;
     const result = await sso.initialize();
-    // Do not invent a user while the SDK navigates to the Account issuer.
+    // A sign-out/owner switch during a slow SSO probe invalidates its answer.
+    if (startedAt !== revision) return current;
+    // Never invent an authenticated user while navigating to Account.
     return result.status === "ready" ? publish(result.identity) : current;
   }
 
@@ -222,8 +240,12 @@ export function createJapaneseFirstPartySdkAdapter(options: {
       catch (error) { clearConnectIntent(); throw error; }
     },
     async signOut() {
+      // Revoke the adapter's in-flight response epoch BEFORE SDK logout so
+      // a delayed verification/callback cannot reattach the former owner.
+      revision++;
       clearConnectIntent();
-      publish(sso.signOutLocal());
+      try { sso.signOutLocal(); }
+      finally { publish({ status: "signed-out" }); }
       // This is app-local logout; canonical Account sessions remain intact.
     },
     refresh,
