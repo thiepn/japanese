@@ -137,7 +137,15 @@ export async function exportLocalWorkspaceBackup(accountId:string):Promise<strin
  * local data, never deletes any store, and either restores all rows or none.
  * External/core cursors are deliberately excluded from export and restore.
  */
-export async function restoreLocalWorkspaceBackup(accountId:string,raw:string):Promise<void>{
+export async function restoreLocalWorkspaceBackup(
+  accountId:string,
+  raw:string,
+  allowed:()=>boolean=()=>true,
+):Promise<void>{
+  // The app-owned workspace lease is checked before and during the indexedDB
+  // transaction. A sign-out/owner switch cannot import backup rows into a
+  // workspace it has already revoked.
+  if(!allowed())throw new Error("JAPANESE_BACKUP_WORKSPACE_CHANGED");
   if(typeof raw!=="string"||raw.length>128*1024*1024){
     throw new Error("JAPANESE_BACKUP_SIZE_INVALID");
   }
@@ -174,15 +182,23 @@ export async function restoreLocalWorkspaceBackup(accountId:string,raw:string):P
   // Do not trust parsed contents merely because their SHA-256 is correct.
   validateBackupRows(accountId,restored);
 
+  if(!allowed())throw new Error("JAPANESE_BACKUP_WORKSPACE_CHANGED");
   const db=await openLocalDb(accountId);
   try{
     await new Promise<void>((resolve,reject)=>{
       const tx=db.transaction([...STORES,"sync_meta"],"readwrite");
       const names=[...STORES,"sync_meta"];
-      let remaining=names.length,blocked=false;
+      let remaining=names.length,blocked=false,revoked=false;
+      const revokeIfNeeded=()=>{
+        if(allowed())return false;
+        revoked=true;
+        try{tx.abort();}catch{/* Already aborted or completed. */}
+        return true;
+      };
       for(const name of names){
         const request=tx.objectStore(name).count();
         request.onsuccess=()=>{
+          if(revokeIfNeeded())return;
           if(request.result!==0)blocked=true;
           remaining--;
           if(remaining!==0)return;
@@ -192,8 +208,14 @@ export async function restoreLocalWorkspaceBackup(accountId:string,raw:string):P
           }
           try{
             for(const storeName of STORES){
-              for(const row of restored[storeName])tx.objectStore(storeName).add(row);
+              for(const row of restored[storeName]){
+                if(revokeIfNeeded())return;
+                const write=tx.objectStore(storeName).add(row);
+                write.onsuccess=()=>{revokeIfNeeded();};
+              }
             }
+            // With no rows, there are no write callbacks to detect a revoke;
+            // count callbacks above still verify it before completion.
           }catch(error){
             tx.abort();
             reject(error);
@@ -202,9 +224,11 @@ export async function restoreLocalWorkspaceBackup(accountId:string,raw:string):P
       }
       tx.oncomplete=()=>resolve();
       tx.onerror=()=>reject(tx.error??new Error("JAPANESE_BACKUP_RESTORE_FAILED"));
-      tx.onabort=()=>reject(blocked
-        ?new Error("JAPANESE_BACKUP_DESTINATION_NOT_EMPTY")
-        :tx.error??new Error("JAPANESE_BACKUP_RESTORE_ABORTED"));
+      tx.onabort=()=>reject(revoked
+        ?new Error("JAPANESE_BACKUP_WORKSPACE_CHANGED")
+        :blocked
+          ?new Error("JAPANESE_BACKUP_DESTINATION_NOT_EMPTY")
+          :tx.error??new Error("JAPANESE_BACKUP_RESTORE_ABORTED"));
     });
   }finally{db.close();}
 }
