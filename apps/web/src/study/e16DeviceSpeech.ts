@@ -23,10 +23,11 @@ export function createE16AudioPlayback():E16AudioPlayback{
     generation++;
     if(!active)return;
     active=false;
-    const resolve=pendingResolve;
-    pendingResolve=null;
+    // Resolve the in-flight utterance BEFORE cancelling the browser. Clearing
+    // pendingResolve first would strand the awaiting play() Promise forever.
+    const finish=pendingResolve;
+    finish?.("cancelled");
     if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();
-    resolve?.("cancelled");
   }
 
   function speakOne(text:string,rate:number,ticket:number):Promise<E16AudioResult>{
