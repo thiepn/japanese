@@ -51,7 +51,10 @@ export function E16ConversationStudio({cases,busy,workspaceId,workspaceCurrent,o
   const original=caseId?buildE16OriginalConversation(caseId,cases):null;
   const turn=original?.turns[turnIndex]??null;
   const compare=turn?e16SourceComparison(turn,scratch):null;
-  const savedForTurn=privateNotes.find(note=>note.turnIndex===turnIndex)??null;
+  // A case switch renders before the async reset effect; never expose the
+  // preceding situation's private note under another original speaker.
+  const savedForTurn=privateNotes.find(note=>
+    note.caseId===caseId&&note.turnIndex===turnIndex)??null;
   const originalQuestion=caseId?getE17OriginalListeningQuestion(caseId,cases):null;
   const canEdit=!busy&&!noteBusy&&!privateNotesLoading;
 
