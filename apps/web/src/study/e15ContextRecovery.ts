@@ -25,10 +25,15 @@ export type E15Advice = Readonly<{
 }>;
 
 const focusOrder:readonly E15Focus[]=["listen","reply-one","reply-two","first-draft","revision"];
+// E14's original stored review key is "listening"; E15's action is "listen".
+// Preserve the original source/event key; only translate UI action labels.
+const reviewKey:Record<E15Focus,E14RecordedReview["key"]>={
+  listen:"listening","reply-one":"reply-one","reply-two":"reply-two",
+  "first-draft":"first-draft",revision:"revision",
+};
 
-function advice(caseReview:E14HandoffReview, row:E14RecordedReview, nowMs:number):E15Advice{
-  if(!focusOrder.includes(row.key as E15Focus))throw new Error("E15_UNKNOWN_SOURCE_STAGE");
-  const focus=row.key as E15Focus;
+function advice(caseReview:E14HandoffReview, row:E14RecordedReview, focus:E15Focus, nowMs:number):E15Advice{
+  if(row.key!==reviewKey[focus])throw new Error("E15_SOURCE_STAGE_TRANSLATION_INVALID");
   const lastMs=row.lastAt===null?null:Date.parse(row.lastAt);
   const valid=lastMs===null||Number.isFinite(lastMs);
   const interval=row.result==="needs-context-review"
@@ -72,12 +77,12 @@ export function planE15Revisits(
     if(!report.eligible)continue;
     const byKey=new Map(report.review.map(row=>[row.key,row]));
     for(const key of focusOrder){
-      const row=byKey.get(key);
+      const row=byKey.get(reviewKey[key]);
       if(!row)throw new Error("E15_SOURCE_STAGE_MISSING:"+report.caseId+":"+key);
       // A revision cannot be recorded without a prior original first draft;
       // the existing StudyPlayer enforces that same private E12 boundary.
       if(key==="revision"&&!byKey.get("first-draft")?.attempted)continue;
-      result.push(advice(report,row,ms));
+      result.push(advice(report,row,key,ms));
     }
   }
   const priority=(x:E15Advice)=>x.reason==="context-correction"?0
