@@ -68,7 +68,11 @@ describe("E14 listening -> original reply -> private follow-up authority",()=>{
     const included=prompts(steps);
     expect(included).toHaveLength(count);
     expect(new Set(included.map(p=>p.id)).size).toBe(count);
-    expect(included.every(p=>original.includes(p))).toBe(true);
+    const originalsById=new Map(original.map(prompt=>[prompt.id,prompt]));
+    expect(included.every(prompt=>{
+      const canonical=originalsById.get(prompt.id);
+      return Boolean(canonical)&&JSON.stringify(canonical)===JSON.stringify(prompt);
+    })).toBe(true);
     expect(included.every(p=>p.eventMetadata?.nonAuthoritative===true&&
       p.eventMetadata?.schedulerExcluded===true&&
       p.sourceId==="thiepn-original")).toBe(true);
