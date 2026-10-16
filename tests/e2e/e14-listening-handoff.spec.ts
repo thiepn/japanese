@@ -103,7 +103,11 @@ test("E14 two original reply decisions hand off into private first/revised writi
   await open.click();
   const privateReview=returned.getByRole("region",{name:"Private Japanese handoff feedback"});
   await expect(privateReview).toBeVisible();
-  await expect(privateReview).toContainText("Original response matched");
+  // The journey deliberately selected the first offered option, not the
+  // correct original line. Assert actual source correction rather than invent
+  // a successful choice or a speaking/mastery grade.
+  await expect(privateReview.getByText("Review the original context")).toHaveCount(2);
+  await expect(privateReview).toContainText("Communicative intent");
   const texts=privateReview.getByText("Read my previous private Japanese text");
   await expect(texts).toHaveCount(2);
   await texts.first().click();
