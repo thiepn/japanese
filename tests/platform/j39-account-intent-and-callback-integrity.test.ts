@@ -106,6 +106,37 @@ describe("E12Q first-party redirect and abandoned connection-intent boundaries",
     expect(h.replaceState).toHaveBeenCalledWith(null,"","/japanese/");
   });
 
+  it("reverifies owner A when the genuine SDK emits unavailable before a cancelled callback resolves",async()=>{
+    const h=harness(owner(A),"https://thiepn.dev/japanese/auth/callback/?error=access_denied&state=opaque");
+    await h.provider.signIn();
+    h.sso.completeCallback.mockImplementationOnce(async()=>{
+      h.emit({status:"unavailable",code:"ACCOUNT_AUTHORIZATION_CANCELLED"});
+      return {status:"unavailable" as const,code:"ACCOUNT_AUTHORIZATION_CANCELLED"};
+    });
+    h.sso.verify.mockImplementationOnce(async()=>{
+      h.emit(owner(A));
+      return owner(A);
+    });
+    expect(await h.provider.refresh()).toMatchObject({status:"authenticated",accountId:A});
+    expect(h.local.content.has(JAPANESE_CONNECT_INTENT_KEY)).toBe(false);
+    expect(h.connections.connect).not.toHaveBeenCalled();
+    expect(h.replaceState).toHaveBeenCalledWith(null,"","/japanese/");
+  });
+
+  it("clears A's pending claim if an unrelated B becomes active during successful SDK callback",async()=>{
+    const h=harness({status:"signed-out"},"https://thiepn.dev/japanese/auth/callback/?code=one-use&state=opaque");
+    await h.provider.signIn();
+    h.sso.completeCallback.mockImplementationOnce(async()=>{
+      h.emit(owner(A));
+      h.emit(owner(B));
+      return owner(A);
+    });
+    expect(await h.provider.refresh()).toMatchObject({status:"authenticated",accountId:B});
+    expect(h.local.content.has(JAPANESE_CONNECT_INTENT_KEY)).toBe(false);
+    expect(await h.provider.completePendingConnection()).toBe(false);
+    expect(h.connections.connect).not.toHaveBeenCalled();
+  });
+
   it("invalid callback does not grant guest-claim intent to the next verified Account",async()=>{
     const h=harness({status:"signed-out"},"https://thiepn.dev/japanese/auth/callback/?error=invalid_request&state=bad");
     await h.provider.signIn();
