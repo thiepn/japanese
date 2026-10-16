@@ -132,6 +132,33 @@ test("E17 source note is speaker-specific, editable and deletable without alteri
   expect(rows.events.length).toBe(source.events.length);
 });
 
+test("E17 never displays a note from another original situation during source switching",async({page})=>{
+  await qualifiedLearn(page);
+  const root=studio(page);
+  const selector=root.getByLabel("Original situation");
+  const values=await selector.locator("option").evaluateAll(options=>
+    options.map(item=>(item as HTMLOptionElement).value));
+  expect(values.length).toBeGreaterThanOrEqual(2);
+  const [a,b]=values as [string,string,...string[]];
+  await selector.selectOption(a);
+  await root.getByLabel("Rehearsal approach").selectOption("shadow-and-reply");
+  await root.getByLabel(/Try the next Japanese line/).fill("SOURCE_A_PRIVATE_NOTE");
+  await notebook(page).getByRole("button",{name:"Save my private listening note"}).click();
+  await expect(notebook(page)).toContainText("Saved on this device");
+  await selector.selectOption(b);
+  await expect(notebook(page)).toContainText("No saved note for this original speaker");
+  await expect(notebook(page)).not.toContainText("SOURCE_A_PRIVATE_NOTE");
+  await root.getByLabel(/Try the next Japanese line/).fill("SOURCE_B_PRIVATE_NOTE");
+  await notebook(page).getByRole("button",{name:"Save my private listening note"}).click();
+  await expect(notebook(page)).toContainText("Saved on this device");
+  await selector.selectOption(a);
+  await expect(notebook(page)).toContainText("Saved on this device");
+  await notebook(page).getByText("Read my last saved listening note").click();
+  await expect(notebook(page).locator("pre[lang='ja']")).toHaveText("SOURCE_A_PRIVATE_NOTE");
+  await expect(notebook(page)).not.toContainText("SOURCE_B_PRIVATE_NOTE");
+  expect((await storeRows(page)).documents).toHaveLength(2);
+});
+
 test("E17 self-check uses the actual E11 listening answer and wrong-why without creating grades",async({page})=>{
   await qualifiedLearn(page);
   const root=studio(page);
