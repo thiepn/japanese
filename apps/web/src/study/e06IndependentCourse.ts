@@ -10,6 +10,7 @@ import {e08ByCase,type E08Extension} from "./e08ContextExtensions";
 import {E09_BY_CASE,type E09CaseDepth} from "./e09CommunicationDepth";
 import {e09RepairCueFor,type E09RepairCue} from "./e09MisconceptionRepairs";
 import {E11_BY_CASE,type E11PracticalTransfer} from "./e11PracticalTransfer";
+import {E11_RESPONSE_BY_CASE,assertE11ResponseMissionSources,type E11ResponseCue} from "./e11ResponseMissions";
 import {E10_DAILY_STAGES,E10_DELAYED_GROUPS,e10StageById,type E10StageId,type E10StageProgress,type E10DelayedId,type E10DelayedProgress} from "./e10DailyStages";
 
 const PREFIX="e06-cumulative-";
@@ -29,6 +30,7 @@ export interface E06CaseProgress {
  correct:number;required:number;attempts:number;unscoredWriting:number;unscoredSpeaking:number;
  firstDraftSubmitted:boolean;revisedDraftSubmitted:boolean;contextProblemsCorrect:number;
  e11ListeningPractised:boolean;e11ReadingPractised:boolean;e11WritingSubmitted:boolean;e12RevisedWritingSubmitted:boolean;
+ e11ResponseAttempts:number; // 0–2 original decision prompts submitted; NOT mastery
  e09Correct:number;e09Required:number;e09DelayedCorrect:number;e09DelayedRequired:number;
  delayedCorrect:number;delayedRequired:number;availableAt?:string;
  dailyStages:E10StageProgress[];nextDailyStage:E10StageId|null;
@@ -378,6 +380,40 @@ function e11Practice(s:E06Case,a:Anchor,t:E11PracticalTransfer,mode:"listening"|
    })
  };
 }
+/**
+ * E11 pragmatic reply choices reuse the ORIGINAL five-turn dialogue and
+ * canonical E06 anchor. This is optional self-rehearsal; it NEVER adds FSRS
+ * reviews, semantic proficiency, accredited levels or prerequisite credit.
+ */
+function e11ResponseChoice(s:E06Case,a:Anchor,t:E11PracticalTransfer,
+ cue:E11ResponseCue,index:0|1):StudyPrompt{
+ const correct=t.turns[cue.correctTurn]!;
+ const foils=cue.contrastTurns.map(i=>t.turns[i]!) as [
+   typeof correct,typeof correct
+ ];
+ const key="e11-role-response-"+(index+1);
+ const original=choice(s,a,key,"communicate",cue.question,correct.ja,
+   [foils[0].ja,foils[1].ja],
+   [foils[0].intent,foils[1].intent],"form_selection");
+ return {...original,
+  instruction:"Choose the Japanese reply that meets this precise situation; then say it aloud in your own voice.",
+  promptLanguage:"en",
+  explanation:"Original conversational intention: "+correct.intent+" "+
+    t.grammar.function+" Contrast: "+t.grammar.mistake+
+    " This supplied-line choice does not measure independent speaking or CEFR.",
+  activity:"practice",
+  languageActivity:"spoken_interaction",
+  eventMetadata:metadata(s,a,"communicate",{
+   e11:true,e11CaseId:s.id,e11Task:key,e11RoleResponse:true,
+   nonAuthoritative:true,schedulerExcluded:true,
+   structuralOnly:false,semanticScore:false,accreditedCefrVerdict:false,
+   e06FoilFeedback:[
+    {response:foils[0].ja,feedback:"This original line instead: "+foils[0].intent},
+    {response:foils[1].ja,feedback:"This original line instead: "+foils[1].intent}
+   ]
+  })
+ };
+}
 function controlledPrompts(s:E06Case,a:Anchor):StudyPrompt[]{
  const audio=s.turns.map(t=>t.speaker+"： "+t.ja).join(" ");
  return [
@@ -545,6 +581,9 @@ export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06O
    e11ReadingPractised:own.some(e=>e.metadata?.promptId===prefix+"e11-micro-reading"&&e.metadata?.e11===true&&e.metadata?.nonAuthoritative===true),
    e11WritingSubmitted:own.some(e=>e.metadata?.promptId===prefix+"e11-original-letter"&&e.metadata?.e11===true&&e.metadata?.nonAuthoritative===true),
    e12RevisedWritingSubmitted:own.some(e=>e.metadata?.promptId===prefix+"e12-revised-letter"&&e.metadata?.e12===true&&e.metadata?.nonAuthoritative===true),
+   e11ResponseAttempts:[1,2].filter(i=>own.some(e=>
+     e.metadata?.promptId===prefix+"e11-role-response-"+i&&
+     e.metadata?.e11RoleResponse===true&&e.metadata?.nonAuthoritative===true)).length,
    firstDraftSubmitted:own.some(e=>e.metadata?.promptId===prefix+"write"&&e.metadata?.nonAuthoritative===true),
    revisedDraftSubmitted:own.some(e=>e.metadata?.promptId===prefix+"e08-second-draft"&&e.metadata?.nonAuthoritative===true),
    contextProblemsCorrect:["e08-context-listen","e08-context-read"].filter(k=>by.get(prefix+k)?.result==="correct").length,
@@ -731,6 +770,13 @@ export function buildE06Journey(id:string,events:readonly StudyEvent[]):StudySte
       micro.pragmaticDecision+" "+micro.grammar.function+" Common misreading: "+micro.grammar.mistake,
       [...micro.vocabulary.map(v=>({expression:v.expression,note:v.meaning+" · "+v.contrast})),
        {expression:micro.grammar.pattern,note:micro.grammar.function}],a),
+   ...(E11_RESPONSE_BY_CASE.has(s.id)?[
+     lesson(s,"e11-role-rehearsal","Choose the next Japanese reply · Two changing situations",
+       "These are two new source-anchored choices from the original five-turn dialogue. Read the situation and select an appropriate response, then say it aloud without looking. Feedback explains why the other original lines fit different conversational needs. This is optional practice, not native-audio, speaking, FSRS or accredited mastery evidence.",
+       micro.turns.map((turn,i)=>({expression:(i+1)+". "+turn.speaker+"： "+turn.ja,note:turn.intent})),a),
+     ...E11_RESPONSE_BY_CASE.get(s.id)!.decisions.map((cue,i)=>
+       e11ResponseChoice(s,a,micro,cue,i as 0|1))
+   ]:[]),
    lesson(s,"e11-letter-coach","Write to the actual recipient · Revise deliberately",
      "Audience: "+micro.writingAudience+". "+micro.pragmaticDecision+
      " These prompts help you review, not certify, your own Japanese.",
