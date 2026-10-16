@@ -63,6 +63,9 @@ test("E15 bounded reply recovery reuses existing StudyEvent and suggests waiting
   await panel.getByRole("button",{name:/Show all/}).click();
   const chosen=panel.locator(".e15-recovery__list li")
     .filter({hasText:"First situated reply"}).first();
+  // Save the source identity before the advised queue reprioritizes.
+  // After answering, this card must move behind still-unattempted cases.
+  const sourceGoal=await chosen.locator(".e15-recovery__goal").innerText();
   await chosen.getByRole("button",{name:"Practise this original cue"}).click();
   const main=page.locator("main.j5-study-shell");
   for(let i=0;i<4;i++)await main.locator("button.j5-next").click();
@@ -78,7 +81,7 @@ test("E15 bounded reply recovery reuses existing StudyEvent and suggests waiting
   const all=queue(page).getByRole("button",{name:/Show all/});
   if(await all.isVisible())await all.click();
   const revisited=queue(page).locator(".e15-recovery__list li")
-    .filter({hasText:"First situated reply"}).first();
+    .filter({hasText:"First situated reply"}).filter({hasText:sourceGoal});
   await expect(revisited).toContainText("Suggested");
   await expect(revisited.getByRole("button",{name:"Wait for suggested revisit"})).toBeDisabled();
   const values=await page.evaluate(async guest=>{
