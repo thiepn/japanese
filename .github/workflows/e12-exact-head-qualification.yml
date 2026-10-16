@@ -35,10 +35,19 @@ jobs:
           node-version: 24.15.0
       - name: Install exact workspace dependencies
         run: pnpm install --no-frozen-lockfile
-      - name: E12 original-source and persistence tests
-        run: pnpm exec vitest run tests/study-player/e12-draft-continuity.test.ts tests/local-db/study-event.test.ts
-      - name: Actual web TypeScript
-        run: pnpm --filter @thiepn/japanese-web typecheck
+      - name: Original learner persistence and Account/guest owner boundary tests
+        run: >-
+          pnpm exec vitest run
+          tests/study-player/e12-draft-continuity.test.ts
+          tests/local-db/study-event.test.ts
+          tests/platform/j37-first-party-sdk-adapter.test.ts
+          tests/platform/j38-first-party-sdk-readiness.test.ts
+          tests/platform/j39-account-intent-and-callback-integrity.test.ts
+          tests/platform/j16f-workspace-races.test.ts
+      - name: Offline private Account SDK provenance fixture checks
+        run: node --test scripts/verify-account-sdk-distribution.test.mjs
+      - name: Monorepo TypeScript including dormant Account adapter
+        run: pnpm typecheck
       - name: Actual web application build
         run: pnpm --filter @thiepn/japanese-web build
       - name: Install Chromium browser
