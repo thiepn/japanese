@@ -565,8 +565,12 @@ export function getE06Overview(events:readonly StudyEvent[],now=new Date()):E06O
   const controlledComplete=correct===CONTROLLED_KEYS.length&&Number.isFinite(due);
   const delayed=e10DelayedProgress(s,a,events,a&&pr.ready&&controlledComplete?due:NaN,now);
   // A previously completed delayed set cannot mask a *newer* source error.
+  // Optional E11/E12 writing, listening and new role responses are
+  // nonAuthoritative. They must never change the canonical E06 status
+  // from unstarted to learning without a real controlled StudyEvent.
+  const hasAuthoritativeAttempt=own.some(e=>e.metadata?.nonAuthoritative!==true);
   const status:E06Status=!a||!pr.ready?"needs-prerequisite":
-    !controlledComplete?(!own.length?"unstarted":"learning"):
+    !controlledComplete?(!hasAuthoritativeAttempt?"unstarted":"learning"):
     delayedCorrect===DELAYED_KEYS.length?"reviewed":
     now.getTime()<due?"waiting":"ready";
   return {
