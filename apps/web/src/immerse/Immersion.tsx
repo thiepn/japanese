@@ -1,3 +1,4 @@
+import "../design/j6.css";
 import { useEffect,useLayoutEffect,useMemo,useRef,useState } from "react";
 import { getDefaultAudioProvider } from "@thiepn/audio";
 import { J6ImmersionHome,J6ReaderView } from "../design/J6Immersion";
