@@ -44,6 +44,8 @@ jobs:
           tests/platform/j38-first-party-sdk-readiness.test.ts
           tests/platform/j39-account-intent-and-callback-integrity.test.ts
           tests/platform/j16f-workspace-races.test.ts
+          tests/local-db/j20-recovery.test.ts
+          tests/local-db/j40-visible-recovery.test.ts
       - name: Offline private Account SDK provenance fixture checks
         run: node --test scripts/verify-account-sdk-distribution.test.mjs
       - name: Monorepo TypeScript including dormant Account adapter
@@ -55,4 +57,11 @@ jobs:
       - name: Desktop/mobile Learn and Study Player smoke
         env:
           CI: ""
-        run: pnpm exec playwright test tests/e2e/j4-learning-journey.spec.ts tests/e2e/j5-study-focus.spec.ts tests/e2e/e12-learner-writing.spec.ts --project=desktop-chromium --project=android-mobile --project=compact-mobile --workers=2
+        run: >-
+          pnpm exec playwright test
+          tests/e2e/j4-learning-journey.spec.ts
+          tests/e2e/j5-study-focus.spec.ts
+          tests/e2e/e12-learner-writing.spec.ts
+          tests/e2e/j17-account-panel.spec.ts
+          tests/e2e/j40-local-backup.spec.ts
+          --project=desktop-chromium --project=android-mobile --project=compact-mobile --workers=2
