@@ -22,8 +22,8 @@ export const E13_MODE_OPTIONS: readonly {
   {id:"whole-situation",label:"Full practical exchange",description:"Work through original listening, reading, language explanation and both private writing drafts."},
 ];
 
-export function eligibleE13Cases(events:readonly StudyEvent[]):E06CaseProgress[]{
-  return getE06Overview(events).cases.filter(c=>
+export function eligibleE13Progress(cases:readonly E06CaseProgress[]):E06CaseProgress[]{
+  return cases.filter(c=>
     c.prerequisiteReady&&c.canDoId!==null&&c.canonicalUnitId!==null&&E11_BY_CASE.has(c.id)
   ).sort((a,b)=>{
     // Put situations with genuine missing evidence first, not invented mastery.
@@ -33,6 +33,10 @@ export function eligibleE13Cases(events:readonly StudyEvent[]):E06CaseProgress[]
     ].filter(Boolean).length;
     return incomplete(a)-incomplete(b)||a.level.localeCompare(b.level)||a.id.localeCompare(b.id);
   });
+}
+
+export function eligibleE13Cases(events:readonly StudyEvent[]):E06CaseProgress[]{
+  return eligibleE13Progress(getE06Overview(events).cases);
 }
 
 function originalPart(steps:StudyStep[],id:string):number{
