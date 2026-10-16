@@ -46,6 +46,7 @@ jobs:
           tests/platform/j16f-workspace-races.test.ts
           tests/local-db/j20-recovery.test.ts
           tests/local-db/j40-visible-recovery.test.ts
+          tests/study-player/e13-practical-mixer.test.ts
       - name: Offline private Account SDK provenance fixture checks
         run: node --test scripts/verify-account-sdk-distribution.test.mjs
       - name: Monorepo TypeScript including dormant Account adapter
@@ -64,4 +65,5 @@ jobs:
           tests/e2e/e12-learner-writing.spec.ts
           tests/e2e/j17-account-panel.spec.ts
           tests/e2e/j40-local-backup.spec.ts
+          tests/e2e/e13-practical-mixer.spec.ts
           --project=desktop-chromium --project=android-mobile --project=compact-mobile --workers=2
