@@ -664,6 +664,9 @@ html[data-j-theme],html[data-j-theme] body,html[data-j-theme] #root{
   top:calc(100% + 10px);
   right:0;
   width:min(345px,calc(100vw - 24px));
+  max-height:calc(100dvh - 94px - env(safe-area-inset-top));
+  overflow-y:auto;
+  overscroll-behavior:contain;
   padding:18px;
   border:1px solid var(--j-line-strong);
   border-radius:3px 13px 13px 13px;
