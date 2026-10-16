@@ -107,7 +107,8 @@ test("E14 two original reply decisions hand off into private first/revised writi
   // correct original line. Assert actual source correction rather than invent
   // a successful choice or a speaking/mastery grade.
   await expect(privateReview.getByText("Review the original context")).toHaveCount(2);
-  await expect(privateReview).toContainText("Communicative intent");
+  await expect(privateReview).toContainText("First situated reply");
+  await expect(privateReview).toContainText("Changed-situation reply");
   const texts=privateReview.getByText("Read my previous private Japanese text");
   await expect(texts).toHaveCount(2);
   await texts.first().click();
