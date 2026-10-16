@@ -74,6 +74,9 @@ export function planE15Revisits(
     for(const key of focusOrder){
       const row=byKey.get(key);
       if(!row)throw new Error("E15_SOURCE_STAGE_MISSING:"+report.caseId+":"+key);
+      // A revision cannot be recorded without a prior original first draft;
+      // the existing StudyPlayer enforces that same private E12 boundary.
+      if(key==="revision"&&!byKey.get("first-draft")?.attempted)continue;
       result.push(advice(report,row,ms));
     }
   }
