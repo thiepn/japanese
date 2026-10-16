@@ -181,13 +181,30 @@ export function createJapaneseFirstPartySdkAdapter(options: {
     if (callbackFlight) return callbackFlight;
     if (typeof window !== "undefined") {
       const callback = new URL(JAPANESE_CALLBACK_URL);
-      if (window.location.origin === callback.origin &&
-          window.location.pathname === callback.pathname) {
+      const location = window.location;
+      if (location.origin === callback.origin &&
+          location.pathname === callback.pathname) {
         const startedAt = revision;
         const attempt = (async () => {
           try {
-            const identity = await sso.completeCallback(window.location);
-            return startedAt === revision ? publish(identity) : current;
+            const identity = await sso.completeCallback(location);
+            if (startedAt !== revision) return current;
+            if (identity.status !== "signed-in") {
+              // A rejected, cancelled or expired code cannot give a future
+              // unrelated Account identity the pending guest-claim intent.
+              clearConnectIntent();
+              // An OAuth cancellation is not revocation. Reverify an existing
+              // session with the SDK instead of dropping its owner or trusting
+              // a stale cached account ID.
+              const verifiedIdentity = await sso.verify();
+              if (startedAt !== revision) return current;
+              return publish(verifiedIdentity.status === "signed-in"
+                ? verifiedIdentity : identity);
+            }
+            return publish(identity);
+          } catch (error) {
+            clearConnectIntent();
+            throw error;
           } finally {
             // The one-use code, state and error fields are never retained in
             // the address bar; no PKCE verifier is copied between PWA/Chrome.
@@ -198,11 +215,29 @@ export function createJapaneseFirstPartySdkAdapter(options: {
         try { return await attempt; }
         finally { if (callbackFlight === attempt) callbackFlight = null; }
       }
+      // Only the one exact registered callback may consume OAuth data.
+      // Redirect/proxy slash normalization and accidental home-path codes
+      // must never silently fall through into SSO initialize or local caches.
+      const params = new URLSearchParams(location.search);
+      const unexpectedOAuthQuery = ["code","error","access_token","refresh_token","id_token"].some(
+        key => params.has(key)
+      );
+      const unexpectedOAuthFragment = /(?:^|[&#])(access_token|refresh_token|id_token|code)=/i
+        .test(location.hash);
+      if (location.pathname.startsWith(JAPANESE_HOME_PATH) &&
+          (unexpectedOAuthQuery || unexpectedOAuthFragment)) {
+        clearConnectIntent();
+        window.history.replaceState(null, "", JAPANESE_HOME_PATH);
+        return publish({ status: "unavailable", code: "ACCOUNT_CALLBACK_ROUTE_INVALID" });
+      }
     }
     const startedAt = revision;
     const result = await sso.initialize();
     // A sign-out/owner switch during a slow SSO probe invalidates its answer.
     if (startedAt !== revision) return current;
+    // A signed-in Account seen without the matching one-use callback must not
+    // reuse a previous, abandoned Japanese guest-claim intent.
+    if (result.status === "ready") clearConnectIntent();
     // Never invent an authenticated user while navigating to Account.
     return result.status === "ready" ? publish(result.identity) : current;
   }
