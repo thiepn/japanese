@@ -124,6 +124,9 @@ export function App(){
   const [accountBusy,setAccountBusy]=useState(false);
   const [accountResolving,setAccountResolving]=useState(true);
   const [accountMessage,setAccountMessage]=useState<string|null>(null);
+  const [localRecoveryBusy,setLocalRecoveryBusy]=useState(false);
+  const [localRecoveryStatus,setLocalRecoveryStatus]=useState<string|null>(null);
+  const localRecoveryFlight=useRef(false);
   const sessionFence=useRef(new StudySessionFence());
   const dashboardRefreshGuard=useRef(new DashboardRefreshGuard());
   const workspaceLease=useRef(new AccountWorkspaceLease());
@@ -291,6 +294,45 @@ export function App(){
         setSummary(nextSummary);setKanaMastery(nextKana);setVocabMastery(nextVocab);setConjugationMastery(nextConjugation);setGrammarMastery(nextGrammar);setSentenceMastery(nextSentence);setLexicalFluency(nextLexicalFluency);setCourseProgress(nextCourse);setMilestone(nextMilestone);setB1Milestone(nextB1Milestone);setB2Milestone(nextB2Milestone);setC1Foundation(nextC1Foundation);setImmersion(nextImmersion);setCompletedToday(nextCompletedToday);setE01(nextE01);setE02(nextE02);setE03(nextE03);setE04(nextE04);setE05(nextE05);setE06(nextE06);
       },
     );
+  }
+
+  async function performLocalRecovery(action:"download"|"restore",file?:File){
+    if(localRecoveryFlight.current||accountResolving||accountBusy)return;
+    if(action==="restore"&&!file)return;
+    const workspaceId=getDevelopmentAccountId();
+    const ticket=workspaceLease.current.snapshot();
+    const isCurrent=()=>workspaceLease.current.isCurrent(ticket)
+      &&getDevelopmentAccountId()===workspaceId;
+    localRecoveryFlight.current=true;
+    setLocalRecoveryBusy(true);
+    setLocalRecoveryStatus(null);
+    let helpers:typeof import("./study/localRecovery")|null=null;
+    try{
+      // No private backup encoder in the initial/ordinary learner JS bundle.
+      helpers=await import("./study/localRecovery");
+      if(!isCurrent())throw new Error("JAPANESE_BACKUP_WORKSPACE_CHANGED");
+      if(action==="download"){
+        const raw=await helpers.prepareLocalWorkspaceDownload(workspaceId,isCurrent);
+        if(!isCurrent())throw new Error("JAPANESE_BACKUP_WORKSPACE_CHANGED");
+        helpers.downloadLocalWorkspaceFile(workspaceId,raw);
+        if(isCurrent())setLocalRecoveryStatus("Local backup saved. It contains private progress and recordings; keep the file secure. It was not uploaded.");
+      }else if(file){
+        await helpers.restoreLocalWorkspaceFile(workspaceId,file,isCurrent);
+        if(!isCurrent())throw new Error("JAPANESE_BACKUP_WORKSPACE_CHANGED");
+        clearLearnerView();
+        const applied=await refreshDashboard();
+        if(isCurrent())setLocalRecoveryStatus(applied
+          ?"Your Japanese workspace was restored from this device file. No cloud sync was performed."
+          :"Backup restored. Reload this page to see your local study progress.");
+      }
+    }catch(error){
+      if(isCurrent())setLocalRecoveryStatus(helpers
+        ?helpers.localRecoveryErrorMessage(error)
+        :"Local backup could not be opened. Existing progress was not changed.");
+    }finally{
+      localRecoveryFlight.current=false;
+      setLocalRecoveryBusy(false);
+    }
   }
 
   async function performAccountAction(action:"signIn"|"connect"|"signOut"){
@@ -473,6 +515,9 @@ export function App(){
         accountBusy={accountBusy||accountResolving}
         onAccountAction={(action)=>void performAccountAction(action)}
         accountStatus={accountMessage}
+        onLocalRecovery={(action,file)=>void performLocalRecovery(action,file)}
+        localRecoveryBusy={localRecoveryBusy}
+        localRecoveryStatus={localRecoveryStatus}
         diagnosticsMode={diagnosticsMode}
       >
         {diagnosticsMode
