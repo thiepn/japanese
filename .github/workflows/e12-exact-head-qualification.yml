@@ -51,6 +51,7 @@ jobs:
           tests/study-player/e14-listening-handoff.test.ts
           tests/study-player/e15-context-recovery.test.ts
           tests/study-player/e16-dialogue-rehearsal.test.ts
+          tests/study-player/e17-original-listening-notebook.test.ts
       - name: Offline private Account SDK provenance fixture checks
         run: node --test scripts/verify-account-sdk-distribution.test.mjs
       - name: Monorepo TypeScript including dormant Account adapter
@@ -74,4 +75,5 @@ jobs:
           tests/e2e/e14-listening-handoff.spec.ts
           tests/e2e/e15-context-recovery.spec.ts
           tests/e2e/e16-dialogue-rehearsal.spec.ts
+          tests/e2e/e17-original-listening-notebook.spec.ts
           --project=desktop-chromium --project=android-mobile --project=compact-mobile --workers=2
