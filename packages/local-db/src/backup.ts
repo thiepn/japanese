@@ -223,7 +223,9 @@ export async function restoreLocalWorkspaceBackup(
         };
       }
       tx.oncomplete=()=>resolve();
-      tx.onerror=()=>reject(tx.error??new Error("JAPANESE_BACKUP_RESTORE_FAILED"));
+      tx.onerror=()=>reject(revoked
+        ?new Error("JAPANESE_BACKUP_WORKSPACE_CHANGED")
+        :tx.error??new Error("JAPANESE_BACKUP_RESTORE_FAILED"));
       tx.onabort=()=>reject(revoked
         ?new Error("JAPANESE_BACKUP_WORKSPACE_CHANGED")
         :blocked
