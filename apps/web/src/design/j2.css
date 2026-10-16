@@ -688,6 +688,16 @@ html[data-j-theme],html[data-j-theme] body,html[data-j-theme] #root{
 .j2-account-panel__actions button:disabled{opacity:.5;cursor:default}
 .j2-account-panel__diagnostics{gap:6px;text-decoration:none;border:1px solid var(--j-line);color:var(--j-fg);background:transparent}
 .j2-account-panel__diagnostics:hover{border-color:var(--j-line-strong)}
+.j2-account-panel__recovery{margin-top:16px;padding-top:13px;border-top:1px solid var(--j-line);display:grid;gap:9px}
+.j2-account-panel__recovery h3{margin:0;font-size:13px;font-weight:750;letter-spacing:.02em}
+.j2-account-panel__recovery p{margin:0;color:var(--j-fg-muted);font-size:11px;line-height:1.5}
+.j2-account-panel__recovery-actions{display:grid;gap:9px}
+.j2-account-panel__recovery-actions button{min-height:44px;padding:10px 12px;text-align:center;border-radius:3px 8px 8px 8px;cursor:pointer;font-size:12px;font-weight:750}
+.j2-account-panel__recovery-actions button:disabled,.j2-account-panel__recovery-actions input:disabled{opacity:.5;cursor:default}
+.j2-account-panel__recovery-label{font-size:12px;font-weight:750;line-height:1.3}
+.j2-account-panel__recovery-actions input[type="file"]{width:100%;min-width:0;max-width:100%;padding:9px 7px;border:1px solid var(--j-line-strong);border-radius:3px;color:var(--j-fg);background:var(--j-bg);font-size:11px}
+.j2-account-panel__recovery-actions input[type="file"]::file-selector-button{min-height:36px;padding:7px 9px;margin-right:8px;border:1px solid var(--j-line-strong);border-radius:3px;background:var(--j-bg-elevated);color:var(--j-fg)}
+.j2-account-panel__recovery [role="status"]{padding:8px 9px;border-left:2px solid var(--j-season-accent);background:var(--j-bg);overflow-wrap:anywhere}
 .j2-account-panel__footnote{margin:13px 0 0;font-size:11px;color:var(--j-fg-muted);line-height:1.45}
 @media(max-width:760px){
   .j2-account{display:grid;place-items:center;padding:4px}
