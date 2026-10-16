@@ -82,7 +82,11 @@ describe("E13 seven-case original next-reply communication practice",()=>{
         expect(task.speechSynthesisText).toBeUndefined();
       }
     }
-    expect(decisions).toBe(14);
+    // All seven role-mission records are original and validated above, but
+    // only cases with a verified canonical listening AND reading anchor may
+    // instantiate a graded-choice interface. The remaining E11 material
+    // stays source-only rather than inventing Can-do evidence.
+    expect(decisions).toBe(2*E06_LINKED_CASES.filter(c=>E11_BY_CASE.has(c.id)).length);
   });
 
   it("requires real original source listening and reading; optional choices do not unlock E06 mastery",()=>{
