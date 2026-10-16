@@ -34,6 +34,8 @@ import {buildE06Journey,buildE11OptionalSession,buildE06NextDailyStage,buildE06D
 import {buildE13PracticalMix,type E13PracticeMode} from "./e13PracticalMixer";
 import {buildE14HandoffSession,eligibleE14Cases,projectE14Review,type E14HandoffMode,type E14HandoffReview} from "./e14ListeningHandoff";
 export type {E14HandoffMode,E14HandoffReview} from "./e14ListeningHandoff";
+import {buildE15SourceRecovery,type E15Focus} from "./e15ContextRecovery";
+export type {E15Focus} from "./e15ContextRecovery";
 export type {E13PracticeMode} from "./e13PracticalMixer";
 import type {E10StageId,E10DelayedId} from "./e10DailyStages";
 export type {E10StageId,E10DelayedId} from "./e10DailyStages";
@@ -151,6 +153,12 @@ export async function getE14PrivateHandoffReviews():Promise<E14HandoffReview[]>{
   if(DEVELOPMENT_ACCOUNT_ID!==owner)throw Error("E14_WORKSPACE_CHANGED_DURING_READ");
   const eligible=eligibleE14Cases(getE06Overview(events).cases);
   return eligible.map(c=>projectE14Review(c.id,owner,events));
+}
+export async function buildE15RecoverySession(caseId:string,focus:E15Focus):Promise<StudyStep[]>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const events=await listStudyEvents(owner);
+  if(DEVELOPMENT_ACCOUNT_ID!==owner)throw Error("E15_WORKSPACE_CHANGED_DURING_BUILD");
+  return buildE15SourceRecovery(caseId,focus,owner,events);
 }
 export async function buildE06Session(id:string):Promise<StudyStep[]>{return buildE06NextDailyStage(id,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
 export async function buildE10DailyStageSession(id:string,stageId:E10StageId):Promise<StudyStep[]>{return buildE06DailyStage(id,stageId,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
