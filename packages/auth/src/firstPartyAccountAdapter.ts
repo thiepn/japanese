@@ -188,18 +188,26 @@ export function createJapaneseFirstPartySdkAdapter(options: {
         const attempt = (async () => {
           try {
             const identity = await sso.completeCallback(location);
-            if (startedAt !== revision) return current;
             if (identity.status !== "signed-in") {
-              // A rejected, cancelled or expired code cannot give a future
-              // unrelated Account identity the pending guest-claim intent.
+              // Account's actual SDK emits the error through subscribe BEFORE
+              // completeCallback resolves, increasing our revision. Do not
+              // mistake that SDK emission for a later owner switch and skip
+              // verification of a previously valid session.
               clearConnectIntent();
-              // An OAuth cancellation is not revocation. Reverify an existing
-              // session with the SDK instead of dropping its owner or trusting
-              // a stale cached account ID.
+              const beforeVerification = revision;
               const verifiedIdentity = await sso.verify();
-              if (startedAt !== revision) return current;
+              // The SDK may emit the verified owner while checking /user.
+              // Respect that live event; never overwrite a newer workspace.
+              if (beforeVerification !== revision) return current;
               return publish(verifiedIdentity.status === "signed-in"
                 ? verifiedIdentity : identity);
+            }
+            // The SDK may have emitted the newly verified owner itself.
+            // If another owner took over in the meantime, their workspace
+            // cannot inherit this callback's guest-claim request.
+            if (startedAt !== revision) {
+              if (current.accountId !== identity.id) clearConnectIntent();
+              return current;
             }
             return publish(identity);
           } catch (error) {
