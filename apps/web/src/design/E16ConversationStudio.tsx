@@ -30,6 +30,7 @@ export function E16ConversationStudio({cases,busy,onHandoff}:Props){
   const [voiceStatus,setVoiceStatus]=useState<"idle"|"playing"|"unavailable">("idle");
   const [noticeOpen,setNoticeOpen]=useState(false);
   const playback=useRef(createE16AudioPlayback());
+  const voiceAttempt=useRef(0);
   const chosen=eligible.find(c=>c.id===selected)??eligible[0]??null;
   const caseId=chosen?.id??null;
   const original=caseId?buildE16OriginalConversation(caseId,cases):null;
@@ -44,6 +45,7 @@ export function E16ConversationStudio({cases,busy,onHandoff}:Props){
     // The device voice is stopped on a new original case and on owner
     // remount; an earlier asynchronous utterance cannot reveal next case.
     const voice=playback.current;
+    voiceAttempt.current++;
     voice.stop();
     setTurnIndex(0);
     setSourceRevealed(false);
@@ -56,6 +58,7 @@ export function E16ConversationStudio({cases,busy,onHandoff}:Props){
   useEffect(()=>()=>playback.current.stop(),[]);
 
   function stopVoice(){
+    voiceAttempt.current++;
     playback.current.stop();
     setVoiceStatus("idle");
   }
@@ -70,20 +73,21 @@ export function E16ConversationStudio({cases,busy,onHandoff}:Props){
   async function speak(all:boolean){
     if(!original||busy)return;
     stopVoice();
+    const attempt=++voiceAttempt.current;
     setVoiceStatus("playing");
     const starting=all?0:turnIndex;
     const cues=all?original.turns:[original.turns[turnIndex]!];
     try{
-      const result=await playback.current.play(cues,mode==="shadow-and-reply"?0.78:1,offset=>{
+      await playback.current.play(cues,mode==="shadow-and-reply"?0.78:1,offset=>{
+        if(attempt!==voiceAttempt.current)return;
         setTurnIndex(starting+offset);
         setSourceRevealed(false);
         setScratch("");
         setPlayed(true);
       });
-      if(result==="completed")setVoiceStatus("idle");
-      else setVoiceStatus("idle");
+      if(attempt===voiceAttempt.current)setVoiceStatus("idle");
     }catch{
-      setVoiceStatus("unavailable");
+      if(attempt===voiceAttempt.current)setVoiceStatus("unavailable");
     }
   }
 
