@@ -40,7 +40,7 @@ export function E15RecoveryQueue({reviews,busy,onStart}:Props){
         <ol className="e15-recovery__list">
           {displayed.map(item=>{
             const original=reviews.find(r=>r.caseId===item.caseId);
-            const feedback=original?.review.find(row=>row.key===item.focus);
+            const feedback=original?.review.find(row=>row.key===(item.focus==="listen"?"listening":item.focus));
             return <li key={item.caseId+":"+item.focus}>
               <div className="e15-recovery__item-heading">
                 <span className="e15-recovery__state">{item.ready?"Available":"Suggested later"}</span>
