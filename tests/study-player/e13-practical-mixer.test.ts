@@ -115,6 +115,6 @@ describe("E13 native cross-situation rehearsal: original A1/A2 authority only",(
     writeFileSync(resolve("artifacts/e13-browser-seed.json"),JSON.stringify({
       guest,caseIds:fixture.ids.slice(0,2),events:fixture.events,
     }),"utf8");
-    expect(fixture.events).toHaveLength(4);
+    expect(fixture.events).toHaveLength(fixture.ids.length*2);
   });
 });
