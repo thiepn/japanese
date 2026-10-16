@@ -1,4 +1,5 @@
-import {readFile,readFileSync} from "node:fs";
+import {readFileSync} from "node:fs";
+import {readFile} from "node:fs/promises";
 import {expect,test,type Page} from "@playwright/test";
 
 const source=JSON.parse(readFileSync("artifacts/e13-browser-seed.json","utf8")) as {
