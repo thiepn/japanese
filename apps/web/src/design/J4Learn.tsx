@@ -1,6 +1,7 @@
 import "./j4.css";
 import "../study/e10DailyStages.css";
-import {useMemo,useState} from "react";
+import {useEffect,useMemo,useState} from "react";
+import {UX2TransferPath,type UX2StudioTarget} from "./UX2TransferPath";
 import {UX1LearningPath} from "./UX1LearningPath";
 import {AdaptiveRemediation} from "../study/AdaptiveRemediation";
 import {AiCoach} from "../ai/AiCoach";
@@ -100,6 +101,20 @@ export function J4Learn(props:Props){
   }=props;
 
   const [showFullCourse,setShowFullCourse]=useState(true);
+  const [showTransfer,setShowTransfer]=useState(e07.primary.origin==="e06");
+  const [studioTarget,setStudioTarget]=useState<UX2StudioTarget|null>(null);
+  useEffect(()=>{if(e07.primary.origin==="e06")setShowTransfer(true);},[e07.primary.key,e07.primary.origin]);
+  // Open and focus the existing E13–E17 studio even if the catalogue was hidden.
+  useEffect(()=>{
+    if(!studioTarget||!showFullCourse)return;
+    const frame=window.requestAnimationFrame(()=>{
+      const heading=document.getElementById(studioTarget);
+      if(heading){heading.setAttribute("tabindex","-1");heading.focus({preventScroll:true});heading.scrollIntoView({block:"start"});}
+      setStudioTarget(null);
+    });
+    return ()=>window.cancelAnimationFrame(frame);
+  },[studioTarget,showFullCourse]);
+  const openOriginalStudio=(target:UX2StudioTarget)=>{setShowFullCourse(true);setStudioTarget(target);};
   const groups=useMemo(()=>{
     const byLevel=new Map<string,CourseUnitProgress[]>();
     for(const unit of course){
@@ -126,6 +141,15 @@ export function J4Learn(props:Props){
   return <section className="j4-learn" aria-labelledby="j4-title">
     <span className="j13-marginal" aria-hidden="true">学</span>
     <UX1LearningPath e01={e01} e02={e02} e03={e03} e04={e04} route={e07} onE01={onStartE01} onE01Delayed={onStartE01Delayed} busy={status==="loading"} onOpenE07={onOpenE07} onE02={onStartE02} onE02Delayed={onStartE02Delayed} onE02Preview={onStartE02Preview} onE03={onStartE03} onE03Delayed={onStartE03Delayed} onE03Preview={onStartE03Preview} onE04={onStartE04} onE04Delayed={onStartE04Delayed} onE04Preview={onStartE04Preview}/>
+    <button className="ux2-path-toggle" type="button" aria-expanded={showTransfer} aria-controls="ux2-transfer-panel" onClick={()=>setShowTransfer(v=>!v)}>
+      <strong>{showTransfer?"Hide":"Open"} cumulative A1–A2 practice</strong>
+      <small>{e06.total} original situations · source prerequisites, delayed transfer and conversation studios</small>
+    </button>
+    <div id="ux2-transfer-panel" hidden={!showTransfer}>
+      <UX2TransferPath e06={e06} e05={e05} busy={status==="loading"}
+       onSource={c=>{if(c.anchorCohort==="e02")onStartE02(c.anchorSceneId);else if(c.anchorCohort==="e03")onStartE03(c.anchorSceneId);else onStartE04(c.anchorSceneId);}}
+       onShort={onStartE06} onFull={onStartE06Full} onPreview={onStartE06Preview} onReview={onStartE06Delayed} onPractical={onStartE11Micro} onRepair={onStartE05Repair} onOpenStudio={openOriginalStudio}/>
+    </div>
     <button className="ux1-mobile-catalogue-toggle" type="button" aria-controls="ux1-expanded-catalogue" aria-expanded={showFullCourse} onClick={()=>setShowFullCourse(v=>!v)}>{showFullCourse?"Hide full course and advanced practice":"Open full course and advanced practice"}</button>
     <div id="ux1-expanded-catalogue" className="ux1-expanded-catalogue" data-open={showFullCourse?"yes":"no"}>
     <header className="j4-hero">

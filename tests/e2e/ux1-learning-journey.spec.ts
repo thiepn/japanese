@@ -8,6 +8,7 @@ test("UX1 Today source recommendation and mobile Learn path stay connected",asyn
  if(testInfo.project.name!=="desktop-chromium"){
   const path=page.locator(".ux1-mobile-path");
   await expect(path.getByRole("heading",{name:"Your learning path"})).toBeVisible();
+  await expect(page.locator(".ux2-path-toggle")).toBeVisible();
   await path.getByRole("button",{name:"First Words"}).click();
   // The original E01 entry is shown only when its canonical source link is available.
   await expect(path.locator(".ux1-node").first()).toBeVisible();

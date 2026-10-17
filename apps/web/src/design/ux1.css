@@ -35,3 +35,30 @@
 .ux1-daily-goal p{margin:0;font-size:14px;line-height:1.5;color:var(--j-fg-muted)}
 .ux1-daily-goal progress{width:100%;height:8px;accent-color:var(--j-matcha-500)}
 @media(max-width:360px){.ux1-engagement{gap:8px}.ux1-engagement strong{font-size:15px}}
+
+/* Phase 1 original cumulative route: mobile discovery of existing E06–E17 flows. */
+.ux2-path-toggle,#ux2-transfer-panel{display:none}
+@media(max-width:760px){
+ .ux2-path-toggle{display:grid;gap:4px;width:100%;min-height:60px;padding:14px;text-align:left;border:1px solid var(--j-line-strong);background:var(--j-bg-elevated);color:var(--j-fg);border-radius:var(--j-radius-md)}
+ .ux2-path-toggle small{font-size:12px;font-weight:400;color:var(--j-fg-muted)}
+ #ux2-transfer-panel:not([hidden]){display:block}
+}
+.ux2-transfer{display:grid;gap:20px;min-width:0;margin-top:16px}
+.ux2-transfer__cases{list-style:none;padding:0;margin:0;display:grid;gap:14px}
+.ux2-transfer-case{display:grid;gap:11px;padding:16px;border:1px solid var(--j-line);background:var(--j-bg-elevated);border-radius:var(--j-radius-md);min-width:0}
+.ux2-transfer-case__head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.ux2-transfer-case__head h3{font-size:17px;line-height:1.35;margin:0}
+.ux2-transfer-case__head small,.ux2-transfer-case p,.ux2-transfer-case__evidence,.ux2-transfer-case__next{color:var(--j-fg-muted);font-size:13px;line-height:1.5}
+.ux2-transfer-case p{margin:0}
+.ux2-transfer-case__state{font-weight:700;color:var(--j-fg)!important}
+.ux2-transfer-case__evidence{padding-left:20px;margin:0;display:grid;gap:3px}
+.ux2-transfer-case__next{border-left:3px solid var(--j-line-strong);padding-left:10px}
+.ux2-transfer__tools{display:grid;gap:13px;padding:18px;border:1px solid var(--j-line);background:var(--j-bg-muted);border-radius:var(--j-radius-md)}
+.ux2-transfer__tools h2{margin:0;font-size:21px}
+.ux2-transfer__tools p{font-size:13px;line-height:1.5;margin:0;color:var(--j-fg-muted)}
+.ux2-transfer__tools ul{padding:0;margin:0;list-style:none;display:grid;gap:10px}
+.ux2-transfer__tools li{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;padding:10px 0;border-top:1px solid var(--j-line)}
+.ux2-transfer__tools li div{display:grid;gap:4px;min-width:0;flex:1 1 180px}
+.ux2-transfer__tools li small{font-size:12px;color:var(--j-fg-muted)}
+.ux2-transfer__tools button{min-height:48px;padding:10px 14px;border:1px solid var(--j-line-strong);border-radius:var(--j-radius-sm);background:var(--j-bg-elevated);color:var(--j-fg)}
+.ux2-transfer button:focus-visible,.ux2-path-toggle:focus-visible{outline:3px solid var(--j-focus);outline-offset:2px}
