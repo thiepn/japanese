@@ -90,8 +90,16 @@ test("E19 original writing comparison and original source navigation fit compact
  const studio=page.getByRole("region",{name:"Write, compare and revise your own Japanese"});
  await expect(studio).toBeVisible();
  await studio.getByRole("button",{name:"A2",exact:true}).click();
- await expect(studio.getByLabel("Original writing situation")).toBeVisible();
+ const a2Choice=studio.getByLabel("Original writing situation");
+ if(await a2Choice.count()){
+  await expect(a2Choice).toBeVisible();
+ }else{
+  // An A2-only empty result is correct when provisional source material has
+  // no admissible canonical link; never invent an A2 can-do just for the UI.
+  await expect(studio.getByRole("status")).toContainText("No canonically source-linked original writing situations");
+ }
  await studio.getByRole("button",{name:"A1",exact:true}).click();
+ await expect(studio.getByLabel("Original writing situation")).toBeVisible();
  const target=studio.getByRole("button",{name:"Continue independent revision"});
  await expect(target).toBeVisible();
  await target.scrollIntoViewIfNeeded();
