@@ -13,9 +13,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  focused-source-and-browser:
+  integrated-full-source-and-browser:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 65
     env:
       VITE_PUBLIC_BASE: /japanese/
     steps:
@@ -23,10 +23,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Report immutable commit
+      - name: Record immutable commit and clean worktree
         run: |
           git rev-parse HEAD
-          git status --short
+          test -z "$(git status --porcelain)"
       - uses: pnpm/action-setup@v4
         with:
           version: 11.19.0
@@ -34,46 +34,84 @@ jobs:
         with:
           node-version: 24.15.0
       - name: Install exact workspace dependencies
+        id: install
         run: pnpm install --no-frozen-lockfile
-      - name: Original learner persistence and Account/guest owner boundary tests
-        run: >-
-          pnpm exec vitest run
-          tests/study-player/e12-draft-continuity.test.ts
-          tests/local-db/study-event.test.ts
-          tests/platform/j37-first-party-sdk-adapter.test.ts
-          tests/platform/j38-first-party-sdk-readiness.test.ts
-          tests/platform/j39-account-intent-and-callback-integrity.test.ts
-          tests/platform/j16f-workspace-races.test.ts
-          tests/local-db/j20-recovery.test.ts
-          tests/local-db/j40-visible-recovery.test.ts
-          tests/study-player/e13-role-response-missions.test.ts
-          tests/study-player/e13-practical-mixer.test.ts
-          tests/study-player/e14-listening-handoff.test.ts
-          tests/study-player/e15-context-recovery.test.ts
-          tests/study-player/e16-dialogue-rehearsal.test.ts
-          tests/study-player/e17-original-listening-notebook.test.ts
-      - name: Offline private Account SDK provenance fixture checks
+      - name: Account SDK distribution provenance fixture
+        id: sdk
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
         run: node --test scripts/verify-account-sdk-distribution.test.mjs
-      - name: Monorepo TypeScript including dormant Account adapter
+      - name: Full monorepo TypeScript
+        id: types
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
         run: pnpm typecheck
-      - name: Actual web application build
-        run: pnpm --filter @thiepn/japanese-web build
-      - name: Install Chromium browser
+      - name: Full Vitest unit and integration suite
+        id: vitest
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm test
+      - name: Validate canonical content and source licenses
+        id: content
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm validate:content
+      - name: Validate native candidate queue without applying
+        id: nativequeue
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm native:p10:preview
+      - name: Audit native provenance and P9 media inventory without promotion
+        id: nativeaudit
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm native:p11:audit
+      - name: Build all packages and enforce actual bundle and design budgets
+        id: build
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm build
+      - name: Install Chromium for full desktop Android and compact acceptance
+        id: chromium
+        if: steps.build.outcome == 'success'
+        continue-on-error: true
         run: pnpm exec playwright install --with-deps chromium
-      - name: Desktop/mobile Learn and Study Player smoke
+      - name: Full original application browser PWA offline and mobile matrix
+        id: browser
+        if: steps.chromium.outcome == 'success'
+        continue-on-error: true
         env:
           CI: ""
         run: >-
           pnpm exec playwright test
-          tests/e2e/j4-learning-journey.spec.ts
-          tests/e2e/j5-study-focus.spec.ts
-          tests/e2e/e12-learner-writing.spec.ts
-          tests/e2e/j17-account-panel.spec.ts
-          tests/e2e/j40-local-backup.spec.ts
-          tests/e2e/e13-original-role-replies.spec.ts
-          tests/e2e/e13-practical-mixer.spec.ts
-          tests/e2e/e14-listening-handoff.spec.ts
-          tests/e2e/e15-context-recovery.spec.ts
-          tests/e2e/e16-dialogue-rehearsal.spec.ts
-          tests/e2e/e17-original-listening-notebook.spec.ts
-          --project=desktop-chromium --project=android-mobile --project=compact-mobile --workers=2
+          --project=desktop-chromium
+          --project=android-mobile
+          --project=compact-mobile
+          --workers=3
+      - name: Exact-head no-release automated acceptance summary
+        if: always()
+        env:
+          INSTALL: ${{ steps.install.outcome }}
+          SDK: ${{ steps.sdk.outcome }}
+          TYPES: ${{ steps.types.outcome }}
+          VITEST: ${{ steps.vitest.outcome }}
+          CONTENT: ${{ steps.content.outcome }}
+          NATIVE_QUEUE: ${{ steps.nativequeue.outcome }}
+          NATIVE_AUDIT: ${{ steps.nativeaudit.outcome }}
+          BUILD: ${{ steps.build.outcome }}
+          CHROMIUM: ${{ steps.chromium.outcome }}
+          BROWSER: ${{ steps.browser.outcome }}
+        run: |
+          echo "Exact commit: $GITHUB_SHA"
+          echo "install=$INSTALL sdk=$SDK types=$TYPES vitest=$VITEST content=$CONTENT"
+          echo "native-queue=$NATIVE_QUEUE native-provenance=$NATIVE_AUDIT build=$BUILD"
+          echo "chromium=$CHROMIUM browser=$BROWSER"
+          echo "P11 independent Japanese review and P21 physical Android remain NOT_TESTED."
+          echo "Production Sync v1 and stable activation remain disabled."
+          for result in "$INSTALL" "$SDK" "$TYPES" "$VITEST" "$CONTENT" "$NATIVE_QUEUE" "$NATIVE_AUDIT" "$BUILD" "$CHROMIUM" "$BROWSER"; do
+            if [ "$result" != success ]; then
+              echo "Full integration acceptance is BLOCKED; inspect failed/not-tested jobs."
+              exit 1
+            fi
+          done
+          echo "FULL AUTOMATED QUALIFICATION PASS. No human release or merge authority inferred."
