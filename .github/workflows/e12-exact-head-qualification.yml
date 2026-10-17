@@ -1,0 +1,134 @@
+name: E12 Exact Source Qualification
+
+on:
+  push:
+    branches:
+      - fix/e12-executed-qualification-and-proven-defects
+
+permissions:
+  contents: read
+
+concurrency:
+  group: japanese-e12-qualification
+  cancel-in-progress: true
+
+jobs:
+  integrated-full-source-and-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      VITE_PUBLIC_BASE: /japanese/
+    steps:
+      - name: Exact source checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Record immutable commit and clean worktree
+        run: |
+          git rev-parse HEAD
+          test -z "$(git status --porcelain)"
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - name: Install exact workspace dependencies
+        id: install
+        run: pnpm install --no-frozen-lockfile
+      - name: Account SDK distribution provenance fixture
+        id: sdk
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        run: node --test scripts/verify-account-sdk-distribution.test.mjs
+      - name: Full monorepo TypeScript
+        id: types
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm typecheck
+      - name: Full Vitest unit and integration suite
+        id: vitest
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm test
+      - name: Validate canonical content and source licenses
+        id: content
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm validate:content
+      - name: Validate native candidate queue without applying
+        id: nativequeue
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm native:p10:preview
+      - name: Audit native provenance and P9 media inventory without promotion
+        id: nativeaudit
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm native:p11:audit
+      - name: Build all packages and enforce actual bundle and design budgets
+        id: build
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        run: pnpm build
+      - name: Install Chromium for full desktop Android and compact acceptance
+        id: chromium
+        if: steps.build.outcome == 'success'
+        continue-on-error: true
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Verify demonstrated responsive regressions before full browser suite
+        id: focused
+        if: steps.chromium.outcome == 'success'
+        continue-on-error: true
+        env:
+          CI: ""
+        run: >-
+          pnpm exec playwright test
+          tests/e2e/j6-immerse-reader.spec.ts
+          tests/e2e/j12-mobile.spec.ts
+          tests/e2e/j13-exhibition.spec.ts
+          tests/e2e/p21-product-consolidation.spec.ts
+          --project=desktop-chromium
+          --project=android-mobile
+          --project=compact-mobile
+          --workers=3
+      - name: Full original application browser PWA offline and mobile matrix
+        id: browser
+        if: steps.focused.outcome == 'success'
+        continue-on-error: true
+        env:
+          CI: ""
+        run: >-
+          pnpm exec playwright test
+          --project=desktop-chromium
+          --project=android-mobile
+          --project=compact-mobile
+          --workers=3
+      - name: Exact-head no-release automated acceptance summary
+        if: always()
+        env:
+          INSTALL: ${{ steps.install.outcome }}
+          SDK: ${{ steps.sdk.outcome }}
+          TYPES: ${{ steps.types.outcome }}
+          VITEST: ${{ steps.vitest.outcome }}
+          CONTENT: ${{ steps.content.outcome }}
+          NATIVE_QUEUE: ${{ steps.nativequeue.outcome }}
+          NATIVE_AUDIT: ${{ steps.nativeaudit.outcome }}
+          BUILD: ${{ steps.build.outcome }}
+          CHROMIUM: ${{ steps.chromium.outcome }}
+          FOCUSED: ${{ steps.focused.outcome }}
+          BROWSER: ${{ steps.browser.outcome }}
+        run: |
+          echo "Exact commit: $GITHUB_SHA"
+          echo "install=$INSTALL sdk=$SDK types=$TYPES vitest=$VITEST content=$CONTENT"
+          echo "native-queue=$NATIVE_QUEUE native-provenance=$NATIVE_AUDIT build=$BUILD"
+          echo "chromium=$CHROMIUM focused=$FOCUSED full-browser=$BROWSER"
+          echo "P11 independent Japanese review and P21 physical Android remain NOT_TESTED."
+          echo "Production Sync v1 and stable activation remain disabled."
+          for result in "$INSTALL" "$SDK" "$TYPES" "$VITEST" "$CONTENT" "$NATIVE_QUEUE" "$NATIVE_AUDIT" "$BUILD" "$CHROMIUM" "$FOCUSED" "$BROWSER"; do
+            if [ "$result" != success ]; then
+              echo "Full integration acceptance is BLOCKED; inspect failed/not-tested jobs."
+              exit 1
+            fi
+          done
+          echo "FULL AUTOMATED QUALIFICATION PASS. No human release or merge authority inferred."

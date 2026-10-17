@@ -15,7 +15,7 @@ test("J15D uses only the native Japanese navigation, not the retired shell",asyn
 
 test("J15D Study entry still opens the native task chamber with accessible controls",async({page})=>{
   await page.goto("./");
-  await page.getByRole("button",{name:/Continue today’s study|Review anyway/}).click();
+  await page.locator(".ux1-native-queue").click();
   await expect(page.locator(".j5-study")).toBeVisible();
   await expect(page.getByRole("button",{name:"Exit"})).toBeVisible();
   await expect(page.locator(".study-card,.study-shell,.study-progress")).toHaveCount(0);

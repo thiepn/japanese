@@ -1,3 +1,4 @@
+import "./j7.css";
 import {useEffect,useMemo,useRef,useState,type KeyboardEvent} from "react";
 import type {EntityKind} from "@thiepn/domain";
 import type {SearchResult} from "@thiepn/search";

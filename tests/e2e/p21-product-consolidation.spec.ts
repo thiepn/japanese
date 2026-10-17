@@ -38,6 +38,13 @@ test("P21 keeps advanced workspace tabs thumb-safe on mobile profiles",async({pa
   test.skip(testInfo.project.name==="desktop-chromium","mobile touch-target hardening only");
   await page.goto("./");
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
+  // Advanced source studios are intentionally collapsed until explicitly
+  // opened. Wait for asynchronous Immerse navigation and interact as a user.
+  await expect(page.locator(".j6-studios")).toBeVisible();
+  for(const id of ["p15","p17","p18","p19"]){
+    await page.locator("#j6-studio-"+id+" > summary").click();
+    await expect(page.locator("."+id+"-tabs button").first()).toBeVisible();
+  }
   const tabs=page.locator(".p15-tabs button,.p17-tabs button,.p18-tabs button,.p19-tabs button");
   expect(await tabs.count()).toBeGreaterThan(0);
   for(const button of await tabs.all()){

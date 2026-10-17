@@ -1,29 +1,44 @@
 import { Suspense,lazy,useEffect,useLayoutEffect,useRef,useState } from "react";
+import {UX1Outcome} from "./design/UX1Outcome";
+import "./design/ux1.css";
 import { createThiepnAccountAuthProvider,getRecentJapaneseAuthFailure,type AuthContext } from "@thiepn/auth";
 import { getDefaultAudioProvider } from "@thiepn/audio";
 import { claimGuestWorkspace } from "@thiepn/local-db";
 import type { SearchResult } from "@thiepn/search";
 import { isStudyLesson,type StudyStep } from "@thiepn/study-player";
 import { searchLocalJapanese } from "./content";
-import { Immersion } from "./immerse/Immersion";
+
 import { getImmersionProgress,type ImmersionProgress } from "./immerse/reader";
 import { AUTHENTIC_GUEST_ACCOUNT_ID,setAuthenticAccountId } from "./immerse/authentic";
-import { StudyPlayer,type StudyAnswer } from "./study/StudyPlayer";
+import type { StudyAnswer } from "./study/StudyPlayer";
+import "./study/a1Excellence.css";
+import "./study/a1ExcellenceE02.css";
+import "./study/a2ExcellenceE03.css";
+import "./study/a2ExcellenceE04.css";
+import "./study/e05AdaptiveRecall.css";
+import "./study/e07Journey.css";
+
+
+
+import {deriveE07Journey,type E07Action} from "./study/e07LearningRoute";
+import "./study/e06IndependentCourse.css";
 import { StudySessionFence } from "./study/sessionFence";
 import { DashboardRefreshGuard } from "./study/dashboardRefreshGuard";
 import { AccountWorkspaceLease,attachWorkspaceWithLease,type WorkspaceLease } from "./study/accountWorkspaceLease";
 import { J2AppShell,type J2Surface } from "./design/J2AppShell";
-import { J3Today } from "./design/J3Today";
-import { J4Learn } from "./design/J4Learn";
-import { J7Library } from "./design/J7Library";
 import { J8Progress } from "./design/J8Progress";
+import { J3Today } from "./design/J3Today";
+
+
+
 import { createJapaneseLanguageDashboardPublisher } from "./languageDashboard";
 import {
-  buildA1MilestoneSession,buildB1MilestoneSession,buildB2MilestoneSession,buildC1FoundationPractice,buildC1FoundationSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildP13C1SynthesisSession,buildP9RealWorldChainSession,buildP9RealWorldQualificationSession,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getC1FoundationAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getCompletedTodayCount,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,GUEST_ACCOUNT_ID,getDevelopmentAccountId,setDevelopmentAccountId,
-  type A1MilestoneProgress,type B1MilestoneProgress,type B2MilestoneProgress,type C1FoundationProgress,type ConjugationMasterySummary,type CourseUnitProgress,type GrammarMasterySummary,type KanaMasterySummary,type LexicalFluencySummary,type SentenceMasterySummary,type StudySummary,type VocabularyMasterySummary
+  buildA1MilestoneSession,buildE01Session,buildE01DelayedSession,getE01Evidence,buildE02Session,buildE02DelayedSession,getE02Evidence,buildE03Session,buildE03DelayedSession,getE03Evidence,buildE04Session,buildE04DelayedSession,buildE04PreviewSession,getE04Evidence,buildE03PreviewSession,buildE02PreviewSession,buildE05RepairSession,getE05Dashboard,buildE06Session,buildE06FullSession,buildE11MicroSession,buildE13PracticalSession,buildE18MixedReviewSession,buildE19WritingPractice,getE19WritingOverview,buildE14HandoffPractice,getE14PrivateHandoffReviews,buildE15RecoverySession,buildE10DailyStageSession,buildE06PreviewSession,buildE06DelayedSession,buildE10DelayedStageSession,buildE06FullDelayedSession,getE06Evidence,buildB1MilestoneSession,buildB2MilestoneSession,buildC1FoundationPractice,buildC1FoundationSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildP13C1SynthesisSession,buildP9RealWorldChainSession,buildP9RealWorldQualificationSession,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getC1FoundationAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getCompletedTodayCount,getUX1Engagement,getStudySummary,getVocabularyMasterySummary,recordStudyAnswer,GUEST_ACCOUNT_ID,getDevelopmentAccountId,setDevelopmentAccountId,
+  type UX1Engagement,type E13PracticeMode,type E18Mode,type E19Overview,type E14HandoffMode,type E14HandoffReview,type E15Focus,type E01Progress,type E02Overview,type E03Overview,type E04Overview,type E05Evidence,type E06Overview,type A1MilestoneProgress,type B1MilestoneProgress,type B2MilestoneProgress,type C1FoundationProgress,type ConjugationMasterySummary,type CourseUnitProgress,type GrammarMasterySummary,type KanaMasterySummary,type LexicalFluencySummary,type SentenceMasterySummary,type StudySummary,type VocabularyMasterySummary
 } from "./study/runtime";
 
 type Surface=J2Surface;
+const EMPTY_ENGAGEMENT:UX1Engagement={totalXp:0,streakDays:0,todayUniqueAnswers:0,dailyGoal:3};
 const EMPTY_SUMMARY:StudySummary={due:0,newKana:5,newVocabulary:2,listening:0,application:0,course:0,learnedKana:0,totalKana:217,learnedVocabulary:0,totalVocabulary:658,memoryTraces:0};
 const EMPTY_KANA:KanaMasterySummary={overall:0,hiragana:0,katakana:0,recognition:0,readingRecall:0,formSelection:0,listening:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
 const EMPTY_VOCAB:VocabularyMasterySummary={overall:0,meaning:0,reading:0,listening:0,activeUse:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
@@ -70,6 +85,13 @@ const ANONYMOUS_AUTH:AuthContext={
   permissions:new Set<string>()
 };
 
+// Each destination below is imported only when the learner opens that surface.
+// This is a real initial-request boundary, not an eager preload or budget exception.
+const J4Learn=lazy(()=>import("./design/J4Learn").then(m=>({default:m.J4Learn})));
+const Immersion=lazy(()=>import("./immerse/Immersion").then(m=>({default:m.Immersion})));
+const J7Library=lazy(()=>import("./design/J7Library").then(m=>({default:m.J7Library})));
+
+const StudyPlayer=lazy(()=>import("./study/StudyPlayer").then(m=>({default:m.StudyPlayer})));
 const J11Diagnostics=lazy(()=>import("./design/J11Diagnostics").then((module)=>({default:module.J11Diagnostics})));
 
 export function App(){
@@ -78,6 +100,8 @@ export function App(){
   const [results,setResults]=useState<SearchResult[]>([]);
   const [libraryStatus,setLibraryStatus]=useState<"idle"|"loading"|"ready"|"error">("idle");
   const [session,setSession]=useState<StudyStep[]|null>(null);
+  const [ux1Outcome,setUx1Outcome]=useState<{owner:string;origin:Surface;pending:boolean;failed:boolean}|null>(null);
+  const sessionOrigin=useRef<Surface>("Today");
   const [sessionStatus,setSessionStatus]=useState<"idle"|"loading"|"error"|"empty">("idle");
   const [summary,setSummary]=useState<StudySummary>(EMPTY_SUMMARY);
   const [kanaMastery,setKanaMastery]=useState<KanaMasterySummary>(EMPTY_KANA);
@@ -88,17 +112,29 @@ export function App(){
   const [lexicalFluency,setLexicalFluency]=useState<LexicalFluencySummary>(EMPTY_LEXICAL_FLUENCY);
   const [courseProgress,setCourseProgress]=useState<CourseUnitProgress[]>([]);
   const [milestone,setMilestone]=useState<A1MilestoneProgress>(EMPTY_MILESTONE);
+  const [e01,setE01]=useState<E01Progress>({status:"not_started",answered:0,correct:0,unscored:0,stages:[],canDo:"A1 introductory exchange",unitId:"",delayedCorrect:0});
+  const [e02,setE02]=useState<E02Overview>({scenes:[],nextSceneId:null,started:0,readyForDelay:0,delayedReviewed:0,total:0,authored:0,unmappedScenes:[]});
+  const [e03,setE03]=useState<E03Overview>({scenes:[],nextSceneId:null,started:0,readyForDelay:0,delayedReviewed:0,total:0,authored:10,unmapped:[],unmappedScenes:[]});
+  const [e04,setE04]=useState<E04Overview>({scenes:[],authored:8,linked:0,unmapped:[],started:0,reviewReady:0,reviewed:0,nextSceneId:null});
+  const [e05,setE05]=useState<E05Evidence>({controlled:{attempts:0,correct:0,distinctCorrect:0,listening:0,reading:0,formSelection:0,typedProduction:0},unscored:{writing:0,speech:0},delayed:{correct:0,attempts:0},repair:{pending:0,repaired:0,available:0},targets:[],canonical:{a1:0,a2:0,explicitA21:0,explicitA22:0,unsplitA2:0}});
+  const [e06,setE06]=useState<E06Overview>({cases:[],total:0,linked:0,prerequisiteReady:0,active:0,waiting:0,ready:0,reviewed:0,unlinked:0,nextId:null,nextDelayedId:null});
+  const [e14Reviews,setE14Reviews]=useState<E14HandoffReview[]>([]);
+  const [e19,setE19]=useState<E19Overview>({cases:[],total:0,sourceReady:0,drafted:0,revised:0});
   const [b1Milestone,setB1Milestone]=useState<B1MilestoneProgress>(EMPTY_B1_MILESTONE);
   const [b2Milestone,setB2Milestone]=useState<B2MilestoneProgress>(EMPTY_B2_MILESTONE);
   const [c1Foundation,setC1Foundation]=useState<C1FoundationProgress>(EMPTY_C1_FOUNDATION);
   const [immersion,setImmersion]=useState<ImmersionProgress>(EMPTY_IMMERSION);
   const [completedToday,setCompletedToday]=useState(0);
+  const [engagement,setEngagement]=useState<UX1Engagement>(EMPTY_ENGAGEMENT);
   const [preferredCoachChain,setPreferredCoachChain]=useState<string|null>(null);
   const [account,setAccount]=useState<AuthContext>(ANONYMOUS_AUTH);
   const [accountConnected,setAccountConnected]=useState(false);
   const [accountBusy,setAccountBusy]=useState(false);
   const [accountResolving,setAccountResolving]=useState(true);
   const [accountMessage,setAccountMessage]=useState<string|null>(null);
+  const [localRecoveryBusy,setLocalRecoveryBusy]=useState(false);
+  const [localRecoveryStatus,setLocalRecoveryStatus]=useState<string|null>(null);
+  const localRecoveryFlight=useRef(false);
   const sessionFence=useRef(new StudySessionFence());
   const dashboardRefreshGuard=useRef(new DashboardRefreshGuard());
   const workspaceLease=useRef(new AccountWorkspaceLease());
@@ -111,6 +147,7 @@ export function App(){
     JAPANESE_LANGUAGE_DASHBOARD.invalidate();
     sessionOwner.current=null;
     setSession(null);
+    setUx1Outcome(null);
     setSessionStatus("idle");
     setSummary(EMPTY_SUMMARY);
     setKanaMastery(EMPTY_KANA);
@@ -121,11 +158,20 @@ export function App(){
     setLexicalFluency(EMPTY_LEXICAL_FLUENCY);
     setCourseProgress([]);
     setMilestone(EMPTY_MILESTONE);
+    setE01({status:"not_started",answered:0,correct:0,unscored:0,stages:[],canDo:"A1 introductory exchange",unitId:"",delayedCorrect:0});
+    setE02({scenes:[],nextSceneId:null,started:0,readyForDelay:0,delayedReviewed:0,total:0,authored:0,unmappedScenes:[]});
+    setE03({scenes:[],nextSceneId:null,started:0,readyForDelay:0,delayedReviewed:0,total:0,authored:10,unmapped:[],unmappedScenes:[]});
+    setE04({scenes:[],authored:8,linked:0,unmapped:[],started:0,reviewReady:0,reviewed:0,nextSceneId:null});
+    setE05({controlled:{attempts:0,correct:0,distinctCorrect:0,listening:0,reading:0,formSelection:0,typedProduction:0},unscored:{writing:0,speech:0},delayed:{correct:0,attempts:0},repair:{pending:0,repaired:0,available:0},targets:[],canonical:{a1:0,a2:0,explicitA21:0,explicitA22:0,unsplitA2:0}});
+    setE06({cases:[],total:0,linked:0,prerequisiteReady:0,active:0,waiting:0,ready:0,reviewed:0,unlinked:0,nextId:null,nextDelayedId:null});
+    setE14Reviews([]);
+    setE19({cases:[],total:0,sourceReady:0,drafted:0,revised:0});
     setB1Milestone(EMPTY_B1_MILESTONE);
     setB2Milestone(EMPTY_B2_MILESTONE);
     setC1Foundation(EMPTY_C1_FOUNDATION);
     setImmersion(EMPTY_IMMERSION);
     setCompletedToday(0);
+    setEngagement(EMPTY_ENGAGEMENT);
     // The local core Library index is public and not owner-scoped; keep its
     // current search results so switching accounts cannot strand its UI.
     setPreferredCoachChain(null);
@@ -254,12 +300,51 @@ export function App(){
       workspaceId,
       getDevelopmentAccountId,
       ()=>Promise.all([
-        getStudySummary(),getKanaMasterySummary(),getVocabularyMasterySummary(),getConjugationMasterySummary(),getGrammarMasterySummary(),getSentenceMasterySummary(),getLexicalFluencySummary(),getCourseProgress(),getA1MilestoneAssessmentProgress(),getB1MilestoneAssessmentProgress(),getB2MilestoneAssessmentProgress(),getC1FoundationAssessmentProgress(),getImmersionProgress(),getCompletedTodayCount()
+        getStudySummary(),getKanaMasterySummary(),getVocabularyMasterySummary(),getConjugationMasterySummary(),getGrammarMasterySummary(),getSentenceMasterySummary(),getLexicalFluencySummary(),getCourseProgress(),getA1MilestoneAssessmentProgress(),getB1MilestoneAssessmentProgress(),getB2MilestoneAssessmentProgress(),getC1FoundationAssessmentProgress(),getImmersionProgress(),getCompletedTodayCount(),getUX1Engagement(),getE01Evidence(),getE02Evidence(),getE03Evidence(),getE04Evidence(),getE05Dashboard(),getE06Evidence(),getE14PrivateHandoffReviews(),getE19WritingOverview()
       ]),
-      ([nextSummary,nextKana,nextVocab,nextConjugation,nextGrammar,nextSentence,nextLexicalFluency,nextCourse,nextMilestone,nextB1Milestone,nextB2Milestone,nextC1Foundation,nextImmersion,nextCompletedToday])=>{
-        setSummary(nextSummary);setKanaMastery(nextKana);setVocabMastery(nextVocab);setConjugationMastery(nextConjugation);setGrammarMastery(nextGrammar);setSentenceMastery(nextSentence);setLexicalFluency(nextLexicalFluency);setCourseProgress(nextCourse);setMilestone(nextMilestone);setB1Milestone(nextB1Milestone);setB2Milestone(nextB2Milestone);setC1Foundation(nextC1Foundation);setImmersion(nextImmersion);setCompletedToday(nextCompletedToday);
+      ([nextSummary,nextKana,nextVocab,nextConjugation,nextGrammar,nextSentence,nextLexicalFluency,nextCourse,nextMilestone,nextB1Milestone,nextB2Milestone,nextC1Foundation,nextImmersion,nextCompletedToday,nextEngagement,nextE01,nextE02,nextE03,nextE04,nextE05,nextE06,nextE14Reviews,nextE19])=>{
+        setSummary(nextSummary);setKanaMastery(nextKana);setVocabMastery(nextVocab);setConjugationMastery(nextConjugation);setGrammarMastery(nextGrammar);setSentenceMastery(nextSentence);setLexicalFluency(nextLexicalFluency);setCourseProgress(nextCourse);setMilestone(nextMilestone);setB1Milestone(nextB1Milestone);setB2Milestone(nextB2Milestone);setC1Foundation(nextC1Foundation);setImmersion(nextImmersion);setCompletedToday(nextCompletedToday);setEngagement(nextEngagement);setE01(nextE01);setE02(nextE02);setE03(nextE03);setE04(nextE04);setE05(nextE05);setE06(nextE06);setE14Reviews(nextE14Reviews);setE19(nextE19);
       },
     );
+  }
+
+  async function performLocalRecovery(action:"download"|"restore",file?:File){
+    if(localRecoveryFlight.current||accountResolving||accountBusy)return;
+    if(action==="restore"&&!file)return;
+    const workspaceId=getDevelopmentAccountId();
+    const ticket=workspaceLease.current.snapshot();
+    const isCurrent=()=>workspaceLease.current.isCurrent(ticket)
+      &&getDevelopmentAccountId()===workspaceId;
+    localRecoveryFlight.current=true;
+    setLocalRecoveryBusy(true);
+    setLocalRecoveryStatus(null);
+    let helpers:typeof import("./study/localRecovery")|null=null;
+    try{
+      // No private backup encoder in the initial/ordinary learner JS bundle.
+      helpers=await import("./study/localRecovery");
+      if(!isCurrent())throw new Error("JAPANESE_BACKUP_WORKSPACE_CHANGED");
+      if(action==="download"){
+        const raw=await helpers.prepareLocalWorkspaceDownload(workspaceId,isCurrent);
+        if(!isCurrent())throw new Error("JAPANESE_BACKUP_WORKSPACE_CHANGED");
+        helpers.downloadLocalWorkspaceFile(workspaceId,raw);
+        if(isCurrent())setLocalRecoveryStatus("Local backup saved. It contains private progress and recordings; keep the file secure. It was not uploaded.");
+      }else if(file){
+        await helpers.restoreLocalWorkspaceFile(workspaceId,file,isCurrent);
+        if(!isCurrent())throw new Error("JAPANESE_BACKUP_WORKSPACE_CHANGED");
+        clearLearnerView();
+        const applied=await refreshDashboard();
+        if(isCurrent())setLocalRecoveryStatus(applied
+          ?"Your Japanese workspace was restored from this device file. No cloud sync was performed."
+          :"Backup restored. Reload this page to see your local study progress.");
+      }
+    }catch(error){
+      if(isCurrent())setLocalRecoveryStatus(helpers
+        ?helpers.localRecoveryErrorMessage(error)
+        :"Local backup could not be opened. Existing progress was not changed.");
+    }finally{
+      localRecoveryFlight.current=false;
+      setLocalRecoveryBusy(false);
+    }
   }
 
   async function performAccountAction(action:"signIn"|"connect"|"signOut"){
@@ -325,6 +410,8 @@ export function App(){
   }
 
   function openSession(queue:StudyStep[]){
+    sessionOrigin.current=surface;
+    setUx1Outcome(null);
     const audio=queue.filter((step)=>Boolean(step.audio)).flatMap((step)=>step.audio?[step.audio]:[]);
     if(audio.length)void getDefaultAudioProvider().prefetch(audio).catch(()=>{/* Audio prefetch failure is nonfatal. */});
     sessionOwner.current=queue.length?getDevelopmentAccountId():null;
@@ -345,6 +432,31 @@ export function App(){
   }
 
   const startStudy=()=>loadStudySession(()=>buildTodayQueue());
+  const startE06=(id:string)=>loadStudySession(()=>buildE06Session(id));
+  const startE06Full=(id:string)=>loadStudySession(()=>buildE06FullSession(id));
+  const startE11Micro=(id:string)=>loadStudySession(()=>buildE11MicroSession(id));
+  const startE13=(ids:readonly string[],mode:E13PracticeMode)=>loadStudySession(()=>buildE13PracticalSession(ids,mode));
+  const startE18=(keys:readonly string[],mode:E18Mode)=>loadStudySession(()=>buildE18MixedReviewSession(keys,mode));
+  const startE19=(key:string)=>loadStudySession(()=>buildE19WritingPractice(key));
+  const startE14=(id:string,mode:E14HandoffMode)=>loadStudySession(()=>buildE14HandoffPractice(id,mode));
+  const startE15=(id:string,focus:E15Focus)=>loadStudySession(()=>buildE15RecoverySession(id,focus));
+  const startE10Stage=(id:string,stageId:import("./study/e10DailyStages").E10StageId)=>loadStudySession(()=>buildE10DailyStageSession(id,stageId));
+  const startE06Preview=(id:string)=>loadStudySession(()=>buildE06PreviewSession(id));
+  const startE06Delayed=(id:string)=>loadStudySession(()=>buildE06DelayedSession(id));
+  const startE06FullDelayed=(id:string)=>loadStudySession(()=>buildE06FullDelayedSession(id));
+  const startE10DelayedStage=(id:string,stageId:import("./study/e10DailyStages").E10DelayedId)=>loadStudySession(()=>buildE10DelayedStageSession(id,stageId));
+  const startE05Repair=()=>loadStudySession(()=>buildE05RepairSession());
+  const startE02Preview=(id:string)=>loadStudySession(()=>buildE02PreviewSession(id));
+  const startE03Preview=(id:string)=>loadStudySession(()=>buildE03PreviewSession(id));
+  const startE04=(id:string)=>loadStudySession(()=>buildE04Session(id));
+  const startE04Delayed=(id:string)=>loadStudySession(()=>buildE04DelayedSession(id));
+  const startE04Preview=(id:string)=>loadStudySession(()=>buildE04PreviewSession(id));
+  const startE03=(id:string)=>loadStudySession(()=>buildE03Session(id));
+  const startE03Delayed=(id:string)=>loadStudySession(()=>buildE03DelayedSession(id));
+  const startE02=(id:string)=>loadStudySession(()=>buildE02Session(id));
+  const startE02Delayed=(id:string)=>loadStudySession(()=>buildE02DelayedSession(id));
+  const startE01=()=>loadStudySession(()=>buildE01Session());
+  const startE01Delayed=()=>loadStudySession(()=>buildE01DelayedSession());
   const startCourseUnit=(unitId:string)=>loadStudySession(()=>buildCourseUnitSession(unitId));
   const startUnitAssessment=(unitId:string)=>loadStudySession(()=>buildUnitAssessmentSession(unitId));
   const startMilestoneAssessment=()=>loadStudySession(()=>buildA1MilestoneSession());
@@ -365,17 +477,25 @@ export function App(){
     await recordStudyAnswer({prompt:answer.prompt,response:answer.response,result:answer.grade.result,responseTimeMs:answer.responseTimeMs});
     if(getDevelopmentAccountId()===workspaceId)setCompletedToday((value)=>value+1);
   }
-  function finishSession(){
+  function finishSession(reason:"complete"|"exit"){
+    const owner=getDevelopmentAccountId();
+    const cafe=reason==="complete"&&Boolean(session?.some(step=>step.id==="a1-e02-food-setup"));
+    const origin=sessionOrigin.current;
     sessionFence.current.invalidate();
     sessionOwner.current=null;
     const active=document.activeElement;
     if(active instanceof HTMLElement)active.blur();
     setSession(null);
+    setUx1Outcome(cafe?{owner,origin,pending:true,failed:false}:null);
     requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:"auto"})));
     void refreshDashboard().then((applied)=>{
-      if(applied&&account.status==="authenticated"&&accountConnected&&getDevelopmentAccountId()===account.accountId){
+      if(getDevelopmentAccountId()!==owner)return;
+      if(cafe)setUx1Outcome(value=>value?.owner===owner?{...value,pending:false,failed:!applied}:value);
+      if(applied&&account.status==="authenticated"&&accountConnected&&owner===account.accountId){
         void JAPANESE_LANGUAGE_DASHBOARD.publish().catch(()=>{/* Core dashboard is non-blocking */});
       }
+    }).catch(()=>{
+      if(cafe&&getDevelopmentAccountId()===owner)setUx1Outcome(value=>value?.owner===owner?{...value,pending:false,failed:true}:value);
     });
   }
 
@@ -397,10 +517,30 @@ export function App(){
     setSurface(next);
   };
 
+  const e07=deriveE07Journey({summary,e01,e02,e03,e04,e05,e06});
+  function openE07Action(a:E07Action){
+    if(a.origin==="fsrs"){void startStudy();return;}
+    if(a.origin==="e05"){void startE05Repair();return;}
+    if(a.origin==="e01"){void (a.kind==="delayed"?startE01Delayed():startE01());return;}
+    if(!a.targetId)return;
+    const id=a.targetId;
+    if(a.origin==="e02"){void (a.kind==="reading"?startE02Preview(id):a.kind==="delayed"?startE02Delayed(id):startE02(id));return;}
+    if(a.origin==="e03"){void (a.kind==="reading"?startE03Preview(id):a.kind==="delayed"?startE03Delayed(id):startE03(id));return;}
+    if(a.origin==="e04"){void (a.kind==="reading"?startE04Preview(id):a.kind==="delayed"?startE04Delayed(id):startE04(id));return;}
+    if(a.origin==="e06"){void (a.kind==="reading"?startE06Preview(id):a.kind==="delayed"?startE06Delayed(id):startE06(id));}
+  }
+
+  const currentE17Owner=getDevelopmentAccountId();
+  const e17LeaseTicket=workspaceLease.current.snapshot();
+  const e17WorkspaceCurrent=()=>getDevelopmentAccountId()===currentE17Owner
+    &&workspaceLease.current.isCurrent(e17LeaseTicket);
+
   return <>
     <a className="skip-link" href="#main-content">Skip to main content</a>
     {session
-      ?<main className="j5-study-shell" id="main-content" tabIndex={-1}><StudyPlayer steps={session} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></main>
+      ?<main className="j5-study-shell" id="main-content" tabIndex={-1}><Suspense fallback={<p role="status">Preparing your study session…</p>}><StudyPlayer steps={session} accountScope={getDevelopmentAccountId()} onAnswer={handleAnswer} onComplete={()=>finishSession("complete")} onExit={()=>finishSession("exit")}/></Suspense></main>
+      :ux1Outcome
+      ?<main className="j5-study-shell" id="main-content" tabIndex={-1}><UX1Outcome scene={e02.scenes.find(scene=>scene.id==="food")} pending={ux1Outcome.pending} failed={ux1Outcome.failed} returnLabel={ux1Outcome.origin==="Today"?"Return to Today":"Return to Learn"} onReturn={()=>{setSurface(ux1Outcome.origin);setUx1Outcome(null);}}/></main>
       :<J2AppShell
         surface={surface}
         onSurfaceChange={navigateSurface}
@@ -409,17 +549,20 @@ export function App(){
         accountBusy={accountBusy||accountResolving}
         onAccountAction={(action)=>void performAccountAction(action)}
         accountStatus={accountMessage}
+        onLocalRecovery={(action,file)=>void performLocalRecovery(action,file)}
+        localRecoveryBusy={localRecoveryBusy}
+        localRecoveryStatus={localRecoveryStatus}
         diagnosticsMode={diagnosticsMode}
       >
         {diagnosticsMode
           ?<Suspense fallback={<p className="j2-account-status" role="status">Opening technical workspace…</p>}><J11Diagnostics key={getDevelopmentAccountId()} onExit={()=>navigateSurface(surface)} accountStatus={account.status} accountConnected={accountConnected}/></Suspense>
-          :<>
-            {surface==="Today"&&<J3Today summary={summary} completedToday={completedToday} status={sessionStatus} onStart={()=>void startStudy()}/>}
-            {surface==="Learn"&&<J4Learn summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} onPreferredCoachChainApplied={()=>setPreferredCoachChain(null)} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>}
-            {surface==="Immerse"&&<Immersion key={getDevelopmentAccountId()} onStartProductionTask={(taskId)=>void startProductiveTask(taskId)} onStartC1Synthesis={(packId)=>void startC1Synthesis(packId)} onOpenC1Coach={(chainId)=>{setPreferredCoachChain(chainId);setSurface("Learn");}}/>}
-            {surface==="Progress"&&<J8Progress kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} immersion={immersion} summary={summary} course={courseProgress} completedToday={completedToday}/>}
+          :<Suspense fallback={<p role="status" aria-live="polite">Opening Japanese section…</p>}>
+            {surface==="Today"&&<J3Today engagement={engagement} e07={e07} onOpenE07={openE07Action} e06={e06} onStartE06={(id)=>void startE06(id)} onStartE11Micro={(id)=>void startE11Micro(id)} onStartE06Delayed={(id)=>void startE06Delayed(id)} e05={e05} onStartE05Repair={()=>void startE05Repair()} e04={e04} onStartE04={(id)=>void startE04(id)} onStartE04Delayed={(id)=>void startE04Delayed(id)} e03={e03} onStartE03={(id)=>void startE03(id)} onStartE03Delayed={(id)=>void startE03Delayed(id)} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE02Delayed={(id)=>void startE02Delayed(id)} summary={summary} completedToday={completedToday} status={sessionStatus} e01={e01} onStartE01={()=>void startE01()} onStartE01Delayed={()=>void startE01Delayed()} onStart={()=>void startStudy()}/>}
+            {surface==="Learn"&&<J4Learn key={getDevelopmentAccountId()} e07={e07} onOpenE07={openE07Action} e06={e06} e16WorkspaceId={currentE17Owner} e16WorkspaceCurrent={e17WorkspaceCurrent} onStartE06={(id)=>void startE06(id)} onStartE06Full={(id)=>void startE06Full(id)} onStartE11Micro={(id)=>void startE11Micro(id)} onStartE13={(ids,mode)=>void startE13(ids,mode)} onStartE18={(keys,mode)=>void startE18(keys,mode)} e19={e19} onStartE19={key=>void startE19(key)} e14Reviews={e14Reviews} onStartE14={(id,mode)=>void startE14(id,mode)} onStartE15={(id,focus)=>void startE15(id,focus)} onStartE10Stage={(id,stage)=>void startE10Stage(id,stage)} onStartE06Delayed={(id)=>void startE06Delayed(id)} onStartE06FullDelayed={(id)=>void startE06FullDelayed(id)} onStartE10DelayedStage={(id,stage)=>void startE10DelayedStage(id,stage)} onStartE06Preview={(id)=>void startE06Preview(id)} e05={e05} onStartE05Repair={()=>void startE05Repair()} onStartE03Preview={(id)=>void startE03Preview(id)} onStartE02Preview={(id)=>void startE02Preview(id)} e04={e04} onStartE04={(id)=>void startE04(id)} onStartE04Delayed={(id)=>void startE04Delayed(id)} onStartE04Preview={(id)=>void startE04Preview(id)} e03={e03} onStartE03={(id)=>void startE03(id)} onStartE03Delayed={(id)=>void startE03Delayed(id)} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE02Delayed={(id)=>void startE02Delayed(id)} e01={e01} onStartE01={()=>void startE01()} onStartE01Delayed={()=>void startE01Delayed()} summary={summary} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} onPreferredCoachChainApplied={()=>setPreferredCoachChain(null)} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id)=>void startCourseUnit(id)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>}
+            {surface==="Immerse"&&<Immersion key={getDevelopmentAccountId()} e07={e07} onOpenE07={openE07Action} e06={e06} onStartE06={(id)=>void startE06(id)} onStartE11Micro={(id)=>void startE11Micro(id)} onStartE06Delayed={(id)=>void startE06Delayed(id)} onStartE06Preview={(id)=>void startE06Preview(id)} e05={e05} onStartE05Repair={()=>void startE05Repair()} onStartE03Preview={(id)=>void startE03Preview(id)} e04={e04} onStartE04={(id)=>void startE04(id)} onStartE04Preview={(id)=>void startE04Preview(id)} e03={e03} onStartE03={(id)=>void startE03(id)} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE01={()=>void startE01()} onStartProductionTask={(taskId)=>void startProductiveTask(taskId)} onStartC1Synthesis={(packId)=>void startC1Synthesis(packId)} onOpenC1Coach={(chainId)=>{setPreferredCoachChain(chainId);setSurface("Learn");}}/>}
+            {surface==="Progress"&&<J8Progress e07={e07} onOpenE07={openE07Action} e06={e06} e05={e05} onStartE05Repair={()=>void startE05Repair()} e04={e04} e03={e03} e02={e02} e01={e01} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} immersion={immersion} summary={summary} course={courseProgress} completedToday={completedToday}/>}
             {surface==="Library"&&<J7Library query={query} setQuery={(value)=>{setLibraryStatus("loading");setResults([]);setQuery(value);}} results={results} status={libraryStatus}/>}
-          </>}
+          </Suspense>}
       </J2AppShell>}
   </>;
 }

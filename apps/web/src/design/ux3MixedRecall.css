@@ -1,0 +1,17 @@
+/* Original mixed-source review: native E02/E03/E04 learner evidence, no new scoring UI. */
+.ux3-mixed{display:grid;gap:18px;margin:24px 0;padding:clamp(16px,3vw,28px);border:1px solid var(--j-line-strong);border-radius:var(--j-radius-md);background:var(--j-bg-elevated);min-width:0}
+.ux3-mixed__header{display:flex;gap:20px;justify-content:space-between;align-items:start;flex-wrap:wrap}
+.ux3-mixed__header>div{flex:1 1 300px;min-width:0}.ux3-mixed__header h2{font-family:var(--j-font-editorial);font-size:clamp(21px,2.6vw,28px);margin:5px 0 8px}
+.ux3-mixed__header p,.ux3-mixed__locked p,.ux3-mixed__explanation,.ux3-mixed__boundary{font-size:13px;line-height:1.6;color:var(--j-fg-muted);margin:0}
+.ux3-mixed__header>strong{padding:9px 12px;border:1px solid var(--j-line);border-radius:var(--j-radius-sm);font-size:13px}
+.ux3-mixed__locked{display:grid;gap:13px}.ux3-mixed__locked button,.ux3-mixed__case,.ux3-mixed__start{min-height:48px;border:1px solid var(--j-line-strong);border-radius:var(--j-radius-sm);background:var(--j-bg-elevated);color:var(--j-fg);padding:10px 14px;cursor:pointer}
+.ux3-mixed__choices{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));padding:0;border:0;min-width:0}
+.ux3-mixed__choices legend{font-size:14px;font-weight:700;margin-bottom:11px}
+.ux3-mixed__case{text-align:left;display:grid;gap:6px}.ux3-mixed__case span{font-size:12px;color:var(--j-fg-muted)}
+.ux3-mixed__case[aria-pressed=true]{border-color:var(--j-focus);background:var(--j-bg-muted);box-shadow:inset 4px 0 0 var(--j-focus)}
+.ux3-mixed__case:disabled{opacity:.65;cursor:not-allowed}
+.ux3-mixed__mode{display:grid;gap:8px;font-size:14px;font-weight:700}
+.ux3-mixed__mode select{width:100%;min-height:48px;padding:8px 10px;border:1px solid var(--j-line-strong);border-radius:var(--j-radius-sm);background:var(--j-bg-elevated);color:var(--j-fg)}
+.ux3-mixed__start{background:var(--j-ai-700);border-color:var(--j-ai-700);color:#fff8ef;font-weight:700}
+.ux3-mixed button:focus-visible,.ux3-mixed select:focus-visible{outline:3px solid var(--j-focus);outline-offset:2px}
+@media(max-width:760px){.ux3-mixed{margin:14px 0 20px}.ux3-mixed__header{gap:10px}.ux3-mixed__header>strong{width:100%}.ux3-mixed__choices{grid-template-columns:1fr}}

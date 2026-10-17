@@ -1,7 +1,7 @@
 import {expect,test,type Page} from "@playwright/test";
 
 const routes=[
-  ["Today",".j3-today__hero"],
+  ["Today",".ux1-mission"],
   ["Learn",".j4-hero"],
   ["Immerse",".j6-hero"],
   ["Library",".j7-library__masthead"],
@@ -29,7 +29,7 @@ test("D4 keeps the five Japanese surfaces usable at 320 CSS pixels in both theme
       await noOverflow(page);
     }
     await nav.getByRole("button",{name:"Today",exact:true}).click();
-    const start=page.getByRole("button",{name:/Continue today’s study|Review anyway/});
+    const start=page.locator(".ux1-native-queue");
     await expect(start).toBeVisible();
     const rect=await start.boundingBox();
     expect(rect).not.toBeNull();

@@ -19,6 +19,13 @@ export class AccountWorkspaceLease {
 
   invalidate():void {this.epoch++;}
 
+  /** Capture an immutable fence even for a guest/offline workspace. A local
+   * backup started as guest must not become a late download or restore for a
+   * different Account while its IndexedDB work is pending. */
+  snapshot():WorkspaceLease {
+    return {epoch:this.epoch,...this.observed};
+  }
+
   capture(auth:WorkspaceAuth):WorkspaceLease|null {
     if(auth.status!=="authenticated"||!auth.accountId||!this.matchesAuth(auth))return null;
     return {epoch:this.epoch,...this.observed};

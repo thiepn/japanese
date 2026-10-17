@@ -6,14 +6,8 @@ test("J3 turns Today into a Japanese daily-study ritual",async({page})=>{
   const today=page.locator(".j3-today");
   await expect(today).toBeVisible();
   await expect(page.getByText("TODAY · 今日",{exact:true})).toBeVisible();
-  const motto=page.getByText("一日一歩",{exact:true});
-  await expect(motto).toHaveCount(1);
-  if((page.viewportSize()?.width??999)>430){
-    await expect(motto).toBeVisible();
-  }else{
-    await expect(motto).toBeHidden();
-  }
-  await expect(page.getByRole("heading",{name:/Continue Japanese|You’re caught up/})).toBeVisible();
+  await expect(page.locator(".ux1-mission")).toContainText("YOUR NEXT STEP");
+  await expect(page.getByRole("heading",{name:"Your Japanese today"})).toBeVisible();
   await expect(page.getByRole("heading",{name:"One route, four intentions"})).toBeVisible();
   await expect(page.getByText("今日の道",{exact:true}).first()).toBeVisible();
 
@@ -25,7 +19,7 @@ test("J3 turns Today into a Japanese daily-study ritual",async({page})=>{
   await expect(route.nth(3)).toContainText("Apply");
 
   await expect(page.locator(".stat-row.six")).toHaveCount(0);
-  await expect(page.locator(".j3-today__continue")).toHaveCount(1);
+  await expect(page.locator(".ux1-native-queue")).toHaveCount(1);
 
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(1);
@@ -36,12 +30,12 @@ test("J3 keeps Today responsive and theme-safe",async({page},testInfo)=>{
 
   await page.getByRole("button",{name:"Use dark theme"}).click();
   await expect(page.locator("html")).toHaveAttribute("data-j-theme","dark");
-  await expect(page.locator(".j3-today__hero")).toBeVisible();
+  await expect(page.locator(".ux1-mission")).toBeVisible();
 
   if(testInfo.project.name!=="desktop-chromium"){
-    const action=page.locator(".j3-today__continue");
+    const action=page.locator(".ux1-native-queue");
     const box=await action.boundingBox();
-    expect(box?.height??0).toBeGreaterThanOrEqual(68);
+    expect(box?.height??0).toBeGreaterThanOrEqual(48);
   }
 
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
@@ -51,7 +45,7 @@ test("J3 keeps Today responsive and theme-safe",async({page},testInfo)=>{
 test("J3 Continue still opens the existing Study Player",async({page})=>{
   await page.goto("./");
 
-  const action=page.locator(".j3-today__continue");
+  const action=page.locator(".ux1-native-queue");
   await expect(action).toBeVisible();
   await action.click();
 

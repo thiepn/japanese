@@ -3,6 +3,12 @@ import {B2Portfolio} from "../study/B2Portfolio";
 import {C1Portfolio} from "../study/C1Portfolio";
 import type {ImmersionProgress} from "../immerse/reader";
 import type {
+  E01Progress,
+  E02Overview,
+  E03Overview,
+  E04Overview,
+  E05Evidence,
+  E06Overview,
   A1MilestoneProgress,
   B1MilestoneProgress,
   B2MilestoneProgress,
@@ -16,9 +22,18 @@ import type {
   StudySummary,
   VocabularyMasterySummary,
 } from "../study/runtime";
+import {E07JourneyPanel} from "./E07JourneyPanel";
+import type {E07Journey,E07Action} from "../study/e07LearningRoute";
 import {JCartouche,JInkProgress,JPattern,JSeal} from "./index";
 
 type Props={
+  e01:E01Progress;
+  e02:E02Overview;
+  e03:E03Overview;
+  e04:E04Overview;
+  e05:E05Evidence;onStartE05Repair:()=>void;
+  e06:E06Overview;
+  e07:E07Journey;onOpenE07:(action:E07Action)=>void;
   kana:KanaMasterySummary;
   vocab:VocabularyMasterySummary;
   conjugation:ConjugationMasterySummary;
@@ -47,7 +62,7 @@ type Skill={
 };
 
 export function J8Progress({
-  kana,vocab,conjugation,grammar,sentence,lexicalFluency,milestone,b1Milestone,b2Milestone,c1Foundation,immersion,summary,course,completedToday,
+  e04,e03,e02,e01,e05,e06,e07,onOpenE07,onStartE05Repair,kana,vocab,conjugation,grammar,sentence,lexicalFluency,milestone,b1Milestone,b2Milestone,c1Foundation,immersion,summary,course,completedToday,
 }:Props){
   const immersionReading=mean(immersion.texts.map((item)=>item.readingMastery));
   const immersionListening=mean(immersion.texts.map((item)=>item.listeningMastery));
@@ -159,6 +174,51 @@ export function J8Progress({
       </div>
     </header>
 
+    <E07JourneyPanel route={e07} onActivate={onOpenE07} busy={false} variant="progress"/>
+    <details className="e07-track-list">
+      <summary>Review detailed E01–E06 controlled, unscored and delayed evidence</summary>
+    <section className="e01-progress" aria-label="A1 first conversations evidence">
+      <strong>A1 · First conversations · controlled evidence only</strong>
+      <p>{e01.canDo}. This is practice evidence, not a verified A1 proficiency decision. Independent writing and speech are explicitly unscored.</p>
+      <dl><div><dt>Guided attempts</dt><dd>{e01.answered}</dd></div><div><dt>Correct controlled answers</dt><dd>{e01.correct}</dd></div><div><dt>Unscored drafts</dt><dd>{e01.unscored}</dd></div><div><dt>Delayed controlled answers</dt><dd>{e01.delayedCorrect} / 3</dd></div><div><dt>State</dt><dd>{e01.status.replaceAll("_"," ")}</dd></div></dl>
+    </section>
+    <section className="e02-course e02-course--progress" aria-labelledby="e02-progress-title">
+      <header className="e02-course__head"><div><p className="j8-kicker">E02 · BEGINNER COMMUNICATION EVIDENCE</p><h2 id="e02-progress-title">What you have practised</h2><p>Controlled responses, independent unscored drafts and delayed checks are counted separately. These are not CEFR or acoustic scores.</p></div><strong>{e02.started}/{e02.total} scenes started</strong></header>
+      <div className="e02-evidence"><span>{e02.readyForDelay} delayed checks ready</span><span>{e02.delayedReviewed} delayed checks complete</span></div>
+      <ol className="e02-progress-list">{e02.scenes.map(item=><li key={item.id}><strong>{item.title}</strong><span>{item.completedControlled}/{item.requiredControlled} controlled correct</span><span>{item.unscoredDrafts} unscored drafts</span><span>{item.delayedCorrect}/{item.delayedTotal} delayed correct</span></li>)}</ol>
+    </section>
+    <section className="e03-path e03-path--progress" aria-labelledby="e03-progress-title">
+      <header className="e03-path__heading"><div><p className="j8-kicker">E03 · ORIGINAL A2.1 EVIDENCE</p><h2 id="e03-progress-title">Connected communication practice</h2><p>Original controlled answers are distinct from structural-only drafts and new-context delayed evidence. Neither is externally validated CEFR proficiency.</p></div><strong>{e03.started}/{e03.total} scenes started</strong></header>
+      <div className="e03-progress-metrics"><span>{e03.readyForDelay} transfer reviews ready</span><span>{e03.delayedReviewed} transfer reviews complete</span><span>{e03.unmapped.length} awaiting canonical association</span></div>
+      <ol className="e03-progress-list">{e03.scenes.map(scene=><li key={scene.id}><strong>{scene.title}</strong><span>{scene.correct}/{scene.required} controlled correct</span><span>{scene.unscoredDrafts} unscored drafts</span><span>{scene.delayedCorrect}/{scene.delayedTotal} delayed correct</span></li>)}</ol>
+    </section>
+    <section className="e04-path e04-path--progress" aria-labelledby="e04-progress-title">
+      <header className="e04-path__heading"><div><p className="j8-kicker">E04 · SOURCE-OWNED A2 COMMUNICATION EVIDENCE</p><h2 id="e04-progress-title">Real practice, not a fluency percentage</h2><p>Distinct counts for guided controlled answers, independent unscored drafts and delayed changed-context responses. No validated A2.2 or spoken acoustic certification is implied.</p></div><strong>{e04.started}/{e04.linked} linked scenarios started</strong></header>
+      <div className="e04-evidence"><span>{e04.reviewReady} delayed checks ready</span><span>{e04.reviewed} transfer checks complete</span><span>{e04.unmapped.length} source-only readings awaiting a Can-do association</span></div>
+      <ol className="e04-progress-list">{e04.scenes.map(scene=><li key={scene.id}><strong>{scene.title}</strong><span>{scene.guidedCorrect}/{scene.guidedTotal} guided correct</span><span>{scene.unscoredDrafts} unscored drafts</span><span>{scene.delayedCorrect}/{scene.delayedTotal} delayed correct</span></li>)}</ol>
+    </section>
+    <section className="e05-panel e05-panel--progress" aria-labelledby="e05-progress-title">
+      <header><div><p className="j8-kicker">E05 · SOURCE-OWNED LEARNER EVIDENCE</p><h2 id="e05-progress-title">Listening, reading, response and original production</h2><p>Counts derive from canonical Can-do-linked StudyEvents. They do not represent a CEFR score or actual pronunciation mastery.</p></div><strong>{e05.controlled.distinctCorrect} distinct correct controlled cues</strong></header>
+      <div className="e05-stats">
+        <div><strong>{e05.controlled.listening}</strong><span>Correct listening responses</span></div>
+        <div><strong>{e05.controlled.reading}</strong><span>Correct reading/comprehension</span></div>
+        <div><strong>{e05.controlled.formSelection}</strong><span>Correct context/form selections</span></div>
+        <div><strong>{e05.controlled.typedProduction}</strong><span>Correct bounded typed responses</span></div>
+        <div><strong>{e05.unscored.writing}</strong><span>Unscored personal writing drafts</span></div>
+        <div><strong>{e05.unscored.speech}</strong><span>Unscored browser speech transcripts</span></div>
+        <div><strong>{e05.delayed.correct}/{e05.delayed.attempts}</strong><span>Correct / attempted delayed transfer</span></div>
+        <div><strong>{e05.repair.pending}</strong><span>Specific corrections awaiting practice</span></div>
+      </div>
+      {e05.repair.pending>0?<button type="button" onClick={onStartE05Repair}>Repair with different questions</button>:null}
+      <p>Listening and reading counts represent controlled responses, while independent production records drafts without semantic or acoustic scores. One new-context correction never grants mastery.</p>
+    </section>
+    <section className="e06-course e06-course--progress" aria-labelledby="e06-progress-title">
+      <header className="e06-course__header"><div><p className="j8-kicker">E06 · ORIGINAL CUMULATIVE EVIDENCE</p><h2 id="e06-progress-title">Independent communication practice</h2><p>Account-scoped original StudyEvents: eight source-linked controlled prompts, seven changed-context delayed tasks, two original unscored writing drafts and optional third-context written response. The E11 original mini-conversation, reading and message are optional and tracked only as unscored attempts. No second learner-state or grading authority.</p></div><strong>{e06.reviewed} delayed sets complete</strong></header>
+      <div className="e06-course__metrics"><span>{e06.linked}/{e06.total} linked</span><span>{e06.prerequisiteReady} prerequisites satisfied</span><span>{e06.active} learning</span><span>{e06.waiting} waiting</span><span>{e06.ready} delayed due</span><span>{e06.cases.filter(c=>c.nextDailyStage!==null).length} short lessons ready</span><span>{e06.unlinked} ungraded previews</span></div>
+      <ol className="e06-course__progress">{e06.cases.map(c=><li key={c.id}><strong>{c.title}</strong><span>{c.correct}/{c.required} controlled · E08 {c.contextProblemsCorrect}/2 · E09 {c.e09Correct}/{c.e09Required}</span><span>{c.firstDraftSubmitted?"Draft 1 recorded":"Draft 1 pending"} · {c.revisedDraftSubmitted?"Revision recorded":"Revision pending"} · {c.unscoredWriting} unscored writing responses · {c.unscoredSpeaking} speech transcripts</span><span>E11 optional: {Number(c.e11ListeningPractised)+Number(c.e11ReadingPractised)}/2 context attempts · {c.e11WritingSubmitted?"independent message recorded":"message optional"} · {c.delayedCorrect}/{c.delayedRequired} delayed correct · {c.nextDelayedStage?"Next transfer: "+c.delayedStages.find(s=>s.id===c.nextDelayedStage)?.title:c.dailyStages.find(s=>s.id===c.nextDailyStage)?.title??"No required stage"}</span></li>)}</ol>
+      <p>A submitted revision means a second text exists; it does not mean the grammar, pragmatics or communication succeeded. Controlled recognition, timed listening, independent typed recall and delayed transfer remain separate evidence categories, not CEFR certification.</p>
+    </section>
+    </details>
     <section className="j8-skills" aria-labelledby="j8-skills-title">
       <header className="j8-section-head">
         <div>

@@ -46,7 +46,7 @@ test("J2 isolates operations from learner Progress behind diagnostics",async({pa
 
   await page.getByRole("button",{name:"Back to Japanese"}).click();
   await expect(page).not.toHaveURL(/diagnostics=1/);
-  await expect(page.getByRole("heading",{name:/Continue Japanese|You’re caught up/})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Your Japanese today"})).toBeVisible();
 });
 
 test("J2 keeps five primary destinations thumb-safe on mobile profiles",async({page},testInfo)=>{

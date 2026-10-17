@@ -30,6 +30,9 @@ export function J2AppShell({
   accountBusy,
   onAccountAction,
   accountStatus,
+  onLocalRecovery,
+  localRecoveryBusy=false,
+  localRecoveryStatus=null,
   diagnosticsMode=false,
   children,
 }:{
@@ -40,6 +43,9 @@ export function J2AppShell({
   accountBusy:boolean;
   onAccountAction:(action:"signIn"|"connect"|"signOut")=>void;
   accountStatus?:string|null;
+  onLocalRecovery?:(action:"download"|"restore",file?:File)=>void;
+  localRecoveryBusy?:boolean;
+  localRecoveryStatus?:string|null;
   diagnosticsMode?:boolean;
   children:ReactNode;
 }){
@@ -171,10 +177,10 @@ export function J2AppShell({
             <div className="j2-account-panel__session" role="status">
               <span className={"j2-account-panel__indicator"+(accountState==="authenticated"?" is-connected":"")} aria-hidden="true"/>
               <div>
-                <strong>{accountState==="loading"?"Checking your session":accountState==="authenticated"?"Signed in to THIEPN Account":"Not signed in"}</strong>
+                <strong>{accountState==="loading"?"Checking your session":accountState==="authenticated"?"Signed in to THIEPN Account":accountState==="expired"?"Sign-in needs attention":"Not signed in"}</strong>
                 <p>{accountState==="authenticated"
                   ?accountConnected?"Japanese is connected on this device.":"Your identity is verified. Japanese is not yet connected."
-                  :accountState==="loading"?"Reading your saved THIEPN Account session.":"You can continue studying locally without signing in."}</p>
+                  :accountState==="loading"?"Reading your saved THIEPN Account session.":accountState==="expired"?"Your last sign-in could not be verified. Continue with local study or retry.":"You can continue studying locally without signing in."}</p>
               </div>
             </div>
             <div className="j2-account-panel__actions">
@@ -189,6 +195,28 @@ export function J2AppShell({
                 :null}
               <a className="j2-account-panel__diagnostics" href={`${import.meta.env.BASE_URL}?diagnostics=1&panel=account`}>View sign-in diagnostics <span aria-hidden="true">↗</span></a>
             </div>
+            {onLocalRecovery?<section className="j2-account-panel__recovery" aria-label="Local Japanese study backup">
+              <h3>This device · local recovery</h3>
+              <p>Study progress, private notes and practice recordings are saved on this device. Account connection does not sync them to another device.</p>
+              <div className="j2-account-panel__recovery-actions">
+                <button className="j2-account-panel__secondary" type="button" disabled={accountBusy||localRecoveryBusy}
+                  onClick={()=>onLocalRecovery("download")}>Save a local backup</button>
+                <label className="j2-account-panel__recovery-label" htmlFor="japanese-local-backup-input">
+                  Restore to an empty workspace
+                </label>
+                <input id="japanese-local-backup-input" type="file" accept=".json,application/json"
+                  aria-label="Select Japanese local backup file" disabled={accountBusy||localRecoveryBusy}
+                  onChange={event=>{
+                    const input=event.currentTarget;
+                    const file=input.files?.[0];
+                    input.value="";
+                    if(file)onLocalRecovery("restore",file);
+                  }}/>
+              </div>
+              <p className="j2-account-panel__recovery-note">Backups include private study content and audio. Store them securely. Restore accepts only the same workspace on an empty device and never overwrites existing data.</p>
+              {localRecoveryBusy?<p role="status">Preparing your local backup…</p>:null}
+              {localRecoveryStatus?<p role="status" aria-live="polite">{localRecoveryStatus}</p>:null}
+            </section>:null}
             <p className="j2-account-panel__footnote">Your study progress remains stored locally on this device. Signing in does not erase it.</p>
           </section>:null}
         </div>
