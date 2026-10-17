@@ -1,6 +1,7 @@
 import "./j4.css";
 import "../study/e10DailyStages.css";
-import {useMemo} from "react";
+import {useMemo,useState} from "react";
+import {UX1LearningPath} from "./UX1LearningPath";
 import {AdaptiveRemediation} from "../study/AdaptiveRemediation";
 import {AiCoach} from "../ai/AiCoach";
 import {RealWorldPerformancePanel} from "../study/RealWorldPerformancePanel";
@@ -98,6 +99,7 @@ export function J4Learn(props:Props){
     onC1Practice,onProductive,onLexicalFluency,onRealWorldChain,onRealWorldQualification,
   }=props;
 
+  const [showFullCourse,setShowFullCourse]=useState(false);
   const groups=useMemo(()=>{
     const byLevel=new Map<string,CourseUnitProgress[]>();
     for(const unit of course){
@@ -123,6 +125,9 @@ export function J4Learn(props:Props){
 
   return <section className="j4-learn" aria-labelledby="j4-title">
     <span className="j13-marginal" aria-hidden="true">学</span>
+    <UX1LearningPath e02={e02} e03={e03} e04={e04} route={e07} busy={status==="loading"} onOpenE07={onOpenE07} onE02={onStartE02} onE02Delayed={onStartE02Delayed} onE02Preview={onStartE02Preview} onE03={onStartE03} onE03Delayed={onStartE03Delayed} onE03Preview={onStartE03Preview} onE04={onStartE04} onE04Delayed={onStartE04Delayed} onE04Preview={onStartE04Preview}/>
+    <button className="ux1-mobile-catalogue-toggle" type="button" aria-expanded={showFullCourse} onClick={()=>setShowFullCourse(v=>!v)}>{showFullCourse?"Hide full course and advanced practice":"Open full course and advanced practice"}</button>
+    <div className="ux1-expanded-catalogue" data-open={showFullCourse?"yes":"no"}>
     <header className="j4-hero">
       <JPattern name="seigaiha" className="j4-hero__pattern"/>
       <div className="j4-hero__cloud j4-hero__cloud--one" aria-hidden="true"/>
@@ -447,6 +452,7 @@ export function J4Learn(props:Props){
       <Evidence value={sentence.overall} glyph="句" label="Sentences"/>
       <Evidence value={lexicalFluency.overall} glyph="連" label="Chunks"/>
     </section>
+    </div>
   </section>;
 }
 

@@ -1,4 +1,5 @@
 import {useMemo} from "react";
+import {UX1Today} from "./UX1Today";
 import type {StudySummary,E01Progress,E02Overview,E03Overview,E04Overview,E05Evidence,E06Overview} from "../study/runtime";
 import {E07JourneyPanel} from "./E07JourneyPanel";
 import type {E07Journey,E07Action} from "../study/e07LearningRoute";
@@ -55,71 +56,7 @@ export function J3Today({summary,completedToday,status,onStart,e01,onStartE01,on
 
   return <section className="j3-today" aria-labelledby="j3-today-title">
     <span className="j13-marginal" aria-hidden="true">今日</span>
-    <div className="j3-today__hero">
-      <div className="j3-today__shoji" aria-hidden="true"/>
-      <JPattern name="asanoha" className="j3-today__pattern"/>
-
-      <div className="j3-today__hero-copy">
-        <div className="j3-today__date">
-          <span aria-hidden="true">一日一歩</span>
-          <i/>
-          <span lang="ja">{japaneseDate()}</span>
-        </div>
-
-        <div className="j3-today__title-lockup">
-          <span className="j3-today__glyph" aria-hidden="true" lang="ja">今日</span>
-          <div>
-            <p className="j3-today__eyebrow">TODAY · 今日</p>
-            <h1 id="j3-today-title">{remaining?"Continue Japanese":"You’re caught up"}</h1>
-            <p className="j3-today__lead">
-              {remaining
-                ?"Follow today’s path: recover what is fading, add a little new Japanese, then use it."
-                :"Today’s planned path is complete. You can still open a light review session if you want another pass."}
-            </p>
-          </div>
-        </div>
-
-        <div className="j3-today__action-row">
-          <button
-            className="j3-today__continue"
-            disabled={status==="loading"}
-            onClick={onStart}
-            type="button"
-          >
-            <span className="j3-today__continue-seal" aria-hidden="true">{remaining?"始":"復"}</span>
-            <span>
-              <strong>{status==="loading"?"Preparing…":remaining?"Continue today’s study":"Review anyway"}</strong>
-              <small>{remaining?remaining+" steps waiting":"No required steps waiting"}</small>
-            </span>
-            <span className="j3-today__continue-arrow" aria-hidden="true">→</span>
-          </button>
-
-          <div className="j3-today__visit">
-            <strong>{completedToday}</strong>
-            <span>answers today</span>
-          </div>
-        </div>
-
-        {status==="error"?<p className="j3-today__error" role="status">Could not open local study data. Reload and try again.</p>:null}
-        {status==="empty"?<p className="j3-today__error" role="status">No study items are due right now. Open Learn to choose a lesson.</p>:null}
-      </div>
-
-      <aside className="j3-today__ritual" aria-label="Today overview">
-        <div className="j3-today__sun" aria-hidden="true"/>
-        <JSeal className="j3-today__daily-seal" size="large" label={remaining?"Today’s study path":"Today complete"}>
-          {remaining?"道":"済"}
-        </JSeal>
-        <div className="j3-today__ritual-copy">
-          <span lang="ja">今日の道</span>
-          <strong>{remaining?remaining:"済"}</strong>
-          <small>{remaining?"steps remain":"path complete"}</small>
-        </div>
-        <JInkProgress value={completedFraction} label="Today's progress through the current queue"/>
-        <p>{routeKinds} active study modes · {introduced} new items queued</p>
-      </aside>
-    </div>
-
-    <E07JourneyPanel route={e07} onActivate={onOpenE07} busy={status==="loading"} variant="today"/>
+    <UX1Today route={e07} summary={summary} status={status} completedToday={completedToday} onActivate={onOpenE07}/>
     <details className="e07-track-list">
       <summary>Browse the original E01–E09 lesson entry points</summary>
     <section className="e01-entry" aria-label="A1 first conversations practice">

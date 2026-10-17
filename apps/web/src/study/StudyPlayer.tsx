@@ -1,3 +1,5 @@
+import "../design/ux1.css";
+import {UX1CafeHeader,UX1CafeTiles,isUX1CafeJourney} from "./UX1Cafe";
 import "./e11Practice.css";
 import "./e08Revision.css";
 import {useEffect,useRef,useState,type ReactNode} from "react";
@@ -48,6 +50,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
   const cueGeneration=useRef(0);
   const savingRef=useRef(false);
   const step=steps[index];
+  const ux1Cafe=isUX1CafeJourney(steps);
   const restorableIndex=findE07RestorableStep(accountScope,steps);
 
   useEffect(()=>{
@@ -225,6 +228,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
 
   if(isStudyLesson(activeStep)){
     return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={false} onExit={onExit} onTheme={toggleTheme}>
+      {ux1Cafe?<UX1CafeHeader steps={steps} index={index}/>:null}
       {draftEnabled&&restorableIndex>index?<div className="e07-draft-resume" role="status"><p>Unfinished original writing or recognized speech text is saved on this device. You can resume it without submitting or grading skipped steps.</p><button type="button" onClick={resumeIndependentDraft}>Resume saved draft <span aria-hidden="true">→</span></button></div>:null}
       {e08StoredDraft&&e08RevisionIndex>index?<div className="e08-return" role="status">
         <div><strong>Your first draft is already recorded</strong><p>Resume the revision directly. Earlier questions will not be marked completed again.</p></div>
@@ -241,6 +245,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         </div>
         <h1>{activeStep.title}</h1>
         <p className="lesson-body">{activeStep.body}</p>
+        {ux1Cafe&&activeStep.id==="a1-e02-food-try"?<UX1CafeTiles/>:null}
 
         {activeStep.audio?<div className="lesson-audio j5-lesson-audio">
           <button className="audio-inline j5-audio-inline" type="button" disabled={audioState==="playing"} onClick={()=>void playAudio("normal")}>
@@ -307,6 +312,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
   }
 
   return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={Boolean(feedback)} onExit={()=>{if(!savingRef.current)onExit();}} onTheme={toggleTheme}>
+    {ux1Cafe?<UX1CafeHeader steps={steps} index={index}/>:null}
     {draftEnabled&&restorableIndex>index?<div className="e07-draft-resume" role="status"><p>Continue unfinished unscored production from this device; earlier prompts are not marked completed by this shortcut.</p><button type="button" onClick={resumeIndependentDraft}>Resume saved draft <span aria-hidden="true">→</span></button></div>:null}
     <div className={"j5-sheet j5-sheet--"+mode.mode}>
       <div className="j5-sheet__cap">

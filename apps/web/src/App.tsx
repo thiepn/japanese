@@ -1,4 +1,6 @@
 import { Suspense,lazy,useEffect,useLayoutEffect,useRef,useState } from "react";
+import {UX1Outcome} from "./design/UX1Outcome";
+import "./design/ux1.css";
 import { createThiepnAccountAuthProvider,getRecentJapaneseAuthFailure,type AuthContext } from "@thiepn/auth";
 import { getDefaultAudioProvider } from "@thiepn/audio";
 import { claimGuestWorkspace } from "@thiepn/local-db";
@@ -97,6 +99,8 @@ export function App(){
   const [results,setResults]=useState<SearchResult[]>([]);
   const [libraryStatus,setLibraryStatus]=useState<"idle"|"loading"|"ready"|"error">("idle");
   const [session,setSession]=useState<StudyStep[]|null>(null);
+  const [ux1Outcome,setUx1Outcome]=useState<{owner:string;origin:Surface;pending:boolean}|null>(null);
+  const sessionOrigin=useRef<Surface>("Today");
   const [sessionStatus,setSessionStatus]=useState<"idle"|"loading"|"error"|"empty">("idle");
   const [summary,setSummary]=useState<StudySummary>(EMPTY_SUMMARY);
   const [kanaMastery,setKanaMastery]=useState<KanaMasterySummary>(EMPTY_KANA);
@@ -140,6 +144,7 @@ export function App(){
     JAPANESE_LANGUAGE_DASHBOARD.invalidate();
     sessionOwner.current=null;
     setSession(null);
+    setUx1Outcome(null);
     setSessionStatus("idle");
     setSummary(EMPTY_SUMMARY);
     setKanaMastery(EMPTY_KANA);
@@ -400,6 +405,8 @@ export function App(){
   }
 
   function openSession(queue:StudyStep[]){
+    sessionOrigin.current=surface;
+    setUx1Outcome(null);
     const audio=queue.filter((step)=>Boolean(step.audio)).flatMap((step)=>step.audio?[step.audio]:[]);
     if(audio.length)void getDefaultAudioProvider().prefetch(audio).catch(()=>{/* Audio prefetch failure is nonfatal. */});
     sessionOwner.current=queue.length?getDevelopmentAccountId():null;
@@ -463,15 +470,21 @@ export function App(){
     await recordStudyAnswer({prompt:answer.prompt,response:answer.response,result:answer.grade.result,responseTimeMs:answer.responseTimeMs});
     if(getDevelopmentAccountId()===workspaceId)setCompletedToday((value)=>value+1);
   }
-  function finishSession(){
+  function finishSession(reason:"complete"|"exit"){
+    const owner=getDevelopmentAccountId();
+    const cafe=reason==="complete"&&Boolean(session?.some(step=>step.id==="a1-e02-food-setup"));
+    const origin=sessionOrigin.current;
     sessionFence.current.invalidate();
     sessionOwner.current=null;
     const active=document.activeElement;
     if(active instanceof HTMLElement)active.blur();
     setSession(null);
+    setUx1Outcome(cafe?{owner,origin,pending:true}:null);
     requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:"auto"})));
     void refreshDashboard().then((applied)=>{
-      if(applied&&account.status==="authenticated"&&accountConnected&&getDevelopmentAccountId()===account.accountId){
+      if(!applied||getDevelopmentAccountId()!==owner)return;
+      if(cafe)setUx1Outcome(value=>value?.owner===owner?{...value,pending:false}:value);
+      if(account.status==="authenticated"&&accountConnected&&owner===account.accountId){
         void JAPANESE_LANGUAGE_DASHBOARD.publish().catch(()=>{/* Core dashboard is non-blocking */});
       }
     });
@@ -516,7 +529,9 @@ export function App(){
   return <>
     <a className="skip-link" href="#main-content">Skip to main content</a>
     {session
-      ?<main className="j5-study-shell" id="main-content" tabIndex={-1}><Suspense fallback={<p role="status">Preparing your study session…</p>}><StudyPlayer steps={session} accountScope={getDevelopmentAccountId()} onAnswer={handleAnswer} onComplete={finishSession} onExit={finishSession}/></Suspense></main>
+      ?<main className="j5-study-shell" id="main-content" tabIndex={-1}><Suspense fallback={<p role="status">Preparing your study session…</p>}><StudyPlayer steps={session} accountScope={getDevelopmentAccountId()} onAnswer={handleAnswer} onComplete={()=>finishSession("complete")} onExit={()=>finishSession("exit")}/></Suspense></main>
+      :ux1Outcome
+      ?<main className="j5-study-shell" id="main-content" tabIndex={-1}><UX1Outcome scene={e02.scenes.find(scene=>scene.id==="food")} pending={ux1Outcome.pending} onReturn={()=>{setSurface(ux1Outcome.origin);setUx1Outcome(null);}}/></main>
       :<J2AppShell
         surface={surface}
         onSurfaceChange={navigateSurface}
