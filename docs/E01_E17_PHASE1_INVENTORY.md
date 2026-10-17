@@ -37,3 +37,7 @@ The draft's branch-specific `.github/workflows/e12-exact-head-qualification.yml`
 ## Full-suite regression discovered on 17 October 2026
 
 A full 3-profile Chromium run on 1add5bcc3a9f303b9eab517a6264e08529e2f439 found six failures (442 passed, 47 skipped): late lazy-route CSS overwrote J12 sticky Library search and J13 panoramic snapping/reference-sheet height, and the P21 mobile touch-target test asserted on advanced tabs before async navigation and before explicitly opening the collapsed studio sections. This branch's corrective changes assign greater specificity to the intended responsive layout rules and exercise advanced tabs through actual studio disclosures. The repair requires a fresh exact-head run; do not infer PASS from this note.
+
+## Further browser repair from exact-head second run
+
+Run 39025397262 at f1507cff5c7807bf14d44d93f261efb0ca007e3a verified the earlier desktop J13 and mobile P21 failures fixed. Browser suite: 445 passed, 47 skipped, 3 failed. Two genuine J12 mobile filter-strip cascade failures (later route CSS restored `display:grid`) are addressed with mobile-specific selector precedence; a third Android Reader geometry failure was 397.08px paper against the 396px viewport-minus-gutter bound and is addressed with a scoped mobile paper max-width and auto margins. The qualification workflow now runs four known-regression specs **before** the full suite; a focused failure keeps the full browser step NOT_TESTED rather than burning a full run. Continue to require full exact-head evidence.

@@ -76,9 +76,25 @@ jobs:
         if: steps.build.outcome == 'success'
         continue-on-error: true
         run: pnpm exec playwright install --with-deps chromium
+      - name: Verify demonstrated responsive regressions before full browser suite
+        id: focused
+        if: steps.chromium.outcome == 'success'
+        continue-on-error: true
+        env:
+          CI: ""
+        run: >-
+          pnpm exec playwright test
+          tests/e2e/j6-immerse-reader.spec.ts
+          tests/e2e/j12-mobile.spec.ts
+          tests/e2e/j13-exhibition.spec.ts
+          tests/e2e/p21-product-consolidation.spec.ts
+          --project=desktop-chromium
+          --project=android-mobile
+          --project=compact-mobile
+          --workers=3
       - name: Full original application browser PWA offline and mobile matrix
         id: browser
-        if: steps.chromium.outcome == 'success'
+        if: steps.focused.outcome == 'success'
         continue-on-error: true
         env:
           CI: ""
@@ -100,15 +116,16 @@ jobs:
           NATIVE_AUDIT: ${{ steps.nativeaudit.outcome }}
           BUILD: ${{ steps.build.outcome }}
           CHROMIUM: ${{ steps.chromium.outcome }}
+          FOCUSED: ${{ steps.focused.outcome }}
           BROWSER: ${{ steps.browser.outcome }}
         run: |
           echo "Exact commit: $GITHUB_SHA"
           echo "install=$INSTALL sdk=$SDK types=$TYPES vitest=$VITEST content=$CONTENT"
           echo "native-queue=$NATIVE_QUEUE native-provenance=$NATIVE_AUDIT build=$BUILD"
-          echo "chromium=$CHROMIUM browser=$BROWSER"
+          echo "chromium=$CHROMIUM focused=$FOCUSED full-browser=$BROWSER"
           echo "P11 independent Japanese review and P21 physical Android remain NOT_TESTED."
           echo "Production Sync v1 and stable activation remain disabled."
-          for result in "$INSTALL" "$SDK" "$TYPES" "$VITEST" "$CONTENT" "$NATIVE_QUEUE" "$NATIVE_AUDIT" "$BUILD" "$CHROMIUM" "$BROWSER"; do
+          for result in "$INSTALL" "$SDK" "$TYPES" "$VITEST" "$CONTENT" "$NATIVE_QUEUE" "$NATIVE_AUDIT" "$BUILD" "$CHROMIUM" "$FOCUSED" "$BROWSER"; do
             if [ "$result" != success ]; then
               echo "Full integration acceptance is BLOCKED; inspect failed/not-tested jobs."
               exit 1
