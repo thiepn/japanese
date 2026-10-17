@@ -1,7 +1,7 @@
 import {useState} from "react";
 import type {E02Overview,E03Overview,E04Overview} from "../study/runtime";
 import type {E07Action,E07Journey} from "../study/e07LearningRoute";
-type Node={id:string;title:string;progress:string;status:string;open:()=>void;review?:()=>void;preview?:boolean;recommended:boolean};
+type Node={id:string;title:string;progress:string;status:string;open:()=>void;review?:(()=>void)|undefined;preview?:boolean;recommended:boolean};
 const A1=[
  {title:"First Words",jp:"はじまり",ids:["greetings","personal","origin"]},
  {title:"People & Time",jp:"人と時間",ids:["family","routine","time"]},

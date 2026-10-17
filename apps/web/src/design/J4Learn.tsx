@@ -99,7 +99,7 @@ export function J4Learn(props:Props){
     onC1Practice,onProductive,onLexicalFluency,onRealWorldChain,onRealWorldQualification,
   }=props;
 
-  const [showFullCourse,setShowFullCourse]=useState(false);
+  const [showFullCourse,setShowFullCourse]=useState(true);
   const groups=useMemo(()=>{
     const byLevel=new Map<string,CourseUnitProgress[]>();
     for(const unit of course){
