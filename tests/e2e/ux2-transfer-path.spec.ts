@@ -4,7 +4,7 @@ test("UX2 original cumulative cases and all practical studios are navigable",asy
  await page.getByRole("button",{name:"Learn",exact:true}).click();
  if(testInfo.project.name==="desktop-chromium"){
   const catalogue=page.locator(".e07-track-list").filter({hasText:"Browse every original A1/A2 situation"});
-  await catalogue.locator("summary").click();
+  await catalogue.locator(":scope > summary").click();
   await expect(page.getByRole("heading",{name:"Communicate across everyday situations"})).toBeVisible();
   return;
  }
@@ -28,4 +28,7 @@ test("UX2 original cumulative cases and all practical studios are navigable",asy
  for(const studio of [".e13-lab",".e14-studio",".e15-recovery",".e16-studio"]){
   await expect(page.locator(studio)).toHaveCount(1);
  }
+ // The first source-gated case opens the original native Study Player, not a parallel lesson.
+ await first.getByRole("button",{name:/Read original case|Study prerequisite source|Continue short lesson|Review full original case/}).click();
+ await expect(page.locator("main.j5-study-shell")).toBeVisible();
 });
