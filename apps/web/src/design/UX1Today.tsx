@@ -1,8 +1,8 @@
 import type {StudySummary} from "../study/runtime";
 import type {E07Action,E07Journey} from "../study/e07LearningRoute";
 /** Source-owned E07 recommendation, presented as a single meaningful mission. */
-export function UX1Today({route,summary,status,completedToday,onActivate}:{
- route:E07Journey;summary:StudySummary;status:string;completedToday:number;onActivate:(action:E07Action)=>void;
+export function UX1Today({route,summary,status,completedToday,onActivate,onStartQueue}:{
+ route:E07Journey;summary:StudySummary;status:string;completedToday:number;onActivate:(action:E07Action)=>void;onStartQueue:()=>void;
 }){
  const primary=route.primary;
  const cafe=primary.origin==="e02"&&primary.targetId==="food";
@@ -27,6 +27,7 @@ export function UX1Today({route,summary,status,completedToday,onActivate}:{
    <div className="ux1-section-head"><h2 id="ux1-plan-title">Today's plan</h2><span>{completedToday} answers recorded</span></div>
    {activities.length?<ul>{activities.map(item=><li key={item.label}><span aria-hidden="true">○</span><span>{item.label}</span><strong>{item.count} waiting</strong></li>)}</ul>:<p>Nothing is scheduled right now. You can still explore Japanese.</p>}
   </section>
+  <button className="ux1-native-queue" type="button" onClick={onStartQueue} disabled={status==="loading"}><span>Open daily study queue</span><small>Review kana, words and course prompts</small></button>
   <details className="ux1-alternatives"><summary>Other ways to study</summary><ul>{route.alternatives.map(item=><li key={item.key}><span><strong>{item.label}</strong><small>{item.description}</small></span><button disabled={status==="loading"} type="button" onClick={()=>onActivate(item)}>Open</button></li>)}</ul></details>
   {status==="error"?<p role="alert">Your study data couldn't be loaded. Try again.</p>:null}
   {status==="empty"?<p role="status">No items are available for that activity. Choose another step.</p>:null}

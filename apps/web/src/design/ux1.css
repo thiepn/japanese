@@ -23,3 +23,6 @@
 @media(max-width:760px){.ux1-mobile-path,.ux1-mobile-catalogue-toggle{display:grid}.ux1-expanded-catalogue[data-open="no"]{display:none}}
 @media(max-width:360px){.ux1-mission{padding:16px}.ux1-mission__seal{width:75px;height:55px}.ux1-plan li{grid-template-columns:18px minmax(0,1fr)}.ux1-plan li strong{grid-column:2}.ux1-chapter h2{font-size:22px}}
 @media(prefers-reduced-motion:reduce){.ux1-cafe-head__progress span{transition:none}}
+
+.ux1-native-queue{min-height:56px;width:100%;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border:1px solid var(--j-line-strong);border-radius:var(--j-radius-sm);background:var(--j-bg-elevated);color:var(--j-fg);font-weight:700;cursor:pointer}
+.ux1-native-queue small{font-size:12px;font-weight:400;color:var(--j-fg-muted)}

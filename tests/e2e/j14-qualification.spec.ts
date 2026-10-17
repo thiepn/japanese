@@ -18,14 +18,14 @@ test("J15 presents Japanese editorial navigation instead of SaaS dashboard chrom
   await expect(today).toHaveCSS("border-radius","0px");
 
   for(const [surface,hero] of [
-    ["Today",".j3-today__hero"],
+    ["Today",".ux1-mission"],
     ["Learn",".j4-hero"],
     ["Immerse",".j6-hero"],
     ["Library",".j7-library__masthead"],
     ["Progress",".j8-hero"],
   ] as const){
     await nav.getByRole("button",{name:surface,exact:true}).click();
-    await expect(page.locator(hero)).toHaveCSS("border-radius","0px");
+    await expect(page.locator(hero)).toHaveCSS("border-radius",surface==="Today"?"24px":"0px");
     await expect(page.locator(hero)).toHaveCSS("box-shadow","none");
   }
 });
@@ -37,7 +37,7 @@ test("J15 keeps the mobile rail flat and Japanese rather than floating-card navi
   const nav=page.getByRole("navigation",{name:"Primary"});
   await expect(nav).toHaveCSS("box-shadow","none");
   await expect(nav.getByRole("button",{name:"Today",exact:true})).toHaveCSS("border-radius","0px");
-  await expect(page.locator(".j3-today__hero")).toHaveCSS("border-radius","0px");
+  await expect(page.locator(".ux1-mission")).toHaveCSS("border-radius","24px");
 });
 
 test("J14 dark mode is coherent across core and legacy learner surfaces",async({page})=>{
@@ -117,7 +117,7 @@ test("J14 theme preference survives reload and can return cleanly to light mode"
   await expect(page.locator("html")).toHaveAttribute("data-j-theme","dark");
   await expect(page.getByRole("button",{name:"Use light theme"})).toBeVisible();
 
-  await page.getByRole("button",{name:/Continue today’s study|Review anyway/}).click();
+  await page.locator(".ux1-native-queue").click();
   await expect(page.locator("html")).toHaveAttribute("data-j-theme","dark");
   await expect(page.locator(".j5-study")).toHaveAttribute("data-j-theme","dark");
   await page.getByRole("button",{name:"Exit"}).click();
@@ -168,7 +168,7 @@ test("J14 keeps an already-used dark PWA functional through offline reload",asyn
   await context.setOffline(true);
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-j-theme","dark");
-  await expect(page.getByRole("heading",{name:/Continue Japanese|You’re caught up/})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Your Japanese today"})).toBeVisible();
   await page.getByRole("button",{name:"Learn",exact:true}).click();
   await page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"}).locator("summary").click();
   await expectDarkSurface(page,".real-world-performance");

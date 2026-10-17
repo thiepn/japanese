@@ -56,7 +56,7 @@ export function J3Today({summary,completedToday,status,onStart,e01,onStartE01,on
 
   return <section className="j3-today" aria-labelledby="j3-today-title">
     <span className="j13-marginal" aria-hidden="true">今日</span>
-    <UX1Today route={e07} summary={summary} status={status} completedToday={completedToday} onActivate={onOpenE07}/>
+    <UX1Today route={e07} summary={summary} status={status} completedToday={completedToday} onActivate={onOpenE07} onStartQueue={onStart}/>
     <details className="e07-track-list">
       <summary>Browse the original E01–E09 lesson entry points</summary>
     <section className="e01-entry" aria-label="A1 first conversations practice">
