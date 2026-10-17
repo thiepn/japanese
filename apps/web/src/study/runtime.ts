@@ -34,6 +34,8 @@ import {buildE05RepairJourney,getE05Evidence,type E05Evidence} from "./e05Adapti
 export type {E05Evidence} from "./e05AdaptiveRecall";
 import {buildE06Journey,buildE11OptionalSession,buildE06NextDailyStage,buildE06DailyStage,buildE06Preview,buildE06Delayed,buildE06NextDelayedStage,buildE06DelayedStage,getE06Overview,e06ReviewPrompts,type E06Overview} from "./e06IndependentCourse";
 import {buildE13PracticalMix,type E13PracticeMode} from "./e13PracticalMixer";
+import {buildE18OriginalMixedReview,type E18Mode} from "./e18OriginalMixedReview";
+export type {E18Mode} from "./e18OriginalMixedReview";
 import {buildE14HandoffSession,eligibleE14Cases,projectE14Review,type E14HandoffMode,type E14HandoffReview} from "./e14ListeningHandoff";
 export type {E14HandoffMode,E14HandoffReview} from "./e14ListeningHandoff";
 import {buildE15SourceRecovery,type E15Focus} from "./e15ContextRecovery";
@@ -137,6 +139,12 @@ export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
 }
 
 export async function buildE11MicroSession(id:string):Promise<StudyStep[]>{return buildE11OptionalSession(id,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function buildE18MixedReviewSession(keys:readonly string[],mode:E18Mode):Promise<StudyStep[]>{
+ const owner=DEVELOPMENT_ACCOUNT_ID;
+ const events=await listStudyEvents(owner);
+ if(DEVELOPMENT_ACCOUNT_ID!==owner)throw Error("E18_WORKSPACE_CHANGED_DURING_BUILD");
+ return buildE18OriginalMixedReview(keys,mode,owner,events);
+}
 export async function buildE13PracticalSession(caseIds:readonly string[],mode:E13PracticeMode):Promise<StudyStep[]>{
   const owner=DEVELOPMENT_ACCOUNT_ID;
   const events=await listStudyEvents(owner);

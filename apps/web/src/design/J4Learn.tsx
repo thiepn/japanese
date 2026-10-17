@@ -2,6 +2,8 @@ import "./j4.css";
 import "../study/e10DailyStages.css";
 import {useEffect,useMemo,useState} from "react";
 import {UX2TransferPath,type UX2StudioTarget} from "./UX2TransferPath";
+import {UX3MixedRecall} from "./UX3MixedRecall";
+import type {E18Mode,E18Cohort} from "../study/e18OriginalMixedReview";
 import {UX1LearningPath} from "./UX1LearningPath";
 import {AdaptiveRemediation} from "../study/AdaptiveRemediation";
 import {AiCoach} from "../ai/AiCoach";
@@ -43,7 +45,7 @@ type Props={
   e03:E03Overview;onStartE03:(id:string)=>void;onStartE03Delayed:(id:string)=>void;
   e04:E04Overview;onStartE04:(id:string)=>void;onStartE04Delayed:(id:string)=>void;onStartE04Preview:(id:string)=>void;
   e05:E05Evidence;onStartE05Repair:()=>void;onStartE03Preview:(id:string)=>void;onStartE02Preview:(id:string)=>void;
-  e06:E06Overview;e14Reviews:readonly E14HandoffReview[];e16WorkspaceId:string;e16WorkspaceCurrent:()=>boolean;onStartE06:(id:string)=>void;onStartE06Full:(id:string)=>void;onStartE11Micro:(id:string)=>void;onStartE13:(ids:readonly string[],mode:E13PracticeMode)=>void;onStartE14:(id:string,mode:E14HandoffMode)=>void;onStartE15:(id:string,focus:E15Focus)=>void;onStartE10Stage:(id:string,stage:import("../study/e10DailyStages").E10StageId)=>void;onStartE10DelayedStage:(id:string,stage:import("../study/e10DailyStages").E10DelayedId)=>void;onStartE06FullDelayed:(id:string)=>void;onStartE06Delayed:(id:string)=>void;onStartE06Preview:(id:string)=>void;
+  e06:E06Overview;e14Reviews:readonly E14HandoffReview[];e16WorkspaceId:string;e16WorkspaceCurrent:()=>boolean;onStartE06:(id:string)=>void;onStartE06Full:(id:string)=>void;onStartE11Micro:(id:string)=>void;onStartE13:(ids:readonly string[],mode:E13PracticeMode)=>void;onStartE18:(keys:readonly string[],mode:E18Mode)=>void;onStartE14:(id:string,mode:E14HandoffMode)=>void;onStartE15:(id:string,focus:E15Focus)=>void;onStartE10Stage:(id:string,stage:import("../study/e10DailyStages").E10StageId)=>void;onStartE10DelayedStage:(id:string,stage:import("../study/e10DailyStages").E10DelayedId)=>void;onStartE06FullDelayed:(id:string)=>void;onStartE06Delayed:(id:string)=>void;onStartE06Preview:(id:string)=>void;
   e07:E07Journey;onOpenE07:(action:E07Action)=>void;
   summary:StudySummary;
   kana:KanaMasterySummary;
@@ -93,7 +95,7 @@ const LEVEL_ORDER=["A1","A2","B1","B2","C1"];
 
 export function J4Learn(props:Props){
   const {
-    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,e14Reviews,e16WorkspaceId,e16WorkspaceCurrent,onStartE06,onStartE06Full,onStartE11Micro,onStartE13,onStartE14,onStartE15,onStartE10Stage,onStartE06Delayed,onStartE10DelayedStage,onStartE06FullDelayed,onStartE06Preview,e07,onOpenE07,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
+    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,e14Reviews,e16WorkspaceId,e16WorkspaceCurrent,onStartE06,onStartE06Full,onStartE11Micro,onStartE13,onStartE18,onStartE14,onStartE15,onStartE10Stage,onStartE06Delayed,onStartE10DelayedStage,onStartE06FullDelayed,onStartE06Preview,e07,onOpenE07,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
     milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,
     onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartAssessment,
     onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,
@@ -141,6 +143,10 @@ export function J4Learn(props:Props){
   return <section className="j4-learn" aria-labelledby="j4-title">
     <span className="j13-marginal" aria-hidden="true">学</span>
     <UX1LearningPath e01={e01} e02={e02} e03={e03} e04={e04} route={e07} onE01={onStartE01} onE01Delayed={onStartE01Delayed} busy={status==="loading"} onOpenE07={onOpenE07} onE02={onStartE02} onE02Delayed={onStartE02Delayed} onE02Preview={onStartE02Preview} onE03={onStartE03} onE03Delayed={onStartE03Delayed} onE03Preview={onStartE03Preview} onE04={onStartE04} onE04Delayed={onStartE04Delayed} onE04Preview={onStartE04Preview}/>
+    <UX3MixedRecall e02={e02} e03={e03} e04={e04} busy={status==="loading"}
+      onStart={onStartE18} onSource={(cohort:E18Cohort,id:string)=>{
+        if(cohort==="e02")onStartE02(id);else if(cohort==="e03")onStartE03(id);else onStartE04(id);
+      }}/>
     <button className="ux2-path-toggle" type="button" aria-expanded={showTransfer} aria-controls="ux2-transfer-panel" onClick={()=>setShowTransfer(v=>!v)}>
       <strong>{showTransfer?"Hide":"Open"} cumulative A1–A2 practice</strong>
       <small>{e06.total} original situations · source prerequisites, delayed transfer and conversation studios</small>
