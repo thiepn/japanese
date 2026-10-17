@@ -42,15 +42,15 @@ test("J20 cached PWA restores graded local evidence offline and after simulated 
   // Warm an online reload, then require its controller before the offline drill.
   await page.reload();
   await expect.poll(()=>page.evaluate(()=>Boolean(navigator.serviceWorker.controller))).toBe(true);
-  await expect(page.getByRole("heading",{name:"Continue Japanese"})).toBeVisible();
-  await page.getByRole("button",{name:/Continue today’s study|Review anyway/}).click();
+  await expect(page.getByRole("heading",{name:"Your Japanese today"})).toBeVisible();
+  await page.locator(".ux1-native-queue").click();
   await expect(page.getByRole("heading",{name:"Five vowel sounds"})).toBeVisible();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
   await expect(page.getByText("あ",{exact:true})).toBeVisible();
   await page.getByRole("button",{name:"a",exact:true}).click();
   await expect(page.getByText("Correct",{exact:true})).toBeVisible();
   await page.getByRole("button",{name:"Exit",exact:true}).click();
-  await expect(page.locator(".j3-today__visit strong")).toHaveText("1");
+  await expect(page.locator(".ux1-section-head span")).toContainText("1 answers recorded");
 
   // The Today visit counter is conditional in the shell. After an offline
   // cold reload, verify the actual durable evidence instead of relying on a
@@ -76,7 +76,7 @@ test("J20 cached PWA restores graded local evidence offline and after simulated 
 
   await context.setOffline(true);
   await page.reload();
-  await expect(page.getByRole("heading",{name:/Continue Japanese|You’re caught up/})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Your Japanese today"})).toBeVisible();
   const offlineRecords=await durableEvidence();
   expect(offlineRecords.ids).toHaveLength(1);
   expect(offlineRecords.mutations).toEqual(offlineRecords.ids);

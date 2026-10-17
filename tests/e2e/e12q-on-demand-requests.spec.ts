@@ -7,7 +7,7 @@ import {expect,test} from "@playwright/test";
  */
 test("P22 requested route code is absent on Today and loaded on deliberate navigation",async({page})=>{
  await page.goto("./");
- await expect(page.getByRole("heading",{name:"Continue Japanese"})).toBeVisible();
+ await expect(page.getByRole("heading",{name:"Your Japanese today"})).toBeVisible();
  const files=()=>page.evaluate(()=>performance.getEntriesByType("resource").map(row=>row.name));
  const first=await files();
  expect(first.filter(x=>/\/assets\/(J4Learn|J7Library|Immersion|StudyPlayer)-[^/]+\.(js|css)(\?|$)/.test(x))).toEqual([]);

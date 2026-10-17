@@ -75,7 +75,7 @@ test("E12 unsent revised writing survives offline restart without events, FSRS o
  await context.setOffline(true);
  try{
    await page.reload();
-   await expect(page.getByRole("heading",{name:/Continue Japanese|You’re caught up/})).toBeVisible();
+   await expect(page.getByRole("heading",{name:"Your Japanese today"})).toBeVisible();
    await page.getByRole("button",{name:"Learn",exact:true}).click();
    await page.locator("details.e07-track-list > summary").click();
    const returnCard=page.locator(".e06-course__case").filter({hasText:"Meet someone and ask for help"});
