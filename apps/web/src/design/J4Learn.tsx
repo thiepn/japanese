@@ -4,6 +4,7 @@ import {useEffect,useMemo,useState} from "react";
 import {UX2TransferPath,type UX2StudioTarget} from "./UX2TransferPath";
 import {UX3MixedRecall} from "./UX3MixedRecall";
 import {E19SourceWritingStudio} from "./E19SourceWritingStudio";
+import {E20SourceOnlyA2} from "./E20SourceOnlyA2";
 import type {E18Mode,E18Cohort} from "../study/e18OriginalMixedReview";
 import {UX1LearningPath} from "./UX1LearningPath";
 import {AdaptiveRemediation} from "../study/AdaptiveRemediation";
@@ -151,6 +152,8 @@ export function J4Learn(props:Props){
       }}/>
     <E19SourceWritingStudio overview={e19} busy={status==="loading"} onWrite={onStartE19}
       onSource={(cohort,id)=>{if(cohort==="e02")onStartE02(id);else if(cohort==="e03")onStartE03(id);else onStartE04(id);}}/>
+    <E20SourceOnlyA2 key={e16WorkspaceId} busy={status==="loading"}
+      onOriginalPreview={(cohort,id)=>{if(cohort==="e03")onStartE03Preview(id);else onStartE04Preview(id);}}/>
     <button className="ux2-path-toggle" type="button" aria-expanded={showTransfer} aria-controls="ux2-transfer-panel" onClick={()=>setShowTransfer(v=>!v)}>
       <strong>{showTransfer?"Hide":"Open"} cumulative A1–A2 practice</strong>
       <small>{e06.total} original situations · source prerequisites, delayed transfer and conversation studios</small>
