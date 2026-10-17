@@ -125,7 +125,7 @@ export function J4Learn(props:Props){
 
   return <section className="j4-learn" aria-labelledby="j4-title">
     <span className="j13-marginal" aria-hidden="true">学</span>
-    <UX1LearningPath e02={e02} e03={e03} e04={e04} route={e07} busy={status==="loading"} onOpenE07={onOpenE07} onE02={onStartE02} onE02Delayed={onStartE02Delayed} onE02Preview={onStartE02Preview} onE03={onStartE03} onE03Delayed={onStartE03Delayed} onE03Preview={onStartE03Preview} onE04={onStartE04} onE04Delayed={onStartE04Delayed} onE04Preview={onStartE04Preview}/>
+    <UX1LearningPath e01={e01} e02={e02} e03={e03} e04={e04} route={e07} onE01={onStartE01} onE01Delayed={onStartE01Delayed} busy={status==="loading"} onOpenE07={onOpenE07} onE02={onStartE02} onE02Delayed={onStartE02Delayed} onE02Preview={onStartE02Preview} onE03={onStartE03} onE03Delayed={onStartE03Delayed} onE03Preview={onStartE03Preview} onE04={onStartE04} onE04Delayed={onStartE04Delayed} onE04Preview={onStartE04Preview}/>
     <button className="ux1-mobile-catalogue-toggle" type="button" aria-expanded={showFullCourse} onClick={()=>setShowFullCourse(v=>!v)}>{showFullCourse?"Hide full course and advanced practice":"Open full course and advanced practice"}</button>
     <div className="ux1-expanded-catalogue" data-open={showFullCourse?"yes":"no"}>
     <header className="j4-hero">

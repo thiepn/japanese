@@ -1,9 +1,9 @@
 import {useState} from "react";
-import type {E02Overview,E03Overview,E04Overview} from "../study/runtime";
+import type {E01Progress,E02Overview,E03Overview,E04Overview} from "../study/runtime";
 import type {E07Action,E07Journey} from "../study/e07LearningRoute";
 type Node={id:string;title:string;progress:string;status:string;open:()=>void;review?:(()=>void)|undefined;preview?:boolean;recommended:boolean};
 const A1=[
- {title:"First Words",jp:"はじまり",ids:["greetings","personal","origin"]},
+ {title:"First Words",jp:"はじまり",ids:["first-conversation","greetings","personal","origin"]},
  {title:"People & Time",jp:"人と時間",ids:["family","routine","time"]},
  {title:"Daily Life",jp:"毎日の暮らし",ids:["preferences","food","shopping"]},
  {title:"Out & About",jp:"外へ",ids:["transport","past"]},
@@ -19,9 +19,10 @@ export function ux1InitialPathLocation(primary:Pick<E07Action,"origin"|"targetId
  if(primary.origin==="e04")return {level:"A2",chapter:1};
  return {level:"A1",chapter:0};
 }
-export function UX1LearningPath({e02,e03,e04,route,busy,onOpenE07,onE02,onE02Delayed,onE02Preview,onE03,onE03Delayed,onE03Preview,onE04,onE04Delayed,onE04Preview}:{
- e02:E02Overview;e03:E03Overview;e04:E04Overview;route:E07Journey;busy:boolean;
+export function UX1LearningPath({e01,e02,e03,e04,route,busy,onOpenE07,onE01,onE01Delayed,onE02,onE02Delayed,onE02Preview,onE03,onE03Delayed,onE03Preview,onE04,onE04Delayed,onE04Preview}:{
+ e01:E01Progress;e02:E02Overview;e03:E03Overview;e04:E04Overview;route:E07Journey;busy:boolean;
  onOpenE07:(action:E07Action)=>void;
+ onE01:()=>void;onE01Delayed:()=>void;
  onE02:(id:string)=>void;onE02Delayed:(id:string)=>void;onE02Preview:(id:string)=>void;
  onE03:(id:string)=>void;onE03Delayed:(id:string)=>void;onE03Preview:(id:string)=>void;
  onE04:(id:string)=>void;onE04Delayed:(id:string)=>void;onE04Preview:(id:string)=>void;
@@ -29,6 +30,7 @@ export function UX1LearningPath({e02,e03,e04,route,busy,onOpenE07,onE02,onE02Del
  const [level,setLevel]=useState<"A1"|"A2">(()=>ux1InitialPathLocation(route.primary).level);
  const [selected,setSelected]=useState(()=>ux1InitialPathLocation(route.primary).chapter);
  const a1:Node[]=[
+  ...(e01.unitId?[{id:"first-conversation",title:"First conversations",progress:e01.correct+" correct guided responses · "+e01.answered+" answered",status:e01.status,open:onE01,review:e01.status==="ready"||e01.status==="reviewed"?onE01Delayed:undefined,recommended:route.primary.origin==="e01"&&route.primary.kind!=="delayed"}]:[]),
   ...e02.scenes.map(s=>({id:s.id,title:s.title,progress:s.completedControlled+" / "+s.requiredControlled+" controlled correct",status:s.state,open:()=>onE02(s.id),review:s.state==="ready"||s.state==="reviewed"?()=>onE02Delayed(s.id):undefined,recommended:route.primary.origin==="e02"&&route.primary.targetId===s.id&&route.primary.kind!=="delayed"})),
   ...e02.unmappedScenes.map(s=>({id:s.id,title:s.title,progress:"Original reading · ungraded",status:"preview",preview:true,open:()=>onE02Preview(s.id),recommended:false}))
  ];
