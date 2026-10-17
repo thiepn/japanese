@@ -35,6 +35,8 @@ export type {E05Evidence} from "./e05AdaptiveRecall";
 import {buildE06Journey,buildE11OptionalSession,buildE06NextDailyStage,buildE06DailyStage,buildE06Preview,buildE06Delayed,buildE06NextDelayedStage,buildE06DelayedStage,getE06Overview,e06ReviewPrompts,type E06Overview} from "./e06IndependentCourse";
 import {buildE13PracticalMix,type E13PracticeMode} from "./e13PracticalMixer";
 import {buildE18OriginalMixedReview,type E18Mode} from "./e18OriginalMixedReview";
+import {buildE19WritingSession,projectE19Overview,type E19Overview} from "./e19SourceWriting";
+export type {E19Overview} from "./e19SourceWriting";
 export type {E18Mode} from "./e18OriginalMixedReview";
 import {buildE14HandoffSession,eligibleE14Cases,projectE14Review,type E14HandoffMode,type E14HandoffReview} from "./e14ListeningHandoff";
 export type {E14HandoffMode,E14HandoffReview} from "./e14ListeningHandoff";
@@ -139,6 +141,18 @@ export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
 }
 
 export async function buildE11MicroSession(id:string):Promise<StudyStep[]>{return buildE11OptionalSession(id,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function getE19WritingOverview():Promise<E19Overview>{
+ const owner=DEVELOPMENT_ACCOUNT_ID;
+ const events=await listStudyEvents(owner);
+ if(DEVELOPMENT_ACCOUNT_ID!==owner)throw Error("E19_WORKSPACE_CHANGED_DURING_READ");
+ return projectE19Overview(owner,events);
+}
+export async function buildE19WritingPractice(key:string):Promise<StudyStep[]>{
+ const owner=DEVELOPMENT_ACCOUNT_ID;
+ const events=await listStudyEvents(owner);
+ if(DEVELOPMENT_ACCOUNT_ID!==owner)throw Error("E19_WORKSPACE_CHANGED_DURING_BUILD");
+ return buildE19WritingSession(key,owner,events);
+}
 export async function buildE18MixedReviewSession(keys:readonly string[],mode:E18Mode):Promise<StudyStep[]>{
  const owner=DEVELOPMENT_ACCOUNT_ID;
  const events=await listStudyEvents(owner);

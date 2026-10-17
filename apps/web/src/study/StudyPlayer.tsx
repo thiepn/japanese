@@ -103,6 +103,8 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
   const e12StoredDraft=steps.filter(isStudyLesson).flatMap(item=>item.examples??[])
     .find(item=>item.expression==="Your prior E11 first draft (private)")?.note??"";
   const e12DraftReference=e12FirstDraft||e12StoredDraft;
+  const e19StoredDraft=steps.filter(isStudyLesson).flatMap(item=>item.examples??[])
+    .find(item=>item.expression==="Your prior E19 source first draft (private)")?.note??"";
   const e12RevisionIndex=steps.findIndex(item=>!isStudyLesson(item)&&item.eventMetadata?.e12DraftStage==="revision");
   const e12FirstIndex=steps.findIndex(item=>!isStudyLesson(item)&&item.eventMetadata?.e11Task==="independent-letter");
   const e08RevisionIndex=steps.findIndex(item=>!isStudyLesson(item)&&item.eventMetadata?.e08DraftStage==="revision");
@@ -111,6 +113,8 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
   const e08Unchanged=e08Revision&&Boolean(e08DraftReference.trim())&&response.trim()===e08DraftReference.trim();
   const e12Revision=!isStudyLesson(activeStep)&&activeStep.eventMetadata?.e12DraftStage==="revision";
   const e12Unchanged=e12Revision&&Boolean(e12DraftReference.trim())&&response.trim()===e12DraftReference.trim();
+  const e19Revision=!isStudyLesson(activeStep)&&activeStep.eventMetadata?.e19Stage==="revision";
+  const e19Unchanged=e19Revision&&Boolean(e19StoredDraft.trim())&&response.trim()===e19StoredDraft.trim();
   const e11OptionalWriting=!isStudyLesson(activeStep)&&activeStep.eventMetadata?.e11Task==="independent-letter";
   const e11OptionalPractice=!isStudyLesson(activeStep)&&activeStep.eventMetadata?.e11===true&&activeStep.eventMetadata?.nonAuthoritative===true;
   const mode=j5StudyMode(activeStep);
@@ -281,6 +285,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
     if(!value.trim()||feedback||savingRef.current||interactionLocked)return;
     if(e08Revision&&(!e08DraftReference.trim()||value.trim()===e08DraftReference.trim()))return;
     if(e12Revision&&(!e12DraftReference.trim()||value.trim()===e12DraftReference.trim()))return;
+    if(e19Revision&&(!e19StoredDraft.trim()||value.trim()===e19StoredDraft.trim()))return;
     const grade=gradeStudyPrompt(currentPrompt,value);
     setSaving(true);
     savingRef.current=true;
@@ -393,6 +398,24 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
               {e12Unchanged?<p role="status">Both messages are identical. Change the draft deliberately before recording a revision; a change alone does not demonstrate accuracy.</p>:null}
               <p className="e11-practice-disclaimer">Optional unscored writing only. Your original StudyEvents remain account-bound; this revision does not affect FSRS or CEFR proficiency.</p>
             </div>:null}
+            {e19Revision?<section className="e08-revision e19-revision" aria-label="Source-grounded independent Japanese writing revision">
+              <h2>Revise your first original Japanese message</h2>
+              {e19StoredDraft?<div className="e08-revision__previous"><strong>First draft · private original source response</strong><pre lang="ja">{e19StoredDraft}</pre>
+                <button type="button" className="quiet-button" disabled={Boolean(feedback)||saving}
+                  onClick={()=>updateResponse(e19StoredDraft)}>Use my original as a starting point</button></div>
+               :<p role="status">The original source draft is not available for this account. The revision cannot be recorded.</p>}
+              <div className="e08-revision__checks"><p>Compare with the original source. These are self-review questions, not validated writing feedback.</p>
+                {Array.isArray(currentPrompt.eventMetadata?.e19WritingChecks)?currentPrompt.eventMetadata.e19WritingChecks.map((item,i)=>{
+                  if(!item||typeof item!=="object"||typeof item.question!=="string"||typeof item.heading!=="string")return null;
+                  const key="e19-"+i;
+                  return <label key={key}><input type="checkbox" checked={e08Checks.includes(key)}
+                    onChange={event=>setE08Checks(old=>event.target.checked?[...old,key]:old.filter(v=>v!==key))}/>
+                    <span><strong>{item.heading}</strong> {item.question}{typeof item.repair==="string"?<small>{item.repair}</small>:null}</span></label>;
+                }):null}
+              </div>
+              {e19Unchanged?<p role="status">This text still matches the original draft. Make a deliberate revision before recording; a difference alone is not a language score.</p>:null}
+              <p className="e11-practice-disclaimer">Optional second Japanese message. Original source and learner IDs are preserved; no scheduler or CEFR grade is created.</p>
+            </section>:null}
             {e08Revision?<div className="e08-revision" aria-label="Compare and revise your Japanese writing">
               <h2>Second draft · compare before sending</h2>
               {e08DraftReference?<div className="e08-revision__previous"><strong>First draft · your own Japanese</strong><pre lang="ja">{e08DraftReference}</pre>
@@ -414,7 +437,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
             </div>
             <div className="productive-response-meta">
               <span>{response.length} characters{currentPrompt.minimumCharacters?" · target "+currentPrompt.minimumCharacters+"+":""}</span>
-              <button className="primary" disabled={!response.trim()||Boolean(feedback)||saving||interactionLocked||(e08Revision&&(!e08DraftReference.trim()||e08Unchanged))||(e12Revision&&(!e12DraftReference.trim()||e12Unchanged))} type="submit">{e12Revision?"Record E12 unscored revision":e08Revision?"Record unscored second draft":e11OptionalWriting?"Record unscored E11 writing":currentPrompt.eventMetadata?.nonAuthoritative===true?"Record unscored writing":"Check structure"}</button>
+              <button className="primary" disabled={!response.trim()||Boolean(feedback)||saving||interactionLocked||(e08Revision&&(!e08DraftReference.trim()||e08Unchanged))||(e12Revision&&(!e12DraftReference.trim()||e12Unchanged))||(e19Revision&&(!e19StoredDraft.trim()||e19Unchanged))} type="submit">{e19Revision?"Record E19 unscored revision":e12Revision?"Record E12 unscored revision":e08Revision?"Record unscored second draft":e11OptionalWriting?"Record unscored E11 writing":currentPrompt.eventMetadata?.nonAuthoritative===true?"Record unscored writing":"Check structure"}</button>
             </div>
             {(e11OptionalWriting||e12Revision)?<button type="button" className="quiet-button e11-skip" disabled={saving||interactionLocked} onClick={advance}>Skip optional {e12Revision?"revision":"writing"} without grading</button>:null}
           </form>
