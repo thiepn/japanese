@@ -16,16 +16,29 @@ function previousDay(d:Date):Date{
  return new Date(d.getFullYear(),d.getMonth(),d.getDate()-1,12);
 }
 
-/** Deterministically projects engagement from the existing owner-scoped StudyEvents. */
-export function projectUX1Engagement(events:readonly StudyEvent[],now=new Date()):UX1Engagement{
+/** Shared read-only filter for daily metrics: optional practice, duplicates and
+ * future/invalid events must not count as saved assessed answers. */
+function scoredAttempts(events:readonly StudyEvent[],now:Date):StudyEvent[]{
  const seenEvents=new Set<string>();
- const visible=events.filter(event=>{
+ return events.filter(event=>{
   if(seenEvents.has(event.id))return false;
   seenEvents.add(event.id);
   if((event.result!=="correct"&&event.result!=="incorrect")||event.metadata?.nonAuthoritative===true)return false;
   const time=Date.parse(event.occurredAt);
   return Number.isFinite(time)&&time<=now.getTime()+1000;
- }).sort((a,b)=>a.occurredAt.localeCompare(b.occurredAt)||a.id.localeCompare(b.id));
+ });
+}
+
+/** Counts actual assessed attempts, not XP, unique prompts or optional drafts. */
+export function countUX1SavedAnswersToday(events:readonly StudyEvent[],now=new Date()):number{
+ const today=localDay(now);
+ return scoredAttempts(events,now).filter(event=>localDay(new Date(event.occurredAt))===today).length;
+}
+
+/** Deterministically projects engagement from the existing owner-scoped StudyEvents. */
+export function projectUX1Engagement(events:readonly StudyEvent[],now=new Date()):UX1Engagement{
+ const visible=scoredAttempts(events,now)
+  .sort((a,b)=>a.occurredAt.localeCompare(b.occurredAt)||a.id.localeCompare(b.id));
  const days=new Set<string>();
  const rewardedPromptDays=new Set<string>();
  const todayPromptIds=new Set<string>();

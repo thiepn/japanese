@@ -1,5 +1,5 @@
 import { entityKey } from "@thiepn/domain";
-import {projectUX1Engagement,type UX1Engagement} from "./ux1Engagement";
+import {countUX1SavedAnswersToday,projectUX1Engagement,type UX1Engagement} from "./ux1Engagement";
 export type {UX1Engagement} from "./ux1Engagement";
 import { getJapaneseDeviceId } from "../deviceIdentity";
 import { replayStudyEvents, type LearnerState } from "@thiepn/learner-engine";
@@ -258,13 +258,10 @@ export async function getUX1Engagement(now=new Date()):Promise<UX1Engagement>{
 // Derive the daily counter from durable, account-scoped events. React component
 // state must never be the authority for progress displayed after a reload.
 export async function getCompletedTodayCount(now=new Date()):Promise<number>{
-  const today=now.toDateString();
-  const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
-  return events.filter((event)=>{
-    if(event.result!=="correct"&&event.result!=="incorrect")return false;
-    const occurredAt=new Date(event.occurredAt);
-    return !Number.isNaN(occurredAt.getTime())&&occurredAt.toDateString()===today;
-  }).length;
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const events=await listStudyEvents(owner);
+  if(DEVELOPMENT_ACCOUNT_ID!==owner)throw new Error("UX1_DAILY_COUNT_WORKSPACE_CHANGED");
+  return countUX1SavedAnswersToday(events,now);
 }
 
 export async function getStudySummary(now=new Date()):Promise<StudySummary>{

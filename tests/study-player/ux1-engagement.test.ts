@@ -1,6 +1,6 @@
 import {describe,expect,it} from "vitest";
 import type {StudyEvent} from "../../packages/domain/src/index";
-import {projectUX1Engagement} from "../../apps/web/src/study/ux1Engagement";
+import {countUX1SavedAnswersToday,projectUX1Engagement} from "../../apps/web/src/study/ux1Engagement";
 
 const now=new Date(2026,9,17,16);
 function e(id:string,when:Date,promptId:string,result:"correct"|"incorrect"|"skipped",metadata:Record<string,unknown>={}):StudyEvent{
@@ -28,6 +28,16 @@ describe("UX-1 source-owned engagement",()=>{
  it("does not award a scene completion bonus for unanswered or currently incorrect required prompts",()=>{
   const events=["hear","read","reply","recall"].map((key,i)=>e(String(i),on(17),"a1-e02-food-"+key,i===3?"incorrect":"correct",{e02SceneId:"food"}));
   expect(projectUX1Engagement(events,now).totalXp).toBe(15);
+ });
+ it("keeps the daily recorded-answer total aligned with the authoritative quest filter",()=>{
+  const correct=e("scored",on(17),"kana-1","correct");
+  const repeated=e("repeated",on(17),"kana-1","incorrect");
+  const optional=e("optional",on(17),"e12-writing","correct",{nonAuthoritative:true});
+  const prior=e("yesterday",on(16),"kana-2","correct");
+  const future=e("tomorrow",on(18),"kana-3","correct");
+  const invalid={...e("invalid",on(17),"kana-4","correct"),occurredAt:"not-a-date"};
+  expect(countUX1SavedAnswersToday([correct,repeated,optional,prior,future,invalid,correct],now)).toBe(2);
+  expect(projectUX1Engagement([correct,repeated,optional,prior,future,invalid,correct],now).todayUniqueAnswers).toBe(1);
  });
  it("keeps yesterday's valid streak and counts distinct answers without another scheduler",()=>{
   const yesterday=e("a",on(16),"gram-1","incorrect");
