@@ -19,19 +19,19 @@ export function UX1Today({engagement,route,summary,status,completedToday,onActiv
    <div className="ux1-mission__seal" aria-hidden="true" lang="ja">{cafe?"喫茶":"学"}</div>
    <h2 id="ux1-mission-title">{cafe?(primary.kind==="delayed"?"Order in a new café situation":"Order a drink"):primary.label}</h2>
    <p>{cafe?"Listen to a conversation, make a polite request, and recall it independently.":primary.description}</p>
-   <button className="ux1-mission__cta" type="button" disabled={status==="loading"||status==="error"} onClick={()=>onActivate(primary)}>
+   <button className="ux1-mission__cta" type="button" disabled={status==="loading"} onClick={()=>onActivate(primary)}>
     {status==="loading"?"Preparing…":primary.kind==="scheduled"?"Review now":primary.kind==="repair"?"Practise correction":primary.kind==="resume"?"Continue lesson":primary.kind==="reading"?"Read original dialogue":"Start this step"} <span aria-hidden="true">→</span>
    </button>
    {primary.kind==="reading"?<small>Original reading preview · no graded Can-do evidence</small>:null}
   </section>
   <section className="ux1-plan" aria-labelledby="ux1-plan-title">
-   <div className="ux1-section-head"><h2 id="ux1-plan-title">Today's plan</h2><span>{completedToday} answers recorded</span></div>
+   <div className="ux1-section-head"><h2 id="ux1-plan-title">Today's plan</h2><span>{completedToday} answer{completedToday===1?"":"s"} recorded</span></div>
    {activities.length?<ul>{activities.map(item=><li key={item.label}><span aria-hidden="true">○</span><span>{item.label}</span><strong>{item.count} waiting</strong></li>)}</ul>:<p>Nothing is scheduled right now. You can still explore Japanese.</p>}
   </section>
   <section className="ux1-daily-goal" aria-labelledby="ux1-daily-goal-title"><div className="ux1-section-head"><h2 id="ux1-daily-goal-title">Daily quest</h2><span>{Math.min(engagement.todayUniqueAnswers,engagement.dailyGoal)} / {engagement.dailyGoal}</span></div><p>Answer {engagement.dailyGoal} different Japanese questions today. Correct and incorrect saved attempts both count.</p><progress value={Math.min(engagement.todayUniqueAnswers,engagement.dailyGoal)} max={engagement.dailyGoal} aria-label="Distinct saved Japanese answers today"/></section>
-  <button className="ux1-native-queue" type="button" onClick={onStartQueue} disabled={status==="loading"||status==="error"}><span>Open daily study queue</span><small>Review kana, words and course prompts</small></button>
+  <button className="ux1-native-queue" type="button" onClick={onStartQueue} disabled={status==="loading"}><span>Open daily study queue</span><small>Review kana, words and course prompts</small></button>
   <details className="ux1-alternatives"><summary>Other ways to study</summary><ul>{route.alternatives.map(item=><li key={item.key}><span><strong>{item.label}</strong><small>{item.description}</small></span><button disabled={status==="loading"} type="button" onClick={()=>onActivate(item)}>Open</button></li>)}</ul></details>
-  {status==="error"?<p role="alert">Your study data couldn't be loaded. Try again.</p>:null}
+  {status==="error"?<p role="alert">The activity could not be opened. You can retry the recommended step or choose another lesson.</p>:null}
   {status==="empty"?<p role="status">No items are available for that activity. Choose another step.</p>:null}
  </section>;
 }

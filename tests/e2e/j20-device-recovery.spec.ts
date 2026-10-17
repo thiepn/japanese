@@ -50,7 +50,7 @@ test("J20 cached PWA restores graded local evidence offline and after simulated 
   await page.getByRole("button",{name:"a",exact:true}).click();
   await expect(page.getByText("Correct",{exact:true})).toBeVisible();
   await page.getByRole("button",{name:"Exit",exact:true}).click();
-  await expect(page.locator(".ux1-section-head span")).toContainText("1 answers recorded");
+  await expect(page.locator(".ux1-plan .ux1-section-head span")).toContainText("1 answer recorded");
 
   // The Today visit counter is conditional in the shell. After an offline
   // cold reload, verify the actual durable evidence instead of relying on a
