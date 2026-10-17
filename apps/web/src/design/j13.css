@@ -92,7 +92,8 @@
   .j4-scroll-section{margin-top:72px}
   .j4-scroll-heading{position:sticky;top:98px;z-index:18;padding:12px 0;background:linear-gradient(var(--j-bg),color-mix(in srgb,var(--j-bg) 94%,transparent))}
   .j4-scroll-heading h2{font-size:42px}
-  .j4-emaki{
+  /* Route-local j4.css may arrive after exhibition runtime. */
+  .j2-shell .j4-emaki{
     min-height:640px;
     border-radius:5px 34px 34px 34px;
     box-shadow:0 26px 70px rgba(23,19,14,.09);
@@ -145,7 +146,8 @@
   .j7-filter-strip button{min-height:72px}
   .j7-catalog{grid-template-columns:minmax(0,1.3fr) minmax(380px,.7fr);gap:42px;margin-top:48px}
   .j7-reference{top:108px}
-  .j7-reference__sheet{min-height:610px;padding:38px;border-radius:5px 28px 28px 28px}
+  /* Preserve the desktop reference sheet after lazy-loaded j7.css. */
+  .j2-shell .j7-reference__sheet{min-height:610px;padding:38px;border-radius:5px 28px 28px 28px}
   .j7-reference__title h2{font-size:clamp(46px,4.7vw,70px)}
   .j7-result>button{min-height:94px;grid-template-columns:48px minmax(0,1fr) auto 18px;padding-inline:14px}
   .j7-result__body strong{font-size:23px}

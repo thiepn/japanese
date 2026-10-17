@@ -130,7 +130,9 @@
   .j7-library__spine>span{font-size:34px}
   .j7-library__intro h1{font-size:clamp(32px,9vw,44px)}
   .j7-library__intro>p:last-child{font-size:10px;line-height:1.5}
-  .j7-search{
+  /* Route-local j7.css may load after mobile runtime CSS; pin the mobile
+     sticky contract by specificity, not by import timing. */
+  .j2-shell .j7-search{
     position:sticky;
     top:calc(var(--j12-topbar) + env(safe-area-inset-top));
     z-index:30;

@@ -33,3 +33,7 @@ The draft's branch-specific `.github/workflows/e12-exact-head-qualification.yml`
 - P21 installed physical Android PWA and real microphone/headphone/interruption acceptance remains pending.
 - Canonical Account identity exists, but Japanese production Sync v1 upload/pull and cloud-saves remain disabled until a qualified shared Core transport exists.
 - P22 capability freeze is not bypassed by this development draft; owner must explicitly approve a capability-expansion release before any merge/stable activation.
+
+## Full-suite regression discovered on 17 October 2026
+
+A full 3-profile Chromium run on 1add5bcc3a9f303b9eab517a6264e08529e2f439 found six failures (442 passed, 47 skipped): late lazy-route CSS overwrote J12 sticky Library search and J13 panoramic snapping/reference-sheet height, and the P21 mobile touch-target test asserted on advanced tabs before async navigation and before explicitly opening the collapsed studio sections. This branch's corrective changes assign greater specificity to the intended responsive layout rules and exercise advanced tabs through actual studio disclosures. The repair requires a fresh exact-head run; do not infer PASS from this note.
