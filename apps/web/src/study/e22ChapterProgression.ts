@@ -78,7 +78,7 @@ export function buildE22Chapters(input:{e01:E01Progress;e02:E02Overview;e03:E03O
    reviewReady:false,reviewed:false
   }))
  ];
- const assignedIds=new Set(E22_A1_GROUPS.flatMap(g=>[...g.ids]));
+ const assignedIds=new Set<string>(E22_A1_GROUPS.flatMap(g=>[...g.ids]));
  const groups:E22Chapter[]=E22_A1_GROUPS.map((g,id)=>chapter("A1",id,g.title,g.jp,a1.filter(n=>g.ids.some(x=>x===n.sceneId))));
  const remaining=a1.filter(n=>!assignedIds.has(n.sceneId));
  if(remaining.length)groups.push(chapter("A1",groups.length,"Other original conversations","ほかの会話",remaining));
