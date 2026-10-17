@@ -8,6 +8,10 @@ test("UX1 Today source recommendation and mobile Learn path stay connected",asyn
  if(testInfo.project.name!=="desktop-chromium"){
   const path=page.locator(".ux1-mobile-path");
   await expect(path.getByRole("heading",{name:"Your learning path"})).toBeVisible();
+  await path.getByLabel("Learning level").selectOption("A2");
+  await expect(path.getByRole("button",{name:"Connected conversations"})).toBeVisible();
+  await expect(path.getByRole("button",{name:"Everyday problem solving"})).toBeVisible();
+  await path.getByLabel("Learning level").selectOption("A1");
   await path.getByRole("button",{name:"Daily Life"}).click();
   const cafe=path.locator(".ux1-node").filter({hasText:"Order a drink politely"});
   await expect(cafe).toBeVisible();
