@@ -3,7 +3,7 @@ import {E20_STAGES,getE20SourceOnlyScenes,compareE20WrittenDrafts,
  type E20Question,type E20Scene,type E20Stage,type E20Cohort} from "../study/e20SourceOnlyA2";
 import "./e20SourceOnlyA2.css";
 
-type Props={onOriginalPreview:(cohort:E20Cohort,id:string)=>void;busy:boolean};
+type Props={onOriginalPreview:(cohort:E20Cohort,id:string)=>void;busy:boolean;requested?:{key:string;sequence:number}|null};
 type AudioState="idle"|"playing"|"unavailable"|"error";
 const scenes=getE20SourceOnlyScenes();
 const stages=E20_STAGES.map(s=>s.id);
@@ -35,7 +35,7 @@ function SourceQuestion({question,choice,onChoose,revealed,onReveal}:{
 /** E20 is an ephemeral, deliberately ungraded source-workshop, NOT StudyPlayer.
  * It presents existing original material in a connected listening → reading →
  * reply → independent message → changed-context follow-up flow, without saving learner responses/events. */
-export function E20SourceOnlyA2({onOriginalPreview,busy}:Props){
+export function E20SourceOnlyA2({onOriginalPreview,busy,requested}:Props){
  const [key,setKey]=useState(scenes[0]?.key??"");
  const [stage,setStage]=useState<E20Stage>("listen");
  const [choices,setChoices]=useState<Record<string,string>>({});
@@ -78,6 +78,19 @@ export function E20SourceOnlyA2({onOriginalPreview,busy}:Props){
   setDraftInput("");setFirstDraft("");setRevisionInput("");setCompareVisible(false);setChecks([]);
   setShowFollowUpText(false);setFollowUpWriting("");
  }
+ useEffect(()=>{
+  if(!requested||!scenes.some(s=>s.key===requested.key))return;
+  switchScene(requested.key);
+  const frame=window.requestAnimationFrame(()=>{
+   const heading=document.getElementById("e20-source-title");
+   if(!heading)return;
+   heading.setAttribute("tabindex","-1");
+   heading.focus({preventScroll:true});
+   heading.scrollIntoView({block:"start",behavior:"auto"});
+  });
+  return ()=>window.cancelAnimationFrame(frame);
+ // The target sequence represents an explicit real navigation, not render-driven reset.
+ },[requested?.sequence]);
  function playText(text:string,rate:number){
   if(!text.trim())return;
   if(typeof window==="undefined"||!("speechSynthesis" in window)||

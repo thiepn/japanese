@@ -1,66 +1,165 @@
-import {useEffect,useState} from "react";
-import type {E01Progress,E02Overview,E03Overview,E04Overview} from "../study/runtime";
+import {useEffect,useMemo,useState} from "react";
+import type {E01Progress,E02Overview,E03Overview,E04Overview,E19Overview} from "../study/runtime";
 import type {E07Action,E07Journey} from "../study/e07LearningRoute";
-type Node={id:string;title:string;progress:string;status:string;open:()=>void;review?:(()=>void)|undefined;preview?:boolean;recommended:boolean};
-const A1=[
- {title:"First Words",jp:"はじまり",ids:["first-conversation","greetings","personal","origin"]},
- {title:"People & Time",jp:"人と時間",ids:["family","routine","time"]},
- {title:"Daily Life",jp:"毎日の暮らし",ids:["preferences","food","shopping"]},
- {title:"Out & About",jp:"外へ",ids:["transport","past"]},
- {title:"Keep Talking",jp:"会話を続ける",ids:["help","exchange"]}
-];
-/** First visible chapter follows actual E07 source ownership, not an XP gate. */
-export function ux1InitialPathLocation(primary:Pick<E07Action,"origin"|"targetId">):{level:"A1"|"A2";chapter:number}{
- if(primary.origin==="e02"&&primary.targetId){
-  const chapter=A1.findIndex(item=>item.ids.includes(primary.targetId!));
-  return {level:"A1",chapter:chapter<0?0:chapter};
- }
- if(primary.origin==="e03")return {level:"A2",chapter:0};
- if(primary.origin==="e04")return {level:"A2",chapter:1};
- return {level:"A1",chapter:0};
-}
-export function UX1LearningPath({e01,e02,e03,e04,route,busy,onOpenE07,onE01,onE01Delayed,onE02,onE02Delayed,onE02Preview,onE03,onE03Delayed,onE03Preview,onE04,onE04Delayed,onE04Preview}:{
- e01:E01Progress;e02:E02Overview;e03:E03Overview;e04:E04Overview;route:E07Journey;busy:boolean;
- onOpenE07:(action:E07Action)=>void;
+import {buildE22Chapters,e22InitialLocation,getE22NextChapter,
+ type E22Chapter,type E22Level,type E22Node} from "../study/e22ChapterProgression";
+
+/** Preserve UX1 deep links and initial E07 selection without adding a scheduler. */
+export const ux1InitialPathLocation=e22InitialLocation;
+type Props={
+ e01:E01Progress;e02:E02Overview;e03:E03Overview;e04:E04Overview;e19:E19Overview;
+ route:E07Journey;busy:boolean;onOpenE07:(action:E07Action)=>void;
  onE01:()=>void;onE01Delayed:()=>void;
  onE02:(id:string)=>void;onE02Delayed:(id:string)=>void;onE02Preview:(id:string)=>void;
  onE03:(id:string)=>void;onE03Delayed:(id:string)=>void;onE03Preview:(id:string)=>void;
  onE04:(id:string)=>void;onE04Delayed:(id:string)=>void;onE04Preview:(id:string)=>void;
-}){
- const [level,setLevel]=useState<"A1"|"A2">(()=>ux1InitialPathLocation(route.primary).level);
- const [selected,setSelected]=useState(()=>ux1InitialPathLocation(route.primary).chapter);
+ onE19:(key:string)=>void;onE20:(key:string)=>void;
+};
+type ChapterFocus={node:E22Node|null;mode:"guided"|"review"|"write"|"source"|"next"};
+
+/** All decisions are projections of original owner-owned source events. */
+export function e22ChapterFocus(chapter:E22Chapter):ChapterFocus{
+ const by=(key:string|null)=>chapter.nodes.find(n=>n.key===key)??null;
+ if(chapter.nextGuidedKey)return {node:by(chapter.nextGuidedKey),mode:"guided"};
+ if(chapter.nextReviewKey)return {node:by(chapter.nextReviewKey),mode:"review"};
+ if(chapter.nextWritingKey)return {node:by(chapter.nextWritingKey),mode:"write"};
+ if(chapter.nextPreviewKey)return {node:by(chapter.nextPreviewKey),mode:"source"};
+ return {node:null,mode:"next"};
+}
+function focusLabel(focus:ChapterFocus):string{
+ if(!focus.node)return "Browse the next original chapter";
+ if(focus.mode==="guided")return "Continue source-linked lesson · "+focus.node.title;
+ if(focus.mode==="review")return "Open available delayed review · "+focus.node.title;
+ if(focus.mode==="write")return "Continue optional independent writing · "+focus.node.title;
+ return "Explore original ungraded source · "+focus.node.title;
+}
+/** UX1 + E22: desktop/mobile source-first chapter progression, without new levels.
+ * E19 and E20 navigation goes to their existing native engines, not clones. */
+export function UX1LearningPath({e01,e02,e03,e04,e19,route,busy,onOpenE07,
+ onE01,onE01Delayed,onE02,onE02Delayed,onE02Preview,onE03,onE03Delayed,
+ onE03Preview,onE04,onE04Delayed,onE04Preview,onE19,onE20}:Props){
+ const location=ux1InitialPathLocation(route.primary);
+ const [level,setLevel]=useState<E22Level>(()=>location.level);
+ const [selected,setSelected]=useState(()=>location.chapter);
  const [chosenByLearner,setChosenByLearner]=useState(false);
+ const path=useMemo(()=>buildE22Chapters({e01,e02,e03,e04,e19}),[e01,e02,e03,e04,e19]);
  useEffect(()=>{
   if(chosenByLearner)return;
-  const location=ux1InitialPathLocation(route.primary);
-  setLevel(location.level);
-  setSelected(location.chapter);
+  const next=ux1InitialPathLocation(route.primary);
+  setLevel(next.level);setSelected(next.chapter);
  },[route.primary.key,chosenByLearner]);
- const a1:Node[]=[
-  ...(e01.unitId?[{id:"first-conversation",title:"First conversations",progress:e01.correct+" correct guided responses · "+e01.answered+" answered",status:e01.status,open:onE01,review:e01.status==="ready"||e01.status==="reviewed"?onE01Delayed:undefined,recommended:route.primary.origin==="e01"&&route.primary.kind!=="delayed"}]:[]),
-  ...e02.scenes.map(s=>({id:s.id,title:s.title,progress:s.completedControlled+" / "+s.requiredControlled+" controlled correct",status:s.state,open:()=>onE02(s.id),review:s.state==="ready"||s.state==="reviewed"?()=>onE02Delayed(s.id):undefined,recommended:route.primary.origin==="e02"&&route.primary.targetId===s.id&&route.primary.kind!=="delayed"})),
-  ...e02.unmappedScenes.map(s=>({id:s.id,title:s.title,progress:"Original reading · ungraded",status:"preview",preview:true,open:()=>onE02Preview(s.id),recommended:false}))
- ];
- const a2:Node[]=[
-  ...e03.scenes.map(s=>({id:"e03-"+s.id,title:s.title,progress:s.correct+" / "+s.required+" controlled correct",status:s.state,open:()=>onE03(s.id),review:s.state==="ready"||s.state==="reviewed"?()=>onE03Delayed(s.id):undefined,recommended:route.primary.origin==="e03"&&route.primary.targetId===s.id})),
-  ...e04.scenes.map(s=>({id:"e04-"+s.id,title:s.title,progress:s.guidedCorrect+" / "+s.guidedTotal+" controlled correct",status:s.status,open:()=>onE04(s.id),review:s.status==="ready"||s.status==="reviewed"?()=>onE04Delayed(s.id):undefined,recommended:route.primary.origin==="e04"&&route.primary.targetId===s.id})),
-  ...e03.unmappedScenes.map(s=>({id:"e03-preview-"+s.id,title:s.title,progress:"Original reading · ungraded",status:"preview",preview:true,open:()=>onE03Preview(s.id),recommended:false})),
-  ...e04.unmapped.map(s=>({id:"e04-preview-"+s.id,title:s.title,progress:"Original reading · ungraded",status:"preview",preview:true,open:()=>onE04Preview(s.id),recommended:false}))
- ];
- const chapters=level==="A1"?A1.map((c,i)=>({id:i,title:c.title,jp:c.jp,nodes:a1.filter(n=>c.ids.includes(n.id))})):[
-  {id:0,title:"Connected conversations",jp:"つながる会話",nodes:a2.filter(n=>n.id.startsWith("e03-"))},
-  {id:1,title:"Everyday problem solving",jp:"暮らしの課題",nodes:a2.filter(n=>n.id.startsWith("e04-"))}
- ];
- const current=chapters.find(c=>c.id===selected)??chapters[0]!;
- const scoredNodes=current.nodes.filter(n=>!n.preview);
- const practised=scoredNodes.filter(n=>n.status==="waiting"||n.status==="ready"||n.status==="reviewed").length;
+ const chapters=level==="A1"?path.a1:path.a2;
+ const current=chapters.find(c=>c.id===selected)??chapters[0]??null;
+ const focus=current?e22ChapterFocus(current):null;
+ const next=current?getE22NextChapter(path,level,current.id):null;
+ function openNode(node:E22Node,mode:"guided"|"review"|"write"|"source"="guided"){
+  if(mode==="write"){if(node.linked&&node.sourceReady)onE19(node.key);return;}
+  if(mode==="source"){
+   if(node.cohort==="e03"||node.cohort==="e04")onE20(node.key);
+   else if(node.cohort==="e02")onE02Preview(node.sceneId);
+   return;
+  }
+  if(!node.linked){openNode(node,"source");return;}
+  if(node.cohort==="e01"){if(mode==="review")onE01Delayed();else onE01();}
+  else if(node.cohort==="e02"){if(mode==="review")onE02Delayed(node.sceneId);else onE02(node.sceneId);}
+  else if(node.cohort==="e03"){if(mode==="review")onE03Delayed(node.sceneId);else onE03(node.sceneId);}
+  else if(node.cohort==="e04"){if(mode==="review")onE04Delayed(node.sceneId);else onE04(node.sceneId);}
+ }
+ function changeChapter(nextLevel:E22Level,id:number){
+  setChosenByLearner(true);setLevel(nextLevel);setSelected(id);
+ }
  return <section className="ux1-mobile-path" aria-labelledby="ux1-path-title">
-  <header className="ux1-intro"><p className="ux1-eyebrow">LEARN · <span lang="ja">学ぶ</span></p><div className="ux1-path-head"><h1 id="ux1-path-title">Your learning path</h1><label><span className="ux1-sr">Learning level</span><select value={level} onChange={e=>{setChosenByLearner(true);setLevel(e.target.value as "A1"|"A2");setSelected(0);}}><option>A1</option><option>A2</option></select></label></div></header>
-  <div className="ux1-chapter-tabs" role="group" aria-label="Learning chapters">{chapters.map(c=><button type="button" key={c.id} aria-pressed={c.id===current.id} onClick={()=>{setChosenByLearner(true);setSelected(c.id);}}>{c.title}</button>)}</div>
-  <section className="ux1-chapter" aria-labelledby="ux1-chapter-title"><p className="ux1-eyebrow">{level} · CHAPTER {current.id+1}</p><h2 id="ux1-chapter-title">{current.title} <span lang="ja">{current.jp}</span></h2><p>{practised} / {scoredNodes.length} source-linked scenes practised or review-ready</p>{current.nodes.length>scoredNodes.length?<small>{current.nodes.length-scoredNodes.length} original reading preview(s) remain ungraded</small>:null}<progress value={practised} max={Math.max(1,scoredNodes.length)} aria-label="Source-linked chapter scenarios practised"/></section>
-  <ol className="ux1-nodes">{current.nodes.map(n=><li className={n.recommended?"ux1-node ux1-node--recommended":"ux1-node"} key={n.id}><span className="ux1-node__mark" aria-hidden="true">{n.preview?"読":n.status==="reviewed"?"✓":n.recommended?"今":"学"}</span><div className="ux1-node__body"><h3>{n.title}</h3><p>{n.progress}</p><small>{n.preview?"Reading preview · not graded":n.status==="ready"?"Changed-context review ready":n.status==="waiting"?"Practised · review later":n.status.replaceAll("_"," ")}</small><div className="ux1-node__actions"><button type="button" disabled={busy} onClick={n.open}>{n.preview?"Read original":n.status==="not_started"?"Start lesson":"Practise lesson"}</button>{n.review?<button type="button" disabled={busy} onClick={n.review}>Delayed review</button>:null}</div></div></li>)}</ol>
-  {current.nodes.length===0?<p role="status">No source-linked lessons are ready in this chapter. Open the full course catalogue below.</p>:null}
-  {(route.primary.kind==="scheduled"||route.primary.kind==="delayed")?<button type="button" className="ux1-path-review" disabled={busy} onClick={()=>onOpenE07(route.primary)}>{route.primary.label} →</button>:null}
-  <p className="ux1-path-note">Original situations, not an external language certification. Advanced course tools remain available below.</p>
+  <header className="ux1-intro">
+   <p className="ux1-eyebrow">E22 · ORIGINAL LEARNER CONTINUITY · <span lang="ja">学ぶ</span></p>
+   <div className="ux1-path-head">
+    <h1 id="ux1-path-title">Your learning path</h1>
+    <label><span className="ux1-sr">Learning level</span>
+     <select value={level} onChange={event=>changeChapter(event.target.value as E22Level,0)}>
+      <option value="A1">A1</option><option value="A2">A2</option>
+     </select>
+    </label>
+   </div>
+   <p className="ux1-path-intro">Original THIEPN navigation groups. Chapter positions are not certified course levels. Complete source-linked controlled lessons, return for due delayed reviews and explore unlinked original sources without grades.</p>
+  </header>
+  <nav className="ux1-chapter-tabs" aria-label="Learning chapters">
+   {chapters.map(c=><button type="button" key={c.key} aria-pressed={c.id===current?.id}
+    onClick={()=>changeChapter(level,c.id)}>
+    <strong>{c.title}</strong>
+    <small>{c.guidedComplete}/{c.linkedCount} guided · {c.previewCount} ungraded</small>
+   </button>)}
+  </nav>
+  {current?<>
+   <section className="ux1-chapter" aria-labelledby="ux1-chapter-title">
+    <p className="ux1-eyebrow">{level} · CHAPTER {current.id+1} / {chapters.length} · ORIGINAL LEARNER GROUP</p>
+    <h2 id="ux1-chapter-title">{current.title} <span lang="ja">{current.jp}</span></h2>
+    <p>{current.guidedComplete} / {current.linkedCount} source-linked guided lessons complete
+     {current.previewCount>0?" · "+current.previewCount+" ungraded original source"+(current.previewCount===1?"":"s"):""}</p>
+    <progress value={current.guidedComplete} max={Math.max(1,current.linkedCount)}
+     aria-label="Source-linked guided chapter lessons complete"/>
+    <div className="ux1-chapter-evidence" aria-label="Separate chapter learning evidence">
+     <span>{current.reviewReady} delayed checks currently ready</span>
+     <span>{current.reviewed} delayed checks previously reviewed</span>
+     <span>{current.nodes.filter(n=>n.sourceReady&&n.writingStatus!=="study-source").length} writing-eligible sources</span>
+    </div>
+    <small className="ux1-chapter__authority">Guided progress is not a grade for your writing or a CEFR award. Review timing is managed by the existing FSRS and source-specific delayed gates.</small>
+   </section>
+   {focus?<section className="ux1-chapter-next" aria-label="Continue the selected original chapter">
+    <strong>Next available chapter activity</strong>
+    <p>{focus.mode==="guided"?"A real original lesson still needs its guided source responses.":
+      focus.mode==="review"?"The original delayed check is ready; reviewing it does not certify the level.":
+      focus.mode==="write"?"Original listening and reading are available for independent, unscored writing and revision.":
+      focus.mode==="source"?"This original material lacks an admissible canonical Can-do link and remains ungraded.":
+      "No remaining source-linked guided, available delayed or original preview activity in this chapter. Browse onward without claiming a mastery certificate."}</p>
+    {focus.node?<button type="button" disabled={busy} onClick={()=>openNode(focus.node!,focus.mode==="next"?"guided":focus.mode)}>
+     {focusLabel(focus)} <span aria-hidden="true">→</span>
+    </button>:next?<button type="button" disabled={busy} onClick={()=>changeChapter(next.level,next.id)}>
+     {next.level===level?"Browse the next chapter":"Browse original A2 source groups"} <span aria-hidden="true">→</span>
+    </button>:null}
+   </section>:null}
+   <ol className="ux1-nodes">
+    {current.nodes.map(node=>{
+     const recommended=route.primary.origin===node.cohort&&
+      (route.primary.targetId===node.sceneId||node.cohort==="e01")&&route.primary.kind!=="delayed";
+     return <li className={recommended?"ux1-node ux1-node--recommended":"ux1-node"} key={node.key}>
+      <span className="ux1-node__mark" aria-hidden="true">{!node.linked?"読":node.reviewed?"✓":recommended?"今":"学"}</span>
+      <div className="ux1-node__body">
+       <h3>{node.title}</h3>
+       <p>{!node.linked?"Original THIEPN source · ungraded; no Can-do mapping":
+        node.cohort==="e01"
+        ?node.guidedAnswered+" source-guided attempts · "+node.guidedCorrect+" correct"
+        :node.guidedCorrect+" / "+node.guidedRequired+" required controlled correct answers"}</p>
+       <small>{!node.linked?"Unlinked original · source-only, no saved grade":
+        node.reviewed?"Original delayed set reviewed":node.reviewReady?"Original changed-context review ready":
+        node.status==="waiting"?"Guided responses recorded · delayed check not yet ready":
+        node.guidedFinished?"Guided source covered · separate delayed checks remain":
+        node.status==="learning"?"Guided source partly practised":"Not yet studied"}</small>
+       <div className="ux1-node__actions">
+        <button type="button" disabled={busy} onClick={()=>openNode(node,node.linked?"guided":"source")}>
+         {!node.linked?(node.cohort==="e03"||node.cohort==="e04"?"Study original source-only workshop":"Read original source"):
+          node.status==="not_started"?"Start original lesson":"Continue original lesson"}
+        </button>
+        {node.reviewReady?<button type="button" disabled={busy}
+         onClick={()=>openNode(node,"review")}>Original delayed review</button>:null}
+        {node.linked&&node.sourceReady&&(node.writingStatus==="first-draft"||node.writingStatus==="revise"||node.writingStatus==="review")?
+         <button type="button" disabled={busy} onClick={()=>openNode(node,"write")}>
+          {node.writingStatus==="first-draft"?"Write first independent message":
+           node.writingStatus==="revise"?"Revise saved private message":"Review or revise my private writing"}
+         </button>:null}
+       </div>
+      </div>
+     </li>;
+    })}
+   </ol>
+   {current.nodes.length===0?<p role="status">No original source material is available in this navigation chapter. No progress is inferred. Use the other original chapters or full catalogue below.</p>:null}
+   {next?<button type="button" className="ux1-chapter-next-button" disabled={busy}
+     onClick={()=>changeChapter(next.level,next.id)}>
+     {next.level===level?"Browse next original chapter":"Browse A2-oriented original situations"}
+     <span aria-hidden="true">→</span>
+    </button>:null}
+   {(route.primary.kind==="scheduled"||route.primary.kind==="delayed")?
+    <button type="button" className="ux1-path-review" disabled={busy} onClick={()=>onOpenE07(route.primary)}>
+     {route.primary.label} →</button>:null}
+   <p className="ux1-path-note">These chapters organize existing THIEPN originals. The existing Today/FSRS queue is still authoritative for due reviews. Optional writing and unlinked A2 workshops cannot award new proficiency or mastery.</p>
+  </>:null}
  </section>;
 }

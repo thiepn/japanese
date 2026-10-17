@@ -108,6 +108,7 @@ export function J4Learn(props:Props){
   const [showFullCourse,setShowFullCourse]=useState(true);
   const [showTransfer,setShowTransfer]=useState(e07.primary.origin==="e06");
   const [studioTarget,setStudioTarget]=useState<UX2StudioTarget|null>(null);
+  const [a2SourceTarget,setA2SourceTarget]=useState<{key:string;sequence:number}|null>(null);
   useEffect(()=>{if(e07.primary.origin==="e06")setShowTransfer(true);},[e07.primary.key,e07.primary.origin]);
   // Open and focus the existing E13–E17 studio even if the catalogue was hidden.
   useEffect(()=>{
@@ -145,14 +146,15 @@ export function J4Learn(props:Props){
 
   return <section className="j4-learn" aria-labelledby="j4-title">
     <span className="j13-marginal" aria-hidden="true">学</span>
-    <UX1LearningPath e01={e01} e02={e02} e03={e03} e04={e04} route={e07} onE01={onStartE01} onE01Delayed={onStartE01Delayed} busy={status==="loading"} onOpenE07={onOpenE07} onE02={onStartE02} onE02Delayed={onStartE02Delayed} onE02Preview={onStartE02Preview} onE03={onStartE03} onE03Delayed={onStartE03Delayed} onE03Preview={onStartE03Preview} onE04={onStartE04} onE04Delayed={onStartE04Delayed} onE04Preview={onStartE04Preview}/>
+    <UX1LearningPath e01={e01} e02={e02} e03={e03} e04={e04} e19={e19} route={e07} onE01={onStartE01} onE01Delayed={onStartE01Delayed} busy={status==="loading"} onOpenE07={onOpenE07} onE02={onStartE02} onE02Delayed={onStartE02Delayed} onE02Preview={onStartE02Preview} onE03={onStartE03} onE03Delayed={onStartE03Delayed} onE03Preview={onStartE03Preview} onE04={onStartE04} onE04Delayed={onStartE04Delayed} onE04Preview={onStartE04Preview} onE19={onStartE19}
+       onE20={key=>setA2SourceTarget(previous=>({key,sequence:(previous?.sequence??0)+1}))}/>
     <UX3MixedRecall e02={e02} e03={e03} e04={e04} busy={status==="loading"}
       onStart={onStartE18} onSource={(cohort:E18Cohort,id:string)=>{
         if(cohort==="e02")onStartE02(id);else if(cohort==="e03")onStartE03(id);else onStartE04(id);
       }}/>
     <E19SourceWritingStudio overview={e19} busy={status==="loading"} onWrite={onStartE19}
       onSource={(cohort,id)=>{if(cohort==="e02")onStartE02(id);else if(cohort==="e03")onStartE03(id);else onStartE04(id);}}/>
-    <E20SourceOnlyA2 key={e16WorkspaceId} busy={status==="loading"}
+    <E20SourceOnlyA2 key={e16WorkspaceId} requested={a2SourceTarget} busy={status==="loading"}
       onOriginalPreview={(cohort,id)=>{if(cohort==="e03")onStartE03Preview(id);else onStartE04Preview(id);}}/>
     <button className="ux2-path-toggle" type="button" aria-expanded={showTransfer} aria-controls="ux2-transfer-panel" onClick={()=>setShowTransfer(v=>!v)}>
       <strong>{showTransfer?"Hide":"Open"} cumulative A1–A2 practice</strong>
