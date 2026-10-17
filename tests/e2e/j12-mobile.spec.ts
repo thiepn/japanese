@@ -22,7 +22,7 @@ test("J12 keeps the daily study action above the mobile navigation fold",async({
 
   await page.goto("./");
   const viewport=page.viewportSize()!;
-  const action=page.getByRole("button",{name:/Continue today’s study|Review anyway/});
+  const action=page.locator(".ux1-mission__cta");
   const nav=page.getByRole("navigation",{name:"Primary"});
   const [actionBox,navBox]=await Promise.all([action.boundingBox(),nav.boundingBox()]);
 
@@ -56,7 +56,7 @@ test("J12 Study is a full-screen thumb-first chamber",async({page},testInfo)=>{
   test.skip(testInfo.project.name==="desktop-chromium","mobile Study qualification");
 
   await page.goto("./");
-  await page.getByRole("button",{name:/Continue today’s study|Review anyway/}).click();
+  await page.locator(".ux1-mission__cta").click();
 
   await expect(page.getByRole("navigation",{name:"Primary"})).toHaveCount(0);
   const viewport=page.viewportSize()!;
@@ -119,7 +119,7 @@ test("J12 keeps Android/PWA chrome synchronized with the active Japanese theme",
   await page.getByRole("button",{name:"Use dark theme"}).click();
   await expect(themeMeta).toHaveAttribute("content","#0D0D0C");
 
-  await page.getByRole("button",{name:/Continue today’s study|Review anyway/}).click();
+  await page.locator(".ux1-mission__cta").click();
   await expect(themeMeta).toHaveAttribute("content","#0D0D0C");
   await page.getByRole("button",{name:"Use light theme"}).click();
   await expect(themeMeta).toHaveAttribute("content","#FBF8F1");

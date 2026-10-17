@@ -99,7 +99,7 @@ export function App(){
   const [results,setResults]=useState<SearchResult[]>([]);
   const [libraryStatus,setLibraryStatus]=useState<"idle"|"loading"|"ready"|"error">("idle");
   const [session,setSession]=useState<StudyStep[]|null>(null);
-  const [ux1Outcome,setUx1Outcome]=useState<{owner:string;origin:Surface;pending:boolean}|null>(null);
+  const [ux1Outcome,setUx1Outcome]=useState<{owner:string;origin:Surface;pending:boolean;failed:boolean}|null>(null);
   const sessionOrigin=useRef<Surface>("Today");
   const [sessionStatus,setSessionStatus]=useState<"idle"|"loading"|"error"|"empty">("idle");
   const [summary,setSummary]=useState<StudySummary>(EMPTY_SUMMARY);
@@ -479,14 +479,16 @@ export function App(){
     const active=document.activeElement;
     if(active instanceof HTMLElement)active.blur();
     setSession(null);
-    setUx1Outcome(cafe?{owner,origin,pending:true}:null);
+    setUx1Outcome(cafe?{owner,origin,pending:true,failed:false}:null);
     requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:"auto"})));
     void refreshDashboard().then((applied)=>{
-      if(!applied||getDevelopmentAccountId()!==owner)return;
-      if(cafe)setUx1Outcome(value=>value?.owner===owner?{...value,pending:false}:value);
-      if(account.status==="authenticated"&&accountConnected&&owner===account.accountId){
+      if(getDevelopmentAccountId()!==owner)return;
+      if(cafe)setUx1Outcome(value=>value?.owner===owner?{...value,pending:false,failed:!applied}:value);
+      if(applied&&account.status==="authenticated"&&accountConnected&&owner===account.accountId){
         void JAPANESE_LANGUAGE_DASHBOARD.publish().catch(()=>{/* Core dashboard is non-blocking */});
       }
+    }).catch(()=>{
+      if(cafe&&getDevelopmentAccountId()===owner)setUx1Outcome(value=>value?.owner===owner?{...value,pending:false,failed:true}:value);
     });
   }
 
@@ -531,7 +533,7 @@ export function App(){
     {session
       ?<main className="j5-study-shell" id="main-content" tabIndex={-1}><Suspense fallback={<p role="status">Preparing your study session…</p>}><StudyPlayer steps={session} accountScope={getDevelopmentAccountId()} onAnswer={handleAnswer} onComplete={()=>finishSession("complete")} onExit={()=>finishSession("exit")}/></Suspense></main>
       :ux1Outcome
-      ?<main className="j5-study-shell" id="main-content" tabIndex={-1}><UX1Outcome scene={e02.scenes.find(scene=>scene.id==="food")} pending={ux1Outcome.pending} onReturn={()=>{setSurface(ux1Outcome.origin);setUx1Outcome(null);}}/></main>
+      ?<main className="j5-study-shell" id="main-content" tabIndex={-1}><UX1Outcome scene={e02.scenes.find(scene=>scene.id==="food")} pending={ux1Outcome.pending} failed={ux1Outcome.failed} returnLabel={ux1Outcome.origin==="Today"?"Return to Today":"Return to Learn"} onReturn={()=>{setSurface(ux1Outcome.origin);setUx1Outcome(null);}}/></main>
       :<J2AppShell
         surface={surface}
         onSurfaceChange={navigateSurface}
