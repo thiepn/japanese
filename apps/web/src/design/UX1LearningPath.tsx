@@ -1,14 +1,15 @@
-import {useEffect,useMemo,useState} from "react";
+import {useMemo} from "react";
 import type {E01Progress,E02Overview,E03Overview,E04Overview,E19Overview} from "../study/runtime";
 import type {E07Action,E07Journey} from "../study/e07LearningRoute";
 import {buildE22Chapters,e22InitialLocation,getE22NextChapter,
- type E22Chapter,type E22Level,type E22Node} from "../study/e22ChapterProgression";
+ type E22Chapter,type E22Level,type E22Node,type E22Selection} from "../study/e22ChapterProgression";
 
 /** Preserve UX1 deep links and initial E07 selection without adding a scheduler. */
 export const ux1InitialPathLocation=e22InitialLocation;
 type Props={
  e01:E01Progress;e02:E02Overview;e03:E03Overview;e04:E04Overview;e19:E19Overview;
  route:E07Journey;busy:boolean;onOpenE07:(action:E07Action)=>void;
+ selection:E22Selection|null;onSelectionChange:(selection:E22Selection)=>void;
  onE01:()=>void;onE01Delayed:()=>void;
  onE02:(id:string)=>void;onE02Delayed:(id:string)=>void;onE02Preview:(id:string)=>void;
  onE03:(id:string)=>void;onE03Delayed:(id:string)=>void;onE03Preview:(id:string)=>void;
@@ -35,19 +36,13 @@ function focusLabel(focus:ChapterFocus):string{
 }
 /** UX1 + E22: desktop/mobile source-first chapter progression, without new levels.
  * E19 and E20 navigation goes to their existing native engines, not clones. */
-export function UX1LearningPath({e01,e02,e03,e04,e19,route,busy,onOpenE07,
+export function UX1LearningPath({e01,e02,e03,e04,e19,route,busy,onOpenE07,selection,onSelectionChange,
  onE01,onE01Delayed,onE02,onE02Delayed,onE02Preview,onE03,onE03Delayed,
  onE03Preview,onE04,onE04Delayed,onE04Preview,onE19,onE20}:Props){
- const location=ux1InitialPathLocation(route.primary);
- const [level,setLevel]=useState<E22Level>(()=>location.level);
- const [selected,setSelected]=useState(()=>location.chapter);
- const [chosenByLearner,setChosenByLearner]=useState(false);
+ const initial=selection??ux1InitialPathLocation(route.primary);
+ const level=initial.level;
+ const selected=initial.chapter;
  const path=useMemo(()=>buildE22Chapters({e01,e02,e03,e04,e19}),[e01,e02,e03,e04,e19]);
- useEffect(()=>{
-  if(chosenByLearner)return;
-  const next=ux1InitialPathLocation(route.primary);
-  setLevel(next.level);setSelected(next.chapter);
- },[route.primary.key,chosenByLearner]);
  const chapters=level==="A1"?path.a1:path.a2;
  const current=chapters.find(c=>c.id===selected)??chapters[0]??null;
  const focus=current?e22ChapterFocus(current):null;
@@ -66,7 +61,7 @@ export function UX1LearningPath({e01,e02,e03,e04,e19,route,busy,onOpenE07,
   else if(node.cohort==="e04"){if(mode==="review")onE04Delayed(node.sceneId);else onE04(node.sceneId);}
  }
  function changeChapter(nextLevel:E22Level,id:number){
-  setChosenByLearner(true);setLevel(nextLevel);setSelected(id);
+  onSelectionChange({level:nextLevel,chapter:id});
  }
  return <section className="ux1-mobile-path" aria-labelledby="ux1-path-title">
   <header className="ux1-intro">
@@ -136,7 +131,7 @@ export function UX1LearningPath({e01,e02,e03,e04,e19,route,busy,onOpenE07,
        <div className="ux1-node__actions">
         <button type="button" disabled={busy} onClick={()=>openNode(node,node.linked?"guided":"source")}>
          {!node.linked?(node.cohort==="e03"||node.cohort==="e04"?"Study original source-only workshop":"Read original source"):
-          node.status==="not_started"?"Start original lesson":"Continue original lesson"}
+          node.status==="not_started"?"Start lesson":"Practise lesson"}
         </button>
         {node.reviewReady?<button type="button" disabled={busy}
          onClick={()=>openNode(node,"review")}>Original delayed review</button>:null}

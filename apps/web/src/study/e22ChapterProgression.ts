@@ -13,6 +13,11 @@ export const E22_A1_GROUPS=[
 ] as const;
 export type E22Cohort="e01"|"e02"|"e03"|"e04";
 export type E22Level="A1"|"A2";
+export interface E22Selection{level:E22Level;chapter:number;}
+/** Owner-bound, ephemeral navigation only; never persisted or a mastery record. */
+export function resolveE22OwnerSelection(owner:string,saved:{owner:string;value:E22Selection}|null):E22Selection|null{
+ return owner&&saved?.owner===owner?saved.value:null;
+}
 export type E22Status="not_started"|"learning"|"waiting"|"ready"|"reviewed"|"preview";
 export interface E22Node{
  key:string;cohort:E22Cohort;sceneId:string;title:string;

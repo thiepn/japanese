@@ -5,7 +5,7 @@ import {getE02Overview} from "../../apps/web/src/study/a1ExcellenceCourse";
 import {getE03Overview} from "../../apps/web/src/study/a2ExcellenceCourse";
 import {getE04Overview} from "../../apps/web/src/study/a2ExcellenceAdvancedCourse";
 import {projectE19Overview} from "../../apps/web/src/study/e19SourceWriting";
-import {buildE22Chapters,getE22NextChapter,e22InitialLocation} from "../../apps/web/src/study/e22ChapterProgression";
+import {buildE22Chapters,getE22NextChapter,e22InitialLocation,resolveE22OwnerSelection} from "../../apps/web/src/study/e22ChapterProgression";
 import {e22ChapterFocus} from "../../apps/web/src/design/UX1LearningPath";
 
 const now=new Date("2026-10-17T14:00:00Z");
@@ -80,5 +80,15 @@ describe("E22 original A1/A2 chapter continuity without synthetic learner author
     expect(c.guidedComplete).toBe(0);
    }
   }
+ });
+});
+
+describe("E22 chapter context survives session view remount but not Account owner changes",()=>{
+ it("retains the same-owner selection without materializing learner progress",()=>{
+  const selection={owner:"local-owner-a",value:{level:"A1" as const,chapter:3}};
+  expect(resolveE22OwnerSelection("local-owner-a",selection)).toEqual(selection.value);
+  expect(resolveE22OwnerSelection("local-owner-b",selection)).toBeNull();
+  expect(resolveE22OwnerSelection("",selection)).toBeNull();
+  expect(resolveE22OwnerSelection("local-owner-a",null)).toBeNull();
  });
 });
