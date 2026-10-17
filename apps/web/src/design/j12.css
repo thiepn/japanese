@@ -125,8 +125,10 @@
   /* Keep the paper inside the physical viewport even with fractional Android
      CSS pixels and late-loading reader base styles. */
   .j2-shell .j6-reader__paper{
-    width:100%;
-    max-width:calc(100vw - 20px);
+    /* Use the reader container rather than 100vw: mobile emulation and
+       standalone PWA viewport rounding can differ by fractional pixels. */
+    width:calc(100% - 20px);
+    max-width:100%;
     margin-inline:auto;
     padding:18px 14px 26px!important;
     border-radius:0!important;
