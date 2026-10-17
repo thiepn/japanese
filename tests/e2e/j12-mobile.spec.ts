@@ -98,7 +98,14 @@ test("J12 keeps coarse mobile UI flat and free of expensive shell effects",async
   await page.getByRole("button",{name:"Learn",exact:true}).click();
 
   await expect(page.locator(".j2-ambient__brush")).toHaveCSS("display","none");
+  // UX-1 keeps advanced practice available under an explicit mobile disclosure.
   const practice=page.locator(".j4-practice");
+  await expect(page.locator(".ux1-mobile-path")).toBeVisible();
+  await expect(practice).toBeHidden();
+  const expand=page.getByRole("button",{name:"Open full course and advanced practice"});
+  await expect(expand).toHaveAttribute("aria-expanded","false");
+  await expand.click();
+  await expect(expand).toHaveAttribute("aria-expanded","true");
   await expect(practice).toBeVisible();
   const contentVisibility=await practice.evaluate((node)=>getComputedStyle(node).contentVisibility);
   expect(contentVisibility).toBe("auto");

@@ -24,6 +24,9 @@ test("J5 turns Study Player into a focused task chamber",async({page})=>{
 test("J5 uses a manuscript treatment for connected writing",async({page})=>{
   await page.goto("./");
   await page.getByRole("button",{name:"Learn",exact:true}).click();
+  // Original full-course tools are deliberately collapsed on mobile in UX-1.
+  const fullCourse=page.getByRole("button",{name:"Open full course and advanced practice"});
+  if(await fullCourse.isVisible())await fullCourse.click();
 
   const writing=page.locator(".j4-practice__quick button").filter({hasText:"Writing"});
   await writing.click();
