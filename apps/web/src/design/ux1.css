@@ -26,3 +26,12 @@
 
 .ux1-native-queue{min-height:56px;width:100%;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border:1px solid var(--j-line-strong);border-radius:var(--j-radius-sm);background:var(--j-bg-elevated);color:var(--j-fg);font-weight:700;cursor:pointer}
 .ux1-native-queue small{font-size:12px;font-weight:400;color:var(--j-fg-muted)}
+
+/* UX-1 motivation is evidence-derived and never a proficiency meter. */
+.ux1-engagement{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--j-line)}
+.ux1-engagement span{display:grid;gap:3px}.ux1-engagement strong{font-size:17px;color:var(--j-fg)}
+.ux1-engagement small{font-size:12px;color:var(--j-fg-muted)}
+.ux1-daily-goal{display:grid;gap:10px;padding:16px;border:1px solid var(--j-line);border-radius:var(--j-radius-md);background:var(--j-bg-elevated)}
+.ux1-daily-goal p{margin:0;font-size:14px;line-height:1.5;color:var(--j-fg-muted)}
+.ux1-daily-goal progress{width:100%;height:8px;accent-color:var(--j-matcha-500)}
+@media(max-width:360px){.ux1-engagement{gap:8px}.ux1-engagement strong{font-size:15px}}

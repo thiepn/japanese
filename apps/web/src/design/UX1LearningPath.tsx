@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect,useState} from "react";
 import type {E01Progress,E02Overview,E03Overview,E04Overview} from "../study/runtime";
 import type {E07Action,E07Journey} from "../study/e07LearningRoute";
 type Node={id:string;title:string;progress:string;status:string;open:()=>void;review?:(()=>void)|undefined;preview?:boolean;recommended:boolean};
@@ -29,6 +29,13 @@ export function UX1LearningPath({e01,e02,e03,e04,route,busy,onOpenE07,onE01,onE0
 }){
  const [level,setLevel]=useState<"A1"|"A2">(()=>ux1InitialPathLocation(route.primary).level);
  const [selected,setSelected]=useState(()=>ux1InitialPathLocation(route.primary).chapter);
+ const [chosenByLearner,setChosenByLearner]=useState(false);
+ useEffect(()=>{
+  if(chosenByLearner)return;
+  const location=ux1InitialPathLocation(route.primary);
+  setLevel(location.level);
+  setSelected(location.chapter);
+ },[route.primary.key,chosenByLearner]);
  const a1:Node[]=[
   ...(e01.unitId?[{id:"first-conversation",title:"First conversations",progress:e01.correct+" correct guided responses · "+e01.answered+" answered",status:e01.status,open:onE01,review:e01.status==="ready"||e01.status==="reviewed"?onE01Delayed:undefined,recommended:route.primary.origin==="e01"&&route.primary.kind!=="delayed"}]:[]),
   ...e02.scenes.map(s=>({id:s.id,title:s.title,progress:s.completedControlled+" / "+s.requiredControlled+" controlled correct",status:s.state,open:()=>onE02(s.id),review:s.state==="ready"||s.state==="reviewed"?()=>onE02Delayed(s.id):undefined,recommended:route.primary.origin==="e02"&&route.primary.targetId===s.id&&route.primary.kind!=="delayed"})),
@@ -48,8 +55,8 @@ export function UX1LearningPath({e01,e02,e03,e04,route,busy,onOpenE07,onE01,onE0
  const scoredNodes=current.nodes.filter(n=>!n.preview);
  const practised=scoredNodes.filter(n=>n.status==="waiting"||n.status==="ready"||n.status==="reviewed").length;
  return <section className="ux1-mobile-path" aria-labelledby="ux1-path-title">
-  <header className="ux1-intro"><p className="ux1-eyebrow">LEARN · <span lang="ja">学ぶ</span></p><div className="ux1-path-head"><h1 id="ux1-path-title">Your learning path</h1><label><span className="ux1-sr">Learning level</span><select value={level} onChange={e=>{setLevel(e.target.value as "A1"|"A2");setSelected(0);}}><option>A1</option><option>A2</option></select></label></div></header>
-  <div className="ux1-chapter-tabs" role="group" aria-label="Learning chapters">{chapters.map(c=><button type="button" key={c.id} aria-pressed={c.id===current.id} onClick={()=>setSelected(c.id)}>{c.title}</button>)}</div>
+  <header className="ux1-intro"><p className="ux1-eyebrow">LEARN · <span lang="ja">学ぶ</span></p><div className="ux1-path-head"><h1 id="ux1-path-title">Your learning path</h1><label><span className="ux1-sr">Learning level</span><select value={level} onChange={e=>{setChosenByLearner(true);setLevel(e.target.value as "A1"|"A2");setSelected(0);}}><option>A1</option><option>A2</option></select></label></div></header>
+  <div className="ux1-chapter-tabs" role="group" aria-label="Learning chapters">{chapters.map(c=><button type="button" key={c.id} aria-pressed={c.id===current.id} onClick={()=>{setChosenByLearner(true);setSelected(c.id);}}>{c.title}</button>)}</div>
   <section className="ux1-chapter" aria-labelledby="ux1-chapter-title"><p className="ux1-eyebrow">{level} · CHAPTER {current.id+1}</p><h2 id="ux1-chapter-title">{current.title} <span lang="ja">{current.jp}</span></h2><p>{practised} / {scoredNodes.length} source-linked scenes practised or review-ready</p>{current.nodes.length>scoredNodes.length?<small>{current.nodes.length-scoredNodes.length} original reading preview(s) remain ungraded</small>:null}<progress value={practised} max={Math.max(1,scoredNodes.length)} aria-label="Source-linked chapter scenarios practised"/></section>
   <ol className="ux1-nodes">{current.nodes.map(n=><li className={n.recommended?"ux1-node ux1-node--recommended":"ux1-node"} key={n.id}><span className="ux1-node__mark" aria-hidden="true">{n.preview?"読":n.status==="reviewed"?"✓":n.recommended?"今":"学"}</span><div className="ux1-node__body"><h3>{n.title}</h3><p>{n.progress}</p><small>{n.preview?"Reading preview · not graded":n.status==="ready"?"Changed-context review ready":n.status==="waiting"?"Practised · review later":n.status.replaceAll("_"," ")}</small><div className="ux1-node__actions"><button type="button" disabled={busy} onClick={n.open}>{n.preview?"Read original":n.status==="not_started"?"Start lesson":"Practise lesson"}</button>{n.review?<button type="button" disabled={busy} onClick={n.review}>Delayed review</button>:null}</div></div></li>)}</ol>
   {current.nodes.length===0?<p role="status">No source-linked lessons are ready in this chapter. Open the full course catalogue below.</p>:null}

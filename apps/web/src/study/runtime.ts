@@ -1,4 +1,6 @@
 import { entityKey } from "@thiepn/domain";
+import {projectUX1Engagement,type UX1Engagement} from "./ux1Engagement";
+export type {UX1Engagement} from "./ux1Engagement";
 import { getJapaneseDeviceId } from "../deviceIdentity";
 import { replayStudyEvents, type LearnerState } from "@thiepn/learner-engine";
 import { getMemoryTrace, listMemoryTraces, listStudyEvents, saveStudyReview } from "@thiepn/local-db";
@@ -243,6 +245,14 @@ export async function getB2MilestoneAssessmentProgress():Promise<MilestoneAssess
 }
 export async function getC1FoundationAssessmentProgress():Promise<MilestoneAssessmentProgress>{
   return getC1FoundationProgress(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));
+}
+
+/** Motivation is derived from the same owner-owned events, never a separate store. */
+export async function getUX1Engagement(now=new Date()):Promise<UX1Engagement>{
+ const owner=DEVELOPMENT_ACCOUNT_ID;
+ const events=await listStudyEvents(owner);
+ if(DEVELOPMENT_ACCOUNT_ID!==owner)throw new Error("UX1_ENGAGEMENT_WORKSPACE_CHANGED");
+ return projectUX1Engagement(events,now);
 }
 
 // Derive the daily counter from durable, account-scoped events. React component
