@@ -149,11 +149,15 @@ export function buildE19WritingSession(key:string,owner:string,events:readonly S
  const progress=evidence(source,owner,events,now);
  if(!progress.sourceReady)throw Error("E19_LISTENING_AND_READING_SOURCE_FIRST:"+key);
  const {first,lessons}=original(source);
+ // StudyLesson.contextId is required whereas StudyPrompt.contextId is optional.
+ // Fail closed rather than manufacturing a context for a source writing prompt.
+ const contextId=first.contextId;
+ if(!contextId)throw Error("E19_ORIGINAL_CONTEXT_MISSING:"+key);
  const guide:StudyLesson={kind:"lesson",id:"e19-"+source.cohort+"-"+source.id+"-guide",
   title:"Independent Japanese · "+source.title,
   body:"Original setting: "+source.setting+" Original writing task: "+source.writingTask+
    " Read the original source text, identify its actual facts and reader, and decide what you mean before drafting. A structural word or length check is not a Japanese-language grade.",
-  contextId:first.contextId,sourceLabel:"Original THIEPN scene · "+source.unitId+" · unscored independent writing",
+  contextId,sourceLabel:"Original THIEPN scene · "+source.unitId+" · unscored independent writing",
   facts:[{label:"Original linked Can-do",value:source.canDoId},
    {label:"Original source task",value:source.writingTask}],
   examples:[{expression:source.sourceReading,note:"Original Japanese source context; compare the facts, not merely vocabulary."}]};
@@ -162,17 +166,17 @@ export function buildE19WritingSession(key:string,owner:string,events:readonly S
   {kind:"lesson",id:"e19-"+source.cohort+"-"+source.id+"-return",
    title:"First draft saved · return for your revision",
    body:"The original optional response is stored only as an unscored StudyEvent. Return to Learn → Independent writing for the second draft. No automatic grammar, pragmatics or pronunciation assessment occurred.",
-   contextId:first.contextId,sourceLabel:"Original THIEPN independent A1/A2 practice"}];
+   contextId,sourceLabel:"Original THIEPN independent A1/A2 practice"}];
  const revision=revisionFor(source,first);
  const checklist:StudyLesson={kind:"lesson",id:"e19-"+source.cohort+"-"+source.id+"-revision-coach",
   title:"Compare facts and audience · then rewrite",
   body:"Use the original written situation and source teaching to examine your own message. Does the recipient know the necessary details? Have you preserved conditions and avoided claiming an unconfirmed outcome? Does the response sound appropriate for the described relationship? These are questions for self-review, not an automatic verdict.",
-  contextId:first.contextId,sourceLabel:"Original THIEPN source teaching · privately saved writing",
+  contextId,sourceLabel:"Original THIEPN source teaching · privately saved writing",
   examples:[{expression:"Your prior E19 source first draft (private)",note:progress.firstDraft},
    {expression:"Source explanation",note:source.sourceNotice}]};
  return [guide,...context,checklist,revision,
   {kind:"lesson",id:"e19-"+source.cohort+"-"+source.id+"-compare",
    title:"Second message recorded · review real changes",
    body:"Return to Learn to compare your private first and revised messages. Only genuine text edits are displayed; nothing here is a semantic score, certified skill, or new FSRS review.",
-   contextId:first.contextId,sourceLabel:"Original THIEPN independent A1/A2 practice"}];
+   contextId,sourceLabel:"Original THIEPN independent A1/A2 practice"}];
 }
