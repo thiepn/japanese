@@ -25,6 +25,7 @@ test("J5 uses a manuscript treatment for connected writing",async({page})=>{
   await page.goto("./");
   await page.getByRole("button",{name:"Learn",exact:true}).click();
   // Original full-course tools are deliberately collapsed on mobile in UX-1.
+  await expect(page.locator(".j4-learn")).toBeVisible();
   const fullCourse=page.getByRole("button",{name:"Open full course and advanced practice"});
   if(await fullCourse.isVisible())await fullCourse.click();
 
