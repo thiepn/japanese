@@ -136,9 +136,12 @@ test("E17 never displays a note from another original situation during source sw
   await qualifiedLearn(page);
   const root=studio(page);
   const selector=root.getByLabel("Original situation");
+  // Choices arrive after the async source-qualified learner projection.
+  // evaluateAll on an unmounted select would silently return an empty list.
+  await expect(selector).toBeVisible();
+  await expect.poll(()=>selector.locator("option").count()).toBeGreaterThanOrEqual(2);
   const values=await selector.locator("option").evaluateAll(options=>
     options.map(item=>(item as HTMLOptionElement).value));
-  expect(values.length).toBeGreaterThanOrEqual(2);
   const [a,b]=values as [string,string,...string[]];
   await selector.selectOption(a);
   await root.getByLabel("Rehearsal approach").selectOption("shadow-and-reply");
@@ -146,12 +149,14 @@ test("E17 never displays a note from another original situation during source sw
   await notebook(page).getByRole("button",{name:"Save my private listening note"}).click();
   await expect(notebook(page)).toContainText("Saved on this device");
   await selector.selectOption(b);
+  await expect(root.getByLabel(/Try the next Japanese line/)).toHaveValue("");
   await expect(notebook(page)).toContainText("No saved note for this original speaker");
   await expect(notebook(page)).not.toContainText("SOURCE_A_PRIVATE_NOTE");
   await root.getByLabel(/Try the next Japanese line/).fill("SOURCE_B_PRIVATE_NOTE");
   await notebook(page).getByRole("button",{name:"Save my private listening note"}).click();
   await expect(notebook(page)).toContainText("Saved on this device");
   await selector.selectOption(a);
+  await expect(root.getByLabel(/Try the next Japanese line/)).toHaveValue("");
   await expect(notebook(page)).toContainText("Saved on this device");
   await notebook(page).getByText("Read my last saved listening note").click();
   await expect(notebook(page).locator("pre[lang='ja']")).toHaveText("SOURCE_A_PRIVATE_NOTE");

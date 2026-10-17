@@ -33,6 +33,7 @@ export function E16ConversationStudio({cases,busy,workspaceId,workspaceCurrent,o
   const [turnIndex,setTurnIndex]=useState(0);
   const [sourceRevealed,setSourceRevealed]=useState(false);
   const [scratch,setScratch]=useState("");
+  const [scratchCaseId,setScratchCaseId]=useState<string|null>(null);
   const [played,setPlayed]=useState(false);
   const [voiceStatus,setVoiceStatus]=useState<"idle"|"playing"|"unavailable">("idle");
   const [noticeOpen,setNoticeOpen]=useState(false);
@@ -48,9 +49,13 @@ export function E16ConversationStudio({cases,busy,workspaceId,workspaceCurrent,o
   const voiceAttempt=useRef(0);
   const chosen=eligible.find(c=>c.id===selected)??eligible[0]??null;
   const caseId=chosen?.id??null;
+  // Fence source changes during render before async reset effects settle.
+  const currentCaseId=useRef<string|null>(null);
+  currentCaseId.current=caseId;
   const original=caseId?buildE16OriginalConversation(caseId,cases):null;
   const turn=original?.turns[turnIndex]??null;
-  const compare=turn?e16SourceComparison(turn,scratch):null;
+  const visibleScratch=scratchCaseId===caseId?scratch:"";
+  const compare=turn?e16SourceComparison(turn,visibleScratch):null;
   // A case switch renders before the async reset effect; never expose the
   // preceding situation's private note under another original speaker.
   const savedForTurn=privateNotes.find(note=>
@@ -70,7 +75,7 @@ export function E16ConversationStudio({cases,busy,workspaceId,workspaceCurrent,o
     voice.stop();
     setTurnIndex(0);
     setSourceRevealed(false);
-    setScratch("");
+    setScratch("");setScratchCaseId(null);
     setPlayed(false);
     setVoiceStatus("idle");
     setNoticeOpen(false);
@@ -88,14 +93,14 @@ export function E16ConversationStudio({cases,busy,workspaceId,workspaceCurrent,o
     if(!caseId)return;
     void listE17ListeningNotes(workspaceId,caseId,cases,workspaceCurrent)
       .then(rows=>{
-        if(active&&workspaceCurrent())setPrivateNotes(rows);
+        if(active&&workspaceCurrent()&&currentCaseId.current===caseId)setPrivateNotes(rows);
       })
       .catch(()=>{
-        if(active&&workspaceCurrent())setNoteStatus(
+        if(active&&workspaceCurrent()&&currentCaseId.current===caseId)setNoteStatus(
           "Saved private notes could not be loaded from this device. Existing study evidence was not changed.");
       })
       .finally(()=>{
-        if(active&&workspaceCurrent())setPrivateNotesLoading(false);
+        if(active&&workspaceCurrent()&&currentCaseId.current===caseId)setPrivateNotesLoading(false);
       });
     return ()=>{active=false;};
   },[caseId,workspaceId]);
@@ -110,7 +115,7 @@ export function E16ConversationStudio({cases,busy,workspaceId,workspaceCurrent,o
     stopVoice();
     setTurnIndex(to);
     setSourceRevealed(false);
-    setScratch("");
+    setScratch("");setScratchCaseId(null);
     setPlayed(false);
   }
   async function speak(all:boolean){
@@ -125,7 +130,7 @@ export function E16ConversationStudio({cases,busy,workspaceId,workspaceCurrent,o
         if(attempt!==voiceAttempt.current)return;
         setTurnIndex(starting+offset);
         setSourceRevealed(false);
-        setScratch("");
+        setScratch("");setScratchCaseId(null);
         setPlayed(true);
       });
       if(attempt===voiceAttempt.current)setVoiceStatus("idle");
@@ -135,18 +140,19 @@ export function E16ConversationStudio({cases,busy,workspaceId,workspaceCurrent,o
   }
 
   async function saveSourceNote(){
-    if(!caseId||!canEdit||saveInProgress.current||!scratch.trim())return;
+    if(!caseId||!canEdit||saveInProgress.current||!visibleScratch.trim())return;
     saveInProgress.current=true;setNoteBusy(true);setNoteStatus(null);
-    const caseBefore=caseId,indexBefore=turnIndex,textBefore=scratch;
+    const caseBefore=caseId,indexBefore=turnIndex,textBefore=visibleScratch;
     try{
       const note=await saveE17ListeningNote(workspaceId,caseBefore,indexBefore,textBefore,cases,workspaceCurrent);
-      if(workspaceCurrent()){
-        setPrivateNotes(previous=>[...previous.filter(n=>n.turnIndex!==indexBefore),note]
+      if(workspaceCurrent()&&currentCaseId.current===caseBefore){
+        setPrivateNotes(previous=>[...previous.filter(n=>
+          n.caseId!==caseBefore||n.turnIndex!==indexBefore),note]
           .sort((a,b)=>a.turnIndex-b.turnIndex));
         setNoteStatus("Private listening note saved locally. It is included in the existing owner-locked workspace backup, not uploaded.");
       }
     }catch{
-      if(workspaceCurrent())setNoteStatus("The private listening note could not be saved. Copy your draft before leaving; no grade or StudyEvent was created.");
+      if(workspaceCurrent()&&currentCaseId.current===caseBefore)setNoteStatus("The private listening note could not be saved. Copy your draft before leaving; no grade or StudyEvent was created.");
     }finally{
       saveInProgress.current=false;
       if(workspaceCurrent())setNoteBusy(false);
@@ -155,16 +161,17 @@ export function E16ConversationStudio({cases,busy,workspaceId,workspaceCurrent,o
   async function deleteSourceNote(){
     if(!caseId||!savedForTurn||!canEdit||saveInProgress.current)return;
     saveInProgress.current=true;setNoteBusy(true);setNoteStatus(null);
-    const indexBefore=turnIndex;
+    const caseBefore=caseId,indexBefore=turnIndex;
     try{
-      await deleteE17ListeningNote(workspaceId,caseId,indexBefore,cases,workspaceCurrent);
-      if(workspaceCurrent()){
-        setPrivateNotes(previous=>previous.filter(note=>note.turnIndex!==indexBefore));
+      await deleteE17ListeningNote(workspaceId,caseBefore,indexBefore,cases,workspaceCurrent);
+      if(workspaceCurrent()&&currentCaseId.current===caseBefore){
+        setPrivateNotes(previous=>previous.filter(note=>
+          note.caseId!==caseBefore||note.turnIndex!==indexBefore));
         setNoteStatus("Your private note for this original speaker was deleted. Existing scored or optional StudyEvents were not changed.");
         setNoteDeleteConfirm(false);
       }
     }catch{
-      if(workspaceCurrent())setNoteStatus("The private note could not be deleted. Retry when this device's storage is available.");
+      if(workspaceCurrent()&&currentCaseId.current===caseBefore)setNoteStatus("The private note could not be deleted. Retry when this device's storage is available.");
     }finally{
       saveInProgress.current=false;
       if(workspaceCurrent())setNoteBusy(false);
@@ -184,7 +191,12 @@ export function E16ConversationStudio({cases,busy,workspaceId,workspaceCurrent,o
         <div className="e16-studio__selectors">
           <label htmlFor="e16-source-case">Original situation
             <select id="e16-source-case" value={chosen.id} disabled={busy||noteBusy}
-              onChange={e=>setSelected(e.currentTarget.value)}>
+              onChange={e=>{
+                stopVoice();setScratch("");setScratchCaseId(null);
+                setPrivateNotes([]);setNoteStatus(null);setNoteDeleteConfirm(false);
+                setHeardAnswer("");setAnswerRevealed(false);
+                setSelected(e.currentTarget.value);
+              }}>
               {eligible.map(c=><option key={c.id} value={c.id}>{c.title} · {c.level}</option>)}
             </select>
           </label>
@@ -223,7 +235,10 @@ export function E16ConversationStudio({cases,busy,workspaceId,workspaceCurrent,o
             <div className="e16-studio__hidden-source" aria-label="Japanese source concealed">Japanese transcript hidden until you reveal this turn.</div>
             {mode==="shadow-and-reply"?<label htmlFor="e16-shadow-scratch">Try the next Japanese line or write what you heard (temporary until explicitly saved, unscored)
               <textarea id="e16-shadow-scratch" lang="ja" rows={3} maxLength={1200}
-                value={scratch} onChange={e=>setScratch(normalizeE16Scratch(e.currentTarget.value))}
+                value={visibleScratch} onChange={e=>{
+                  setScratchCaseId(caseId);
+                  setScratch(normalizeE16Scratch(e.currentTarget.value));
+                }}
                 placeholder="自分のことばで…" />
               </label>:null}
             <button className="e16-studio__reveal" type="button" onClick={()=>setSourceRevealed(true)}>
@@ -234,9 +249,9 @@ export function E16ConversationStudio({cases,busy,workspaceId,workspaceCurrent,o
             <p><strong>Meaning:</strong> {compare?.translation}</p>
             <p><strong>Intention:</strong> {compare?.intent}</p>
             {turn?.replyDecision?<p className="e16-studio__source-decision"><strong>Source-owned response question:</strong> {turn.replyDecision.question} This turn contains the original source reply. E14 has the native choice-based check.</p>:null}
-            {scratch.trim()?<details>
+            {visibleScratch.trim()?<details>
               <summary>Compare with my unsent response</summary>
-              <pre lang="ja">{scratch}</pre>
+              <pre lang="ja">{visibleScratch}</pre>
               <p>{compare?.comparisonNote}</p>
             </details>:null}
             <button type="button" onClick={()=>setSourceRevealed(false)}>Hide transcript and rehearse again</button>
@@ -247,8 +262,8 @@ export function E16ConversationStudio({cases,busy,workspaceId,workspaceCurrent,o
               <p>After hearing this source turn, save your own remembered Japanese or a contextual observation. This is a private note in the original local document store, not a transcript grader. Unsent text is still temporary.</p>
             </header>
             {privateNotesLoading?<p role="status">Reading your private source notes from this device…</p>:null}
-            {mode==="shadow-and-reply"&&scratch.trim()?<button type="button"
-              disabled={!canEdit||scratch.length>E17_NOTE_MAX_CHARACTERS}
+            {mode==="shadow-and-reply"&&visibleScratch.trim()?<button type="button"
+              disabled={!canEdit||visibleScratch.length>E17_NOTE_MAX_CHARACTERS}
               onClick={()=>void saveSourceNote()}>
               {savedForTurn?"Update my private listening note":"Save my private listening note"}
             </button>:null}
@@ -259,7 +274,7 @@ export function E16ConversationStudio({cases,busy,workspaceId,workspaceCurrent,o
               </details>
               <div className="e17-notebook__saved-actions">
                 <button type="button" disabled={!canEdit} onClick={()=>{
-                  setMode("shadow-and-reply");setScratch(savedForTurn.text);
+                  setMode("shadow-and-reply");setScratchCaseId(caseId);setScratch(savedForTurn.text);
                   setSourceRevealed(false);setNoteStatus(null);
                 }}>Rehearse again from my saved note</button>
                 {!noteDeleteConfirm?<button type="button" disabled={!canEdit}
