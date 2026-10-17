@@ -60,7 +60,9 @@ export function deriveE07Journey({
  if(active3)options.push(action("e03","resume","Continue connected dialogue and reading","Revisit the source explanation before independent production.",active3.title+" · previously started",88,active3.id));
  const active2=e02.scenes.find(s=>s.state==="learning");
  if(active2)options.push(action("e02","resume","Continue an everyday A1 exchange","Finish the contextual practice and independent response drafts.",active2.title+" · previously started",86,active2.id));
- if(e01.status!=="reviewed"&&e01.status!=="ready"&&e01.status!=="waiting"){
+ // The initial or source-unavailable E01 projection has no canonical unit;
+ // it must never displace the runnable native Today queue.
+ if(e01.unitId&&e01.status!=="reviewed"&&e01.status!=="ready"&&e01.status!=="waiting"){
   options.push(action("e01","study","Build your first Japanese conversation","Meet, understand, discover, respond and return later.","Canonical A1 first-conversation journey",72));
  }
  const ready6=e06.cases.find(c=>c.status==="unstarted"&&c.prerequisiteReady&&c.canDoId!==null);
