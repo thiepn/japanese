@@ -3,12 +3,14 @@ test("UX2 original cumulative cases and all practical studios are navigable",asy
  await page.goto("./");
  await page.getByRole("button",{name:"Learn",exact:true}).click();
  if(testInfo.project.name==="desktop-chromium"){
+  const catalogue=page.locator(".e07-track-list").filter({hasText:"Browse every original A1/A2 situation"});
+  await catalogue.locator("summary").click();
   await expect(page.getByRole("heading",{name:"Communicate across everyday situations"})).toBeVisible();
   return;
  }
  const toggle=page.locator(".ux2-path-toggle");
  await expect(toggle).toBeVisible();
- await toggle.click();
+ if(await toggle.getAttribute("aria-expanded")==="false")await toggle.click();
  await expect(toggle).toHaveAttribute("aria-expanded","true");
  const transfer=page.locator("#ux2-transfer-panel");
  await expect(transfer.getByRole("heading",{name:/Use Japanese across situations/})).toBeVisible();

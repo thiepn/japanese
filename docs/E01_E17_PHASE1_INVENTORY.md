@@ -41,3 +41,9 @@ A full 3-profile Chromium run on 1add5bcc3a9f303b9eab517a6264e08529e2f439 found 
 ## Further browser repair from exact-head second run
 
 Run 39025397262 at f1507cff5c7807bf14d44d93f261efb0ca007e3a verified the earlier desktop J13 and mobile P21 failures fixed. Browser suite: 445 passed, 47 skipped, 3 failed. Two genuine J12 mobile filter-strip cascade failures (later route CSS restored `display:grid`) are addressed with mobile-specific selector precedence; a third Android Reader geometry failure was 397.08px paper against the 396px viewport-minus-gutter bound and is addressed with a scoped mobile paper max-width and auto margins. The qualification workflow now runs four known-regression specs **before** the full suite; a focused failure keeps the full browser step NOT_TESTED rather than burning a full run. Continue to require full exact-head evidence.
+
+## Mobile cumulative learning navigation — UX2
+
+The consolidated main-targeted draft exposes the original E06–E12 seven cumulative cases in the mobile Learn route, including verifiable prerequisite source listening and reading/form, native next-short-stage and full-session entry, the original 20-hour delayed retrieval state, and saved but unscored independent E11/E12 drafts. No new Can-do IDs, StudyEvents, mastery, schedulers, ownership partitions or cloud sync are created.
+
+E13–E17 original practice studios (mixer, continuous handoff, recovery suggestions, source dialogue shadowing and explicit owner-private notebook) are directly reachable from the same mobile section. The existing catalogue is expanded and the selected original studio heading receives keyboard focus; this is navigation, not copied practice logic. CSS-only desktop continues to use the original advanced catalogue. Source-unlinked cases remain reading-only. This UX2 addition requires full exact-head browser qualification before it can be marked accepted.
