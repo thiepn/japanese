@@ -98,16 +98,18 @@ test("J12 keeps coarse mobile UI flat and free of expensive shell effects",async
   await page.getByRole("button",{name:"Learn",exact:true}).click();
 
   await expect(page.locator(".j2-ambient__brush")).toHaveCSS("display","none");
-  // UX-1 keeps advanced practice available under an explicit mobile disclosure.
+  // Existing advanced tools remain accessible without a hidden prerequisite.
   const practice=page.locator(".j4-practice");
   await expect(page.locator(".ux1-mobile-path")).toBeVisible();
-  await expect(practice).toBeHidden();
+  await expect(practice).toBeVisible();
   const expand=page.locator(".ux1-mobile-catalogue-toggle");
-  await expect(expand).toHaveText("Open full course and advanced practice");
-  await expect(expand).toHaveAttribute("aria-expanded","false");
-  await expand.click();
   await expect(expand).toHaveText("Hide full course and advanced practice");
   await expect(expand).toHaveAttribute("aria-expanded","true");
+  await expand.click();
+  await expect(expand).toHaveText("Open full course and advanced practice");
+  await expect(expand).toHaveAttribute("aria-expanded","false");
+  await expect(practice).toBeHidden();
+  await expand.click();
   await expect(practice).toBeVisible();
   const contentVisibility=await practice.evaluate((node)=>getComputedStyle(node).contentVisibility);
   expect(contentVisibility).toBe("auto");
