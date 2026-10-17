@@ -2,11 +2,11 @@ import { expect,test } from "@playwright/test";
 
 test("PWA shell, integrated Study Player and canonical content survive offline reload",async({page,context},testInfo)=>{
   await page.goto("./");
-  await expect(page.getByRole("heading",{name:"Continue Japanese"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Your Japanese today"})).toBeVisible();
   await page.evaluate(async()=>{if(!("serviceWorker" in navigator))throw new Error("SERVICE_WORKER_UNAVAILABLE");await navigator.serviceWorker.ready;});
   await page.reload();
 
-  await page.getByRole("button",{name:/Continue today’s study|Review anyway/}).click();
+  await page.locator(".ux1-native-queue").click();
   await expect(page.getByRole("heading",{name:"Five vowel sounds"})).toBeVisible();
   await page.getByRole("button",{name:"Continue"}).click();
 
@@ -38,7 +38,7 @@ test("PWA shell, integrated Study Player and canonical content survive offline r
 
   await context.setOffline(true);
   await page.reload();
-  await expect(page.getByRole("heading",{name:/Continue Japanese|You’re caught up/})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Your Japanese today"})).toBeVisible();
   if(testInfo.project.name!=="desktop-chromium"){
     await expect.poll(()=>page.locator(".j2-shell").evaluate((node)=>getComputedStyle(node).getPropertyValue("--j12-mobile").trim())).toBe("1");
   }

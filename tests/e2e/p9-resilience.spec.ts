@@ -30,10 +30,10 @@ test("P9 real-world performance, native listening and provider fallbacks survive
 
   await page.evaluate(async()=>{if(!("serviceWorker" in navigator))throw new Error("SERVICE_WORKER_UNAVAILABLE");await navigator.serviceWorker.ready;});
   await page.reload();
-  await expect(page.getByRole("heading",{name:/Continue Japanese|You’re caught up/})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Your Japanese today"})).toBeVisible();
   await context.setOffline(true);
   await page.reload();
-  await expect(page.getByRole("heading",{name:/Continue Japanese|You’re caught up/})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Your Japanese today"})).toBeVisible();
   await page.getByRole("button",{name:"Learn"}).click();
   await page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"}).locator("summary").click();
   await expect(page.getByRole("heading",{name:"Functional chains under time pressure"})).toBeVisible();
