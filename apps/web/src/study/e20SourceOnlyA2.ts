@@ -10,16 +10,21 @@ import {E04_UNMAPPED} from "./a2ExcellenceAdvancedCourse";
  * The existing E03/E04 reading-only previews retain their original IDs.
  */
 export type E20Cohort="e03"|"e04";
-export type E20Stage="listen"|"read"|"respond"|"compose";
+export type E20Stage="listen"|"read"|"respond"|"compose"|"follow-up";
 export const E20_STAGES:readonly {id:E20Stage;title:string;description:string}[]=[
  {id:"listen",title:"Listen",description:"Hear the original dialogue using device speech synthesis if available, then compare the source's gist and detail."},
  {id:"read",title:"Read",description:"Interpret an original Japanese text, then compare what it actually supports."},
  {id:"respond",title:"Respond",description:"Make an appropriate reply, then recall an exact original model before revealing it."},
- {id:"compose",title:"Compose",description:"Write your own message, revise it after source reflection and compare changes without grading."}
+ {id:"compose",title:"Compose",description:"Write your own message, revise it after source reflection and compare changes without grading."},
+ {id:"follow-up",title:"Follow-up",description:"Transfer your attention to the original second situation: another speaker, changed constraints, source-only listening and connected reading, then an independent message."}
 ];
 export interface E20Question{
  id:string;kind:"gist"|"detail"|"reply";prompt:string;
  choices:readonly string[];reference:string;sourceExplanation:string;
+}
+export interface E20FollowUp{
+ audio:string;reading:string;
+ listen:E20Question;read:E20Question;
 }
 export interface E20Scene{
  key:string;cohort:E20Cohort;sceneId:string;title:string;setting:string;goal:string;
@@ -31,6 +36,7 @@ export interface E20Scene{
  readQuestions:readonly [E20Question,E20Question];
  reply:E20Question;model:{question:string;references:readonly string[];sourceExplanation:string};
  writingTask:string;speakingTask:string;sourceWritingChecks:readonly string[];
+ followUp:E20FollowUp;
 }
 function choices(reference:string,foils:readonly string[]):string[]{
  const options=[reference,...foils];
@@ -69,6 +75,14 @@ function e03(s:E03Scene):E20Scene{
   reply:question(key+":reply","reply",s.respond.question,s.respond.answer,s.respond.foils,s.respond.feedback),
   model:{question:s.recall.question,references:s.recall.answers,sourceExplanation:s.recall.feedback},
   writingTask:s.writing,speakingTask:s.speaking,
+  followUp:{
+   audio:s.transfer.audio,reading:s.transfer.reading,
+   listen:question(key+":follow-up:listen","detail",s.transfer.question,s.transfer.answer,
+    s.transfer.foils,s.transfer.feedback),
+   read:question(key+":follow-up:read","detail",s.transfer.readingQuestion,
+    s.transfer.readingAnswer,s.transfer.readingFoils,
+    "Compare this reference to the original follow-up written source above; a response is not a graded reading assessment.")
+  },
   sourceWritingChecks:[
    "Does your reply actually accomplish the original communicative objective: "+s.objective,
    "Does it keep the time, people, place and conditions consistent with the original dialogue and written passage?",
@@ -101,6 +115,13 @@ function e04(s:E04Scene):E20Scene{
   reply:question(key+":reply","reply",s.response.question,s.response.answer,s.response.foils,s.response.correction),
   model:{question:s.recall.question,references:s.recall.answers,sourceExplanation:s.recall.correction},
   writingTask:s.writing.prompt,speakingTask:s.speaking.prompt,
+  followUp:{
+   audio:s.transfer.audio,reading:s.transfer.reading,
+   listen:question(key+":follow-up:listen","detail",s.transfer.question,s.transfer.answer,
+    s.transfer.foils,s.transfer.correction),
+   read:question(key+":follow-up:read","detail",s.transfer.readingQuestion,
+    s.transfer.readingAnswer,s.transfer.readingFoils,s.transfer.correction)
+  },
   sourceWritingChecks:[
    "Does your message accomplish the original practical goal: "+s.goal,
    "Does it distinguish confirmed facts from assumptions in the original dialogue and practical notice?",

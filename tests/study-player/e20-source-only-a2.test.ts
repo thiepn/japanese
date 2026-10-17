@@ -20,7 +20,7 @@ describe("E20 original A2 unlinked-source communication",()=>{
   expect(scenes.length).toBeGreaterThan(0);
   expect(scenes.length).toBeLessThanOrEqual(E03_SCENES.length+E04_SCENES.length);
   expect(getE20SourceOnlyScene("e03:unverified-invented")).toBeNull();
-  expect(E20_STAGES.map(s=>s.id)).toEqual(["listen","read","respond","compose"]);
+  expect(E20_STAGES.map(s=>s.id)).toEqual(["listen","read","respond","compose","follow-up"]);
  });
  it("preserves all original authored dialogue, reading, response choices, explanations and writing task exactly",()=>{
   for(const s of scenes){
@@ -36,6 +36,12 @@ describe("E20 original A2 unlinked-source communication",()=>{
    expect(s.listenQuestions).toHaveLength(2);
    expect(s.readQuestions).toHaveLength(2);
    expect(s.sourceNotes.length).toBeGreaterThan(0);
+   expect(s.followUp.audio.length).toBeGreaterThan(5);
+   expect(s.followUp.reading.length).toBeGreaterThan(5);
+   expect(s.followUp.listen.id).toBe(s.key+":follow-up:listen");
+   expect(s.followUp.read.id).toBe(s.key+":follow-up:read");
+   expect(s.followUp.listen.choices).toHaveLength(3);
+   expect(s.followUp.read.choices).toHaveLength(3);
    expect(s.writingTask.length).toBeGreaterThan(10);
    expect(s.speakingTask.length).toBeGreaterThan(10);
    const all=[...s.listenQuestions,...s.readQuestions,s.reply];
@@ -47,6 +53,17 @@ describe("E20 original A2 unlinked-source communication",()=>{
     expect(q.prompt.length).toBeGreaterThan(5);
     expect(q.sourceExplanation.length).toBeGreaterThan(10);
    }
+   const originalTransfer=s.cohort==="e03"
+    ?E03_SCENES.find(x=>x.id===s.sceneId)!.transfer
+    :E04_SCENES.find(x=>x.id===s.sceneId)!.transfer;
+   expect(s.followUp.audio).toBe(originalTransfer.audio);
+   expect(s.followUp.reading).toBe(originalTransfer.reading);
+   expect(s.followUp.listen.prompt).toBe(originalTransfer.question);
+   expect(s.followUp.listen.reference).toBe(originalTransfer.answer);
+   expect(s.followUp.listen.choices).toEqual([originalTransfer.answer,...originalTransfer.foils]);
+   expect(s.followUp.read.prompt).toBe(originalTransfer.readingQuestion);
+   expect(s.followUp.read.reference).toBe(originalTransfer.readingAnswer);
+   expect(s.followUp.read.choices).toEqual([originalTransfer.readingAnswer,...originalTransfer.readingFoils]);
    expect(s.model.references.length).toBeGreaterThan(0);
    expect(s.model.references.every(v=>v.trim())).toBe(true);
   }

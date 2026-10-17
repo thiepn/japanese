@@ -34,7 +34,7 @@ function SourceQuestion({question,choice,onChoose,revealed,onReveal}:{
 
 /** E20 is an ephemeral, deliberately ungraded source-workshop, NOT StudyPlayer.
  * It presents existing original material in a connected listening → reading →
- * reply → independent message flow, without saving learner responses/events. */
+ * reply → independent message → changed-context follow-up flow, without saving learner responses/events. */
 export function E20SourceOnlyA2({onOriginalPreview,busy}:Props){
  const [key,setKey]=useState(scenes[0]?.key??"");
  const [stage,setStage]=useState<E20Stage>("listen");
@@ -42,6 +42,8 @@ export function E20SourceOnlyA2({onOriginalPreview,busy}:Props){
  const [revealed,setRevealed]=useState<Record<string,boolean>>({});
  const [showTranscript,setShowTranscript]=useState(false);
  const [showReadingGloss,setShowReadingGloss]=useState(false);
+ const [showFollowUpText,setShowFollowUpText]=useState(false);
+ const [followUpWriting,setFollowUpWriting]=useState("");
  const [modelResponse,setModelResponse]=useState("");
  const [showModel,setShowModel]=useState(false);
  const [draftInput,setDraftInput]=useState("");
@@ -74,16 +76,17 @@ export function E20SourceOnlyA2({onOriginalPreview,busy}:Props){
   stopAudio();setKey(next);setStage("listen");setChoices({});setRevealed({});
   setShowTranscript(false);setShowReadingGloss(false);setModelResponse("");setShowModel(false);
   setDraftInput("");setFirstDraft("");setRevisionInput("");setCompareVisible(false);setChecks([]);
+  setShowFollowUpText(false);setFollowUpWriting("");
  }
- function playOriginal(rate:number){
-  if(!current)return;
+ function playText(text:string,rate:number){
+  if(!text.trim())return;
   if(typeof window==="undefined"||!("speechSynthesis" in window)||
    typeof SpeechSynthesisUtterance==="undefined"){setAudioState("unavailable");return;}
   generation.current++;
   const id=generation.current;
   try{
    window.speechSynthesis.cancel();
-   const utterance=new SpeechSynthesisUtterance(current.originalJapaneseDialogue);
+   const utterance=new SpeechSynthesisUtterance(text);
    utterance.lang="ja-JP";utterance.rate=rate;
    const voices=window.speechSynthesis.getVoices();
    const japanese=voices.find(v=>v.lang.toLowerCase().startsWith("ja"));
@@ -94,8 +97,9 @@ export function E20SourceOnlyA2({onOriginalPreview,busy}:Props){
    window.speechSynthesis.speak(utterance);
   }catch{if(generation.current===id)setAudioState("error");}
  }
+ function playOriginal(rate:number){if(current)playText(current.originalJapaneseDialogue,rate);}
  function changeStage(next:E20Stage){
-  if(stage==="listen"&&next!=="listen")stopAudio();
+  if(stage!==next)stopAudio();
   setStage(next);
  }
  function renderQuestion(q:E20Question){
@@ -108,6 +112,8 @@ export function E20SourceOnlyA2({onOriginalPreview,busy}:Props){
    <p role="status">No original A2 scenes require an ungraded canonical-mapping fallback. Use the regular source-linked A2 course.</p>
  </section>;
  const phaseIndex=stages.indexOf(stage);
+ const sceneIndex=scenes.findIndex(s=>s.key===current.key);
+ const nextSource=sceneIndex>=0?scenes[sceneIndex+1]??null:null;
  const diff=firstDraft&&revisionInput.trim()?compareE20WrittenDrafts(firstDraft,revisionInput):null;
  return <section className="e20-source" aria-labelledby="e20-source-title">
   <header className="e20-source__head">
@@ -134,13 +140,13 @@ export function E20SourceOnlyA2({onOriginalPreview,busy}:Props){
     <p>{current.setting}</p><p><b>Purpose:</b> {current.goal}</p>
    </div>
   </div>
-  <nav className="e20-source__stages" aria-label="Four ungraded source learning stages">
+  <nav className="e20-source__stages" aria-label="Five ungraded source learning stages">
    {E20_STAGES.map((s,i)=><button key={s.id} type="button" aria-current={stage===s.id?"step":undefined}
     onClick={()=>changeStage(s.id)}><span>{i+1}</span>{s.title}</button>)}
   </nav>
   <div className="e20-source__stage" aria-live="polite">
    <div className="e20-source__stage-head">
-    <div><p className="j4-kicker">STEP {phaseIndex+1} / 4 · SELF-DIRECTED, NOT SCORED</p>
+    <div><p className="j4-kicker">STEP {phaseIndex+1} / {stages.length} · SELF-DIRECTED, NOT SCORED</p>
      <h3>{E20_STAGES[phaseIndex]?.title} · {current.title}</h3>
      <p>{E20_STAGES[phaseIndex]?.description}</p>
     </div>
@@ -231,10 +237,61 @@ export function E20SourceOnlyA2({onOriginalPreview,busy}:Props){
      <p className="e20-source__privacy">This workshop saves <strong>nothing</strong>: your selections and drafts exist only while the current Learn view is open. Copy anything you want to keep before leaving, changing situations, refreshing, or switching accounts. No StudyEvent, FSRS grade, recording, cloud upload or new language credential is created.</p>
     </div>
    </>:null}
+   {stage==="follow-up"?<section className="e20-source__follow-up" aria-label="Source-only changed-context follow-up">
+    <div className="e20-source__follow-up-header">
+     <h4>Original changed-context follow-up · no delayed grade</h4>
+     <p>This is the second situation already written for this original scene. The people, conditions or outcome differ from the first scene. The actual follow-up texts and answers come from the same THIEPN original source, not a newly certified A2 Can-do.</p>
+    </div>
+    <div className="e20-source__audio">
+     <strong>New Japanese spoken notice · optional device-synthesized voice</strong>
+     <p>Listen for the changed information before revealing its original text. Device speech synthesis is not a native recording, independent listening grade or pronunciation assessment.</p>
+     <div className="e20-source__audio-actions">
+      <button type="button" disabled={audioState==="playing"} onClick={()=>playText(current.followUp.audio,.94)}>Play follow-up with device voice</button>
+      <button type="button" disabled={audioState==="playing"} onClick={()=>playText(current.followUp.audio,.76)}>Slower follow-up</button>
+      {audioState==="playing"?<button type="button" onClick={stopAudio}>Stop speech</button>:null}
+     </div>
+     {audioState==="error"||audioState==="unavailable"?<p role="status">Japanese device voice is unavailable. Reveal the original follow-up instead; no listening evidence is claimed.</p>:null}
+     <button type="button" aria-expanded={showFollowUpText}
+      onClick={()=>setShowFollowUpText(v=>!v)}>{showFollowUpText?"Hide":"Reveal"} original follow-up spoken text</button>
+     {showFollowUpText?<p lang="ja" className="e20-source__japanese e20-source__follow-up-text">{current.followUp.audio}</p>:null}
+    </div>
+    <div className="e20-source__questions">{renderQuestion(current.followUp.listen)}</div>
+    <article className="e20-source__reading">
+     <h4>Original changed-context written notice</h4>
+     <p lang="ja" className="e20-source__japanese">{current.followUp.reading}</p>
+     <p>This text is a different authored source from the first scene. Decide what it actually states before opening the reference.</p>
+    </article>
+    <div className="e20-source__questions">{renderQuestion(current.followUp.read)}</div>
+    <details className="e20-source__notes">
+     <summary>Compare the original situation to its follow-up</summary>
+     <div className="e20-source__source-contrast">
+      <div><strong>First situation · authored conversation</strong><p lang="ja">{current.originalJapaneseDialogue}</p></div>
+      <div><strong>New situation · authored follow-up</strong><p lang="ja">{current.followUp.audio}</p></div>
+     </div>
+     <p>Notice who speaks, what changed, which conditions are explicit, and whether a response from the first situation would still be appropriate. This is a source comparison, not measured transfer.</p>
+    </details>
+    <div className="e20-source__writing">
+     <label htmlFor="e20-follow-up-message">Independent follow-up · temporary Japanese reply
+      <textarea id="e20-follow-up-message" lang="ja" maxLength={4000} rows={4}
+       placeholder="新しい場面に合わせて日本語で書いてください…"
+       value={followUpWriting} onChange={event=>setFollowUpWriting(event.currentTarget.value)}/>
+     </label>
+     <p>Use the specific facts in the changed-context spoken and written sources. This is separate from your first-situation draft; there is no automatic correctness, naturalness, CEFR or FSRS judgment.</p>
+     {followUpWriting.trim()?<p role="status">Text remains temporary in this view; copy it before leaving or moving to another situation. It is not saved as a learning event.</p>:null}
+    </div>
+    {nextSource?<div className="e20-source__next-scene">
+     <strong>Continue original A2 source study</strong>
+     <p>Next unlinked original situation: {nextSource.title} · {nextSource.cohort.toUpperCase()}. Continuing resets every temporary choice and draft from the current scene.</p>
+     <button type="button" onClick={()=>switchScene(nextSource.key)}>Next original situation · {nextSource.title}</button>
+    </div>:<div className="e20-source__next-scene">
+     <strong>Last available original unlinked situation</strong>
+     <p>You have reached the end of this source-only list. You may revisit any case in the selector; this is not a completed A2 proficiency milestone.</p>
+    </div>}
+   </section>:null}
   </div>
   <div className="e20-source__footer">
    {phaseIndex>0?<button type="button" onClick={()=>changeStage(stages[phaseIndex-1]!)}>Previous · {E20_STAGES[phaseIndex-1]?.title}</button>:null}
-   {phaseIndex<3?<button type="button" className="e20-source__next" onClick={()=>changeStage(stages[phaseIndex+1]!)}>
+   {phaseIndex<stages.length-1?<button type="button" className="e20-source__next" onClick={()=>changeStage(stages[phaseIndex+1]!)}>
     Continue to {E20_STAGES[phaseIndex+1]?.title}</button>:null}
    <button type="button" disabled={busy} onClick={()=>{stopAudio();onOriginalPreview(current.cohort,current.sceneId);}}>
     Open original reading-only lesson</button>
