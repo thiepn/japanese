@@ -48,8 +48,9 @@ test("E20 private first/revised messages remain ephemeral and switching original
  await expect(studio.getByRole("button",{name:"Compare my two session drafts (not a grade)"})).toBeDisabled();
  await second.fill(revised);
  await studio.getByRole("button",{name:"Compare my two session drafts (not a grade)"}).click();
- await expect(studio.getByRole("region",{name:"Temporary written draft comparison"})).toContainText(revised);
- await expect(studio.getByRole("region",{name:"Temporary written draft comparison"})).toContainText("not establish semantic accuracy");
+ const comparison=studio.locator('[aria-label="Temporary written draft comparison"][role="status"]');
+ await expect(comparison).toContainText(revised);
+ await expect(comparison).toContainText("not establish semantic accuracy");
  const chooser=studio.getByLabel("Choose an original A2-oriented situation");
  const options=await chooser.locator("option").all();
  expect(options.length).toBeGreaterThan(1);
