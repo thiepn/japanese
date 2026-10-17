@@ -88,6 +88,7 @@ test("E20 retains five usable steps without horizontal overflow on Android and c
   expect(bounds!.x).toBeGreaterThanOrEqual(-1);
   expect(bounds!.x+bounds!.width).toBeLessThanOrEqual(viewport.width+1);
  }
+ await studio.locator(".e20-source__stages").getByRole("button",{name:/Compose/}).click();
  const drafts=studio.getByLabel("First Japanese message");
  await drafts.fill("友達に連絡します。明日会いませんか。");
  await studio.getByRole("button",{name:"Keep first draft in this session"}).click();
@@ -112,7 +113,7 @@ test("E20 original changed-context follow-up remains source-only and continues t
  await expect(followup.locator(".e20-source__reading .e20-source__japanese")).toBeVisible();
  const response="日曜日の朝なら大丈夫です。よろしくお願いします。";
  await followup.getByLabel("Independent follow-up · temporary Japanese reply").fill(response);
- await expect(followup.getByRole("status")).toContainText("not saved as a learning event");
+ await expect(followup.locator(".e20-source__writing p[role='status']")).toContainText("not saved as a learning event");
  const next=followup.getByRole("button",{name:/Next original situation/});
  await expect(next).toBeVisible();
  const before=await studio.getByLabel("Choose an original A2-oriented situation").inputValue();
@@ -122,5 +123,5 @@ test("E20 original changed-context follow-up remains source-only and continues t
  await expect(studio.getByText("STEP 1 / 5 · SELF-DIRECTED, NOT SCORED")).toBeVisible();
  await studio.locator(".e20-source__stages").getByRole("button",{name:/Follow-up/}).click();
  await expect(followup.getByLabel("Independent follow-up · temporary Japanese reply")).toHaveValue("");
- await expect(followup.getByRole("status")).toHaveCount(0);
+ await expect(followup.locator(".e20-source__writing p[role='status']")).toHaveCount(0);
 });
