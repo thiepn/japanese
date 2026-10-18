@@ -42,7 +42,7 @@ test("E22 desktop and mobile chapter path distinguishes guided progress, indepen
  await expect(atlas).toContainText("writing-eligible sources");
  const cafe=atlas.locator(".ux1-node").filter({hasText:"Order a drink politely"});
  await expect(cafe).toBeVisible();
- await cafe.getByRole("button",{name:/Start original lesson|Continue original lesson/}).click();
+ await cafe.getByRole("button",{name:/^(Start lesson|Practise lesson)$/}).click();
  await expect(page.locator("main.j5-study-shell")).toBeVisible();
  await page.getByRole("button",{name:"Exit"}).click();
  await expect(atlas).toBeVisible();

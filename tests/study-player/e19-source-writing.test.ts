@@ -92,6 +92,36 @@ describe("E19 original A1/A2 private source writing continuity",()=>{
   expect(projectE19Overview(owner,[...s.events,{...one,occurredAt:"2040-01-01T00:00:00Z"}],now)
    .cases.find(c=>c.key===s.key)?.firstDraft).toBeNull();
  });
+ it("rejects mismatched or missing original source metadata across E02, E03 and E04",()=>{
+  for(const [cohort,id] of [
+   ["e02",E02_AVAILABLE_SCENES[0]!.id],["e03",E03_MAPPED[0]!.scene.id],["e04",E04_MAPPED[0]!.scene.id]
+  ] as const){
+   const owner="e19-provenance-"+cohort,key=cohort+":"+id;
+   const prompts=original(cohort,id);
+   const listening=prompts.find(p=>p.skill==="listening"&&p.promptType==="choice")!;
+   const reading=prompts.find(p=>p.skill==="comprehension"&&p.promptType==="choice")!;
+   const first=prompts.find(p=>p.promptType==="textarea"&&p.id.endsWith("-write"))!;
+   const evidence=[listening,reading].map((prompt,i)=>createStudyEvent({
+    id:cohort+"-source-"+i,userId:owner,deviceId:"fixture",
+    prompt,response:prompt.acceptedAnswers[0]!,occurredAt:"2026-10-16T10:00:00.000Z",responseTimeMs:500
+   }));
+   expect(evidence.every(e=>e.result==="correct")).toBe(true);
+   const view=(events:typeof evidence)=>projectE19Overview(owner,events,now).cases.find(c=>c.key===key)!;
+   expect(view(evidence).sourceReady).toBe(true);
+   for(const field of [cohort,cohort+"SceneId",cohort+"UnitId",cohort+"CanDoId"]){
+    const incorrect=evidence.map(e=>({...e,metadata:{...e.metadata,[field]:field===cohort?false:"unrelated"}}));
+    expect(view(incorrect).sourceReady).toBe(false);
+   }
+   for(const field of [cohort+"SceneId",cohort+"UnitId",cohort+"CanDoId"]){
+    const incomplete=evidence.map(e=>{const metadata={...e.metadata};delete metadata[field];return {...e,metadata};});
+    expect(view(incomplete).sourceReady).toBe(false);
+   }
+   const written=draft(owner,first,"私の大切な原稿です。",cohort+"-draft");
+   expect(view([...evidence,written]).firstDraft).toBe("私の大切な原稿です。");
+   const wrongDraft={...written,metadata:{...written.metadata,[cohort+"SceneId"]:"unrelated"}};
+   expect(view([...evidence,wrongDraft]).firstDraft).toBeNull();
+  }
+ });
  it("is source-compatible with every available linked E02, E03 and E04 native lesson",()=>{
   const view=projectE19Overview("e19-check",[],now);
   expect(view.total).toBe(E02_AVAILABLE_SCENES.length+E03_MAPPED.length+E04_MAPPED.length);

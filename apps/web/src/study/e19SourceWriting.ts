@@ -69,15 +69,26 @@ function original(source:Source):{first:StudyPrompt;listening:StudyPrompt;readin
  if(lessons.length<2)throw Error("E19_ORIGINAL_TEACHING_NOT_AVAILABLE:"+source.id);
  return {first,listening,reading,lessons};
 }
+/** Require exact original source ownership for every recovered response.
+ * Missing or mismatched cohort/scene/unit/Can-do event metadata is not evidence.
+ */
 function latest(events:readonly StudyEvent[],owner:string,prompt:StudyPrompt,now:Date):StudyEvent|null{
+ const cohort=(["e02","e03","e04"] as const).find(c=>prompt.eventMetadata?.[c]===true);
+ if(!cohort||!prompt.contextId||!prompt.sourceId||!prompt.contentVersion||
+   prompt.primaryTarget.kind!=="can_do")return null;
+ const sceneKey=cohort+"SceneId",unitKey=cohort+"UnitId",canDoKey=cohort+"CanDoId";
+ const source=prompt.eventMetadata;
+ if(!source||typeof source[sceneKey]!=="string"||!source[sceneKey]||
+   typeof source[unitKey]!=="string"||!source[unitKey]||
+   source[canDoKey]!==prompt.primaryTarget.id)return null;
  return events.filter(e=>e.userId===owner&&e.metadata?.promptId===prompt.id&&
-  e.sourceId===prompt.sourceId&&e.contextId===prompt.contextId&&
-  e.contentVersion===prompt.contentVersion&&e.primaryTarget?.kind==="can_do"&&
-  e.primaryTarget.id===prompt.primaryTarget.id&&
-  e.metadata?.[String(prompt.eventMetadata?.e02?"e02":prompt.eventMetadata?.e03?"e03":"e04")+"SceneId"]===
-   prompt.eventMetadata?.[String(prompt.eventMetadata?.e02?"e02":prompt.eventMetadata?.e03?"e03":"e04")+"SceneId"]&&
-  Number.isFinite(Date.parse(e.occurredAt))&&Date.parse(e.occurredAt)<=now.getTime()+1000)
-  .sort((a,b)=>b.occurredAt.localeCompare(a.occurredAt)||b.id.localeCompare(a.id))[0]??null;
+   e.sourceId===prompt.sourceId&&e.contextId===prompt.contextId&&
+   e.contentVersion===prompt.contentVersion&&e.primaryTarget?.kind==="can_do"&&
+   e.primaryTarget.id===prompt.primaryTarget.id&&
+   e.metadata?.[cohort]===true&&e.metadata?.[sceneKey]===source[sceneKey]&&
+   e.metadata?.[unitKey]===source[unitKey]&&e.metadata?.[canDoKey]===source[canDoKey]&&
+   Number.isFinite(Date.parse(e.occurredAt))&&Date.parse(e.occurredAt)<=now.getTime()+1000)
+   .sort((a,b)=>b.occurredAt.localeCompare(a.occurredAt)||b.id.localeCompare(a.id))[0]??null;
 }
 function revisionFor(source:Source,first:StudyPrompt):StudyPrompt{
  return {...first,
