@@ -6,7 +6,7 @@ import {E03_SCENES} from "../../apps/web/src/study/a2ExcellenceScenes";
 import {E04_SCENES} from "../../apps/web/src/study/a2ExcellenceAdvancedScenes";
 import {E03_UNMAPPED_SCENES,buildE03Preview} from "../../apps/web/src/study/a2ExcellenceCourse";
 import {E04_UNMAPPED,buildE04Preview} from "../../apps/web/src/study/a2ExcellenceAdvancedCourse";
-import {getE20SourceOnlyScenes,getE20SourceOnlyScene,compareE20WrittenDrafts,E20_STAGES} from "../../apps/web/src/study/e20SourceOnlyA2";
+import {getE20SourceOnlyScenes,getE20SourceOnlyScene,compareE20WrittenDrafts,buildE20WritingCopy,E20_STAGES} from "../../apps/web/src/study/e20SourceOnlyA2";
 
 describe("E20 original A2 unlinked-source communication",()=>{
  const scenes=getE20SourceOnlyScenes();
@@ -86,6 +86,21 @@ describe("E20 original A2 unlinked-source communication",()=>{
    changed:true,beforeChange:"しょう",afterChange:"せんか"
   });
   expect(compareE20WrittenDrafts("","日本語")).toMatchObject({changed:true,beforeChange:"",afterChange:"日本語"});
+ });
+ it("offers a local writing copy without original passages or invented grading",()=>{
+  const scene=scenes[0]!,first="日曜日の午前は大丈夫です。";
+  const revised="日曜日の午後なら大丈夫です。",followUp="新しい時間を教えてください。";
+  const copy=buildE20WritingCopy({key:scene.key,workingFirst:first,keptFirst:first,revision:revised,followUp});
+  expect(copy?.filename).toMatch(/^thiepn-japanese-e0[34]-[a-z0-9_-]+-writing\.txt$/);
+  for(const value of [first,revised,followUp])expect(copy?.content).toContain(value);
+  expect(copy?.content).toContain("Ungraded practice");
+  expect(copy?.content).not.toContain(scene.originalJapaneseDialogue);
+  expect(copy?.content).not.toContain(scene.followUp.audio);
+  expect(buildE20WritingCopy({key:scene.key,workingFirst:"  ",keptFirst:"",revision:"",followUp:""})).toBeNull();
+  expect(buildE20WritingCopy({key:"e03:invented",workingFirst:first,keptFirst:"",revision:"",followUp:""})).toBeNull();
+  const followUpOnly=buildE20WritingCopy({key:scene.key,workingFirst:"",keptFirst:"",revision:"",followUp});
+  expect(followUpOnly?.content).toContain(followUp);
+  expect(followUpOnly?.content).not.toContain(first);
  });
  it("cannot create any owner events or scheduler traces when building the source-only workshop",async()=>{
   const owner="e20-original-preview-owner";

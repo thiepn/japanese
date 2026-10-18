@@ -1,6 +1,6 @@
 import {useEffect,useRef,useState} from "react";
 import {E20_STAGES,getE20SourceOnlyScenes,compareE20WrittenDrafts,
- type E20Question,type E20Scene,type E20Stage,type E20Cohort} from "../study/e20SourceOnlyA2";
+ buildE20WritingCopy,type E20Question,type E20Scene,type E20Stage,type E20Cohort} from "../study/e20SourceOnlyA2";
 import "./e20SourceOnlyA2.css";
 
 type Props={onOriginalPreview:(cohort:E20Cohort,id:string)=>void;busy:boolean;requested?:{key:string;sequence:number}|null};
@@ -128,6 +128,17 @@ export function E20SourceOnlyA2({onOriginalPreview,busy,requested}:Props){
  const sceneIndex=scenes.findIndex(s=>s.key===current.key);
  const nextSource=sceneIndex>=0?scenes[sceneIndex+1]??null:null;
  const diff=firstDraft&&revisionInput.trim()?compareE20WrittenDrafts(firstDraft,revisionInput):null;
+ const writingCopy=buildE20WritingCopy({key:current.key,workingFirst:draftInput,
+  keptFirst:firstDraft,revision:revisionInput,followUp:followUpWriting});
+ function downloadWritingCopy(){
+  if(!writingCopy)return;
+  const url=URL.createObjectURL(new Blob([writingCopy.content],{type:"text/plain;charset=utf-8"}));
+  const anchor=document.createElement("a");
+  anchor.href=url;anchor.download=writingCopy.filename;
+  document.body.appendChild(anchor);
+  anchor.click();anchor.remove();
+  window.setTimeout(()=>URL.revokeObjectURL(url),1000);
+ }
  return <section className="e20-source" aria-labelledby="e20-source-title">
   <header className="e20-source__head">
    <div><p className="j4-kicker">E20 · ORIGINAL A2 · SOURCE-ONLY</p>
@@ -247,7 +258,7 @@ export function E20SourceOnlyA2({onOriginalPreview,busy,requested}:Props){
        <p>Literal text removed/changed: “{diff.beforeChange||"∅"}” · added/changed: “{diff.afterChange||"∅"}”. Text changes do not establish semantic accuracy, naturalness or A2 proficiency.</p>
       </section>:null}
      </div>:null}
-     <p className="e20-source__privacy">This workshop saves <strong>nothing</strong>: your selections and drafts exist only while the current Learn view is open. Copy anything you want to keep before leaving, changing situations, refreshing, or switching accounts. No StudyEvent, FSRS grade, recording, cloud upload or new language credential is created.</p>
+     <p className="e20-source__privacy">This workshop saves <strong>nothing inside the app</strong>: your selections and drafts exist only while the current Learn view is open. Explicitly download your own Japanese messages as a local text file, or copy them manually, before leaving, changing situations, refreshing or switching accounts. A downloaded file is stored by your browser, not in an app account. No StudyEvent, FSRS grade, recording, cloud upload or new language credential is created.</p>
     </div>
    </>:null}
    {stage==="follow-up"?<section className="e20-source__follow-up" aria-label="Source-only changed-context follow-up">
@@ -303,6 +314,7 @@ export function E20SourceOnlyA2({onOriginalPreview,busy,requested}:Props){
    </section>:null}
   </div>
   <div className="e20-source__footer">
+   {writingCopy?<button type="button" onClick={downloadWritingCopy}>Download my Japanese messages (.txt)</button>:null}
    {phaseIndex>0?<button type="button" onClick={()=>changeStage(stages[phaseIndex-1]!)}>Previous · {E20_STAGES[phaseIndex-1]?.title}</button>:null}
    {phaseIndex<stages.length-1?<button type="button" className="e20-source__next" onClick={()=>changeStage(stages[phaseIndex+1]!)}>
     Continue to {E20_STAGES[phaseIndex+1]?.title}</button>:null}

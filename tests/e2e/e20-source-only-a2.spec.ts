@@ -1,3 +1,4 @@
+import {readFileSync} from "node:fs";
 import {expect,test} from "@playwright/test";
 
 async function learn(page:import("@playwright/test").Page){
@@ -124,4 +125,30 @@ test("E20 original changed-context follow-up remains source-only and continues t
  await studio.locator(".e20-source__stages").getByRole("button",{name:/Follow-up/}).click();
  await expect(followup.getByLabel("Independent follow-up · temporary Japanese reply")).toHaveValue("");
  await expect(followup.locator(".e20-source__writing p[role='status']")).toHaveCount(0);
+});
+
+test("E20 explicitly downloads only learner-written Japanese, and the app still forgets source-only drafts on reload",async({page})=>{
+ const studio=await learn(page);
+ await expect(studio.getByRole("button",{name:"Download my Japanese messages (.txt)"})).toHaveCount(0);
+ await studio.locator(".e20-source__stages").getByRole("button",{name:/Compose/}).click();
+ const first="朝の会議に行きます。",second="朝の会議に行きます。少し早く着きます。";
+ const followUp="会議が午後になったら教えてください。";
+ await studio.getByLabel("First Japanese message").fill(first);
+ await studio.getByRole("button",{name:"Keep first draft in this session"}).click();
+ await studio.getByLabel("Second Japanese message").fill(second);
+ await studio.locator(".e20-source__stages").getByRole("button",{name:/Follow-up/}).click();
+ await studio.getByLabel("Independent follow-up · temporary Japanese reply").fill(followUp);
+ const started=page.waitForEvent("download");
+ await studio.getByRole("button",{name:"Download my Japanese messages (.txt)"}).click();
+ const download=await started;
+ expect(download.suggestedFilename()).toMatch(/^thiepn-japanese-e0[34]-.*-writing\.txt$/);
+ const output=readFileSync(await download.path(),"utf8");
+ for(const value of [first,second,followUp])expect(output).toContain(value);
+ expect(output).toContain("no source dialogues or readings are copied");
+ await page.reload();
+ await page.getByRole("button",{name:"Learn",exact:true}).click();
+ const reopened=page.getByRole("region",{name:"Source-only A2 communication workshop"});
+ await expect(reopened.getByRole("button",{name:"Download my Japanese messages (.txt)"})).toHaveCount(0);
+ await reopened.locator(".e20-source__stages").getByRole("button",{name:/Compose/}).click();
+ await expect(reopened.getByLabel("First Japanese message")).toHaveValue("");
 });

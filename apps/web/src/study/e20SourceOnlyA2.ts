@@ -148,3 +148,31 @@ export function compareE20WrittenDrafts(first:string,revised:string){
  return {changed:a!==b,beforeChange:before.slice(prefix,before.length-suffix).join(""),
   afterChange:after.slice(prefix,after.length-suffix).join("")};
 }
+
+/** An explicit, local-only copy of learner text from the original ungraded
+ * workshop. It cannot include source passages or write study/scheduler data.
+ */
+export interface E20WritingCopyInput{
+ key:string;workingFirst:string;keptFirst:string;revision:string;followUp:string;
+}
+export function buildE20WritingCopy(input:E20WritingCopyInput):{filename:string;content:string}|null{
+ const scene=getE20SourceOnlyScene(input.key);
+ if(!scene)return null;
+ const sections=[
+  ["First message currently in the editor",input.workingFirst],
+  ["First draft kept for revision",input.keptFirst],
+  ["Second Japanese message",input.revision],
+  ["Changed-context Japanese follow-up",input.followUp]
+ ].filter((entry)=>entry[1].trim().length>0);
+ if(!sections.length)return null;
+ return {
+  filename:"thiepn-japanese-"+scene.cohort+"-"+scene.sceneId.replace(/[^a-z0-9_-]/gi,"-")+"-writing.txt",
+  content:[
+   "THIEPN Japanese — personal writing copy",
+   "Original THIEPN source-only situation: "+scene.title+" ("+scene.key+")",
+   "Only learner-entered text is included; no source dialogues or readings are copied.",
+   "Ungraded practice. No Can-do certification, StudyEvent, FSRS memory or cloud sync.",
+   ...sections.map(([label,value])=>label+"\n"+value)
+  ].join("\n\n")+"\n"
+ };
+}
