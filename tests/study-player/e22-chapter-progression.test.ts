@@ -1,11 +1,15 @@
 import "fake-indexeddb/auto";
+import {mkdirSync,writeFileSync} from "node:fs";
+import {resolve} from "node:path";
+import {createStudyEvent,isStudyLesson,type StudyPrompt} from "../../packages/study-player/src/index";
+import {buildE02Journey,E02_AVAILABLE_SCENES} from "../../apps/web/src/study/a1ExcellenceCourse";
 import {describe,expect,it} from "vitest";
 import {getE01Progress} from "../../apps/web/src/study/a1Excellence";
 import {getE02Overview} from "../../apps/web/src/study/a1ExcellenceCourse";
 import {getE03Overview} from "../../apps/web/src/study/a2ExcellenceCourse";
 import {getE04Overview} from "../../apps/web/src/study/a2ExcellenceAdvancedCourse";
 import {projectE19Overview} from "../../apps/web/src/study/e19SourceWriting";
-import {buildE22Chapters,getE22NextChapter,e22InitialLocation,resolveE22OwnerSelection} from "../../apps/web/src/study/e22ChapterProgression";
+import {buildE22Chapters,getE22NextChapter,e22InitialLocation,resolveE22OwnerSelection,e24ReadyReviews} from "../../apps/web/src/study/e22ChapterProgression";
 import {e22ChapterFocus} from "../../apps/web/src/design/UX1LearningPath";
 
 const now=new Date("2026-10-17T14:00:00Z");
@@ -69,7 +73,36 @@ describe("E22 original A1/A2 chapter continuity without synthetic learner author
   expect(target.nextReviewKey).toBe(node.key);
   expect(target.nextWritingKey).toBe(node.key);
   // Genuine due review takes priority over optional drafting, no second grading engine.
-  expect(e22ChapterFocus(target).mode).toBe(target.nextGuidedKey?"guided":"review");
+  expect(e22ChapterFocus(target)).toMatchObject({mode:"review",node:{key:node.key}});
+  const off=e24ReadyReviews(path);
+  expect(off).toContainEqual({level:target.level,chapterId:target.id,chapterTitle:target.title,node});
+  expect(off.every(item=>item.node.linked&&item.node.reviewReady)).toBe(true);
+ });
+ it("does not promote waiting, reviewed, preview-only or another owner's source as a ready review",()=>{
+  const base=fresh(),scene=base.e02.scenes[0]!;
+  const targetScene=base.e02.scenes.map(s=>s.id===scene.id?{...s,state:"waiting" as const}:s);
+  expect(e24ReadyReviews(buildE22Chapters({...base,e02:{...base.e02,scenes:targetScene}}))).toHaveLength(0);
+  const marked=base.e02.scenes.map(s=>s.id===scene.id?{...s,state:"ready" as const}:s);
+  const path=buildE22Chapters({...base,e02:{...base.e02,scenes:marked}});
+  expect(e24ReadyReviews(path).map(x=>x.node.key)).toContain("e02:"+scene.id);
+  const completed=base.e02.scenes.map(s=>s.id===scene.id?{...s,state:"reviewed" as const}:s);
+  expect(e24ReadyReviews(buildE22Chapters({...base,e02:{...base.e02,scenes:completed}}))).toHaveLength(0);
+ });
+ it("prepares exact owner-scoped native E02 due-review events for browser acceptance",()=>{
+  const scene=E02_AVAILABLE_SCENES.find(s=>s.id==="food");
+  expect(scene).toBeDefined();
+  const owner="00000000-0000-4000-8000-000000000001";
+  const prompts=buildE02Journey(scene!.id).filter((item):item is StudyPrompt=>!isStudyLesson(item));
+  const required=["hear","read","reply","recall"].map(suffix=>
+   prompts.find(p=>p.id.endsWith("-"+suffix))!);
+  expect(required.every(Boolean)).toBe(true);
+  const events=required.map((prompt,i)=>createStudyEvent({id:"e24-ready-"+i,userId:owner,
+   deviceId:"source-review-fixture",prompt,response:prompt.acceptedAnswers[0]!,
+   occurredAt:"2026-10-14T10:00:00.000Z",responseTimeMs:700}));
+  expect(events.every(e=>e.result==="correct")).toBe(true);
+  expect(getE02Overview(events,new Date("2026-10-18T10:00:00Z")).scenes.find(s=>s.id==="food")?.state).toBe("ready");
+  mkdirSync(resolve("artifacts"),{recursive:true});
+  writeFileSync(resolve("artifacts/e24-review-browser-seed.json"),JSON.stringify({owner,events,sceneId:"food"}),"utf8");
  });
  it("does not mark a chapter certified or count preview-only A2 chapters as completed",()=>{
   const path=buildE22Chapters(fresh());

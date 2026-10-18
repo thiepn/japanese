@@ -1,7 +1,7 @@
 import {useMemo} from "react";
 import type {E01Progress,E02Overview,E03Overview,E04Overview,E19Overview} from "../study/runtime";
 import type {E07Action,E07Journey} from "../study/e07LearningRoute";
-import {buildE22Chapters,e22InitialLocation,getE22NextChapter,
+import {buildE22Chapters,e22InitialLocation,getE22NextChapter,e24ReadyReviews,
  type E22Chapter,type E22Level,type E22Node,type E22Selection} from "../study/e22ChapterProgression";
 
 /** Preserve UX1 deep links and initial E07 selection without adding a scheduler. */
@@ -21,8 +21,8 @@ type ChapterFocus={node:E22Node|null;mode:"guided"|"review"|"write"|"source"|"ne
 /** All decisions are projections of original owner-owned source events. */
 export function e22ChapterFocus(chapter:E22Chapter):ChapterFocus{
  const by=(key:string|null)=>chapter.nodes.find(n=>n.key===key)??null;
- if(chapter.nextGuidedKey)return {node:by(chapter.nextGuidedKey),mode:"guided"};
  if(chapter.nextReviewKey)return {node:by(chapter.nextReviewKey),mode:"review"};
+ if(chapter.nextGuidedKey)return {node:by(chapter.nextGuidedKey),mode:"guided"};
  if(chapter.nextWritingKey)return {node:by(chapter.nextWritingKey),mode:"write"};
  if(chapter.nextPreviewKey)return {node:by(chapter.nextPreviewKey),mode:"source"};
  return {node:null,mode:"next"};
@@ -47,6 +47,9 @@ export function UX1LearningPath({e01,e02,e03,e04,e19,route,busy,onOpenE07,select
  const current=chapters.find(c=>c.id===selected)??chapters[0]??null;
  const focus=current?e22ChapterFocus(current):null;
  const next=current?getE22NextChapter(path,level,current.id):null;
+ const readyElsewhere=e24ReadyReviews(path).filter(item=>
+  item.level!==current?.level||item.chapterId!==current?.id);
+ const existingPriority=route.primary.kind==="scheduled"||route.primary.kind==="delayed";
  function openNode(node:E22Node,mode:"guided"|"review"|"write"|"source"="guided"){
   if(mode==="write"){if(node.linked&&node.sourceReady)onE19(node.key);return;}
   if(mode==="source"){
@@ -76,6 +79,23 @@ export function UX1LearningPath({e01,e02,e03,e04,e19,route,busy,onOpenE07,select
    </div>
    <p className="ux1-path-intro">Original THIEPN navigation groups. Chapter positions are not certified course levels. Complete source-linked controlled lessons, return for due delayed reviews and explore unlinked original sources without grades.</p>
   </header>
+  {existingPriority?<section className="ux1-due-priority" aria-label="Existing Today or FSRS priority">
+   <strong>Due first · original Today and FSRS priority</strong>
+   <p>{route.primary.description} {route.primary.basis}</p>
+   <button type="button" disabled={busy} onClick={()=>onOpenE07(route.primary)}>
+    {route.primary.label} <span aria-hidden="true">→</span>
+   </button>
+  </section>:null}
+  {readyElsewhere.length>0?<section className="ux1-review-elsewhere" aria-label="Ready source reviews outside this chapter">
+   <strong>{readyElsewhere.length} source-linked delayed {readyElsewhere.length===1?"review":"reviews"} ready in other chapters</strong>
+   <p>These are real original changed-context checks, not extra FSRS grades. Open a ready source review directly without losing your chapter selection.</p>
+   <div className="ux1-review-elsewhere__actions">
+    {readyElsewhere.map(item=><button type="button" key={item.node.key} disabled={busy}
+     onClick={()=>openNode(item.node,"review")}>
+     Review {item.node.title} · {item.level} / {item.chapterTitle}
+    </button>)}
+   </div>
+  </section>:null}
   <nav className="ux1-chapter-tabs" aria-label="Learning chapters">
    {chapters.map(c=><button type="button" key={c.key} aria-pressed={c.id===current?.id}
     onClick={()=>changeChapter(level,c.id)}>
@@ -151,10 +171,7 @@ export function UX1LearningPath({e01,e02,e03,e04,e19,route,busy,onOpenE07,select
      {next.level===level?"Browse next original chapter":"Browse A2-oriented original situations"}
      <span aria-hidden="true">→</span>
     </button>:null}
-   {(route.primary.kind==="scheduled"||route.primary.kind==="delayed")?
-    <button type="button" className="ux1-path-review" disabled={busy} onClick={()=>onOpenE07(route.primary)}>
-     {route.primary.label} →</button>:null}
-   <p className="ux1-path-note">These chapters organize existing THIEPN originals. The existing Today/FSRS queue is still authoritative for due reviews. Optional writing and unlinked A2 workshops cannot award new proficiency or mastery.</p>
+    <p className="ux1-path-note">These chapters organize existing THIEPN originals. The existing Today/FSRS queue is still authoritative for due reviews. Optional writing and unlinked A2 workshops cannot award new proficiency or mastery.</p>
   </>:null}
  </section>;
 }

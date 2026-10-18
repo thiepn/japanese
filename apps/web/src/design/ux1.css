@@ -91,3 +91,12 @@
  .ux1-node__body{padding:12px}
  .ux1-chapter-tabs button{min-width:115px}
 }
+
+/* E24: original ready checks and authoritative Today/FSRS recovery stay above
+   chapter source browsing, including mobile and 200% zoom. */
+.ux1-due-priority,.ux1-review-elsewhere{display:grid;gap:10px;padding:14px;border:1px solid var(--j-line-strong);background:var(--j-bg-elevated);border-radius:var(--j-radius-sm);min-width:0}
+.ux1-due-priority strong,.ux1-review-elsewhere strong{font-size:15px}
+.ux1-due-priority p,.ux1-review-elsewhere p{margin:0;color:var(--j-fg-muted);font-size:13px;line-height:1.6}
+.ux1-due-priority button,.ux1-review-elsewhere button{min-height:48px;padding:10px 14px;border:1px solid var(--j-line-strong);background:var(--j-bg-elevated);color:var(--j-fg);border-radius:var(--j-radius-sm);text-align:left;white-space:normal;overflow-wrap:anywhere;cursor:pointer}
+.ux1-due-priority button{background:var(--j-ai-700);border-color:var(--j-ai-700);color:#fff8ef;display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:700}
+.ux1-review-elsewhere__actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:8px;min-width:0}

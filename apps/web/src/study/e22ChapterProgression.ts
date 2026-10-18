@@ -114,3 +114,15 @@ export function getE22NextChapter(path:E22Path,level:E22Level,id:number):{level:
  if(level==="A1"&&path.a2.length)return {level:"A2",id:0};
  return null;
 }
+
+/** E24: read-only destinations for delayed checks already declared READY by
+ * original E01/E02/E03/E04 owner-scoped source projections. No new scheduler.
+ */
+export interface E24ReadyReview{
+ level:E22Level;chapterId:number;chapterTitle:string;node:E22Node;
+}
+export function e24ReadyReviews(path:E22Path):E24ReadyReview[]{
+ return [...path.a1,...path.a2].flatMap(chapter=>
+  chapter.nodes.filter(node=>node.linked&&node.reviewReady)
+   .map(node=>({level:chapter.level,chapterId:chapter.id,chapterTitle:chapter.title,node})));
+}

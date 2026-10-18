@@ -1,5 +1,8 @@
 import {expect,test} from "@playwright/test";
 import {readFileSync} from "node:fs";
+const e24=JSON.parse(readFileSync("artifacts/e24-review-browser-seed.json","utf8")) as {
+ owner:string;events:Array<Record<string,unknown>>;sceneId:string;
+};
 const e19=JSON.parse(readFileSync("artifacts/e19-browser-seed.json","utf8")) as {
  guest:string;key:string;events:Array<Record<string,unknown>>;firstText:string;
 };
@@ -101,4 +104,38 @@ test("E22 full five-chapter navigator fits compact and Android mobile screens",a
  await next.click();
  await expect(atlas.getByRole("heading",{name:/Connected conversations/})).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)).toBeLessThanOrEqual(1);
+});
+
+test("E24 original delayed review is accessible across chapters without switching the selected chapter",async({page})=>{
+ await page.goto("./");
+ await page.evaluate(async({owner,events})=>{
+  const db=await new Promise<IDBDatabase>((resolve,reject)=>{
+   const req=indexedDB.open("thiepn-japanese:"+owner,8);
+   req.onupgradeneeded=()=>{
+    for(const name of ["study_events","sync_outbox","sync_meta","memory_traces","private_documents",
+     "private_vocabulary","private_sentences","private_media_reviews","private_prosody_captures"])
+     if(!req.result.objectStoreNames.contains(name))
+      req.result.createObjectStore(name,{keyPath:name==="sync_outbox"?"mutation_id":name==="sync_meta"?"key":"id"});
+   };
+   req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);
+  });
+  await new Promise<void>((resolve,reject)=>{
+   const tx=db.transaction("study_events","readwrite");
+   for(const event of events)tx.objectStore("study_events").put(event);
+   tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);
+  });
+  db.close();
+ },e24);
+ await page.reload();
+ await page.getByRole("button",{name:"Learn",exact:true}).click();
+ const atlas=page.getByRole("region",{name:"Your learning path"});
+ await expect(atlas.getByRole("heading",{name:/First Words/})).toBeVisible();
+ const cross=atlas.getByRole("region",{name:"Ready source reviews outside this chapter"});
+ await expect(cross).toContainText("Order a drink politely");
+ await expect(atlas.getByRole("region",{name:"Existing Today or FSRS priority"})).toBeVisible();
+ await cross.getByRole("button",{name:/Order a drink politely/}).click();
+ await expect(page.locator("main.j5-study-shell")).toBeVisible();
+ await expect(page.locator("main.j5-study-shell")).toContainText(/Delayed A1 transfer|changed|review/i);
+ await page.getByRole("button",{name:"Exit"}).click();
+ await expect(atlas.getByRole("heading",{name:/First Words/})).toBeVisible();
 });
