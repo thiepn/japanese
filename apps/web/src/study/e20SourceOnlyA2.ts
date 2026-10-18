@@ -158,7 +158,7 @@ export interface E20WritingCopyInput{
 export function buildE20WritingCopy(input:E20WritingCopyInput):{filename:string;content:string}|null{
  const scene=getE20SourceOnlyScene(input.key);
  if(!scene)return null;
- const sections=[
+ const sections:Array<readonly [string,string]>=[
   ["First message currently in the editor",input.workingFirst],
   ["First draft kept for revision",input.keptFirst],
   ["Second Japanese message",input.revision],
