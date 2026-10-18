@@ -92,10 +92,12 @@ describe("E19 original A1/A2 private source writing continuity",()=>{
   expect(projectE19Overview(owner,[...s.events,{...one,occurredAt:"2040-01-01T00:00:00Z"}],now)
    .cases.find(c=>c.key===s.key)?.firstDraft).toBeNull();
  });
- it("rejects mismatched or missing original source metadata across E02, E03 and E04",()=>{
-  for(const [cohort,id] of [
-   ["e02",E02_AVAILABLE_SCENES[0]!.id],["e03",E03_MAPPED[0]!.scene.id],["e04",E04_MAPPED[0]!.scene.id]
-  ] as const){
+  it("rejects mismatched or missing metadata for every actually source-linked E02/E03/E04 scene",()=>{
+   // Unlinked A2 scenes must remain unlinked; never manufacture a Can-do test fixture.
+   const linked=projectE19Overview("e19-source-list",[],now).cases;
+   expect(linked.length).toBe(E02_AVAILABLE_SCENES.length+E03_MAPPED.length+E04_MAPPED.length);
+   expect(linked.length).toBeGreaterThan(0);
+   for(const {cohort,sceneId:id} of linked){
    const owner="e19-provenance-"+cohort,key=cohort+":"+id;
    const prompts=original(cohort,id);
    const listening=prompts.find(p=>p.skill==="listening"&&p.promptType==="choice")!;
