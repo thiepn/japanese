@@ -72,7 +72,7 @@ export function UX1LearningPath({e01,e02,e03,e04,e19,route,busy,onOpenE07,select
    <div className="ux1-path-head">
     <h1 id="ux1-path-title">Your learning path</h1>
     <label><span className="ux1-sr">Learning level</span>
-     <select value={level} onChange={event=>changeChapter(event.target.value as E22Level,0)}>
+     <select value={level} disabled={busy} onChange={event=>changeChapter(event.target.value as E22Level,0)}>
       <option value="A1">A1</option><option value="A2">A2</option>
      </select>
     </label>
@@ -97,7 +97,7 @@ export function UX1LearningPath({e01,e02,e03,e04,e19,route,busy,onOpenE07,select
    </div>
   </section>:null}
   <nav className="ux1-chapter-tabs" aria-label="Learning chapters">
-   {chapters.map(c=><button type="button" key={c.key} aria-pressed={c.id===current?.id}
+   {chapters.map(c=><button type="button" key={c.key} disabled={busy} aria-pressed={c.id===current?.id}
     onClick={()=>changeChapter(level,c.id)}>
     <strong>{c.title}</strong>
     <small>{c.guidedComplete}/{c.linkedCount} guided · {c.previewCount} ungraded</small>
