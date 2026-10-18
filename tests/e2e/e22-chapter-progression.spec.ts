@@ -129,6 +129,9 @@ test("E24 original delayed review is accessible across chapters without switchin
  await page.reload();
  await page.getByRole("button",{name:"Learn",exact:true}).click();
  const atlas=page.getByRole("region",{name:"Your learning path"});
+ // E07 may initially select the actual due source's chapter; deliberately move
+ // elsewhere to test cross-chapter access without depending on FSRS due counts.
+ await atlas.getByRole("button",{name:/First Words/}).click();
  await expect(atlas.getByRole("heading",{name:/First Words/})).toBeVisible();
  const cross=atlas.getByRole("region",{name:"Ready source reviews outside this chapter"});
  await expect(cross).toContainText("Order a drink politely");
