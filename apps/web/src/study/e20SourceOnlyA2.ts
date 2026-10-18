@@ -158,13 +158,14 @@ export interface E20WritingCopyInput{
 export function buildE20WritingCopy(input:E20WritingCopyInput):{filename:string;content:string}|null{
  const scene=getE20SourceOnlyScene(input.key);
  if(!scene)return null;
- const sections:Array<readonly [string,string]>=[
+ const sections:[string,string][]=[
   ["First message currently in the editor",input.workingFirst],
   ["First draft kept for revision",input.keptFirst],
   ["Second Japanese message",input.revision],
   ["Changed-context Japanese follow-up",input.followUp]
- ].filter((entry)=>entry[1].trim().length>0);
- if(!sections.length)return null;
+ ];
+ const included=sections.filter(([,value])=>value.trim().length>0);
+ if(!included.length)return null;
  return {
   filename:"thiepn-japanese-"+scene.cohort+"-"+scene.sceneId.replace(/[^a-z0-9_-]/gi,"-")+"-writing.txt",
   content:[
@@ -172,7 +173,7 @@ export function buildE20WritingCopy(input:E20WritingCopyInput):{filename:string;
    "Original THIEPN source-only situation: "+scene.title+" ("+scene.key+")",
    "Only learner-entered text is included; no source dialogues or readings are copied.",
    "Ungraded practice. No Can-do certification, StudyEvent, FSRS memory or cloud sync.",
-   ...sections.map(([label,value])=>label+"\n"+value)
+   ...included.map(([label,value])=>label+"\n"+value)
   ].join("\n\n")+"\n"
  };
 }
