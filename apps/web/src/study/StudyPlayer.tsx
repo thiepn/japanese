@@ -195,7 +195,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         const result=await deviceSpeech.current.play(
           Array(playback==="shadow"?2:1).fill(ttsText),
           {rate:playback==="slow"?.78:.94,gapMs:playback==="shadow"?450:0,
-            language:activeStep.speechSynthesisLanguage??"ja-JP"},
+            language:(!isStudyLesson(activeStep)?activeStep.speechSynthesisLanguage:undefined)??"ja-JP"},
         );
         if(result==="cancelled")return;
       }
