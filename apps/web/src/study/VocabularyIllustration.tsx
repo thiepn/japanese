@@ -10,6 +10,5 @@ export function VocabularyIllustration({lexemeId,className=""}:{lexemeId:string;
   return <figure className={["vocabulary-visual",className].filter(Boolean).join(" ")}>
     <img src={`${import.meta.env.BASE_URL}vocab/${visual.file}`} alt={visual.alt}
       width={320} height={240} loading="lazy" decoding="async" onError={()=>setFailed(true)}/>
-    <figcaption>Visual cue · original illustration</figcaption>
   </figure>;
 }

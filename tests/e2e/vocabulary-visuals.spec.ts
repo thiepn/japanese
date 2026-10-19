@@ -45,6 +45,7 @@ test("blocked optional images leave the original text reference available",async
  await word.getByRole("option").click();
  const sheet=page.locator(".j7-reference__sheet--lexeme");
  await expect(sheet).toContainText("house");
- await sheet.scrollIntoViewIfNeeded();
+ const image=sheet.locator(".vocabulary-visual img");
+ await image.scrollIntoViewIfNeeded();
  await expect(sheet.locator(".vocabulary-visual")).toHaveCount(0);
 });

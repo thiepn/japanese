@@ -13,7 +13,7 @@ function setup({cacheDenied=false}={}){
  };
  const caches={open:async()=>{if(cacheDenied)throw Error("quota");return store;},keys:async()=>[],delete:async()=>true};
  const fetch=vi.fn(async()=>{if(disconnected)throw Error("offline");return new Response("<svg/>",{status:200});});
- const self={registration:{scope:"https://example.test/jp/"},addEventListener:(name,handler)=>handlers.set(name,handler),skipWaiting(){},clients:{claim:async()=>{}}};
+ const self={location:{origin:"https://example.test"},registration:{scope:"https://example.test/jp/"},addEventListener:(name,handler)=>handlers.set(name,handler),skipWaiting(){},clients:{claim:async()=>{}}};
  runInNewContext(source,{self,caches,fetch,Response,Promise,URL,console});
  async function image(name){
    const request={method:"GET",url:"https://example.test/jp/vocab/"+name+".svg",destination:"image",mode:"cors"};
