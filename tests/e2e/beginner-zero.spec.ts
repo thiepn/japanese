@@ -34,10 +34,11 @@ test("A0 requires five recognition and two form answers before opening K sounds"
   await page.goto("./");
   await page.getByRole("button",{name:"Start Japanese from Zero"}).click();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
-  for(const answer of ["a","i","u","e","o","あ","い"]){
+  const answers=["a","i","u","e","o","あ","い"];
+  for(const [index,answer] of answers.entries()){
     await page.locator(".j5-choices").getByRole("button",{name:answer,exact:true}).click();
     await expect(page.getByText("Correct",{exact:true})).toBeVisible();
-    await page.getByRole("button",{name:"Continue",exact:true}).click();
+    await page.getByRole("button",{name:index===answers.length-1?"Finish":"Continue",exact:true}).click();
   }
   await expect(page.getByRole("heading",{name:"Your next Japanese lesson"})).toBeVisible();
   await expect(page.locator(".beginner-entry__objective")).toHaveText("Hiragana · K sounds");

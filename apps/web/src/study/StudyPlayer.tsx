@@ -210,7 +210,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
     setAudioState("playing");
     try{
       const voices=typeof speechSynthesis==="undefined"?[]:speechSynthesis.getVoices();
-      if(voices.length&&!voices.some(voice=>voice.lang.toLowerCase().startsWith("ja")))
+      if(!voices.some(voice=>voice.lang.toLowerCase().startsWith("ja")))
         throw new Error("JAPANESE_DEVICE_VOICE_UNAVAILABLE");
       await speakWithDevice(expression,.82,1,"ja-JP");
       if(generation===cueGeneration.current)setAudioState("idle");

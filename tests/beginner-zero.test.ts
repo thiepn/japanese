@@ -55,5 +55,7 @@ describe("A0 instructional path",()=>{
     const unrelated={...event(first.id),primaryTarget:{kind:"kana",id:"unrelated"}} as StudyEvent;
     expect(projectBeginnerOverview([unrelated]).started).toBe(false);
     expect(projectBeginnerOverview([event(first.id,"incorrect")]).stages[0].correct).toBe(0);
+    expect(projectBeginnerOverview([event(first.id,"incorrect")]).started).toBe(true);
+    expect(projectBeginnerOverview([event(first.id,"correct")]).started).toBe(true);
   });
 });

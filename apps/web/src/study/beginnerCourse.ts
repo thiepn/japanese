@@ -64,7 +64,12 @@ export function projectBeginnerOverview(events:readonly StudyEvent[]):BeginnerOv
   });
   const nextId=stages.find(stage=>!stage.completed)?.id??null;
   return {stages,completed:stages.filter(s=>s.completed).length,total:stages.length,nextId,
-    started:stages.some(s=>s.correct>0),complete:nextId===null};
+    started:events.some(event=>event.primaryTarget?.kind==="kana"
+      &&(event.result==="correct"||event.result==="incorrect")
+      &&event.metadata?.nonAuthoritative!==true
+      &&[...GROUPS].some(group=>[...recognitionFor(group.id),...selectedPractice(group.id)]
+        .some(prompt=>prompt.id===event.metadata?.promptId&&prompt.primaryTarget.id===event.primaryTarget?.id))),
+    complete:nextId===null};
 }
 const VOWEL_TIPS:Readonly<Record<string,string>>={
   "あ":"a · as in father","い":"i · like ee in see",
