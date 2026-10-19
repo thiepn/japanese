@@ -125,7 +125,7 @@ test("J14 theme preference survives reload and can return cleanly to light mode"
   await expect(page.locator("html")).toHaveAttribute("data-j-theme","dark");
   await expect(page.getByRole("button",{name:"Use light theme"})).toBeVisible();
 
-  await page.locator(".ux1-native-queue").click();
+  await page.getByRole("button",{name:"Start Japanese from Zero"}).click();
   await expect(page.locator("html")).toHaveAttribute("data-j-theme","dark");
   await expect(page.locator(".j5-study")).toHaveAttribute("data-j-theme","dark");
   await page.getByRole("button",{name:"Exit"}).click();
@@ -256,6 +256,10 @@ test("J14 exposes visible keyboard focus without pointer-only navigation",async(
   await learn.press("Enter");
   await expect(page.locator(".j4-learn")).toBeVisible();
 
+  await page.locator(".beginner-explore > summary").focus();
+  await expectVisibleFocus(page.locator(".beginner-explore > summary"));
+  await page.locator(".beginner-explore > summary").press("Enter");
+  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
   const emaki=page.locator(".j4-emaki");
   await emaki.focus();
   await expectVisibleFocus(emaki);

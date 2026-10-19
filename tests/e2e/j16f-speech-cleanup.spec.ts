@@ -13,6 +13,8 @@ test("leaving speaking practice aborts recognition and disconnects late callback
   });
   await page.goto("./");
   await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await page.locator(".beginner-explore > summary").click();
+  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
   await page.locator(".j4-practice__quick button").filter({hasText:"Speaking"}).click();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
   await page.locator(".j5-speak-button").click();

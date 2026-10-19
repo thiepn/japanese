@@ -111,7 +111,7 @@ export function J4Learn(props:Props){
   }=props;
 
   const [showFullCourse,setShowFullCourse]=useState(false);
-  const beginnerMode=!beginner.complete||e01.status==="not_started"||e01.status==="learning"||Boolean(e02.nextSceneId);
+  const beginnerMode=!beginner.complete||Boolean(e01.unitId&&(e01.status==="not_started"||e01.status==="learning"))||Boolean(e02.nextSceneId);
   const [advancedOpen,setAdvancedOpen]=useState(!beginnerMode);
   const [showTransfer,setShowTransfer]=useState(e07.primary.origin==="e06");
   const [studioTarget,setStudioTarget]=useState<UX2StudioTarget|null>(null);
