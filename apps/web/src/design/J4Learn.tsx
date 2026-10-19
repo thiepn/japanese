@@ -1,4 +1,6 @@
 import "./j4.css";
+import {BeginnerEntry} from "./BeginnerEntry";
+import type {BeginnerOverview} from "../study/beginnerCourse";
 import "../study/e10DailyStages.css";
 import {useEffect,useMemo,useState} from "react";
 import {UX2TransferPath,type UX2StudioTarget} from "./UX2TransferPath";
@@ -44,6 +46,7 @@ import type {E07Journey,E07Action} from "../study/e07LearningRoute";
 import {JCartouche,JInkProgress,JPattern,JSeal} from "./index";
 
 type Props={
+   beginner:BeginnerOverview;onStartBeginner:()=>void;onReviewDue:()=>void;
   e01:E01Progress;onStartE01:()=>void;onStartE01Delayed:()=>void;
   e02:E02Overview;onStartE02:(id:string)=>void;onStartE02Delayed:(id:string)=>void;
   e03:E03Overview;onStartE03:(id:string)=>void;onStartE03Delayed:(id:string)=>void;
@@ -100,14 +103,16 @@ const LEVEL_ORDER=["A1","A2","B1","B2","C1"];
 
 export function J4Learn(props:Props){
   const {
-    e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,e14Reviews,e16WorkspaceId,e16WorkspaceCurrent,onStartE06,onStartE06Full,onStartE11Micro,onStartE13,onStartE18,onStartE14,onStartE15,onStartE10Stage,onStartE06Delayed,onStartE10DelayedStage,onStartE06FullDelayed,onStartE06Preview,e19,onStartE19,e07,onOpenE07,e22Selection,onE22Selection,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
+    beginner,onStartBeginner,onReviewDue,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,e14Reviews,e16WorkspaceId,e16WorkspaceCurrent,onStartE06,onStartE06Full,onStartE11Micro,onStartE13,onStartE18,onStartE14,onStartE15,onStartE10Stage,onStartE06Delayed,onStartE10DelayedStage,onStartE06FullDelayed,onStartE06Preview,e19,onStartE19,e07,onOpenE07,e22Selection,onE22Selection,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
     milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,
     onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartAssessment,
     onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,
     onC1Practice,onProductive,onLexicalFluency,onRealWorldChain,onRealWorldQualification,
   }=props;
 
-  const [showFullCourse,setShowFullCourse]=useState(true);
+  const [showFullCourse,setShowFullCourse]=useState(false);
+  const [advancedOpen,setAdvancedOpen]=useState(false);
+  const beginnerMode=!beginner.complete||e01.status==="not_started"||e01.status==="learning";
   const [showTransfer,setShowTransfer]=useState(e07.primary.origin==="e06");
   const [studioTarget,setStudioTarget]=useState<UX2StudioTarget|null>(null);
   const [a2SourceTarget,setA2SourceTarget]=useState<{key:string;sequence:number}|null>(null);
@@ -146,8 +151,13 @@ export function J4Learn(props:Props){
   const kanaCoverage=summary.totalKana?summary.learnedKana/summary.totalKana:0;
   const vocabCoverage=summary.totalVocabulary?summary.learnedVocabulary/summary.totalVocabulary:0;
 
-  return <section className="j4-learn" aria-labelledby="j4-title">
+  return <section className="j4-learn" aria-label="Japanese lessons">
     <span className="j13-marginal" aria-hidden="true">学</span>
+    {beginnerMode?<BeginnerEntry overview={beginner} due={summary.due} busy={status==="loading"}
+      sessionError={status==="error"} onContinue={onStartBeginner} onReview={onReviewDue}/>:null}
+    <details className="beginner-explore" open={!beginnerMode||advancedOpen}
+      onToggle={event=>setAdvancedOpen(event.currentTarget.open)}>
+      <summary>Browse other lessons and advanced practice</summary>
     <UX1LearningPath e01={e01} e02={e02} e03={e03} e04={e04} e19={e19} route={e07}
       selection={e22Selection} onSelectionChange={onE22Selection} onE01={onStartE01} onE01Delayed={onStartE01Delayed} busy={status==="loading"} onOpenE07={onOpenE07} onE02={onStartE02} onE02Delayed={onStartE02Delayed} onE02Preview={onStartE02Preview} onE03={onStartE03} onE03Delayed={onStartE03Delayed} onE03Preview={onStartE03Preview} onE04={onStartE04} onE04Delayed={onStartE04Delayed} onE04Preview={onStartE04Preview} onE19={onStartE19}
        onE20={key=>setA2SourceTarget(previous=>({key,sequence:(previous?.sequence??0)+1}))}/>
@@ -495,6 +505,7 @@ export function J4Learn(props:Props){
       <Evidence value={lexicalFluency.overall} glyph="連" label="Chunks"/>
     </section>
     </div>
+    </details>
   </section>;
 }
 
