@@ -46,7 +46,7 @@ test("blocked optional images leave the original text reference available",async
  const sheet=page.locator(".j7-reference__sheet--lexeme");
  await expect(sheet).toContainText("house");
  const image=sheet.locator(".vocabulary-visual img");
- await image.scrollIntoViewIfNeeded();
+ await sheet.scrollIntoViewIfNeeded();
  await expect(sheet.locator(".vocabulary-visual")).toHaveCount(0);
 });
 
@@ -66,7 +66,7 @@ test("VOC3 new A1 and A2 canonical words display mapped, lazy illustrations",asy
    await expect(image).toHaveAttribute("loading","lazy");
    await expect(image).toHaveAttribute("src",new RegExp("/vocab/"+word.file.replace(".","\\.")+"$"));
    await image.scrollIntoViewIfNeeded();
-   await expect(image).toHaveJSProperty("complete",true);
+   await expect.poll(async()=>image.evaluate(el=>(el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
  }
  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
  expect(overflow).toBeLessThanOrEqual(1);
