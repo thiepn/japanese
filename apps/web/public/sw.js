@@ -38,25 +38,28 @@ self.addEventListener("fetch", (event) => {
 
   // Cache encountered illustrations only; storage failure must not block the network.
   if (event.request.destination === "image" && requestUrl.pathname.startsWith(`${BASE}vocab/`) && requestUrl.pathname.endsWith(".svg")) {
-    event.respondWith((async () => {
+    const responsePromise = (async () => {
       const hit = await caches.open(VOCAB_CACHE).then(cache => cache.match(event.request)).catch(() => null);
       if (hit) return hit;
       const response = await fetch(event.request);
       if (response.ok) {
         const copy = response.clone();
-        // Writes are serialized, so concurrent image loads cannot escape the 48-entry cap.
+        // Serialize cache writes and FIFO eviction to keep concurrent loads within the cap.
         imageCacheWrites = imageCacheWrites.then(async () => {
           try {
             const cache = await caches.open(VOCAB_CACHE);
             await cache.put(event.request, copy);
             const keys = await cache.keys();
             for (const key of keys.slice(0, Math.max(0, keys.length - MAX_VOCAB_IMAGES))) await cache.delete(key);
-          } catch { /* Offline cache not available; original response is still usable. */ }
+          } catch { /* Storage is optional; the online image response remains usable. */ }
         }).catch(() => {});
-        event.waitUntil(imageCacheWrites);
       }
       return response;
-    })());
+    })();
+    event.respondWith(responsePromise);
+    // Register lifetime extension during the fetch event, not after awaited network I/O.
+    // Awaiting responsePromise ensures the imageCacheWrites assignment has occurred.
+    event.waitUntil(responsePromise.then(() => imageCacheWrites).catch(() => {}));
     return;
   }
 

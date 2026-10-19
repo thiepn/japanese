@@ -5,7 +5,7 @@ import {runInNewContext} from "node:vm";
 const source=readFileSync(new URL("../../apps/web/public/sw.js",import.meta.url),"utf8");
 // Asset revisions must invalidate previously cached pictures without touching learner data.
 if(!source.includes("vocab-v3"))throw new Error("Vocabulary image cache must be versioned after SVG changes");
-function setup({cacheDenied=false}={}){
+function setup({cacheDenied=false,networkGate=null}={}){
  const handlers=new Map();const entries=new Map();const waits=[];let disconnected=false;
  const store={
    match:async request=>entries.get(request.url)?.clone(),
@@ -16,7 +16,7 @@ function setup({cacheDenied=false}={}){
  const deleted=[];
  const cacheNames=["japanese-shell-vocab-v1","japanese-shell-vocab-v2","japanese-shell-vocab-v3","japanese-shell-v7","unrelated-cache"];
  const caches={open:async()=>{if(cacheDenied)throw Error("quota");return store;},keys:async()=>cacheNames,delete:async(name)=>{deleted.push(name);return true;}};
- const fetch=vi.fn(async()=>{if(disconnected)throw Error("offline");return new Response("<svg/>",{status:200});});
+ const fetch=vi.fn(async()=>{if(networkGate)await networkGate;if(disconnected)throw Error("offline");return new Response("<svg/>",{status:200});});
  const self={location:{origin:"https://example.test"},registration:{scope:"https://example.test/jp/"},addEventListener:(name,handler)=>handlers.set(name,handler),skipWaiting(){},clients:{claim:async()=>{}}};
  runInNewContext(source,{self,caches,fetch,Response,Promise,URL,console});
  async function image(name){
@@ -51,6 +51,19 @@ describe("original vocabulary-image service worker cache",()=>{
    expect(h.rawRequest("https://example.test/jp/auth/callback.svg")).toBeUndefined();
    expect(h.rawRequest("https://not-example.test/jp/vocab/rice.svg")).toBeUndefined();
    expect(h.entries.size).toBe(0);
+ });
+ it("registers event lifetime extension synchronously before a delayed image response",async()=>{
+   let release;
+   const networkGate=new Promise(resolve=>{release=resolve;});
+   const h=setup({networkGate});
+   const pending=h.image("apple");
+   // The fetch event is no longer dispatching after this synchronous assertion.
+   expect(h.waits).toHaveLength(1);
+   release();
+   const response=await pending;
+   expect(response.status).toBe(200);
+   await Promise.all(h.waits);
+   expect(h.entries.size).toBe(1);
  });
  it("fetches images online when storage access is blocked",async()=>{
    const h=setup({cacheDenied:true});
