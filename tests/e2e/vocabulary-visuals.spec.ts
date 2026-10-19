@@ -29,7 +29,7 @@ test("A1 and A2 words show their own source-linked illustrations",async({page})=
    const sheet=page.locator(".j7-reference__sheet--lexeme");
    await expect(sheet).toContainText(entry.id);
    const img=sheet.locator(".vocabulary-visual img");
-   await expect(img).toHaveAttribute("alt",new RegExp(entry.file==="school"?"school building":"hospital"));
+   await expect(img).toHaveAttribute("alt",new RegExp(entry.file==="school"?"school with classroom windows":"hospital building marked with a medical cross"));
    await expect(img).toHaveAttribute("src",new RegExp("/vocab/"+entry.file+"\\.svg$"));
  }
 });
