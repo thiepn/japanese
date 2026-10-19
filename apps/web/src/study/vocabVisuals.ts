@@ -357,6 +357,370 @@ export const VOCABULARY_VISUALS:readonly VocabularyVisual[]=[
     "file": "walk.svg",
     "alt": "Illustration of a walking shoe",
     "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "person",
+    "lexemeId": "lex-hito",
+    "file": "person.svg",
+    "alt": "Illustration of a single person standing",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "student",
+    "lexemeId": "lex-gakusei",
+    "file": "student.svg",
+    "alt": "Illustration of a student carrying a schoolbook",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "teacher",
+    "lexemeId": "lex-sensei",
+    "file": "teacher.svg",
+    "alt": "Illustration of a teacher pointing at a classroom board",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "friends",
+    "lexemeId": "lex-tomodachi",
+    "file": "friends.svg",
+    "alt": "Illustration of two friends greeting each other",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "see",
+    "lexemeId": "lex-miru",
+    "file": "see.svg",
+    "alt": "Illustration of a person watching a picture",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "listen",
+    "lexemeId": "lex-kiku",
+    "file": "listen.svg",
+    "alt": "Illustration of a person listening to a speaker",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "go",
+    "lexemeId": "lex-iku",
+    "file": "go.svg",
+    "alt": "Illustration of a person walking away along a path",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "return-home",
+    "lexemeId": "lex-kaeru",
+    "file": "return-home.svg",
+    "alt": "Illustration of a person walking home toward a house",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "talk",
+    "lexemeId": "lex-hanasu",
+    "file": "talk.svg",
+    "alt": "Illustration of two people talking",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "big",
+    "lexemeId": "lex-ookii",
+    "file": "big.svg",
+    "alt": "Illustration of a large box beside a much smaller box",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "small",
+    "lexemeId": "lex-chiisai",
+    "file": "small.svg",
+    "alt": "Illustration of a small box beside a much larger box",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "morning",
+    "lexemeId": "lex-asa",
+    "file": "morning.svg",
+    "alt": "Illustration of a sunrise over the horizon",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "noon",
+    "lexemeId": "lex-hiru",
+    "file": "noon.svg",
+    "alt": "Illustration of the sun high above a daytime landscape",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "night",
+    "lexemeId": "lex-yoru",
+    "file": "night.svg",
+    "alt": "Illustration of a moon and stars in a night sky",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "wake-up",
+    "lexemeId": "lex-okiru",
+    "file": "wake-up.svg",
+    "alt": "Illustration of a person getting out of bed",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "sleep",
+    "lexemeId": "lex-neru",
+    "file": "sleep.svg",
+    "alt": "Illustration of a person sleeping in bed",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "study",
+    "lexemeId": "lex-benkyou-suru",
+    "file": "study.svg",
+    "alt": "Illustration of a learner studying at a desk",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "office-work",
+    "lexemeId": "lex-hataraku",
+    "file": "office-work.svg",
+    "alt": "Illustration of a person working at a desk",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "rest",
+    "lexemeId": "lex-yasumu",
+    "file": "rest.svg",
+    "alt": "Illustration of a person resting on a sofa",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "meet",
+    "lexemeId": "lex-au",
+    "file": "meet.svg",
+    "alt": "Illustration of two people meeting and shaking hands",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "wait",
+    "lexemeId": "lex-matsu",
+    "file": "wait.svg",
+    "alt": "Illustration of a person waiting by a clock",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "breakfast",
+    "lexemeId": "lex-asagohan",
+    "file": "breakfast.svg",
+    "alt": "Illustration of a breakfast meal in morning light",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "lunch",
+    "lexemeId": "lex-hirugohan",
+    "file": "lunch.svg",
+    "alt": "Illustration of a lunch meal with the midday sun",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "dinner",
+    "lexemeId": "lex-bangohan",
+    "file": "dinner.svg",
+    "alt": "Illustration of an evening dinner with a crescent moon",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "price",
+    "lexemeId": "lex-nedan",
+    "file": "price.svg",
+    "alt": "Illustration of a price tag with a yen mark",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "new",
+    "lexemeId": "lex-atarashii",
+    "file": "new.svg",
+    "alt": "Illustration of a clean new pair of shoes in a box",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "old",
+    "lexemeId": "lex-furui",
+    "file": "old.svg",
+    "alt": "Illustration of an aged worn pair of shoes",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "hot-weather",
+    "lexemeId": "lex-atsui",
+    "file": "hot-weather.svg",
+    "alt": "Illustration of strong summer sun and a thermometer",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "cold-weather",
+    "lexemeId": "lex-samui",
+    "file": "cold-weather.svg",
+    "alt": "Illustration of a snowy thermometer and falling snow",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "energetic",
+    "lexemeId": "lex-genki",
+    "file": "energetic.svg",
+    "alt": "Illustration of a cheerful person raising both arms",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "quiet",
+    "lexemeId": "lex-shizuka",
+    "file": "quiet.svg",
+    "alt": "Illustration of a silent reading room",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "parents",
+    "lexemeId": "lex-ryoushin",
+    "file": "parents.svg",
+    "alt": "Illustration of two parents with a small child",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "employee",
+    "lexemeId": "lex-kaishain",
+    "file": "employee.svg",
+    "alt": "Illustration of an office employee with an ID badge",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "board",
+    "lexemeId": "lex-noru",
+    "file": "board.svg",
+    "alt": "Illustration of a person boarding a train",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "get-off",
+    "lexemeId": "lex-oriru",
+    "file": "get-off.svg",
+    "alt": "Illustration of a person getting off a train",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "right",
+    "lexemeId": "lex-migi",
+    "file": "right.svg",
+    "alt": "Illustration of a directional arrow pointing right",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "left",
+    "lexemeId": "lex-hidari",
+    "file": "left.svg",
+    "alt": "Illustration of a directional arrow pointing left",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "front",
+    "lexemeId": "lex-mae",
+    "file": "front.svg",
+    "alt": "Illustration of an object in front of another object",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "behind",
+    "lexemeId": "lex-ushiro",
+    "file": "behind.svg",
+    "alt": "Illustration of an object positioned behind another object",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "near",
+    "lexemeId": "lex-chikai",
+    "file": "near.svg",
+    "alt": "Illustration of two closely spaced buildings",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "far",
+    "lexemeId": "lex-tooi",
+    "file": "far.svg",
+    "alt": "Illustration of two distant buildings across a landscape",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "travel",
+    "lexemeId": "lex-ryokou",
+    "file": "travel.svg",
+    "alt": "Illustration of a suitcase with a travel ticket",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "reservation",
+    "lexemeId": "lex-yoyaku",
+    "file": "reservation.svg",
+    "alt": "Illustration of a confirmed booking in a calendar",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "cooking",
+    "lexemeId": "lex-ryouri",
+    "file": "cooking.svg",
+    "alt": "Illustration of a cook stirring a pot",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "email",
+    "lexemeId": "lex-meeru",
+    "file": "email.svg",
+    "alt": "Illustration of an electronic mail envelope",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "town",
+    "lexemeId": "lex-machi",
+    "file": "town.svg",
+    "alt": "Illustration of a row of town buildings",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "beverage",
+    "lexemeId": "lex-nomimono",
+    "file": "beverage.svg",
+    "alt": "Illustration of different beverages in glasses",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "kanji",
+    "lexemeId": "lex-kanji-word",
+    "file": "kanji.svg",
+    "alt": "Illustration of three example Japanese kanji characters",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "app",
+    "lexemeId": "lex-apuri",
+    "file": "app.svg",
+    "alt": "Illustration of a smartphone with application icons",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "sit",
+    "lexemeId": "lex-suwaru",
+    "file": "sit.svg",
+    "alt": "Illustration of a person sitting on a chair",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "enter",
+    "lexemeId": "lex-hairu",
+    "file": "enter.svg",
+    "alt": "Illustration of a person entering a doorway",
+    "rights": "Original THIEPN illustration"
+  },
+  {
+    "id": "practice",
+    "lexemeId": "lex-renshuu",
+    "file": "practice.svg",
+    "alt": "Illustration of a learner practicing written characters",
+    "rights": "Original THIEPN illustration"
   }
 ];
 const byLexeme=new Map(VOCABULARY_VISUALS.map(visual=>[visual.lexemeId,visual] as const));

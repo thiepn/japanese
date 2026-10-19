@@ -19,3 +19,11 @@ No external images or textbook art have been copied. Each added illustration is 
 Phase 2 corrects an image cache bug: if CacheStorage access fails, the image must still load over the network. Concurrent writes are serialized and FIFO-evicted to prevent more than 48 retained images. The existing text-only rendering remains the offline fallback for an unvisited image. The dedicated simulated worker tests exercise storage refusal, offline reuse and concurrency.
 
 Required independent qualification: full checkout with Node 24/pnpm, focused Vitest, TypeScript/Vite, real Chromium desktop and Android sessions, and visual source review. These are not marked PASS without execution.
+
+## VOC3 — A1–A2 selective visual extension
+
+Added **52 original, first-party SVG drawings** (103 total across VOC1–VOC3). Every new drawing maps to a canonical existing lexeme with explicit A1/A2 course-unit membership, preserved by `vocabVisuals.ts`. Visual sets now cover people, core actions, time of day, routines, school/work, comparisons and spatial direction, meals, travel, communication and household contexts. Pictures for verbs, relations and abstract concepts are **contextual cues**, not standalone word definitions or independent assessment.
+
+No external artwork, textbook screenshots, new dependencies, network image APIs or commercial stock images were introduced. Each SVG is committed in `apps/web/public/vocab/` and retains the original project-authored rights marker. The service worker still caches **at most 48 encountered images**, so adding 52 files does not require an initial 52-image download. Unvisited image failure remains optional to core learning.
+
+This branch is unmerged and undeployed. Source asset and mapping checks were performed; full Node 24, pnpm/Vitest, Vite/TypeScript and real desktop/Android Playwright remain necessary before release.

@@ -6,7 +6,7 @@ import {VOCABULARY_VISUALS,validateVocabularyVisuals,vocabularyVisualForLexeme} 
 describe("Japanese beginner vocabulary illustrations",()=>{
  const ids=new Set(coreContent.lexemes.map(v=>v.id));
  it("uses canonical Japanese IDs and ships only small original local SVGs",()=>{
-   expect(VOCABULARY_VISUALS).toHaveLength(51);
+   expect(VOCABULARY_VISUALS).toHaveLength(103);
    expect(validateVocabularyVisuals(ids)).toEqual([]);
    for(const item of VOCABULARY_VISUALS){
      const file=new URL(`../../apps/web/public/vocab/${item.file}`,import.meta.url);
@@ -27,6 +27,13 @@ describe("Japanese beginner vocabulary illustrations",()=>{
    expect(VOCABULARY_VISUALS.slice(0,8).map(entry=>entry.id)).toEqual(["apple","water","tea","book","car","bread","fish","coffee"]);
    const unitIds=new Set(coreContent.courseUnits.filter(unit=>unit.level==="A1"||unit.level==="A2").flatMap(unit=>unit.vocabularyIds));
    for(const entry of VOCABULARY_VISUALS.slice(8))expect(unitIds.has(entry.lexemeId)).toBe(true);
-   expect(new Set(VOCABULARY_VISUALS.map(entry=>entry.lexemeId)).size).toBe(51);
+   expect(new Set(VOCABULARY_VISUALS.map(entry=>entry.lexemeId)).size).toBe(103);
+ });
+ it("maps every Phase 3 image to an original A1/A2 lexical source without adding a grading hint",()=>{
+   const unitIds=new Set(coreContent.courseUnits.filter(unit=>unit.level==="A1"||unit.level==="A2").flatMap(unit=>unit.vocabularyIds));
+   const additions=VOCABULARY_VISUALS.slice(51);
+   expect(additions).toHaveLength(52);
+   for(const entry of additions)expect(unitIds.has(entry.lexemeId)).toBe(true);
+   expect(new Set(VOCABULARY_VISUALS.map(entry=>entry.file)).size).toBe(VOCABULARY_VISUALS.length);
  });
 });
