@@ -25,16 +25,22 @@ function recognitionFor(id:BeginnerStageId):StudyPrompt[]{
     return prompt;
   });
 }
+function selectedPractice(id:BeginnerStageId):StudyPrompt[]{
+  const seeds=basicHiragana.filter(seed=>seed.group===id);
+  return foundationApplicationPrompts.filter(prompt=>prompt.skill==="form_selection"
+    &&seeds.some(seed=>prompt.primaryTarget.id==="hiragana-"+seed.kana)).slice(0,2);
+}
 function correctlyAnswered(events:readonly StudyEvent[]):Set<string>{
   return new Set(events.filter(event=>event.result==="correct"&&event.primaryTarget?.kind==="kana"
-    &&typeof event.metadata?.promptId==="string").map(event=>String(event.metadata?.promptId)));
+    &&event.metadata?.nonAuthoritative!==true&&typeof event.metadata?.promptId==="string")
+    .map(event=>String(event.metadata?.promptId)+"|"+event.primaryTarget!.id));
 }
 export function projectBeginnerOverview(events:readonly StudyEvent[]):BeginnerOverview{
   const correct=correctlyAnswered(events);
   let priorCompleted=true;
   const stages:BeginnerStage[]=GROUPS.map(group=>{
-    const prompts=recognitionFor(group.id);
-    const count=prompts.filter(prompt=>correct.has(prompt.id)).length;
+    const prompts=[...recognitionFor(group.id),...selectedPractice(group.id)];
+    const count=prompts.filter(prompt=>correct.has(prompt.id+"|"+prompt.primaryTarget.id)).length;
     const completed=count===prompts.length;
     const stage={id:group.id,title:group.title,correct:count,total:prompts.length,completed,unlocked:priorCompleted};
     priorCompleted=priorCompleted&&completed;
@@ -63,8 +69,7 @@ export function buildBeginnerStage(id:BeginnerStageId,events:readonly StudyEvent
     sourceLabel:"THIEPN original kana foundations"
   };
   const recognize=recognitionFor(id);
-  const forms=foundationApplicationPrompts.filter(prompt=>prompt.skill==="form_selection"
-    &&seeds.some(seed=>prompt.primaryTarget.id==="hiragana-"+seed.kana)).slice(0,2);
+  const forms=selectedPractice(id);
   // Reuse canonical prompt IDs and the existing FSRS writer; no parallel grades or records.
   return [teach,...recognize,...forms];
 }

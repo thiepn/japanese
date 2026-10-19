@@ -24,7 +24,7 @@ export function BeginnerEntry({overview,due,busy,sessionError,onContinue,onRevie
     </div>
     <p className="beginner-entry__progress">
       {overview.completed} of {overview.total} hiragana sound groups completed
-      {current&&current.correct>0?" · "+current.correct+"/"+current.total+" sounds recognized in this group":""}
+      {current&&current.correct>0?" · "+current.correct+"/"+current.total+" answers correct in this group":""}
     </p>
     <progress aria-label="Beginner hiragana groups completed" value={overview.completed} max={overview.total}/>
     {sessionError?<p className="beginner-entry__error" role="alert">The lesson could not be opened. Retry without clearing local progress.</p>:null}
