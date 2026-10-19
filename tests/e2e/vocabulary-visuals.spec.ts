@@ -11,9 +11,9 @@ test("Japanese reference uses opt-in original images without adding images to ev
  await expect(img).toHaveAttribute("alt","Illustration of a red apple");
  await expect(img).toHaveAttribute("src",/\/vocab\/apple\.svg$/);
  await search.fill("友達");
- const train=page.locator(".j7-result").filter({hasText:"友達"}).first();
- await expect(train).toBeVisible({timeout:15000});
- await train.getByRole("option").click();
+ const friend=page.locator(".j7-result").filter({hasText:"友達"}).first();
+ await expect(friend).toBeVisible({timeout:15000});
+ await friend.getByRole("option").click();
  await expect(page.locator(".j7-reference__sheet--lexeme .vocabulary-visual")).toHaveCount(0);
 });
 
@@ -40,10 +40,11 @@ test("blocked optional images leave the original text reference available",async
  await page.getByRole("button",{name:"Library",exact:true}).click();
  const search=page.getByRole("textbox",{name:"Search Japanese"});
  await search.fill("家");
- const word=page.locator(".j7-result").filter({hasText:"家"}).first();
+ const word=page.locator(".j7-result").filter({has:page.getByText("家",{exact:true})}).first();
  await expect(word).toBeVisible({timeout:15000});
  await word.getByRole("option").click();
  const sheet=page.locator(".j7-reference__sheet--lexeme");
  await expect(sheet).toContainText("house");
+ await sheet.scrollIntoViewIfNeeded();
  await expect(sheet.locator(".vocabulary-visual")).toHaveCount(0);
 });
