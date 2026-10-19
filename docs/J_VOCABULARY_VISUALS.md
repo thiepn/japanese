@@ -43,3 +43,10 @@ Reviewed nine original SVG assets at 300×225 raster previews and their reduced 
 Updated the separate illustration cache identifier from `vocab-v1` to `vocab-v2` so devices do not keep the old SVG versions forever. Activation retires the old picture-only cache through the existing prefix filter. This may temporarily remove previously viewed *image* offline copies until visited online again; it does **not** clear app/learner data, review history, backups or the ordinary shell cache. The existing 48-image limit, lazy requests, image failure text fallback and event/grading isolation are preserved.
 
 **Qualification:** static source and original visual previews performed; full project Node 24/pnpm + desktop/Android browser acceptance not available in this container. Do not treat visual preview as actual app acceptance.
+
+### VOC4 executable preview and source-integrity evidence
+
+- Nine corrected SVGs were rendered with locally available CairoSVG and visually inspected in a 3×3 contact sheet. The exact local Git blob SHAs for all nine were compared with GitHub's asset-tree SHAs at the VOC4 branch head; all nine were identical to the committed sources.
+- The same nine exact-source SVGs were displayed in **system Chromium** through an isolated static HTML image harness, at 320, 390, 768 and 1440 px viewports: **36/36 PASS** for successful SVG decode, image-fit bounds and absence of horizontal overflow. This tests original image rendering only, not live Japanese app routes, components, service worker or Android native usage.
+- Total original SVG assets remain **103**, 95,876 bytes in the GitHub tree; maximum file size **3,892 bytes**. No new vocabulary concepts were added while nine ambiguous illustrations were corrected.
+- Local checkout remains blocked by GitHub DNS resolution, Node is 22 rather than project-required 24 and pnpm is absent. Accordingly, full TypeScript/Vite, repository Vitest, desktop/mobile app E2E, real offline browser and Android tests remain **NOT_TESTED**; skipped GitHub CI is not a PASS. Further semantic review and native testing are required before merging/releasing.
