@@ -1,0 +1,38 @@
+/* Readable functional secondary labels after copy reduction.
+   Content is removed in JSX, never visually hidden here. */
+#root .j2-shell small {
+  font-size: 14px !important;
+  line-height: 1.45;
+  letter-spacing: normal;
+}
+#root .j2-shell :is(
+  .course-kicker, .eyebrow, .source-note, .course-note,
+  .j2-account-panel__recovery-note, .j2-account-panel__session p,
+  .j3-route__copy, .j4-hero__mastery span,
+  .j6-cover__meta, .j7-result__match, .j8-crest__evidence,
+  .j11-boundary p, .j11-overview__grid p,
+  .ux1-path-note, .e13-lab__scope, .e14-studio__boundary,
+  .e15-recovery__footnote, .e16-studio__privacy, .e19-writing__disclaimer,
+  .e20-source__boundary
+) {
+  font-size: 14px !important;
+  line-height: 1.5;
+}
+#root .j2-shell :is(.j6-hero__copy, .j4-hero__copy, .j7-library__intro,
+  .j8-hero__copy, .j11-overview__grid, .j2-nav__label) {
+  min-width: 0;
+}
+#root .j2-shell :is(.j11-boundary p, .j6-feature__copy,
+  .ux2-transfer-case__state, .j7-empty, .j2-account-panel__recovery-note) {
+  overflow-wrap: break-word;
+}
+@media (max-width: 760px) {
+  #root .j2-shell :is(.j6-hero, .j4-hero, .j7-library__masthead,
+    .j8-hero) {
+    min-height: 0;
+  }
+  #root .j2-shell :is(.j2-account-panel__recovery-note,
+    .j11-boundary p, .ux1-path-note) {
+    line-height: 1.55;
+  }
+}

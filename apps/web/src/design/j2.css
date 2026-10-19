@@ -227,7 +227,7 @@ html[data-j-theme],html[data-j-theme] body,html[data-j-theme] #root{
   display:flex;
   flex-direction:column;
   gap:6px;
-  padding:28px 18px 22px;
+  padding:16px 18px 22px;
   border-right:1px solid color-mix(in srgb,var(--j-line) 85%,transparent);
   background:
     linear-gradient(180deg,color-mix(in srgb,var(--j-bg-elevated) 72%,transparent),color-mix(in srgb,var(--j-bg) 90%,transparent));

@@ -15,7 +15,7 @@
 
 .j4-hero{
   position:relative;
-  min-height:440px;
+  min-height:340px;
   display:grid;
   grid-template-columns:minmax(0,1.25fr) minmax(230px,.55fr);
   align-items:center;

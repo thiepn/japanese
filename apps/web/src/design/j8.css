@@ -20,7 +20,7 @@
   grid-template-columns:minmax(0,1.05fr) minmax(340px,.95fr);
   gap:30px;
   align-items:stretch;
-  min-height:470px;
+  min-height:390px;
   overflow:hidden;
   padding:clamp(30px,5vw,58px);
   border:1px solid var(--j-line);
