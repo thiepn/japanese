@@ -261,6 +261,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
             {audioState==="playing"?"Playing…":audioPlayed?"Replay pronunciation":"Hear pronunciation"}
           </button>
           <button className="quiet-button audio-inline-slow" type="button" disabled={audioState==="playing"} onClick={()=>void playAudio("slow")}>Slower</button>
+          {audioState==="error"?<p className="audio-error" role="status">Recording failed. Check your connection and retry.</p>:null}
         </div>:null}
 
         {activeStep.facts?.length?<div className="lesson-facts j5-lesson-facts">{activeStep.facts.map((fact)=><div key={fact.label}>
@@ -354,7 +355,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
             <button type="button" disabled={audioState==="playing"} onClick={()=>void playAudio("shadow")}>Shadow ×2</button>
           </div>
           {audioState==="error"?<div className="audio-error j5-audio-error" role="status">
-            <p>Audio is not available yet. Retry when connected, or skip this listening item without creating mastery evidence.</p>
+            <p>{currentPrompt.audio?"Recording failed. Check your connection and retry, or skip without listening evidence.":"Japanese device speech failed. Check your installed voice and media volume, then retry or skip without listening evidence."}</p>
             <button className="quiet-button audio-skip" type="button" onClick={advance}>Skip for now</button>
           </div>:null}
         </div>
