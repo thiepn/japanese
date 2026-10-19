@@ -169,7 +169,7 @@ export function J2AppShell({
           >
             <header className="j2-account-panel__header">
               <div>
-                <p className="j2-account-panel__eyebrow">THIEPN · IDENTITY</p>
+                
                 <h2>Account</h2>
               </div>
               <button aria-label="Close Account panel" className="j2-account-panel__close" onClick={()=>setAccountOpen(false)} type="button">×</button>
@@ -217,7 +217,7 @@ export function J2AppShell({
               {localRecoveryBusy?<p role="status">Preparing your local backup…</p>:null}
               {localRecoveryStatus?<p role="status" aria-live="polite">{localRecoveryStatus}</p>:null}
             </section>:null}
-            <p className="j2-account-panel__footnote">Your study progress remains stored locally on this device. Signing in does not erase it.</p>
+            
           </section>:null}
         </div>
       </div>
@@ -225,10 +225,7 @@ export function J2AppShell({
 
     <div className="j2-workspace">
       {!diagnosticsMode?<nav className="j2-nav" aria-label="Primary">
-        <div className="j2-nav__caption" aria-hidden="true">
-          <span lang="ja">学習</span>
-          <i/>
-        </div>
+        
         {SURFACES.map((item)=><button
           aria-current={!diagnosticsMode&&surface===item.id?"page":undefined}
           aria-label={item.english}
@@ -242,12 +239,9 @@ export function J2AppShell({
             <strong lang="ja">{item.japanese}</strong>
             <small>{item.english}</small>
           </span>
-          <span className="j2-nav__hint" aria-hidden="true">{item.hint}</span>
+          
         </button>)}
-        <div className="j2-nav__footer" aria-hidden="true">
-          <span>日本語</span>
-          <small>study · immerse · grow</small>
-        </div>
+        
       </nav>:null}      <main className={"j2-content"+(diagnosticsMode?" j2-content--diagnostics":"")} id="main-content" tabIndex={-1}>
         <div className={"j9-fusuma j9-fusuma--"+surface.toLowerCase()} key={(diagnosticsMode?"diagnostics":surface)+"-transition"} aria-hidden="true"/>
         {accountStatus?<p className="j2-account-status" role="status">{accountStatus}</p>:null}
