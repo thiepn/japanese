@@ -181,9 +181,9 @@ export function E16ConversationStudio({cases,busy,workspaceId,workspaceCurrent,o
   const advance=()=>move(turnIndex+1);
   return <section className="e16-studio" aria-labelledby="e16-studio-title">
     <header className="e16-studio__header">
-      <p className="j4-kicker">E16 · ORIGINAL DIALOGUE LISTENING LAB</p>
+      
       <h2 id="e16-studio-title">Follow the whole conversation, one speaker at a time</h2>
-      <p>The source's complete exchange, not a simulated chatbot. Hear a Japanese turn without a transcript, try to respond or shadow it, then reveal the exact wording, meaning and intention. Continue into E14 to save your actual practice.</p>
+      
     </header>
     {!chosen||!original
       ?<p role="status">Unlock one original E11 situation through its linked listening and reading prerequisites first. The app does not substitute an invented dialogue.</p>
@@ -300,7 +300,7 @@ export function E16ConversationStudio({cases,busy,workspaceId,workspaceCurrent,o
             </button>
             {answerRevealed?<div className="e17-notebook__answer">
               <p><strong>Original answer:</strong> <span lang="ja">{originalQuestion.answer}</span></p>
-              <p>The source identifies these misleading alternatives:</p>
+              
               <ul>{originalQuestion.misconceptionExplanations.map(x=><li key={x}>{x}</li>)}</ul>
               <p>Compare your wording yourself. This does not calculate correctness, mark comprehension, or create an event. Continue into E14 for the original native answer check.</p>
             </div>:null}
@@ -321,7 +321,7 @@ export function E16ConversationStudio({cases,busy,workspaceId,workspaceCurrent,o
           <p><strong>Practical action:</strong> {original.pragmaticDecision}</p>
         </details>
         <div className="e16-studio__handoff">
-          <p>Ready to choose the original responses and write for <strong>{original.writingAudience}</strong>? Continue into the existing native E14 StudyPlayer, which records your answers privately.</p>
+          
           <button type="button" disabled={busy||noteBusy} onClick={()=>{stopVoice();onHandoff(chosen.id);}}>
             Continue to saved listening, replies and writing
           </button>

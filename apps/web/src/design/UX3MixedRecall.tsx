@@ -39,7 +39,7 @@ export function UX3MixedRecall({e02,e03,e04,busy,onStart,onSource}:Props){
  }
  return <section className="ux3-mixed" aria-labelledby="ux3-mixed-title">
   <header className="ux3-mixed__header">
-   <div><p className="j4-kicker">ORIGINAL A1–A2 · CROSS-SITUATION RETRIEVAL</p>
+   <div>
     <h2 id="ux3-mixed-title">Recall across real situations</h2>
     <p>Interleave original listening, reading and bounded Japanese responses from two or three completed lessons. Unlike a repeat of one dialogue, the next question can change its situation. This repeats existing source questions, not a new unseen transfer.</p>
    </div>
