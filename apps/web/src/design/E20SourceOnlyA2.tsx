@@ -171,6 +171,7 @@ export function E20SourceOnlyA2({onOriginalPreview,busy,requested}:Props){
   <div className="e20-source__stage" aria-live="polite">
    <div className="e20-source__stage-head">
     <div>
+     <p className="e20-source__stage-progress" role="status">Step {phaseIndex+1} of {E20_STAGES.length} · Unscored</p>
      <h3>{E20_STAGES[phaseIndex]?.title} · {current.title}</h3>
      <p>{E20_STAGES[phaseIndex]?.description}</p>
     </div>

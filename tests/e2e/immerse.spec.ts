@@ -4,7 +4,7 @@ test("Immerse exposes graded A1→C1 autonomy and long-form missions without cre
   await page.goto("./");
   await page.getByRole("button",{name:"Immerse"}).click();
 
-  await expect(page.getByRole("heading",{name:/Enter Japanese/})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Immersion",exact:true})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Long-form B2 task chains"})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Read across a theme"})).toBeVisible();
   await expect(page.locator(".autonomy-missions").first().locator(".mission-card")).toHaveCount(6);

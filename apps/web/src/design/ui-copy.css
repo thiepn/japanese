@@ -1,5 +1,8 @@
 /* Readable functional secondary labels after copy reduction.
    Content is removed in JSX, never visually hidden here. */
+#root .j2-shell .ux1-native-queue { min-height: 48px !important; }
+#root .j2-shell .ux1-native-queue:focus-visible { outline: 3px solid var(--j-focus); outline-offset: 2px; }
+#root .j2-shell .e20-source__stage-progress { font-size: 14px; line-height: 1.5; margin: 0 0 6px; color: var(--j-fg-muted); }
 #root .j2-shell small {
   font-size: 14px !important;
   line-height: 1.45;
