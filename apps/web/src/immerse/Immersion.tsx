@@ -1,6 +1,7 @@
 import "../design/j6.css";
 import { useEffect,useLayoutEffect,useMemo,useRef,useState } from "react";
 import { getDefaultAudioProvider } from "@thiepn/audio";
+import {createDeviceSpeechPlayback} from "../study/deviceSpeech";
 import { J6ImmersionHome,J6ReaderView } from "../design/J6Immersion";
 import {E07JourneyPanel} from "../design/E07JourneyPanel";
 import type {E07Journey,E07Action} from "../study/e07LearningRoute";
@@ -40,7 +41,7 @@ export function Immersion({e07,onOpenE07,e06,onStartE06,onStartE11Micro,onStartE
   const extensiveTracks=useMemo(()=>progress?buildExtensiveTracks(progress):[],[progress]);
   const audioProvider=useRef(getDefaultAudioProvider());
   const playbackFence=useRef(new ReaderPlaybackFence());
-  const cancelSpeechWait=useRef<(()=>void)|null>(null);
+  const deviceSpeech=useRef(createDeviceSpeechPlayback());
   const catalogScrollY=useRef<number|null>(null);
   const readerWasOpen=useRef(false);
 
@@ -54,18 +55,14 @@ export function Immersion({e07,onOpenE07,e06,onStartE06,onStartE11Micro,onStartE
     void refresh();
     return()=>{
       playbackFence.current.invalidate();
-      cancelSpeechWait.current?.();
-      cancelSpeechWait.current=null;
+      deviceSpeech.current.stop();
       audioProvider.current.stop();
-      if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();
     };
   },[]);
   function stopPlayback(){
     playbackFence.current.invalidate();
-    cancelSpeechWait.current?.();
-    cancelSpeechWait.current=null;
+    deviceSpeech.current.stop();
     audioProvider.current.stop();
-    if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();
     setSpeaking(false);setSpeakingSegment(null);
   }
   // Reader mounts in place of a scrolled catalogue; reset before paint.
@@ -126,29 +123,18 @@ export function Immersion({e07,onOpenE07,e06,onStartE06,onStartE11Micro,onStartE
       }
       return;
     }
-    if(typeof speechSynthesis==="undefined"){
-      if(playbackFence.current.accepts(epoch)){setAudioError("Japanese speech synthesis is unavailable in this browser.");setSpeaking(false);}
-      return;
-    }
     try{
-      speechSynthesis.cancel();
-      const utterance=new SpeechSynthesisUtterance(sourceView.joinedJapanese);
-      utterance.lang="ja-JP";utterance.rate=rate;
-      const japanese=speechSynthesis.getVoices().find((voice)=>voice.lang.toLowerCase().startsWith("ja"));
-      if(japanese)utterance.voice=japanese;
-      utterance.onend=()=>{
-        if(!playbackFence.current.accepts(epoch))return;
-        setSpeaking(false);setListeningPlayed(true);
-        void recordListeningExposure(sourceView.text.id,rate,"speech_synthesis")
-          .then(()=>{if(playbackFence.current.accepts(epoch))void refresh();})
-          .catch(()=>{if(playbackFence.current.accepts(epoch))setAudioError("Listening progress could not be saved.");});
-      };
-      utterance.onerror=()=>{
-        if(playbackFence.current.accepts(epoch)){setAudioError("Japanese speech synthesis failed. Retry or read instead.");setSpeaking(false);}
-      };
-      speechSynthesis.speak(utterance);
-    }catch{
-      if(playbackFence.current.accepts(epoch)){setAudioError("Japanese speech synthesis failed. Retry or read instead.");setSpeaking(false);}
+      const result=await deviceSpeech.current.play([sourceView.joinedJapanese],{rate,language:"ja-JP"});
+      if(result!=="completed"||!playbackFence.current.accepts(epoch))return;
+      setListeningPlayed(true);
+      await recordListeningExposure(sourceView.text.id,rate,"speech_synthesis");
+      if(playbackFence.current.accepts(epoch))void refresh();
+    }catch(error){
+      if(playbackFence.current.accepts(epoch))setAudioError(error instanceof Error&&error.message==="DEVICE_SPEECH_UNAVAILABLE"
+        ?"Japanese speech synthesis is unavailable in this browser."
+        :"Japanese speech synthesis failed. Retry or read instead.");
+    }finally{
+      if(playbackFence.current.accepts(epoch))setSpeaking(false);
     }
   }
 
@@ -166,25 +152,11 @@ export function Immersion({e07,onOpenE07,e06,onStartE06,onStartE11Micro,onStartE
         if(!playbackFence.current.accepts(epoch))return;
         await recordListeningSegmentReplay(sourceView.text.id,sentenceId,rate,repeats,"recorded");
       }else{
-        if(typeof speechSynthesis==="undefined"){
-          throw Error("SPEECH_SYNTHESIS_UNAVAILABLE");
-        }
-        for(let index=0;index<Math.max(1,Math.min(3,repeats));index++){
-          if(!playbackFence.current.accepts(epoch))return;
-          await new Promise<void>((resolve,reject)=>{
-            const utterance=new SpeechSynthesisUtterance(item.sentence.text);utterance.lang="ja-JP";utterance.rate=rate;
-            const japanese=speechSynthesis.getVoices().find((voice)=>voice.lang.toLowerCase().startsWith("ja"));if(japanese)utterance.voice=japanese;
-            let settled=false;
-            const done=(error=false)=>{
-              if(settled)return;settled=true;
-              cancelSpeechWait.current=null;
-              if(error)reject(Error("SPEECH_SYNTHESIS_FAILED"));else resolve();
-            };
-            cancelSpeechWait.current=()=>done();
-            utterance.onend=()=>done();utterance.onerror=()=>done(true);
-            try{speechSynthesis.speak(utterance);}catch{done(true);}
-          });
-        }
+        const result=await deviceSpeech.current.play(
+          Array(Math.max(1,Math.min(3,repeats))).fill(item.sentence.text),
+          {rate,language:"ja-JP"}
+        );
+        if(result!=="completed")return;
         if(!playbackFence.current.accepts(epoch))return;
         await recordListeningSegmentReplay(sourceView.text.id,sentenceId,rate,repeats,"speech_synthesis");
       }
