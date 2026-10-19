@@ -86,3 +86,29 @@ test("VOC4 rebuilt learning images retain meaningful accessible descriptions",as
    await expect.poll(async()=>img.evaluate(el=>(el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
  }
 });
+
+test.describe("Vocabulary illustration reconnection",()=>{
+ test.use({serviceWorkers:"block"});
+ test("retries an optional failed image on reconnect without changing its text reference",async({page})=>{
+   let disconnected=true;
+   await page.route("**/vocab/apple.svg",route=>disconnected?route.abort("internetdisconnected"):route.continue());
+   await page.goto("./");
+   await page.getByRole("button",{name:"Library",exact:true}).click();
+   const search=page.getByRole("textbox",{name:"Search Japanese"});
+   await search.fill("りんご");
+   const word=page.locator(".j7-result.result-lexeme").filter({has:page.getByText("りんご",{exact:true})}).first();
+   await expect(word).toBeVisible({timeout:15000});
+   await word.getByRole("option").click();
+   const sheet=page.locator(".j7-reference__sheet--lexeme");
+   const image=sheet.locator(".vocabulary-visual img");
+   await image.scrollIntoViewIfNeeded();
+   await expect(sheet.locator(".vocabulary-visual")).toHaveCount(0);
+   await expect(sheet).toContainText("apple");
+   disconnected=false;
+   await page.evaluate(()=>window.dispatchEvent(new Event("online")));
+   await expect(image).toHaveAttribute("src",/\/vocab\/apple\.svg$/);
+   await image.scrollIntoViewIfNeeded();
+   await expect.poll(async()=>image.evaluate(el=>(el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+   await expect(sheet).toContainText("apple");
+ });
+});
