@@ -1,4 +1,6 @@
 import { entityKey } from "@thiepn/domain";
+import {countUX1SavedAnswersToday,projectUX1Engagement,type UX1Engagement} from "./ux1Engagement";
+export type {UX1Engagement} from "./ux1Engagement";
 import { getJapaneseDeviceId } from "../deviceIdentity";
 import { replayStudyEvents, type LearnerState } from "@thiepn/learner-engine";
 import { getMemoryTrace, listMemoryTraces, listStudyEvents, saveStudyReview } from "@thiepn/local-db";
@@ -20,6 +22,30 @@ import { productivePracticeSession,productiveTaskSession,productivePrompts } fro
 import { lexicalChunkLessons,lexicalChunkMeaningPrompts,lexicalChunkActivePrompts,lexicalChunkTransferPrompts,lexicalChunkPrompts,lexicalFluencySession } from "./lexicalFluency";
 import { buildNextRealWorldChainSession,buildP9QualificationSession } from "./realWorldPerformance";
 import { c1DiscoursePrompts,c1FoundationPractice } from "./c1Foundation";
+import {buildE01Journey,buildE01DelayedJourney,e01ReviewPrompts,getE01Progress,type E01Progress} from "./a1Excellence";
+export type {E01Progress} from "./a1Excellence";
+import {buildE02Journey,buildE02DelayedJourney,buildE02Preview,e02ReviewPrompts,getE02Overview,type E02Overview} from "./a1ExcellenceCourse";
+export type {E02Overview} from "./a1ExcellenceCourse";
+import {buildE03Journey,buildE03DelayedJourney,buildE03Preview,e03ReviewPrompts,getE03Overview,type E03Overview} from "./a2ExcellenceCourse";
+export type {E03Overview} from "./a2ExcellenceCourse";
+import {buildE04Journey,buildE04Delayed,buildE04Preview,e04ReviewPrompts,getE04Overview,type E04Overview} from "./a2ExcellenceAdvancedCourse";
+export type {E04Overview} from "./a2ExcellenceAdvancedCourse";
+import {buildE05RepairJourney,getE05Evidence,type E05Evidence} from "./e05AdaptiveRecall";
+export type {E05Evidence} from "./e05AdaptiveRecall";
+import {buildE06Journey,buildE11OptionalSession,buildE06NextDailyStage,buildE06DailyStage,buildE06Preview,buildE06Delayed,buildE06NextDelayedStage,buildE06DelayedStage,getE06Overview,e06ReviewPrompts,type E06Overview} from "./e06IndependentCourse";
+import {buildE13PracticalMix,type E13PracticeMode} from "./e13PracticalMixer";
+import {buildE18OriginalMixedReview,type E18Mode} from "./e18OriginalMixedReview";
+import {buildE19WritingSession,projectE19Overview,type E19Overview} from "./e19SourceWriting";
+export type {E19Overview} from "./e19SourceWriting";
+export type {E18Mode} from "./e18OriginalMixedReview";
+import {buildE14HandoffSession,eligibleE14Cases,projectE14Review,type E14HandoffMode,type E14HandoffReview} from "./e14ListeningHandoff";
+export type {E14HandoffMode,E14HandoffReview} from "./e14ListeningHandoff";
+import {buildE15SourceRecovery,type E15Focus} from "./e15ContextRecovery";
+export type {E15Focus} from "./e15ContextRecovery";
+export type {E13PracticeMode} from "./e13PracticalMixer";
+import type {E10StageId,E10DelayedId} from "./e10DailyStages";
+export type {E10StageId,E10DelayedId} from "./e10DailyStages";
+export type {E06Overview} from "./e06IndependentCourse";
 import { buildC1SynthesisSession } from "./c1Synthesis";
 
 export const GUEST_ACCOUNT_ID="00000000-0000-4000-8000-000000000001";
@@ -85,7 +111,7 @@ function foundationApplicationPool():StudyPrompt[]{
   return [...pronunciationPerceptionPrompts,...foundationApplicationPrompts,...vocabularyApplicationPrompts,...conjugationPrompts,...lexicalChunkPrompts,...productivePrompts,...c1DiscoursePrompts];
 }
 function allPrompts():StudyPrompt[]{
-  return [...foundationPrompts,...vocabularyMeaningPrompts,...foundationApplicationPool(),...allGrammarCoursePrompts];
+  return [...foundationPrompts,...vocabularyMeaningPrompts,...foundationApplicationPool(),...allGrammarCoursePrompts,...e01ReviewPrompts,...e02ReviewPrompts,...e03ReviewPrompts,...e04ReviewPrompts,...e06ReviewPrompts];
 }
 
 export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
@@ -113,6 +139,76 @@ export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
   if(queue.length<MAX_QUEUE_SIZE)addUnique(queue,due.slice(0,MAX_QUEUE_SIZE));
   return insertFirstExposureLessons(queue,byId,privatePrompts);
 }
+
+export async function buildE11MicroSession(id:string):Promise<StudyStep[]>{return buildE11OptionalSession(id,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function getE19WritingOverview():Promise<E19Overview>{
+ const owner=DEVELOPMENT_ACCOUNT_ID;
+ const events=await listStudyEvents(owner);
+ if(DEVELOPMENT_ACCOUNT_ID!==owner)throw Error("E19_WORKSPACE_CHANGED_DURING_READ");
+ return projectE19Overview(owner,events);
+}
+export async function buildE19WritingPractice(key:string):Promise<StudyStep[]>{
+ const owner=DEVELOPMENT_ACCOUNT_ID;
+ const events=await listStudyEvents(owner);
+ if(DEVELOPMENT_ACCOUNT_ID!==owner)throw Error("E19_WORKSPACE_CHANGED_DURING_BUILD");
+ return buildE19WritingSession(key,owner,events);
+}
+export async function buildE18MixedReviewSession(keys:readonly string[],mode:E18Mode):Promise<StudyStep[]>{
+ const owner=DEVELOPMENT_ACCOUNT_ID;
+ const events=await listStudyEvents(owner);
+ if(DEVELOPMENT_ACCOUNT_ID!==owner)throw Error("E18_WORKSPACE_CHANGED_DURING_BUILD");
+ return buildE18OriginalMixedReview(keys,mode,owner,events);
+}
+export async function buildE13PracticalSession(caseIds:readonly string[],mode:E13PracticeMode):Promise<StudyStep[]>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const events=await listStudyEvents(owner);
+  if(DEVELOPMENT_ACCOUNT_ID!==owner)throw Error("E13_WORKSPACE_CHANGED_DURING_BUILD");
+  return buildE13PracticalMix(caseIds,mode,events);
+}
+export async function buildE14HandoffPractice(caseId:string,mode:E14HandoffMode):Promise<StudyStep[]>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const events=await listStudyEvents(owner);
+  if(DEVELOPMENT_ACCOUNT_ID!==owner)throw Error("E14_WORKSPACE_CHANGED_DURING_BUILD");
+  return buildE14HandoffSession(caseId,mode,owner,events);
+}
+export async function getE14PrivateHandoffReviews():Promise<E14HandoffReview[]>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const events=await listStudyEvents(owner);
+  if(DEVELOPMENT_ACCOUNT_ID!==owner)throw Error("E14_WORKSPACE_CHANGED_DURING_READ");
+  const eligible=eligibleE14Cases(getE06Overview(events).cases);
+  return eligible.map(c=>projectE14Review(c.id,owner,events));
+}
+export async function buildE15RecoverySession(caseId:string,focus:E15Focus):Promise<StudyStep[]>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const events=await listStudyEvents(owner);
+  if(DEVELOPMENT_ACCOUNT_ID!==owner)throw Error("E15_WORKSPACE_CHANGED_DURING_BUILD");
+  return buildE15SourceRecovery(caseId,focus,owner,events);
+}
+export async function buildE06Session(id:string):Promise<StudyStep[]>{return buildE06NextDailyStage(id,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function buildE10DailyStageSession(id:string,stageId:E10StageId):Promise<StudyStep[]>{return buildE06DailyStage(id,stageId,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function buildE06FullSession(id:string):Promise<StudyStep[]>{return buildE06Journey(id,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function buildE06PreviewSession(id:string):Promise<StudyStep[]>{return buildE06Preview(id);}
+export async function buildE06DelayedSession(id:string):Promise<StudyStep[]>{return buildE06NextDelayedStage(id,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function buildE10DelayedStageSession(id:string,stageId:E10DelayedId):Promise<StudyStep[]>{return buildE06DelayedStage(id,stageId,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function buildE06FullDelayedSession(id:string):Promise<StudyStep[]>{return buildE06Delayed(id,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function getE06Evidence():Promise<E06Overview>{return getE06Overview(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function buildE05RepairSession():Promise<StudyStep[]>{return buildE05RepairJourney(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function getE05Dashboard():Promise<E05Evidence>{return getE05Evidence(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function buildE04Session(sceneId:string):Promise<StudyStep[]>{return buildE04Journey(sceneId);}
+export async function buildE04PreviewSession(sceneId:string):Promise<StudyStep[]>{return buildE04Preview(sceneId);}
+export async function buildE04DelayedSession(sceneId:string):Promise<StudyStep[]>{return buildE04Delayed(sceneId,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function getE04Evidence():Promise<E04Overview>{return getE04Overview(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function buildE03PreviewSession(sceneId:string):Promise<StudyStep[]>{return buildE03Preview(sceneId);}
+export async function buildE03Session(sceneId:string):Promise<StudyStep[]>{return buildE03Journey(sceneId);}
+export async function buildE03DelayedSession(sceneId:string):Promise<StudyStep[]>{return buildE03DelayedJourney(sceneId,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function getE03Evidence():Promise<E03Overview>{return getE03Overview(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function buildE02PreviewSession(sceneId:string):Promise<StudyStep[]>{return buildE02Preview(sceneId);}
+export async function buildE02Session(sceneId:string):Promise<StudyStep[]>{return buildE02Journey(sceneId);}
+export async function buildE02DelayedSession(sceneId:string):Promise<StudyStep[]>{return buildE02DelayedJourney(sceneId,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function getE02Evidence():Promise<E02Overview>{return getE02Overview(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function buildE01Session():Promise<StudyStep[]>{return buildE01Journey();}
+export async function buildE01DelayedSession():Promise<StudyStep[]>{return buildE01DelayedJourney(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
+export async function getE01Evidence():Promise<E01Progress>{return getE01Progress(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
 
 export async function buildCourseUnitSession(unitId:string):Promise<StudyStep[]>{
   return courseUnitSession(unitId);
@@ -173,16 +269,21 @@ export async function getC1FoundationAssessmentProgress():Promise<MilestoneAsses
   return getC1FoundationProgress(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));
 }
 
+/** Motivation is derived from the same owner-owned events, never a separate store. */
+export async function getUX1Engagement(now=new Date()):Promise<UX1Engagement>{
+ const owner=DEVELOPMENT_ACCOUNT_ID;
+ const events=await listStudyEvents(owner);
+ if(DEVELOPMENT_ACCOUNT_ID!==owner)throw new Error("UX1_ENGAGEMENT_WORKSPACE_CHANGED");
+ return projectUX1Engagement(events,now);
+}
+
 // Derive the daily counter from durable, account-scoped events. React component
 // state must never be the authority for progress displayed after a reload.
 export async function getCompletedTodayCount(now=new Date()):Promise<number>{
-  const today=now.toDateString();
-  const events=await listStudyEvents(DEVELOPMENT_ACCOUNT_ID);
-  return events.filter((event)=>{
-    if(event.result!=="correct"&&event.result!=="incorrect")return false;
-    const occurredAt=new Date(event.occurredAt);
-    return !Number.isNaN(occurredAt.getTime())&&occurredAt.toDateString()===today;
-  }).length;
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const events=await listStudyEvents(owner);
+  if(DEVELOPMENT_ACCOUNT_ID!==owner)throw new Error("UX1_DAILY_COUNT_WORKSPACE_CHANGED");
+  return countUX1SavedAnswersToday(events,now);
 }
 
 export async function getStudySummary(now=new Date()):Promise<StudySummary>{
@@ -356,7 +457,9 @@ export function recordStudyAnswer(input:{prompt:StudyPrompt;response:string;resu
     const now=new Date().toISOString();
     const base=existing??scheduler.create({id:traceId,userId:accountId,entity:input.prompt.primaryTarget,skillDimension:input.prompt.skill,cueFamily:input.prompt.cueFamily},now);
     const event=createStudyEvent({id:crypto.randomUUID(),userId:accountId,deviceId:DEVELOPMENT_DEVICE_ID,prompt:input.prompt,response:input.response,occurredAt:now,responseTimeMs:input.responseTimeMs,baseRevision:base.revision});
-    const trace=input.prompt.eventMetadata?.schedulerExcluded===true?undefined:scheduler.review(base,{grade:gradeFor(input.result),reviewedAt:now});
+    const nonAuthoritative=input.prompt.eventMetadata?.nonAuthoritative===true;
+    if(nonAuthoritative){event.result="skipped";event.metadata={...event.metadata,structuralResult:input.result,nonAuthoritative:true};}
+    const trace=nonAuthoritative||input.prompt.eventMetadata?.schedulerExcluded===true?undefined:scheduler.review(base,{grade:gradeFor(input.result),reviewedAt:now});
     await saveStudyReview(event,trace);
   });
   pendingReviews.set(key,attempt);

@@ -3,7 +3,7 @@ import {expect,test} from "@playwright/test";
 test("J5 turns Study Player into a focused task chamber",async({page})=>{
   await page.goto("./");
 
-  await page.getByRole("button",{name:/Continue today’s study|Review anyway/}).click();
+  await page.locator(".ux1-native-queue").click();
 
   const study=page.locator(".j5-study");
   await expect(study).toBeVisible();
@@ -24,6 +24,10 @@ test("J5 turns Study Player into a focused task chamber",async({page})=>{
 test("J5 uses a manuscript treatment for connected writing",async({page})=>{
   await page.goto("./");
   await page.getByRole("button",{name:"Learn",exact:true}).click();
+  // Original full-course tools are deliberately collapsed on mobile in UX-1.
+  await expect(page.locator(".j4-learn")).toBeVisible();
+  const fullCourse=page.getByRole("button",{name:"Open full course and advanced practice"});
+  if(await fullCourse.isVisible())await fullCourse.click();
 
   const writing=page.locator(".j4-practice__quick button").filter({hasText:"Writing"});
   await writing.click();
@@ -43,7 +47,7 @@ test("J5 uses a manuscript treatment for connected writing",async({page})=>{
 test("J5 carries the J-series theme into the isolated study session",async({page})=>{
   await page.goto("./");
   await page.getByRole("button",{name:"Use dark theme"}).click();
-  await page.getByRole("button",{name:/Continue today’s study|Review anyway/}).click();
+  await page.locator(".ux1-native-queue").click();
 
   await expect(page.locator(".j5-study")).toHaveAttribute("data-j-theme","dark");
   await expect(page.locator("html")).toHaveAttribute("data-j-theme","dark");
@@ -57,7 +61,7 @@ test("J5 remains a single-column task chamber on mobile",async({page},testInfo)=
   test.skip(testInfo.project.name==="desktop-chromium","mobile chamber qualification");
 
   await page.goto("./");
-  await page.getByRole("button",{name:/Continue today’s study|Review anyway/}).click();
+  await page.locator(".ux1-native-queue").click();
 
   const exit=await page.getByRole("button",{name:"Exit"}).boundingBox();
   expect(exit?.height??0).toBeGreaterThanOrEqual(40);
@@ -75,7 +79,7 @@ test("J5 remains a single-column task chamber on mobile",async({page},testInfo)=
 test("J5 reduced-motion mode preserves all study controls",async({page})=>{
   await page.emulateMedia({reducedMotion:"reduce"});
   await page.goto("./");
-  await page.getByRole("button",{name:/Continue today’s study|Review anyway/}).click();
+  await page.locator(".ux1-native-queue").click();
 
   await expect(page.getByRole("button",{name:"Exit"})).toBeVisible();
   await expect(page.getByRole("button",{name:"Continue"})).toBeVisible();

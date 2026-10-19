@@ -1,11 +1,15 @@
+import "../design/j6.css";
 import { useEffect,useLayoutEffect,useMemo,useRef,useState } from "react";
 import { getDefaultAudioProvider } from "@thiepn/audio";
 import { J6ImmersionHome,J6ReaderView } from "../design/J6Immersion";
+import {E07JourneyPanel} from "../design/E07JourneyPanel";
+import type {E07Journey,E07Action} from "../study/e07LearningRoute";
 import { buildExtensiveTracks } from "./extensive";
 import { ReaderPlaybackFence } from "./playbackFence";
 import { getAdaptiveImmersionRecommendation,type AdaptiveImmersionRecommendation } from "./adaptive";
 import { getAutonomyMissionProgress,type AutonomyMissionProgress } from "../study/autonomyMissions";
 import type { ReadingQuestion } from "@thiepn/content-schema";
+import type {E02Overview,E03Overview,E04Overview,E05Evidence,E06Overview} from "../study/runtime";
 import {
   buildReaderText,getImmersionProgress,gradeReadingQuestion,recordListeningExposure,recordListeningSegmentReplay,recordMinedWord,
   recordReaderLookup,recordReadingExposure,recordTextCheck,
@@ -15,7 +19,7 @@ import {
 type CheckMode="reading"|"listening";
 interface SelectedToken { token:ReaderToken; sentenceId:string; }
 
-export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coach}:{onStartProductionTask:(taskId:string)=>void;onStartC1Synthesis:(packId:string)=>void;onOpenC1Coach:(chainId:string)=>void}){
+export function Immersion({e07,onOpenE07,e06,onStartE06,onStartE11Micro,onStartE06Delayed,onStartE06Preview,e05,onStartE05Repair,onStartE03Preview,e04,onStartE04,onStartE04Preview,e03,onStartE03,e02,onStartE02,onStartE01,onStartProductionTask,onStartC1Synthesis,onOpenC1Coach}:{e07:E07Journey;onOpenE07:(action:E07Action)=>void;e06:E06Overview;onStartE06:(id:string)=>void;onStartE11Micro:(id:string)=>void;onStartE06Delayed:(id:string)=>void;onStartE06Preview:(id:string)=>void;e05:E05Evidence;onStartE05Repair:()=>void;onStartE03Preview:(id:string)=>void;e04:E04Overview;onStartE04:(id:string)=>void;onStartE04Preview:(id:string)=>void;e03:E03Overview;onStartE03:(id:string)=>void;e02:E02Overview;onStartE02:(id:string)=>void;onStartE01:()=>void;onStartProductionTask:(taskId:string)=>void;onStartC1Synthesis:(packId:string)=>void;onOpenC1Coach:(chainId:string)=>void}){
   const [progress,setProgress]=useState<ImmersionProgress|null>(null);
   const [recommendation,setRecommendation]=useState<AdaptiveImmersionRecommendation|null>(null);
   const [missions,setMissions]=useState<AutonomyMissionProgress[]>([]);
@@ -212,7 +216,29 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
     listeningPlayed={listeningPlayed} speaking={speaking} speak={speak} audioError={audioError} checkMode={checkMode} startCheck={startCheck}
     questionIndex={questionIndex} feedback={feedback} answerQuestion={answerQuestion} nextQuestion={nextQuestion} speakingSegment={speakingSegment} speakSegment={speakSegment}/>;
 
-  return <J6ImmersionHome
+  return <>
+    <E07JourneyPanel route={e07} onActivate={onOpenE07} busy={false} variant="immerse"/>
+    <details className="e07-track-list">
+      <summary>Browse the original conversation and ungraded reading collections</summary>
+    {e06.total>0?<section className="e06-entry" aria-label="Independent A1 and A2 cumulative immersion">
+      <div><strong>Cumulative listening · Reading · Communication</strong><p>Three original conversations per linked case, separate practical notices, meaningful lexical and grammar contrasts, independent writing and delayed cross-situation retrieval. Device synthesis is not a native recording.</p></div>
+      <div className="e06-entry__actions">{e06.nextId?<button type="button" onClick={()=>onStartE06(e06.nextId!)}>Short lesson: {e06.cases.find(c=>c.id===e06.nextId)?.dailyStages.find(s=>s.id===e06.cases.find(c=>c.id===e06.nextId)?.nextDailyStage)?.title??e06.cases.find(c=>c.id===e06.nextId)?.title}</button>:null}
+      {e06.nextDelayedId?<button type="button" onClick={()=>onStartE06Delayed(e06.nextDelayedId!)}>Open delayed transfer</button>:null}
+      {e06.cases.find(c=>c.canDoId&&c.prerequisiteReady)?<button type="button" onClick={()=>onStartE11Micro(e06.cases.find(c=>c.canDoId&&c.prerequisiteReady)!.id)}>E11 · New original dialogue + notice</button>:null}
+      {!e06.nextId&&e06.unlinked>0?<button type="button" onClick={()=>onStartE06Preview(e06.cases.find(c=>c.canDoId===null)!.id)}>Read original source-only case</button>:null}</div>
+    </section>:null}
+    {e05.repair.pending>0?<section className="e05-panel" aria-label="Alternative original reading and listening correction"><div><strong>Retrieve in a different situation</strong><p>{e05.repair.pending} misconceptions have an original alternative question ready. Normal FSRS reviews remain authoritative.</p></div><button type="button" onClick={onStartE05Repair}>Repair a missed cue</button></section>:null}
+    {e03.unmappedScenes.length>0?<section className="e05-panel" aria-label="Original ungraded A2 dialogue"><div><strong>A2 reading without an invented Can-do</strong><p>Read the original dialogue and connected passage without fabricated mastery.</p></div><button type="button" onClick={()=>onStartE03Preview(e03.unmappedScenes[0]!.id)}>Read {e03.unmappedScenes[0]!.title}</button></section>:null}
+    {e04.nextSceneId||e04.unmapped.length?<section className="e04-entry" aria-label="Original A2.2 connected listening and reading">
+      <div><strong>A2.2-oriented problem-solving texts</strong><p>Longer original exchanges and practical notices with reason-giving, tactful requests and decision-making. Audio is device-synthesized, not native recorded speech.</p></div>
+      <div className="e04-entry__actions">{e04.nextSceneId?<button type="button" onClick={()=>onStartE04(e04.nextSceneId!)}>Study {e04.scenes.find(s=>s.id===e04.nextSceneId)?.title}</button>:null}
+        {e04.unmapped[0]?<button type="button" onClick={()=>onStartE04Preview(e04.unmapped[0]!.id)}>Read: {e04.unmapped[0]!.title}</button>:null}</div>
+    </section>:null}
+    {e03.nextSceneId?<section className="e03-entry" aria-label="A2.1 original audio and connected reading"><div><strong>A2.1 · Longer listening and reading</strong><p>Listen to a multi-turn original dialogue before revealing the transcript, then read a separate connected passage and produce a response. Synthetic device audio is explicitly labeled.</p></div><div className="e03-entry__actions"><button type="button" onClick={()=>onStartE03(e03.nextSceneId!)}>Open: {e03.scenes.find(s=>s.id===e03.nextSceneId)?.title}</button></div></section>:null}
+    {e02.nextSceneId?<section className="e02-entry" aria-label="A1 original dialogue and listening path"><div><strong>Original beginner dialogues</strong><p>Listen first, then read, explore grammar and respond without a script. Synthetic device speech is identified, not claimed as native audio.</p></div><div className="e02-entry__actions"><button type="button" onClick={()=>onStartE02(e02.nextSceneId!)}>Open: {e02.scenes.find(s=>s.id===e02.nextSceneId)?.title}</button></div></section>:null}
+    <section className="e01-entry" aria-label="A1 contextual listening journey"><div className="e01-entry__copy"><strong>First conversations · Listening to communication</strong><p>Start with an original Japanese dialogue before revealing text. Device Japanese speech is synthetic, never presented as licensed native recording.</p></div><div className="e01-entry__actions"><button type="button" onClick={onStartE01}>Start A1 dialogue</button></div></section>
+    </details>
+    <J6ImmersionHome
     progress={progress}
     recommendation={recommendation}
     missions={missions}
@@ -223,5 +249,6 @@ export function Immersion({onStartProductionTask,onStartC1Synthesis,onOpenC1Coac
     onOpenC1Coach={onOpenC1Coach}
     preferredNativeSet={preferredNativeSet}
     onPreferredNativeSet={setPreferredNativeSet}
-  />;
+  />
+  </>;
 }

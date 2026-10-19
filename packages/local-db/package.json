@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "exports": { ".": "./src/index.ts" },
+  "exports": { ".": "./src/index.ts", "./backup": "./src/backup.ts" },
   "dependencies": {
     "@thiepn/domain": "workspace:*",
     "@thiepn/scheduler": "workspace:*",

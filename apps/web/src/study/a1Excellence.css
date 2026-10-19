@@ -1,0 +1,7 @@
+/* E01 stays within the existing editorial shell and native Study Player. */
+.e01-entry{display:flex;gap:1rem;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:1rem 1.25rem;border:1px solid var(--border,rgba(120,120,120,.35));margin:1rem 0;background:var(--surface,transparent)}
+.e01-entry__copy{max-width:49rem}.e01-entry__copy strong{display:block;margin-bottom:.35rem}.e01-entry__copy p{margin:.25rem 0;color:var(--text-muted,inherit);line-height:1.5}
+.e01-entry__actions{display:flex;flex-wrap:wrap;gap:.5rem}.e01-entry__actions button{min-height:44px}
+.e01-progress{border:1px solid var(--border,rgba(120,120,120,.35));padding:1rem 1.25rem;margin:1rem 0}
+.e01-progress dl{display:flex;flex-wrap:wrap;gap:1.25rem;margin:.7rem 0}.e01-progress dt{font-size:.8rem;opacity:.75}.e01-progress dd{margin:0;font-weight:600}
+@media(max-width:480px){.e01-entry__actions{width:100%}.e01-entry__actions button{flex:1}}
