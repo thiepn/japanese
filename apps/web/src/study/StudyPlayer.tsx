@@ -5,6 +5,7 @@ import "./e08Revision.css";
 import {useEffect,useRef,useState,type ReactNode} from "react";
 import {eligibleE07Draft,e07DraftPreference,setE07DraftPreference,saveE07Draft,readE07Draft,clearE07Draft,clearAllE07Drafts,findE07RestorableStep,E07_DRAFT_LIMIT} from "./e07DraftBuffer";
 import {getDefaultAudioProvider} from "@thiepn/audio";
+import {createDeviceSpeechPlayback} from "./deviceSpeech";
 import {gradeStudyPrompt,isStudyLesson,type GradeResult,type StudyPrompt,type StudyStep} from "@thiepn/study-player";
 import {j5StudyMode,type J5StudyModeMeta} from "./j5StudyVisual";
 import type {JSeason,JTheme} from "../design";
@@ -46,6 +47,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
   const season=resolveJ10Season();
   const startedAt=useRef(performance.now());
   const audioProvider=useRef(getDefaultAudioProvider());
+  const deviceSpeech=useRef(createDeviceSpeechPlayback());
   const recognitionRef=useRef<StudyRecognition|null>(null);
   const cueGeneration=useRef(0);
   const savingRef=useRef(false);
@@ -73,11 +75,11 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
     stopRecognition();
     const provider=audioProvider.current;
     provider.stop();
-    if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();
+    deviceSpeech.current.stop();
     setAudioState("idle");
     setAudioPlayed(false);
     setSpeechState("idle");
-    return()=>{cueGeneration.current+=1;stopRecognition();provider.stop();if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();};
+    return()=>{cueGeneration.current+=1;stopRecognition();provider.stop();deviceSpeech.current.stop();};
   },[index]);
 
   useEffect(()=>{
@@ -166,6 +168,8 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
 
   function advance(){
     audioProvider.current.stop();
+    deviceSpeech.current.stop();
+    cueGeneration.current+=1;
     setE08Checks([]);
     if(index+1>=steps.length){onComplete();return;}
     setIndex((value)=>value+1);
@@ -188,12 +192,12 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         else if(playback==="shadow")await audioProvider.current.play(activeStep.audio,{rate:.92,repeats:2,gapMs:1200});
         else await audioProvider.current.play(activeStep.audio);
       }else if(ttsText){
-        await speakWithDevice(
-          ttsText,
-          playback==="slow"?.78:.94,
-          playback==="shadow"?2:1,
-          (!isStudyLesson(activeStep)?activeStep.speechSynthesisLanguage:undefined)??"ja-JP",
+        const result=await deviceSpeech.current.play(
+          Array(playback==="shadow"?2:1).fill(ttsText),
+          {rate:playback==="slow"?.78:.94,gapMs:playback==="shadow"?450:0,
+            language:activeStep.speechSynthesisLanguage??"ja-JP"},
         );
+        if(result==="cancelled")return;
       }
       if(generation!==cueGeneration.current)return;
       setAudioPlayed(true);
@@ -568,25 +572,3 @@ function StudyHeader({
   </>;
 }
 
-function speakWithDevice(text:string,rate:number,repeats:number,lang:string):Promise<void>{
-  return new Promise((resolve,reject)=>{
-    if(typeof speechSynthesis==="undefined"){reject(new Error("SPEECH_SYNTHESIS_UNAVAILABLE"));return;}
-    let remaining=Math.max(1,repeats);
-    const play=()=>{
-      const utterance=new SpeechSynthesisUtterance(text);
-      utterance.lang=lang;
-      utterance.rate=rate;
-      const voice=speechSynthesis.getVoices().find((item)=>item.lang.toLowerCase().startsWith("ja"));
-      if(voice)utterance.voice=voice;
-      utterance.onerror=()=>reject(new Error("SPEECH_SYNTHESIS_FAILED"));
-      utterance.onend=()=>{
-        remaining-=1;
-        if(remaining>0)setTimeout(play,450);
-        else resolve();
-      };
-      speechSynthesis.speak(utterance);
-    };
-    speechSynthesis.cancel();
-    play();
-  });
-}
