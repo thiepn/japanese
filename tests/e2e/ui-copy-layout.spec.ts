@@ -33,3 +33,30 @@ test("functional Japanese copy layout across desktop, Android and compact mobile
     await page.screenshot({path:testInfo.outputPath("copy-"+screen.tab.toLowerCase()+".png"),animations:"disabled"});
   }
 });
+
+test("advanced Japanese studios and evidence portfolios keep readable layouts",async({page},testInfo)=>{
+  await page.goto("./");
+  await page.getByRole("button",{name:"Immerse",exact:true}).click();
+  const studios=[
+    {id:"j6-studio-authentic",name:"Your Japanese"},
+    {id:"j6-studio-p15",name:"Research real Japanese, cite it, defend it, rewrite it"},
+    {id:"j6-studio-p16",name:"Turn real-source work into research-grade evidence"}
+  ];
+  for(const studio of studios){
+    const region=page.locator("#"+studio.id);
+    await region.locator(":scope > summary").click();
+    await expect(region.getByRole("heading",{name:studio.name,exact:true})).toBeVisible();
+    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
+    expect(overflow,studio.id+" horizontal overflow").toBeLessThanOrEqual(1);
+    await page.screenshot({path:testInfo.outputPath("advanced-"+studio.id+".png"),animations:"disabled"});
+  }
+  await page.getByRole("button",{name:"Progress",exact:true}).click();
+  for(const id of ["j8-b2-vault","j8-c1-vault"]){
+    const vault=page.getByTestId(id);
+    await vault.locator(":scope > summary").click();
+    await expect(vault).toHaveAttribute("open","");
+    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
+    expect(overflow,id+" horizontal overflow").toBeLessThanOrEqual(1);
+    await page.screenshot({path:testInfo.outputPath("advanced-"+id+".png"),animations:"disabled"});
+  }
+});

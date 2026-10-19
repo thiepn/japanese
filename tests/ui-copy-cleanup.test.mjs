@@ -3,6 +3,8 @@ import {describe,expect,it} from "vitest";
 
 const design=(name)=>readFileSync(new URL("../apps/web/src/design/"+name,import.meta.url),"utf8");
 const main=()=>readFileSync(new URL("../apps/web/src/main.tsx",import.meta.url),"utf8");
+const study=(name)=>readFileSync(new URL("../apps/web/src/study/"+name,import.meta.url),"utf8");
+const immerse=(name)=>readFileSync(new URL("../apps/web/src/immerse/"+name,import.meta.url),"utf8");
 
 describe("Japanese functional UI copy",()=>{
   it("removes decorative section kickers and repeated commentary from main learner surfaces",()=>{
@@ -30,6 +32,20 @@ describe("Japanese functional UI copy",()=>{
     expect(reader).toContain("device Japanese speech synthesis");
     expect(reader).toContain("{feedback.explanation}");
     expect(design("E20SourceOnlyA2.tsx")).toContain("saves <strong>nothing inside the app</strong>");
+  });
+  it("removes repeated advanced introductions without removing grading, rights or recovery disclosures",()=>{
+    const source=immerse("C1EnvironmentLab.tsx");
+    expect(source).not.toContain("This workspace uses external Japanese sources in their original context");
+    expect(source).toContain("Every mapped source must appear at least once");
+    const bibliography=immerse("C1ResearchQualityLab.tsx");
+    expect(bibliography).toContain("External pages are not scraped or republished.");
+    const portfolios=study("C1Portfolio.tsx");
+    expect(portfolios).not.toContain("This portfolio consolidates advanced autonomy");
+    expect(portfolios).toContain("Human review is external qualitative evidence only.");
+    expect(study("C2ReadinessPanel.tsx")).toContain("It is not an accredited CEFR C2 certificate.");
+    expect(study("ReleaseOperationsPanel.tsx")).toContain("physical-device gate.");
+    expect(study("StudyPlayer.tsx")).toContain("Optional. Stored locally, unencrypted");
+    expect(design("E20SourceOnlyA2.tsx")).toContain("Step {phaseIndex+1} of {E20_STAGES.length} · Unscored");
   });
   it("preserves readable supporting typography without hiding content",()=>{
     const css=readFileSync(new URL("../apps/web/src/design/ui-copy.css",import.meta.url),"utf8");
