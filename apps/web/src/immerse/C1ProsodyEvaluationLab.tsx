@@ -56,6 +56,7 @@ export function C1ProsodyEvaluationLab(){
   const primaryAudio=useRef<HTMLAudioElement|null>(null);
   const maskerAudio=useRef<HTMLAudioElement|null>(null);
   const maskerTimer=useRef<number|null>(null);
+  const overlapGeneration=useRef(0);
 
   const [reviewerLabel,setReviewerLabel]=useState("");
   const [reviewerRole,setReviewerRole]=useState<C2ExternalReviewerRole>("teacher");
@@ -134,24 +135,40 @@ export function C1ProsodyEvaluationLab(){
   }
 
   function stopAllAudio(){
+    overlapGeneration.current++;
     if(maskerTimer.current!==null){window.clearTimeout(maskerTimer.current);maskerTimer.current=null;}
-    for(const audio of [primaryAudio.current,maskerAudio.current]){if(audio){audio.pause();audio.removeAttribute("src");audio.load();}}
+    for(const audio of [primaryAudio.current,maskerAudio.current]){
+      if(audio){audio.onended=null;audio.onerror=null;audio.pause();audio.removeAttribute("src");audio.load();}
+    }
     primaryAudio.current=null;maskerAudio.current=null;setOverlapPlaying(false);
   }
 
   async function playOverlap(task:C1OverlapListeningTask){
     stopAllAudio();setMessage("");setOverlapPlayed(false);setOverlapMixValid(false);setOverlapPlaying(true);
+    const ticket=overlapGeneration.current;
     const pair=overlapSources(task);
     const primary=new Audio(pair.primary.recording.url),masker=new Audio(pair.masker.recording.url);
     primaryAudio.current=primary;maskerAudio.current=masker;
     primary.preload="auto";masker.preload="auto";primary.playbackRate=task.primaryRate;masker.volume=task.maskerVolume;
-    primary.onended=()=>{stopAllAudio();setOverlapPlayed(true);};
-    primary.onerror=()=>{stopAllAudio();setMessage("The primary verified native recording could not be played.");};
-    masker.onerror=()=>setMessage("The competing recording could not be played; this attempt should not be saved as overlap evidence.");
+    primary.onended=()=>{if(ticket!==overlapGeneration.current)return;stopAllAudio();setOverlapPlayed(true);};
+    primary.onerror=()=>{if(ticket!==overlapGeneration.current)return;stopAllAudio();setMessage("The primary verified native recording could not be played.");};
+    masker.onerror=()=>{if(ticket!==overlapGeneration.current)return;setOverlapMixValid(false);setMessage("The competing recording could not be played; this attempt should not be saved as overlap evidence.");};
     try{
       await primary.play();
-      maskerTimer.current=window.setTimeout(()=>{void masker.play().then(()=>setOverlapMixValid(true)).catch(()=>{setOverlapMixValid(false);setMessage("The competing recording could not start; this attempt cannot be saved as overlap evidence.");});},task.maskerDelayMs);
+      if(ticket!==overlapGeneration.current)return;
+      maskerTimer.current=window.setTimeout(()=>{
+        maskerTimer.current=null;
+        if(ticket!==overlapGeneration.current)return;
+        void masker.play().then(()=>{
+          if(ticket===overlapGeneration.current)setOverlapMixValid(true);
+        }).catch(()=>{
+          if(ticket!==overlapGeneration.current)return;
+          setOverlapMixValid(false);
+          setMessage("The competing recording could not start; this attempt cannot be saved as overlap evidence.");
+        });
+      },task.maskerDelayMs);
     }catch{
+      if(ticket!==overlapGeneration.current)return;
       stopAllAudio();setMessage("The verified native source could not start in this browser.");
     }
   }
