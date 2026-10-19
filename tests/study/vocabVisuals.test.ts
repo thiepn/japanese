@@ -6,7 +6,7 @@ import {VOCABULARY_VISUALS,validateVocabularyVisuals,vocabularyVisualForLexeme} 
 describe("Japanese beginner vocabulary illustrations",()=>{
  const ids=new Set(coreContent.lexemes.map(v=>v.id));
  it("uses canonical Japanese IDs and ships only small original local SVGs",()=>{
-   expect(VOCABULARY_VISUALS).toHaveLength(8);
+   expect(VOCABULARY_VISUALS).toHaveLength(51);
    expect(validateVocabularyVisuals(ids)).toEqual([]);
    for(const item of VOCABULARY_VISUALS){
      const file=new URL(`../../apps/web/public/vocab/${item.file}`,import.meta.url);
@@ -17,10 +17,16 @@ describe("Japanese beginner vocabulary illustrations",()=>{
      expect(vocabularyVisualForLexeme(item.lexemeId)).toEqual(item);
    }
  });
- it("leaves unsupported words unillustrated",()=>{expect(vocabularyVisualForLexeme("missing")).toBeNull();expect(vocabularyVisualForLexeme("lex-taberu")).toBeNull();});
+ it("leaves unsupported words unillustrated",()=>{expect(vocabularyVisualForLexeme("missing")).toBeNull();expect(vocabularyVisualForLexeme("lex-ue")).toBeNull();});
  it("rejects broken mappings and missing accessibility labels",()=>{
    const bad=[{...VOCABULARY_VISUALS[0],lexemeId:"not-real",file:"../bad.svg",alt:""}];
    expect(validateVocabularyVisuals(ids,bad)).toEqual(expect.arrayContaining([expect.stringContaining("Unknown canonical lexeme"),expect.stringContaining("Unsafe image filename"),expect.stringContaining("Missing accessible description")]));
    expect(validateVocabularyVisuals(ids,[VOCABULARY_VISUALS[0],VOCABULARY_VISUALS[0]])).toEqual(expect.arrayContaining([expect.stringContaining("Duplicate image ID")]));
+ });
+ it("preserves old visual IDs and maps all 43 additions to enrolled A1/A2 course words",()=>{
+   expect(VOCABULARY_VISUALS.slice(0,8).map(entry=>entry.id)).toEqual(["apple","water","tea","book","car","bread","fish","coffee"]);
+   const unitIds=new Set(coreContent.courseUnits.filter(unit=>unit.level==="A1"||unit.level==="A2").flatMap(unit=>unit.vocabularyIds));
+   for(const entry of VOCABULARY_VISUALS.slice(8))expect(unitIds.has(entry.lexemeId)).toBe(true);
+   expect(new Set(VOCABULARY_VISUALS.map(entry=>entry.lexemeId)).size).toBe(51);
  });
 });

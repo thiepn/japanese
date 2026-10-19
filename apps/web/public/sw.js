@@ -2,6 +2,7 @@ const CACHE_PREFIX = "japanese-shell-";
 const CACHE = `${CACHE_PREFIX}v7`;
 const VOCAB_CACHE = `${CACHE_PREFIX}vocab-v1`;
 const MAX_VOCAB_IMAGES = 48;
+let imageCacheWrites = Promise.resolve();
 const BASE = new URL(self.registration.scope).pathname;
 const CORE = [BASE, `${BASE}manifest.webmanifest`, `${BASE}icon.svg`, `${BASE}icon-192.png`, `${BASE}icon-512.png`];
 
@@ -35,22 +36,24 @@ self.addEventListener("fetch", (event) => {
   if (requestUrl.pathname.startsWith(`${BASE}auth/`) ||
       requestUrl.search || requestUrl.hash) return;
 
-  // Images are separate optional static assets, never part of the shell install.
+  // Cache encountered illustrations only; storage failure must not block the network.
   if (event.request.destination === "image" && requestUrl.pathname.startsWith(`${BASE}vocab/`) && requestUrl.pathname.endsWith(".svg")) {
     event.respondWith((async () => {
-      const cache = await caches.open(VOCAB_CACHE);
-      const hit = await cache.match(event.request);
+      const hit = await caches.open(VOCAB_CACHE).then(cache => cache.match(event.request)).catch(() => null);
       if (hit) return hit;
       const response = await fetch(event.request);
       if (response.ok) {
         const copy = response.clone();
-        event.waitUntil((async () => {
+        // Writes are serialized, so concurrent image loads cannot escape the 48-entry cap.
+        imageCacheWrites = imageCacheWrites.then(async () => {
           try {
+            const cache = await caches.open(VOCAB_CACHE);
             await cache.put(event.request, copy);
             const keys = await cache.keys();
             for (const key of keys.slice(0, Math.max(0, keys.length - MAX_VOCAB_IMAGES))) await cache.delete(key);
-          } catch { /* Cache denied: online images remain available. */ }
-        })());
+          } catch { /* Offline cache not available; original response is still usable. */ }
+        }).catch(() => {});
+        event.waitUntil(imageCacheWrites);
       }
       return response;
     })());
