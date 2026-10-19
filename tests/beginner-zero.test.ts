@@ -16,7 +16,12 @@ describe("A0 instructional path",()=>{
     expect(route.stages[1].unlocked).toBe(false);
     expect(()=>buildBeginnerStage("k",[])).toThrow("BEGINNER_STAGE_LOCKED");
     const lesson=buildBeginnerStage("vowels",[]);
-    expect(lesson.filter(step=>!isStudyLesson(step))).toHaveLength(7);
+    const practice=lesson.filter(step=>!isStudyLesson(step));
+    expect(practice).toHaveLength(7);
+    expect(practice.every(step=>canonical.find(prompt=>prompt.id===step.id)===step)).toBe(true);
+    expect(practice.map(step=>step.primaryTarget.id)).toEqual([
+      "hiragana-あ","hiragana-い","hiragana-う","hiragana-え","hiragana-お","hiragana-あ","hiragana-い"
+    ]);
     expect(isStudyLesson(lesson[0]!)?lesson[0].examples?.map(e=>e.expression):[]).toEqual(["あ","い","う","え","お"]);
   });
   it("reuses original IDs and requires correct answers rather than exposure",()=>{
