@@ -48,9 +48,9 @@ export function E13PracticalLab({cases,busy,onStart}:Props){
   return <section className="e13-lab" aria-labelledby="e13-lab-title">
     <header className="e13-lab__heading">
       <div>
-        <p className="j4-kicker">E13 · PRACTICAL JAPANESE · SOURCE-QUALIFIED</p>
+        
         <h2 id="e13-lab-title">Practice across different situations</h2>
-        <p>Combine two or three already-unlocked original Japanese conversations in one practice session. Respond to different people and notices instead of repeating one memorized dialogue.</p>
+        
       </div>
       <strong>{eligible.length} available</strong>
     </header>

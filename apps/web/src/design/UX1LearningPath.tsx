@@ -77,7 +77,7 @@ export function UX1LearningPath({e01,e02,e03,e04,e19,route,busy,onOpenE07,select
      </select>
     </label>
    </div>
-   <p className="ux1-path-intro">Original THIEPN navigation groups. Chapter positions are not certified course levels. Complete source-linked controlled lessons, return for due delayed reviews and explore unlinked original sources without grades.</p>
+   
   </header>
   {existingPriority?<section className="ux1-due-priority" aria-label="Existing Today or FSRS priority">
    <strong>Due first · original Today and FSRS priority</strong>
@@ -105,7 +105,7 @@ export function UX1LearningPath({e01,e02,e03,e04,e19,route,busy,onOpenE07,select
   </nav>
   {current?<>
    <section className="ux1-chapter" aria-labelledby="ux1-chapter-title">
-    <p className="ux1-eyebrow">{level} · CHAPTER {current.id+1} / {chapters.length} · ORIGINAL LEARNER GROUP</p>
+    
     <h2 id="ux1-chapter-title">{current.title} <span lang="ja">{current.jp}</span></h2>
     <p>{current.guidedComplete} / {current.linkedCount} source-linked guided lessons complete
      {current.previewCount>0?" · "+current.previewCount+" ungraded original source"+(current.previewCount===1?"":"s"):""}</p>
@@ -171,7 +171,7 @@ export function UX1LearningPath({e01,e02,e03,e04,e19,route,busy,onOpenE07,select
      {next.level===level?"Browse next original chapter":"Browse A2-oriented original situations"}
      <span aria-hidden="true">→</span>
     </button>:null}
-    <p className="ux1-path-note">These chapters organize existing THIEPN originals. The existing Today/FSRS queue is still authoritative for due reviews. Optional writing and unlinked A2 workshops cannot award new proficiency or mastery.</p>
+    
   </>:null}
  </section>;
 }
