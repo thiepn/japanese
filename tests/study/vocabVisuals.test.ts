@@ -13,9 +13,20 @@ describe("Japanese beginner vocabulary illustrations",()=>{
      const text=readFileSync(file,"utf8");
      expect(statSync(file).size).toBeLessThan(8192);
      expect(text).toContain('viewBox="0 0 320 240"');
-     expect(text).not.toMatch(/<script|<foreignObject|<image|(?:href|src)="https?:\/\//i);
+     expect(text).not.toMatch(/<(?:script|foreignObject|image|iframe|object|embed|style|use|a)\b|\son[a-z]+\s*=|\shref\s*=|url\s*\(/i);
      expect(vocabularyVisualForLexeme(item.lexemeId)).toEqual(item);
    }
+ });
+ it("requires stable safe picture IDs that exactly match local file basenames",()=>{
+   const changed=[{...VOCABULARY_VISUALS[0],id:"../wrong",file:"apple.svg"}];
+   expect(validateVocabularyVisuals(ids,changed)).toEqual(expect.arrayContaining([
+     expect.stringContaining("Unsafe image ID"),
+     expect.stringContaining("Mismatched image ID/file")
+   ]));
+   const misfile=[{...VOCABULARY_VISUALS[0],file:"book.svg"}];
+   expect(validateVocabularyVisuals(ids,misfile)).toEqual(expect.arrayContaining([
+     expect.stringContaining("Mismatched image ID/file")
+   ]));
  });
  it("leaves unsupported words unillustrated",()=>{expect(vocabularyVisualForLexeme("missing")).toBeNull();expect(vocabularyVisualForLexeme("lex-ue")).toBeNull();});
  it("rejects broken mappings and missing accessibility labels",()=>{

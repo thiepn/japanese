@@ -734,7 +734,9 @@ export function validateVocabularyVisuals(lexemes:ReadonlySet<string>,records:re
     if(files.has(visual.file))errors.push("Duplicate image file: "+visual.file);
     ids.add(visual.id);usedLexemes.add(visual.lexemeId);files.add(visual.file);
     if(!lexemes.has(visual.lexemeId))errors.push("Unknown canonical lexeme: "+visual.lexemeId);
+    if(!/^[a-z0-9-]+$/.test(visual.id))errors.push("Unsafe image ID: "+visual.id);
     if(!/^[a-z0-9-]+\.svg$/.test(visual.file))errors.push("Unsafe image filename: "+visual.file);
+    if(visual.file!==`${visual.id}.svg`)errors.push("Mismatched image ID/file: "+visual.id);
     if(!visual.alt.trim())errors.push("Missing accessible description: "+visual.id);
     if(visual.rights!=="Original THIEPN illustration")errors.push("Unverified visual rights: "+visual.id);
   }
