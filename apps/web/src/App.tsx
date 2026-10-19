@@ -21,7 +21,7 @@ import "./study/e07Journey.css";
 
 
 import {deriveE07Journey,type E07Action} from "./study/e07LearningRoute";
-import {chooseBeginnerContinuation} from "./study/beginnerCourse";
+import {chooseBeginnerContinuation,projectBeginnerOverview} from "./study/beginnerCourse";
 import "./study/e06IndependentCourse.css";
 import { StudySessionFence } from "./study/sessionFence";
 import {resolveE22OwnerSelection,type E22Selection} from "./study/e22ChapterProgression";
@@ -40,7 +40,7 @@ import {
 } from "./study/runtime";
 
 type Surface=J2Surface;
-const EMPTY_BEGINNER:BeginnerOverview={stages:[],completed:0,total:10,nextId:"vowels",started:false,complete:false};
+const EMPTY_BEGINNER:BeginnerOverview=projectBeginnerOverview([]);
 const EMPTY_ENGAGEMENT:UX1Engagement={totalXp:0,streakDays:0,todayUniqueAnswers:0,dailyGoal:3};
 const EMPTY_SUMMARY:StudySummary={due:0,newKana:5,newVocabulary:2,listening:0,application:0,course:0,learnedKana:0,totalKana:217,learnedVocabulary:0,totalVocabulary:658,memoryTraces:0};
 const EMPTY_KANA:KanaMasterySummary={overall:0,hiragana:0,katakana:0,recognition:0,readingRecall:0,formSelection:0,listening:0,confidence:0,accuracy:0,matureSkills:0,expectedSkills:0,evidenceCount:0};
