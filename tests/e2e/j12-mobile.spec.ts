@@ -22,7 +22,7 @@ test("J12 keeps the daily study action above the mobile navigation fold",async({
 
   await page.goto("./");
   const viewport=page.viewportSize()!;
-  const action=page.locator(".ux1-mission__cta");
+  const action=page.getByRole("button",{name:"Start Japanese from Zero"});
   const nav=page.getByRole("navigation",{name:"Primary"});
   const [actionBox,navBox]=await Promise.all([action.boundingBox(),nav.boundingBox()]);
 
@@ -56,7 +56,7 @@ test("J12 Study is a full-screen thumb-first chamber",async({page},testInfo)=>{
   test.skip(testInfo.project.name==="desktop-chromium","mobile Study qualification");
 
   await page.goto("./");
-  await page.locator(".ux1-mission__cta").click();
+  await page.getByRole("button",{name:"Start Japanese from Zero"}).click();
 
   await expect(page.getByRole("navigation",{name:"Primary"})).toHaveCount(0);
   const viewport=page.viewportSize()!;
@@ -100,7 +100,10 @@ test("J12 keeps coarse mobile UI flat and free of expensive shell effects",async
   await expect(page.locator(".j2-ambient__brush")).toHaveCSS("display","none");
   // Existing advanced tools remain accessible without a hidden prerequisite.
   const practice=page.locator(".j4-practice");
+  await page.locator(".beginner-explore > summary").click();
   await expect(page.locator(".ux1-mobile-path")).toBeVisible();
+  await expect(practice).toBeHidden();
+  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
   await expect(practice).toBeVisible();
   const expand=page.locator(".ux1-mobile-catalogue-toggle");
   await expect(expand).toHaveText("Hide full course and advanced practice");
@@ -130,7 +133,7 @@ test("J12 keeps Android/PWA chrome synchronized with the active Japanese theme",
   await page.getByRole("button",{name:"Use dark theme"}).click();
   await expect(themeMeta).toHaveAttribute("content","#0D0D0C");
 
-  await page.locator(".ux1-mission__cta").click();
+  await page.getByRole("button",{name:"Start Japanese from Zero"}).click();
   await expect(themeMeta).toHaveAttribute("content","#0D0D0C");
   await page.getByRole("button",{name:"Use light theme"}).click();
   await expect(themeMeta).toHaveAttribute("content","#FBF8F1");

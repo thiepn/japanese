@@ -18,14 +18,18 @@ test("J15 presents Japanese editorial navigation instead of SaaS dashboard chrom
   await expect(today).toHaveCSS("border-radius","0px");
 
   for(const [surface,hero] of [
-    ["Today",".ux1-mission"],
+    ["Today",".beginner-entry"],
     ["Learn",".j4-hero"],
     ["Immerse",".j6-hero"],
     ["Library",".j7-library__masthead"],
     ["Progress",".j8-hero"],
   ] as const){
     await nav.getByRole("button",{name:surface,exact:true}).click();
-    await expect(page.locator(hero)).toHaveCSS("border-radius",surface==="Today"?"24px":"0px");
+    if(surface==="Learn"){
+      await page.locator(".beginner-explore > summary").click();
+      await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+    }
+    await expect(page.locator(hero)).toHaveCSS("border-radius","0px");
     await expect(page.locator(hero)).toHaveCSS("box-shadow","none");
   }
 });
@@ -37,7 +41,7 @@ test("J15 keeps the mobile rail flat and Japanese rather than floating-card navi
   const nav=page.getByRole("navigation",{name:"Primary"});
   await expect(nav).toHaveCSS("box-shadow","none");
   await expect(nav.getByRole("button",{name:"Today",exact:true})).toHaveCSS("border-radius","0px");
-  await expect(page.locator(".ux1-mission")).toHaveCSS("border-radius","24px");
+  await expect(page.locator(".beginner-entry")).toHaveCSS("border-radius","0px");
 });
 
 test("J14 dark mode is coherent across core and legacy learner surfaces",async({page})=>{
@@ -61,6 +65,8 @@ test("J14 dark mode is coherent across core and legacy learner surfaces",async({
   expect(tokens.fg.toLowerCase()).toBe("#ede7dc");
 
   await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await page.locator(".beginner-explore > summary").click();
+  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
   const realWorld=page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"});
   await realWorld.locator("summary").click();
   await expect(page.locator(".real-world-performance")).toBeVisible();
@@ -86,6 +92,8 @@ test("J14 removes legacy light islands and restores muted-text contrast in dark 
   await page.goto("./");
 
   await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await page.locator(".beginner-explore > summary").click();
+  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
   const realWorld=page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"});
   await realWorld.locator("summary").click();
   await expectDarkSurface(page,".performance-summary>div");
@@ -161,6 +169,8 @@ test("J14 keeps an already-used dark PWA functional through offline reload",asyn
   await page.getByRole("button",{name:"Use dark theme"}).click();
   await expect(page.locator("html")).toHaveAttribute("data-j-theme","dark");
   await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await page.locator(".beginner-explore > summary").click();
+  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
   const drawer=page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"});
   await drawer.locator("summary").click();
   await expectDarkSurface(page,".real-world-performance");
@@ -168,8 +178,10 @@ test("J14 keeps an already-used dark PWA functional through offline reload",asyn
   await context.setOffline(true);
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-j-theme","dark");
-  await expect(page.getByRole("heading",{name:"Your Japanese today"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Start Japanese from Zero"})).toBeVisible();
   await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await page.locator(".beginner-explore > summary").click();
+  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
   await page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"}).locator("summary").click();
   await expectDarkSurface(page,".real-world-performance");
   await context.setOffline(false);

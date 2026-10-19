@@ -25,7 +25,7 @@ test("A0 review is not mixed with new course items",async({page})=>{
   await page.goto("./");
   await expect(page.getByRole("button",{name:"Review due material"})).toBeDisabled();
   await page.getByRole("button",{name:"Start Japanese from Zero"}).click();
-  await expect(page.locator(".j5-lesson")).toBeVisible();
+  await expect(page.locator(".study-lesson")).toBeVisible();
   await page.getByRole("button",{name:"Exit"}).click();
   await expect(page.getByRole("button",{name:"Review due material"})).toBeDisabled();
 });
