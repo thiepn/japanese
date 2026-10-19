@@ -1,0 +1,25 @@
+.beginner-entry{max-width:780px;margin:0 auto;padding:clamp(20px,4vw,38px);border:1px solid var(--j-line);background:var(--j-bg-elevated);color:var(--j-fg);}
+.beginner-entry__header{display:grid;gap:12px;}
+.beginner-entry__level{margin:0;font-size:14px;font-weight:700;letter-spacing:.06em;color:var(--j-fg-muted);}
+.beginner-entry h1{margin:0;font-size:clamp(27px,4vw,40px);line-height:1.2;}
+.beginner-entry__objective{margin:0;font-size:clamp(18px,2.5vw,23px);font-weight:600;}
+.beginner-entry__actions{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 20px;}
+.beginner-entry__actions button{min-height:50px;padding:12px 20px;font-size:16px;font-weight:700;border-radius:5px;border:1px solid var(--j-line-strong);cursor:pointer;}
+.beginner-entry__actions button:focus-visible{outline:3px solid var(--j-season-accent);outline-offset:3px;}
+.beginner-entry__primary{background:var(--j-fg);color:var(--j-bg);flex:1 1 235px;}
+.beginner-entry__review{background:var(--j-bg);color:var(--j-fg);flex:1 1 200px;}
+.beginner-entry__actions button:disabled{opacity:.54;cursor:not-allowed;}
+.beginner-entry__progress,.beginner-entry__next,.beginner-entry__error{font-size:15px;line-height:1.5;}
+.beginner-entry progress{display:block;width:100%;height:12px;margin:12px 0 26px;accent-color:var(--j-season-accent);}
+.beginner-entry__stages{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:26px;row-gap:0;padding:0;list-style:none;margin:0;}
+.beginner-entry__stages li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--j-line);font-size:15px;line-height:1.4;}
+.beginner-entry__stages li[aria-current=step]{font-weight:700;}
+.beginner-entry__stages li span:last-child{color:var(--j-fg-muted);white-space:nowrap;}
+.beginner-entry__next{margin:18px 0 0;}
+.beginner-explore{max-width:1040px;margin:24px auto;}
+.beginner-explore>summary{cursor:pointer;font-size:16px;font-weight:700;padding:16px;border:1px solid var(--j-line);}
+.beginner-explore[open]>summary{margin-bottom:24px;}
+.j5-kana-audio{display:flex;align-items:center;gap:12px;margin-left:auto;}
+.j5-kana-audio button{min-height:44px;padding:8px 15px;font-size:15px;border:1px solid var(--j-line-strong);border-radius:5px;color:var(--j-fg);background:var(--j-bg);cursor:pointer;}
+.j5-kana-audio button:focus-visible{outline:3px solid var(--j-season-accent);outline-offset:2px;}
+@media(max-width:600px){.beginner-entry__stages{grid-template-columns:1fr;}.beginner-entry__actions{flex-direction:column;}.beginner-entry__actions button{flex-basis:auto;width:100%;}}

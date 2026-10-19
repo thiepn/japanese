@@ -1,0 +1,35 @@
+import {describe,expect,it} from "vitest";
+import type {StudyEvent} from "@thiepn/domain";
+import {isStudyLesson} from "@thiepn/study-player";
+import {buildBeginnerStage,projectBeginnerOverview} from "../apps/web/src/study/beginnerCourse";
+import {foundationPrompts} from "../apps/web/src/study/foundationPrompts";
+const event=(id:string,result:"correct"|"incorrect"="correct"):StudyEvent=>({
+  result,metadata:{promptId:id},primaryTarget:{kind:"kana",id:"hiragana"}
+} as unknown as StudyEvent);
+describe("A0 instructional path",()=>{
+  it("starts with five vowels and locks later stages",()=>{
+    const route=projectBeginnerOverview([]);
+    expect(route.nextId).toBe("vowels");
+    expect(route.stages[1].unlocked).toBe(false);
+    expect(()=>buildBeginnerStage("k",[])).toThrow("BEGINNER_STAGE_LOCKED");
+    const lesson=buildBeginnerStage("vowels",[]);
+    expect(lesson.filter(step=>!isStudyLesson(step))).toHaveLength(7);
+    expect(isStudyLesson(lesson[0]!)?lesson[0].examples?.map(e=>e.expression):[]).toEqual(["あ","い","う","え","お"]);
+  });
+  it("reuses original IDs and requires correct answers rather than exposure",()=>{
+    const ids=foundationPrompts.filter(p=>["あ","い","う","え","お"].some(ch=>p.primaryTarget.id==="hiragana-"+ch)).map(p=>p.id);
+    expect(ids).toHaveLength(5);
+    const partial=projectBeginnerOverview(ids.map((id,index)=>event(id,index===0?"incorrect":"correct")));
+    expect(partial.nextId).toBe("vowels");
+    expect(partial.stages[0].correct).toBe(4);
+    const completed=projectBeginnerOverview(ids.map(id=>event(id)));
+    expect(completed.nextId).toBe("k");
+    expect(buildBeginnerStage("k",ids.map(id=>event(id)))[0]?.kind).toBe("lesson");
+  });
+  it("does not promote unrelated or incorrect events",()=>{
+    const first=foundationPrompts[0]!;
+    const unrelated={...event(first.id),primaryTarget:{kind:"lexeme",id:"unrelated"}} as StudyEvent;
+    expect(projectBeginnerOverview([unrelated]).started).toBe(false);
+    expect(projectBeginnerOverview([event(first.id,"incorrect")]).stages[0].correct).toBe(0);
+  });
+});
