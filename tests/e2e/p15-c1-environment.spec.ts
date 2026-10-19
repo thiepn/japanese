@@ -26,7 +26,7 @@ test("P15 exposes the real-source C1 environment, multi-day writing and hidden-p
   await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
   await page.getByTestId("j8-c1-vault").locator("summary").click();
   await expect(page.getByText("C1→C2 LONGITUDINAL PORTFOLIO",{exact:true})).toBeVisible();
-  await expect(page.getByText("AUTHENTIC ENVIRONMENT",{exact:true})).toBeVisible();
+  await expect(page.locator(".p15-portfolio-environment").getByText("Evaluated sources",{exact:true})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Real-source research + multi-day production"})).toBeVisible();
 });
 

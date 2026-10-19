@@ -20,7 +20,7 @@ test("P18 exposes hidden live pressure, real-partner evidence and cross-domain t
   await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
   await page.getByTestId("j8-c1-vault").locator("summary").click();
   await expect(page.getByText("C1→C2 LONGITUDINAL PORTFOLIO",{exact:true})).toBeVisible();
-  await expect(page.getByText("ADVANCED INTERACTION",{exact:true})).toBeVisible();
+  await expect(page.locator(".p18-portfolio").getByText("Pressure turns",{exact:true})).toBeVisible();
 });
 
 test("P18 upgrades the C1 AI coach with live-repair scenario chains",async({page})=>{
