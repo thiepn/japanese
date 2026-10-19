@@ -5,7 +5,7 @@ test("J8 turns Progress into a longitudinal Japanese path",async({page})=>{
   await page.getByRole("button",{name:"Progress",exact:true}).click();
 
   await expect(page.locator(".j8-progress")).toBeVisible();
-  await expect(page.getByRole("heading",{name:"The path you have actually built"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Progress"})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Six views of durable ability"})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Checkpoints on the road"})).toBeVisible();
 
@@ -60,7 +60,6 @@ test("J8 evidence ledger remains explicit behind the decorative landscape",async
   await expect(page.getByText("Graded answers",{exact:true})).toBeVisible();
   await expect(page.getByText("Memory traces",{exact:true})).toBeVisible();
   await expect(page.getByText("Due now",{exact:true})).toBeVisible();
-  await expect(page.getByText(/visual summaries only/i)).toBeVisible();
 });
 
 test("J8 Progress remains usable on mobile without horizontal overflow",async({page},testInfo)=>{

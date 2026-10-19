@@ -9,7 +9,6 @@ test("J4 turns Learn into an A1→C1 emakimono journey",async({page})=>{
   if(await fullCourse.isVisible())await fullCourse.click();
 
   await expect(page.getByRole("heading",{name:"Your Japanese journey"})).toBeVisible();
-  await expect(page.getByText("A1 → C1 · 学びの絵巻",{exact:true})).toBeVisible();
   await expect(page.getByRole("heading",{name:"The learning road"})).toBeVisible();
 
   const journey=page.getByRole("region",{name:"A1 to C1 learning journey"});

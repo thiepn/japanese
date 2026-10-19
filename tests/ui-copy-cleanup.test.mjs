@@ -27,14 +27,14 @@ describe("Japanese functional UI copy",()=>{
     const learn=design("J4Learn.tsx");
     expect(learn).toContain("No steps are available for that activity yet.");
     const reader=design("J6Immersion.tsx");
-    expect(reader).toContain("Device Japanese speech synthesis");
+    expect(reader).toContain("device Japanese speech synthesis");
     expect(reader).toContain("{feedback.explanation}");
     expect(design("E20SourceOnlyA2.tsx")).toContain("saves <strong>nothing inside the app</strong>");
   });
   it("preserves readable supporting typography without hiding content",()=>{
     const css=readFileSync(new URL("../apps/web/src/design/ui-copy.css",import.meta.url),"utf8");
     expect(css).toContain("font-size: 14px !important");
-    expect(css).not.toMatch(/display:\\s*none/);
+    expect(css).not.toMatch(/display:\s*none/);
     expect(main()).toContain('import "./design/ui-copy.css";');
   });
 });

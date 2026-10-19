@@ -5,7 +5,7 @@ test("J6 turns Immerse into an editorial reading room",async({page})=>{
   await page.getByRole("button",{name:"Immerse",exact:true}).click();
 
   await expect(page.locator(".j6-immerse")).toBeVisible();
-  await expect(page.getByRole("heading",{name:/Enter Japanese/})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Immersion",exact:true})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Japanese to live inside"})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Read across a theme"})).toBeVisible();
 
