@@ -1,5 +1,7 @@
 const CACHE_PREFIX = "japanese-shell-";
-const CACHE = `${CACHE_PREFIX}v6`;
+const CACHE = `${CACHE_PREFIX}v7`;
+const VOCAB_CACHE = `${CACHE_PREFIX}vocab-v1`;
+const MAX_VOCAB_IMAGES = 48;
 const BASE = new URL(self.registration.scope).pathname;
 const CORE = [BASE, `${BASE}manifest.webmanifest`, `${BASE}icon.svg`, `${BASE}icon-192.png`, `${BASE}icon-512.png`];
 
@@ -13,7 +15,7 @@ self.addEventListener("activate", (event) => {
     caches.keys().then((keys) =>
       Promise.all(
         keys
-          .filter((key) => key.startsWith(CACHE_PREFIX) && key !== CACHE)
+          .filter((key) => key.startsWith(CACHE_PREFIX) && key !== CACHE && key !== VOCAB_CACHE)
           .map((key) => caches.delete(key)),
       ),
     ).then(() => self.clients.claim()),
@@ -32,6 +34,28 @@ self.addEventListener("fetch", (event) => {
   // routes require a network round trip and cannot use an offline login page.
   if (requestUrl.pathname.startsWith(`${BASE}auth/`) ||
       requestUrl.search || requestUrl.hash) return;
+
+  // Images are separate optional static assets, never part of the shell install.
+  if (event.request.destination === "image" && requestUrl.pathname.startsWith(`${BASE}vocab/`) && requestUrl.pathname.endsWith(".svg")) {
+    event.respondWith((async () => {
+      const cache = await caches.open(VOCAB_CACHE);
+      const hit = await cache.match(event.request);
+      if (hit) return hit;
+      const response = await fetch(event.request);
+      if (response.ok) {
+        const copy = response.clone();
+        event.waitUntil((async () => {
+          try {
+            await cache.put(event.request, copy);
+            const keys = await cache.keys();
+            for (const key of keys.slice(0, Math.max(0, keys.length - MAX_VOCAB_IMAGES))) await cache.delete(key);
+          } catch { /* Cache denied: online images remain available. */ }
+        })());
+      }
+      return response;
+    })());
+    return;
+  }
 
   event.respondWith(
     fetch(event.request)
