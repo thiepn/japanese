@@ -76,7 +76,8 @@ test("J20 cached PWA restores graded local evidence offline and after simulated 
 
   await context.setOffline(true);
   await page.reload();
-  await expect(page.getByRole("heading",{name:"Start Japanese from Zero"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Your next Japanese lesson"})).toBeVisible();
+  await expect(page.locator(".beginner-entry__progress")).toContainText("1/7 answers correct in this group");
   const offlineRecords=await durableEvidence();
   expect(offlineRecords.ids).toHaveLength(1);
   expect(offlineRecords.mutations).toEqual(offlineRecords.ids);

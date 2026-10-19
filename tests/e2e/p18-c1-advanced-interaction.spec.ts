@@ -26,6 +26,8 @@ test("P18 exposes hidden live pressure, real-partner evidence and cross-domain t
 test("P18 upgrades the C1 AI coach with live-repair scenario chains",async({page})=>{
   await page.goto("./");
   await page.getByRole("button",{name:"Learn"}).evaluate((button)=>(button as HTMLButtonElement).click());
+  await page.locator(".beginner-explore > summary").click();
+  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
   await page.locator(".j4-practice__drawer").filter({hasText:"AI coach"}).locator(":scope > summary").click();
 
   await expect(page.getByText("ADVANCED LIVE INTERACTION",{exact:true})).toBeVisible();

@@ -1,7 +1,7 @@
 import {expect,test,type Page} from "@playwright/test";
 
 const routes=[
-  ["Today",".ux1-mission"],
+  ["Today",".beginner-entry"],
   ["Learn",".j4-hero"],
   ["Immerse",".j6-hero"],
   ["Library",".j7-library__masthead"],
@@ -25,11 +25,15 @@ test("D4 keeps the five Japanese surfaces usable at 320 CSS pixels in both theme
     await expect(page.locator("html")).toHaveAttribute("data-j-theme",theme);
     for(const [surface,selector] of routes){
       await nav.getByRole("button",{name:surface,exact:true}).click();
+      if(surface==="Learn"){
+        await page.locator(".beginner-explore > summary").click();
+        await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+      }
       await expect(page.locator(selector)).toBeVisible();
       await noOverflow(page);
     }
     await nav.getByRole("button",{name:"Today",exact:true}).click();
-    const start=page.locator(".ux1-native-queue");
+    const start=page.getByRole("button",{name:"Start Japanese from Zero"});
     await expect(start).toBeVisible();
     const rect=await start.boundingBox();
     expect(rect).not.toBeNull();
@@ -46,6 +50,8 @@ test("D4 tablet and desktop preserve lazy exhibition composition and technical i
     const nav=page.getByRole("navigation",{name:"Primary"});
     await expect(nav).toBeVisible();
     await nav.getByRole("button",{name:"Learn",exact:true}).click();
+    await page.locator(".beginner-explore > summary").click();
+    await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
     await expect(page.locator(".j4-emaki")).toBeVisible();
     await noOverflow(page);
     await nav.getByRole("button",{name:"Library",exact:true}).click();

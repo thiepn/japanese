@@ -7,6 +7,8 @@ test("P9 real-world performance, native listening and provider fallbacks survive
   await page.goto("./");
 
   await page.getByRole("button",{name:"Learn"}).click();
+  await page.locator(".beginner-explore > summary").click();
+  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
   await page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"}).locator("summary").click();
   await expect(page.getByRole("heading",{name:"Functional chains under time pressure"})).toBeVisible();
   await expect(page.locator(".performance-chain-grid > article")).toHaveCount(5);
@@ -15,7 +17,7 @@ test("P9 real-world performance, native listening and provider fallbacks survive
   await page.getByRole("button",{name:"Continue"}).click();
   await expect(page.getByText("Timed response",{exact:true})).toBeVisible();
   await page.getByRole("button",{name:"Exit"}).click();
-  await expect(page.getByRole("heading",{name:"Your Japanese journey"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Start Japanese from Zero"})).toBeVisible();
 
   // Compact headless Chromium can re-scroll a fixed nav during actionability checks after StudyPlayer teardown.
   // The fixed-nav hit target itself is certified in mobile.spec.ts.
@@ -30,11 +32,13 @@ test("P9 real-world performance, native listening and provider fallbacks survive
 
   await page.evaluate(async()=>{if(!("serviceWorker" in navigator))throw new Error("SERVICE_WORKER_UNAVAILABLE");await navigator.serviceWorker.ready;});
   await page.reload();
-  await expect(page.getByRole("heading",{name:"Your Japanese today"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Start Japanese from Zero"})).toBeVisible();
   await context.setOffline(true);
   await page.reload();
-  await expect(page.getByRole("heading",{name:"Your Japanese today"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Start Japanese from Zero"})).toBeVisible();
   await page.getByRole("button",{name:"Learn"}).click();
+  await page.locator(".beginner-explore > summary").click();
+  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
   await page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"}).locator("summary").click();
   await expect(page.getByRole("heading",{name:"Functional chains under time pressure"})).toBeVisible();
   // Compact mobile headless Chromium has the same fixed-nav scrollIntoView drift while offline.
