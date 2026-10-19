@@ -28,7 +28,13 @@ function setup({cacheDenied=false}={}){
    return response;
  }
 async function activate(){handlers.get("activate")({waitUntil(promise){waits.push(promise);}});await Promise.all(waits);}
- return {image,fetch,entries,waits,deleted,activate,setOffline(value){disconnected=value;}};
+function rawRequest(url){
+   const request={method:"GET",url,destination:"image",mode:"cors"};
+   let response;
+   handlers.get("fetch")({request,respondWith(promise){response=promise;},waitUntil(promise){waits.push(promise);}});
+   return response;
+ }
+ return {image,rawRequest,fetch,entries,waits,deleted,activate,setOffline(value){disconnected=value;}};
 }
 describe("original vocabulary-image service worker cache",()=>{
  it("retains shell and current pictures while removing old picture caches",async()=>{
@@ -38,6 +44,13 @@ describe("original vocabulary-image service worker cache",()=>{
    expect(h.deleted).not.toContain("japanese-shell-vocab-v3");
    expect(h.deleted).not.toContain("japanese-shell-v7");
    expect(h.deleted).not.toContain("unrelated-cache");
+ });
+ it("excludes query parameters, auth routes and other origins from image interception",()=>{
+   const h=setup();
+   expect(h.rawRequest("https://example.test/jp/vocab/rice.svg?token=private")).toBeUndefined();
+   expect(h.rawRequest("https://example.test/jp/auth/callback.svg")).toBeUndefined();
+   expect(h.rawRequest("https://not-example.test/jp/vocab/rice.svg")).toBeUndefined();
+   expect(h.entries.size).toBe(0);
  });
  it("fetches images online when storage access is blocked",async()=>{
    const h=setup({cacheDenied:true});
