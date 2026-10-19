@@ -84,7 +84,7 @@ export function C1AdvancedLab({onOpenText,onStartSynthesis,preferredSetId}:{onOp
     </article>)}</div>
 
     <section className="native-synthesis">
-      <span className="course-kicker">NATIVE MULTI-SOURCE SYNTHESIS</span>
+      
       <p>{sourceSet.synthesisPrompt}</p>
       <div className="coach-goals">{sourceSet.targetMoves.map((move)=><span key={move}>{move}</span>)}</div>
       <textarea rows={7} value={synthesis} onChange={(event)=>setSynthesis(event.target.value)} placeholder="複数の音声を統合し、共通点・相違点・留保を日本語でまとめる…"/>
@@ -94,7 +94,7 @@ export function C1AdvancedLab({onOpenText,onStartSynthesis,preferredSetId}:{onOp
     </section>
 
     <section className="p13-synthesis-packs">
-      <div className="section-heading"><div><span className="course-kicker">MULTI-SOURCE REASONING</span><h2>Synthesize before you generalize</h2></div><span className="course-count">{c1SynthesisPacks.length} C1 packs</span></div>
+      <div className="section-heading"><div><h2>Synthesize before you generalize</h2></div><span className="course-count">{c1SynthesisPacks.length} C1 packs</span></div>
       <p className="course-note">These packs reuse the canonical C1 texts but force cross-source reasoning. The Study Player checks only transparent length and requested target language; semantic quality remains ungraded unless reviewed separately.</p>
       <div className="mission-grid">{c1SynthesisPacks.map((pack)=>{
         const progress=synthesisProgress.find((item)=>item.pack.id===pack.id);

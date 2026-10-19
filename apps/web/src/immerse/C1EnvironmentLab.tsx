@@ -134,7 +134,7 @@ export function C1EnvironmentLab(){
       <div><span className="course-kicker">C1 REAL-SOURCE ENVIRONMENT</span><h2>Research real Japanese, cite it, defend it, rewrite it</h2></div>
       <span className="course-count">{progress.activeDays} active day{progress.activeDays===1?"":"s"}</span>
     </div>
-    <p className="course-note">This workspace uses external Japanese sources in their original context instead of copying them into the course. You register the exact page you read, evaluate what it can support, mine specialist vocabulary, build a cited long-form project, defend it under unpredictable pressure and revise it on another day.</p>
+    
 
     <div className="p15-environment-stats">
       <EnvStat value={progress.registeredSources} label="sources"/>
@@ -155,7 +155,7 @@ export function C1EnvironmentLab(){
 
     {tab==="sources"?<div className="p15-source-desk">
       <section>
-        <div className="section-heading"><div><span className="course-kicker">NATIVE SOURCE PORTALS</span><h3>Choose the real document, not a synthetic lesson</h3></div><span>{c1SourcePortals.length} portals</span></div>
+        <div className="section-heading"><div><h3>Choose the real document, not a synthetic lesson</h3></div><span>{c1SourcePortals.length} portals</span></div>
         <div className="p15-portal-grid">{c1SourcePortals.map((item)=><article key={item.id} className={portalId===item.id?"selected":""}>
           <div><span>{item.genre.replaceAll("_"," ")}</span><small>{item.sourceRole.replaceAll("_"," ")}</small></div>
           <h4>{item.title}</h4><strong>{item.publisher}</strong><p>{item.task}</p>
@@ -164,7 +164,7 @@ export function C1EnvironmentLab(){
       </section>
 
       <section className="p15-register-source">
-        <div className="section-heading"><div><span className="course-kicker">REGISTER EXACT SOURCE</span><h3>{portal.publisher}</h3></div><span>{portal.genre.replaceAll("_"," ")}</span></div>
+        <div className="section-heading"><div><h3>{portal.publisher}</h3></div><span>{portal.genre.replaceAll("_"," ")}</span></div>
         <p>{portal.citationHint}</p>
         <div className="p15-form-grid">
           <label><span>Portal</span><select value={portalId} onChange={(event)=>choosePortal(event.target.value)}>{c1SourcePortals.map((item)=><option value={item.id} key={item.id}>{item.publisher} · {item.title}</option>)}</select></label>
@@ -176,7 +176,7 @@ export function C1EnvironmentLab(){
       </section>
 
       {progress.sources.length?<section className="p15-source-evaluation">
-        <div className="section-heading"><div><span className="course-kicker">SOURCE EVALUATION</span><h3>What does this source actually support?</h3></div><span>{progress.evaluatedSources}/{progress.registeredSources} evaluated</span></div>
+        <div className="section-heading"><div><h3>What does this source actually support?</h3></div><span>{progress.evaluatedSources}/{progress.registeredSources} evaluated</span></div>
         <div className="p15-source-picker">
           <aside>{progress.sources.map((source)=>{
             const evaluated=evaluatedIds.has(source.id);
@@ -195,7 +195,7 @@ export function C1EnvironmentLab(){
             <button className="primary" type="button" disabled={claim.trim().length<45||evidence.trim().length<45||limitation.trim().length<30||purpose.trim().length<25} onClick={()=>void saveEvaluation()}>{activeEvaluation?"Save updated evaluation":"Save evaluation"}</button>
 
             <section className="p15-term-miner">
-              <span className="course-kicker">SPECIALIST VOCABULARY</span><h4>Mine terminology from this source</h4>
+              <h4>Mine terminology from this source</h4>
               <p>Saved terms enter the existing private-vocabulary review path; they are not added to the public canonical lexicon automatically.</p>
               <div className="p15-form-grid">
                 <label><span>Term</span><input lang="ja" value={term} onChange={(event)=>setTerm(event.target.value)} placeholder="専門用語"/></label>
@@ -256,7 +256,7 @@ function WritingStudio(props:{
   const hoursRemaining=Math.max(0,20-active.delayHours);
 
   return <div className="p15-writing-studio">
-    <div className="section-heading"><div><span className="course-kicker">MULTI-DAY C1 WRITING</span><h3>Build an argument that survives sources, pressure and time</h3></div><span>{props.progress.writingProjectsCompleted}/{c1WritingProjects.length} complete</span></div>
+    <div className="section-heading"><div><h3>Build an argument that survives sources, pressure and time</h3></div><span>{props.progress.writingProjectsCompleted}/{c1WritingProjects.length} complete</span></div>
     <div className="p15-project-grid">{props.progress.projects.map((entry)=><button type="button" className={entry.project.id===active.project.id?"active":""} onClick={()=>props.onProject(entry.project.id)} key={entry.project.id}>
       <span>{entry.project.domain}</span><strong>{entry.project.title}</strong><small>{stageLabel(entry)}</small>
     </button>)}</div>
@@ -372,7 +372,7 @@ function DefenseLab({progress,activeProjectId,onProject,onSaved,setMessage}:{pro
   }
 
   return <div className="p15-defense-lab">
-    <div className="section-heading"><div><span className="course-kicker">UNPREDICTABLE C1 DEFENSE</span><h3>Draw the objection after you commit to the argument</h3></div><span>{c1PressureChallenges.length} pressure types</span></div>
+    <div className="section-heading"><div><h3>Draw the objection after you commit to the argument</h3></div><span>{c1PressureChallenges.length} pressure types</span></div>
     <p>The challenge is not shown until you draw it. Responses are saved as transcript/typed interaction evidence only; there is no hidden semantic score.</p>
     {candidates.length?<div className="p15-defense-projects">{candidates.map((entry)=><button className={active?.project.id===entry.project.id?"active":""} key={entry.project.id} type="button" onClick={()=>onProject(entry.project.id)}><strong>{entry.project.title}</strong><small>{entry.defenses.length} saved defenses</small></button>)}</div>:<p className="p15-empty">Save a first draft in the Writing studio before opening live defense.</p>}
 
