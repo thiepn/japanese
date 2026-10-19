@@ -46,6 +46,9 @@ function selectedPractice(id:BeginnerStageId):StudyPrompt[]{
   return foundationApplicationPrompts.filter(prompt=>prompt.skill==="form_selection"
     &&seeds.some(seed=>prompt.primaryTarget.id==="hiragana-"+seed.kana)).slice(0,2);
 }
+const A0_CANONICAL_IDENTITIES=new Set(GROUPS.flatMap(group=>
+  [...recognitionFor(group.id),...selectedPractice(group.id)]
+    .map(prompt=>prompt.id+"|"+prompt.primaryTarget.id)));
 function correctlyAnswered(events:readonly StudyEvent[]):Set<string>{
   return new Set(events.filter(event=>event.result==="correct"&&event.primaryTarget?.kind==="kana"
     &&event.metadata?.nonAuthoritative!==true&&typeof event.metadata?.promptId==="string")
@@ -67,8 +70,7 @@ export function projectBeginnerOverview(events:readonly StudyEvent[]):BeginnerOv
     started:events.some(event=>event.primaryTarget?.kind==="kana"
       &&(event.result==="correct"||event.result==="incorrect")
       &&event.metadata?.nonAuthoritative!==true
-      &&[...GROUPS].some(group=>[...recognitionFor(group.id),...selectedPractice(group.id)]
-        .some(prompt=>prompt.id===event.metadata?.promptId&&prompt.primaryTarget.id===event.primaryTarget?.id))),
+      &&A0_CANONICAL_IDENTITIES.has(String(event.metadata?.promptId)+"|"+event.primaryTarget.id)),
     complete:nextId===null};
 }
 const VOWEL_TIPS:Readonly<Record<string,string>>={
