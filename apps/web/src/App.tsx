@@ -438,9 +438,12 @@ export function App(){
   }
 
   const startStudy=()=>loadStudySession(()=>buildTodayQueue());
-  const startBeginner=()=>beginner.nextId
-    ?loadStudySession(()=>buildBeginnerStageSession(beginner.nextId!))
-    :loadStudySession(()=>buildE01Session());
+  const startBeginner=()=>{
+    if(beginner.nextId)return loadStudySession(()=>buildBeginnerStageSession(beginner.nextId!));
+    if(e01.status==="not_started"||e01.status==="learning")return loadStudySession(()=>buildE01Session());
+    if(e02.nextSceneId)return loadStudySession(()=>buildE02Session(e02.nextSceneId!));
+    return loadStudySession(()=>buildTodayQueue());
+  };
   const reviewDue=()=>loadStudySession(()=>buildDueReviewSession());
   const startE06=(id:string)=>loadStudySession(()=>buildE06Session(id));
   const startE06Full=(id:string)=>loadStudySession(()=>buildE06FullSession(id));

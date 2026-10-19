@@ -58,9 +58,12 @@ export function J3Today({beginner,onStartBeginner,onReviewDue,engagement,summary
     ?completedToday/(completedToday+remaining)
     :remaining===0?1:0;
 
-  if(!beginner.complete||e01.status==="not_started"||e01.status==="learning"){
+  if(!beginner.complete||e01.status==="not_started"||e01.status==="learning"||Boolean(e02.nextSceneId)){
     return <section className="j3-today" aria-label="Beginner Japanese study">
-      <BeginnerEntry overview={beginner} due={summary.due} busy={status==="loading"} sessionError={status==="error"}
+      <BeginnerEntry overview={beginner}
+        a1Next={e01.status==="not_started"||e01.status==="learning"?"First conversations":
+          e02.scenes.find(scene=>scene.id===e02.nextSceneId)?.title??"A1 practice"}
+        due={summary.due} busy={status==="loading"} sessionError={status==="error"}
         onContinue={onStartBeginner} onReview={onReviewDue}/>
     </section>;
   }

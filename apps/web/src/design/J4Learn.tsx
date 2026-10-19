@@ -111,7 +111,7 @@ export function J4Learn(props:Props){
   }=props;
 
   const [showFullCourse,setShowFullCourse]=useState(false);
-  const beginnerMode=!beginner.complete||e01.status==="not_started"||e01.status==="learning";
+  const beginnerMode=!beginner.complete||e01.status==="not_started"||e01.status==="learning"||Boolean(e02.nextSceneId);
   const [advancedOpen,setAdvancedOpen]=useState(!beginnerMode);
   const [showTransfer,setShowTransfer]=useState(e07.primary.origin==="e06");
   const [studioTarget,setStudioTarget]=useState<UX2StudioTarget|null>(null);
@@ -153,7 +153,10 @@ export function J4Learn(props:Props){
 
   return <section className="j4-learn" aria-label="Japanese lessons">
     <span className="j13-marginal" aria-hidden="true">学</span>
-    {beginnerMode?<BeginnerEntry overview={beginner} due={summary.due} busy={status==="loading"}
+    {beginnerMode?<BeginnerEntry overview={beginner}
+      a1Next={e01.status==="not_started"||e01.status==="learning"?"First conversations":
+        e02.scenes.find(scene=>scene.id===e02.nextSceneId)?.title??"A1 practice"}
+      due={summary.due} busy={status==="loading"}
       sessionError={status==="error"} onContinue={onStartBeginner} onReview={onReviewDue}/>:null}
     <details className="beginner-explore" open={advancedOpen}
       onToggle={event=>setAdvancedOpen(event.currentTarget.open)}>

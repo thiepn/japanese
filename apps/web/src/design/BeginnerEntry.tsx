@@ -1,12 +1,12 @@
 import type {BeginnerOverview} from "../study/beginnerCourse";
 import "./beginner.css";
 
-export function BeginnerEntry({overview,due,busy,sessionError,onContinue,onReview}:{
-  overview:BeginnerOverview;due:number;busy:boolean;sessionError:boolean;
+export function BeginnerEntry({overview,a1Next,due,busy,sessionError,onContinue,onReview}:{
+  overview:BeginnerOverview;a1Next:string;due:number;busy:boolean;sessionError:boolean;
   onContinue:()=>void;onReview:()=>void;
 }){
   const current=overview.stages.find(stage=>stage.id===overview.nextId);
-  const nextName=current?"Hiragana · "+current.title:"First conversations";
+  const nextName=current?"Hiragana · "+current.title:"A1 · "+a1Next;
   const initial=!overview.started&&!overview.complete;
   return <section className="beginner-entry" aria-labelledby="beginner-title">
     <header className="beginner-entry__header">
@@ -36,6 +36,5 @@ export function BeginnerEntry({overview,due,busy,sessionError,onContinue,onRevie
       </li>)}
     </ol>
     </details>
-    {overview.complete?<p className="beginner-entry__next">Next: greetings, names and introductions in A1.</p>:null}
   </section>;
 }
