@@ -28,11 +28,14 @@ export function BeginnerEntry({overview,due,busy,sessionError,onContinue,onRevie
     </p>
     <progress aria-label="Beginner hiragana groups completed" value={overview.completed} max={overview.total}/>
     {sessionError?<p className="beginner-entry__error" role="alert">The lesson could not be opened. Retry without clearing local progress.</p>:null}
+    <details className="beginner-entry__path">
+      <summary>See all 10 hiragana lessons</summary>
     <ol className="beginner-entry__stages" aria-label="Hiragana learning sequence">
       {overview.stages.map((stage,index)=><li key={stage.id} aria-current={stage.id===overview.nextId?"step":undefined}>
         <span>{index+1}. {stage.title}</span><span>{stage.completed?"Done":stage.unlocked?stage.correct+"/"+stage.total:"Locked"}</span>
       </li>)}
     </ol>
+    </details>
     {overview.complete?<p className="beginner-entry__next">Next: greetings, names and introductions in A1.</p>:null}
   </section>;
 }

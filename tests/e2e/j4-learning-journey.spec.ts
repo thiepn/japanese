@@ -5,6 +5,7 @@ test("J4 turns Learn into an A1→C1 emakimono journey",async({page})=>{
   await page.getByRole("button",{name:"Learn",exact:true}).click();
   // Original full-course tools are deliberately collapsed on mobile in UX-1.
   await expect(page.locator(".j4-learn")).toBeVisible();
+  await page.locator(".beginner-explore > summary").click();
   const fullCourse=page.getByRole("button",{name:"Open full course and advanced practice"});
   if(await fullCourse.isVisible())await fullCourse.click();
 
@@ -39,6 +40,7 @@ test("J4 preserves course entry and milestone truth",async({page})=>{
   await page.getByRole("button",{name:"Learn",exact:true}).click();
   // Original full-course tools are deliberately collapsed on mobile in UX-1.
   await expect(page.locator(".j4-learn")).toBeVisible();
+  await page.locator(".beginner-explore > summary").click();
   const fullCourse=page.getByRole("button",{name:"Open full course and advanced practice"});
   if(await fullCourse.isVisible())await fullCourse.click();
 
@@ -61,6 +63,7 @@ test("J4 keeps specialist practice out of the primary journey until requested",a
   await page.getByRole("button",{name:"Learn",exact:true}).click();
   // Original full-course tools are deliberately collapsed on mobile in UX-1.
   await expect(page.locator(".j4-learn")).toBeVisible();
+  await page.locator(".beginner-explore > summary").click();
   const fullCourse=page.getByRole("button",{name:"Open full course and advanced practice"});
   if(await fullCourse.isVisible())await fullCourse.click();
 
@@ -83,6 +86,7 @@ test("J4 becomes a vertical route on mobile without document overflow",async({pa
   await page.getByRole("button",{name:"Learn",exact:true}).click();
   // Original full-course tools are deliberately collapsed on mobile in UX-1.
   await expect(page.locator(".j4-learn")).toBeVisible();
+  await page.locator(".beginner-explore > summary").click();
   const fullCourse=page.getByRole("button",{name:"Open full course and advanced practice"});
   if(await fullCourse.isVisible())await fullCourse.click();
 

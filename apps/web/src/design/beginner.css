@@ -23,3 +23,6 @@
 .j5-kana-audio button{min-height:44px;padding:8px 15px;font-size:15px;border:1px solid var(--j-line-strong);border-radius:5px;color:var(--j-fg);background:var(--j-bg);cursor:pointer;}
 .j5-kana-audio button:focus-visible{outline:3px solid var(--j-season-accent);outline-offset:2px;}
 @media(max-width:600px){.beginner-entry__stages{grid-template-columns:1fr;}.beginner-entry__actions{flex-direction:column;}.beginner-entry__actions button{flex-basis:auto;width:100%;}}
+.beginner-entry__path{margin-top:20px;}
+.beginner-entry__path>summary{min-height:44px;display:list-item;cursor:pointer;font-weight:650;font-size:15px;padding:10px 4px;}
+.beginner-entry__path[open]>summary{margin-bottom:12px;}

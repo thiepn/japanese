@@ -111,8 +111,8 @@ export function J4Learn(props:Props){
   }=props;
 
   const [showFullCourse,setShowFullCourse]=useState(false);
-  const [advancedOpen,setAdvancedOpen]=useState(false);
   const beginnerMode=!beginner.complete||e01.status==="not_started"||e01.status==="learning";
+  const [advancedOpen,setAdvancedOpen]=useState(!beginnerMode);
   const [showTransfer,setShowTransfer]=useState(e07.primary.origin==="e06");
   const [studioTarget,setStudioTarget]=useState<UX2StudioTarget|null>(null);
   const [a2SourceTarget,setA2SourceTarget]=useState<{key:string;sequence:number}|null>(null);
@@ -155,7 +155,7 @@ export function J4Learn(props:Props){
     <span className="j13-marginal" aria-hidden="true">学</span>
     {beginnerMode?<BeginnerEntry overview={beginner} due={summary.due} busy={status==="loading"}
       sessionError={status==="error"} onContinue={onStartBeginner} onReview={onReviewDue}/>:null}
-    <details className="beginner-explore" open={!beginnerMode||advancedOpen}
+    <details className="beginner-explore" open={advancedOpen}
       onToggle={event=>setAdvancedOpen(event.currentTarget.open)}>
       <summary>Browse other lessons and advanced practice</summary>
     <UX1LearningPath e01={e01} e02={e02} e03={e03} e04={e04} e19={e19} route={e07}

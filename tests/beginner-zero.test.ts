@@ -24,7 +24,7 @@ describe("A0 instructional path",()=>{
     expect(partial.stages[0].correct).toBe(4);
     const completed=projectBeginnerOverview(ids.map(id=>event(id)));
     expect(completed.nextId).toBe("k");
-    expect(buildBeginnerStage("k",ids.map(id=>event(id)))[0]?.kind).toBe("lesson");
+    expect(isStudyLesson(buildBeginnerStage("k",ids.map(id=>event(id)))[0]!)).toBe(true);
   });
   it("does not promote unrelated or incorrect events",()=>{
     const first=foundationPrompts[0]!;
