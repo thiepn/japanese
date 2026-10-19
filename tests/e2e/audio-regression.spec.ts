@@ -62,7 +62,7 @@ test("shadowing reference voice failure becomes a retryable visible error",async
   await action.click();
   await expect(page.getByRole("button",{name:"Playing…",exact:true})).toBeVisible();
   await endCurrent(page,"error");
-  await expect(page.getByRole("status")).toContainText("Reference playback failed");
+  await expect(page.locator(".shadowing-lab .import-message[role=status]")).toContainText("Reference playback failed");
   await expect(action).toBeEnabled();
   await action.click();
   await endCurrent(page,"end");
