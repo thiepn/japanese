@@ -95,7 +95,7 @@ function Overview({onOpen}:{onOpen:(panel:Panel)=>void}){
     <div className="j11-overview__grid">
       {PANELS.filter((item)=>item.id!=="overview").map((item)=><article key={item.id}>
         <span aria-hidden="true">{item.glyph}</span>
-        <div><h3>{item.label}</h3><p>{overviewCopy(item.id)}</p></div>
+        <div><h3>{item.label}</h3></div>
         <button type="button" onClick={()=>onOpen(item.id)}>Open {item.label.toLowerCase()}</button>
       </article>)}
     </div>
