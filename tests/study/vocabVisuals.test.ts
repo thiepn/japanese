@@ -36,4 +36,23 @@ describe("Japanese beginner vocabulary illustrations",()=>{
    for(const entry of additions)expect(unitIds.has(entry.lexemeId)).toBe(true);
    expect(new Set(VOCABULARY_VISUALS.map(entry=>entry.file)).size).toBe(VOCABULARY_VISUALS.length);
  });
+ it("keeps revised related directional and condition illustrations distinct and correctly described",()=>{
+   const expected:Record<string,string>={
+     board:"train doorway to board",
+     "get-off":"out of a train doorway",
+     near:"close together",
+     far:"long distance",
+     walk:"walking stride",
+     new:"clean new shoe",
+     old:"worn shoe",
+     shop:"striped awning",
+     meeting:"discussing documents",
+     rest:"reclining on a sofa"
+   };
+   for(const [id,fragment] of Object.entries(expected)){
+     const visual=VOCABULARY_VISUALS.find(entry=>entry.id===id);
+     expect(visual?.alt).toContain(fragment);
+   }
+   expect(VOCABULARY_VISUALS).toHaveLength(103);
+ });
 });

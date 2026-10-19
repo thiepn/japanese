@@ -208,7 +208,7 @@ export const VOCABULARY_VISUALS:readonly VocabularyVisual[]=[
     "id": "shop",
     "lexemeId": "lex-mise",
     "file": "shop.svg",
-    "alt": "Illustration of a small shop",
+    "alt": "Illustration of a small shop with a striped awning and merchandise in its window",
     "rights": "Original THIEPN illustration"
   },
   {
@@ -348,14 +348,14 @@ export const VOCABULARY_VISUALS:readonly VocabularyVisual[]=[
     "id": "meeting",
     "lexemeId": "lex-kaigi",
     "file": "meeting.svg",
-    "alt": "Illustration of two people in a meeting",
+    "alt": "Illustration of two people discussing documents across a table",
     "rights": "Original THIEPN illustration"
   },
   {
     "id": "walk",
     "lexemeId": "lex-aruku",
     "file": "walk.svg",
-    "alt": "Illustration of a walking shoe",
+    "alt": "Illustration of a person taking a walking stride",
     "rights": "Original THIEPN illustration"
   },
   {
@@ -488,7 +488,7 @@ export const VOCABULARY_VISUALS:readonly VocabularyVisual[]=[
     "id": "rest",
     "lexemeId": "lex-yasumu",
     "file": "rest.svg",
-    "alt": "Illustration of a person resting on a sofa",
+    "alt": "Illustration of a person reclining on a sofa",
     "rights": "Original THIEPN illustration"
   },
   {
@@ -537,14 +537,14 @@ export const VOCABULARY_VISUALS:readonly VocabularyVisual[]=[
     "id": "new",
     "lexemeId": "lex-atarashii",
     "file": "new.svg",
-    "alt": "Illustration of a clean new pair of shoes in a box",
+    "alt": "Illustration of a clean new shoe with a sparkle",
     "rights": "Original THIEPN illustration"
   },
   {
     "id": "old",
     "lexemeId": "lex-furui",
     "file": "old.svg",
-    "alt": "Illustration of an aged worn pair of shoes",
+    "alt": "Illustration of a worn shoe with scuffs and creases",
     "rights": "Original THIEPN illustration"
   },
   {
@@ -593,14 +593,14 @@ export const VOCABULARY_VISUALS:readonly VocabularyVisual[]=[
     "id": "board",
     "lexemeId": "lex-noru",
     "file": "board.svg",
-    "alt": "Illustration of a person boarding a train",
+    "alt": "Illustration of a person moving through a train doorway to board",
     "rights": "Original THIEPN illustration"
   },
   {
     "id": "get-off",
     "lexemeId": "lex-oriru",
     "file": "get-off.svg",
-    "alt": "Illustration of a person getting off a train",
+    "alt": "Illustration of a person moving out of a train doorway",
     "rights": "Original THIEPN illustration"
   },
   {
@@ -635,14 +635,14 @@ export const VOCABULARY_VISUALS:readonly VocabularyVisual[]=[
     "id": "near",
     "lexemeId": "lex-chikai",
     "file": "near.svg",
-    "alt": "Illustration of two closely spaced buildings",
+    "alt": "Illustration of two houses close together",
     "rights": "Original THIEPN illustration"
   },
   {
     "id": "far",
     "lexemeId": "lex-tooi",
     "file": "far.svg",
-    "alt": "Illustration of two distant buildings across a landscape",
+    "alt": "Illustration of two houses separated by a long distance",
     "rights": "Original THIEPN illustration"
   },
   {
