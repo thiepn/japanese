@@ -38,7 +38,7 @@ export function B2Portfolio(){
 
     <div className="portfolio-columns">
       <article>
-        <span className="course-kicker">AUTONOMY MISSIONS</span>
+        
         <h3>Multi-document chains</h3>
         <div className="portfolio-mission-list">{portfolio.missionProgress.map((entry)=><div key={entry.mission.id}>
           <div><strong>{entry.mission.title}</strong><span>{entry.completedStages}/{entry.totalStages}</span></div>
@@ -48,7 +48,7 @@ export function B2Portfolio(){
       </article>
 
       <article>
-        <span className="course-kicker">PRODUCTION RELIABILITY</span>
+        
         <h3>Repeat success after time has passed</h3>
         <p>{portfolio.reliability.successfulAttempts} structurally successful attempts across {portfolio.reliability.tasksAttempted} B2 tasks and {portfolio.reliability.activeDays} production days.</p>
         {portfolio.reliability.taskEvidence.length?<div className="reliable-task-list">{portfolio.reliability.taskEvidence.slice(0,8).map((item)=><div key={item.taskId}>
@@ -58,7 +58,7 @@ export function B2Portfolio(){
     </div>
 
     {portfolio.reliability.feedbackPatterns.length?<section className="portfolio-patterns">
-      <span className="course-kicker">RECURRING ADVISORY FEEDBACK</span>
+      
       <div>{portfolio.reliability.feedbackPatterns.slice(0,6).map((pattern)=><article key={pattern.message}><strong>{pattern.count}×</strong><p>{pattern.message}</p><small>{pattern.areas.join(" · ")}</small></article>)}</div>
     </section>:null}
 
