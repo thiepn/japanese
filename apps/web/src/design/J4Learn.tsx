@@ -154,7 +154,7 @@ export function J4Learn(props:Props){
   return <section className="j4-learn" aria-label="Japanese lessons">
     <span className="j13-marginal" aria-hidden="true">学</span>
     {beginnerMode?<BeginnerEntry overview={beginner}
-      a1Next={e01.status==="not_started"||e01.status==="learning"?"First conversations":
+      a1Next={e01.unitId&&(e01.status==="not_started"||e01.status==="learning")?"First conversations":
         e02.scenes.find(scene=>scene.id===e02.nextSceneId)?.title??"A1 practice"}
       due={summary.due} busy={status==="loading"}
       sessionError={status==="error"} onContinue={onStartBeginner} onReview={onReviewDue}/>:null}

@@ -1,7 +1,7 @@
 import {describe,expect,it} from "vitest";
 import type {StudyEvent} from "@thiepn/domain";
 import {isStudyLesson} from "@thiepn/study-player";
-import {buildBeginnerStage,projectBeginnerOverview} from "../apps/web/src/study/beginnerCourse";
+import {buildBeginnerStage,chooseBeginnerContinuation,projectBeginnerOverview} from "../apps/web/src/study/beginnerCourse";
 import {foundationPrompts,foundationApplicationPrompts} from "../apps/web/src/study/foundationPrompts";
 const canonical=[...foundationPrompts,...foundationApplicationPrompts];
 const event=(id:string,result:"correct"|"incorrect"="correct"):StudyEvent=>{
@@ -28,6 +28,22 @@ describe("A0 instructional path",()=>{
     const completed=projectBeginnerOverview(ids.map(id=>event(id)));
     expect(completed.nextId).toBe("k");
     expect(isStudyLesson(buildBeginnerStage("k",ids.map(id=>event(id)))[0]!)).toBe(true);
+    const retry=buildBeginnerStage("vowels",ids.slice(1).map(id=>event(id)));
+    expect(retry.filter(step=>!isStudyLesson(step)).map(step=>step.id)).toEqual([ids[0]]);
+    const completeVowels=projectBeginnerOverview(ids.map(id=>event(id)));
+    expect(chooseBeginnerContinuation(completeVowels,{unitId:"a1-intro",status:"not_started"},null)).toEqual({kind:"kana",id:"k"});
+  });
+  it("hands off to canonical A1, skips unavailable introductions, and does not invent a new course writer",()=>{
+    const all=projectBeginnerOverview([]);
+    const completed={...all,nextId:null,complete:true};
+    expect(chooseBeginnerContinuation(completed,{unitId:"intro",status:"not_started"},"food"))
+      .toEqual({kind:"first-conversation"});
+    expect(chooseBeginnerContinuation(completed,{unitId:"",status:"not_started"},"food"))
+      .toEqual({kind:"a1-scene",id:"food"});
+    expect(chooseBeginnerContinuation(completed,{unitId:"",status:"not_started"},null))
+      .toEqual({kind:"daily"});
+    expect(chooseBeginnerContinuation(completed,{unitId:"intro",status:"waiting"},"greetings"))
+      .toEqual({kind:"a1-scene",id:"greetings"});
   });
   it("does not promote unrelated or incorrect events",()=>{
     const first=foundationPrompts[0]!;

@@ -21,6 +21,7 @@ import "./study/e07Journey.css";
 
 
 import {deriveE07Journey,type E07Action} from "./study/e07LearningRoute";
+import {chooseBeginnerContinuation} from "./study/beginnerCourse";
 import "./study/e06IndependentCourse.css";
 import { StudySessionFence } from "./study/sessionFence";
 import {resolveE22OwnerSelection,type E22Selection} from "./study/e22ChapterProgression";
@@ -439,9 +440,10 @@ export function App(){
 
   const startStudy=()=>loadStudySession(()=>buildTodayQueue());
   const startBeginner=()=>{
-    if(beginner.nextId)return loadStudySession(()=>buildBeginnerStageSession(beginner.nextId!));
-    if(e01.status==="not_started"||e01.status==="learning")return loadStudySession(()=>buildE01Session());
-    if(e02.nextSceneId)return loadStudySession(()=>buildE02Session(e02.nextSceneId!));
+    const next=chooseBeginnerContinuation(beginner,e01,e02.nextSceneId);
+    if(next.kind==="kana")return loadStudySession(()=>buildBeginnerStageSession(next.id));
+    if(next.kind==="first-conversation")return loadStudySession(()=>buildE01Session());
+    if(next.kind==="a1-scene")return loadStudySession(()=>buildE02Session(next.id));
     return loadStudySession(()=>buildTodayQueue());
   };
   const reviewDue=()=>loadStudySession(()=>buildDueReviewSession());

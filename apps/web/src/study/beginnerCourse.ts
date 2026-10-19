@@ -17,6 +17,22 @@ const GROUPS=[
 export type BeginnerStageId=typeof GROUPS[number]["id"];
 export type BeginnerStage={id:BeginnerStageId;title:string;correct:number;total:number;completed:boolean;unlocked:boolean};
 export type BeginnerOverview={stages:BeginnerStage[];completed:number;total:number;nextId:BeginnerStageId|null;started:boolean;complete:boolean};
+export type BeginnerContinuation=
+  |{kind:"kana";id:BeginnerStageId}
+  |{kind:"first-conversation"}
+  |{kind:"a1-scene";id:string}
+  |{kind:"daily"};
+export function chooseBeginnerContinuation(
+  beginner:BeginnerOverview,
+  introduction:{unitId:string;status:string},
+  nextSceneId:string|null
+):BeginnerContinuation{
+  if(beginner.nextId)return {kind:"kana",id:beginner.nextId};
+  if(introduction.unitId&&(introduction.status==="not_started"||introduction.status==="learning"))
+    return {kind:"first-conversation"};
+  if(nextSceneId)return {kind:"a1-scene",id:nextSceneId};
+  return {kind:"daily"};
+}
 
 function recognitionFor(id:BeginnerStageId):StudyPrompt[]{
   return basicHiragana.filter(seed=>seed.group===id).map(seed=>{
@@ -68,8 +84,12 @@ export function buildBeginnerStage(id:BeginnerStageId,events:readonly StudyEvent
     examples:seeds.map(seed=>({expression:seed.kana,note:VOWEL_TIPS[seed.kana]??seed.reading})),
     sourceLabel:"THIEPN original kana foundations"
   };
+  const correct=correctlyAnswered(events);
   const recognize=recognitionFor(id);
   const forms=selectedPractice(id);
-  // Reuse canonical prompt IDs and the existing FSRS writer; no parallel grades or records.
-  return [teach,...recognize,...forms];
+  // Previously correct canonical answers stay recorded. Re-teach, then retry only unmet cues.
+  const pending=[...recognize,...forms].filter(prompt=>
+    !correct.has(prompt.id+"|"+prompt.primaryTarget.id));
+  return [teach,...pending];
+
 }
