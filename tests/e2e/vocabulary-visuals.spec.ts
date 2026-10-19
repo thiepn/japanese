@@ -71,3 +71,18 @@ test("VOC3 new A1 and A2 canonical words display mapped, lazy illustrations",asy
  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
  expect(overflow).toBeLessThanOrEqual(1);
 });
+
+
+test("VOC4 rebuilt learning images retain meaningful accessible descriptions",async({page})=>{
+ await page.goto("./");await page.getByRole("button",{name:"Library",exact:true}).click();
+ const search=page.getByRole("textbox",{name:"Search Japanese"});
+ for(const entry of [{word:"学校",description:/school with classroom windows/},{word:"病院",description:/hospital building marked/},{word:"駅",description:/railway station with a clock/}]){
+   await search.fill(entry.word);
+   const word=page.locator(".j7-result.result-lexeme").filter({has:page.getByText(entry.word,{exact:true})}).first();
+   await expect(word).toBeVisible({timeout:15000});await word.getByRole("option").click();
+   const img=page.locator(".j7-reference__sheet--lexeme .vocabulary-visual img");
+   await expect(img).toHaveAttribute("alt",entry.description);
+   await img.scrollIntoViewIfNeeded();
+   await expect.poll(async()=>img.evaluate(el=>(el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+ }
+});

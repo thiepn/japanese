@@ -68,14 +68,14 @@ export const VOCABULARY_VISUALS:readonly VocabularyVisual[]=[
     "id": "school",
     "lexemeId": "lex-gakkou",
     "file": "school.svg",
-    "alt": "Illustration of a school building",
+    "alt": "Illustration of a multistory school with classroom windows and a clock",
     "rights": "Original THIEPN illustration"
   },
   {
     "id": "rice",
     "lexemeId": "lex-gohan",
     "file": "rice.svg",
-    "alt": "Illustration of a bowl of rice",
+    "alt": "Illustration of a bowl of cooked white rice",
     "rights": "Original THIEPN illustration"
   },
   {
@@ -117,7 +117,7 @@ export const VOCABULARY_VISUALS:readonly VocabularyVisual[]=[
     "id": "station",
     "lexemeId": "lex-eki",
     "file": "station.svg",
-    "alt": "Illustration of a train station",
+    "alt": "Illustration of a railway station with a clock and tracks",
     "rights": "Original THIEPN illustration"
   },
   {
@@ -201,7 +201,7 @@ export const VOCABULARY_VISUALS:readonly VocabularyVisual[]=[
     "id": "restaurant",
     "lexemeId": "lex-resutoran",
     "file": "restaurant.svg",
-    "alt": "Illustration of a restaurant",
+    "alt": "Illustration of a restaurant with a striped awning and food sign",
     "rights": "Original THIEPN illustration"
   },
   {
@@ -285,7 +285,7 @@ export const VOCABULARY_VISUALS:readonly VocabularyVisual[]=[
     "id": "hospital",
     "lexemeId": "lex-byouin",
     "file": "hospital.svg",
-    "alt": "Illustration of a hospital",
+    "alt": "Illustration of a hospital building marked with a medical cross",
     "rights": "Original THIEPN illustration"
   },
   {
@@ -313,7 +313,7 @@ export const VOCABULARY_VISUALS:readonly VocabularyVisual[]=[
     "id": "hotel",
     "lexemeId": "lex-hotel",
     "file": "hotel.svg",
-    "alt": "Illustration of a hotel",
+    "alt": "Illustration of a hotel with a labeled entrance",
     "rights": "Original THIEPN illustration"
   },
   {
@@ -621,14 +621,14 @@ export const VOCABULARY_VISUALS:readonly VocabularyVisual[]=[
     "id": "front",
     "lexemeId": "lex-mae",
     "file": "front.svg",
-    "alt": "Illustration of an object in front of another object",
+    "alt": "Illustration of a tree in front of a house",
     "rights": "Original THIEPN illustration"
   },
   {
     "id": "behind",
     "lexemeId": "lex-ushiro",
     "file": "behind.svg",
-    "alt": "Illustration of an object positioned behind another object",
+    "alt": "Illustration of a tree behind a house",
     "rights": "Original THIEPN illustration"
   },
   {
@@ -649,7 +649,7 @@ export const VOCABULARY_VISUALS:readonly VocabularyVisual[]=[
     "id": "travel",
     "lexemeId": "lex-ryokou",
     "file": "travel.svg",
-    "alt": "Illustration of a suitcase with a travel ticket",
+    "alt": "Illustration of travel luggage and an airplane ticket",
     "rights": "Original THIEPN illustration"
   },
   {

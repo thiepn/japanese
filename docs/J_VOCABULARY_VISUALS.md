@@ -35,3 +35,11 @@ This branch is unmerged and undeployed. Source asset and mapping checks were per
 - Three source-equivalent isolated service-worker scenarios executed under Node 22 with `node --test`: CacheStorage denied and online fallback, revisiting cached artwork offline, and parallel request eviction at 48. All three passed **after correcting the existing test's missing `self.location` fixture**.
 - Corrected the earlier Playwright test that assumed `友達` remained unillustrated; the new negative reference is `日本語`. Added original VOC3 A1/A2 mapping and lazy-load reference checks.
 - Node 24 and pnpm are absent; `git ls-remote` fails DNS for GitHub. Exact-head TypeScript/Vite/Vitest and real Chromium/Android app qualification remain `NOT_TESTED`. Browser test source has been authored but not executed.
+
+## VOC4 — visual clarity repairs and cache invalidation
+
+Reviewed nine original SVG assets at 300×225 raster previews and their reduced presentation in a 3×3 contact sheet. Replaced visually ambiguous house-shaped `school`, `hospital`, `hotel`, `restaurant`, and `station` imagery with differentiated buildings and unmistakable functional marks (classroom windows/clock, medical cross, hotel sign, restaurant awning, station tracks). Added explicit rice grains to `rice`. Reworked `front` and `behind` using the **same house/tree pair** with depth/occlusion reversed, and replaced the platform-dependent airplane glyph in `travel` with an authored vector pictogram. Updated accessible descriptions for all nine; no canonical IDs or media filenames changed.
+
+Updated the separate illustration cache identifier from `vocab-v1` to `vocab-v2` so devices do not keep the old SVG versions forever. Activation retires the old picture-only cache through the existing prefix filter. This may temporarily remove previously viewed *image* offline copies until visited online again; it does **not** clear app/learner data, review history, backups or the ordinary shell cache. The existing 48-image limit, lazy requests, image failure text fallback and event/grading isolation are preserved.
+
+**Qualification:** static source and original visual previews performed; full project Node 24/pnpm + desktop/Android browser acceptance not available in this container. Do not treat visual preview as actual app acceptance.

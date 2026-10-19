@@ -3,6 +3,8 @@ import {readFileSync} from "node:fs";
 import {runInNewContext} from "node:vm";
 
 const source=readFileSync(new URL("../../apps/web/public/sw.js",import.meta.url),"utf8");
+// Asset revisions must invalidate previously cached pictures without touching learner data.
+if(!source.includes("vocab-v2"))throw new Error("Vocabulary image cache must be versioned after SVG changes");
 function setup({cacheDenied=false}={}){
  const handlers=new Map();const entries=new Map();const waits=[];let disconnected=false;
  const store={
