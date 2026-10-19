@@ -27,3 +27,11 @@ Added **52 original, first-party SVG drawings** (103 total across VOC1–VOC3). 
 No external artwork, textbook screenshots, new dependencies, network image APIs or commercial stock images were introduced. Each SVG is committed in `apps/web/public/vocab/` and retains the original project-authored rights marker. The service worker still caches **at most 48 encountered images**, so adding 52 files does not require an initial 52-image download. Unvisited image failure remains optional to core learning.
 
 This branch is unmerged and undeployed. Source asset and mapping checks were performed; full Node 24, pnpm/Vitest, Vite/TypeScript and real desktop/Android Playwright remain necessary before release.
+
+### VOC3 focused verification evidence (isolated)
+
+- GitHub source and tree inspection: 103 distinct, canonical mapped records; 103 physically present SVGs; original 51 records unchanged, all 52 new lexemes enrolled in canonical A1/A2 units; total 89,767 bytes of SVG source. No grading/content schema changes.
+- All 52 new SVGs were fetched and inspected for XML tag balance, expected 320×240 viewBox, and absence of script/foreignObject/image embedding or external links. This is not a visual UX check.
+- Three source-equivalent isolated service-worker scenarios executed under Node 22 with `node --test`: CacheStorage denied and online fallback, revisiting cached artwork offline, and parallel request eviction at 48. All three passed **after correcting the existing test's missing `self.location` fixture**.
+- Corrected the earlier Playwright test that assumed `友達` remained unillustrated; the new negative reference is `日本語`. Added original VOC3 A1/A2 mapping and lazy-load reference checks.
+- Node 24 and pnpm are absent; `git ls-remote` fails DNS for GitHub. Exact-head TypeScript/Vite/Vitest and real Chromium/Android app qualification remain `NOT_TESTED`. Browser test source has been authored but not executed.

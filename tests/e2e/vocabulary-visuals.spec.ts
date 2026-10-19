@@ -10,10 +10,10 @@ test("Japanese reference uses opt-in original images without adding images to ev
  const img=page.locator(".j7-reference__sheet--lexeme .vocabulary-visual img");
  await expect(img).toHaveAttribute("alt","Illustration of a red apple");
  await expect(img).toHaveAttribute("src",/\/vocab\/apple\.svg$/);
- await search.fill("友達");
- const friend=page.locator(".j7-result").filter({hasText:"友達"}).first();
- await expect(friend).toBeVisible({timeout:15000});
- await friend.getByRole("option").click();
+ await search.fill("日本語");
+ const unillustrated=page.locator(".j7-result.result-lexeme").filter({has:page.getByText("日本語",{exact:true})}).first();
+ await expect(unillustrated).toBeVisible({timeout:15000});
+ await unillustrated.getByRole("option").click();
  await expect(page.locator(".j7-reference__sheet--lexeme .vocabulary-visual")).toHaveCount(0);
 });
 
@@ -48,4 +48,26 @@ test("blocked optional images leave the original text reference available",async
  const image=sheet.locator(".vocabulary-visual img");
  await image.scrollIntoViewIfNeeded();
  await expect(sheet.locator(".vocabulary-visual")).toHaveCount(0);
+});
+
+
+test("VOC3 new A1 and A2 canonical words display mapped, lazy illustrations",async({page})=>{
+ await page.goto("./");
+ await page.getByRole("button",{name:"Library",exact:true}).click();
+ const search=page.getByRole("textbox",{name:"Search Japanese"});
+ for(const word of [{term:"学生",id:"lex-gakusei",file:"student.svg"},{term:"メール",id:"lex-meeru",file:"email.svg"}]){
+   await search.fill(word.term);
+   const result=page.locator(".j7-result.result-lexeme").filter({has:page.getByText(word.term,{exact:true})}).first();
+   await expect(result).toBeVisible({timeout:15000});
+   await result.getByRole("option").click();
+   const sheet=page.locator(".j7-reference__sheet--lexeme");
+   await expect(sheet).toContainText(word.id);
+   const image=sheet.locator(".vocabulary-visual img");
+   await expect(image).toHaveAttribute("loading","lazy");
+   await expect(image).toHaveAttribute("src",new RegExp("/vocab/"+word.file.replace(".","\\.")+"$"));
+   await image.scrollIntoViewIfNeeded();
+   await expect(image).toHaveJSProperty("complete",true);
+ }
+ const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
+ expect(overflow).toBeLessThanOrEqual(1);
 });
