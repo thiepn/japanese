@@ -171,3 +171,64 @@ test("a newly recognized source word remains available offline with original acc
     await context.setOffline(false);
   }
 });
+
+test("a later failed canonical review demotes word readiness after reload without affecting A0",async({page})=>{
+  await page.goto("./");
+  await page.getByRole("button",{name:"Start Japanese from Zero"}).click();
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  for(const [index,answer] of ["a","i","u","e","o","あ","い"].entries()){
+    await page.locator(".j5-choices").getByRole("button",{name:answer,exact:true}).click();
+    await expect(page.getByText("Correct",{exact:true})).toBeVisible();
+    await page.getByRole("button",{name:index===6?"Finish":"Continue",exact:true}).click();
+  }
+  const bridge=page.locator(".kana-words-entry");
+  await bridge.getByRole("button",{name:"Read new words"}).click();
+  await decodeFirstSightWord(page,"ii");
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await page.locator(".j5-choices").getByRole("button",{name:"good",exact:true}).click();
+  await expect(page.getByText("Correct",{exact:true})).toBeVisible();
+  await page.getByRole("button",{name:"Exit",exact:true}).click();
+  await expect(bridge).toContainText("1 of 2 available words recognized");
+
+  // A disposable test fixture models a later original, authoritative review
+  // imported in nonchronological ID order. It is not a production evidence writer.
+  await page.evaluate(async()=>{
+    const request=indexedDB.open("thiepn-japanese:00000000-0000-4000-8000-000000000001");
+    const db=await new Promise<IDBDatabase>((resolve,reject)=>{
+      request.onsuccess=()=>resolve(request.result);
+      request.onerror=()=>reject(request.error);
+    });
+    try{
+      const original=await new Promise<{
+        id:string;occurredAt:string;result:string;
+        primaryTarget:{id:string;kind:string};metadata:{promptId?:string}
+      }>((resolve,reject)=>{
+        const tx=db.transaction("study_events","readonly");
+        const req=tx.objectStore("study_events").getAll();
+        tx.oncomplete=()=>{
+          const event=(req.result as Array<typeof original>)
+            .find(entry=>entry.primaryTarget?.id==="lex-ii"&&entry.metadata?.promptId==="vocab-meaning-lex-ii");
+          if(event)resolve(event);else reject(new Error("CANONICAL_WORD_EVENT_MISSING"));
+        };
+        tx.onerror=()=>reject(tx.error);
+      });
+      const later={...original,id:"00000000-0000-4000-8000-000000000099",
+        result:"incorrect",
+        occurredAt:new Date(Date.parse(original.occurredAt)+60_000).toISOString()};
+      await new Promise<void>((resolve,reject)=>{
+        const tx=db.transaction("study_events","readwrite");
+        tx.objectStore("study_events").add(later);
+        tx.oncomplete=()=>resolve();
+        tx.onerror=()=>reject(tx.error);
+      });
+    }finally{db.close();}
+  });
+
+  await page.reload();
+  await expect(bridge).toContainText("0 of 2 available words recognized");
+  await expect(bridge).toContainText("1 awaiting review");
+  await expect(bridge.getByRole("button",{name:"Read learned words"})).toHaveCount(0);
+  await expect(page.locator(".beginner-entry__objective")).toHaveText("Hiragana · K sounds");
+  await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await expect(page.locator(".kana-words-entry")).toContainText("1 awaiting review");
+});
