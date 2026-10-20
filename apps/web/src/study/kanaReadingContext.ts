@@ -50,7 +50,7 @@ export function projectKanaReadingContext(events:readonly StudyEvent[]):KanaRead
   const needsRetry=[...attempts.values()].filter(attempt=>attempt.outcome==="incorrect").length;
   const remaining=complete?pool.length-attempts.size:0;
   return {available:complete&&pool.length>0&&(remaining>0||needsRetry>0),
-    revisitable:complete&&pool.length>0&&attempts.size===pool.length,
+    revisitable:complete&&attempts.size>0,
     completed:attempts.size,total:pool.length,remaining,needsRetry};
 }
 const sensesByLexeme=new Map(coreContent.senses
@@ -120,9 +120,11 @@ export function buildKanaReadingContext(events:readonly StudyEvent[]):StudyStep[
 }
 
 export function buildKanaReadingReference(events:readonly StudyEvent[]):StudyStep[]{
-  // User-initiated source rereading, not a shadow review schedule or graded session.
+  // Only previously encountered source sentences may be revealed; showing unseen
+  // translations here would compromise the original independent comprehension prompts.
   if(!projectKanaReadingContext(events).revisitable)return [];
-  return pool.map((sentence):StudyLesson=>({
+  const seen=readingAttempts(events);
+  return pool.filter(sentence=>seen.has(sentence.id)).map((sentence):StudyLesson=>({
     kind:"lesson",
     id:"a0-source-reference-"+sentence.id,
     title:sentence.text,
