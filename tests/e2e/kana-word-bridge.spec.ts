@@ -111,3 +111,45 @@ test("missed source words remain visible through reload and wait for original du
   await page.getByRole("button",{name:"Learn",exact:true}).click();
   await expect(page.locator(".kana-words-entry")).toContainText("2 awaiting review");
 });
+
+test("a newly recognized source word remains available offline with original account-scoped evidence",async({page,context})=>{
+  await page.goto("./");
+  await page.evaluate(async()=>{
+    if(!("serviceWorker" in navigator))throw new Error("WORD_BRIDGE_SERVICE_WORKER_UNAVAILABLE");
+    await navigator.serviceWorker.ready;
+  });
+  await page.reload();
+  await expect.poll(()=>page.evaluate(()=>Boolean(navigator.serviceWorker.controller))).toBe(true);
+  await page.getByRole("button",{name:"Start Japanese from Zero"}).click();
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  const kana=["a","i","u","e","o","あ","い"];
+  for(const [index,answer] of kana.entries()){
+    await page.locator(".j5-choices").getByRole("button",{name:answer,exact:true}).click();
+    await expect(page.getByText("Correct",{exact:true})).toBeVisible();
+    await page.getByRole("button",{name:index===6?"Finish":"Continue",exact:true}).click();
+  }
+  const bridge=page.locator(".kana-words-entry");
+  await bridge.getByRole("button",{name:"Read new words"}).click();
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await page.locator(".j5-choices").getByRole("button",{name:"good",exact:true}).click();
+  await expect(page.getByText("Correct",{exact:true})).toBeVisible();
+  await page.getByRole("button",{name:"Exit",exact:true}).click();
+  await expect(bridge).toContainText("1 of 2 available words recognized");
+
+  await context.setOffline(true);
+  try{
+    await page.reload();
+    await expect(bridge).toContainText("1 of 2 available words recognized");
+    await expect(bridge.getByRole("button",{name:"Read learned words"})).toBeVisible();
+    await bridge.getByRole("button",{name:"Read learned words"}).click();
+    await page.locator(".j5-typed-form input").fill("いい");
+    await page.locator(".j5-typed-form").getByRole("button",{name:"Check"}).click();
+    await expect(page.getByText("Correct",{exact:true})).toBeVisible();
+    await page.getByRole("button",{name:"Exit",exact:true}).click();
+    await expect(bridge.getByRole("button",{name:"Use learned words"})).toBeVisible();
+    await expect(page.locator(".beginner-entry__objective")).toHaveText("Hiragana · K sounds");
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)).toBeLessThanOrEqual(1);
+  }finally{
+    await context.setOffline(false);
+  }
+});
