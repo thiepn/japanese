@@ -1,6 +1,6 @@
 import type {StudyEvent} from "@thiepn/domain";
 import type {StudyLesson,StudyPrompt,StudyStep} from "@thiepn/study-player";
-import {basicHiragana,foundationApplicationPrompts,foundationLessons,kanaRecognitionPrompts} from "./foundationPrompts";
+import {basicHiragana,basicKatakana,foundationApplicationPrompts,foundationLessons,kanaRecognitionPrompts} from "./foundationPrompts";
 
 const GROUPS=[
   {id:"vowels",title:"Five vowel sounds",context:"hiragana-vowels"},
@@ -34,69 +34,92 @@ export function chooseBeginnerContinuation(
   return {kind:"daily"};
 }
 
-function recognitionFor(id:BeginnerStageId):StudyPrompt[]{
-  return basicHiragana.filter(seed=>seed.group===id).map(seed=>{
-    const prompt=kanaRecognitionPrompts.find(item=>item.primaryTarget.id==="hiragana-"+seed.kana);
+type Script="hiragana"|"katakana";
+function seedsFor(script:Script,id:BeginnerStageId){
+  return (script==="hiragana"?basicHiragana:basicKatakana).filter(seed=>seed.group===id);
+}
+function recognitionFor(script:Script,id:BeginnerStageId):StudyPrompt[]{
+  return seedsFor(script,id).map(seed=>{
+    const prompt=kanaRecognitionPrompts.find(item=>item.primaryTarget.id===script+"-"+seed.kana);
     if(!prompt)throw new Error("MISSING_CANONICAL_KANA:"+seed.kana);
     return prompt;
   });
 }
-function selectedPractice(id:BeginnerStageId):StudyPrompt[]{
-  const seeds=basicHiragana.filter(seed=>seed.group===id);
+function selectedPractice(script:Script,id:BeginnerStageId):StudyPrompt[]{
+  const seeds=seedsFor(script,id);
   return foundationApplicationPrompts.filter(prompt=>prompt.skill==="form_selection"
-    &&seeds.some(seed=>prompt.primaryTarget.id==="hiragana-"+seed.kana)).slice(0,2);
+    &&seeds.some(seed=>prompt.primaryTarget.id===script+"-"+seed.kana)).slice(0,2);
 }
-const A0_CANONICAL_IDENTITIES=new Set(GROUPS.flatMap(group=>
-  [...recognitionFor(group.id),...selectedPractice(group.id)]
-    .map(prompt=>prompt.id+"|"+prompt.primaryTarget.id)));
+function stagePrompts(script:Script,id:BeginnerStageId):StudyPrompt[]{
+  return [...recognitionFor(script,id),...selectedPractice(script,id)];
+}
+const CANONICAL_IDENTITIES:Record<Script,ReadonlySet<string>>={
+  hiragana:new Set(GROUPS.flatMap(group=>stagePrompts("hiragana",group.id)
+    .map(prompt=>prompt.id+"|"+prompt.primaryTarget.id))),
+  katakana:new Set(GROUPS.flatMap(group=>stagePrompts("katakana",group.id)
+    .map(prompt=>prompt.id+"|"+prompt.primaryTarget.id)))
+};
 function correctlyAnswered(events:readonly StudyEvent[]):Set<string>{
   return new Set(events.filter(event=>event.result==="correct"&&event.primaryTarget?.kind==="kana"
     &&event.metadata?.nonAuthoritative!==true&&typeof event.metadata?.promptId==="string")
     .map(event=>String(event.metadata?.promptId)+"|"+event.primaryTarget!.id));
 }
-export function projectBeginnerOverview(events:readonly StudyEvent[]):BeginnerOverview{
+function projectScriptOverview(script:Script,events:readonly StudyEvent[]):BeginnerOverview{
   const correct=correctlyAnswered(events);
   let priorCompleted=true;
   const stages:BeginnerStage[]=GROUPS.map(group=>{
-    const prompts=[...recognitionFor(group.id),...selectedPractice(group.id)];
+    const prompts=stagePrompts(script,group.id);
+    if(prompts.length===0)throw new Error("EMPTY_CANONICAL_KANA_GROUP:"+script+"-"+group.id);
     const count=prompts.filter(prompt=>correct.has(prompt.id+"|"+prompt.primaryTarget.id)).length;
     const completed=count===prompts.length;
-    const stage={id:group.id,title:group.title,correct:count,total:prompts.length,completed,unlocked:priorCompleted};
+    const stage={id:group.id,
+      title:script==="katakana"&&group.id==="w"?"W sounds and ン":group.title,
+      correct:count,total:prompts.length,completed,unlocked:priorCompleted};
     priorCompleted=priorCompleted&&completed;
     return stage;
   });
   const nextId=stages.find(stage=>!stage.completed)?.id??null;
-  return {stages,completed:stages.filter(s=>s.completed).length,total:stages.length,nextId,
+  return {stages,completed:stages.filter(stage=>stage.completed).length,total:stages.length,nextId,
     started:events.some(event=>event.primaryTarget?.kind==="kana"
       &&(event.result==="correct"||event.result==="incorrect")
       &&event.metadata?.nonAuthoritative!==true
-      &&A0_CANONICAL_IDENTITIES.has(String(event.metadata?.promptId)+"|"+event.primaryTarget.id)),
+      &&CANONICAL_IDENTITIES[script].has(String(event.metadata?.promptId)+"|"+event.primaryTarget.id)),
     complete:nextId===null};
+}
+export function projectBeginnerOverview(events:readonly StudyEvent[]):BeginnerOverview{
+  return projectScriptOverview("hiragana",events);
+}
+export function projectKatakanaOverview(events:readonly StudyEvent[]):BeginnerOverview{
+  return projectScriptOverview("katakana",events);
 }
 const VOWEL_TIPS:Readonly<Record<string,string>>={
   "あ":"a · as in father","い":"i · like ee in see",
   "う":"u · a short unrounded oo-like sound","え":"e · as in get","お":"o · a pure oh sound"
 };
-export function buildBeginnerStage(id:BeginnerStageId,events:readonly StudyEvent[]):StudyStep[]{
+function buildScriptStage(script:Script,id:BeginnerStageId,events:readonly StudyEvent[]):StudyStep[]{
   const group=GROUPS.find(item=>item.id===id);
   if(!group)throw new Error("UNKNOWN_BEGINNER_STAGE");
-  if(!projectBeginnerOverview(events).stages.find(stage=>stage.id===id)?.unlocked)throw new Error("BEGINNER_STAGE_LOCKED");
-  const seeds=basicHiragana.filter(seed=>seed.group===id);
-  const explanation=foundationLessons[group.context]?.body;
+  const overview=projectScriptOverview(script,events);
+  if(!overview.stages.find(stage=>stage.id===id)?.unlocked)throw new Error("BEGINNER_STAGE_LOCKED");
+  const seeds=seedsFor(script,id);
+  const context=script+"-"+id;
+  const explanation=foundationLessons[context]?.body;
   const teach:StudyLesson={
-    kind:"lesson",id:"a0-hiragana-"+id+"-teach",contextId:"a0-hiragana-"+id,
-    title:"Hiragana · "+group.title,
-    body:(explanation??"Each hiragana character represents a Japanese sound.")+
+    kind:"lesson",id:"a0-"+script+"-"+id+"-teach",contextId:"a0-"+script+"-"+id,
+    title:(script==="hiragana"?"Hiragana":"Katakana")+" · "+overview.stages.find(stage=>stage.id===id)!.title,
+    body:(explanation??"Each kana character represents a Japanese sound.")+
       " Play each sound and repeat it aloud. Then identify each character in practice.",
-    examples:seeds.map(seed=>({expression:seed.kana,note:VOWEL_TIPS[seed.kana]??seed.reading})),
+    examples:seeds.map(seed=>({expression:seed.kana,note:script==="hiragana"?VOWEL_TIPS[seed.kana]??seed.reading:seed.reading})),
     sourceLabel:"THIEPN original kana foundations"
   };
   const correct=correctlyAnswered(events);
-  const recognize=recognitionFor(id);
-  const forms=selectedPractice(id);
-  // Previously correct canonical answers stay recorded. Re-teach, then retry only unmet cues.
-  const pending=[...recognize,...forms].filter(prompt=>
+  const pending=stagePrompts(script,id).filter(prompt=>
     !correct.has(prompt.id+"|"+prompt.primaryTarget.id));
   return [teach,...pending];
-
+}
+export function buildBeginnerStage(id:BeginnerStageId,events:readonly StudyEvent[]):StudyStep[]{
+  return buildScriptStage("hiragana",id,events);
+}
+export function buildKatakanaStage(id:BeginnerStageId,events:readonly StudyEvent[]):StudyStep[]{
+  return buildScriptStage("katakana",id,events);
 }

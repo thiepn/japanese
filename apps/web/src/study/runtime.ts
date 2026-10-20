@@ -1,5 +1,5 @@
 import { entityKey } from "@thiepn/domain";
-import {buildBeginnerStage,projectBeginnerOverview,type BeginnerStageId,type BeginnerOverview} from "./beginnerCourse";
+import {buildBeginnerStage,buildKatakanaStage,projectBeginnerOverview,projectKatakanaOverview,type BeginnerStageId,type BeginnerOverview} from "./beginnerCourse";
 export type {BeginnerOverview} from "./beginnerCourse";
 import {countUX1SavedAnswersToday,projectUX1Engagement,type UX1Engagement} from "./ux1Engagement";
 export type {UX1Engagement} from "./ux1Engagement";
@@ -153,6 +153,18 @@ export async function buildBeginnerStageSession(id:BeginnerStageId):Promise<Stud
   const events=await listStudyEvents(owner);
   if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("BEGINNER_WORKSPACE_CHANGED_DURING_BUILD");
   return buildBeginnerStage(id,events);
+}
+export async function getKatakanaOverview():Promise<BeginnerOverview>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const events=await listStudyEvents(owner);
+  if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("KATAKANA_WORKSPACE_CHANGED_DURING_READ");
+  return projectKatakanaOverview(events);
+}
+export async function buildKatakanaStageSession(id:BeginnerStageId):Promise<StudyStep[]>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const events=await listStudyEvents(owner);
+  if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("KATAKANA_WORKSPACE_CHANGED_DURING_BUILD");
+  return buildKatakanaStage(id,events);
 }
 export async function buildDueReviewSession(now=new Date()):Promise<StudyStep[]>{
   const owner=DEVELOPMENT_ACCOUNT_ID;
