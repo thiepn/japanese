@@ -1,7 +1,7 @@
 import { entityKey } from "@thiepn/domain";
 import {buildBeginnerStage,buildKatakanaStage,projectBeginnerOverview,projectKatakanaOverview,type BeginnerStageId,type BeginnerOverview} from "./beginnerCourse";
 import {buildKanaWordBridge,projectKanaWordBridge,type KanaWordBridgeOverview} from "./kanaWordBridge";
-import {buildKanaReadingContext} from "./kanaReadingContext";
+import {buildKanaReadingContext,buildKanaReadingReference} from "./kanaReadingContext";
 export type {KanaWordBridgeOverview} from "./kanaWordBridge";
 export type {BeginnerOverview} from "./beginnerCourse";
 import {countUX1SavedAnswersToday,projectUX1Engagement,type UX1Engagement} from "./ux1Engagement";
@@ -186,6 +186,12 @@ export async function buildKanaReadingContextSession():Promise<StudyStep[]>{
   const events=await listStudyEvents(owner);
   if(owner!==DEVELOPMENT_ACCOUNT_ID)throw new Error("SOURCE_READING_WORKSPACE_CHANGED_DURING_BUILD");
   return buildKanaReadingContext(events);
+}
+export async function buildKanaReadingReferenceSession():Promise<StudyStep[]>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const events=await listStudyEvents(owner);
+  if(owner!==DEVELOPMENT_ACCOUNT_ID)throw new Error("SOURCE_READING_WORKSPACE_CHANGED_DURING_REFERENCE");
+  return buildKanaReadingReference(events);
 }
 export async function buildDueReviewSession(now=new Date()):Promise<StudyStep[]>{
   const owner=DEVELOPMENT_ACCOUNT_ID;
