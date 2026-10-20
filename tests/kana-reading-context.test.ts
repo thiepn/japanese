@@ -45,7 +45,7 @@ describe("original A1 sentences as basic-kana reading transfer",()=>{
     expect((prompts[0] as StudyPrompt).explanation).toContain("本 (ほん) — book");
     expect((prompts[0] as StudyPrompt).explanation).toContain("を — marks the direct object of an action");
     expect((prompts[0] as StudyPrompt).explanation).toContain("〜ます — polite nonpast verb predicate");
-    const correctPositions=prompts.map(step=>isStudyLesson(step)?-1:step.choices.indexOf(step.acceptedAnswers[0]!));
+    const correctPositions=prompts.map(step=>!isStudyLesson(step)&&step.promptType==="choice"?step.choices.indexOf(step.acceptedAnswers[0]!):-1);
     expect(correctPositions).toEqual([0,1]);
     const first=prompts[0] as StudyPrompt;
     expect(first).toMatchObject({
@@ -55,7 +55,7 @@ describe("original A1 sentences as basic-kana reading transfer",()=>{
       eventMetadata:{nonAuthoritative:true,schedulerExcluded:true,kanaSourceReadingContext:true}
     });
     for(const step of prompts){
-      if(isStudyLesson(step))throw Error("EXPECTED_ORIGINAL_SENTENCE_PROMPT");
+      if(isStudyLesson(step)||step.promptType!=="choice")throw Error("EXPECTED_ORIGINAL_SENTENCE_PROMPT");
       const sentence=coreContent.sentences.find(row=>row.id===step.primaryTarget.id);
       expect(sentence).toBeDefined();
       expect(step.prompt).toBe(sentence?.reading);
@@ -70,7 +70,7 @@ describe("original A1 sentences as basic-kana reading transfer",()=>{
   it("persists original attempts but never awards sentence, vocabulary or FSRS mastery",()=>{
     const completed=completedHiragana();
     const first=buildKanaReadingContext(completed)[0];
-    if(!first||isStudyLesson(first))throw Error("EXPECTED_SENTENCE_QUESTION");
+    if(!first||isStudyLesson(first)||first.promptType!=="choice")throw Error("EXPECTED_SENTENCE_QUESTION");
     const wrong=submitted(first,first.choices[1]!);
     expect(wrong.result).toBe("skipped");
     expect(wrong.primaryTarget).toEqual({kind:"sentence",id:"sentence-a1-004"});
@@ -94,7 +94,7 @@ describe("original A1 sentences as basic-kana reading transfer",()=>{
     let missed:StudyPrompt|null=null;
     for(let i=0;i<7;i++){
       const first=buildKanaReadingContext(events)[0];
-      if(!first||isStudyLesson(first))throw Error("SOURCE_READING_NOT_AVAILABLE");
+      if(!first||isStudyLesson(first)||first.promptType!=="choice")throw Error("SOURCE_READING_NOT_AVAILABLE");
       encountered.add(first.primaryTarget.id);
       if(i===0){
         missed=first;
@@ -125,7 +125,7 @@ describe("original A1 sentences as basic-kana reading transfer",()=>{
   it("uses latest unscored outcome by time, including a lapse and equal-time ambiguity",()=>{
     const original=completedHiragana();
     const first=buildKanaReadingContext(original)[0];
-    if(!first||isStudyLesson(first))throw Error("EXPECTED_FIRST_SENTENCE");
+    if(!first||isStudyLesson(first)||first.promptType!=="choice")throw Error("EXPECTED_FIRST_SENTENCE");
     const correct=submitted(first,first.acceptedAnswers[0]!);
     const wrongChoice=first.choices.find(choice=>choice!==first.acceptedAnswers[0])!;
     const laterWrong=submitted(first,wrongChoice,"2026-10-20T10:00:00.000Z","later-wrong");
