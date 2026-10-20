@@ -67,6 +67,47 @@ describe("original A1 sentences as basic-kana reading transfer",()=>{
       expect(step.eventMetadata?.nonAuthoritative).toBe(true);
     }
   });
+  it("maps every incorrect choice to a different original A1 sentence after answering",()=>{
+    const completed=completedHiragana();
+    let events=[...completed];
+    const reviewed=new Set<string>();
+    for(let index=0;index<7;index++){
+      const first=buildKanaReadingContext(events)[0];
+      if(!first||isStudyLesson(first)||first.promptType!=="choice")
+        throw Error("EXPECTED_AUTHORED_CHOICE");
+      reviewed.add(first.primaryTarget.id);
+      const target=coreContent.sentences.find(sentence=>sentence.id===first.primaryTarget.id)!;
+      const foilFeedback=first.eventMetadata?.e06FoilFeedback;
+      expect(Array.isArray(foilFeedback)).toBe(true);
+      const corrections=foilFeedback as Array<{response:string;feedback:string}>;
+      expect(corrections).toHaveLength(3);
+      expect(new Set(corrections.map(item=>item.response)).size).toBe(3);
+      for(const item of corrections){
+        expect(item.response).not.toBe(target.translation);
+        expect(first.choices).toContain(item.response);
+        const foil=coreContent.sentences.find(sentence=>
+          sentence.level==="A1"&&sentence.sourceIds.includes("thiepn-original")
+          &&sentence.translation===item.response);
+        expect(foil).toBeDefined();
+        expect(foil?.id).not.toBe(target.id);
+        expect(item.feedback).toContain(foil!.text);
+        expect(item.feedback).toContain(foil!.reading!);
+        expect(item.feedback).toContain(target.text);
+        expect(item.feedback).toContain(target.reading!);
+      }
+      // The error contrast is only feedback metadata, not the prompt or grading rubric.
+      for(const item of corrections)expect(first.prompt).not.toContain(item.feedback);
+      expect(first.acceptedAnswers).toEqual([target.translation]);
+      expect(first.eventMetadata).toMatchObject({
+        nonAuthoritative:true,schedulerExcluded:true,kanaSourceReadingContext:true
+      });
+      events.push(submitted(first,first.acceptedAnswers[0]!));
+    }
+    expect(reviewed.size).toBe(7);
+    expect(projectKanaReadingContext(events)).toMatchObject({
+      total:7,completed:7,remaining:0,needsRetry:0
+    });
+  });
   it("persists original attempts but never awards sentence, vocabulary or FSRS mastery",()=>{
     const completed=completedHiragana();
     const first=buildKanaReadingContext(completed)[0];
