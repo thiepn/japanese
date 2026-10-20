@@ -1,4 +1,6 @@
 import { entityKey } from "@thiepn/domain";
+import {buildBeginnerStage,projectBeginnerOverview,type BeginnerStageId,type BeginnerOverview} from "./beginnerCourse";
+export type {BeginnerOverview} from "./beginnerCourse";
 import {countUX1SavedAnswersToday,projectUX1Engagement,type UX1Engagement} from "./ux1Engagement";
 export type {UX1Engagement} from "./ux1Engagement";
 import { getJapaneseDeviceId } from "../deviceIdentity";
@@ -140,6 +142,30 @@ export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
   return insertFirstExposureLessons(queue,byId,privatePrompts);
 }
 
+export async function getBeginnerOverview():Promise<BeginnerOverview>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const events=await listStudyEvents(owner);
+  if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("BEGINNER_WORKSPACE_CHANGED_DURING_READ");
+  return projectBeginnerOverview(events);
+}
+export async function buildBeginnerStageSession(id:BeginnerStageId):Promise<StudyStep[]>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const events=await listStudyEvents(owner);
+  if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("BEGINNER_WORKSPACE_CHANGED_DURING_BUILD");
+  return buildBeginnerStage(id,events);
+}
+export async function buildDueReviewSession(now=new Date()):Promise<StudyStep[]>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const [traces,privateSet,privateSentences]=await Promise.all([
+    listMemoryTraces(owner),buildPrivateVocabularyPrompts(),buildPrivateSentencePrompts()
+  ]);
+  if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("REVIEW_WORKSPACE_CHANGED_DURING_BUILD");
+  const byId=new Map(traces.map(trace=>[trace.id,trace]));
+  const pool=[...allPrompts(),...privateSet.meaning,...privateSet.application,...privateSentences];
+  const due=pool.filter(prompt=>isDue(prompt,byId,now))
+    .sort((a,b)=>dueAt(a,byId)-dueAt(b,byId)).slice(0,MAX_QUEUE_SIZE);
+  return due;
+}
 export async function buildE11MicroSession(id:string):Promise<StudyStep[]>{return buildE11OptionalSession(id,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
 export async function getE19WritingOverview():Promise<E19Overview>{
  const owner=DEVELOPMENT_ACCOUNT_ID;

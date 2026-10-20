@@ -9,13 +9,15 @@ test("J15D uses only the native Japanese navigation, not the retired shell",asyn
   await expect(nav).toHaveCSS("box-shadow","none");
   await expect(page.locator(".app-shell,.nav,.topbar,.study-shell,.study-card")).toHaveCount(0);
   await nav.getByRole("button",{name:"Learn",exact:true}).click();
+  await page.locator(".beginner-explore > summary").click();
+  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
   await expect(page.locator(".j4-hero")).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)).toBeLessThanOrEqual(1);
 });
 
 test("J15D Study entry still opens the native task chamber with accessible controls",async({page})=>{
   await page.goto("./");
-  await page.locator(".ux1-native-queue").click();
+  await page.getByRole("button",{name:"Start Japanese from Zero"}).click();
   await expect(page.locator(".j5-study")).toBeVisible();
   await expect(page.getByRole("button",{name:"Exit"})).toBeVisible();
   await expect(page.locator(".study-card,.study-shell,.study-progress")).toHaveCount(0);

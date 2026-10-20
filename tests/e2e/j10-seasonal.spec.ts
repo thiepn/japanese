@@ -34,7 +34,7 @@ test("J10 exposes six deterministic seasonal art worlds without changing navigat
 
 test("J10 season carries into the isolated Study Focus Chamber",async({page})=>{
   await page.goto("./?season=winter");
-  await page.locator(".ux1-native-queue").click();
+  await page.getByRole("button",{name:"Start Japanese from Zero"}).click();
 
   const study=page.locator(".j5-study");
   await expect(study).toHaveAttribute("data-j-season","winter");

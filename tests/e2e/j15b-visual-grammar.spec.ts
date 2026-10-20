@@ -7,14 +7,18 @@ test("J15B freezes five distinct editorial page frames and flat navigation",asyn
   await expect(nav).toHaveCSS("backdrop-filter","none");
   await expect(nav.getByRole("button",{name:"Today",exact:true})).toHaveCSS("border-radius","0px");
   for(const [name,selector] of [
-    ["Today",".ux1-mission"],
+    ["Today",".beginner-entry"],
     ["Learn",".j4-hero"],
     ["Immerse",".j6-hero"],
     ["Library",".j7-library__masthead"],
     ["Progress",".j8-hero"],
   ] as const){
     await nav.getByRole("button",{name,exact:true}).click();
-    await expect(page.locator(selector)).toHaveCSS("border-radius",name==="Today"?"24px":"0px");
+    if(name==="Learn"){
+      await page.locator(".beginner-explore > summary").click();
+      await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+    }
+    await expect(page.locator(selector)).toHaveCSS("border-radius","0px");
     await expect(page.locator(selector)).toHaveCSS("box-shadow","none");
   }
 });
