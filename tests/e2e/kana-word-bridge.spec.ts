@@ -47,6 +47,34 @@ test("source-backed word reading begins after first kana row and returns to the 
     await page.getByRole("button",{name:index===1?"Finish":"Continue",exact:true}).click();
   }
   await expect(bridge).toHaveCount(0);
+  const durable=await page.evaluate(async()=>{
+    const db=await new Promise<IDBDatabase>((resolve,reject)=>{
+      const request=indexedDB.open("thiepn-japanese:00000000-0000-4000-8000-000000000001");
+      request.onsuccess=()=>resolve(request.result);
+      request.onerror=()=>reject(request.error);
+    });
+    try{
+      return await new Promise<{promptIds:string[];traceIds:string[]}>((resolve,reject)=>{
+        const tx=db.transaction(["study_events","memory_traces"],"readonly");
+        const events=tx.objectStore("study_events").getAll();
+        const traces=tx.objectStore("memory_traces").getAll();
+        tx.oncomplete=()=>resolve({
+          promptIds:(events.result as Array<{primaryTarget?:{kind?:string};result:string;metadata?:{promptId?:string}}>)
+            .filter(event=>event.primaryTarget?.kind==="lexeme"&&event.result==="correct")
+            .map(event=>event.metadata?.promptId??""),
+          traceIds:(traces.result as Array<{id:string}>).map(trace=>trace.id)
+            .filter(id=>id.startsWith("lexeme:lex-ii:")||id.startsWith("lexeme:lex-iie:"))
+        });
+        tx.onerror=()=>reject(tx.error);
+      });
+    }finally{db.close();}
+  });
+  expect(durable.promptIds).toHaveLength(6);
+  expect(new Set(durable.promptIds).size).toBe(6);
+  expect(durable.traceIds).toHaveLength(6);
+  expect(new Set(durable.traceIds).size).toBe(6);
+  await page.reload();
+  await expect(bridge).toHaveCount(0);
   await expect(page.locator(".beginner-entry__objective")).toHaveText("Hiragana · K sounds");
   await page.getByRole("button",{name:"Learn",exact:true}).click();
   await expect(page.getByRole("heading",{name:"Read Japanese words"})).toHaveCount(0);
