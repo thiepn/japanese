@@ -110,12 +110,12 @@ export function J4Learn(props:Props){
     onC1Practice,onProductive,onLexicalFluency,onRealWorldChain,onRealWorldQualification,
   }=props;
 
-  const [showFullCourse,setShowFullCourse]=useState(false);
   const beginnerMode=!beginner.complete||Boolean(e01.unitId&&(e01.status==="not_started"||e01.status==="learning"))||Boolean(e02.nextSceneId);
+  const [showFullCourse,setShowFullCourse]=useState(!beginnerMode);
   const [advancedOpen,setAdvancedOpen]=useState(!beginnerMode);
   const coachDrawer=useRef<HTMLDetailsElement|null>(null);
   // Hydrated A0/A1 progress can arrive after this screen initially mounts.
-  useEffect(()=>{if(!beginnerMode)setAdvancedOpen(true);},[beginnerMode]);
+  useEffect(()=>{if(!beginnerMode){setAdvancedOpen(true);setShowFullCourse(true);}},[beginnerMode]);
   useEffect(()=>{
     if(!preferredCoachChain)return;
     setAdvancedOpen(true);
