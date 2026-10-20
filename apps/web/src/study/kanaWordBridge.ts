@@ -10,7 +10,7 @@ type BridgeWord={
   meaningPrompt:StudyPrompt;readingPrompt:StudyPrompt;activePrompt:StudyPrompt;
 };
 export type KanaWordBridgeOverview={
-  eligible:number;learned:number;read:number;transferred:number;newWords:number;readyToRead:number;readyToUse:number;
+  eligible:number;learned:number;read:number;transferred:number;newWords:number;readyToRead:number;readyToUse:number;pendingReview:number;
   available:boolean;
 };
 const meaningById=new Map(vocabularyMeaningPrompts.map(prompt=>[prompt.primaryTarget.id,prompt] as const));
@@ -74,10 +74,15 @@ export function projectKanaWordBridge(events:readonly StudyEvent[]):KanaWordBrid
   const newWords=progress.filter(p=>!p.meaningAttempted);
   const readyToRead=progress.filter(p=>p.meaningCorrect&&!p.readingAttempted);
   const readyToUse=progress.filter(p=>p.meaningCorrect&&p.readingCorrect&&!p.activeAttempted);
+  const pendingReview=progress.filter(p=>
+    (p.meaningAttempted&&!p.meaningCorrect)||
+    (p.meaningCorrect&&p.readingAttempted&&!p.readingCorrect)||
+    (p.meaningCorrect&&p.readingCorrect&&p.activeAttempted&&!p.activeCorrect));
   return {eligible:progress.length,learned:progress.filter(p=>p.meaningCorrect).length,
     read:progress.filter(p=>p.readingCorrect).length,
     transferred:progress.filter(p=>p.activeCorrect).length,
     newWords:newWords.length,readyToRead:readyToRead.length,readyToUse:readyToUse.length,
+    pendingReview:pendingReview.length,
     available:newWords.length>0||readyToRead.length>0||readyToUse.length>0};
 }
 export function buildKanaWordBridge(events:readonly StudyEvent[]):StudyStep[]{

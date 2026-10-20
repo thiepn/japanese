@@ -177,7 +177,7 @@ export function J4Learn(props:Props){
         e02.scenes.find(scene=>scene.id===e02.nextSceneId)?.title??"A1 practice"}
       due={summary.due} busy={status==="loading"}
       sessionError={status==="error"} onContinue={onStartBeginner} onReview={onReviewDue}/>:null}
-    {wordBridge.available?<KanaWordsEntry overview={wordBridge} busy={status==="loading"} onContinue={onStartWords}/>:null}
+    {wordBridge.available||wordBridge.pendingReview>0?<KanaWordsEntry overview={wordBridge} due={summary.due} busy={status==="loading"} onContinue={onStartWords} onReviewDue={onReviewDue}/>:null}
     {beginner.complete&&!katakana.complete?<KatakanaEntry overview={katakana} busy={status==="loading"} onContinue={onStartKatakana}/>:null}
     <details className="beginner-explore" open={advancedOpen}
       onToggle={event=>setAdvancedOpen(event.currentTarget.open)}>
