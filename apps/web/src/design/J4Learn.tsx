@@ -49,7 +49,7 @@ import type {E07Journey,E07Action} from "../study/e07LearningRoute";
 import {JCartouche,JInkProgress,JPattern,JSeal} from "./index";
 
 type Props={
-   beginner:BeginnerOverview;katakana:BeginnerOverview;wordBridge:KanaWordBridgeOverview;onStartWords:()=>void;onStartKatakana:()=>void;onStartBeginner:()=>void;onReviewDue:()=>void;
+   beginner:BeginnerOverview;katakana:BeginnerOverview;wordBridge:KanaWordBridgeOverview;onReadContext:()=>void;onStartWords:()=>void;onStartKatakana:()=>void;onStartBeginner:()=>void;onReviewDue:()=>void;
   e01:E01Progress;onStartE01:()=>void;onStartE01Delayed:()=>void;
   e02:E02Overview;onStartE02:(id:string)=>void;onStartE02Delayed:(id:string)=>void;
   e03:E03Overview;onStartE03:(id:string)=>void;onStartE03Delayed:(id:string)=>void;
@@ -106,7 +106,7 @@ const LEVEL_ORDER=["A1","A2","B1","B2","C1"];
 
 export function J4Learn(props:Props){
   const {
-    beginner,katakana,wordBridge,onStartWords,onStartKatakana,onStartBeginner,onReviewDue,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,e14Reviews,e16WorkspaceId,e16WorkspaceCurrent,onStartE06,onStartE06Full,onStartE11Micro,onStartE13,onStartE18,onStartE14,onStartE15,onStartE10Stage,onStartE06Delayed,onStartE10DelayedStage,onStartE06FullDelayed,onStartE06Preview,e19,onStartE19,e07,onOpenE07,e22Selection,onE22Selection,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
+    beginner,katakana,wordBridge,onReadContext,onStartWords,onStartKatakana,onStartBeginner,onReviewDue,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,e14Reviews,e16WorkspaceId,e16WorkspaceCurrent,onStartE06,onStartE06Full,onStartE11Micro,onStartE13,onStartE18,onStartE14,onStartE15,onStartE10Stage,onStartE06Delayed,onStartE10DelayedStage,onStartE06FullDelayed,onStartE06Preview,e19,onStartE19,e07,onOpenE07,e22Selection,onE22Selection,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
     milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,
     onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartAssessment,
     onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,
@@ -177,7 +177,7 @@ export function J4Learn(props:Props){
         e02.scenes.find(scene=>scene.id===e02.nextSceneId)?.title??"A1 practice"}
       due={summary.due} busy={status==="loading"}
       sessionError={status==="error"} onContinue={onStartBeginner} onReview={onReviewDue}/>:null}
-    {wordBridge.available||wordBridge.pendingReview>0?<KanaWordsEntry overview={wordBridge} due={summary.due} busy={status==="loading"} onContinue={onStartWords} onReviewDue={onReviewDue}/>:null}
+    {wordBridge.available||wordBridge.pendingReview>0||wordBridge.readingContext.available?<KanaWordsEntry overview={wordBridge} due={summary.due} busy={status==="loading"} onContinue={onStartWords} onReviewDue={onReviewDue} onReadContext={onReadContext}/>:null}
     {beginner.complete&&!katakana.complete?<KatakanaEntry overview={katakana} busy={status==="loading"} onContinue={onStartKatakana}/>:null}
     <details className="beginner-explore" open={advancedOpen}
       onToggle={event=>setAdvancedOpen(event.currentTarget.open)}>

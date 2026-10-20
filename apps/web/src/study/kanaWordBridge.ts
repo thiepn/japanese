@@ -2,6 +2,7 @@ import type {StudyEvent} from "@thiepn/domain";
 import type {StudyPrompt,StudyStep} from "@thiepn/study-player";
 import {basicHiragana,basicKatakana} from "./foundationPrompts";
 import {projectBeginnerOverview,projectKatakanaOverview} from "./beginnerCourse";
+import {projectKanaReadingContext,type KanaReadingContextOverview} from "./kanaReadingContext";
 import {starterVocabulary,vocabularyApplicationPrompts,vocabularyLessons,vocabularyMeaningPrompts} from "./vocabulary";
 
 type Script="hiragana"|"katakana";
@@ -11,7 +12,7 @@ type BridgeWord={
 };
 export type KanaWordBridgeOverview={
   eligible:number;learned:number;read:number;transferred:number;newWords:number;readyToRead:number;readyToUse:number;pendingReview:number;
-  available:boolean;
+  available:boolean;readingContext:KanaReadingContextOverview;
 };
 const meaningById=new Map(vocabularyMeaningPrompts.map(prompt=>[prompt.primaryTarget.id,prompt] as const));
 const readingById=new Map(vocabularyApplicationPrompts.filter(prompt=>prompt.skill==="reading")
@@ -128,6 +129,7 @@ export function projectKanaWordBridge(events:readonly StudyEvent[]):KanaWordBrid
     transferred:progress.filter(p=>p.activeCorrect).length,
     newWords:newWords.length,readyToRead:readyToRead.length,readyToUse:readyToUse.length,
     pendingReview:pendingReview.length,
+    readingContext:projectKanaReadingContext(events),
     available:newWords.length>0||readyToRead.length>0||readyToUse.length>0};
 }
 export function buildKanaWordBridge(events:readonly StudyEvent[]):StudyStep[]{
