@@ -32,7 +32,33 @@ const eligibleWords:BridgeWord[]=starterVocabulary.flatMap(item=>{
   if(!meaningPrompt||!readingPrompt||!activePrompt)return [];
   return [{id:lexeme.id,form,meaning:item.meaning,script,meaningPrompt,readingPrompt,activePrompt}];
 });
-type WordProgress={word:BridgeWord;meaningCorrect:boolean;readingCorrect:boolean;activeCorrect:boolean;meaningAttempted:boolean;readingAttempted:boolean;activeAttempted:boolean};
+type WordProgress={word:BridgeWord;meaningCorrect:boolean;readingCorrect:boolean;activeCorrect:boolean;meaningAttempted:boolean;readingAttempted:boolean;activeAttempted:boolean;firstSightAttempted:boolean};
+const kanaByForm=new Map([...basicHiragana,...basicKatakana].map(seed=>[seed.kana,seed.reading] as const));
+function firstSightPrompt(word:BridgeWord):StudyPrompt{
+  const sounds=[...word.form].map(char=>{
+    const sound=kanaByForm.get(char);
+    if(!sound)throw new Error("MISSING_AUTHORED_KANA_SOUND:"+char);
+    return sound;
+  });
+  const romaji=sounds.join("");
+  return {
+    id:"a0-kana-first-sight-"+word.id,
+    primaryTarget:word.meaningPrompt.primaryTarget,
+    skill:"reading",
+    cueFamily:"a0-kana-first-sight-unscored",
+    promptType:"typed",
+    instruction:"Read this unfamiliar word in romaji.",
+    prompt:word.form,promptLanguage:"ja",placeholder:"Romaji…",
+    acceptedAnswers:[romaji],displayAnswer:romaji,answerNormalization:"romaji",
+    explanation:[...word.form].map((char,index)=>char+" ("+sounds[index]+")").join(" + ")+" → "+romaji+
+      ". This checks basic kana transcription, not pronunciation or vocabulary mastery.",
+    contextId:"a0-kana-first-sight-"+word.id,
+    sourceId:word.meaningPrompt.sourceId,
+    contentVersion:word.meaningPrompt.contentVersion,
+    activity:"reading",
+    eventMetadata:{nonAuthoritative:true,schedulerExcluded:true,kanaWordFirstSight:true}
+  };
+}
 function evidence(events:readonly StudyEvent[]):{correct:Set<string>;attempted:Set<string>}{
   const correct=new Set<string>(),attempted=new Set<string>();
   for(const event of events){
@@ -59,6 +85,12 @@ function progressedWords(events:readonly StudyEvent[]):WordProgress[]{
     }
   }
   const {correct,attempted}=evidence(events);
+  const firstSightAttempts=new Set(events.filter(event=>event.result==="skipped"
+    &&event.primaryTarget?.kind==="lexeme"
+    &&event.metadata?.nonAuthoritative===true
+    &&event.metadata?.kanaWordFirstSight===true
+    &&event.metadata?.promptId==="a0-kana-first-sight-"+event.primaryTarget.id)
+    .map(event=>event.primaryTarget!.id));
   return eligibleWords.filter(word=>[...word.form].every(kana=>allowed.has(word.script+":"+kana)))
     .map(word=>{
       const meaningKey=word.id+"|"+word.meaningPrompt.id;
@@ -66,7 +98,8 @@ function progressedWords(events:readonly StudyEvent[]):WordProgress[]{
       const activeKey=word.id+"|"+word.activePrompt.id;
       return {word,meaningCorrect:correct.has(meaningKey),readingCorrect:correct.has(readingKey),
         activeCorrect:correct.has(activeKey),meaningAttempted:attempted.has(meaningKey),
-        readingAttempted:attempted.has(readingKey),activeAttempted:attempted.has(activeKey)};
+        readingAttempted:attempted.has(readingKey),activeAttempted:attempted.has(activeKey),
+        firstSightAttempted:firstSightAttempts.has(word.id)};
     });
 }
 export function projectKanaWordBridge(events:readonly StudyEvent[]):KanaWordBridgeOverview{
@@ -97,6 +130,9 @@ export function buildKanaWordBridge(events:readonly StudyEvent[]):StudyStep[]{
   for(const entry of introductions){
     const lesson=vocabularyLessons[entry.word.meaningPrompt.contextId??""];
     if(!lesson)throw new Error("MISSING_SOURCE_VOCABULARY_LESSON:"+entry.word.id);
+    // First encounter checks decoding before the canonical lesson reveals meaning.
+    // Its event is explicitly unscored and never updates the FSRS scheduler.
+    if(!entry.firstSightAttempted)steps.push(firstSightPrompt(entry.word));
     steps.push({...lesson,body:"Read this word in kana. Then choose its meaning."});
     steps.push(entry.word.meaningPrompt);
   }
