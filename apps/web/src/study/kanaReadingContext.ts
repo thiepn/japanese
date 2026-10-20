@@ -42,8 +42,9 @@ function sourcePrompt(index:number):StudyPrompt{
   const distractors=pool.filter(item=>item.id!==sentence.id&&item.translation!==sentence.translation);
   const foils=[1,3,5].map(offset=>distractors[(index+offset)%distractors.length]?.translation)
     .filter((item):item is string=>Boolean(item));
-  const choices=[...new Set([sentence.translation,...foils])];
+  const choices=[...new Set(foils)];
   if(choices.length<3)throw new Error("A0_SOURCE_READING_CHOICES_INCOMPLETE:"+sentence.id);
+  choices.splice(index%(choices.length+1),0,sentence.translation);
   return {
     id:promptId(sentence.id),
     primaryTarget:{kind:"sentence",id:sentence.id},

@@ -42,6 +42,8 @@ describe("original A1 sentences as basic-kana reading transfer",()=>{
     const prompts=buildKanaReadingContext(completedHiragana());
     expect(prompts).toHaveLength(2);
     expect(prompts.every(step=>!isStudyLesson(step))).toBe(true);
+    const correctPositions=prompts.map(step=>isStudyLesson(step)?-1:step.choices.indexOf(step.acceptedAnswers[0]!));
+    expect(correctPositions).toEqual([0,1]);
     const first=prompts[0] as StudyPrompt;
     expect(first).toMatchObject({
       id:"a0-source-reading-sentence-a1-004",prompt:"ほんをよみます。",
