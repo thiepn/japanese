@@ -13,7 +13,7 @@ export function KanaWordsEntry({overview,busy,onContinue}:{
       {overview.nextWord?<p className="kana-words-entry__next" lang="ja">{overview.nextWord}</p>:null}
     </div>
     <button type="button" disabled={busy} onClick={onContinue}>
-      {busy?"Opening…":overview.readyToUse>0?"Use learned words":"Read new words"}
+      {busy?"Opening…":overview.readyToUse>0?"Use learned words":overview.readyToRead>0?"Read learned words":"Read new words"}
     </button>
   </section>;
 }

@@ -7,13 +7,15 @@ import {starterVocabulary,vocabularyApplicationPrompts,vocabularyLessons,vocabul
 type Script="hiragana"|"katakana";
 type BridgeWord={
   id:string;form:string;meaning:string;script:Script;
-  meaningPrompt:StudyPrompt;activePrompt:StudyPrompt;
+  meaningPrompt:StudyPrompt;readingPrompt:StudyPrompt;activePrompt:StudyPrompt;
 };
 export type KanaWordBridgeOverview={
-  eligible:number;learned:number;transferred:number;newWords:number;readyToUse:number;
+  eligible:number;learned:number;read:number;transferred:number;newWords:number;readyToRead:number;readyToUse:number;
   nextWord:string|null;available:boolean;
 };
 const meaningById=new Map(vocabularyMeaningPrompts.map(prompt=>[prompt.primaryTarget.id,prompt] as const));
+const readingById=new Map(vocabularyApplicationPrompts.filter(prompt=>prompt.skill==="reading")
+  .map(prompt=>[prompt.primaryTarget.id,prompt] as const));
 const activeById=new Map(vocabularyApplicationPrompts.filter(prompt=>prompt.skill==="active_use")
   .map(prompt=>[prompt.primaryTarget.id,prompt] as const));
 const hira=new Set(basicHiragana.map(seed=>seed.kana));
@@ -25,11 +27,12 @@ const eligibleWords:BridgeWord[]=starterVocabulary.flatMap(item=>{
   const script:Script|null=/^[ぁ-ゖ]+$/u.test(form)?"hiragana":/^[ァ-ヺ]+$/u.test(form)?"katakana":null;
   if(!script||![...form].every(kana=>(script==="hiragana"?hira:kata).has(kana)))return [];
   const meaningPrompt=meaningById.get(lexeme.id);
+  const readingPrompt=readingById.get(lexeme.id);
   const activePrompt=activeById.get(lexeme.id);
-  if(!meaningPrompt||!activePrompt)return [];
-  return [{id:lexeme.id,form,meaning:item.meaning,script,meaningPrompt,activePrompt}];
+  if(!meaningPrompt||!readingPrompt||!activePrompt)return [];
+  return [{id:lexeme.id,form,meaning:item.meaning,script,meaningPrompt,readingPrompt,activePrompt}];
 });
-type WordProgress={word:BridgeWord;meaningCorrect:boolean;activeCorrect:boolean;meaningAttempted:boolean;activeAttempted:boolean};
+type WordProgress={word:BridgeWord;meaningCorrect:boolean;readingCorrect:boolean;activeCorrect:boolean;meaningAttempted:boolean;readingAttempted:boolean;activeAttempted:boolean};
 function evidence(events:readonly StudyEvent[]):{correct:Set<string>;attempted:Set<string>}{
   const correct=new Set<string>(),attempted=new Set<string>();
   for(const event of events){
@@ -59,28 +62,34 @@ function progressedWords(events:readonly StudyEvent[]):WordProgress[]{
   return eligibleWords.filter(word=>[...word.form].every(kana=>allowed.has(word.script+":"+kana)))
     .map(word=>{
       const meaningKey=word.id+"|"+word.meaningPrompt.id;
+      const readingKey=word.id+"|"+word.readingPrompt.id;
       const activeKey=word.id+"|"+word.activePrompt.id;
-      return {word,meaningCorrect:correct.has(meaningKey),activeCorrect:correct.has(activeKey),
-        meaningAttempted:attempted.has(meaningKey),activeAttempted:attempted.has(activeKey)};
+      return {word,meaningCorrect:correct.has(meaningKey),readingCorrect:correct.has(readingKey),
+        activeCorrect:correct.has(activeKey),meaningAttempted:attempted.has(meaningKey),
+        readingAttempted:attempted.has(readingKey),activeAttempted:attempted.has(activeKey)};
     });
 }
 export function projectKanaWordBridge(events:readonly StudyEvent[]):KanaWordBridgeOverview{
   const progress=progressedWords(events);
   const newWords=progress.filter(p=>!p.meaningAttempted);
-  const readyToUse=progress.filter(p=>p.meaningCorrect&&!p.activeAttempted);
+  const readyToRead=progress.filter(p=>p.meaningCorrect&&!p.readingAttempted);
+  const readyToUse=progress.filter(p=>p.meaningCorrect&&p.readingCorrect&&!p.activeAttempted);
   return {eligible:progress.length,learned:progress.filter(p=>p.meaningCorrect).length,
+    read:progress.filter(p=>p.readingCorrect).length,
     transferred:progress.filter(p=>p.activeCorrect).length,
-    newWords:newWords.length,readyToUse:readyToUse.length,
-    nextWord:(readyToUse[0]??newWords[0])?.word.form??null,
-    available:newWords.length>0||readyToUse.length>0};
+    newWords:newWords.length,readyToRead:readyToRead.length,readyToUse:readyToUse.length,
+    nextWord:(readyToUse[0]??readyToRead[0]??newWords[0])?.word.form??null,
+    available:newWords.length>0||readyToRead.length>0||readyToUse.length>0};
 }
 export function buildKanaWordBridge(events:readonly StudyEvent[]):StudyStep[]{
   const progress=progressedWords(events);
-  const transfer=progress.filter(p=>p.meaningCorrect&&!p.activeAttempted).slice(0,2);
+  const transfer=progress.filter(p=>p.meaningCorrect&&p.readingCorrect&&!p.activeAttempted).slice(0,2);
+  const reading=progress.filter(p=>p.meaningCorrect&&!p.readingAttempted).slice(0,2);
   const introductions=progress.filter(p=>!p.meaningAttempted).slice(0,2);
   const steps:StudyStep[]=[];
-  // Practice original meaning→written-form retrieval without a repeated lesson reveal.
+  // These are the existing meaning, reading, active-use staging prerequisites.
   for(const entry of transfer)steps.push(entry.word.activePrompt);
+  for(const entry of reading)steps.push(entry.word.readingPrompt);
   for(const entry of introductions){
     const lesson=vocabularyLessons[entry.word.meaningPrompt.contextId??""];
     if(!lesson)throw new Error("MISSING_SOURCE_VOCABULARY_LESSON:"+entry.word.id);
