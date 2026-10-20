@@ -1,6 +1,6 @@
 const CACHE_PREFIX = "japanese-shell-";
 const CACHE = `${CACHE_PREFIX}v7`;
-const VOCAB_CACHE = `${CACHE_PREFIX}vocab-v3`;
+const VOCAB_CACHE = `${CACHE_PREFIX}vocab-v4`;
 const MAX_VOCAB_IMAGES = 48;
 let imageCacheWrites = Promise.resolve();
 const BASE = new URL(self.registration.scope).pathname;

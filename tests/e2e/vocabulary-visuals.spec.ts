@@ -112,3 +112,25 @@ test.describe("Vocabulary illustration reconnection",()=>{
    await expect(sheet).toContainText("apple");
  });
 });
+
+test("VOC8 original daily actions render decoded accessible illustrations",async({page})=>{
+ await page.goto("./");
+ await page.getByRole("button",{name:"Library",exact:true}).click();
+ const search=page.getByRole("textbox",{name:"Search Japanese"});
+ for(const item of [
+   {term:"食べる",file:"eat.svg",alt:/bringing food from a plate to their mouth/},
+   {term:"飲む",file:"drink.svg",alt:/lifting a tilted cup to drink/},
+   {term:"起きる",file:"wake-up.svg",alt:/sitting up and stretching in bed/}
+ ]){
+   await search.fill(item.term);
+   const result=page.locator(".j7-result.result-lexeme").filter({has:page.getByText(item.term,{exact:true})}).first();
+   await expect(result).toBeVisible({timeout:15000});
+   await result.getByRole("option").click();
+   const image=page.locator(".j7-reference__sheet--lexeme .vocabulary-visual img");
+   await expect(image).toHaveAttribute("alt",item.alt);
+   await expect(image).toHaveAttribute("loading","lazy");
+   await expect(image).toHaveAttribute("src",new RegExp("/vocab/"+item.file.replace(".","\\.")+"$"));
+   await image.scrollIntoViewIfNeeded();
+   await expect.poll(async()=>image.evaluate(el=>(el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+ }
+});

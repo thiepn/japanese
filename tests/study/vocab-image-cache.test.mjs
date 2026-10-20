@@ -4,7 +4,7 @@ import {runInNewContext} from "node:vm";
 
 const source=readFileSync(new URL("../../apps/web/public/sw.js",import.meta.url),"utf8");
 // Asset revisions must invalidate previously cached pictures without touching learner data.
-if(!source.includes("vocab-v3"))throw new Error("Vocabulary image cache must be versioned after SVG changes");
+if(!source.includes("vocab-v4"))throw new Error("Vocabulary image cache must be versioned after SVG changes");
 function setup({cacheDenied=false,networkGate=null}={}){
  const handlers=new Map();const entries=new Map();const waits=[];let disconnected=false;
  const store={
@@ -14,7 +14,7 @@ function setup({cacheDenied=false,networkGate=null}={}){
    delete:async request=>entries.delete(request.url)
  };
  const deleted=[];
- const cacheNames=["japanese-shell-vocab-v1","japanese-shell-vocab-v2","japanese-shell-vocab-v3","japanese-shell-v7","unrelated-cache"];
+ const cacheNames=["japanese-shell-vocab-v1","japanese-shell-vocab-v2","japanese-shell-vocab-v3","japanese-shell-vocab-v4","japanese-shell-v7","unrelated-cache"];
  const caches={open:async()=>{if(cacheDenied)throw Error("quota");return store;},keys:async()=>cacheNames,delete:async(name)=>{deleted.push(name);return true;}};
  const fetch=vi.fn(async()=>{if(networkGate)await networkGate;if(disconnected)throw Error("offline");return new Response("<svg/>",{status:200});});
  const self={location:{origin:"https://example.test"},registration:{scope:"https://example.test/jp/"},addEventListener:(name,handler)=>handlers.set(name,handler),skipWaiting(){},clients:{claim:async()=>{}}};
@@ -41,7 +41,8 @@ describe("original vocabulary-image service worker cache",()=>{
    const h=setup();await h.activate();
    expect(h.deleted).toContain("japanese-shell-vocab-v1");
    expect(h.deleted).toContain("japanese-shell-vocab-v2");
-   expect(h.deleted).not.toContain("japanese-shell-vocab-v3");
+   expect(h.deleted).toContain("japanese-shell-vocab-v3");
+   expect(h.deleted).not.toContain("japanese-shell-vocab-v4");
    expect(h.deleted).not.toContain("japanese-shell-v7");
    expect(h.deleted).not.toContain("unrelated-cache");
  });

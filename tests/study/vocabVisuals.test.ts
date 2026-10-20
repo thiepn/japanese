@@ -66,4 +66,17 @@ describe("Japanese beginner vocabulary illustrations",()=>{
    }
    expect(VOCABULARY_VISUALS).toHaveLength(103);
  });
+ it("keeps three original VOC8 action scenes semantically labeled",()=>{
+   const descriptions:Record<string,string>={
+     eat:"bringing food from a plate to their mouth",
+     drink:"lifting a tilted cup to drink",
+     "wake-up":"sitting up and stretching in bed"
+   };
+   for(const [id,phrase] of Object.entries(descriptions)){
+     const visual=VOCABULARY_VISUALS.find(entry=>entry.id===id);
+     expect(visual?.alt).toContain(phrase);
+     expect(visual?.file).toBe(id+".svg");
+   }
+   expect(VOCABULARY_VISUALS).toHaveLength(103);
+ });
 });

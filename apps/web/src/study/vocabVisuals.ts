@@ -82,14 +82,14 @@ export const VOCABULARY_VISUALS:readonly VocabularyVisual[]=[
     "id": "eat",
     "lexemeId": "lex-taberu",
     "file": "eat.svg",
-    "alt": "Illustration of a person eating",
+    "alt": "Illustration of a person bringing food from a plate to their mouth",
     "rights": "Original THIEPN illustration"
   },
   {
     "id": "drink",
     "lexemeId": "lex-nomu",
     "file": "drink.svg",
-    "alt": "Illustration of a person drinking",
+    "alt": "Illustration of a person lifting a tilted cup to drink",
     "rights": "Original THIEPN illustration"
   },
   {
@@ -460,7 +460,7 @@ export const VOCABULARY_VISUALS:readonly VocabularyVisual[]=[
     "id": "wake-up",
     "lexemeId": "lex-okiru",
     "file": "wake-up.svg",
-    "alt": "Illustration of a person getting out of bed",
+    "alt": "Illustration of a person sitting up and stretching in bed beside a clock",
     "rights": "Original THIEPN illustration"
   },
   {
