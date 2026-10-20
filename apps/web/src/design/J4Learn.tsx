@@ -2,7 +2,7 @@ import "./j4.css";
 import {BeginnerEntry} from "./BeginnerEntry";
 import type {BeginnerOverview} from "../study/beginnerCourse";
 import "../study/e10DailyStages.css";
-import {useEffect,useMemo,useState} from "react";
+import {useEffect,useMemo,useRef,useState} from "react";
 import {UX2TransferPath,type UX2StudioTarget} from "./UX2TransferPath";
 import {UX3MixedRecall} from "./UX3MixedRecall";
 import {E19SourceWritingStudio} from "./E19SourceWritingStudio";
@@ -113,6 +113,22 @@ export function J4Learn(props:Props){
   const [showFullCourse,setShowFullCourse]=useState(false);
   const beginnerMode=!beginner.complete||Boolean(e01.unitId&&(e01.status==="not_started"||e01.status==="learning"))||Boolean(e02.nextSceneId);
   const [advancedOpen,setAdvancedOpen]=useState(!beginnerMode);
+  const coachDrawer=useRef<HTMLDetailsElement|null>(null);
+  // Hydrated A0/A1 progress can arrive after this screen initially mounts.
+  useEffect(()=>{if(!beginnerMode)setAdvancedOpen(true);},[beginnerMode]);
+  useEffect(()=>{
+    if(!preferredCoachChain)return;
+    setAdvancedOpen(true);
+    setShowFullCourse(true);
+    const frame=window.requestAnimationFrame(()=>{
+      const drawer=coachDrawer.current;
+      if(!drawer)return;
+      drawer.open=true;
+      drawer.querySelector("summary")?.focus({preventScroll:true});
+      drawer.scrollIntoView({block:"nearest"});
+    });
+    return ()=>window.cancelAnimationFrame(frame);
+  },[preferredCoachChain]);
   const [showTransfer,setShowTransfer]=useState(e07.primary.origin==="e06");
   const [studioTarget,setStudioTarget]=useState<UX2StudioTarget|null>(null);
   const [a2SourceTarget,setA2SourceTarget]=useState<{key:string;sequence:number}|null>(null);
@@ -493,7 +509,7 @@ export function J4Learn(props:Props){
         <div><RealWorldPerformancePanel onStartChain={onRealWorldChain} onStartQualification={onRealWorldQualification}/></div>
       </details>
 
-      <details className="j4-practice__drawer">
+      <details ref={coachDrawer} className="j4-practice__drawer">
         <summary><span aria-hidden="true">対</span><strong>AI coach</strong><small>Advisory practice only</small></summary>
         <div><AiCoach preferredChainId={preferredCoachChain} onPreferredChainApplied={onPreferredCoachChainApplied}/></div>
       </details>
