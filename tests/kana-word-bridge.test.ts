@@ -16,7 +16,7 @@ function grade(steps:readonly StudyPrompt[],owner="bridge-fixture"):StudyEvent[]
   });
 }
 const questions=(steps:ReturnType<typeof buildKanaWordBridge>):StudyPrompt[]=>
-  steps.filter((step):step is StudyPrompt=>!isStudyLesson(step));
+  steps.filter((step):step is StudyPrompt=>!isStudyLesson(step)&&!step.id.startsWith("a0-kana-first-sight-"));
 function knownVowels():StudyEvent[]{
   return grade(questions(buildBeginnerStage("vowels",[])));
 }
@@ -36,12 +36,43 @@ describe("source-backed Kana-to-Words Bridge",()=>{
     const overview=projectKanaWordBridge(events);
     expect(overview).toMatchObject({eligible:2,learned:0,read:0,transferred:0,newWords:2,readyToRead:0,readyToUse:0,available:true});
     const steps=buildKanaWordBridge(events);
-    expect(steps).toHaveLength(4);
-    expect(isStudyLesson(steps[0]!)).toBe(true);
-    expect(isStudyLesson(steps[2]!)).toBe(true);
+    expect(steps).toHaveLength(6);
+    expect(isStudyLesson(steps[0]!)).toBe(false);
+    expect(isStudyLesson(steps[1]!)).toBe(true);
+    expect(isStudyLesson(steps[3]!)).toBe(false);
+    expect(isStudyLesson(steps[4]!)).toBe(true);
+    expect(steps[0]).toMatchObject({
+      id:"a0-kana-first-sight-lex-ii",prompt:"いい",acceptedAnswers:["ii"],
+      sourceId:"thiepn-original",
+      eventMetadata:{nonAuthoritative:true,schedulerExcluded:true,kanaWordFirstSight:true}
+    });
+    expect(steps[3]).toMatchObject({id:"a0-kana-first-sight-lex-iie",prompt:"いいえ",acceptedAnswers:["iie"]});
     expect(questions(steps).map(p=>p.id)).toEqual(["vocab-meaning-lex-ii","vocab-meaning-lex-iie"]);
     expect(questions(steps)[0]).toBe(vocabularyMeaningPrompts.find(p=>p.id==="vocab-meaning-lex-ii"));
-    expect(steps[0]).toMatchObject({id:vocabularyLessons["vocab-lex-ii"]?.id,sourceLabel:vocabularyLessons["vocab-lex-ii"]?.sourceLabel});
+    expect(steps[1]).toMatchObject({id:vocabularyLessons["vocab-lex-ii"]?.id,sourceLabel:vocabularyLessons["vocab-lex-ii"]?.sourceLabel});
+  });
+  it("records first-sight reading only as non-authoritative evidence and never as FSRS vocabulary mastery",()=>{
+    const vowel=knownVowels();
+    const session=buildKanaWordBridge(vowel);
+    const first=session[0]!;
+    if(isStudyLesson(first))throw new Error("MISSING_FIRST_SIGHT_DECODING");
+    expect(first).toMatchObject({skill:"reading",cueFamily:"a0-kana-first-sight-unscored",
+      sourceId:"thiepn-original",answerNormalization:"romaji",
+      eventMetadata:{schedulerExcluded:true,nonAuthoritative:true}});
+    const raw=createStudyEvent({id:"first-sight-only",userId:"bridge-fixture",deviceId:"test-device",
+      prompt:first,response:"ii",occurredAt:"2026-10-20T10:00:00.000Z",responseTimeMs:100});
+    // recordStudyAnswer persists this prompt as skipped, not an authoritative answer.
+    const saved={...raw,result:"skipped" as const,
+      metadata:{...raw.metadata,structuralResult:raw.result,nonAuthoritative:true}};
+    const overview=projectKanaWordBridge([...vowel,saved]);
+    expect(overview).toMatchObject({learned:0,read:0,transferred:0,newWords:2});
+    const resumed=buildKanaWordBridge([...vowel,saved]);
+    expect(resumed[0]).toMatchObject({id:vocabularyLessons["vocab-lex-ii"]?.id});
+    expect(resumed.filter(step=>!isStudyLesson(step)&&step.id==="a0-kana-first-sight-lex-ii")).toHaveLength(0);
+    expect(resumed.filter(step=>!isStudyLesson(step)&&step.id==="a0-kana-first-sight-lex-iie")).toHaveLength(1);
+    expect(questions(resumed).map(prompt=>prompt.id)).toEqual(["vocab-meaning-lex-ii","vocab-meaning-lex-iie"]);
+    const forged={...saved,metadata:{...saved.metadata,promptId:"a0-kana-first-sight-unrelated"}};
+    expect(buildKanaWordBridge([...vowel,forged])[0]).toMatchObject({id:"a0-kana-first-sight-lex-ii"});
   });
   it("uses existing meaning → reading → active-use prerequisites, with independent follow-up",()=>{
     const vowel=knownVowels(), first=buildKanaWordBridge(vowel);
