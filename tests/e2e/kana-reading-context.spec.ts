@@ -34,6 +34,48 @@ function completedSourceReadingEvidence(){
   return events;
 }
 
+test("partial A1 reading can revisit only encountered source without exposing next answers",async({page},testInfo)=>{
+  await page.goto("./");
+  await page.evaluate(async events=>{
+    const req=indexedDB.open("thiepn-japanese:00000000-0000-4000-8000-000000000001");
+    const db=await new Promise<IDBDatabase>((resolve,reject)=>{
+      req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);
+    });
+    try{
+      await new Promise<void>((resolve,reject)=>{
+        const tx=db.transaction("study_events","readwrite");
+        for(const event of events)tx.objectStore("study_events").add(event);
+        tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);
+      });
+    }finally{db.close();}
+  },hiraganaEvidence());
+  await page.reload();
+  const card=page.locator(".kana-words-entry");
+  await expect(card.getByRole("button",{name:"Revisit source sentences"})).toHaveCount(0);
+  await card.getByRole("button",{name:"Read A1 sentences"}).click();
+  await expect(page.locator(".j5-sheet")).toContainText("ほんをよみます。");
+  await page.locator(".j5-choices").getByRole("button",{name:"I read a book.",exact:true}).click();
+  await expect(page.locator(".j5-feedback")).toContainText("Context matched");
+  await page.getByRole("button",{name:"Exit",exact:true}).click();
+  await expect(card).toContainText("1 of 7 original A1 sentences attempted");
+
+  await page.reload();
+  await card.getByRole("button",{name:"Revisit source sentences"}).click();
+  await expect(page.getByRole("heading",{name:"本を読みます。",exact:true})).toBeVisible();
+  await expect(page.locator(".j5-lesson-facts")).toContainText("ほんをよみます。");
+  await expect(page.locator(".lesson-body")).toContainText("I read a book.");
+  await expect(page.getByRole("heading",{name:"駅に行きます。",exact:true})).toHaveCount(0);
+  // A single attempted sentence means exactly one read-only lesson, with no second page.
+  await page.getByRole("button",{name:"Finish",exact:true}).click();
+  await expect(card).toContainText("1 of 7 original A1 sentences attempted");
+  await card.getByRole("button",{name:"Read A1 sentences"}).click();
+  await expect(page.locator(".j5-sheet")).toContainText("えきにいきます。");
+  await page.getByRole("button",{name:"Exit",exact:true}).click();
+  if(testInfo.project.name!=="desktop-chromium"){
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)).toBeLessThanOrEqual(1);
+  }
+});
+
 test("completed original A1 sentences remain readable without new evidence or changing A1 handoff",async({page})=>{
   await page.goto("./");
   await expect(page.getByRole("button",{name:"Revisit source sentences"})).toHaveCount(0);
