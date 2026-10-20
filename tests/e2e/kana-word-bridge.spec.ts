@@ -1,4 +1,13 @@
-import {expect,test} from "@playwright/test";
+import {expect,test,type Page} from "@playwright/test";
+
+async function decodeFirstSightWord(page:Page,romaji:string):Promise<void>{
+  await expect(page.locator(".j5-sheet__cap")).toContainText("READ THIS UNFAMILIAR WORD IN ROMAJI");
+  await page.locator(".j5-typed-form input").fill(romaji);
+  await page.locator(".j5-typed-form").getByRole("button",{name:"Check"}).click();
+  await expect(page.locator(".j5-feedback")).toContainText("Response recorded");
+  await expect(page.locator(".j5-feedback")).toContainText("no language grade");
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+}
 
 test("source-backed word reading begins after first kana row and returns to the original A0 lesson",async({page},testInfo)=>{
   await page.goto("./");
@@ -15,12 +24,14 @@ test("source-backed word reading begins after first kana row and returns to the 
   const bridge=page.locator(".kana-words-entry");
   await expect(bridge).toContainText("0 of 2 available words recognized");
   await bridge.getByRole("button",{name:"Read new words"}).click();
+  await decodeFirstSightWord(page,"ii");
   await expect(page.getByRole("heading",{name:"いい",exact:true})).toBeVisible();
   await expect(page.locator(".j5-lesson-facts")).toContainText("good");
   await page.getByRole("button",{name:"Continue",exact:true}).click();
   await page.locator(".j5-choices").getByRole("button",{name:"good",exact:true}).click();
   await expect(page.getByText("Correct",{exact:true})).toBeVisible();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await decodeFirstSightWord(page,"iie");
   await expect(page.getByRole("heading",{name:"いいえ",exact:true})).toBeVisible();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
   await page.locator(".j5-choices").getByRole("button",{name:"no",exact:true}).click();
@@ -54,7 +65,7 @@ test("source-backed word reading begins after first kana row and returns to the 
       request.onerror=()=>reject(request.error);
     });
     try{
-      return await new Promise<{promptIds:string[];traceIds:string[]}>((resolve,reject)=>{
+      return await new Promise<{promptIds:string[];traceIds:string[];firstSightIds:string[]}>((resolve,reject)=>{
         const tx=db.transaction(["study_events","memory_traces"],"readonly");
         const events=tx.objectStore("study_events").getAll();
         const traces=tx.objectStore("memory_traces").getAll();
@@ -62,6 +73,10 @@ test("source-backed word reading begins after first kana row and returns to the 
           promptIds:(events.result as Array<{primaryTarget?:{kind?:string};result:string;metadata?:{promptId?:string}}>)
             .filter(event=>event.primaryTarget?.kind==="lexeme"&&event.result==="correct")
             .map(event=>event.metadata?.promptId??""),
+          firstSightIds:(events.result as Array<{result:string;metadata?:{promptId?:string;nonAuthoritative?:boolean;kanaWordFirstSight?:boolean}}>)
+            .filter(event=>event.result==="skipped"&&event.metadata?.nonAuthoritative===true
+              &&event.metadata?.kanaWordFirstSight===true)
+            .map(event=>event.metadata?.promptId??"").sort(),
           traceIds:(traces.result as Array<{id:string}>).map(trace=>trace.id)
             .filter(id=>id.startsWith("lexeme:lex-ii:")||id.startsWith("lexeme:lex-iie:"))
         });
@@ -73,6 +88,7 @@ test("source-backed word reading begins after first kana row and returns to the 
   expect(new Set(durable.promptIds).size).toBe(6);
   expect(durable.traceIds).toHaveLength(6);
   expect(new Set(durable.traceIds).size).toBe(6);
+  expect(durable.firstSightIds).toEqual(["a0-kana-first-sight-lex-ii","a0-kana-first-sight-lex-iie"].sort());
   await page.reload();
   await expect(bridge).toHaveCount(0);
   await expect(page.locator(".beginner-entry__objective")).toHaveText("Hiragana · K sounds");
@@ -96,12 +112,13 @@ test("missed source words remain visible through reload and wait for original du
   const bridge=page.locator(".kana-words-entry");
   await expect(bridge).toContainText("0 of 2 available words recognized");
   await bridge.getByRole("button",{name:"Read new words"}).click();
-  for(let i=0;i<2;i++){
+  for(const [index,romaji] of ["ii","iie"].entries()){
+    await decodeFirstSightWord(page,romaji);
     await page.getByRole("button",{name:"Continue",exact:true}).click();
     // The original canonical choice list has its correct answer first.
     await page.locator(".j5-choices").getByRole("button").nth(1).click();
     await expect(page.locator(".j5-feedback.incorrect")).toBeVisible();
-    await page.getByRole("button",{name:i===1?"Finish":"Continue",exact:true}).click();
+    await page.getByRole("button",{name:index===1?"Finish":"Continue",exact:true}).click();
   }
   await expect(bridge).toContainText("2 awaiting review");
   await expect(bridge.getByRole("button",{name:"Read new words"})).toHaveCount(0);
@@ -130,6 +147,7 @@ test("a newly recognized source word remains available offline with original acc
   }
   const bridge=page.locator(".kana-words-entry");
   await bridge.getByRole("button",{name:"Read new words"}).click();
+  await decodeFirstSightWord(page,"ii");
   await page.getByRole("button",{name:"Continue",exact:true}).click();
   await page.locator(".j5-choices").getByRole("button",{name:"good",exact:true}).click();
   await expect(page.getByText("Correct",{exact:true})).toBeVisible();
