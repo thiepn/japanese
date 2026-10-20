@@ -66,7 +66,7 @@ test("partial A1 reading can revisit only encountered source without exposing ne
   await expect(page.locator(".lesson-body")).toContainText("I read a book.");
   await expect(page.getByRole("heading",{name:"駅に行きます。",exact:true})).toHaveCount(0);
   // A single attempted sentence means exactly one read-only lesson, with no second page.
-  await page.getByRole("button",{name:"Finish",exact:true}).click();
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
   await expect(card).toContainText("1 of 7 original A1 sentences attempted");
   await card.getByRole("button",{name:"Read A1 sentences"}).click();
   await expect(page.locator(".j5-sheet")).toContainText("えきにいきます。");
