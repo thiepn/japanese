@@ -1,6 +1,7 @@
 import {expect,test} from "@playwright/test";
 import {createStudyEvent,isStudyLesson,type StudyPrompt} from "@thiepn/study-player";
 import {buildBeginnerStage,type BeginnerStageId} from "../../apps/web/src/study/beginnerCourse";
+import {buildKanaReadingContext} from "../../apps/web/src/study/kanaReadingContext";
 
 const stages:BeginnerStageId[]=["vowels","k","s","t","n","h","m","y","r","w"];
 function hiraganaEvidence(){
@@ -15,6 +16,85 @@ function hiraganaEvidence(){
   }
   return events;
 }
+function completedSourceReadingEvidence(){
+  const events=hiraganaEvidence();
+  for(let index=0;index<7;index++){
+    const prompt=buildKanaReadingContext(events)[0];
+    if(!prompt||isStudyLesson(prompt))throw Error("SOURCE_SENTENCE_NOT_AVAILABLE");
+    const raw=createStudyEvent({
+      id:"completed-source-reading-"+index,
+      userId:"00000000-0000-4000-8000-000000000001",
+      deviceId:"temporary-browser-fixture",prompt,
+      response:prompt.acceptedAnswers[0]!,
+      occurredAt:"2026-10-20T09:30:00.000Z",responseTimeMs:100
+    });
+    events.push({...raw,result:"skipped" as const,
+      metadata:{...raw.metadata,nonAuthoritative:true,structuralResult:raw.result}});
+  }
+  return events;
+}
+
+test("completed original A1 sentences remain readable without new evidence or changing A1 handoff",async({page})=>{
+  await page.goto("./");
+  await expect(page.getByRole("button",{name:"Revisit source sentences"})).toHaveCount(0);
+  await page.evaluate(async events=>{
+    const req=indexedDB.open("thiepn-japanese:00000000-0000-4000-8000-000000000001");
+    const db=await new Promise<IDBDatabase>((resolve,reject)=>{
+      req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);
+    });
+    try{
+      await new Promise<void>((resolve,reject)=>{
+        const tx=db.transaction("study_events","readwrite");
+        for(const event of events)tx.objectStore("study_events").add(event);
+        tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);
+      });
+    }finally{db.close();}
+  },completedSourceReadingEvidence());
+  await page.reload();
+  const card=page.locator(".kana-words-entry");
+  await expect(card).toContainText("7 of 7 original A1 sentences attempted");
+  await expect(card.getByRole("button",{name:"Read A1 sentences"})).toHaveCount(0);
+  await card.getByRole("button",{name:"Revisit source sentences"}).click();
+  await expect(page.getByRole("heading",{name:"本を読みます。",exact:true})).toBeVisible();
+  await expect(page.locator(".j5-lesson-facts")).toContainText("ほんをよみます。");
+  await expect(page.locator(".lesson-body")).toContainText("I read a book.");
+  await expect(page.locator(".lesson-body")).toContainText("を — marks the direct object of an action");
+  await expect(page.locator(".source-note")).toContainText("sentence-a1-004");
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await expect(page.getByRole("heading",{name:"駅に行きます。",exact:true})).toBeVisible();
+  await expect(page.locator(".j5-lesson-facts")).toContainText("えきにいきます。");
+  await page.getByRole("button",{name:"Exit",exact:true}).click();
+  await expect(card).toContainText("7 of 7 original A1 sentences attempted");
+  await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await expect(page.locator(".kana-words-entry").getByRole("button",{name:"Revisit source sentences"})).toBeVisible();
+  const persisted=await page.evaluate(async()=>{
+    const req=indexedDB.open("thiepn-japanese:00000000-0000-4000-8000-000000000001");
+    const db=await new Promise<IDBDatabase>((resolve,reject)=>{
+      req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);
+    });
+    try{
+      return await new Promise<{sourceIds:string[];sentenceTraceIds:string[]}>((resolve,reject)=>{
+        const tx=db.transaction(["study_events","memory_traces"],"readonly");
+        const original=tx.objectStore("study_events").getAll();
+        const traces=tx.objectStore("memory_traces").getAll();
+        tx.oncomplete=()=>resolve({
+          sourceIds:(original.result as Array<{id:string;metadata?:{kanaSourceReadingContext?:boolean}}>)
+            .filter(event=>event.metadata?.kanaSourceReadingContext===true)
+            .map(event=>event.id),
+          sentenceTraceIds:(traces.result as Array<{id:string}>)
+            .map(trace=>trace.id).filter(id=>id.startsWith("sentence:sentence-a1-"))
+        });
+        tx.onerror=()=>reject(tx.error);
+      });
+    }finally{db.close();}
+  });
+  expect(persisted.sourceIds).toHaveLength(7);
+  expect(new Set(persisted.sourceIds).size).toBe(7);
+  expect(persisted.sentenceTraceIds).toHaveLength(0);
+  await page.reload();
+  await expect(page.locator(".kana-words-entry").getByRole("button",{name:"Revisit source sentences"})).toBeVisible();
+});
+
 test("original A1 reading comprehension unlocks after hiragana and survives browser reload",async({page,context},testInfo)=>{
   await page.goto("./");
   await expect(page.getByRole("button",{name:"Read A1 sentences"})).toHaveCount(0);
