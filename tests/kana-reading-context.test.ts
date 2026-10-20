@@ -189,6 +189,58 @@ describe("original A1 sentences as basic-kana reading transfer",()=>{
     const before=projectKanaReadingContext([...original,correct]).needsRetry;
     expect(projectKanaReadingContext([...original,correct,forged]).needsRetry).toBe(before);
   });
+  it("allows source rereading after one recorded attempt without revealing six unseen meanings",()=>{
+    const kana=completedHiragana();
+    expect(projectKanaReadingContext(kana)).toMatchObject({revisitable:false,completed:0,remaining:7});
+    expect(buildKanaReadingReference(kana)).toEqual([]);
+
+    const first=buildKanaReadingContext(kana)[0];
+    if(!first||isStudyLesson(first)||first.promptType!=="choice")
+      throw Error("EXPECTED_ORIGINAL_A1_COMPREHENSION");
+    const wrong=first.choices.find(choice=>choice!==first.acceptedAnswers[0])!;
+    const evidence=submitted(first,wrong);
+    const seen=[...kana,evidence];
+    expect(projectKanaReadingContext(seen)).toMatchObject({
+      available:true,revisitable:true,completed:1,remaining:6,needsRetry:1
+    });
+    const readBack=buildKanaReadingReference(seen);
+    expect(readBack).toHaveLength(1);
+    expect(readBack.every(isStudyLesson)).toBe(true);
+    expect(readBack[0]).toMatchObject({
+      kind:"lesson",id:"a0-source-reference-sentence-a1-004",
+      title:"本を読みます。",contextId:"a0-source-sentence-sentence-a1-004"
+    });
+    const next=buildKanaReadingContext(seen)[0];
+    expect(next?.id).toBe("a0-source-reading-sentence-a1-008");
+    expect(readBack.some(step=>step.id==="a0-source-reference-sentence-a1-008")).toBe(false);
+    const forged={...evidence,id:"not-a-real-original-answer",
+      metadata:{...evidence.metadata,promptId:"unrelated"}};
+    expect(projectKanaReadingContext([...kana,forged]).revisitable).toBe(false);
+    expect(buildKanaReadingReference([...kana,forged])).toEqual([]);
+    const authoritative={...evidence,id:"not-unscored",result:"correct" as const};
+    expect(buildKanaReadingReference([...kana,authoritative])).toEqual([]);
+  });
+  it("expands partial source reference only as additional original questions are answered",()=>{
+    const kana=completedHiragana();
+    const first=buildKanaReadingContext(kana)[0];
+    if(!first||isStudyLesson(first))throw Error("MISSING_FIRST_SOURCE_SENTENCE");
+    const once=[...kana,submitted(first,first.acceptedAnswers[0]!)];
+    const second=buildKanaReadingContext(once)[0];
+    if(!second||isStudyLesson(second))throw Error("MISSING_SECOND_SOURCE_SENTENCE");
+    const twice=[...once,submitted(second,second.acceptedAnswers[0]!)];
+    expect(projectKanaReadingContext(twice)).toMatchObject({
+      available:true,revisitable:true,completed:2,total:7,remaining:5
+    });
+    const reference=buildKanaReadingReference(twice);
+    expect(reference.map(step=>step.id)).toEqual([
+      "a0-source-reference-sentence-a1-004",
+      "a0-source-reference-sentence-a1-008"
+    ]);
+    expect(reference.every(isStudyLesson)).toBe(true);
+    expect(reference.some(step=>step.id==="a0-source-reference-sentence-a1-009")).toBe(false);
+    expect(projectBeginnerOverview(twice).complete).toBe(true);
+    expect(projectKanaWordBridge(twice).readingContext.completed).toBe(2);
+  });
   it("retains read-only original sentence access after all seven encounters",()=>{
     const original=completedHiragana();
     let events=[...original];
