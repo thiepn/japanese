@@ -34,7 +34,9 @@ test("A1 and A2 words show their own source-linked illustrations",async({page})=
  }
 });
 
-test("blocked optional images leave the original text reference available",async({page})=>{
+test.describe("Unavailable optional images",()=>{
+ test.use({serviceWorkers:"block"});
+ test("blocked optional images leave the original text reference available",async({page})=>{
  await page.route("**/vocab/house.svg",route=>route.abort());
  await page.goto("./");
  await page.getByRole("button",{name:"Library",exact:true}).click();
@@ -48,6 +50,8 @@ test("blocked optional images leave the original text reference available",async
  const image=sheet.locator(".vocabulary-visual img");
  await sheet.scrollIntoViewIfNeeded();
  await expect(sheet.locator(".vocabulary-visual")).toHaveCount(0);
+});
+
 });
 
 
@@ -133,4 +137,19 @@ test("VOC8 original daily actions render decoded accessible illustrations",async
    await image.scrollIntoViewIfNeeded();
    await expect.poll(async()=>image.evaluate(el=>(el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
  }
+});
+
+test("VOC8 quiet reference shows semantic original hush image",async({page})=>{
+ await page.goto("./");
+ await page.getByRole("button",{name:"Library",exact:true}).click();
+ const search=page.getByRole("textbox",{name:"Search Japanese"});
+ await search.fill("静か");
+ const result=page.locator(".j7-result.result-lexeme").filter({has:page.getByText("静か",{exact:true})}).first();
+ await expect(result).toBeVisible({timeout:15000});
+ await result.getByRole("option").click();
+ const img=page.locator(".j7-reference__sheet--lexeme .vocabulary-visual img");
+ await expect(img).toHaveAttribute("alt",/finger to their lips/);
+ await expect(img).toHaveAttribute("src",/\/vocab\/quiet\.svg$/);
+ await img.scrollIntoViewIfNeeded();
+ await expect.poll(async()=>img.evaluate(el=>(el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
 });

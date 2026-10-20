@@ -28,6 +28,10 @@ describe("Japanese beginner vocabulary illustrations",()=>{
      expect.stringContaining("Mismatched image ID/file")
    ]));
  });
+ it("represents quiet with a visible hush gesture rather than decorative symbols",()=>{
+   expect(vocabularyVisualForLexeme("lex-shizuka")?.file).toBe("quiet.svg");
+   expect(vocabularyVisualForLexeme("lex-shizuka")?.alt).toContain("finger to their lips");
+ });
  it("leaves unsupported words unillustrated",()=>{expect(vocabularyVisualForLexeme("missing")).toBeNull();expect(vocabularyVisualForLexeme("lex-ue")).toBeNull();});
  it("rejects broken mappings and missing accessibility labels",()=>{
    const bad=[{...VOCABULARY_VISUALS[0],lexemeId:"not-real",file:"../bad.svg",alt:""}];

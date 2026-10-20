@@ -572,7 +572,7 @@ export const VOCABULARY_VISUALS:readonly VocabularyVisual[]=[
     "id": "quiet",
     "lexemeId": "lex-shizuka",
     "file": "quiet.svg",
-    "alt": "Illustration of a silent reading room",
+    "alt": "A person holding a finger to their lips in front of an open book",
     "rights": "Original THIEPN illustration"
   },
   {
