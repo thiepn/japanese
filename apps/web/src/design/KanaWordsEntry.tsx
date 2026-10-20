@@ -12,7 +12,8 @@ export function KanaWordsEntry({overview,due,busy,onContinue,onReviewDue,onReadC
       {overview.available||overview.pendingReview>0?<p>{overview.learned} of {overview.eligible} available words recognized
         {overview.readyToUse>0?" · "+overview.readyToUse+" ready for independent recall":""}
         {overview.pendingReview>0?" · "+overview.pendingReview+" awaiting review":""}</p>:null}
-      {overview.readingContext.available?<p>{overview.readingContext.completed} of {overview.readingContext.total} original A1 sentences read</p>:null}
+      {overview.readingContext.available?<p>{overview.readingContext.completed} of {overview.readingContext.total} original A1 sentences attempted
+        {overview.readingContext.needsRetry>0?" · "+overview.readingContext.needsRetry+" to retry":""}</p>:null}
     </div>
     <div className="kana-words-entry__actions">
       {overview.available?<button type="button" disabled={busy} onClick={onContinue}>

@@ -19,23 +19,64 @@ export interface KanaReadingContextOverview {
   completed:number;
   total:number;
   remaining:number;
+  needsRetry:number;
 }
 
-function encountered(events:readonly StudyEvent[]):Set<string>{
+type ReadingAttempt={at:number;outcome:"correct"|"incorrect"|"unknown"};
+function readingAttempts(events:readonly StudyEvent[]):Map<string,ReadingAttempt>{
   const canonical=new Set(pool.map(sentence=>sentence.id));
-  return new Set(events.filter(event=>event.result==="skipped"
-    &&event.primaryTarget?.kind==="sentence"
-    &&canonical.has(event.primaryTarget.id)
-    &&event.metadata?.nonAuthoritative===true
-    &&event.metadata?.kanaSourceReadingContext===true
-    &&event.metadata?.promptId===promptId(event.primaryTarget.id))
-    .map(event=>event.primaryTarget!.id));
+  const latest=new Map<string,ReadingAttempt>();
+  for(const event of events){
+    if(event.result!=="skipped"||event.primaryTarget?.kind!=="sentence")continue;
+    const id=event.primaryTarget.id;
+    if(!canonical.has(id)||event.metadata?.nonAuthoritative!==true
+      ||event.metadata?.kanaSourceReadingContext!==true
+      ||event.metadata?.promptId!==promptId(id))continue;
+    const raw=event.metadata?.structuralResult;
+    const outcome=raw==="correct"||raw==="incorrect"?raw:"unknown";
+    const time=Date.parse(event.occurredAt);
+    const at=Number.isFinite(time)?time:Number.NEGATIVE_INFINITY;
+    const previous=latest.get(id);
+    if(previous&&(at<previous.at||
+      at===previous.at&&previous.outcome==="incorrect"&&outcome!=="incorrect"))continue;
+    latest.set(id,{at,outcome});
+  }
+  return latest;
 }
 export function projectKanaReadingContext(events:readonly StudyEvent[]):KanaReadingContextOverview{
   const complete=projectBeginnerOverview(events).complete;
-  const done=complete?encountered(events):new Set<string>();
-  return {available:complete&&done.size<pool.length&&pool.length>0,
-    completed:done.size,total:pool.length,remaining:complete?pool.length-done.size:0};
+  const attempts=complete?readingAttempts(events):new Map<string,ReadingAttempt>();
+  const needsRetry=[...attempts.values()].filter(attempt=>attempt.outcome==="incorrect").length;
+  const remaining=complete?pool.length-attempts.size:0;
+  return {available:complete&&pool.length>0&&(remaining>0||needsRetry>0),
+    completed:attempts.size,total:pool.length,remaining,needsRetry};
+}
+const sensesByLexeme=new Map(coreContent.senses
+  .filter(sense=>sense.sourceIds.includes("thiepn-original"))
+  .map(sense=>[sense.lexemeId,sense.glosses] as const));
+const grammarById=new Map(coreContent.grammar
+  .filter(grammar=>grammar.sourceIds.includes("thiepn-original"))
+  .map(grammar=>[grammar.id,grammar] as const));
+function sourceExplanation(sentence:(typeof pool)[number]):string{
+  const details:string[]=[];
+  for(const token of sentence.tokens){
+    const entity=token.entityRef;
+    if(entity?.kind==="lexeme"){
+      const glosses=sensesByLexeme.get(entity.id);
+      if(glosses?.length)details.push(token.surface+(token.reading?" ("+token.reading+")":"")+" — "+glosses.join(" / "));
+    }else if(entity?.kind==="grammar"){
+      const grammar=grammarById.get(entity.id);
+      if(grammar)details.push(token.surface+" — "+grammar.summary);
+    }
+  }
+  // Include an original sentence-level grammar concept when it has no separate token.
+  for(const id of sentence.grammarIds){
+    const grammar=grammarById.get(id);
+    if(grammar&&!sentence.tokens.some(token=>token.entityRef?.kind==="grammar"&&token.entityRef.id===id))
+      details.push(grammar.label+" — "+grammar.summary);
+  }
+  return sentence.text+" — "+sentence.translation+
+    (details.length?". Source: "+[...new Set(details)].join("; "):"");
 }
 function sourcePrompt(index:number):StudyPrompt{
   const sentence=pool[index]!;
@@ -52,7 +93,7 @@ function sourcePrompt(index:number):StudyPrompt{
     promptType:"choice",instruction:"Choose the meaning of this Japanese sentence.",
     prompt:sentence.reading!,promptLanguage:"ja",
     choices,acceptedAnswers:[sentence.translation],displayAnswer:sentence.translation,
-    explanation:sentence.text+" — "+sentence.translation,
+    explanation:sourceExplanation(sentence),
     contextId:"a0-source-sentence-"+sentence.id,sourceId:sentence.sourceIds[0],
     contentVersion:coreContent.version,activity:"reading",languageActivity:"reading",
     eventMetadata:{nonAuthoritative:true,schedulerExcluded:true,kanaSourceReadingContext:true}
@@ -61,9 +102,9 @@ function sourcePrompt(index:number):StudyPrompt{
 export function buildKanaReadingContext(events:readonly StudyEvent[]):StudyStep[]{
   const state=projectKanaReadingContext(events);
   if(!state.available)return [];
-  const done=encountered(events);
-  return pool.map((sentence,index)=>({sentence,index}))
-    .filter(item=>!done.has(item.sentence.id))
-    .slice(0,2)
-    .map(item=>sourcePrompt(item.index));
+  const attempts=readingAttempts(events);
+  const candidates=pool.map((sentence,index)=>({sentence,index}));
+  const unseen=candidates.filter(item=>!attempts.has(item.sentence.id));
+  const missed=candidates.filter(item=>attempts.get(item.sentence.id)?.outcome==="incorrect");
+  return [...unseen,...missed].slice(0,2).map(item=>sourcePrompt(item.index));
 }
