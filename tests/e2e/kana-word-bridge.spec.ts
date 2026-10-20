@@ -82,3 +82,32 @@ test("source-backed word reading begins after first kana row and returns to the 
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)).toBeLessThanOrEqual(1);
   }
 });
+
+test("missed source words remain visible through reload and wait for original due review",async({page})=>{
+  await page.goto("./");
+  await page.getByRole("button",{name:"Start Japanese from Zero"}).click();
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  const kana=["a","i","u","e","o","あ","い"];
+  for(const [index,answer] of kana.entries()){
+    await page.locator(".j5-choices").getByRole("button",{name:answer,exact:true}).click();
+    await expect(page.getByText("Correct",{exact:true})).toBeVisible();
+    await page.getByRole("button",{name:index===6?"Finish":"Continue",exact:true}).click();
+  }
+  const bridge=page.locator(".kana-words-entry");
+  await expect(bridge).toContainText("0 of 2 available words recognized");
+  await bridge.getByRole("button",{name:"Read new words"}).click();
+  for(let i=0;i<2;i++){
+    await page.getByRole("button",{name:"Continue",exact:true}).click();
+    // The original canonical choice list has its correct answer first.
+    await page.locator(".j5-choices").getByRole("button").nth(1).click();
+    await expect(page.locator(".j5-feedback.incorrect")).toBeVisible();
+    await page.getByRole("button",{name:i===1?"Finish":"Continue",exact:true}).click();
+  }
+  await expect(bridge).toContainText("2 awaiting review");
+  await expect(bridge.getByRole("button",{name:"Read new words"})).toHaveCount(0);
+  await expect(page.locator(".beginner-entry__objective")).toHaveText("Hiragana · K sounds");
+  await page.reload();
+  await expect(bridge).toContainText("2 awaiting review");
+  await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await expect(page.locator(".kana-words-entry")).toContainText("2 awaiting review");
+});

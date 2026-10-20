@@ -72,6 +72,47 @@ describe("source-backed Kana-to-Words Bridge",()=>{
     expect(overview.newWords).toBe(1);
     expect(buildKanaWordBridge([...vowel,incorrect,forged,unscored]).filter(isStudyLesson)).toHaveLength(1);
   });
+  it("keeps failed source words visible for the original review queue without unearned unlocks",()=>{
+    const vowels=knownVowels();
+    const prompts=questions(buildKanaWordBridge(vowels));
+    const failed=prompts.map((prompt,index)=>({
+      ...grade([prompt])[0]!,id:"incorrect-meaning-"+index,result:"incorrect" as const
+    }));
+    const afterMisses=[...vowels,...failed];
+    expect(projectKanaWordBridge(afterMisses)).toMatchObject({
+      eligible:2,learned:0,newWords:0,readyToRead:0,readyToUse:0,
+      pendingReview:2,available:false
+    });
+    expect(buildKanaWordBridge(afterMisses)).toEqual([]);
+
+    // The same canonical meaning prompt can be answered later by the existing
+    // due-review session. It is not regraded through a new bridge writer.
+    const recovered=grade([prompts[0]!]);
+    const afterRecovery=[...afterMisses,...recovered];
+    expect(projectKanaWordBridge(afterRecovery)).toMatchObject({
+      learned:1,pendingReview:1,readyToRead:1,available:true
+    });
+    expect(questions(buildKanaWordBridge(afterRecovery)).map(prompt=>prompt.id))
+      .toEqual(["vocab-reading-lex-ii"]);
+
+    const missReading={...grade(questions(buildKanaWordBridge(afterRecovery)))[0]!,
+      id:"incorrect-reading",result:"incorrect" as const};
+    expect(projectKanaWordBridge([...afterRecovery,missReading])).toMatchObject({
+      learned:1,read:0,pendingReview:2,readyToRead:0,readyToUse:0,available:false
+    });
+    expect(buildKanaWordBridge([...afterRecovery,missReading])).toEqual([]);
+    const readingRecovered=grade(questions(buildKanaWordBridge(afterRecovery)));
+    const use=questions(buildKanaWordBridge([...afterRecovery,missReading,...readingRecovered]));
+    expect(use.map(prompt=>prompt.id)).toEqual(["vocab-active-lex-ii"]);
+    const missUse={...grade(use)[0]!,id:"incorrect-use",result:"incorrect" as const};
+    const withMissedUse=[...afterRecovery,missReading,...readingRecovered,missUse];
+    expect(projectKanaWordBridge(withMissedUse)).toMatchObject({
+      read:1,transferred:0,pendingReview:2,available:false
+    });
+    expect(projectKanaWordBridge([...withMissedUse,...grade(use)])).toMatchObject({
+      read:1,transferred:1,pendingReview:1,available:false
+    });
+  });
   it("unlocks source katakana words only after their original script groups are acquired",()=>{
     const hira=completeKana("hiragana");
     expect(projectKanaWordBridge(hira).eligible).toBeGreaterThan(2);
