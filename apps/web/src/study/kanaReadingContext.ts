@@ -81,11 +81,18 @@ function sourceExplanation(sentence:(typeof pool)[number]):string{
 function sourcePrompt(index:number):StudyPrompt{
   const sentence=pool[index]!;
   const distractors=pool.filter(item=>item.id!==sentence.id&&item.translation!==sentence.translation);
-  const foils=[1,3,5].map(offset=>distractors[(index+offset)%distractors.length]?.translation)
-    .filter((item):item is string=>Boolean(item));
-  const choices=[...new Set(foils)];
+  const foilRecords=[1,3,5].map(offset=>distractors[(index+offset)%distractors.length])
+    .filter((item):item is (typeof pool)[number]=>Boolean(item));
+  const choices=[...new Set(foilRecords.map(item=>item.translation))];
   if(choices.length<3)throw new Error("A0_SOURCE_READING_CHOICES_INCOMPLETE:"+sentence.id);
   choices.splice(index%(choices.length+1),0,sentence.translation);
+  // StudyPlayer already shows e06FoilFeedback only after an incorrect choice.
+  // Each contrast is an original sentence with an authored reading and translation.
+  const foilFeedback=foilRecords.map(item=>({
+    response:item.translation,
+    feedback:"That meaning belongs to "+item.reading+" ("+item.text+
+      "), not "+sentence.reading+" ("+sentence.text+")."
+  }));
   return {
     id:promptId(sentence.id),
     primaryTarget:{kind:"sentence",id:sentence.id},
@@ -96,7 +103,8 @@ function sourcePrompt(index:number):StudyPrompt{
     explanation:sourceExplanation(sentence),
     contextId:"a0-source-sentence-"+sentence.id,sourceId:sentence.sourceIds[0],
     contentVersion:coreContent.version,activity:"reading",languageActivity:"reading",
-    eventMetadata:{nonAuthoritative:true,schedulerExcluded:true,kanaSourceReadingContext:true}
+    eventMetadata:{nonAuthoritative:true,schedulerExcluded:true,kanaSourceReadingContext:true,
+      e06FoilFeedback:foilFeedback}
   };
 }
 export function buildKanaReadingContext(events:readonly StudyEvent[]):StudyStep[]{
