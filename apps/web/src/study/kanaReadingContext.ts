@@ -1,5 +1,5 @@
 import type {StudyEvent} from "@thiepn/domain";
-import type {StudyPrompt,StudyStep} from "@thiepn/study-player";
+import type {StudyLesson,StudyPrompt,StudyStep} from "@thiepn/study-player";
 import {coreContent} from "../coreContent";
 import {basicHiragana} from "./foundationPrompts";
 import {projectBeginnerOverview} from "./beginnerCourse";
@@ -20,6 +20,7 @@ export interface KanaReadingContextOverview {
   total:number;
   remaining:number;
   needsRetry:number;
+  revisitable:boolean;
 }
 
 type ReadingAttempt={at:number;outcome:"correct"|"incorrect"|"unknown"};
@@ -49,6 +50,7 @@ export function projectKanaReadingContext(events:readonly StudyEvent[]):KanaRead
   const needsRetry=[...attempts.values()].filter(attempt=>attempt.outcome==="incorrect").length;
   const remaining=complete?pool.length-attempts.size:0;
   return {available:complete&&pool.length>0&&(remaining>0||needsRetry>0),
+    revisitable:complete&&pool.length>0&&attempts.size===pool.length,
     completed:attempts.size,total:pool.length,remaining,needsRetry};
 }
 const sensesByLexeme=new Map(coreContent.senses
@@ -115,4 +117,18 @@ export function buildKanaReadingContext(events:readonly StudyEvent[]):StudyStep[
   const unseen=candidates.filter(item=>!attempts.has(item.sentence.id));
   const missed=candidates.filter(item=>attempts.get(item.sentence.id)?.outcome==="incorrect");
   return [...unseen,...missed].slice(0,2).map(item=>sourcePrompt(item.index));
+}
+
+export function buildKanaReadingReference(events:readonly StudyEvent[]):StudyStep[]{
+  // User-initiated source rereading, not a shadow review schedule or graded session.
+  if(!projectKanaReadingContext(events).revisitable)return [];
+  return pool.map((sentence):StudyLesson=>({
+    kind:"lesson",
+    id:"a0-source-reference-"+sentence.id,
+    title:sentence.text,
+    body:sourceExplanation(sentence).replace(sentence.text+" — ",""),
+    contextId:"a0-source-sentence-"+sentence.id,
+    facts:[{label:"Kana reading",value:sentence.reading!,language:"ja"}],
+    sourceLabel:"THIEPN original A1 · "+sentence.id
+  }));
 }
