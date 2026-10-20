@@ -11,7 +11,7 @@ type BridgeWord={
 };
 export type KanaWordBridgeOverview={
   eligible:number;learned:number;read:number;transferred:number;newWords:number;readyToRead:number;readyToUse:number;
-  nextWord:string|null;available:boolean;
+  available:boolean;
 };
 const meaningById=new Map(vocabularyMeaningPrompts.map(prompt=>[prompt.primaryTarget.id,prompt] as const));
 const readingById=new Map(vocabularyApplicationPrompts.filter(prompt=>prompt.skill==="reading")
@@ -78,7 +78,6 @@ export function projectKanaWordBridge(events:readonly StudyEvent[]):KanaWordBrid
     read:progress.filter(p=>p.readingCorrect).length,
     transferred:progress.filter(p=>p.activeCorrect).length,
     newWords:newWords.length,readyToRead:readyToRead.length,readyToUse:readyToUse.length,
-    nextWord:(readyToUse[0]??readyToRead[0]??newWords[0])?.word.form??null,
     available:newWords.length>0||readyToRead.length>0||readyToUse.length>0};
 }
 export function buildKanaWordBridge(events:readonly StudyEvent[]):StudyStep[]{
