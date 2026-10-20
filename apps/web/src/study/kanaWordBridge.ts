@@ -60,15 +60,27 @@ function firstSightPrompt(word:BridgeWord):StudyPrompt{
   };
 }
 function evidence(events:readonly StudyEvent[]):{correct:Set<string>;attempted:Set<string>}{
-  const correct=new Set<string>(),attempted=new Set<string>();
+  // IndexedDB getAll() is ordered by record key, not by when a review occurred.
+  // A later incorrect canonical answer must not be overridden by an older pass.
+  const latest=new Map<string,StudyEvent>();
   for(const event of events){
     if(event.primaryTarget?.kind!=="lexeme"||event.metadata?.nonAuthoritative===true)continue;
     if(event.result!=="correct"&&event.result!=="incorrect")continue;
     if(typeof event.metadata?.promptId!=="string")continue;
     const key=event.primaryTarget.id+"|"+event.metadata.promptId;
-    attempted.add(key);
-    if(event.result==="correct")correct.add(key);
+    const previous=latest.get(key);
+    if(previous){
+      const time=Date.parse(event.occurredAt),previousTime=Date.parse(previous.occurredAt);
+      const current=Number.isFinite(time)?time:Number.NEGATIVE_INFINITY;
+      const prior=Number.isFinite(previousTime)?previousTime:Number.NEGATIVE_INFINITY;
+      if(current<prior)continue;
+      // Equal timestamps are ambiguous; prefer a lapse to an unearned unlock.
+      if(current===prior&&previous.result==="incorrect"&&event.result==="correct")continue;
+    }
+    latest.set(key,event);
   }
+  const attempted=new Set(latest.keys()),correct=new Set<string>();
+  for(const [key,event] of latest)if(event.result==="correct")correct.add(key);
   return {correct,attempted};
 }
 function progressedWords(events:readonly StudyEvent[]):WordProgress[]{
