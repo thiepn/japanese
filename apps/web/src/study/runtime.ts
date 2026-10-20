@@ -1,5 +1,7 @@
 import { entityKey } from "@thiepn/domain";
 import {buildBeginnerStage,buildKatakanaStage,projectBeginnerOverview,projectKatakanaOverview,type BeginnerStageId,type BeginnerOverview} from "./beginnerCourse";
+import {buildKanaWordBridge,projectKanaWordBridge,type KanaWordBridgeOverview} from "./kanaWordBridge";
+export type {KanaWordBridgeOverview} from "./kanaWordBridge";
 export type {BeginnerOverview} from "./beginnerCourse";
 import {countUX1SavedAnswersToday,projectUX1Engagement,type UX1Engagement} from "./ux1Engagement";
 export type {UX1Engagement} from "./ux1Engagement";
@@ -165,6 +167,18 @@ export async function buildKatakanaStageSession(id:BeginnerStageId):Promise<Stud
   const events=await listStudyEvents(owner);
   if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("KATAKANA_WORKSPACE_CHANGED_DURING_BUILD");
   return buildKatakanaStage(id,events);
+}
+export async function getKanaWordBridgeOverview():Promise<KanaWordBridgeOverview>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const events=await listStudyEvents(owner);
+  if(owner!==DEVELOPMENT_ACCOUNT_ID)throw new Error("WORD_BRIDGE_WORKSPACE_CHANGED_DURING_READ");
+  return projectKanaWordBridge(events);
+}
+export async function buildKanaWordBridgeSession():Promise<StudyStep[]>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const events=await listStudyEvents(owner);
+  if(owner!==DEVELOPMENT_ACCOUNT_ID)throw new Error("WORD_BRIDGE_WORKSPACE_CHANGED_DURING_BUILD");
+  return buildKanaWordBridge(events);
 }
 export async function buildDueReviewSession(now=new Date()):Promise<StudyStep[]>{
   const owner=DEVELOPMENT_ACCOUNT_ID;
