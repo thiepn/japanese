@@ -74,6 +74,37 @@ describe("source-backed Kana-to-Words Bridge",()=>{
     const forged={...saved,metadata:{...saved.metadata,promptId:"a0-kana-first-sight-unrelated"}};
     expect(buildKanaWordBridge([...vowel,forged])[0]).toMatchObject({id:"a0-kana-first-sight-lex-ii"});
   });
+  it("decodes previously unseen original katakana words without manufactured audio or proficiency credit",()=>{
+    const events=completeKana("katakana");
+    const steps=buildKanaWordBridge(events);
+    expect(steps[0]).toMatchObject({id:"a0-kana-first-sight-lex-toire",
+      prompt:"トイレ",acceptedAnswers:["toire"],
+      eventMetadata:{nonAuthoritative:true,schedulerExcluded:true}});
+    expect(steps[3]).toMatchObject({id:"a0-kana-first-sight-lex-resutoran",
+      prompt:"レストラン",acceptedAnswers:["resutoran"],
+      eventMetadata:{nonAuthoritative:true,schedulerExcluded:true}});
+    expect(questions(steps).map(prompt=>prompt.id)).toEqual([
+      "vocab-meaning-lex-toire","vocab-meaning-lex-resutoran"
+    ]);
+  });
+  it("treats incorrect first-sight decoding as a saved unscored attempt, not a failed FSRS word",()=>{
+    const vowels=knownVowels();
+    const step=buildKanaWordBridge(vowels)[0]!;
+    if(isStudyLesson(step))throw Error("EXPECTED_FIRST_SIGHT_PROMPT");
+    const event=createStudyEvent({id:"cold-miss",userId:"bridge-fixture",deviceId:"test-device",
+      prompt:step,response:"aaa",occurredAt:"2026-10-20T10:00:00.000Z",responseTimeMs:100});
+    expect(event.result).toBe("incorrect");
+    const saved={...event,result:"skipped" as const,
+      metadata:{...event.metadata,nonAuthoritative:true,structuralResult:event.result}};
+    const state=projectKanaWordBridge([...vowels,saved]);
+    expect(state).toMatchObject({eligible:2,learned:0,read:0,transferred:0,
+      pendingReview:0,readyToRead:0});
+    const followUp=buildKanaWordBridge([...vowels,saved]);
+    expect(followUp[0]).toMatchObject({id:vocabularyLessons["vocab-lex-ii"]?.id});
+    expect(questions(followUp).map(prompt=>prompt.id)).toEqual([
+      "vocab-meaning-lex-ii","vocab-meaning-lex-iie"
+    ]);
+  });
   it("uses existing meaning → reading → active-use prerequisites, with independent follow-up",()=>{
     const vowel=knownVowels(), first=buildKanaWordBridge(vowel);
     const meanings=grade(questions(first));
