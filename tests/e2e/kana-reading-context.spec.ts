@@ -15,7 +15,7 @@ function hiraganaEvidence(){
   }
   return events;
 }
-test("original A1 reading comprehension unlocks after hiragana and survives browser reload",async({page},testInfo)=>{
+test("original A1 reading comprehension unlocks after hiragana and survives browser reload",async({page,context},testInfo)=>{
   await page.goto("./");
   await expect(page.getByRole("button",{name:"Read A1 sentences"})).toHaveCount(0);
   await page.evaluate(async events=>{
@@ -64,6 +64,22 @@ test("original A1 reading comprehension unlocks after hiragana and survives brow
   expect(evidence.traces.filter(id=>id.startsWith("sentence:sentence-a1-004:"))).toHaveLength(0);
   await page.reload();
   await expect(card).toContainText("1 of 7 original A1 sentences read");
+  await page.evaluate(async()=>{
+    if(!("serviceWorker" in navigator))throw new Error("A0_SOURCE_READING_SERVICE_WORKER_UNAVAILABLE");
+    await navigator.serviceWorker.ready;
+  });
+  await page.reload();
+  await expect.poll(()=>page.evaluate(()=>Boolean(navigator.serviceWorker.controller))).toBe(true);
+  await context.setOffline(true);
+  try{
+    await page.reload();
+    await expect(card).toContainText("1 of 7 original A1 sentences read");
+    await card.getByRole("button",{name:"Read A1 sentences"}).click();
+    await expect(page.locator(".j5-sheet")).toContainText("えきにいきます。");
+    await page.getByRole("button",{name:"Exit",exact:true}).click();
+  }finally{
+    await context.setOffline(false);
+  }
   await page.getByRole("button",{name:"Learn",exact:true}).click();
   await expect(page.locator(".kana-words-entry")).toContainText("1 of 7 original A1 sentences read");
   await page.locator(".kana-words-entry").getByRole("button",{name:"Read A1 sentences"}).click();
