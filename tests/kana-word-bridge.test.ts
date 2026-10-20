@@ -6,11 +6,11 @@ import {buildKanaWordBridge,projectKanaWordBridge} from "../apps/web/src/study/k
 import {vocabularyApplicationPrompts,vocabularyMeaningPrompts,vocabularyLessons} from "../apps/web/src/study/vocabulary";
 
 const GROUPS:BeginnerStageId[]=["vowels","k","s","t","n","h","m","y","r","w"];
-function grade(steps:readonly StudyPrompt[],owner="bridge-fixture"):StudyEvent[]{
+function grade(steps:readonly StudyPrompt[],owner="bridge-fixture",occurredAt="2026-10-20T10:00:00.000Z"):StudyEvent[]{
   return steps.map((prompt,index)=>{
     const event=createStudyEvent({id:owner+"-"+prompt.id+"-"+index,
       userId:owner,deviceId:"test-device",prompt,response:prompt.acceptedAnswers[0]!,
-      occurredAt:"2026-10-20T10:00:00.000Z",responseTimeMs:100});
+      occurredAt,responseTimeMs:100});
     expect(event.result).toBe("correct");
     return event;
   });
@@ -149,7 +149,7 @@ describe("source-backed Kana-to-Words Bridge",()=>{
 
     // The same canonical meaning prompt can be answered later by the existing
     // due-review session. It is not regraded through a new bridge writer.
-    const recovered=grade([prompts[0]!]);
+    const recovered=grade([prompts[0]!],"bridge-fixture","2026-10-20T10:01:00.000Z");
     const afterRecovery=[...afterMisses,...recovered];
     expect(projectKanaWordBridge(afterRecovery)).toMatchObject({
       learned:1,pendingReview:1,readyToRead:1,available:true
@@ -163,7 +163,7 @@ describe("source-backed Kana-to-Words Bridge",()=>{
       learned:1,read:0,pendingReview:2,readyToRead:0,readyToUse:0,available:false
     });
     expect(buildKanaWordBridge([...afterRecovery,missReading])).toEqual([]);
-    const readingRecovered=grade(questions(buildKanaWordBridge(afterRecovery)));
+    const readingRecovered=grade(questions(buildKanaWordBridge(afterRecovery)),"bridge-fixture","2026-10-20T10:02:00.000Z");
     const use=questions(buildKanaWordBridge([...afterRecovery,missReading,...readingRecovered]));
     expect(use.map(prompt=>prompt.id)).toEqual(["vocab-active-lex-ii"]);
     const missUse={...grade(use)[0]!,id:"incorrect-use",result:"incorrect" as const};
@@ -171,9 +171,65 @@ describe("source-backed Kana-to-Words Bridge",()=>{
     expect(projectKanaWordBridge(withMissedUse)).toMatchObject({
       read:1,transferred:0,pendingReview:2,available:false
     });
-    expect(projectKanaWordBridge([...withMissedUse,...grade(use)])).toMatchObject({
+    expect(projectKanaWordBridge([...withMissedUse,...grade(use,"bridge-fixture","2026-10-20T10:03:00.000Z")])).toMatchObject({
       read:1,transferred:1,pendingReview:1,available:false
     });
+  });
+  it("uses the latest canonical review regardless of IndexedDB record order",()=>{
+    const vowel=knownVowels();
+    const firstMeaning=questions(buildKanaWordBridge(vowel))[0]!;
+    const earlierCorrect=grade([firstMeaning],"bridge-fixture","2026-10-20T10:01:00.000Z")[0]!;
+    const laterIncorrect={...earlierCorrect,id:"late-failed-meaning",result:"incorrect" as const,
+      occurredAt:"2026-10-20T10:05:00.000Z"};
+    // An older historical pass cannot overrule the most recent incorrect due-review answer,
+    // even if a datastore lists its UUID after the newer event.
+    const reversed=[...vowel,laterIncorrect,earlierCorrect];
+    expect(projectKanaWordBridge(reversed)).toMatchObject({
+      learned:0,readyToRead:0,pendingReview:1,newWords:1,available:true
+    });
+    expect(questions(buildKanaWordBridge(reversed)).map(p=>p.id)).toEqual([
+      "vocab-meaning-lex-iie"
+    ]);
+
+    const newerCorrect={...earlierCorrect,id:"recovered-meaning",occurredAt:"2026-10-20T10:06:00.000Z"};
+    const recovered=[...vowel,newerCorrect,laterIncorrect,earlierCorrect];
+    expect(projectKanaWordBridge(recovered)).toMatchObject({
+      learned:1,readyToRead:1,pendingReview:0
+    });
+    expect(questions(buildKanaWordBridge(recovered)).map(p=>p.id)).toEqual([
+      "vocab-reading-lex-ii","vocab-meaning-lex-iie"
+    ]);
+  });
+  it("suspends active-use transfer after a newer original reading lapse and restores it after review",()=>{
+    const vowel=knownVowels();
+    const meaningPrompt=questions(buildKanaWordBridge(vowel))[0]!;
+    const meaning=grade([meaningPrompt])[0]!;
+    const readingPrompt=questions(buildKanaWordBridge([...vowel,meaning]))[0]!;
+    const reading=grade([readingPrompt])[0]!;
+    expect(questions(buildKanaWordBridge([...vowel,meaning,reading]))[0]!.id)
+      .toBe("vocab-active-lex-ii");
+    const lapse={...reading,id:"later-lapsed-reading",result:"incorrect" as const,
+      occurredAt:"2026-10-20T10:05:00.000Z"};
+    const blocked=[...vowel,lapse,reading,meaning];
+    expect(projectKanaWordBridge(blocked)).toMatchObject({
+      learned:1,read:0,readyToUse:0,pendingReview:1
+    });
+    expect(questions(buildKanaWordBridge(blocked)).some(p=>p.id==="vocab-active-lex-ii"))
+      .toBe(false);
+    const recovered={...reading,id:"subsequent-reading-pass",
+      occurredAt:"2026-10-20T10:06:00.000Z"};
+    expect(questions(buildKanaWordBridge([recovered,...blocked]))[0]!.id)
+      .toBe("vocab-active-lex-ii");
+  });
+  it("does not allow an equal-time historical correct answer to erase a lapse",()=>{
+    const vowels=knownVowels();
+    const meaningPrompt=questions(buildKanaWordBridge(vowels))[0]!;
+    const pass=grade([meaningPrompt])[0]!;
+    const miss={...pass,id:"equal-time-miss",result:"incorrect" as const};
+    for(const order of [[pass,miss],[miss,pass]]){
+      const overview=projectKanaWordBridge([...vowels,...order]);
+      expect(overview).toMatchObject({learned:0,pendingReview:1,readyToRead:0});
+    }
   });
   it("unlocks source katakana words only after their original script groups are acquired",()=>{
     const hira=completeKana("hiragana");
