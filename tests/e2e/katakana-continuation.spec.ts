@@ -1,5 +1,5 @@
 import {expect,test} from "@playwright/test";
-import {createStudyEvent,isStudyLesson} from "@thiepn/study-player";
+import {createStudyEvent,isStudyLesson,type StudyPrompt} from "@thiepn/study-player";
 import {buildBeginnerStage,type BeginnerStageId} from "../../apps/web/src/study/beginnerCourse";
 
 const guest="00000000-0000-4000-8000-000000000001";
@@ -8,7 +8,7 @@ function originalHiraganaEvents(){
   let events:ReturnType<typeof createStudyEvent>[]=[];
   for(const id of hiraganaIds){
     const steps=buildBeginnerStage(id,events);
-    const fresh=steps.filter(step=>!isStudyLesson(step)).map(prompt=>createStudyEvent({
+    const fresh=steps.filter((step):step is StudyPrompt=>!isStudyLesson(step)).map(prompt=>createStudyEvent({
       id:"disposable-"+prompt.id,userId:guest,deviceId:"e2e-katakana-fixture",
       prompt,response:prompt.acceptedAnswers[0]!,occurredAt:"2026-10-20T09:00:00.000Z",responseTimeMs:100
     }));
