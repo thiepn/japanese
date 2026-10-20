@@ -109,9 +109,15 @@ test("incorrect original A1 comprehension gives source-token correction and stay
   const card=page.locator(".kana-words-entry");
   await card.getByRole("button",{name:"Read A1 sentences"}).click();
   await expect(page.locator(".j5-sheet")).toContainText("ほんをよみます。");
+  await expect(page.locator(".e06-correction")).toHaveCount(0);
   // The original first source sentence has its correct option at position zero.
   await page.locator(".j5-choices").getByRole("button").nth(1).click();
   await expect(page.locator(".j5-feedback")).toContainText("Recheck the new context");
+  await expect(page.locator(".e06-correction")).toContainText("Why that option does not fit:");
+  await expect(page.locator(".e06-correction")).toContainText("あした、いえにかえります。");
+  await expect(page.locator(".e06-correction")).toContainText("明日、家に帰ります。");
+  await expect(page.locator(".e06-correction")).toContainText("ほんをよみます。");
+  await expect(page.locator(".e06-correction")).toContainText("本を読みます。");
   await expect(page.locator(".j5-feedback")).toContainText("本 (ほん) — book");
   await expect(page.locator(".j5-feedback")).toContainText("を — marks the direct object of an action");
   await expect(page.locator(".j5-feedback")).toContainText("〜ます — polite nonpast verb predicate");
