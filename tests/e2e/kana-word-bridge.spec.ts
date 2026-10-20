@@ -199,14 +199,15 @@ test("a later failed canonical review demotes word readiness after reload withou
       request.onerror=()=>reject(request.error);
     });
     try{
-      const original=await new Promise<{
+      type WordEvidence={
         id:string;occurredAt:string;result:string;
-        primaryTarget:{id:string;kind:string};metadata:{promptId?:string}
-      }>((resolve,reject)=>{
+        primaryTarget:{id:string;kind:string};metadata:{promptId?:string};
+      };
+      const original=await new Promise<WordEvidence>((resolve,reject)=>{
         const tx=db.transaction("study_events","readonly");
         const req=tx.objectStore("study_events").getAll();
         tx.oncomplete=()=>{
-          const event=(req.result as Array<typeof original>)
+          const event=(req.result as WordEvidence[])
             .find(entry=>entry.primaryTarget?.id==="lex-ii"&&entry.metadata?.promptId==="vocab-meaning-lex-ii");
           if(event)resolve(event);else reject(new Error("CANONICAL_WORD_EVENT_MISSING"));
         };
