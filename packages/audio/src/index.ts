@@ -33,10 +33,49 @@ export class BrowserAudioProvider implements AudioProvider {
     const repeats=Math.max(1,Math.min(3,options.repeats??1));
     const rate=Math.max(0.65,Math.min(1.25,options.rate??1));
     const gap=Math.max(0,Math.min(2500,options.gapMs??650));
-    for(let index=0;index<repeats;index++){
-      if(generation!==this.generation)return;
-      await this.playOnce(asset,rate,generation,options.startMs,options.endMs);
-      if(index+1<repeats&&generation===this.generation)await delay(gap);
+    // Start the media element before the first await. Waiting for CacheStorage
+    // or loadedmetadata can lose transient touch activation on Android browsers.
+    const audio=new Audio(asset.url);
+    audio.preload="auto";
+    audio.playbackRate=rate;
+    this.current=audio;
+    let cachedObjectUrl:string|null=null;
+    try{
+      for(let index=0;index<repeats;index++){
+        if(generation!==this.generation)return;
+        try{
+          await this.playOnce(audio,generation,options.startMs,options.endMs);
+        }catch(error){
+          if(generation!==this.generation)return;
+          // A cached source can rescue a missing/offline URL, but not a
+          // browser permission denial. Never mark failed audio as completed.
+          if(cachedObjectUrl||((error as {name?:string})?.name==="NotAllowedError"))throw error;
+          const source=await this.resolveSource(asset);
+          if(generation!==this.generation){
+            if(source.objectUrl)URL.revokeObjectURL(source.objectUrl);
+            return;
+          }
+          if(!source.objectUrl)throw error;
+          cachedObjectUrl=source.objectUrl;
+          this.currentObjectUrl=cachedObjectUrl;
+          audio.src=cachedObjectUrl;
+          audio.load();
+          await this.playOnce(audio,generation,options.startMs,options.endMs);
+        }
+        if(index+1<repeats&&generation===this.generation)await delay(gap);
+      }
+    }finally{
+      if(this.current===audio){
+        this.current=null;
+        this.resolveCurrent=null;
+        audio.pause();
+        audio.removeAttribute("src");
+        audio.load();
+      }
+      if(cachedObjectUrl){
+        URL.revokeObjectURL(cachedObjectUrl);
+        if(this.currentObjectUrl===cachedObjectUrl)this.currentObjectUrl=null;
+      }
     }
   }
 
@@ -57,41 +96,73 @@ export class BrowserAudioProvider implements AudioProvider {
 
   stop():void{
     this.generation++;
-    if(this.current){this.current.pause();this.current.removeAttribute("src");this.current.load();}
-    this.current=null;
-    this.resolveCurrent?.();
+    // Settle the pending pass before changing the media source. Otherwise a
+    // browser abort/error event can turn navigation into a failed playback.
+    const cancel=this.resolveCurrent;
     this.resolveCurrent=null;
-    if(this.currentObjectUrl){URL.revokeObjectURL(this.currentObjectUrl);this.currentObjectUrl=null;}
+    cancel?.();
+    if(this.current){
+      this.current.pause();
+      this.current.removeAttribute("src");
+      this.current.load();
+    }
+    this.current=null;
+    if(this.currentObjectUrl){
+      URL.revokeObjectURL(this.currentObjectUrl);
+      this.currentObjectUrl=null;
+    }
   }
 
-  private async playOnce(asset:AudioAssetRecord,rate:number,generation:number,startMs?:number,endMs?:number):Promise<void>{
-    const source=await this.resolveSource(asset);
-    if(generation!==this.generation){if(source.objectUrl)URL.revokeObjectURL(source.objectUrl);return;}
-    const audio=new Audio(source.url);
-    this.current=audio;
-    this.currentObjectUrl=source.objectUrl??null;
-    audio.preload="auto";
-    audio.playbackRate=rate;
+  private playOnce(audio:HTMLAudioElement,generation:number,startMs?:number,endMs?:number):Promise<void>{
+    if(generation!==this.generation)return Promise.resolve();
     const startSeconds=Math.max(0,startMs??0)/1000;
     const endSeconds=endMs===undefined?null:Math.max(startMs??0,endMs)/1000;
-    await new Promise<void>((resolve,reject)=>{
-      this.resolveCurrent=resolve;
-      let started=false;
-      const cleanup=()=>{audio.onloadedmetadata=null;audio.ontimeupdate=null;audio.onended=null;audio.onerror=null;this.resolveCurrent=null;};
-      const finish=()=>{audio.pause();cleanup();resolve();};
-      const start=()=>{
-        if(started)return;started=true;
-        if(startSeconds>0&&Number.isFinite(audio.duration))audio.currentTime=Math.min(startSeconds,Math.max(0,audio.duration-.01));
-        audio.play().catch((error)=>{cleanup();reject(error);});
+    return new Promise<void>((resolve,reject)=>{
+      let settled=false;
+      const cleanup=()=>{
+        audio.onloadedmetadata=null;
+        audio.ontimeupdate=null;
+        audio.onended=null;
+        audio.onerror=null;
+        if(this.resolveCurrent===cancel)this.resolveCurrent=null;
       };
-      audio.onloadedmetadata=start;
+      const finish=()=>{
+        if(settled)return;
+        settled=true;
+        audio.pause();
+        cleanup();
+        resolve();
+      };
+      const fail=(error:unknown)=>{
+        if(settled)return;
+        settled=true;
+        audio.pause();
+        cleanup();
+        reject(error);
+      };
+      const cancel=()=>{
+        if(settled)return;
+        settled=true;
+        cleanup();
+        resolve();
+      };
+      const seek=()=>{
+        try{
+          const length=Number.isFinite(audio.duration)?Math.max(0,audio.duration-.01):startSeconds;
+          audio.currentTime=Math.min(startSeconds,length);
+        }catch{/* Retry when metadata arrives. */}
+      };
+      this.resolveCurrent=cancel;
+      audio.onloadedmetadata=seek;
       audio.ontimeupdate=()=>{if(endSeconds!==null&&audio.currentTime>=endSeconds)finish();};
-      audio.onended=()=>{cleanup();resolve();};
-      audio.onerror=()=>{cleanup();reject(new Error("AUDIO_PLAYBACK_FAILED"));};
-      if(audio.readyState>=1)start();else audio.load();
-    }).finally(()=>{
-      if(this.current===audio)this.current=null;
-      if(source.objectUrl){URL.revokeObjectURL(source.objectUrl);if(this.currentObjectUrl===source.objectUrl)this.currentObjectUrl=null;}
+      audio.onended=finish;
+      audio.onerror=()=>fail(new Error("AUDIO_PLAYBACK_FAILED"));
+      // Set the target before playback when possible; do not delay play() for
+      // metadata, as that can invalidate the initiating user gesture.
+      seek();
+      try{
+        void audio.play().catch(fail);
+      }catch(error){fail(error);}
     });
   }
 
@@ -105,7 +176,7 @@ export class BrowserAudioProvider implements AudioProvider {
         const objectUrl=URL.createObjectURL(blob);
         return {url:objectUrl,objectUrl};
       }
-    }catch{/* direct URL fallback */}
+    }catch{/* direct URL already failed */}
     return {url:asset.url};
   }
 }
