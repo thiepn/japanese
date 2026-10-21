@@ -68,7 +68,7 @@ function firstSightPrompt(word:BridgeWord):StudyPrompt{
     explanation:[...word.form].map((char,index)=>char+" ("+sounds[index]+")").join(" + ")+" → "+romaji+
       ". This checks basic kana transcription, not pronunciation or vocabulary mastery.",
     contextId:"a0-kana-first-sight-"+word.id,
-    sourceId:word.meaningPrompt.sourceId,
+    ...(word.meaningPrompt.sourceId?{sourceId:word.meaningPrompt.sourceId}:{}),
     contentVersion:word.meaningPrompt.contentVersion,
     activity:"reading",
     eventMetadata:{nonAuthoritative:true,schedulerExcluded:true,kanaWordFirstSight:true}
