@@ -53,6 +53,18 @@ function selectedPractice(script:Script,id:BeginnerStageId):StudyPrompt[]{
 function stagePrompts(script:Script,id:BeginnerStageId):StudyPrompt[]{
   return [...recognitionFor(script,id),...selectedPractice(script,id)];
 }
+// A0 uses the original authored answers and grading authority, but must not
+// reveal every correct answer as the first choice. Keep the original prompt IDs,
+// cue families and source records; only its beginner-stage presentation changes.
+function positionStageAnswer(prompt:StudyPrompt,index:number):StudyPrompt{
+  if(prompt.promptType!=="choice"||prompt.choices.length<2)return prompt;
+  const correct=prompt.acceptedAnswers[0];
+  if(!correct||!prompt.choices.includes(correct))
+    throw new Error("A0_CANONICAL_KANA_ANSWER_MISSING:"+prompt.id);
+  const choices=prompt.choices.filter(choice=>choice!==correct);
+  choices.splice((index+1)%prompt.choices.length,0,correct);
+  return {...prompt,choices};
+}
 const CANONICAL_IDENTITIES:Record<Script,ReadonlySet<string>>={
   hiragana:new Set(GROUPS.flatMap(group=>stagePrompts("hiragana",group.id)
     .map(prompt=>prompt.id+"|"+prompt.primaryTarget.id))),
@@ -113,7 +125,7 @@ function buildScriptStage(script:Script,id:BeginnerStageId,events:readonly Study
     sourceLabel:"THIEPN original kana foundations"
   };
   const correct=correctlyAnswered(events);
-  const pending=stagePrompts(script,id).filter(prompt=>
+  const pending=stagePrompts(script,id).map(positionStageAnswer).filter(prompt=>
     !correct.has(prompt.id+"|"+prompt.primaryTarget.id));
   return [teach,...pending];
 }
