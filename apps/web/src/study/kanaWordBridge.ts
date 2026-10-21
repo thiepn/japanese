@@ -41,7 +41,9 @@ function meaningPromptForBridge(word:BridgeWord):StudyPrompt{
   const correct=original.acceptedAnswers[0];
   if(!correct||!original.choices.includes(correct))
     throw new Error("A0_SOURCE_WORD_ANSWER_MISSING:"+word.id);
-  const position=eligibleWords.findIndex(entry=>entry.id===word.id);
+  const position=eligibleWords.filter(entry=>entry.script===word.script)
+    .sort((a,b)=>a.form<b.form?-1:a.form>b.form?1:0)
+    .findIndex(entry=>entry.id===word.id);
   if(position<0)throw new Error("A0_SOURCE_WORD_IDENTITY_MISSING:"+word.id);
   if(original.choices.length<2)throw new Error("A0_SOURCE_WORD_DISTRACTORS_MISSING:"+word.id);
   const choices=original.choices.filter(choice=>choice!==correct);
