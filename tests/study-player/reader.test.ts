@@ -32,6 +32,13 @@ describe("P12 graded reader",()=>{
     expect(negativePast.some((token)=>token.lexemeId==="lex-benkyou-suru"&&token.surface==="勉強しませんでした")).toBe(true);
   });
 
+  it("uses contextual source reading before generic lexeme reading in A1 Reader",()=>{
+    const question=segmentSentence(sentenceRecord("sentence-a1-003"));
+    const nani=question.find(token=>token.surface==="何");
+    expect(nani).toMatchObject({lexemeId:"lex-nani",surface:"何",reading:"なん"});
+    expect(question.map(token=>token.surface).join("")).toBe("名前は何ですか。");
+  });
+
   it("keeps comprehension questions attached to text-level evidence",()=>{
     const text=coreContent.readingTexts.find((item)=>item.id==="text-a1-shopping");
     expect(text?.comprehensionQuestions[0]?.answer).toBe("300 yen");

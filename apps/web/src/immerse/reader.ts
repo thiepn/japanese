@@ -139,12 +139,23 @@ export function gradeReadingQuestion(question:ReadingQuestion,response:string):R
 }
 
 export function segmentSentence(sentence:Sentence):ReaderToken[]{
+  // Prefer contextual source token readings to an ambiguous dictionary reading.
+  const authoredReadings=new Map<number,{surface:string;reading:string}>();
+  let tokenCursor=0;
+  for(const token of sentence.tokens){
+    const offset=sentence.text.indexOf(token.surface,tokenCursor);
+    if(offset<0)break;
+    if(token.reading&&/^[\u3040-\u30ffー]+$/u.test(token.reading))
+      authoredReadings.set(offset,{surface:token.surface,reading:token.reading});
+    tokenCursor=offset+token.surface.length;
+  }
   const lexemeIds=[...new Set(sentence.entityRefs.filter((ref)=>ref.kind==="lexeme").map((ref)=>ref.id))];
   const candidates:{surface:string;lexeme:Lexeme;reading?:string}[]=[];
   for(const id of lexemeIds){
     const lexeme=coreContent.lexemes.find((item)=>item.id===id);
     if(!lexeme)continue;
-    const baseReading=lexeme.readings[0]?.text;
+    const uniqueReadings=new Set(lexeme.readings.map(item=>item.text));
+    const baseReading=uniqueReadings.size===1?[...uniqueReadings][0]:undefined;
     const surfaces=new Map<string,string|undefined>();
     surfaces.set(lexeme.canonicalForm,baseReading);
     for(const item of lexeme.forms)surfaces.set(item.text,baseReading);
@@ -168,7 +179,9 @@ export function segmentSentence(sentence:Sentence):ReaderToken[]{
     const match=candidates.find((candidate)=>sentence.text.startsWith(candidate.surface,index));
     if(match){
       const sense=senseForLexeme(match.lexeme);
-      result.push({surface:match.surface,lexemeId:match.lexeme.id,...(match.reading?{reading:match.reading}:{}),meaning:sense.glosses.join(" / ")});
+      const authored=authoredReadings.get(index);
+      const reading=authored?.surface===match.surface?authored.reading:match.reading;
+      result.push({surface:match.surface,lexemeId:match.lexeme.id,...(reading?{reading}:{}),meaning:sense.glosses.join(" / ")});
       index+=match.surface.length;
       continue;
     }
