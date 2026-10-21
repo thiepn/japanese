@@ -23,7 +23,7 @@ export interface KanaReadingContextOverview {
   revisitable:boolean;
 }
 
-type ReadingAttempt={at:number;outcome:"correct"|"incorrect"|"unknown"};
+type ReadingAttempt={at:number;outcome:"correct"|"incorrect"|"unknown";count:number};
 function readingAttempts(events:readonly StudyEvent[]):Map<string,ReadingAttempt>{
   const canonical=new Set(pool.map(sentence=>sentence.id));
   const latest=new Map<string,ReadingAttempt>();
@@ -38,9 +38,13 @@ function readingAttempts(events:readonly StudyEvent[]):Map<string,ReadingAttempt
     const time=Date.parse(event.occurredAt);
     const at=Number.isFinite(time)?time:Number.NEGATIVE_INFINITY;
     const previous=latest.get(id);
+    const count=(previous?.count??0)+1;
     if(previous&&(at<previous.at||
-      at===previous.at&&previous.outcome==="incorrect"&&outcome!=="incorrect"))continue;
-    latest.set(id,{at,outcome});
+      at===previous.at&&previous.outcome==="incorrect"&&outcome!=="incorrect")){
+      previous.count=count;
+      continue;
+    }
+    latest.set(id,{at,outcome,count});
   }
   return latest;
 }
@@ -80,14 +84,16 @@ function sourceExplanation(sentence:(typeof pool)[number]):string{
   return sentence.text+" — "+sentence.translation+
     (details.length?". Source: "+[...new Set(details)].join("; "):"");
 }
-function sourcePrompt(index:number):StudyPrompt{
+function sourcePrompt(index:number,priorAttempts=0):StudyPrompt{
   const sentence=pool[index]!;
   const distractors=pool.filter(item=>item.id!==sentence.id&&item.translation!==sentence.translation);
-  const foilRecords=[1,3,5].map(offset=>distractors[(index+offset)%distractors.length])
+  // Retried source questions must test meaning again, not memory of button position.
+  // Rotate only through existing original A1 translations and source-bound contrasts.
+  const foilRecords=[1,3,5].map(offset=>distractors[(index+offset+priorAttempts)%distractors.length])
     .filter((item):item is (typeof pool)[number]=>Boolean(item));
   const choices=[...new Set(foilRecords.map(item=>item.translation))];
   if(choices.length<3)throw new Error("A0_SOURCE_READING_CHOICES_INCOMPLETE:"+sentence.id);
-  choices.splice(index%(choices.length+1),0,sentence.translation);
+  choices.splice((index+priorAttempts)%(choices.length+1),0,sentence.translation);
   // StudyPlayer already shows e06FoilFeedback only after an incorrect choice.
   // Each contrast is an original sentence with an authored reading and translation.
   const foilFeedback=foilRecords.map(item=>({
@@ -116,7 +122,7 @@ export function buildKanaReadingContext(events:readonly StudyEvent[]):StudyStep[
   const candidates=pool.map((sentence,index)=>({sentence,index}));
   const unseen=candidates.filter(item=>!attempts.has(item.sentence.id));
   const missed=candidates.filter(item=>attempts.get(item.sentence.id)?.outcome==="incorrect");
-  return [...unseen,...missed].slice(0,2).map(item=>sourcePrompt(item.index));
+  return [...unseen,...missed].slice(0,2).map(item=>sourcePrompt(item.index,attempts.get(item.sentence.id)?.count??0));
 }
 
 export function buildKanaReadingReference(events:readonly StudyEvent[]):StudyStep[]{
