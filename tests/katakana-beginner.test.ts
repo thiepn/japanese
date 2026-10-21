@@ -56,6 +56,38 @@ describe("optional original katakana continuation",()=>{
     expect(projectKatakanaOverview(events)).toMatchObject({complete:true,completed:10,nextId:null});
     expect(projectBeginnerOverview(events).started).toBe(false);
   });
+  it("rotates wrong katakana cue positions without changing canonical source or hiragana progress",()=>{
+    const first=buildKatakanaStage("vowels",[])[1];
+    if(!first||isStudyLesson(first)||first.promptType!=="choice")throw Error("EXPECTED_KATAKANA_CHOICE");
+    const correct=first.acceptedAnswers[0]!;
+    const wrong=first.choices.find(choice=>!first.acceptedAnswers.includes(choice))!;
+    const fail=createStudyEvent({
+      id:"wrong-kata-choice",userId:"isolated-test-owner",deviceId:"katakana-test-device",
+      prompt:first,response:wrong,occurredAt:"2026-10-20T10:00:00.000Z",responseTimeMs:100
+    });
+    expect(fail.result).toBe("incorrect");
+    const second=buildKatakanaStage("vowels",[fail])[1];
+    if(!second||isStudyLesson(second)||second.promptType!=="choice")throw Error("EXPECTED_KATAKANA_RETRY");
+    expect(first.choices.indexOf(correct)).toBe(1);
+    expect(second.choices.indexOf(correct)).toBe(2);
+    expect(second.acceptedAnswers).toEqual(first.acceptedAnswers);
+    expect(second.primaryTarget).toEqual(first.primaryTarget);
+    expect(second.cueFamily).toBe(first.cueFamily);
+    expect([...second.choices].sort()).toEqual([...first.choices].sort());
+    expect(projectKatakanaOverview([fail]).stages[0].correct).toBe(0);
+    expect(projectBeginnerOverview([fail]).started).toBe(false);
+    const irrelevant={...fail,id:"mismatched",metadata:{...fail.metadata,promptId:"foundation-hiragana-recognition-1"}};
+    expect(buildKatakanaStage("vowels",[irrelevant])[1]).toEqual(first);
+    const good=createStudyEvent({
+      id:"kata-recovered",userId:"isolated-test-owner",deviceId:"katakana-test-device",
+      prompt:second,response:correct,occurredAt:"2026-10-20T10:01:00.000Z",responseTimeMs:100
+    });
+    expect(good.result).toBe("correct");
+    expect(projectKatakanaOverview([fail,good]).stages[0].correct).toBe(1);
+    expect(buildKatakanaStage("vowels",[fail,good])
+      .filter((step):step is StudyPrompt=>!isStudyLesson(step))
+      .some(step=>step.id===first.id)).toBe(false);
+  });
   it("keeps katakana separate from the existing hiragana → A1 route",()=>{
     const hiragana=buildBeginnerStage("vowels",[]).filter((step):step is StudyPrompt=>!isStudyLesson(step));
     const preexisting=hiragana.map((prompt,index)=>createStudyEvent({

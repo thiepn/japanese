@@ -67,6 +67,58 @@ describe("A0 instructional path",()=>{
     expect(chooseBeginnerContinuation(projectBeginnerOverview(evidence),
       {unitId:"a1-intro",status:"not_started"},null)).toEqual({kind:"first-conversation"});
   });
+  it("moves a failed original hiragana answer between positions without mutating grading or source",()=>{
+    const first=buildBeginnerStage("vowels",[])[1];
+    if(!first||isStudyLesson(first)||first.promptType!=="choice")throw Error("EXPECTED_HIRAGANA_CHOICE");
+    const correct=first.acceptedAnswers[0]!;
+    const wrong=first.choices.find(choice=>!first.acceptedAnswers.includes(choice))!;
+    const original=canonical.find(item=>item.id===first.id)!;
+    const fail1=createStudyEvent({
+      id:"wrong-hiragana-1",userId:"a0-source-fixture",deviceId:"test-device",
+      prompt:first,response:wrong,occurredAt:"2026-10-20T10:00:00.000Z",responseTimeMs:100
+    });
+    expect(fail1.result).toBe("incorrect");
+    const retry=buildBeginnerStage("vowels",[fail1])[1];
+    if(!retry||isStudyLesson(retry)||retry.promptType!=="choice")throw Error("EXPECTED_RETRY_CHOICE");
+    expect(first.choices.indexOf(correct)).toBe(1);
+    expect(retry.choices.indexOf(correct)).toBe(2);
+    expect(retry.id).toBe(first.id);
+    expect(retry.primaryTarget).toEqual(original.primaryTarget);
+    expect(retry.acceptedAnswers).toEqual(original.acceptedAnswers);
+    expect([...retry.choices].sort()).toEqual([...original.choices].sort());
+    expect(buildBeginnerStage("vowels",[fail1])[1]).toEqual(retry);
+    const fake={...fail1,id:"unscored-failure",metadata:{...fail1.metadata,nonAuthoritative:true}};
+    const other={...fail1,id:"wrong-script",primaryTarget:{kind:"kana" as const,id:"katakana-ア"}};
+    const madeUp={...fail1,id:"made-up-cue",metadata:{...fail1.metadata,promptId:"not-original"}};
+    expect(buildBeginnerStage("vowels",[fake])[1]).toEqual(first);
+    expect(buildBeginnerStage("vowels",[other])[1]).toEqual(first);
+    expect(buildBeginnerStage("vowels",[madeUp])[1]).toEqual(first);
+
+    const fail2=createStudyEvent({
+      id:"wrong-hiragana-2",userId:"a0-source-fixture",deviceId:"test-device",
+      prompt:retry,response:wrong,occurredAt:"2026-10-20T10:01:00.000Z",responseTimeMs:100
+    });
+    expect(fail2.result).toBe("incorrect");
+    const twice=buildBeginnerStage("vowels",[fail1,fail2])[1];
+    if(!twice||isStudyLesson(twice)||twice.promptType!=="choice")throw Error("EXPECTED_SECOND_RETRY");
+    expect(twice.choices.indexOf(correct)).toBe(3);
+    expect(buildBeginnerStage("vowels",[fail2,fail1])[1]).toEqual(twice);
+    expect(projectBeginnerOverview([fail1,fail2]).stages[0]).toMatchObject({
+      correct:0,completed:false
+    });
+    const recovered=createStudyEvent({
+      id:"hiragana-recovered",userId:"a0-source-fixture",deviceId:"test-device",
+      prompt:twice,response:correct,occurredAt:"2026-10-20T10:02:00.000Z",responseTimeMs:100
+    });
+    expect(recovered.result).toBe("correct");
+    expect(projectBeginnerOverview([fail1,fail2,recovered]).stages[0]).toMatchObject({
+      correct:1,completed:false
+    });
+    const remaining=buildBeginnerStage("vowels",[fail1,fail2,recovered])
+      .filter((step):step is StudyPrompt=>!isStudyLesson(step));
+    expect(remaining.some(prompt=>prompt.id===first.id)).toBe(false);
+    expect(remaining[0]?.id).toBe(canonical.find(item=>item.primaryTarget.id==="hiragana-い"&&item.skill==="recognition")?.id);
+  });
   it("reuses original IDs and requires correct answers rather than exposure",()=>{
     const ids=buildBeginnerStage("vowels",[]).filter(step=>!isStudyLesson(step)).map(step=>step.id);
     expect(ids).toHaveLength(7);
