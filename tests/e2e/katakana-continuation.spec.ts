@@ -52,6 +52,9 @@ test("Katakana is optional after hiragana and saves seven real FSRS cues",async(
   await page.getByRole("button",{name:"Hear ア pronounced"}).click();
   await expect(page.getByRole("status")).toContainText("Japanese device speech is unavailable");
   await page.getByRole("button",{name:"Continue",exact:true}).click();
+  const firstChoices=page.locator(".j5-choices").getByRole("button");
+  await expect(firstChoices.nth(0)).not.toHaveText("a");
+  await expect(firstChoices.nth(1)).toHaveText("a");
   const answers=["a","i","u","e","o","ア","イ"];
   for(const [index,answer] of answers.entries()){
     await page.locator(".j5-choices").getByRole("button",{name:answer,exact:true}).click();
