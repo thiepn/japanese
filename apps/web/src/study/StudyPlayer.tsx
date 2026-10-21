@@ -1,4 +1,5 @@
 import "../design/ux1.css";
+import "../design/beginner.css";
 import {UX1CafeHeader,UX1CafeTiles,isUX1CafeJourney} from "./UX1Cafe";
 import {VocabularyIllustration} from "./VocabularyIllustration";
 import "./e11Practice.css";
@@ -6,6 +7,7 @@ import "./e08Revision.css";
 import {useEffect,useRef,useState,type ReactNode} from "react";
 import {eligibleE07Draft,e07DraftPreference,setE07DraftPreference,saveE07Draft,readE07Draft,clearE07Draft,clearAllE07Drafts,findE07RestorableStep,E07_DRAFT_LIMIT} from "./e07DraftBuffer";
 import {getDefaultAudioProvider} from "@thiepn/audio";
+import {createDeviceSpeechPlayback} from "./deviceSpeech";
 import {gradeStudyPrompt,isStudyLesson,type GradeResult,type StudyPrompt,type StudyStep} from "@thiepn/study-player";
 import {j5StudyMode,type J5StudyModeMeta} from "./j5StudyVisual";
 import type {JSeason,JTheme} from "../design";
@@ -47,6 +49,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
   const season=resolveJ10Season();
   const startedAt=useRef(performance.now());
   const audioProvider=useRef(getDefaultAudioProvider());
+  const deviceSpeech=useRef(createDeviceSpeechPlayback());
   const recognitionRef=useRef<StudyRecognition|null>(null);
   const cueGeneration=useRef(0);
   const savingRef=useRef(false);
@@ -74,11 +77,11 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
     stopRecognition();
     const provider=audioProvider.current;
     provider.stop();
-    if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();
+    deviceSpeech.current.stop();
     setAudioState("idle");
     setAudioPlayed(false);
     setSpeechState("idle");
-    return()=>{cueGeneration.current+=1;stopRecognition();provider.stop();if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();};
+    return()=>{cueGeneration.current+=1;stopRecognition();provider.stop();deviceSpeech.current.stop();};
   },[index]);
 
   useEffect(()=>{
@@ -167,6 +170,8 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
 
   function advance(){
     audioProvider.current.stop();
+    deviceSpeech.current.stop();
+    cueGeneration.current+=1;
     setE08Checks([]);
     if(index+1>=steps.length){onComplete();return;}
     setIndex((value)=>value+1);
@@ -176,6 +181,11 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
     setSaveError(false);
     setTimerTick(0);
     startedAt.current=performance.now();
+  }
+
+  function speakWithDevice(text:string,rate:number,repeats:number,lang:string){
+    return deviceSpeech.current.play(Array(repeats).fill(text),
+      {rate,language:lang,gapMs:repeats>1?450:0});
   }
 
   async function playAudio(playback:"normal"|"slow"|"shadow"){
@@ -189,12 +199,10 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         else if(playback==="shadow")await audioProvider.current.play(activeStep.audio,{rate:.92,repeats:2,gapMs:1200});
         else await audioProvider.current.play(activeStep.audio);
       }else if(ttsText){
-        await speakWithDevice(
-          ttsText,
-          playback==="slow"?.78:.94,
-          playback==="shadow"?2:1,
-          (!isStudyLesson(activeStep)?activeStep.speechSynthesisLanguage:undefined)??"ja-JP",
-        );
+        const result=await speakWithDevice(ttsText,
+          playback==="slow"?.78:.94,playback==="shadow"?2:1,
+          (!isStudyLesson(activeStep)?activeStep.speechSynthesisLanguage:undefined)??"ja-JP");
+        if(result==="cancelled")return;
       }
       if(generation!==cueGeneration.current)return;
       setAudioPlayed(true);
@@ -204,6 +212,20 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
     }
   }
 
+  async function playBeginnerSound(expression:string){
+    if(audioState==="playing")return;
+    const generation=cueGeneration.current;
+    setAudioState("playing");
+    try{
+      const voices=typeof speechSynthesis==="undefined"?[]:speechSynthesis.getVoices();
+      if(!voices.some(voice=>voice.lang.toLowerCase().startsWith("ja")))
+        throw new Error("JAPANESE_DEVICE_VOICE_UNAVAILABLE");
+      await speakWithDevice(expression,.82,1,"ja-JP");
+      if(generation===cueGeneration.current)setAudioState("idle");
+    }catch{
+      if(generation===cueGeneration.current)setAudioState("error");
+    }
+  }
   function toggleTheme(){
     setTheme(theme==="light"?"dark":"light");
   }
@@ -269,7 +291,15 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         {activeStep.examples?.length?<div className="lesson-examples j5-lesson-examples">{activeStep.examples.map((example)=><div key={example.expression+":"+example.note}>
           <strong lang="ja">{example.expression}</strong>
           <span>{example.note}</span>
+          {(activeStep.id.startsWith("a0-hiragana-")||activeStep.id.startsWith("a0-katakana-"))?<div className="j5-kana-audio">
+            <button type="button" disabled={audioState==="playing"}
+              aria-label={"Hear "+example.expression+" pronounced"} onClick={()=>void playBeginnerSound(example.expression)}>
+              {audioState==="playing"?"Playing…":"Listen"}
+            </button>
+          </div>:null}
         </div>)}</div>:null}
+        {(activeStep.id.startsWith("a0-hiragana-")||activeStep.id.startsWith("a0-katakana-"))&&audioState==="error"
+          ?<p role="status">Japanese device speech is unavailable. You can continue reading and return for listening later.</p>:null}
 
         {activeStep.sourceLabel?<p className="source-note">Source: {activeStep.sourceLabel}</p>:null}
         <button className="primary j5-next" type="button" onClick={advance}><span>Continue</span><i aria-hidden="true">→</i></button>
@@ -568,27 +598,4 @@ function StudyHeader({
     </header>
     <div className="j5-study-progress" aria-hidden="true"><span style={{width:pct+"%"}}/></div>
   </>;
-}
-
-function speakWithDevice(text:string,rate:number,repeats:number,lang:string):Promise<void>{
-  return new Promise((resolve,reject)=>{
-    if(typeof speechSynthesis==="undefined"){reject(new Error("SPEECH_SYNTHESIS_UNAVAILABLE"));return;}
-    let remaining=Math.max(1,repeats);
-    const play=()=>{
-      const utterance=new SpeechSynthesisUtterance(text);
-      utterance.lang=lang;
-      utterance.rate=rate;
-      const voice=speechSynthesis.getVoices().find((item)=>item.lang.toLowerCase().startsWith("ja"));
-      if(voice)utterance.voice=voice;
-      utterance.onerror=()=>reject(new Error("SPEECH_SYNTHESIS_FAILED"));
-      utterance.onend=()=>{
-        remaining-=1;
-        if(remaining>0)setTimeout(play,450);
-        else resolve();
-      };
-      speechSynthesis.speak(utterance);
-    };
-    speechSynthesis.cancel();
-    play();
-  });
 }
