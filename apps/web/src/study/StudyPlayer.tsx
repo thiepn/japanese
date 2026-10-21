@@ -1,4 +1,5 @@
 import "../design/ux1.css";
+import "../design/beginner.css";
 import {UX1CafeHeader,UX1CafeTiles,isUX1CafeJourney} from "./UX1Cafe";
 import "./e11Practice.css";
 import "./e08Revision.css";
@@ -210,6 +211,20 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
     }
   }
 
+  async function playBeginnerSound(expression:string){
+    if(audioState==="playing")return;
+    const generation=cueGeneration.current;
+    setAudioState("playing");
+    try{
+      const voices=typeof speechSynthesis==="undefined"?[]:speechSynthesis.getVoices();
+      if(!voices.some(voice=>voice.lang.toLowerCase().startsWith("ja")))
+        throw new Error("JAPANESE_DEVICE_VOICE_UNAVAILABLE");
+      await speakWithDevice(expression,.82,1,"ja-JP");
+      if(generation===cueGeneration.current)setAudioState("idle");
+    }catch{
+      if(generation===cueGeneration.current)setAudioState("error");
+    }
+  }
   function toggleTheme(){
     setTheme(theme==="light"?"dark":"light");
   }
@@ -264,7 +279,6 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
             {audioState==="playing"?"Playing…":audioPlayed?"Replay pronunciation":"Hear pronunciation"}
           </button>
           <button className="quiet-button audio-inline-slow" type="button" disabled={audioState==="playing"} onClick={()=>void playAudio("slow")}>Slower</button>
-          {audioState==="error"?<p className="audio-error" role="status">Recording failed. Check your connection and retry.</p>:null}
         </div>:null}
 
         {activeStep.facts?.length?<div className="lesson-facts j5-lesson-facts">{activeStep.facts.map((fact)=><div key={fact.label}>
@@ -275,7 +289,15 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         {activeStep.examples?.length?<div className="lesson-examples j5-lesson-examples">{activeStep.examples.map((example)=><div key={example.expression+":"+example.note}>
           <strong lang="ja">{example.expression}</strong>
           <span>{example.note}</span>
+          {(activeStep.id.startsWith("a0-hiragana-")||activeStep.id.startsWith("a0-katakana-"))?<div className="j5-kana-audio">
+            <button type="button" disabled={audioState==="playing"}
+              aria-label={"Hear "+example.expression+" pronounced"} onClick={()=>void playBeginnerSound(example.expression)}>
+              {audioState==="playing"?"Playing…":"Listen"}
+            </button>
+          </div>:null}
         </div>)}</div>:null}
+        {(activeStep.id.startsWith("a0-hiragana-")||activeStep.id.startsWith("a0-katakana-"))&&audioState==="error"
+          ?<p role="status">Japanese device speech is unavailable. You can continue reading and return for listening later.</p>:null}
 
         {activeStep.sourceLabel?<p className="source-note">Source: {activeStep.sourceLabel}</p>:null}
         <button className="primary j5-next" type="button" onClick={advance}><span>Continue</span><i aria-hidden="true">→</i></button>
@@ -358,7 +380,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
             <button type="button" disabled={audioState==="playing"} onClick={()=>void playAudio("shadow")}>Shadow ×2</button>
           </div>
           {audioState==="error"?<div className="audio-error j5-audio-error" role="status">
-            <p>{currentPrompt.audio?"Recording failed. Check your connection and retry, or skip without listening evidence.":"Japanese device speech failed. Check your installed voice and media volume, then retry or skip without listening evidence."}</p>
+            <p>Audio is not available yet. Retry when connected, or skip this listening item without creating mastery evidence.</p>
             <button className="quiet-button audio-skip" type="button" onClick={advance}>Skip for now</button>
           </div>:null}
         </div>
@@ -575,4 +597,3 @@ function StudyHeader({
     <div className="j5-study-progress" aria-hidden="true"><span style={{width:pct+"%"}}/></div>
   </>;
 }
-
