@@ -16,16 +16,20 @@ function hiraganaEvidence(){
   }
   return events;
 }
-function completedSourceReadingEvidence(){
+function completedSourceReadingEvidence(firstFailed=false){
   const events=hiraganaEvidence();
   for(let index=0;index<7;index++){
     const prompt=buildKanaReadingContext(events)[0];
     if(!prompt||isStudyLesson(prompt))throw Error("SOURCE_SENTENCE_NOT_AVAILABLE");
+    let response=prompt.acceptedAnswers[0]!;
+    if(firstFailed&&index===0){
+      if(prompt.promptType!=="choice")throw Error("ORIGINAL_A1_RETRY_REQUIRES_CHOICES");
+      response=prompt.choices.find(choice=>choice!==response)!;
+    }
     const raw=createStudyEvent({
       id:"completed-source-reading-"+index,
       userId:"00000000-0000-4000-8000-000000000001",
-      deviceId:"temporary-browser-fixture",prompt,
-      response:prompt.acceptedAnswers[0]!,
+      deviceId:"temporary-browser-fixture",prompt,response,
       occurredAt:"2026-10-20T09:30:00.000Z",responseTimeMs:100
     });
     events.push({...raw,result:"skipped" as const,
@@ -33,6 +37,80 @@ function completedSourceReadingEvidence(){
   }
   return events;
 }
+
+test("retried original A1 sentences rotate source foils and correct position after reload",async({page},testInfo)=>{
+  await page.goto("./");
+  await page.evaluate(async events=>{
+    const req=indexedDB.open("thiepn-japanese:00000000-0000-4000-8000-000000000001");
+    const db=await new Promise<IDBDatabase>((resolve,reject)=>{
+      req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);
+    });
+    try{
+      await new Promise<void>((resolve,reject)=>{
+        const tx=db.transaction("study_events","readwrite");
+        for(const event of events)tx.objectStore("study_events").add(event);
+        tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);
+      });
+    }finally{db.close();}
+  },completedSourceReadingEvidence(true));
+  await page.reload();
+  const card=page.locator(".kana-words-entry");
+  await expect(card).toContainText("7 of 7 original A1 sentences attempted");
+  await expect(card).toContainText("1 to retry");
+  await card.getByRole("button",{name:"Read A1 sentences"}).click();
+  await expect(page.locator(".j5-sheet")).toContainText("ほんをよみます。");
+  const choice=page.locator(".j5-choices").getByRole("button");
+  await expect(choice.nth(1)).toHaveText("I read a book.");
+  await expect(choice.nth(0)).not.toHaveText("I read a book.");
+  await expect(page.locator(".e06-correction")).toHaveCount(0);
+  await choice.nth(0).click();
+  await expect(page.locator(".j5-feedback.incorrect")).toBeVisible();
+  await expect(page.locator(".e06-correction")).toContainText("Why that option does not fit:");
+  await page.getByRole("button",{name:"Exit",exact:true}).click();
+  await expect(card).toContainText("1 to retry");
+  await page.reload();
+  await card.getByRole("button",{name:"Read A1 sentences"}).click();
+  await expect(page.locator(".j5-sheet")).toContainText("ほんをよみます。");
+  const third=page.locator(".j5-choices").getByRole("button");
+  await expect(third.nth(2)).toHaveText("I read a book.");
+  await third.nth(2).click();
+  await expect(page.locator(".j5-feedback")).toContainText("Context matched");
+  await expect(page.locator(".e06-correction")).toHaveCount(0);
+  await page.getByRole("button",{name:"Exit",exact:true}).click();
+  await expect(card).toContainText("7 of 7 original A1 sentences attempted");
+  await expect(card).not.toContainText("to retry");
+  await expect(card.getByRole("button",{name:"Read A1 sentences"})).toHaveCount(0);
+  await expect(card.getByRole("button",{name:"Revisit source sentences"})).toBeVisible();
+  const records=await page.evaluate(async()=>{
+    const req=indexedDB.open("thiepn-japanese:00000000-0000-4000-8000-000000000001");
+    const db=await new Promise<IDBDatabase>((resolve,reject)=>{
+      req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);
+    });
+    try{
+      return await new Promise<{attempts:Array<{result:string;metadata?:{structuralResult?:string}}>;sentenceTraces:number}>((resolve,reject)=>{
+        const tx=db.transaction(["study_events","memory_traces"],"readonly");
+        const eventStore=tx.objectStore("study_events").getAll();
+        const traceStore=tx.objectStore("memory_traces").getAll();
+        tx.oncomplete=()=>resolve({
+          attempts:(eventStore.result as Array<{result:string;metadata?:{promptId?:string;structuralResult?:string}}>)
+            .filter(event=>event.metadata?.promptId==="a0-source-reading-sentence-a1-004"),
+          sentenceTraces:(traceStore.result as Array<{id:string}>).filter(trace=>
+            trace.id.startsWith("sentence:sentence-a1-004:")).length
+        });
+        tx.onerror=()=>reject(tx.error);
+      });
+    }finally{db.close();}
+  });
+  expect(records.attempts).toHaveLength(3);
+  expect(records.attempts.every(attempt=>attempt.result==="skipped")).toBe(true);
+  expect(records.attempts.map(attempt=>attempt.metadata?.structuralResult).sort()).toEqual([
+    "correct","incorrect","incorrect"
+  ]);
+  expect(records.sentenceTraces).toBe(0);
+  if(testInfo.project.name!=="desktop-chromium"){
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)).toBeLessThanOrEqual(1);
+  }
+});
 
 test("partial A1 reading can revisit only encountered source without exposing next answers",async({page},testInfo)=>{
   await page.goto("./");
