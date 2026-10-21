@@ -115,15 +115,27 @@ function progressedWords(events:readonly StudyEvent[]):WordProgress[]{
         firstSightAttempted:firstSightAttempts.has(word.id)};
     });
 }
+function needsCanonicalReview(p:WordProgress):boolean{
+  return (p.meaningAttempted&&!p.meaningCorrect)
+    ||(p.meaningCorrect&&p.readingAttempted&&!p.readingCorrect)
+    ||(p.meaningCorrect&&p.readingCorrect&&p.activeAttempted&&!p.activeCorrect);
+}
+export function buildKanaWordSourceRepair(events:readonly StudyEvent[]):StudyStep[]{
+  // Reopen original authored word explanations, never a premature graded retry.
+  // A word is available only after its original cue has actually been attempted
+  // and its latest canonical result still requires the existing FSRS review.
+  return progressedWords(events).filter(needsCanonicalReview).map(entry=>{
+    const lesson=vocabularyLessons[entry.word.meaningPrompt.contextId??""];
+    if(!lesson)throw new Error("MISSING_SOURCE_VOCABULARY_LESSON:"+entry.word.id);
+    return lesson;
+  });
+}
 export function projectKanaWordBridge(events:readonly StudyEvent[]):KanaWordBridgeOverview{
   const progress=progressedWords(events);
   const newWords=progress.filter(p=>!p.meaningAttempted);
   const readyToRead=progress.filter(p=>p.meaningCorrect&&!p.readingAttempted);
   const readyToUse=progress.filter(p=>p.meaningCorrect&&p.readingCorrect&&!p.activeAttempted);
-  const pendingReview=progress.filter(p=>
-    (p.meaningAttempted&&!p.meaningCorrect)||
-    (p.meaningCorrect&&p.readingAttempted&&!p.readingCorrect)||
-    (p.meaningCorrect&&p.readingCorrect&&p.activeAttempted&&!p.activeCorrect));
+  const pendingReview=progress.filter(needsCanonicalReview);
   return {eligible:progress.length,learned:progress.filter(p=>p.meaningCorrect).length,
     read:progress.filter(p=>p.readingCorrect).length,
     transferred:progress.filter(p=>p.activeCorrect).length,

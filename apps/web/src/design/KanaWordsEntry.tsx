@@ -1,9 +1,9 @@
 import type {KanaWordBridgeOverview} from "../study/kanaWordBridge";
 import "./beginner.css";
 
-export function KanaWordsEntry({overview,due,busy,onContinue,onReviewDue,onReadContext,onRevisitContext}:{
+export function KanaWordsEntry({overview,due,busy,onContinue,onReviewDue,onReadContext,onRevisitContext,onRevisitWords}:{
   overview:KanaWordBridgeOverview;due:number;busy:boolean;
-  onContinue:()=>void;onReviewDue:()=>void;onReadContext:()=>void;onRevisitContext:()=>void;
+  onContinue:()=>void;onReviewDue:()=>void;onReadContext:()=>void;onRevisitContext:()=>void;onRevisitWords:()=>void;
 }){
   if(!overview.available&&overview.pendingReview===0&&!overview.readingContext.available&&!overview.readingContext.revisitable)return null;
   return <section className="kana-words-entry" aria-label="Kana to words">
@@ -24,6 +24,9 @@ export function KanaWordsEntry({overview,due,busy,onContinue,onReviewDue,onReadC
       </button>:null}
       {overview.readingContext.revisitable?<button type="button" disabled={busy} onClick={onRevisitContext}>
         Revisit source sentences
+      </button>:null}
+      {overview.pendingReview>0?<button type="button" disabled={busy} onClick={onRevisitWords}>
+        Revisit word lessons
       </button>:null}
       {overview.pendingReview>0&&due>0?<button type="button" disabled={busy} onClick={onReviewDue}>
         Review due material ({due})
