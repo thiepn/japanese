@@ -181,6 +181,11 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
     startedAt.current=performance.now();
   }
 
+  function speakWithDevice(text:string,rate:number,repeats:number,lang:string){
+    return deviceSpeech.current.play(Array(repeats).fill(text),
+      {rate,language:lang,gapMs:repeats>1?450:0});
+  }
+
   async function playAudio(playback:"normal"|"slow"|"shadow"){
     const ttsText=!isStudyLesson(activeStep)?activeStep.speechSynthesisText:undefined;
     if((!activeStep.audio&&!ttsText)||audioState==="playing")return;
@@ -192,11 +197,9 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         else if(playback==="shadow")await audioProvider.current.play(activeStep.audio,{rate:.92,repeats:2,gapMs:1200});
         else await audioProvider.current.play(activeStep.audio);
       }else if(ttsText){
-        const result=await deviceSpeech.current.play(
-          Array(playback==="shadow"?2:1).fill(ttsText),
-          {rate:playback==="slow"?.78:.94,gapMs:playback==="shadow"?450:0,
-            language:(!isStudyLesson(activeStep)?activeStep.speechSynthesisLanguage:undefined)??"ja-JP"},
-        );
+        const result=await speakWithDevice(ttsText,
+          playback==="slow"?.78:.94,playback==="shadow"?2:1,
+          (!isStudyLesson(activeStep)?activeStep.speechSynthesisLanguage:undefined)??"ja-JP");
         if(result==="cancelled")return;
       }
       if(generation!==cueGeneration.current)return;
