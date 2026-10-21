@@ -26,8 +26,8 @@ test("the first A0 kana choice cannot be passed by clicking the first button",as
   await page.getByRole("button",{name:"Start Japanese from Zero"}).click();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
   const choices=page.locator(".j5-choices").getByRole("button");
-  await expect(choices.nth(0)).not.toHaveText("a");
-  await expect(choices.nth(1)).toHaveText("a");
+  await expect(choices.nth(0).locator("span:not(.j5-choice-index)")).not.toHaveText("a");
+  await expect(choices.nth(1).locator("span:not(.j5-choice-index)")).toHaveText("a");
   await choices.nth(0).click();
   await expect(page.locator(".j5-feedback.incorrect")).toBeVisible();
   await page.getByRole("button",{name:"Exit",exact:true}).click();
@@ -36,18 +36,18 @@ test("the first A0 kana choice cannot be passed by clicking the first button",as
   await page.reload();
   await page.getByRole("button",{name:"Continue lesson"}).click();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
-  await expect(page.locator(".j5-choices").getByRole("button").nth(2)).toHaveText("a");
+  await expect(page.locator(".j5-choices").getByRole("button").nth(2).locator("span:not(.j5-choice-index)")).toHaveText("a");
   await page.locator(".j5-choices").getByRole("button").nth(0).click();
   await expect(page.locator(".j5-feedback.incorrect")).toBeVisible();
   await page.getByRole("button",{name:"Exit",exact:true}).click();
   await page.reload();
   await page.getByRole("button",{name:"Continue lesson"}).click();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
-  await expect(page.locator(".j5-choices").getByRole("button").nth(3)).toHaveText("a");
+  await expect(page.locator(".j5-choices").getByRole("button").nth(3).locator("span:not(.j5-choice-index)")).toHaveText("a");
   await page.locator(".j5-choices").getByRole("button",{name:"a",exact:true}).click();
   await expect(page.getByText("Correct",{exact:true})).toBeVisible();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
-  await expect(page.locator(".j5-choices").getByRole("button").nth(2)).toHaveText("i");
+  await expect(page.locator(".j5-choices").getByRole("button").nth(2).locator("span:not(.j5-choice-index)")).toHaveText("i");
   if(testInfo.project.name!=="desktop-chromium"){
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)).toBeLessThanOrEqual(1);
   }
