@@ -123,6 +123,35 @@ describe("source-backed Kana-to-Words Bridge",()=>{
     const forged={...saved,metadata:{...saved.metadata,promptId:"a0-kana-first-sight-unrelated"}};
     expect(buildKanaWordBridge([...vowel,forged])[0]).toMatchObject({id:"a0-kana-first-sight-lex-ii"});
   });
+  it("does not expose the right meaning as the first choice for original katakana source words",()=>{
+    const script=completeKana("katakana");
+    const steps=buildKanaWordBridge(script);
+    const questionsForSource=questions(steps);
+    expect(questionsForSource.map(prompt=>prompt.id)).toEqual([
+      "vocab-meaning-lex-toire","vocab-meaning-lex-resutoran"
+    ]);
+    for(const [index,prompt] of questionsForSource.entries()){
+      if(prompt.promptType!=="choice")throw Error("ORIGINAL_KATAKANA_MEANING_MISSING");
+      const original=vocabularyMeaningPrompts.find(item=>item.id===prompt.id);
+      if(!original||original.promptType!=="choice")throw Error("ORIGINAL_SOURCE_MEANING_MISSING");
+      expect(prompt.id).toBe(original.id);
+      expect(prompt.primaryTarget).toEqual(original.primaryTarget);
+      expect(prompt.acceptedAnswers).toEqual(original.acceptedAnswers);
+      expect(prompt.sourceId).toBe(original.sourceId);
+      expect(prompt.contentVersion).toBe(original.contentVersion);
+      expect([...prompt.choices].sort()).toEqual([...original.choices].sort());
+      const answer=prompt.acceptedAnswers[0]!;
+      expect(original.choices[0]).toBe(answer);
+      expect(prompt.choices.indexOf(answer)).toBeGreaterThan(0);
+      expect(prompt.choices[0]).not.toBe(answer);
+      expect(grade([prompt])[0]?.result).toBe("correct");
+      // The original canonical prompt stays untouched for the existing FSRS queue.
+      expect(original.choices[0]).toBe(original.acceptedAnswers[0]);
+      expect(questions(buildKanaWordBridge(script))[index]).toEqual(prompt);
+    }
+    expect(questionsForSource[0]?.prompt).toBe("トイレ");
+    expect(questionsForSource[1]?.prompt).toBe("レストラン");
+  });
   it("decodes previously unseen original katakana words without manufactured audio or proficiency credit",()=>{
     const events=completeKana("katakana");
     const steps=buildKanaWordBridge(events);
