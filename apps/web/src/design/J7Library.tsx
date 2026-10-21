@@ -3,6 +3,7 @@ import {useEffect,useMemo,useRef,useState,type KeyboardEvent} from "react";
 import type {EntityKind} from "@thiepn/domain";
 import type {SearchResult} from "@thiepn/search";
 import {coreContent,senseForLexeme} from "../coreContent";
+import {VocabularyIllustration} from "../study/VocabularyIllustration";
 import {JCartouche,JPattern,JSeal} from "./index";
 
 type FilterKind="all"|Extract<EntityKind,"lexeme"|"kanji"|"grammar"|"sentence"|"lexical_chunk"|"text"|"production_task">;
@@ -187,6 +188,7 @@ function ReferenceDetail({item}:{item:SearchResult}){
       {detail.primary?<strong>{detail.primary}</strong>:item.subtitle?<strong>{item.subtitle}</strong>:null}
     </div>
 
+    {item.entity.kind==="lexeme"?<VocabularyIllustration key={item.entity.id} lexemeId={item.entity.id} className="vocabulary-visual--reference"/>:null}
     {detail.badges.length?<div className="j7-reference__badges">{detail.badges.map((badge)=><span key={badge}>{badge}</span>)}</div>:null}
 
     {detail.sections.map((section)=><section className="j7-reference__section" key={section.label}>
