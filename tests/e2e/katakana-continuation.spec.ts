@@ -38,7 +38,7 @@ test("a missed original katakana cue changes position across reload without chan
   await page.getByRole("button",{name:"Start katakana"}).click();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
   const first=page.locator(".j5-choices").getByRole("button");
-  await expect(first.nth(1)).toHaveText("a");
+  await expect(first.nth(1).locator("span:not(.j5-choice-index)")).toHaveText("a");
   await first.nth(0).click();
   await expect(page.locator(".j5-feedback.incorrect")).toBeVisible();
   await page.getByRole("button",{name:"Exit",exact:true}).click();
@@ -47,11 +47,11 @@ test("a missed original katakana cue changes position across reload without chan
   await page.getByRole("button",{name:"Continue katakana"}).click();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
   const retry=page.locator(".j5-choices").getByRole("button");
-  await expect(retry.nth(2)).toHaveText("a");
+  await expect(retry.nth(2).locator("span:not(.j5-choice-index)")).toHaveText("a");
   await page.locator(".j5-choices").getByRole("button",{name:"a",exact:true}).click();
   await expect(page.getByText("Correct",{exact:true})).toBeVisible();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
-  await expect(page.locator(".j5-choices").getByRole("button").nth(2)).toHaveText("i");
+  await expect(page.locator(".j5-choices").getByRole("button").nth(2).locator("span:not(.j5-choice-index)")).toHaveText("i");
   await page.getByRole("button",{name:"Exit",exact:true}).click();
   await expect(page.locator(".katakana-entry")).toContainText("1/7 answers correct");
   await expect(page.locator(".beginner-entry__objective")).toContainText("A1 ·");
@@ -97,8 +97,8 @@ test("Katakana is optional after hiragana and saves seven real FSRS cues",async(
   await expect(page.getByRole("status")).toContainText("Japanese device speech is unavailable");
   await page.getByRole("button",{name:"Continue",exact:true}).click();
   const firstChoices=page.locator(".j5-choices").getByRole("button");
-  await expect(firstChoices.nth(0)).not.toHaveText("a");
-  await expect(firstChoices.nth(1)).toHaveText("a");
+  await expect(firstChoices.nth(0).locator("span:not(.j5-choice-index)")).not.toHaveText("a");
+  await expect(firstChoices.nth(1).locator("span:not(.j5-choice-index)")).toHaveText("a");
   const answers=["a","i","u","e","o","ア","イ"];
   for(const [index,answer] of answers.entries()){
     await page.locator(".j5-choices").getByRole("button",{name:answer,exact:true}).click();
