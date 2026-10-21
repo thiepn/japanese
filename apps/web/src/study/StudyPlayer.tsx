@@ -282,14 +282,14 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         {activeStep.examples?.length?<div className="lesson-examples j5-lesson-examples">{activeStep.examples.map((example)=><div key={example.expression+":"+example.note}>
           <strong lang="ja">{example.expression}</strong>
           <span>{example.note}</span>
-          {activeStep.id.startsWith("a0-hiragana-")?<div className="j5-kana-audio">
+          {(activeStep.id.startsWith("a0-hiragana-")||activeStep.id.startsWith("a0-katakana-"))?<div className="j5-kana-audio">
             <button type="button" disabled={audioState==="playing"}
               aria-label={"Hear "+example.expression+" pronounced"} onClick={()=>void playBeginnerSound(example.expression)}>
               {audioState==="playing"?"Playing…":"Listen"}
             </button>
           </div>:null}
         </div>)}</div>:null}
-        {activeStep.id.startsWith("a0-hiragana-")&&audioState==="error"
+        {(activeStep.id.startsWith("a0-hiragana-")||activeStep.id.startsWith("a0-katakana-"))&&audioState==="error"
           ?<p role="status">Japanese device speech is unavailable. You can continue reading and return for listening later.</p>:null}
 
         {activeStep.sourceLabel?<p className="source-note">Source: {activeStep.sourceLabel}</p>:null}

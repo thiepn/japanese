@@ -1,9 +1,9 @@
 import type { AudioAssetRecord, CanDoDescriptor, ContentSeedPackage, CourseUnit, GrammarConcept, Kanji, Lexeme, LexicalChunk, ProductiveTask, ReadingText, Sense, Sentence } from "@thiepn/content-schema";
-import rawContent from "../../../content/seed/jp-core.json";
-import rawC1Lexicon from "../../../content/seed/jp-c1-lexicon.json";
-import rawC1Language from "../../../content/seed/jp-c1-language.json";
-import rawC1Course from "../../../content/seed/jp-c1-course.json";
-import rawRegistry from "../../../content/sources/registry.json";
+import rawContent from "../../../content/seed/jp-core.json" with { type: "json" };
+import rawC1Lexicon from "../../../content/seed/jp-c1-lexicon.json" with { type: "json" };
+import rawC1Language from "../../../content/seed/jp-c1-language.json" with { type: "json" };
+import rawC1Course from "../../../content/seed/jp-c1-course.json" with { type: "json" };
+import rawRegistry from "../../../content/sources/registry.json" with { type: "json" };
 
 const base=rawContent as unknown as ContentSeedPackage;
 const c1Lexicon=rawC1Lexicon as unknown as Pick<ContentSeedPackage,"lexemes"|"senses">;

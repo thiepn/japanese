@@ -1,6 +1,9 @@
 import {useMemo} from "react";
 import {UX1Today} from "./UX1Today";
 import {BeginnerEntry} from "./BeginnerEntry";
+import {KatakanaEntry} from "./KatakanaEntry";
+import {KanaWordsEntry} from "./KanaWordsEntry";
+import type {KanaWordBridgeOverview} from "../study/kanaWordBridge";
 import type {BeginnerOverview} from "../study/beginnerCourse";
 import type {UX1Engagement,StudySummary,E01Progress,E02Overview,E03Overview,E04Overview,E05Evidence,E06Overview} from "../study/runtime";
 import {E07JourneyPanel} from "./E07JourneyPanel";
@@ -8,7 +11,7 @@ import type {E07Journey,E07Action} from "../study/e07LearningRoute";
 import {JCartouche,JDivider,JInkProgress,JPattern,JSeal} from "./index";
 
 type J3TodayProps={
-  beginner:BeginnerOverview;onStartBeginner:()=>void;onReviewDue:()=>void;
+  beginner:BeginnerOverview;katakana:BeginnerOverview;wordBridge:KanaWordBridgeOverview;onReadContext:()=>void;onRevisitContext:()=>void;onRevisitWords:()=>void;onStartWords:()=>void;onStartKatakana:()=>void;onStartBeginner:()=>void;onReviewDue:()=>void;
   engagement:UX1Engagement;
   summary:StudySummary;
   completedToday:number;
@@ -43,7 +46,7 @@ function japaneseDate(now=new Date()):string{
   }
 }
 
-export function J3Today({beginner,onStartBeginner,onReviewDue,engagement,summary,completedToday,status,onStart,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,e05,onStartE05Repair,e06,onStartE06,onStartE06Delayed,onStartE11Micro,e07,onOpenE07}:J3TodayProps){
+export function J3Today({beginner,katakana,wordBridge,onReadContext,onRevisitContext,onRevisitWords,onStartWords,onStartKatakana,onStartBeginner,onReviewDue,engagement,summary,completedToday,status,onStart,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,e05,onStartE05Repair,e06,onStartE06,onStartE06Delayed,onStartE11Micro,e07,onOpenE07}:J3TodayProps){
   const route=useMemo<RouteItem[]>(()=>[
     {id:"review",japanese:"復",label:"Review",count:summary.due,tone:"review"},
     {id:"learn",japanese:"学",label:"Learn",count:summary.newKana+summary.newVocabulary+summary.course,tone:"learn"},
@@ -65,11 +68,15 @@ export function J3Today({beginner,onStartBeginner,onReviewDue,engagement,summary
           e02.scenes.find(scene=>scene.id===e02.nextSceneId)?.title??"A1 practice"}
         due={summary.due} busy={status==="loading"} sessionError={status==="error"}
         onContinue={onStartBeginner} onReview={onReviewDue}/>
+      {wordBridge.available||wordBridge.pendingReview>0||wordBridge.readingContext.available||wordBridge.readingContext.revisitable?<KanaWordsEntry overview={wordBridge} due={summary.due} busy={status==="loading"} onContinue={onStartWords} onReviewDue={onReviewDue} onReadContext={onReadContext} onRevisitContext={onRevisitContext} onRevisitWords={onRevisitWords}/>:null}
+      {beginner.complete&&!katakana.complete?<KatakanaEntry overview={katakana} busy={status==="loading"} onContinue={onStartKatakana}/>:null}
     </section>;
   }
   return <section className="j3-today" aria-labelledby="ux1-today-title">
     <span className="j13-marginal" aria-hidden="true">今日</span>
     <UX1Today engagement={engagement} route={e07} summary={summary} status={status} completedToday={completedToday} onActivate={onOpenE07} onStartQueue={onStart}/>
+    {wordBridge.available||wordBridge.pendingReview>0||wordBridge.readingContext.available||wordBridge.readingContext.revisitable?<KanaWordsEntry overview={wordBridge} due={summary.due} busy={status==="loading"} onContinue={onStartWords} onReviewDue={onReviewDue} onReadContext={onReadContext} onRevisitContext={onRevisitContext} onRevisitWords={onRevisitWords}/>:null}
+      {beginner.complete&&!katakana.complete?<KatakanaEntry overview={katakana} busy={status==="loading"} onContinue={onStartKatakana}/>:null}
     <details className="e07-track-list">
       <summary>Browse the original E01–E09 lesson entry points</summary>
     <section className="e01-entry" aria-label="A1 first conversations practice">

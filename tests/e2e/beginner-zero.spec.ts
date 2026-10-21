@@ -21,6 +21,38 @@ test("A0 first launch teaches before testing and keeps advanced tools optional",
   }
 });
 
+test("the first A0 kana choice cannot be passed by clicking the first button",async({page},testInfo)=>{
+  await page.goto("./");
+  await page.getByRole("button",{name:"Start Japanese from Zero"}).click();
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  const choices=page.locator(".j5-choices").getByRole("button");
+  await expect(choices.nth(0)).not.toHaveText("a");
+  await expect(choices.nth(1)).toHaveText("a");
+  await choices.nth(0).click();
+  await expect(page.locator(".j5-feedback.incorrect")).toBeVisible();
+  await page.getByRole("button",{name:"Exit",exact:true}).click();
+  await expect(page.locator(".beginner-entry__objective")).toHaveText("Hiragana · Five vowel sounds");
+  await expect(page.locator(".beginner-entry__progress")).toContainText("0 of 10 hiragana sound groups completed");
+  await page.reload();
+  await page.getByRole("button",{name:"Continue lesson"}).click();
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await expect(page.locator(".j5-choices").getByRole("button").nth(2)).toHaveText("a");
+  await page.locator(".j5-choices").getByRole("button").nth(0).click();
+  await expect(page.locator(".j5-feedback.incorrect")).toBeVisible();
+  await page.getByRole("button",{name:"Exit",exact:true}).click();
+  await page.reload();
+  await page.getByRole("button",{name:"Continue lesson"}).click();
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await expect(page.locator(".j5-choices").getByRole("button").nth(3)).toHaveText("a");
+  await page.locator(".j5-choices").getByRole("button",{name:"a",exact:true}).click();
+  await expect(page.getByText("Correct",{exact:true})).toBeVisible();
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await expect(page.locator(".j5-choices").getByRole("button").nth(2)).toHaveText("i");
+  if(testInfo.project.name!=="desktop-chromium"){
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)).toBeLessThanOrEqual(1);
+  }
+});
+
 test("A0 review is not mixed with new course items",async({page})=>{
   await page.goto("./");
   await expect(page.getByRole("button",{name:"Review due material"})).toBeDisabled();
