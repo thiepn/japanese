@@ -122,11 +122,44 @@ test("missed source words remain visible through reload and wait for original du
   }
   await expect(bridge).toContainText("2 awaiting review");
   await expect(bridge.getByRole("button",{name:"Read new words"})).toHaveCount(0);
+  // No immediate graded retry: inspect source records before/after read-only remediation.
+  const snapshot=()=>page.evaluate(async()=>{
+    const db=await new Promise<IDBDatabase>((resolve,reject)=>{
+      const request=indexedDB.open("thiepn-japanese:00000000-0000-4000-8000-000000000001");
+      request.onsuccess=()=>resolve(request.result);
+      request.onerror=()=>reject(request.error);
+    });
+    try{
+      return await new Promise<{wordEvents:string[];traces:number}>((resolve,reject)=>{
+        const tx=db.transaction(["study_events","memory_traces"],"readonly");
+        const events=tx.objectStore("study_events").getAll();
+        const traces=tx.objectStore("memory_traces").count();
+        tx.oncomplete=()=>resolve({
+          wordEvents:(events.result as Array<{id:string;primaryTarget?:{kind:string}}>)
+            .filter(event=>event.primaryTarget?.kind==="lexeme").map(event=>event.id).sort(),
+          traces:traces.result
+        });
+        tx.onerror=()=>reject(tx.error);
+      });
+    }finally{db.close();}
+  });
+  const before=await snapshot();
+  await bridge.getByRole("button",{name:"Revisit word lessons"}).click();
+  await expect(page.getByRole("heading",{name:"いい",exact:true})).toBeVisible();
+  await expect(page.locator(".j5-lesson-facts")).toContainText("good");
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await expect(page.getByRole("heading",{name:"いいえ",exact:true})).toBeVisible();
+  await expect(page.locator(".j5-lesson-facts")).toContainText("no");
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  expect(await snapshot()).toEqual(before);
+  await expect(bridge).toContainText("2 awaiting review");
   await expect(page.locator(".beginner-entry__objective")).toHaveText("Hiragana · K sounds");
   await page.reload();
   await expect(bridge).toContainText("2 awaiting review");
+  await expect(bridge.getByRole("button",{name:"Revisit word lessons"})).toBeVisible();
   await page.getByRole("button",{name:"Learn",exact:true}).click();
   await expect(page.locator(".kana-words-entry")).toContainText("2 awaiting review");
+  await expect(page.locator(".kana-words-entry").getByRole("button",{name:"Revisit word lessons"})).toBeVisible();
 });
 
 test("a newly recognized source word remains available offline with original account-scoped evidence",async({page,context})=>{
