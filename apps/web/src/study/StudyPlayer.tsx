@@ -6,6 +6,7 @@ import "./e08Revision.css";
 import {useEffect,useRef,useState,type ReactNode} from "react";
 import {eligibleE07Draft,e07DraftPreference,setE07DraftPreference,saveE07Draft,readE07Draft,clearE07Draft,clearAllE07Drafts,findE07RestorableStep,E07_DRAFT_LIMIT} from "./e07DraftBuffer";
 import {getDefaultAudioProvider} from "@thiepn/audio";
+import {A1FuriganaText,hasA1Furigana,isA1FuriganaStep} from "./a1Furigana";
 import {gradeStudyPrompt,isStudyLesson,type GradeResult,type StudyPrompt,type StudyStep} from "@thiepn/study-player";
 import {j5StudyMode,type J5StudyModeMeta} from "./j5StudyVisual";
 import type {JSeason,JTheme} from "../design";
@@ -37,6 +38,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
   const [e12FirstDraft,setE12FirstDraft]=useState("");
   const [e08Checks,setE08Checks]=useState<string[]>([]);
   const [feedback,setFeedback]=useState<GradeResult|null>(null);
+  const [showFurigana,setShowFurigana]=useState(true);
   const [saving,setSaving]=useState(false);
   const [saveError,setSaveError]=useState(false);
   const [audioState,setAudioState]=useState<"idle"|"playing"|"error">("idle");
@@ -245,6 +247,13 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
     try{recognition.start();}catch{stopRecognition();setSpeechState("error");}
   }
 
+  const a1FuriganaStep=isA1FuriganaStep(activeStep);
+  const renderReading=(value:string)=>a1FuriganaStep?<A1FuriganaText text={value} visible={showFurigana}/>:value;
+  const furiganaAvailable=a1FuriganaStep&&(isStudyLesson(activeStep)
+    ?[activeStep.title,...(activeStep.facts??[]).filter((fact)=>fact.language==="ja").map((fact)=>fact.value),...(activeStep.examples??[]).map((example)=>example.expression)].some(hasA1Furigana)
+    :hasA1Furigana(activeStep.prompt));
+  const furiganaToggle=furiganaAvailable?<button className="j5-furigana-toggle" type="button" aria-pressed={showFurigana} onClick={()=>setShowFurigana((value)=>!value)}>{showFurigana?"Hide furigana":"Show furigana"}</button>:null;
+
   if(isStudyLesson(activeStep)){
     return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={false} onExit={onExit} onTheme={toggleTheme}>
       {ux1Cafe?<UX1CafeHeader steps={steps} index={index}/>:null}
@@ -262,7 +271,8 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
           <span className="eyebrow">LEARN</span>
           <span className="j5-sheet__counter">{index+1} / {steps.length}</span>
         </div>
-        <h1>{activeStep.title}</h1>
+        {furiganaToggle}
+        <h1>{renderReading(activeStep.title)}</h1>
         <p className="lesson-body">{activeStep.body}</p>
         {ux1Cafe&&activeStep.id==="a1-e02-food-try"?<UX1CafeTiles/>:null}
 
@@ -276,11 +286,11 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
 
         {activeStep.facts?.length?<div className="lesson-facts j5-lesson-facts">{activeStep.facts.map((fact)=><div key={fact.label}>
           <span>{fact.label}</span>
-          <strong lang={fact.language}>{fact.value}</strong>
+          <strong lang={fact.language}>{fact.language==="ja"?renderReading(fact.value):fact.value}</strong>
         </div>)}</div>:null}
 
         {activeStep.examples?.length?<div className="lesson-examples j5-lesson-examples">{activeStep.examples.map((example)=><div key={example.expression+":"+example.note}>
-          <strong lang="ja">{example.expression}</strong>
+          <strong lang="ja">{renderReading(example.expression)}</strong>
           <span>{example.note}</span>
           {activeStep.id.startsWith("a0-hiragana-")?<div className="j5-kana-audio">
             <button type="button" disabled={audioState==="playing"}
@@ -348,6 +358,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         <span className="j5-sheet__counter">{index+1} / {steps.length}</span>
       </div>
 
+      {furiganaToggle}
       {remainingSeconds!==null?<div className={"timed-prompt j5-timer "+(remainingSeconds===0?"expired":"")}>
         <span>Timed response</span>
         <strong>{remainingSeconds>0?remainingSeconds+"s remaining":"time target elapsed"}</strong>
@@ -377,7 +388,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
             <button className="quiet-button audio-skip" type="button" onClick={advance}>Skip for now</button>
           </div>:null}
         </div>
-        :<div className={"j5-prompt j5-prompt--"+mode.mode} lang={currentPrompt.promptLanguage}>{currentPrompt.prompt}</div>}
+        :<div className={"j5-prompt j5-prompt--"+mode.mode} lang={currentPrompt.promptLanguage}>{renderReading(currentPrompt.prompt)}</div>}
 
       {currentPrompt.promptType==="choice"
         ?<div className="j5-choices">{currentPrompt.choices.map((choice,index)=><button
