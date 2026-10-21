@@ -22,13 +22,39 @@ describe("optional original katakana continuation",()=>{
     const steps=buildKatakanaStage("vowels",[]);
     const prompts=steps.filter((step):step is StudyPrompt=>!isStudyLesson(step));
     expect(prompts).toHaveLength(7);
-    expect(prompts.every(step=>canonical.find(item=>item.id===step.id)===step)).toBe(true);
+    expect(prompts.every(step=>{const original=canonical.find(item=>item.id===step.id);return original?.primaryTarget.id===step.primaryTarget.id&&original?.cueFamily===step.cueFamily;})).toBe(true);
     expect(prompts.map(step=>step.primaryTarget.id)).toEqual([
       "katakana-ア","katakana-イ","katakana-ウ","katakana-エ","katakana-オ","katakana-ア","katakana-イ"
     ]);
     expect(isStudyLesson(steps[0]!)?steps[0].examples?.map(item=>item.expression):[])
       .toEqual(["ア","イ","ウ","エ","オ"]);
     expect(steps[0]!.id).toBe("a0-katakana-vowels-teach");
+  });
+  it("requires choosing original katakana forms and sounds instead of a first-button shortcut",()=>{
+    let events:StudyEvent[]=[];
+    for(const id of groupIds){
+      const prompts=buildKatakanaStage(id,events)
+        .filter((step):step is StudyPrompt=>!isStudyLesson(step));
+      const positions=prompts.map((prompt,index)=>{
+        if(prompt.promptType!=="choice")throw Error("MISSING_KATAKANA_CHOICE");
+        const original=canonical.find(source=>source.id===prompt.id);
+        if(!original||original.promptType!=="choice")
+          throw Error("MISSING_ORIGINAL_KATAKANA_PROMPT:"+prompt.id);
+        expect(prompt.acceptedAnswers).toEqual(original.acceptedAnswers);
+        expect(prompt.primaryTarget).toEqual(original.primaryTarget);
+        expect(prompt.cueFamily).toBe(original.cueFamily);
+        expect([...prompt.choices].sort()).toEqual([...original.choices].sort());
+        return prompt.choices.indexOf(prompt.acceptedAnswers[0]!);
+      });
+      expect(positions.length).toBeGreaterThanOrEqual(5);
+      expect(positions).toEqual(prompts.map((prompt,index)=>(index+1)%(prompt.promptType==="choice"?prompt.choices.length:4)));
+      expect(new Set(positions).size).toBeGreaterThanOrEqual(3);
+      const next=answered(buildKatakanaStage(id,events));
+      events=[...events,...next];
+      expect(projectKatakanaOverview(events).stages.find(stage=>stage.id===id)?.completed).toBe(true);
+    }
+    expect(projectKatakanaOverview(events)).toMatchObject({complete:true,completed:10,nextId:null});
+    expect(projectBeginnerOverview(events).started).toBe(false);
   });
   it("keeps katakana separate from the existing hiragana → A1 route",()=>{
     const hiragana=buildBeginnerStage("vowels",[]).filter((step):step is StudyPrompt=>!isStudyLesson(step));
