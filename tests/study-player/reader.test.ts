@@ -34,10 +34,9 @@ describe("P12 graded reader",()=>{
 
   it("uses contextual source reading before generic lexeme reading in A1 Reader",()=>{
     const question=segmentSentence(sentenceRecord("sentence-a1-003"));
-    const nani=question.find((token)=>token.surface==="何");
-    // The source says なん in 名前は何ですか, not the dictionary なに.
+    const nani=question.find(token=>token.surface==="何");
     expect(nani).toMatchObject({lexemeId:"lex-nani",surface:"何",reading:"なん"});
-    expect(question.map((token)=>token.surface).join("")).toBe("名前は何ですか。");
+    expect(question.map(token=>token.surface).join("")).toBe("名前は何ですか。");
   });
 
   it("keeps comprehension questions attached to text-level evidence",()=>{
