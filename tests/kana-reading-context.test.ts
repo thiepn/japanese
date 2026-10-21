@@ -130,6 +130,76 @@ describe("original A1 sentences as basic-kana reading transfer",()=>{
     const graded={...wrong,id:"not-unscored",result:"correct" as const};
     expect(projectKanaReadingContext([...completed,graded]).completed).toBe(0);
   });
+  it("varies authored translation contrasts and answer position on source-backed retries",()=>{
+    const kana=completedHiragana();
+    const first=buildKanaReadingContext(kana)[0];
+    if(!first||isStudyLesson(first)||first.promptType!=="choice")
+      throw Error("EXPECTED_FIRST_ORIGINAL_READING");
+    const wrong=first.choices.find(choice=>choice!==first.acceptedAnswers[0])!;
+    const miss=submitted(first,wrong,"2026-10-20T09:31:00.000Z","first-source-miss");
+    let events=[...kana,miss];
+    // New original sentences retain priority before a repeat encounter.
+    for(let i=1;i<7;i++){
+      const next=buildKanaReadingContext(events)[0];
+      if(!next||isStudyLesson(next)||next.promptType!=="choice")
+        throw Error("EXPECTED_NEW_ORIGINAL_READING");
+      expect(next.primaryTarget.id).not.toBe(first.primaryTarget.id);
+      events.push(submitted(next,next.acceptedAnswers[0]!));
+    }
+    expect(projectKanaReadingContext(events)).toMatchObject({
+      total:7,completed:7,needsRetry:1,remaining:0
+    });
+    const retry=buildKanaReadingContext(events)[0];
+    if(!retry||isStudyLesson(retry)||retry.promptType!=="choice")
+      throw Error("EXPECTED_RETRY_ORIGINAL_READING");
+    expect(retry.id).toBe(first.id);
+    expect(retry.primaryTarget).toEqual(first.primaryTarget);
+    expect(retry.sourceId).toBe(first.sourceId);
+    expect(retry.acceptedAnswers).toEqual(first.acceptedAnswers);
+    expect(retry.eventMetadata).toMatchObject({
+      nonAuthoritative:true,schedulerExcluded:true,kanaSourceReadingContext:true
+    });
+    expect(first.choices.indexOf(first.acceptedAnswers[0]!)).toBe(0);
+    expect(retry.choices.indexOf(retry.acceptedAnswers[0]!)).toBe(1);
+    expect(retry.choices).not.toEqual(first.choices);
+    const firstFoils=new Set(first.choices.filter(choice=>choice!==first.acceptedAnswers[0]));
+    const retryFoils=retry.choices.filter(choice=>choice!==retry.acceptedAnswers[0]);
+    expect(retryFoils.some(choice=>!firstFoils.has(choice))).toBe(true);
+    const originalTranslations=new Set(coreContent.sentences
+      .filter(sentence=>sentence.level==="A1"&&sentence.sourceIds.includes("thiepn-original"))
+      .map(sentence=>sentence.translation));
+    for(const choice of retry.choices)expect(originalTranslations.has(choice)).toBe(true);
+    const contrasts=retry.eventMetadata?.e06FoilFeedback as Array<{response:string;feedback:string}>;
+    expect(contrasts).toHaveLength(3);
+    for(const contrast of contrasts){
+      expect(retryFoils).toContain(contrast.response);
+      const original=coreContent.sentences.find(sentence=>sentence.translation===contrast.response);
+      expect(original?.sourceIds).toContain("thiepn-original");
+      expect(contrast.feedback).toContain(original!.text);
+      expect(contrast.feedback).toContain(original!.reading!);
+    }
+    // Recorded evidence, not randomization or a second store, controls session layout.
+    expect(buildKanaReadingContext([...events])[0]).toEqual(retry);
+    const forged={...miss,id:"forged-retry",metadata:{...miss.metadata,promptId:"forged-source-prompt"}};
+    expect(buildKanaReadingContext([...events,forged])[0]).toEqual(retry);
+
+    const missAgain=submitted(retry,retryFoils[0]!,
+      "2026-10-20T10:00:00.000Z","second-source-miss");
+    const twice=[...events,missAgain];
+    const third=buildKanaReadingContext(twice)[0];
+    if(!third||isStudyLesson(third)||third.promptType!=="choice")
+      throw Error("EXPECTED_THIRD_SOURCE_READING");
+    expect(third.acceptedAnswers).toEqual(first.acceptedAnswers);
+    expect(third.choices.indexOf(third.acceptedAnswers[0]!)).toBe(2);
+    // Order of historical records from IndexedDB must not affect retry construction.
+    expect(buildKanaReadingContext([missAgain,...events])[0]).toEqual(third);
+    const recovered=submitted(third,third.acceptedAnswers[0]!,
+      "2026-10-20T10:01:00.000Z","source-recovered");
+    expect(projectKanaReadingContext([...twice,recovered])).toMatchObject({
+      total:7,completed:7,needsRetry:0,remaining:0,available:false
+    });
+    expect(buildKanaReadingContext([...twice,recovered])).toEqual([]);
+  });
   it("puts unseen source sentences before missed ones and permits an explicit retry",()=>{
     const original=completedHiragana();
     let events=[...original];
