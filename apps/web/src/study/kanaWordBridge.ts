@@ -41,8 +41,12 @@ function meaningPromptForBridge(word:BridgeWord):StudyPrompt{
   const correct=original.acceptedAnswers[0];
   if(!correct||!original.choices.includes(correct))
     throw new Error("A0_SOURCE_WORD_ANSWER_MISSING:"+word.id);
-  const position=eligibleWords.filter(entry=>entry.script===word.script)
-    .sort((a,b)=>a.form<b.form?-1:a.form>b.form?1:0)
+  const stageOrder=new Map(projectBeginnerOverview([]).stages.map((stage,index)=>[stage.id,index]));
+  const unlockStage=(entry:BridgeWord)=>Math.max(...[...entry.form].map(char=>{
+    const seed=(entry.script==="hiragana"?basicHiragana:basicKatakana).find(item=>item.kana===char);
+    return stageOrder.get(seed?.group??"")??-1;
+  }));
+  const position=eligibleWords.filter(entry=>entry.script===word.script&&unlockStage(entry)===unlockStage(word))
     .findIndex(entry=>entry.id===word.id);
   if(position<0)throw new Error("A0_SOURCE_WORD_IDENTITY_MISSING:"+word.id);
   if(original.choices.length<2)throw new Error("A0_SOURCE_WORD_DISTRACTORS_MISSING:"+word.id);
