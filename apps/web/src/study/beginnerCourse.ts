@@ -56,13 +56,13 @@ function stagePrompts(script:Script,id:BeginnerStageId):StudyPrompt[]{
 // A0 uses the original authored answers and grading authority, but must not
 // reveal every correct answer as the first choice. Keep the original prompt IDs,
 // cue families and source records; only its beginner-stage presentation changes.
-function positionStageAnswer(prompt:StudyPrompt,index:number):StudyPrompt{
+function positionStageAnswer(prompt:StudyPrompt,index:number,previousErrors:number):StudyPrompt{
   if(prompt.promptType!=="choice"||prompt.choices.length<2)return prompt;
   const correct=prompt.acceptedAnswers[0];
   if(!correct||!prompt.choices.includes(correct))
     throw new Error("A0_CANONICAL_KANA_ANSWER_MISSING:"+prompt.id);
   const choices=prompt.choices.filter(choice=>choice!==correct);
-  choices.splice((index+1)%prompt.choices.length,0,correct);
+  choices.splice((index+1+previousErrors)%prompt.choices.length,0,correct);
   return {...prompt,choices};
 }
 const CANONICAL_IDENTITIES:Record<Script,ReadonlySet<string>>={
@@ -71,6 +71,17 @@ const CANONICAL_IDENTITIES:Record<Script,ReadonlySet<string>>={
   katakana:new Set(GROUPS.flatMap(group=>stagePrompts("katakana",group.id)
     .map(prompt=>prompt.id+"|"+prompt.primaryTarget.id)))
 };
+function previousStageErrors(script:Script,events:readonly StudyEvent[]):Map<string,number>{
+  const failures=new Map<string,number>();
+  for(const event of events){
+    if(event.result!=="incorrect"||event.primaryTarget?.kind!=="kana"
+      ||event.metadata?.nonAuthoritative===true||typeof event.metadata?.promptId!=="string")continue;
+    const identity=event.metadata.promptId+"|"+event.primaryTarget.id;
+    if(!CANONICAL_IDENTITIES[script].has(identity))continue;
+    failures.set(identity,(failures.get(identity)??0)+1);
+  }
+  return failures;
+}
 function correctlyAnswered(events:readonly StudyEvent[]):Set<string>{
   return new Set(events.filter(event=>event.result==="correct"&&event.primaryTarget?.kind==="kana"
     &&event.metadata?.nonAuthoritative!==true&&typeof event.metadata?.promptId==="string")
@@ -125,8 +136,10 @@ function buildScriptStage(script:Script,id:BeginnerStageId,events:readonly Study
     sourceLabel:"THIEPN original kana foundations"
   };
   const correct=correctlyAnswered(events);
-  const pending=stagePrompts(script,id).map(positionStageAnswer).filter(prompt=>
-    !correct.has(prompt.id+"|"+prompt.primaryTarget.id));
+  const errors=previousStageErrors(script,events);
+  const pending=stagePrompts(script,id).map((prompt,index)=>
+    positionStageAnswer(prompt,index,errors.get(prompt.id+"|"+prompt.primaryTarget.id)??0)
+  ).filter(prompt=>!correct.has(prompt.id+"|"+prompt.primaryTarget.id));
   return [teach,...pending];
 }
 export function buildBeginnerStage(id:BeginnerStageId,events:readonly StudyEvent[]):StudyStep[]{
