@@ -1,6 +1,7 @@
 import "../design/ux1.css";
 import "../design/beginner.css";
 import {UX1CafeHeader,UX1CafeTiles,isUX1CafeJourney} from "./UX1Cafe";
+import {VocabularyIllustration} from "./VocabularyIllustration";
 import "./e11Practice.css";
 import "./e08Revision.css";
 import {useEffect,useRef,useState,type ReactNode} from "react";
@@ -270,6 +271,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
           <span className="j5-sheet__counter">{index+1} / {steps.length}</span>
         </div>
         <h1>{activeStep.title}</h1>
+        {activeStep.id.startsWith("lesson-")&&activeStep.contextId.startsWith("vocab-")?<VocabularyIllustration key={activeStep.id} lexemeId={activeStep.contextId.slice(6)}/>:null}
         <p className="lesson-body">{activeStep.body}</p>
         {ux1Cafe&&activeStep.id==="a1-e02-food-try"?<UX1CafeTiles/>:null}
 
