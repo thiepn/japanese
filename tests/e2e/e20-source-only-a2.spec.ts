@@ -1,9 +1,11 @@
+import {openAdditionalLearn} from "./open-additional-learn";
 import {readFileSync} from "node:fs";
 import {expect,test} from "@playwright/test";
 
 async function learn(page:import("@playwright/test").Page){
  await page.goto("./");
  await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await openAdditionalLearn(page,false);
  const studio=page.getByRole("region",{name:"Source-only A2 communication workshop"});
  await expect(studio).toBeVisible();
  return studio;
@@ -147,6 +149,7 @@ test("E20 explicitly downloads only learner-written Japanese, and the app still 
  expect(output).toContain("no source dialogues or readings are copied");
  await page.reload();
  await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await openAdditionalLearn(page,false);
  const reopened=page.getByRole("region",{name:"Source-only A2 communication workshop"});
  await expect(reopened.getByRole("button",{name:"Download my Japanese messages (.txt)"})).toHaveCount(0);
  await reopened.locator(".e20-source__stages").getByRole("button",{name:/Compose/}).click();
