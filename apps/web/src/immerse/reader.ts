@@ -139,17 +139,14 @@ export function gradeReadingQuestion(question:ReadingQuestion,response:string):R
 }
 
 export function segmentSentence(sentence:Sentence):ReaderToken[]{
-  // Sparse A1 author annotations take priority over a generic dictionary
-  // reading. 何, 七, and other contextual forms cannot be inferred safely
-  // from the first lexical reading alone.
+  // Prefer contextual source token readings to an ambiguous dictionary reading.
   const authoredReadings=new Map<number,{surface:string;reading:string}>();
   let tokenCursor=0;
   for(const token of sentence.tokens){
     const offset=sentence.text.indexOf(token.surface,tokenCursor);
     if(offset<0)break;
-    if(token.reading&&/^[\u3040-\u30ffー]+$/u.test(token.reading)){
+    if(token.reading&&/^[\u3040-\u30ffー]+$/u.test(token.reading))
       authoredReadings.set(offset,{surface:token.surface,reading:token.reading});
-    }
     tokenCursor=offset+token.surface.length;
   }
   const lexemeIds=[...new Set(sentence.entityRefs.filter((ref)=>ref.kind==="lexeme").map((ref)=>ref.id))];
@@ -157,7 +154,7 @@ export function segmentSentence(sentence:Sentence):ReaderToken[]{
   for(const id of lexemeIds){
     const lexeme=coreContent.lexemes.find((item)=>item.id===id);
     if(!lexeme)continue;
-    const uniqueReadings=new Set(lexeme.readings.map((item)=>item.text));
+    const uniqueReadings=new Set(lexeme.readings.map(item=>item.text));
     const baseReading=uniqueReadings.size===1?[...uniqueReadings][0]:undefined;
     const surfaces=new Map<string,string|undefined>();
     surfaces.set(lexeme.canonicalForm,baseReading);
