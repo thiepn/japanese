@@ -69,7 +69,7 @@ function firstSightPrompt(word:BridgeWord):StudyPrompt{
       ". This checks basic kana transcription, not pronunciation or vocabulary mastery.",
     contextId:"a0-kana-first-sight-"+word.id,
     ...(word.meaningPrompt.sourceId?{sourceId:word.meaningPrompt.sourceId}:{}),
-    contentVersion:word.meaningPrompt.contentVersion,
+    ...(word.meaningPrompt.contentVersion?{contentVersion:word.meaningPrompt.contentVersion}:{}),
     activity:"reading",
     eventMetadata:{nonAuthoritative:true,schedulerExcluded:true,kanaWordFirstSight:true}
   };
