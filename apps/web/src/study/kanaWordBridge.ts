@@ -43,8 +43,10 @@ function meaningPromptForBridge(word:BridgeWord):StudyPrompt{
     throw new Error("A0_SOURCE_WORD_ANSWER_MISSING:"+word.id);
   const position=eligibleWords.findIndex(entry=>entry.id===word.id);
   if(position<0)throw new Error("A0_SOURCE_WORD_IDENTITY_MISSING:"+word.id);
+  if(original.choices.length<2)throw new Error("A0_SOURCE_WORD_DISTRACTORS_MISSING:"+word.id);
   const choices=original.choices.filter(choice=>choice!==correct);
-  choices.splice((position+1)%original.choices.length,0,correct);
+  // Every new word requires choosing past at least one original distractor.
+  choices.splice(position%(original.choices.length-1)+1,0,correct);
   return {...original,choices};
 }
 function firstSightPrompt(word:BridgeWord):StudyPrompt{
