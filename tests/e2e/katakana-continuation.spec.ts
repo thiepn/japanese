@@ -16,6 +16,50 @@ function originalHiraganaEvents(){
   }
   return events;
 }
+test("a missed original katakana cue changes position across reload without changing A1",async({page},testInfo)=>{
+  await page.goto("./");
+  await page.evaluate(async events=>{
+    const request=indexedDB.open("thiepn-japanese:00000000-0000-4000-8000-000000000001");
+    const db=await new Promise<IDBDatabase>((resolve,reject)=>{
+      request.onsuccess=()=>resolve(request.result);
+      request.onerror=()=>reject(request.error);
+    });
+    try{
+      await new Promise<void>((resolve,reject)=>{
+        const tx=db.transaction("study_events","readwrite");
+        for(const event of events)tx.objectStore("study_events").add(event);
+        tx.oncomplete=()=>resolve();
+        tx.onerror=()=>reject(tx.error);
+      });
+    }finally{db.close();}
+  },originalHiraganaEvents());
+  await page.reload();
+  await expect(page.locator(".beginner-entry__objective")).toContainText("A1 ·");
+  await page.getByRole("button",{name:"Start katakana"}).click();
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  const first=page.locator(".j5-choices").getByRole("button");
+  await expect(first.nth(1)).toHaveText("a");
+  await first.nth(0).click();
+  await expect(page.locator(".j5-feedback.incorrect")).toBeVisible();
+  await page.getByRole("button",{name:"Exit",exact:true}).click();
+  await expect(page.locator(".katakana-entry")).toContainText("0 of 10 groups completed");
+  await page.reload();
+  await page.getByRole("button",{name:"Continue katakana"}).click();
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  const retry=page.locator(".j5-choices").getByRole("button");
+  await expect(retry.nth(2)).toHaveText("a");
+  await page.locator(".j5-choices").getByRole("button",{name:"a",exact:true}).click();
+  await expect(page.getByText("Correct",{exact:true})).toBeVisible();
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await expect(page.locator(".j5-choices").getByRole("button").nth(2)).toHaveText("i");
+  await page.getByRole("button",{name:"Exit",exact:true}).click();
+  await expect(page.locator(".katakana-entry")).toContainText("1/7 answers correct");
+  await expect(page.locator(".beginner-entry__objective")).toContainText("A1 ·");
+  if(testInfo.project.name!=="desktop-chromium"){
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)).toBeLessThanOrEqual(1);
+  }
+});
+
 test("Katakana is optional after hiragana and saves seven real FSRS cues",async({page},testInfo)=>{
   await page.addInitScript(()=>{
     Object.defineProperty(window.speechSynthesis,"getVoices",{

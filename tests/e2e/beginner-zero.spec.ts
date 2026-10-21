@@ -36,7 +36,14 @@ test("the first A0 kana choice cannot be passed by clicking the first button",as
   await page.reload();
   await page.getByRole("button",{name:"Continue lesson"}).click();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
-  await expect(page.locator(".j5-choices").getByRole("button").nth(1)).toHaveText("a");
+  await expect(page.locator(".j5-choices").getByRole("button").nth(2)).toHaveText("a");
+  await page.locator(".j5-choices").getByRole("button").nth(0).click();
+  await expect(page.locator(".j5-feedback.incorrect")).toBeVisible();
+  await page.getByRole("button",{name:"Exit",exact:true}).click();
+  await page.reload();
+  await page.getByRole("button",{name:"Continue lesson"}).click();
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await expect(page.locator(".j5-choices").getByRole("button").nth(3)).toHaveText("a");
   await page.locator(".j5-choices").getByRole("button",{name:"a",exact:true}).click();
   await expect(page.getByText("Correct",{exact:true})).toBeVisible();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
