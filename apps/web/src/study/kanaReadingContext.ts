@@ -109,7 +109,8 @@ function sourcePrompt(index:number,priorAttempts=0):StudyPrompt{
     prompt:sentence.reading!,promptLanguage:"ja",
     choices,acceptedAnswers:[sentence.translation],displayAnswer:sentence.translation,
     explanation:sourceExplanation(sentence),
-    contextId:"a0-source-sentence-"+sentence.id,sourceId:sentence.sourceIds[0],
+    contextId:"a0-source-sentence-"+sentence.id,
+    ...(sentence.sourceIds[0]?{sourceId:sentence.sourceIds[0]}:{}),
     contentVersion:coreContent.version,activity:"reading",languageActivity:"reading",
     eventMetadata:{nonAuthoritative:true,schedulerExcluded:true,kanaSourceReadingContext:true,
       e06FoilFeedback:foilFeedback}
