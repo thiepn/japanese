@@ -60,8 +60,8 @@ test("retried original A1 sentences rotate source foils and correct position aft
   await card.getByRole("button",{name:"Read A1 sentences"}).click();
   await expect(page.locator(".j5-sheet")).toContainText("ほんをよみます。");
   const choice=page.locator(".j5-choices").getByRole("button");
-  await expect(choice.nth(1)).toHaveText("I read a book.");
-  await expect(choice.nth(0)).not.toHaveText("I read a book.");
+  await expect(choice.nth(1).locator("span:not(.j5-choice-index)")).toHaveText("I read a book.");
+  await expect(choice.nth(0).locator("span:not(.j5-choice-index)")).not.toHaveText("I read a book.");
   await expect(page.locator(".e06-correction")).toHaveCount(0);
   await choice.nth(0).click();
   await expect(page.locator(".j5-feedback.incorrect")).toBeVisible();
@@ -72,7 +72,7 @@ test("retried original A1 sentences rotate source foils and correct position aft
   await card.getByRole("button",{name:"Read A1 sentences"}).click();
   await expect(page.locator(".j5-sheet")).toContainText("ほんをよみます。");
   const third=page.locator(".j5-choices").getByRole("button");
-  await expect(third.nth(2)).toHaveText("I read a book.");
+  await expect(third.nth(2).locator("span:not(.j5-choice-index)")).toHaveText("I read a book.");
   await third.nth(2).click();
   await expect(page.locator(".j5-feedback")).toContainText("Context matched");
   await expect(page.locator(".e06-correction")).toHaveCount(0);
