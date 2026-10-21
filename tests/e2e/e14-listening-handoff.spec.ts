@@ -1,3 +1,4 @@
+import {openAdditionalLearn} from "./open-additional-learn";
 import {readFileSync} from "node:fs";
 import {expect,test,type Page} from "@playwright/test";
 
@@ -35,6 +36,7 @@ async function originalOwnerPage(page:Page){
   },fixture);
   await page.reload();
   await page.getByRole("button",{name:"Learn",exact:true}).click();
+ await openAdditionalLearn(page,true);
 }
 function studio(page:Page){
   return page.getByRole("region",{name:"Hear it. Respond. Write the follow-up."});
