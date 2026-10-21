@@ -2,7 +2,7 @@ import {describe,expect,it} from "vitest";
 import type {StudyEvent} from "@thiepn/domain";
 import {createStudyEvent,isStudyLesson,type StudyPrompt} from "@thiepn/study-player";
 import {buildBeginnerStage,buildKatakanaStage,projectBeginnerOverview,type BeginnerStageId} from "../apps/web/src/study/beginnerCourse";
-import {buildKanaWordBridge,projectKanaWordBridge} from "../apps/web/src/study/kanaWordBridge";
+import {buildKanaWordBridge,buildKanaWordSourceRepair,projectKanaWordBridge} from "../apps/web/src/study/kanaWordBridge";
 import {vocabularyApplicationPrompts,vocabularyMeaningPrompts,vocabularyLessons} from "../apps/web/src/study/vocabulary";
 
 const GROUPS:BeginnerStageId[]=["vowels","k","s","t","n","h","m","y","r","w"];
@@ -133,6 +133,63 @@ describe("source-backed Kana-to-Words Bridge",()=>{
     expect(overview.readyToRead).toBe(0);
     expect(overview.newWords).toBe(1);
     expect(buildKanaWordBridge([...vowel,incorrect,forged,unscored]).filter(isStudyLesson)).toHaveLength(1);
+  });
+  it("offers only original authored lessons for attempted canonical word failures, with no grade authority",()=>{
+    const vowels=knownVowels();
+    expect(buildKanaWordSourceRepair([])).toEqual([]);
+    expect(buildKanaWordSourceRepair(vowels)).toEqual([]);
+    const meaning=questions(buildKanaWordBridge(vowels));
+    const missed=meaning.map((prompt,index)=>({
+      ...grade([prompt])[0]!,id:"word-failed-"+index,result:"incorrect" as const
+    }));
+    const blocked=[...vowels,...missed];
+    expect(projectKanaWordBridge(blocked)).toMatchObject({
+      pendingReview:2,available:false,learned:0
+    });
+    const originals=buildKanaWordSourceRepair(blocked);
+    expect(originals).toHaveLength(2);
+    expect(originals.every(isStudyLesson)).toBe(true);
+    expect(originals[0]).toBe(vocabularyLessons["vocab-lex-ii"]);
+    expect(originals[1]).toBe(vocabularyLessons["vocab-lex-iie"]);
+    for(const lesson of originals){
+      if(!isStudyLesson(lesson))throw Error("UNEXPECTED_GRADED_RETRY");
+      expect(lesson.sourceLabel).toBe(vocabularyLessons[lesson.contextId]?.sourceLabel);
+      expect(lesson.facts?.some(fact=>fact.label==="Meaning")).toBe(true);
+      expect(lesson.facts?.some(fact=>fact.label==="Reading")).toBe(true);
+    }
+    expect(buildKanaWordBridge(blocked)).toEqual([]);
+    const forged={...missed[0]!,id:"forged",metadata:{...missed[0]!.metadata,promptId:"not-original"}};
+    expect(buildKanaWordSourceRepair([...vowels,forged])).toEqual([]);
+    const unscored={...missed[0]!,id:"unscored",
+      metadata:{...missed[0]!.metadata,nonAuthoritative:true}};
+    expect(buildKanaWordSourceRepair([...vowels,unscored])).toEqual([]);
+    const recovered=grade([meaning[0]!],"bridge-fixture","2026-10-20T10:01:00.000Z")[0]!;
+    const afterRecovery=[...blocked,recovered];
+    expect(buildKanaWordSourceRepair(afterRecovery)).toEqual([vocabularyLessons["vocab-lex-iie"]]);
+    expect(questions(buildKanaWordBridge(afterRecovery)).map(prompt=>prompt.id)).toEqual([
+      "vocab-reading-lex-ii"
+    ]);
+  });
+  it("keeps original reading and active-use lapses explainable without shortcutting the original review",()=>{
+    const vowels=knownVowels();
+    const meaning=questions(buildKanaWordBridge(vowels))[0]!;
+    const passedMeaning=grade([meaning])[0]!;
+    const reading=questions(buildKanaWordBridge([...vowels,passedMeaning]))[0]!;
+    const failedReading={...grade([reading])[0]!,id:"failed-reading",
+      result:"incorrect" as const,occurredAt:"2026-10-20T10:01:00.000Z"};
+    const blocked=[...vowels,passedMeaning,failedReading];
+    expect(projectKanaWordBridge(blocked).pendingReview).toBe(1);
+    expect(buildKanaWordSourceRepair(blocked)).toEqual([vocabularyLessons["vocab-lex-ii"]]);
+    expect(questions(buildKanaWordBridge(blocked)).some(prompt=>prompt.id==="vocab-active-lex-ii")).toBe(false);
+    const recoveredReading=grade([reading],"bridge-fixture","2026-10-20T10:02:00.000Z")[0]!;
+    const active=questions(buildKanaWordBridge([...blocked,recoveredReading]))[0]!;
+    expect(active.id).toBe("vocab-active-lex-ii");
+    const failedActive={...grade([active])[0]!,id:"failed-active",
+      result:"incorrect" as const,occurredAt:"2026-10-20T10:03:00.000Z"};
+    expect(buildKanaWordSourceRepair([...blocked,recoveredReading,failedActive]))
+      .toEqual([vocabularyLessons["vocab-lex-ii"]]);
+    expect(questions(buildKanaWordBridge([...blocked,recoveredReading,failedActive]))
+      .some(prompt=>prompt.id==="vocab-active-lex-ii")).toBe(false);
   });
   it("keeps failed source words visible for the original review queue without unearned unlocks",()=>{
     const vowels=knownVowels();
