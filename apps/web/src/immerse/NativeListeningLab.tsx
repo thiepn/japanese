@@ -140,7 +140,7 @@ export function NativeListeningLab(){
     </>}
 
     {recall?<section className="native-delayed-recall">
-      <div><span className="course-kicker">DELAYED LISTENING RECALL</span><strong>{Math.round(recall.delayHours)}h since synthesis</strong></div>
+      <div><strong>{Math.round(recall.delayHours)}h since synthesis</strong></div>
       <p>Without reopening the original notes or synthesis, write what you remember from the sources: central claims, conditions, contrasts and uncertainty.</p>
       <textarea rows={5} value={recallText} onChange={(event)=>setRecallText(event.target.value)} placeholder="覚えている内容を日本語で再構成…"/>
       <button className="unit-action" disabled={!recallText.trim()} type="button" onClick={()=>void saveRecall()}>Save delayed recall</button>

@@ -141,7 +141,7 @@ export function E20SourceOnlyA2({onOriginalPreview,busy,requested}:Props){
  }
  return <section className="e20-source" aria-labelledby="e20-source-title">
   <header className="e20-source__head">
-   <div><p className="j4-kicker">E20 · ORIGINAL A2 · SOURCE-ONLY</p>
+   <div>
     <h2 id="e20-source-title">Source-only A2 communication workshop</h2>
     <p>Connect original dialogue listening, connected reading, contextual replies and your own writing even when a safe canonical A2 Can-do association is unavailable. This is self-directed, <strong>ungraded source study</strong>, not A2 certification or new FSRS evidence.</p>
    </div>
@@ -170,7 +170,8 @@ export function E20SourceOnlyA2({onOriginalPreview,busy,requested}:Props){
   </nav>
   <div className="e20-source__stage" aria-live="polite">
    <div className="e20-source__stage-head">
-    <div><p className="j4-kicker">STEP {phaseIndex+1} / {stages.length} · SELF-DIRECTED, NOT SCORED</p>
+    <div>
+     <p className="e20-source__stage-progress" role="status">Step {phaseIndex+1} of {E20_STAGES.length} · Unscored</p>
      <h3>{E20_STAGES[phaseIndex]?.title} · {current.title}</h3>
      <p>{E20_STAGES[phaseIndex]?.description}</p>
     </div>

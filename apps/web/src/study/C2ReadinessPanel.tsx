@@ -56,7 +56,7 @@ export function C2ReadinessPanel(){
     </div>:null}
 
     <section className="p20-section">
-      <div className="section-heading"><div><span className="course-kicker">QUALIFICATION GATES</span><h3>Every gate is explicit and independently inspectable</h3></div><span>{summary.requirementsMet}/{summary.requirements.length}</span></div>
+      <div className="section-heading"><div><h3>Every gate is explicit and independently inspectable</h3></div><span>{summary.requirementsMet}/{summary.requirements.length}</span></div>
       <div className="p20-requirements">{summary.requirements.map((item)=><article className={item.met?"met":""} key={item.id}>
         <span className="p20-check">{item.met?"✓":"○"}</span>
         <div><div><strong>{item.label}</strong><span>{item.current}</span></div><small>Target: {item.target}</small><p>{item.explanation}</p></div>
@@ -64,7 +64,7 @@ export function C2ReadinessPanel(){
     </section>
 
     <section className="p20-section">
-      <div className="section-heading"><div><span className="course-kicker">SEVEN-DIMENSION MATRIX</span><h3>Internal support stays separate from external human scores</h3></div><span>{summary.externalAverage===null?"external average n/a":summary.externalAverage.toFixed(2)+"/5 external average"}</span></div>
+      <div className="section-heading"><div><h3>Internal support stays separate from external human scores</h3></div><span>{summary.externalAverage===null?"external average n/a":summary.externalAverage.toFixed(2)+"/5 external average"}</span></div>
       <div className="p20-matrix" role="table" aria-label="C2-oriented readiness dimensions">
         <div className="p20-matrix-head" role="row"><span>Dimension</span><span>Internal support</span><span>Broad observations</span><span>Mean</span><span>Latest</span><span>Trend</span><span>Status</span></div>
         {summary.dimensions.map((item)=><div className={"p20-matrix-row "+item.status} role="row" key={item.dimension}>
@@ -81,7 +81,7 @@ export function C2ReadinessPanel(){
     </section>
 
     <section className="p20-section">
-      <div className="section-heading"><div><span className="course-kicker">EXTERNAL CALIBRATION</span><h3>Compare broad reviewers instead of averaging disagreement away</h3></div><span>{summary.calibration.status.replaceAll("_"," ")}</span></div>
+      <div className="section-heading"><div><h3>Compare broad reviewers instead of averaging disagreement away</h3></div><span>{summary.calibration.status.replaceAll("_"," ")}</span></div>
       {summary.calibration.earlierReviewer&&summary.calibration.laterReviewer?<div className="p20-calibration-head">
         <div><span>Earlier</span><strong>{summary.calibration.earlierReviewer}</strong></div>
         <div><span>Later</span><strong>{summary.calibration.laterReviewer}</strong></div>
@@ -97,7 +97,7 @@ export function C2ReadinessPanel(){
     </section>
 
     {summary.nextActions.length?<section className="p20-next">
-      <span className="course-kicker">NEXT EVIDENCE</span><h3>Highest-value gaps to close</h3>
+      <h3>Highest-value gaps to close</h3>
       <ol>{summary.nextActions.map((item)=><li key={item}>{item}</li>)}</ol>
     </section>:null}
 

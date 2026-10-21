@@ -23,7 +23,7 @@ test("P19 exposes bounded real-audio evidence, overlap listening and external re
   await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
   await page.getByTestId("j8-c1-vault").locator("summary").click();
   await expect(page.getByText("C1→C2 LONGITUDINAL PORTFOLIO",{exact:true})).toBeVisible();
-  await expect(page.getByText("AUDIO + EXTERNAL REVIEW",{exact:true})).toBeVisible();
+  await expect(page.locator(".p19-portfolio").getByText("Overlap attempts",{exact:true})).toBeVisible();
 });
 
 test("P19 local-audio capture remains visibly local-only before microphone permission",async({page})=>{

@@ -41,12 +41,12 @@ export function ReleaseOperationsPanel(){
 
     <div className="release-check-columns">
       <article>
-        <span className="course-kicker">STATIC PRODUCT GATES</span>
+        
         <h3>Implemented in the repository</h3>
         <div className="release-check-list">{staticChecks.map(([label,actual,required])=><div className={actual>=required?"pass":"blocked"} key={label}><span>{actual>=required?"✓":"○"}</span><strong>{label}</strong><small>{actual} / {required}</small></div>)}</div>
       </article>
       <article>
-        <span className="course-kicker">LOCAL VERIFIED MEDIA</span>
+        
         <h3>Curation readiness</h3>
         {curation?<div className="release-check-list">{mediaChecks.map(([label,actual,required])=><div className={actual>=required?"pass":"blocked"} key={label}><span>{actual>=required?"✓":"○"}</span><strong>{label}</strong><small>{actual} / {required}</small></div>)}
           <div className={curation.speechRates.includes("natural")?"pass":"blocked"}><span>{curation.speechRates.includes("natural")?"✓":"○"}</span><strong>Natural-rate source</strong><small>{curation.speechRates.join(", ")||"none"}</small></div>
@@ -85,6 +85,6 @@ export function ReleaseOperationsPanel(){
       <span>Scheduled identity/availability smoke · defect-only capability freeze</span>
       <p>Production monitoring verifies the deployed release identity and required public paths. Maintenance accepts defect, security, privacy, accessibility, dependency, content-correction, reliability and operations work only; capability expansion is outside P22.</p>
     </div>
-    <p className="course-note">P22 does not erase earlier evidence gates. If P11 external validation or P21 physical-device evidence is still incomplete, the stable activation workflow remains blocked even when normal CI is green.</p>
+    
   </section>;
 }

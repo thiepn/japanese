@@ -27,9 +27,9 @@
 
 .j6-hero{
   position:relative;
-  min-height:470px;
+  min-height:350px;
   display:grid;
-  grid-template-columns:170px minmax(0,1fr) 150px;
+  grid-template-columns:170px minmax(0,1fr);
   gap:clamp(18px,3vw,42px);
   align-items:center;
   overflow:hidden;

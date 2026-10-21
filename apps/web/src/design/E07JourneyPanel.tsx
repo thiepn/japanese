@@ -14,7 +14,7 @@ export function E07JourneyPanel({route,onActivate,busy,variant}:Props){
  const primary=route.primary;
  return <section className={"e07-journey e07-journey--"+variant} aria-labelledby={"e07-journey-"+variant}>
    <header className="e07-journey__header">
-     <div><p className="e07-journey__eyebrow">E07 · CONTINUE FROM YOUR ACTUAL EVIDENCE</p>
+     <div>
        <h2 id={"e07-journey-"+variant}>{title[variant]}</h2>
        <p>{primary.description}</p></div>
      <span className="e07-journey__basis">{primary.kind.replaceAll("-"," ")} · {primary.origin.toUpperCase()}</span>

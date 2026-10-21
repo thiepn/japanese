@@ -454,7 +454,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
                 <button type="button" className="quiet-button" disabled={Boolean(feedback)||saving} onClick={()=>updateResponse(e08DraftReference)}>Use as starting text</button></div>
               :<div className="e08-revision__previous"><p role="status">A submitted first draft is required before this revision can be compared. Return to the first draft instead of creating a fake revision.</p>
                 {e08FirstIndex>=0?<button type="button" onClick={()=>{setIndex(e08FirstIndex);setFeedback(null);setResponse("");setE08Checks([]);}}>Return to first draft</button>:null}</div>}
-              <div className="e08-revision__checks"><p>Use these questions as self-review, not automatic correctness marks:</p>
+              <div className="e08-revision__checks">
                 {Array.isArray(currentPrompt.eventMetadata?.e08RevisionChecks)?currentPrompt.eventMetadata.e08RevisionChecks.map((item,i)=>{
                   if(!item||typeof item!=="object"||typeof item.question!=="string"||typeof item.heading!=="string")return null;
                   const key=String(i);

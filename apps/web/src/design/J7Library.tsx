@@ -66,13 +66,13 @@ export function J7Library({
       <JPattern name="sayagata" className="j7-library__pattern"/>
       <div className="j7-library__spine" aria-hidden="true">
         <span>蔵</span>
-        <small>ARCHIVE</small>
+        
       </div>
       <div className="j7-library__intro">
         <JCartouche japanese="蔵" subtitle="Library"/>
-        <p className="j7-kicker">REFERENCE · SEARCH · CONNECT</p>
+        
         <h1 id="j7-library-title">Japanese knowledge</h1>
-        <p>Search canonical words, collocations, kanji, grammar, sentences and graded texts by Japanese form, reading or English meaning/function.</p>
+        
       </div>
       <JSeal label="Japanese archive">蔵</JSeal>
     </header>
@@ -122,7 +122,7 @@ export function J7Library({
       <section className="j7-index" aria-labelledby="j7-index-title">
         <header className="j7-index__head">
           <div>
-            <p className="j7-kicker">CATALOG · 目録</p>
+            
             <h2 id="j7-index-title">{query.trim()?"Search results":"Starter shelf"}</h2>
           </div>
           <span>{filtered.length}</span>
@@ -165,11 +165,7 @@ export function J7Library({
       </aside>
     </div>
 
-    <footer className="j7-library__footer">
-      <span>LOCAL-FIRST REFERENCE</span>
-      <i/>
-      <p>Search runs against the canonical content bundled with Japanese. Results are reference views, not a second copy of learning content.</p>
-    </footer>
+    
   </section>;
 }
 

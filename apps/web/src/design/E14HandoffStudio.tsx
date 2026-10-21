@@ -34,9 +34,9 @@ export function E14HandoffStudio({cases,reviews,busy,onStart}:Props){
   const attempted=report?.review.filter(item=>item.attempted).length??0;
   return <section className="e14-studio" aria-labelledby="e14-studio-title">
     <header className="e14-studio__head">
-      <p className="j4-kicker">E14 · SOURCE-ANCHORED CONVERSATION HANDOFF</p>
+      
       <h2 id="e14-studio-title">Hear it. Respond. Write the follow-up.</h2>
-      <p>Choose one original unlocked situation. Hear the dialogue, respond as its circumstances change, then compose and revise a private message for its intended reader. Previous attempts are shown alongside the original source's intentions, not an invented language score.</p>
+      
     </header>
     {!eligible.length
       ?<p role="status">Finish a source-linked E06 situation before starting its original listening-to-response handoff. No prerequisite or level is invented.</p>

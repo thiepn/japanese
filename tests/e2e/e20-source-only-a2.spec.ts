@@ -13,7 +13,7 @@ test("E20 links original ungraded A2 listening, reading, reply, and independent 
  const studio=await learn(page);
  await expect(studio).toContainText("zero scored items");
  await expect(studio.getByLabel("Choose an original A2-oriented situation")).toBeVisible();
- await expect(studio.getByText("STEP 1 / 5 · SELF-DIRECTED, NOT SCORED")).toBeVisible();
+ await expect(studio.getByText("Step 1 of 5 · Unscored")).toBeVisible();
  const listen=studio.locator(".e20-question").first();
  await expect(listen.locator(".e20-question__choices button")).toHaveCount(3);
  await listen.locator(".e20-question__choices button").first().click();
@@ -23,7 +23,7 @@ test("E20 links original ungraded A2 listening, reading, reply, and independent 
  await studio.getByRole("button",{name:"Reveal original Japanese transcript and intentions"}).click();
  await expect(studio.locator(".e20-source__dialogue li").first()).toBeVisible();
  await studio.getByRole("button",{name:"Continue to Read"}).click();
- await expect(studio.getByText("STEP 2 / 5 · SELF-DIRECTED, NOT SCORED")).toBeVisible();
+ await expect(studio.getByText("Step 2 of 5 · Unscored")).toBeVisible();
  await expect(studio.locator(".e20-source__reading .e20-source__japanese")).toBeVisible();
  await studio.getByRole("button",{name:"Reveal original source explanation"}).click();
  await expect(studio.locator(".e20-source__reading")).toContainText(/Original|The|It|A/);
@@ -33,10 +33,10 @@ test("E20 links original ungraded A2 listening, reading, reply, and independent 
  await studio.getByRole("button",{name:"Reveal original model and source explanation"}).click();
  await expect(studio.locator(".e20-source__model [role=status]")).toContainText("No response or grade was stored");
  await studio.getByRole("button",{name:"Continue to Compose"}).click();
- await expect(studio.getByText("STEP 4 / 5 · SELF-DIRECTED, NOT SCORED")).toBeVisible();
+ await expect(studio.getByText("Step 4 of 5 · Unscored")).toBeVisible();
  await expect(studio.getByText("This workshop saves")).toBeVisible();
  await studio.getByRole("button",{name:"Continue to Follow-up"}).click();
- await expect(studio.getByText("STEP 5 / 5 · SELF-DIRECTED, NOT SCORED")).toBeVisible();
+ await expect(studio.getByText("Step 5 of 5 · Unscored")).toBeVisible();
  await expect(studio.getByRole("region",{name:"Source-only changed-context follow-up"})).toBeVisible();
 });
 
@@ -61,7 +61,7 @@ test("E20 private first/revised messages remain ephemeral and switching original
  const secondKey=await options[1]!.getAttribute("value");
  expect(secondKey).toBeTruthy();
  await chooser.selectOption(secondKey!);
- await expect(studio.getByText("STEP 1 / 5 · SELF-DIRECTED, NOT SCORED")).toBeVisible();
+ await expect(studio.getByText("Step 1 of 5 · Unscored")).toBeVisible();
  await studio.locator(".e20-source__stages").getByRole("button",{name:/Compose/}).click();
  await expect(studio.getByLabel("First Japanese message")).toHaveValue("");
  await expect(studio.getByLabel("Second Japanese message")).toHaveCount(0);
@@ -121,7 +121,7 @@ test("E20 original changed-context follow-up remains source-only and continues t
  await next.click();
  const after=await studio.getByLabel("Choose an original A2-oriented situation").inputValue();
  expect(after).not.toBe(before);
- await expect(studio.getByText("STEP 1 / 5 · SELF-DIRECTED, NOT SCORED")).toBeVisible();
+ await expect(studio.getByText("Step 1 of 5 · Unscored")).toBeVisible();
  await studio.locator(".e20-source__stages").getByRole("button",{name:/Follow-up/}).click();
  await expect(followup.getByLabel("Independent follow-up · temporary Japanese reply")).toHaveValue("");
  await expect(followup.locator(".e20-source__writing p[role='status']")).toHaveCount(0);

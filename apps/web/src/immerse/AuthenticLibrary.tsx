@@ -212,7 +212,7 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
       </div>:null}
     </div>
     {detectedChunks.length?<section className="authentic-collocations">
-      <div className="section-heading"><div><span className="course-kicker">COLLOCATIONS IN CONTEXT</span><h2>Reusable phrases found here</h2></div><span>{detectedChunks.length}</span></div>
+      <div className="section-heading"><div><h2>Reusable phrases found here</h2></div><span>{detectedChunks.length}</span></div>
       <div className="chunk-chip-list">{detectedChunks.slice(0,16).map((chunk)=><span className="chunk-chip" key={chunk.id}><strong lang="ja">{chunk.expression}</strong><small>{chunk.meaning} · {chunk.register}</small></span>)}</div>
     </section>:null}
     <article className="authentic-text" lang="ja">{analysis.tokens.map((token,index)=>{
@@ -220,7 +220,7 @@ function AuthenticReader({view,onBack,onDeleted}:{view:PrivateDocumentView;onBac
       return <span className={"auth-token "+token.kind} key={index}>{token.surface}</span>;
     })}</article>
     <div className="authentic-legend"><span><i className="known"/>linked to your lexicon</span><span><i className="unknown"/>unresolved</span></div>
-    {sourceSentences.length?<section className="sentence-mining"><div className="section-heading"><div><span className="course-kicker">SENTENCE MINING</span><h2>Keep useful context</h2></div></div>
+    {sourceSentences.length?<section className="sentence-mining"><div className="section-heading"><div><h2>Keep useful context</h2></div></div>
       <p className="course-note">Save a sentence only after supplying the meaning you want to review. Duplicate Japanese sentences merge their source-document references instead of creating duplicate cards.</p>
       <div className="sentence-mine-list">{sourceSentences.slice(0,12).map((sentence)=><article key={sentence}><span lang="ja">{sentence}</span><button className="quiet-button" type="button" onClick={()=>{setSentenceCandidate(sentence);setSentenceTranslation("");setMineMessage("");}}>Mine sentence</button></article>)}</div>
       {sentenceCandidate?<div className="sentence-mine-editor"><strong lang="ja">{sentenceCandidate}</strong><input value={sentenceTranslation} onChange={(event)=>setSentenceTranslation(event.target.value)} placeholder="Meaning / translation for your review"/><div><button className="primary" disabled={!sentenceTranslation.trim()} type="button" onClick={()=>void saveSentence()}>Save sentence</button><button className="quiet-button" type="button" onClick={()=>setSentenceCandidate(null)}>Cancel</button></div></div>:null}
