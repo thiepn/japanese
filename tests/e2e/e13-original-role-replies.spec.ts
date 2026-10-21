@@ -1,3 +1,4 @@
+import {openAdditionalLearn} from "./open-additional-learn";
 import {readFileSync} from "node:fs";
 import {expect,test} from "@playwright/test";
 import {E11_RESPONSE_BY_CASE} from "../../apps/web/src/study/e11ResponseMissions";
@@ -39,6 +40,7 @@ test("E13 source-anchored reply decisions run in StudyPlayer and record only uns
  },fixture);
  await page.reload();
  await page.getByRole("button",{name:"Learn",exact:true}).click();
+ await openAdditionalLearn(page,false);
  await page.locator("details.e07-track-list > summary").click();
  const card=page.locator(".e06-course__case").filter({hasText:"Meet someone and ask for help"});
  await expect(card).toContainText("0/2 practical reply decisions");
@@ -94,6 +96,7 @@ test("E13 source-anchored reply decisions run in StudyPlayer and record only uns
  expect(rows.traces).toBe(0);
  await page.reload();
  await page.getByRole("button",{name:"Learn",exact:true}).click();
+ await openAdditionalLearn(page,false);
  await page.locator("details.e07-track-list > summary").click();
  await expect(page.locator(".e06-course__case").filter({hasText:"Meet someone and ask for help"}))
    .toContainText("2/2 practical reply decisions (not a mastery score)");
