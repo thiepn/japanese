@@ -48,8 +48,57 @@ describe("source-backed Kana-to-Words Bridge",()=>{
     });
     expect(steps[3]).toMatchObject({id:"a0-kana-first-sight-lex-iie",prompt:"いいえ",acceptedAnswers:["iie"]});
     expect(questions(steps).map(p=>p.id)).toEqual(["vocab-meaning-lex-ii","vocab-meaning-lex-iie"]);
-    expect(questions(steps)[0]).toBe(vocabularyMeaningPrompts.find(p=>p.id==="vocab-meaning-lex-ii"));
+    expect(questions(steps)[0]).toMatchObject({
+      id:"vocab-meaning-lex-ii",primaryTarget:{kind:"lexeme",id:"lex-ii"},
+      acceptedAnswers:["good"],sourceId:"thiepn-original"
+    });
     expect(steps[1]).toMatchObject({id:vocabularyLessons["vocab-lex-ii"]?.id,sourceLabel:vocabularyLessons["vocab-lex-ii"]?.sourceLabel});
+  });
+  it("makes original meaning choices require recognition rather than a first-button shortcut",()=>{
+    const vowel=knownVowels();
+    const steps=buildKanaWordBridge(vowel);
+    const originals=questions(steps);
+    expect(originals).toHaveLength(2);
+    for(const [index,prompt] of originals.entries()){
+      if(prompt.promptType!=="choice")throw Error("CANONICAL_MEANING_CHOICE_REQUIRED");
+      const canonical=vocabularyMeaningPrompts.find(item=>item.id===prompt.id);
+      if(!canonical||canonical.promptType!=="choice")throw Error("MISSING_CANONICAL_VOCABULARY");
+      expect(prompt).not.toBe(canonical);
+      expect(prompt.id).toBe(canonical.id);
+      expect(prompt.primaryTarget).toEqual(canonical.primaryTarget);
+      expect(prompt.contextId).toBe(canonical.contextId);
+      expect(prompt.sourceId).toBe(canonical.sourceId);
+      expect(prompt.contentVersion).toBe(canonical.contentVersion);
+      expect(prompt.skill).toBe(canonical.skill);
+      expect(prompt.cueFamily).toBe(canonical.cueFamily);
+      expect(prompt.acceptedAnswers).toEqual(canonical.acceptedAnswers);
+      expect([...prompt.choices].sort()).toEqual([...canonical.choices].sort());
+      expect(canonical.choices[0]).toBe(canonical.acceptedAnswers[0]);
+      const answer=prompt.acceptedAnswers[0]!;
+      expect(prompt.choices.indexOf(answer)).toBe(index+1);
+      expect(prompt.choices[0]).not.toBe(answer);
+      const graded=createStudyEvent({
+        id:"source-meaning-"+index,userId:"bridge-fixture",deviceId:"test-device",
+        prompt,response:answer,occurredAt:"2026-10-20T10:00:00.000Z",responseTimeMs:100
+      });
+      expect(graded.result).toBe("correct");
+      expect(graded.metadata?.promptId).toBe(canonical.id);
+    }
+    const persisted=grade([originals[0]!],"bridge-fixture","2026-10-20T10:01:00.000Z");
+    const resumed=buildKanaWordBridge([...vowel,...persisted]);
+    const next=questions(resumed);
+    expect(next.map(prompt=>prompt.id)).toEqual([
+      "vocab-reading-lex-ii","vocab-meaning-lex-iie"
+    ]);
+    const remaining=next.find(prompt=>prompt.id==="vocab-meaning-lex-iie");
+    if(!remaining||remaining.promptType!=="choice")throw Error("MISSING_REMAINING_MEANING");
+    expect(remaining.choices.indexOf(remaining.acceptedAnswers[0]!)).toBe(2);
+    const original=vocabularyMeaningPrompts.find(prompt=>prompt.id==="vocab-meaning-lex-iie");
+    if(!original||original.promptType!=="choice")throw Error("MISSING_ORIGINAL_MEANING");
+    expect(original.choices[0]).toBe(original.acceptedAnswers[0]);
+    const forged={...persisted[0]!,id:"fake-other",metadata:{...persisted[0]!.metadata,nonAuthoritative:true}};
+    expect(questions(buildKanaWordBridge([...vowel,forged]))[0]?.id).toBe("vocab-meaning-lex-ii");
+    expect(questions(buildKanaWordBridge([...vowel,forged]))[0]).toEqual(originals[0]);
   });
   it("records first-sight reading only as non-authoritative evidence and never as FSRS vocabulary mastery",()=>{
     const vowel=knownVowels();
