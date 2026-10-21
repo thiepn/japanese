@@ -1,3 +1,4 @@
+import {openAdditionalLearn} from "./open-additional-learn";
 import {expect,test} from "@playwright/test";
 import {readFileSync} from "node:fs";
 const e24=JSON.parse(readFileSync("artifacts/e24-review-browser-seed.json","utf8")) as {
@@ -9,6 +10,7 @@ const e19=JSON.parse(readFileSync("artifacts/e19-browser-seed.json","utf8")) as 
 async function openLearn(page:import("@playwright/test").Page){
  await page.goto("./");
  await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await openAdditionalLearn(page,false);
  const atlas=page.getByRole("region",{name:"Your learning path"});
  await expect(atlas).toBeVisible();
  return atlas;
@@ -72,6 +74,7 @@ test("E22 source-linked A1 chapter resumes the real existing owner-private indep
  await seedPrivateE19(page);
  await page.reload();
  await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await openAdditionalLearn(page,false);
  const atlas=page.getByRole("region",{name:"Your learning path"});
  const sourceTitle=e19.key.split(":")[1]!;
  // The same original scene ID remains the owner of the writing evidence.
@@ -128,6 +131,7 @@ test("E24 original delayed review is accessible across chapters without switchin
  },e24);
  await page.reload();
  await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await openAdditionalLearn(page,false);
  const atlas=page.getByRole("region",{name:"Your learning path"});
  // E07 may initially select the actual due source's chapter; deliberately move
  // elsewhere to test cross-chapter access without depending on FSRS due counts.
