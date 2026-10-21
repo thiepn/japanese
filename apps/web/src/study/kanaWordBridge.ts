@@ -35,6 +35,18 @@ const eligibleWords:BridgeWord[]=starterVocabulary.flatMap(item=>{
 });
 type WordProgress={word:BridgeWord;meaningCorrect:boolean;readingCorrect:boolean;activeCorrect:boolean;meaningAttempted:boolean;readingAttempted:boolean;activeAttempted:boolean;firstSightAttempted:boolean};
 const kanaByForm=new Map([...basicHiragana,...basicKatakana].map(seed=>[seed.kana,seed.reading] as const));
+function meaningPromptForBridge(word:BridgeWord):StudyPrompt{
+  const original=word.meaningPrompt;
+  if(original.promptType!=="choice")throw new Error("A0_SOURCE_WORD_MEANING_CHOICE_MISSING:"+word.id);
+  const correct=original.acceptedAnswers[0];
+  if(!correct||!original.choices.includes(correct))
+    throw new Error("A0_SOURCE_WORD_ANSWER_MISSING:"+word.id);
+  const position=eligibleWords.findIndex(entry=>entry.id===word.id);
+  if(position<0)throw new Error("A0_SOURCE_WORD_IDENTITY_MISSING:"+word.id);
+  const choices=original.choices.filter(choice=>choice!==correct);
+  choices.splice((position+1)%original.choices.length,0,correct);
+  return {...original,choices};
+}
 function firstSightPrompt(word:BridgeWord):StudyPrompt{
   const sounds=[...word.form].map(char=>{
     const sound=kanaByForm.get(char);
@@ -160,7 +172,7 @@ export function buildKanaWordBridge(events:readonly StudyEvent[]):StudyStep[]{
     // Its event is explicitly unscored and never updates the FSRS scheduler.
     if(!entry.firstSightAttempted)steps.push(firstSightPrompt(entry.word));
     steps.push({...lesson,body:"Read this word in kana. Then choose its meaning."});
-    steps.push(entry.word.meaningPrompt);
+    steps.push(meaningPromptForBridge(entry.word));
   }
   return steps;
 }
