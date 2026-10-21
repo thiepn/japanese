@@ -28,12 +28,16 @@ test("source-backed word reading begins after first kana row and returns to the 
   await expect(page.getByRole("heading",{name:"いい",exact:true})).toBeVisible();
   await expect(page.locator(".j5-lesson-facts")).toContainText("good");
   await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await expect(page.locator(".j5-choices").getByRole("button").nth(0)).not.toHaveText("good");
+  await expect(page.locator(".j5-choices").getByRole("button").nth(1)).toHaveText("good");
   await page.locator(".j5-choices").getByRole("button",{name:"good",exact:true}).click();
   await expect(page.getByText("Correct",{exact:true})).toBeVisible();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
   await decodeFirstSightWord(page,"iie");
   await expect(page.getByRole("heading",{name:"いいえ",exact:true})).toBeVisible();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await expect(page.locator(".j5-choices").getByRole("button").nth(0)).not.toHaveText("no");
+  await expect(page.locator(".j5-choices").getByRole("button").nth(2)).toHaveText("no");
   await page.locator(".j5-choices").getByRole("button",{name:"no",exact:true}).click();
   await expect(page.getByText("Correct",{exact:true})).toBeVisible();
   await page.getByRole("button",{name:"Finish",exact:true}).click();
@@ -115,8 +119,8 @@ test("missed source words remain visible through reload and wait for original du
   for(const [index,romaji] of ["ii","iie"].entries()){
     await decodeFirstSightWord(page,romaji);
     await page.getByRole("button",{name:"Continue",exact:true}).click();
-    // The original canonical choice list has its correct answer first.
-    await page.locator(".j5-choices").getByRole("button").nth(1).click();
+    // The first position is incorrect for both original source-word meanings.
+    await page.locator(".j5-choices").getByRole("button").nth(0).click();
     await expect(page.locator(".j5-feedback.incorrect")).toBeVisible();
     await page.getByRole("button",{name:index===1?"Finish":"Continue",exact:true}).click();
   }
