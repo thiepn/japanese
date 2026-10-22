@@ -39,7 +39,7 @@ export function CourseFirstA1Path({owner,busy,onStart}:{owner:string;busy:boolea
    </div>:<p role="status">All {units.length} available A1 units are complete. Further units are not published yet. You can revisit completed lessons below.</p>}
    <div className="cf-a1__units">
     {units.map((unit,index)=><details key={unit.id} open={index===0&&Boolean(nextId&&unit.lessons.some(l=>l.id===nextId))}>
-      <summary><strong>Unit {index+1}: {unit.title}</strong><span>{unit.completed}/{unit.total}</span></summary>
+      <summary><strong>Unit {Number(unit.id.slice(-2))}: {unit.title}</strong><span>{unit.completed}/{unit.total}</span></summary>
       <ol>{unit.lessons.map(lesson=><li key={lesson.id} className={lesson.id===nextId?"cf-a1__active":""}>
        <button type="button" disabled={!lesson.unlocked||busy} onClick={()=>onStart(lesson.id)}
         aria-current={lesson.id===nextId?"step":undefined}>

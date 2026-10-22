@@ -12,6 +12,8 @@ import {buildE02Journey,E02_AVAILABLE_SCENES} from "./a1ExcellenceCourse";
 import {C2_A1_DAILY_ROUTINES} from "./c2A1DailyRoutine";
 import {C3_A1_YESTERDAY} from "./c3A1Yesterday";
 import {C3_A1_ORIGINS} from "./c3A1Origins";
+import {C4_A1_PREFERENCES} from "./c4A1Preferences";
+import {C4_A1_MEETING_TIMES} from "./c4A1MeetingTimes";
 import {validateAuthoredCourse,courseCoverage,isCourseFirstCapstone,type CourseFirstUnit as Unit,type CourseFirstLesson as Lesson,type EditorialRecord} from "./courseAuthoring";
 
 export const C1_A1_UNITS:readonly Unit[]=[
@@ -148,7 +150,25 @@ export const C3_EDITORIAL_RECORDS:readonly EditorialRecord[]=[
  }))
 ];
 export const C3_COVERAGE_LEDGER=courseCoverage(C3_A1_UNITS,C3_EDITORIAL_RECORDS);
-const byId=new Map(C3_A1_UNITS.flatMap(unit=>unit.lessons.map(lesson=>[lesson.id,{unit,lesson}] as const)));
+
+/** Additional source-linked units; missing canonical 06 and 08–11 are NOT awarded. */
+export const C4_A1_UNITS:readonly Unit[]=[...C3_A1_UNITS,C4_A1_PREFERENCES,C4_A1_MEETING_TIMES];
+export const C4_EDITORIAL_RECORDS:readonly EditorialRecord[]=[
+ ...C3_EDITORIAL_RECORDS,
+ ...[C4_A1_PREFERENCES,C4_A1_MEETING_TIMES].map(unit=>({
+  unitId:unit.id,sourceId:"thiepn-original" as const,level:"A1" as const,
+  rights:"original-owned" as const,
+  stageSequence:["encounter","explain","guided","read","transfer","independent"] as const,
+  lessonObjectives:unit.lessons.map(lesson=>lesson.objective),
+  grammarFocus:unit.id==="a1-unit-07"?
+    ["grammar-wa-topic","grammar-ka-question","grammar-mo-also"]:
+    ["grammar-wa-topic","grammar-ka-question"],
+  recordedAudio:"none" as const,synthesis:"device-only" as const,
+  independentWriting:"ungraded" as const,linguisticReview:"pending" as const,measuredStudyMinutes:null
+ }))
+];
+export const C4_COVERAGE_LEDGER=courseCoverage(C4_A1_UNITS,C4_EDITORIAL_RECORDS);
+const byId=new Map(C4_A1_UNITS.flatMap(unit=>unit.lessons.map(lesson=>[lesson.id,{unit,lesson}] as const)));
 const ORIGINAL_SOURCE="thiepn-original";
 const anchors=new Map(E02_AVAILABLE_SCENES.map(scene=>[scene.id,scene]));
 function canon(unit:Unit){const record=coreContent.courseUnits.find(x=>x.id===unit.id);
@@ -177,7 +197,7 @@ export interface C1A1LessonProgress{id:string;title:string;done:number;required:
 export interface C1A1UnitProgress{id:string;title:string;completed:number;total:number;lessons:C1A1LessonProgress[];}
 export function projectC1A1Course(events:readonly StudyEvent[]):{units:C1A1UnitProgress[];nextId:string|null}{
  let prior=true,nextId:string|null=null;
- const units=C3_A1_UNITS.map(unit=>{
+ const units=C4_A1_UNITS.map(unit=>{
   const lessons=unit.lessons.map(lesson=>{
    const latest=matched(events,unit,lesson);
    const required=ids(unit,lesson);
@@ -276,4 +296,12 @@ export function validateC3A1Course():string[]{
  const scenes=new Map(E02_AVAILABLE_SCENES.map(x=>[x.id,x.unitId]));
  const source=rawRegistry.sources.find(x=>x.id==="thiepn-original");
  return validateAuthoredCourse(C3_A1_UNITS,C3_EDITORIAL_RECORDS,targets,scenes,source?.publicExport===true);
+}
+
+/** Original-source publication gate; absence of 06 and 08–11 remains a documented gap. */
+export function validateC4A1Course():string[]{
+ const targets=new Map(coreContent.courseUnits.filter(x=>x.level==="A1").map(x=>[x.id,x.canDoId]));
+ const scenes=new Map(E02_AVAILABLE_SCENES.map(x=>[x.id,x.unitId]));
+ const source=rawRegistry.sources.find(x=>x.id==="thiepn-original");
+ return validateAuthoredCourse(C4_A1_UNITS,C4_EDITORIAL_RECORDS,targets,scenes,source?.publicExport===true);
 }

@@ -78,3 +78,12 @@ Open draft PR #76 is a **separate unintegrated content seed**; it is not a sourc
 - C3 uses the existing C2 validation pipeline for per-unit original-rights, canonical can-do, scene mapping, order, unique checks and missing-media/competence assertions. Human linguistic review remains pending and duration unmeasured. Device-synthesized Japanese remains synthetic speech, **not licensed recorded native audio**.
 - Source rights: all newly authored writing is original THIEPN educational content; existing E02 scenes are reused only via native prompt IDs. No user-uploaded Marugoto PDF content or recording is redistributed.
 - This does **not** establish full A1 or A2, verified learning hours, accessible audio comprehensiveness, production fluency or independent CEFR/JLPT proficiency.
+
+## C4 — Preferences and meeting-time practice (bounded source-linked expansion)
+
+- The authored path adds `a1-unit-07` (E02 `preferences`) and `a1-unit-12` (E02 `time`), each comprising five new original lessons and the unchanged original E02 capstone. **7 published units / 42 lessons / 203 native controlled checks**. Existing `cf-a1-01-*` through `cf-a1-05-*` (30 lessons) are unchanged.
+- Unit 7 teaches `が好きです` as a preference (not a food order), `特に` for special favorites, modest negative preference `あまり好きではありません`, shared preference with `も`, a connected three-person reading, and choice-vs-order transfer.
+- Unit 12 teaches question/answer `何時から`, time `から` versus endpoint `まで`, half hours `半`, three-event timetable comprehension, and changed-schedule confirmation without inventing missing information.
+- Canonical unit **06 and 08–11 have no verified E02 scene in the current registry.** They are **not** created, credited, or represented as completed. The learner path may show 7 and 12 after 5 as authored course entries, retaining their true canonical unit labels and IDs; that is not evidence that intervening official units have been studied.
+- Both new units are original THIEPN-authored Japanese, mapped to existing canonical `can_do` targets and E02 source IDs, and validated through the same C2 authoring gate. E02 `preferences` and `time` scene IDs, delayed prompts, StudyEvents and FSRS remain untouched.
+- All newly authored independent writing remains **ungraded**. No recorded native audio, calibrated study time, pronunciation grade, human-reviewed fluency or full A1/A2 coverage is asserted. Device TTS (if available) is not original recorded speech. No user-provided Marugoto text, worksheets, or audio were copied.
