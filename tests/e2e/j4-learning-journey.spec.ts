@@ -46,6 +46,7 @@ test("J4 preserves course entry and milestone truth",async({page})=>{
   await expect(page.locator("main.j5-study-shell#main-content")).toBeVisible();
   await expect(page.getByRole("heading",{name:"Identify people"})).toBeVisible();
   await page.getByRole("button",{name:"Exit"}).click();
+  await openAdditionalLearn(page,true);
 
   await expect(page.getByRole("heading",{name:"Your Japanese journey"})).toBeVisible();
   await expect(page.getByText("A1 milestone",{exact:true})).toBeVisible();
