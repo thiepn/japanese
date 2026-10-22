@@ -26,8 +26,12 @@ test("D4 keeps the five Japanese surfaces usable at 320 CSS pixels in both theme
     for(const [surface,selector] of routes){
       await nav.getByRole("button",{name:surface,exact:true}).click();
       if(surface==="Learn"){
-        await page.locator(".beginner-explore > summary").click();
-        await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+        const advanced=page.locator(".beginner-explore");
+        if(await advanced.getAttribute("open")===null)
+          await advanced.locator(":scope > summary").click();
+        const expand=page.locator(".ux1-mobile-catalogue-toggle");
+        if(await expand.isVisible()&&await expand.getAttribute("aria-expanded")==="false")
+          await expand.click();
       }
       await expect(page.locator(selector)).toBeVisible();
       await noOverflow(page);
@@ -51,7 +55,9 @@ test("D4 tablet and desktop preserve lazy exhibition composition and technical i
     await expect(nav).toBeVisible();
     await nav.getByRole("button",{name:"Learn",exact:true}).click();
     await page.locator(".beginner-explore > summary").click();
-    await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+    const expand=page.locator(".ux1-mobile-catalogue-toggle");
+    if(await expand.isVisible()&&await expand.getAttribute("aria-expanded")==="false")
+      await expand.click();
     await expect(page.locator(".j4-emaki")).toBeVisible();
     await noOverflow(page);
     await nav.getByRole("button",{name:"Library",exact:true}).click();
