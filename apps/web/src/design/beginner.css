@@ -4,7 +4,7 @@
 .beginner-entry h1{margin:0;font-size:clamp(27px,4vw,40px);line-height:1.2;}
 .beginner-entry__objective{margin:0;font-size:clamp(18px,2.5vw,23px);font-weight:600;}
 .beginner-entry__actions{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 20px;}
-.beginner-entry__actions button{min-height:50px;padding:12px 20px;font-size:16px;font-weight:700;border-radius:5px;border:1px solid var(--j-line-strong);cursor:pointer;}
+.beginner-entry__actions button{min-height:56px;padding:12px 20px;font-size:16px;font-weight:700;border-radius:5px;border:1px solid var(--j-line-strong);cursor:pointer;}
 .beginner-entry__actions button:focus-visible{outline:3px solid var(--j-season-accent);outline-offset:3px;}
 .beginner-entry__primary{background:var(--j-fg);color:var(--j-bg);flex:1 1 235px;}
 .beginner-entry__review{background:var(--j-bg);color:var(--j-fg);flex:1 1 200px;}
