@@ -1,4 +1,5 @@
 name: Course-First A1 Full Playwright Regression
+# Exact-head final qualification after controlled Learn navigation and browser test repairs.
 on:
   push:
     branches:
