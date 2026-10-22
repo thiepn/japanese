@@ -9,6 +9,6 @@ export async function openAdditionalLearn(page:Page,fullCourse=false):Promise<vo
   await expect(catalogue).toHaveAttribute("open","");
   if(!fullCourse)return;
   const expand=page.getByRole("button",{name:"Open full course and advanced practice",exact:true});
-  if(await expand.count())await expand.click();
+  if(await expand.isVisible())await expand.click();
   await expect(page.getByRole("heading",{name:"Your Japanese journey"})).toBeVisible();
 }
