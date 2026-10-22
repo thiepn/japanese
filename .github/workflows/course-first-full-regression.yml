@@ -1,5 +1,5 @@
 name: Course-First A1 Full Playwright Regression
-# Complete exact-head C1 and original-studio regression after the explicit navigation contract.
+# Repeat the exact-head full suite after correcting the last observed lazy-load heading assertion.
 on:
   push:
     branches:
