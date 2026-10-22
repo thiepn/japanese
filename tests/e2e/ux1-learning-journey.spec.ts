@@ -26,6 +26,7 @@ test("UX1 Today source recommendation and mobile Learn path stay connected",asyn
   await expect(page.locator(".ux1-cafe-head")).toContainText("A small café");
   await page.getByRole("button",{name:"Exit"}).click();
   await expect(page.locator(".ux1-outcome")).toHaveCount(0);
+  await openAdditionalLearn(page,false);
   await expect(page.locator(".ux1-mobile-path")).toBeVisible();
  }
 });

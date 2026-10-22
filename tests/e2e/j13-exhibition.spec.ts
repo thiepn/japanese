@@ -1,3 +1,4 @@
+import {openAdditionalLearn} from "./open-additional-learn";
 import {expect,test} from "@playwright/test";
 
 test("J13 lazy-loads the exhibition layer on tablet and desktop only",async({page},testInfo)=>{
@@ -117,7 +118,9 @@ test("J13 keeps keyboard focus visible across the exhibition shell",async({page}
   expect(outline).not.toBe("none");
 
   await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await openAdditionalLearn(page,true);
   const emaki=page.locator(".j4-emaki");
+  await expect(emaki).toBeVisible();
   await emaki.focus();
   const emakiOutline=await emaki.evaluate((node)=>getComputedStyle(node).outlineStyle);
   expect(emakiOutline).not.toBe("none");
