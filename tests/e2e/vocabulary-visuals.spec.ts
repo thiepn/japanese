@@ -95,7 +95,11 @@ test.describe("Vocabulary illustration reconnection",()=>{
  test.use({serviceWorkers:"block"});
  test("retries an optional failed image on reconnect without changing its text reference",async({page})=>{
    let disconnected=true;
-   await page.route("**/vocab/apple.svg",route=>disconnected?route.abort("internetdisconnected"):route.continue());
+   let failedRequests=0;
+   await page.route("**/vocab/apple.svg",route=>{
+     if(disconnected){failedRequests+=1;return route.abort("internetdisconnected");}
+     return route.continue();
+   });
    await page.goto("./");
    await page.getByRole("button",{name:"Library",exact:true}).click();
    const search=page.getByRole("textbox",{name:"Search Japanese"});
@@ -105,7 +109,8 @@ test.describe("Vocabulary illustration reconnection",()=>{
    await word.getByRole("option").click();
    const sheet=page.locator(".j7-reference__sheet--lexeme");
    const image=sheet.locator(".vocabulary-visual img");
-   await image.scrollIntoViewIfNeeded();
+   await sheet.scrollIntoViewIfNeeded();
+   await expect.poll(()=>failedRequests).toBeGreaterThan(0);
    await expect(sheet.locator(".vocabulary-visual")).toHaveCount(0);
    await expect(sheet).toContainText("apple");
    disconnected=false;

@@ -1,9 +1,10 @@
+import {openAdditionalLearn} from "./open-additional-learn";
 import {expect,test} from "@playwright/test";
 
 test("functional Japanese copy layout across desktop, Android and compact mobile",async({page},testInfo)=>{
   await page.goto("./");
   const screens=[
-    {tab:"Today",selector:".j3-today",heading:"Your Japanese today"},
+    {tab:"Today",selector:".j3-today",heading:"Start Japanese from Zero"},
     {tab:"Learn",selector:".j4-learn",heading:"Your Japanese journey"},
     {tab:"Immerse",selector:".j6-immerse",heading:"Immersion"},
     {tab:"Library",selector:".j7-library",heading:"Japanese knowledge"},
@@ -13,8 +14,7 @@ test("functional Japanese copy layout across desktop, Android and compact mobile
     if(screen.tab!=="Today")await page.getByRole("button",{name:screen.tab,exact:true}).click();
     await expect(page.locator(screen.selector)).toBeVisible();
     if(screen.tab==="Learn"){
-      const full=page.getByRole("button",{name:"Open full course and advanced practice"});
-      if(await full.isVisible())await full.click();
+      await openAdditionalLearn(page,true);
     }
     await expect(page.getByRole("heading",{name:screen.heading,exact:true})).toBeVisible();
     const result=await page.evaluate(()=>{

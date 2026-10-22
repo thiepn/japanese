@@ -1,3 +1,4 @@
+import {openAdditionalLearn} from "./open-additional-learn";
 import {expect,test} from "@playwright/test";
 
 test("J4 turns Learn into an A1→C1 emakimono journey",async({page})=>{
@@ -5,9 +6,7 @@ test("J4 turns Learn into an A1→C1 emakimono journey",async({page})=>{
   await page.getByRole("button",{name:"Learn",exact:true}).click();
   // Original full-course tools are deliberately collapsed on mobile in UX-1.
   await expect(page.locator(".j4-learn")).toBeVisible();
-  await page.locator(".beginner-explore > summary").click();
-  const fullCourse=page.getByRole("button",{name:"Open full course and advanced practice"});
-  if(await fullCourse.isVisible())await fullCourse.click();
+  await openAdditionalLearn(page,true);
 
   await expect(page.getByRole("heading",{name:"Your Japanese journey"})).toBeVisible();
   await expect(page.getByRole("heading",{name:"The learning road"})).toBeVisible();
@@ -39,9 +38,7 @@ test("J4 preserves course entry and milestone truth",async({page})=>{
   await page.getByRole("button",{name:"Learn",exact:true}).click();
   // Original full-course tools are deliberately collapsed on mobile in UX-1.
   await expect(page.locator(".j4-learn")).toBeVisible();
-  await page.locator(".beginner-explore > summary").click();
-  const fullCourse=page.getByRole("button",{name:"Open full course and advanced practice"});
-  if(await fullCourse.isVisible())await fullCourse.click();
+  await openAdditionalLearn(page,true);
 
   const first=page.locator(".j4-landmark").first();
   await first.getByRole("button",{name:/Enter landmark|Continue landmark|Review landmark|Study anyway/}).click();
@@ -62,9 +59,7 @@ test("J4 keeps specialist practice out of the primary journey until requested",a
   await page.getByRole("button",{name:"Learn",exact:true}).click();
   // Original full-course tools are deliberately collapsed on mobile in UX-1.
   await expect(page.locator(".j4-learn")).toBeVisible();
-  await page.locator(".beginner-explore > summary").click();
-  const fullCourse=page.getByRole("button",{name:"Open full course and advanced practice"});
-  if(await fullCourse.isVisible())await fullCourse.click();
+  await openAdditionalLearn(page,true);
 
   await expect(page.getByRole("heading",{name:"Practice beyond the road"})).toBeVisible();
   await expect(page.getByRole("button",{name:/Lexical fluency/})).toBeVisible();
@@ -85,9 +80,7 @@ test("J4 becomes a vertical route on mobile without document overflow",async({pa
   await page.getByRole("button",{name:"Learn",exact:true}).click();
   // Original full-course tools are deliberately collapsed on mobile in UX-1.
   await expect(page.locator(".j4-learn")).toBeVisible();
-  await page.locator(".beginner-explore > summary").click();
-  const fullCourse=page.getByRole("button",{name:"Open full course and advanced practice"});
-  if(await fullCourse.isVisible())await fullCourse.click();
+  await openAdditionalLearn(page,true);
 
   const emaki=page.locator(".j4-emaki");
   const regions=page.locator(".j4-region");
