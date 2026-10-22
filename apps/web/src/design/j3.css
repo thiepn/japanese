@@ -329,7 +329,7 @@
 }
 
 .j3-route__head h2{
-  margin:18px 0 7px;
+  margin:4px 0 7px;
   font-family:var(--j-font-editorial);
   font-size:clamp(26px,4vw,42px);
   letter-spacing:-.03em;

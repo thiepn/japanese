@@ -1,11 +1,15 @@
 import "../design/ux1.css";
 import "../design/beginner.css";
 import {UX1CafeHeader,UX1CafeTiles,isUX1CafeJourney} from "./UX1Cafe";
+import {VocabularyIllustration} from "./VocabularyIllustration";
 import "./e11Practice.css";
 import "./e08Revision.css";
 import {useEffect,useRef,useState,type ReactNode} from "react";
 import {eligibleE07Draft,e07DraftPreference,setE07DraftPreference,saveE07Draft,readE07Draft,clearE07Draft,clearAllE07Drafts,findE07RestorableStep,E07_DRAFT_LIMIT} from "./e07DraftBuffer";
 import {getDefaultAudioProvider} from "@thiepn/audio";
+import {createDeviceSpeechPlayback} from "./deviceSpeech";
+import {A1FuriganaText,hasA1Furigana,isA1FuriganaStep} from "./a1Furigana";
+import {A2FuriganaText,hasA2Furigana,isA2FuriganaStep} from "./a2Furigana";
 import {gradeStudyPrompt,isStudyLesson,type GradeResult,type StudyPrompt,type StudyStep} from "@thiepn/study-player";
 import {j5StudyMode,type J5StudyModeMeta} from "./j5StudyVisual";
 import type {JSeason,JTheme} from "../design";
@@ -37,6 +41,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
   const [e12FirstDraft,setE12FirstDraft]=useState("");
   const [e08Checks,setE08Checks]=useState<string[]>([]);
   const [feedback,setFeedback]=useState<GradeResult|null>(null);
+  const [showFurigana,setShowFurigana]=useState(true);
   const [saving,setSaving]=useState(false);
   const [saveError,setSaveError]=useState(false);
   const [audioState,setAudioState]=useState<"idle"|"playing"|"error">("idle");
@@ -47,6 +52,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
   const season=resolveJ10Season();
   const startedAt=useRef(performance.now());
   const audioProvider=useRef(getDefaultAudioProvider());
+  const deviceSpeech=useRef(createDeviceSpeechPlayback());
   const recognitionRef=useRef<StudyRecognition|null>(null);
   const cueGeneration=useRef(0);
   const savingRef=useRef(false);
@@ -74,11 +80,11 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
     stopRecognition();
     const provider=audioProvider.current;
     provider.stop();
-    if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();
+    deviceSpeech.current.stop();
     setAudioState("idle");
     setAudioPlayed(false);
     setSpeechState("idle");
-    return()=>{cueGeneration.current+=1;stopRecognition();provider.stop();if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();};
+    return()=>{cueGeneration.current+=1;stopRecognition();provider.stop();deviceSpeech.current.stop();};
   },[index]);
 
   useEffect(()=>{
@@ -167,6 +173,8 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
 
   function advance(){
     audioProvider.current.stop();
+    deviceSpeech.current.stop();
+    cueGeneration.current+=1;
     setE08Checks([]);
     if(index+1>=steps.length){onComplete();return;}
     setIndex((value)=>value+1);
@@ -176,6 +184,11 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
     setSaveError(false);
     setTimerTick(0);
     startedAt.current=performance.now();
+  }
+
+  function speakWithDevice(text:string,rate:number,repeats:number,lang:string){
+    return deviceSpeech.current.play(Array(repeats).fill(text),
+      {rate,language:lang,gapMs:repeats>1?450:0});
   }
 
   async function playAudio(playback:"normal"|"slow"|"shadow"){
@@ -189,12 +202,10 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         else if(playback==="shadow")await audioProvider.current.play(activeStep.audio,{rate:.92,repeats:2,gapMs:1200});
         else await audioProvider.current.play(activeStep.audio);
       }else if(ttsText){
-        await speakWithDevice(
-          ttsText,
-          playback==="slow"?.78:.94,
-          playback==="shadow"?2:1,
-          (!isStudyLesson(activeStep)?activeStep.speechSynthesisLanguage:undefined)??"ja-JP",
-        );
+        const result=await speakWithDevice(ttsText,
+          playback==="slow"?.78:.94,playback==="shadow"?2:1,
+          (!isStudyLesson(activeStep)?activeStep.speechSynthesisLanguage:undefined)??"ja-JP");
+        if(result==="cancelled")return;
       }
       if(generation!==cueGeneration.current)return;
       setAudioPlayed(true);
@@ -245,6 +256,18 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
     try{recognition.start();}catch{stopRecognition();setSpeechState("error");}
   }
 
+  const a1FuriganaStep=isA1FuriganaStep(activeStep);
+  const a2FuriganaStep=!a1FuriganaStep&&isA2FuriganaStep(activeStep);
+  const renderReading=(value:string)=>a1FuriganaStep
+    ?<A1FuriganaText text={value} visible={showFurigana}/>
+    :a2FuriganaStep?<A2FuriganaText text={value} visible={showFurigana}/>:value;
+  const readingCandidates=isStudyLesson(activeStep)
+    ?[activeStep.title,...(activeStep.facts??[]).filter(fact=>fact.language==="ja").map(fact=>fact.value),...(activeStep.examples??[]).map(example=>example.expression)]
+    :[activeStep.prompt];
+  const furiganaAvailable=(a1FuriganaStep&&readingCandidates.some(hasA1Furigana))||
+    (a2FuriganaStep&&readingCandidates.some(hasA2Furigana));
+  const furiganaToggle=furiganaAvailable?<button className="j5-furigana-toggle" type="button" aria-pressed={showFurigana} onClick={()=>setShowFurigana(value=>!value)}>{showFurigana?"Hide furigana":"Show furigana"}</button>:null;
+
   if(isStudyLesson(activeStep)){
     return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={false} onExit={onExit} onTheme={toggleTheme}>
       {ux1Cafe?<UX1CafeHeader steps={steps} index={index}/>:null}
@@ -262,7 +285,9 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
           <span className="eyebrow">LEARN</span>
           <span className="j5-sheet__counter">{index+1} / {steps.length}</span>
         </div>
-        <h1>{activeStep.title}</h1>
+        {furiganaToggle}
+        <h1>{renderReading(activeStep.title)}</h1>
+        {activeStep.id.startsWith("lesson-")&&activeStep.contextId.startsWith("vocab-")?<VocabularyIllustration key={activeStep.id} lexemeId={activeStep.contextId.slice(6)}/>:null}
         <p className="lesson-body">{activeStep.body}</p>
         {ux1Cafe&&activeStep.id==="a1-e02-food-try"?<UX1CafeTiles/>:null}
 
@@ -276,20 +301,20 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
 
         {activeStep.facts?.length?<div className="lesson-facts j5-lesson-facts">{activeStep.facts.map((fact)=><div key={fact.label}>
           <span>{fact.label}</span>
-          <strong lang={fact.language}>{fact.value}</strong>
+          <strong lang={fact.language}>{fact.language==="ja"?renderReading(fact.value):fact.value}</strong>
         </div>)}</div>:null}
 
         {activeStep.examples?.length?<div className="lesson-examples j5-lesson-examples">{activeStep.examples.map((example)=><div key={example.expression+":"+example.note}>
-          <strong lang="ja">{example.expression}</strong>
+          <strong lang="ja">{renderReading(example.expression)}</strong>
           <span>{example.note}</span>
-          {activeStep.id.startsWith("a0-hiragana-")?<div className="j5-kana-audio">
+          {(activeStep.id.startsWith("a0-hiragana-")||activeStep.id.startsWith("a0-katakana-"))?<div className="j5-kana-audio">
             <button type="button" disabled={audioState==="playing"}
               aria-label={"Hear "+example.expression+" pronounced"} onClick={()=>void playBeginnerSound(example.expression)}>
               {audioState==="playing"?"Playing…":"Listen"}
             </button>
           </div>:null}
         </div>)}</div>:null}
-        {activeStep.id.startsWith("a0-hiragana-")&&audioState==="error"
+        {(activeStep.id.startsWith("a0-hiragana-")||activeStep.id.startsWith("a0-katakana-"))&&audioState==="error"
           ?<p role="status">Japanese device speech is unavailable. You can continue reading and return for listening later.</p>:null}
 
         {activeStep.sourceLabel?<p className="source-note">Source: {activeStep.sourceLabel}</p>:null}
@@ -348,6 +373,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         <span className="j5-sheet__counter">{index+1} / {steps.length}</span>
       </div>
 
+      {furiganaToggle}
       {remainingSeconds!==null?<div className={"timed-prompt j5-timer "+(remainingSeconds===0?"expired":"")}>
         <span>Timed response</span>
         <strong>{remainingSeconds>0?remainingSeconds+"s remaining":"time target elapsed"}</strong>
@@ -377,7 +403,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
             <button className="quiet-button audio-skip" type="button" onClick={advance}>Skip for now</button>
           </div>:null}
         </div>
-        :<div className={"j5-prompt j5-prompt--"+mode.mode} lang={currentPrompt.promptLanguage}>{currentPrompt.prompt}</div>}
+        :<div className={"j5-prompt j5-prompt--"+mode.mode} lang={currentPrompt.promptLanguage}>{renderReading(currentPrompt.prompt)}</div>}
 
       {currentPrompt.promptType==="choice"
         ?<div className="j5-choices">{currentPrompt.choices.map((choice,index)=><button
@@ -445,7 +471,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
                 <button type="button" className="quiet-button" disabled={Boolean(feedback)||saving} onClick={()=>updateResponse(e08DraftReference)}>Use as starting text</button></div>
               :<div className="e08-revision__previous"><p role="status">A submitted first draft is required before this revision can be compared. Return to the first draft instead of creating a fake revision.</p>
                 {e08FirstIndex>=0?<button type="button" onClick={()=>{setIndex(e08FirstIndex);setFeedback(null);setResponse("");setE08Checks([]);}}>Return to first draft</button>:null}</div>}
-              <div className="e08-revision__checks"><p>Use these questions as self-review, not automatic correctness marks:</p>
+              <div className="e08-revision__checks">
                 {Array.isArray(currentPrompt.eventMetadata?.e08RevisionChecks)?currentPrompt.eventMetadata.e08RevisionChecks.map((item,i)=>{
                   if(!item||typeof item!=="object"||typeof item.question!=="string"||typeof item.heading!=="string")return null;
                   const key=String(i);
@@ -589,27 +615,4 @@ function StudyHeader({
     </header>
     <div className="j5-study-progress" aria-hidden="true"><span style={{width:pct+"%"}}/></div>
   </>;
-}
-
-function speakWithDevice(text:string,rate:number,repeats:number,lang:string):Promise<void>{
-  return new Promise((resolve,reject)=>{
-    if(typeof speechSynthesis==="undefined"){reject(new Error("SPEECH_SYNTHESIS_UNAVAILABLE"));return;}
-    let remaining=Math.max(1,repeats);
-    const play=()=>{
-      const utterance=new SpeechSynthesisUtterance(text);
-      utterance.lang=lang;
-      utterance.rate=rate;
-      const voice=speechSynthesis.getVoices().find((item)=>item.lang.toLowerCase().startsWith("ja"));
-      if(voice)utterance.voice=voice;
-      utterance.onerror=()=>reject(new Error("SPEECH_SYNTHESIS_FAILED"));
-      utterance.onend=()=>{
-        remaining-=1;
-        if(remaining>0)setTimeout(play,450);
-        else resolve();
-      };
-      speechSynthesis.speak(utterance);
-    };
-    speechSynthesis.cancel();
-    play();
-  });
 }

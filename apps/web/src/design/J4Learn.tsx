@@ -1,5 +1,8 @@
 import "./j4.css";
 import {BeginnerEntry} from "./BeginnerEntry";
+import {KatakanaEntry} from "./KatakanaEntry";
+import {KanaWordsEntry} from "./KanaWordsEntry";
+import type {KanaWordBridgeOverview} from "../study/kanaWordBridge";
 import type {BeginnerOverview} from "../study/beginnerCourse";
 import "../study/e10DailyStages.css";
 import {useEffect,useMemo,useRef,useState} from "react";
@@ -46,7 +49,7 @@ import type {E07Journey,E07Action} from "../study/e07LearningRoute";
 import {JCartouche,JInkProgress,JPattern,JSeal} from "./index";
 
 type Props={
-   beginner:BeginnerOverview;onStartBeginner:()=>void;onReviewDue:()=>void;
+   beginner:BeginnerOverview;katakana:BeginnerOverview;wordBridge:KanaWordBridgeOverview;onReadContext:()=>void;onRevisitContext:()=>void;onRevisitWords:()=>void;onStartWords:()=>void;onStartKatakana:()=>void;onStartBeginner:()=>void;onReviewDue:()=>void;
   e01:E01Progress;onStartE01:()=>void;onStartE01Delayed:()=>void;
   e02:E02Overview;onStartE02:(id:string)=>void;onStartE02Delayed:(id:string)=>void;
   e03:E03Overview;onStartE03:(id:string)=>void;onStartE03Delayed:(id:string)=>void;
@@ -103,7 +106,7 @@ const LEVEL_ORDER=["A1","A2","B1","B2","C1"];
 
 export function J4Learn(props:Props){
   const {
-    beginner,onStartBeginner,onReviewDue,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,e14Reviews,e16WorkspaceId,e16WorkspaceCurrent,onStartE06,onStartE06Full,onStartE11Micro,onStartE13,onStartE18,onStartE14,onStartE15,onStartE10Stage,onStartE06Delayed,onStartE10DelayedStage,onStartE06FullDelayed,onStartE06Preview,e19,onStartE19,e07,onOpenE07,e22Selection,onE22Selection,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
+    beginner,katakana,wordBridge,onReadContext,onRevisitContext,onRevisitWords,onStartWords,onStartKatakana,onStartBeginner,onReviewDue,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,e14Reviews,e16WorkspaceId,e16WorkspaceCurrent,onStartE06,onStartE06Full,onStartE11Micro,onStartE13,onStartE18,onStartE14,onStartE15,onStartE10Stage,onStartE06Delayed,onStartE10DelayedStage,onStartE06FullDelayed,onStartE06Preview,e19,onStartE19,e07,onOpenE07,e22Selection,onE22Selection,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
     milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,
     onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartAssessment,
     onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,
@@ -174,6 +177,8 @@ export function J4Learn(props:Props){
         e02.scenes.find(scene=>scene.id===e02.nextSceneId)?.title??"A1 practice"}
       due={summary.due} busy={status==="loading"}
       sessionError={status==="error"} onContinue={onStartBeginner} onReview={onReviewDue}/>:null}
+    {wordBridge.available||wordBridge.pendingReview>0||wordBridge.readingContext.available||wordBridge.readingContext.revisitable?<KanaWordsEntry overview={wordBridge} due={summary.due} busy={status==="loading"} onContinue={onStartWords} onReviewDue={onReviewDue} onReadContext={onReadContext} onRevisitContext={onRevisitContext} onRevisitWords={onRevisitWords}/>:null}
+    {beginner.complete&&!katakana.complete?<KatakanaEntry overview={katakana} busy={status==="loading"} onContinue={onStartKatakana}/>:null}
     <details className="beginner-explore" open={advancedOpen}
       onToggle={event=>setAdvancedOpen(event.currentTarget.open)}>
       <summary>Browse other lessons and advanced practice</summary>
@@ -209,10 +214,7 @@ export function J4Learn(props:Props){
         <JCartouche japanese="学" subtitle="Learn"/>
         <p className="j4-hero__kicker">A1 → C1 · 学びの絵巻</p>
         <h1 id="j4-title">Your Japanese journey</h1>
-        <p>
-          Move through one continuous path from script foundations to advanced discourse.
-          Each landmark reflects the same course order, evidence, mastery and delayed checks already used by the learning engine.
-        </p>
+        
         {status==="empty"?<p role="status">No steps are available for that activity yet. Try another lesson.</p>:null}
         {status==="error"?<p role="alert">This activity could not be loaded. Try again.</p>:null}
         <div className="j4-hero__actions">
@@ -231,7 +233,7 @@ export function J4Learn(props:Props){
         <span className="j4-hero__crest-ring"/>
         <span className="j4-hero__crest-kanji" aria-hidden="true">道</span>
         <strong>{current?.level??"C1"}</strong>
-        <small>{current?"current region":"journey reviewed"}</small>
+        
       </div>
     </header>
 
@@ -249,7 +251,7 @@ export function J4Learn(props:Props){
       <div className="e01-entry__actions"><button type="button" disabled={status==="loading"} onClick={onStartE01}>{e01.answered?"Practice again":"Start contextual lesson"}</button>{(e01.status==="ready"||e01.status==="reviewed")?<button type="button" disabled={status==="loading"} onClick={onStartE01Delayed}>Delayed transfer</button>:null}</div>
     </section>
     <section className="e02-course" aria-labelledby="e02-course-title">
-      <header className="e02-course__head"><div><p className="j4-kicker">E02 · ORIGINAL A1 COMMUNICATION</p><h2 id="e02-course-title">Practice Japanese in real situations</h2><p>Each original scene combines hidden-text listening, connected reading, canonical grammar, responses, unscored speaking and writing, then delayed transfer.</p></div><strong>{e02.delayedReviewed}/{e02.total} delayed checks</strong></header>
+      <header className="e02-course__head"><div><h2 id="e02-course-title">Practice Japanese in real situations</h2><p>Each original scene combines hidden-text listening, connected reading, canonical grammar, responses, unscored speaking and writing, then delayed transfer.</p></div><strong>{e02.delayedReviewed}/{e02.total} delayed checks</strong></header>
       <ol className="e02-course__list">{e02.scenes.map((item,index)=><li className="e02-course__item" key={item.id}>
         <div className="e02-course__number">{String(index+1).padStart(2,"0")}</div>
         <div className="e02-course__info"><h3>{item.title}</h3><p>{item.canDo}</p><small>{item.completedControlled}/{item.requiredControlled} controlled items correct · {item.unscoredDrafts} unscored drafts · {item.state.replaceAll("_"," ")}</small>
@@ -261,7 +263,7 @@ export function J4Learn(props:Props){
       {e02.total===0?<p role="status">No E02 scenes currently have a complete canonical A1 source link. Original lessons remain readable above without graded events.</p>:null}
     </section>
     <section className="e03-path" aria-labelledby="e03-path-title">
-      <header className="e03-path__heading"><div><p className="j4-kicker">E03 · ORIGINAL A2.1 COMMUNICATION</p><h2 id="e03-path-title">Use Japanese across connected situations</h2><p>{e03.authored} original scenes authored · {e03.total} linked to an existing A2 Can-do. A2.1 placement is provisional and does not certify a CEFR level.</p></div><strong>{e03.delayedReviewed}/{e03.total} delayed transfer checks</strong></header>
+      <header className="e03-path__heading"><div><h2 id="e03-path-title">Use Japanese across connected situations</h2><p>{e03.authored} original scenes authored · {e03.total} linked to an existing A2 Can-do. A2.1 placement is provisional and does not certify a CEFR level.</p></div><strong>{e03.delayedReviewed}/{e03.total} delayed transfer checks</strong></header>
       {e03.unmappedScenes.length>0?<details className="e03-path__scope"><summary>{e03.unmappedScenes.length} original situations awaiting a verified A2 Can-do association</summary><p>These original texts remain reading-only, with no graded events.</p><ul>{e03.unmappedScenes.map(s=><li key={s.id}><strong>{s.title}</strong><button type="button" disabled={status==="loading"} onClick={()=>onStartE03Preview(s.id)}>Open reading</button></li>)}</ul></details>:null}
       <ol className="e03-path__list">{e03.scenes.map((scene,index)=><li key={scene.id} className="e03-path__item">
         <span className="e03-path__number">{String(index+1).padStart(2,"0")}</span>
@@ -273,7 +275,7 @@ export function J4Learn(props:Props){
       {e03.total===0?<p role="status">The A2.1 material has no safely verified Can-do links in the current canonical course. No invented progress is offered.</p>:null}
     </section>
     <section className="e04-path" aria-labelledby="e04-path-title">
-      <header className="e04-path__heading"><div><p className="j4-kicker">E04 · ORIGINAL ADVANCED ELEMENTARY COMMUNICATION</p><h2 id="e04-path-title">Solve everyday problems in Japanese</h2><p>{e04.authored} original scenes authored; {e04.linked} provisionally linked to existing second-half A2 course objectives. Independent drafts are unscored and language ability is not externally certified.</p></div><strong>{e04.reviewed}/{e04.linked} delayed transfer checks completed</strong></header>
+      <header className="e04-path__heading"><div><h2 id="e04-path-title">Solve everyday problems in Japanese</h2><p>{e04.authored} original scenes authored; {e04.linked} provisionally linked to existing second-half A2 course objectives. Independent drafts are unscored and language ability is not externally certified.</p></div><strong>{e04.reviewed}/{e04.linked} delayed transfer checks completed</strong></header>
       <ol className="e04-path__list">{e04.scenes.map((scene,index)=><li className="e04-path__item" key={scene.id}>
         <span className="e04-path__number">{String(index+1).padStart(2,"0")}</span>
         <div className="e04-path__copy"><h3>{scene.title}</h3><p>{scene.goal}</p><small>Provisional link: {scene.unitId} · {scene.canDo}</small><small>{scene.guidedCorrect}/{scene.guidedTotal} controlled correct · {scene.unscoredDrafts} unscored drafts · {scene.status.replaceAll("_"," ")}</small>
@@ -286,13 +288,13 @@ export function J4Learn(props:Props){
       {e04.linked===0?<p role="status">No sufficiently matched canonical A2.2 objectives. Original content is available above in reading-only form, without fabricated mastery.</p>:null}
     </section>
     <section className="e05-panel e05-panel--learn" aria-labelledby="e05-learn-title">
-      <header><div><p className="j4-kicker">E05 · ADAPTIVE CORRECTION</p><h2 id="e05-learn-title">Correct the distinction you missed</h2><p>Original alternative questions target misconceptions. The usual FSRS review must still be completed.</p></div><strong>{e05.repair.pending} outstanding</strong></header>
+      <header><div><h2 id="e05-learn-title">Correct the distinction you missed</h2><p>Original alternative questions target misconceptions. The usual FSRS review must still be completed.</p></div><strong>{e05.repair.pending} outstanding</strong></header>
       {e05.targets.length?<ol>{e05.targets.slice(0,6).map(t=><li key={t.promptId}><strong>{t.title}</strong><small>{t.cohort.toUpperCase()} · {t.skill} · canonical {t.canonicalId}</small></li>)}</ol>:<p>No specific repair targets are pending. Continue your normal lessons.</p>}
       <button type="button" disabled={status==="loading"||e05.repair.pending===0} onClick={onStartE05Repair}>Practise changed-question corrections</button>
       <details><summary>Canonical A1/A2 structure and subdivision limits</summary><p>A1 units: {e05.canonical.a1}; unsplit A2 units: {e05.canonical.unsplitA2}; explicitly labeled A2.1: {e05.canonical.explicitA21}; explicitly labeled A2.2: {e05.canonical.explicitA22}. If the source only labels A2, dividing it in halves is not a verified CEFR/JF A2.1/A2.2 mapping.</p></details>
     </section>
     <section className="e06-course" aria-labelledby="e06-course-title">
-      <header className="e06-course__header"><div><p className="j4-kicker">E06 · ORIGINAL INDEPENDENT A1/A2</p><h2 id="e06-course-title">Communicate across everyday situations</h2><p>Seven source-linked cases retain their eight controlled FSRS cues, seven delayed-transfer prompts and two-draft writing. E11 adds original listening and reading plus two new practical reply decisions per case, all optional and excluded from mastery. E12 lets you compare and revise your own message without inventing a spoken proficiency score.</p></div><strong>{e06.reviewed}/{e06.total} delayed sets</strong></header>
+      <header className="e06-course__header"><div><h2 id="e06-course-title">Communicate across everyday situations</h2><p>Seven source-linked cases retain their eight controlled FSRS cues, seven delayed-transfer prompts and two-draft writing. E11 adds original listening and reading plus two new practical reply decisions per case, all optional and excluded from mastery. E12 lets you compare and revise your own message without inventing a spoken proficiency score.</p></div><strong>{e06.reviewed}/{e06.total} delayed sets</strong></header>
       <ol className="e06-course__cases">{e06.cases.map((c,i)=><li key={c.id} className="e06-course__case">
         <span className="e06-course__number">{String(i+1).padStart(2,"0")}</span>
         <div className="e06-course__info"><h3>{c.title}</h3><p>{c.objective}</p><small>{c.level} · {c.anchorCohort.toUpperCase()} source {c.anchorSceneId}{c.canonicalUnitId?" · "+c.canonicalUnitId:" · unlinked original reading"}</small>
@@ -338,9 +340,9 @@ export function J4Learn(props:Props){
       <header>
         <span className="j4-vertical-label" aria-hidden="true" lang="ja">土台</span>
         <div>
-          <p className="j4-kicker">FOUNDATION · 土台</p>
+          
           <h2 id="j4-foundation-title">Before the road opens</h2>
-          <p>Script and core vocabulary feed every later landmark instead of living in a separate app.</p>
+          
         </div>
       </header>
 
@@ -371,9 +373,9 @@ export function J4Learn(props:Props){
     <section className="j4-scroll-section" aria-labelledby="j4-scroll-title">
       <div className="j4-scroll-heading">
         <div>
-          <p className="j4-kicker">EMAKIMONO · 学びの絵巻</p>
+          
           <h2 id="j4-scroll-title">The learning road</h2>
-          <p>Scroll through the regions. The scenery changes; the prerequisite graph does not.</p>
+          
         </div>
         <JSeal size="large" label="Learning path">学</JSeal>
       </div>
@@ -463,15 +465,15 @@ export function J4Learn(props:Props){
           })}
         </div>
       </div>
-      <p className="j4-scroll-hint">Desktop/tablet: scroll sideways through the illustrated road. Mobile: the same journey becomes a vertical route.</p>
+      
     </section>
 
     <section className="j4-practice" aria-labelledby="j4-practice-title">
       <header className="j4-practice__head">
         <div>
-          <p className="j4-kicker">TRAINING GROUNDS · 稽古場</p>
+          
           <h2 id="j4-practice-title">Practice beyond the road</h2>
-          <p>The course path stays primary. Specialist practice remains available without turning Learn back into an endless dashboard.</p>
+          
         </div>
         <span className="j4-practice__brush" aria-hidden="true"/>
       </header>

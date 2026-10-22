@@ -29,7 +29,7 @@ test("J2 isolates operations from learner Progress behind diagnostics",async({pa
   await page.goto("./");
   await page.getByRole("button",{name:"Progress",exact:true}).click();
 
-  await expect(page.getByRole("heading",{name:"The path you have actually built"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Progress"})).toBeVisible();
   await expect(page.getByText("P11 / P21 / P22 RELEASE OPERATIONS",{exact:true})).toHaveCount(0);
   await expect(page.getByText("P22 DEPLOYMENT IDENTITY",{exact:true})).toHaveCount(0);
   await expect(page.getByText("P9 PROVIDER OBSERVABILITY",{exact:true})).toHaveCount(0);

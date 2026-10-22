@@ -1,3 +1,4 @@
+import {openAdditionalLearn} from "./open-additional-learn";
 import { expect,test } from "@playwright/test";
 
 test("P18 exposes hidden live pressure, real-partner evidence and cross-domain transfer",async({page})=>{
@@ -20,14 +21,13 @@ test("P18 exposes hidden live pressure, real-partner evidence and cross-domain t
   await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
   await page.getByTestId("j8-c1-vault").locator("summary").click();
   await expect(page.getByText("C1→C2 LONGITUDINAL PORTFOLIO",{exact:true})).toBeVisible();
-  await expect(page.getByText("ADVANCED INTERACTION",{exact:true})).toBeVisible();
+  await expect(page.locator(".p18-portfolio").getByText("Pressure turns",{exact:true})).toBeVisible();
 });
 
 test("P18 upgrades the C1 AI coach with live-repair scenario chains",async({page})=>{
   await page.goto("./");
   await page.getByRole("button",{name:"Learn"}).evaluate((button)=>(button as HTMLButtonElement).click());
-  await page.locator(".beginner-explore > summary").click();
-  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+  await openAdditionalLearn(page,true);
   await page.locator(".j4-practice__drawer").filter({hasText:"AI coach"}).locator(":scope > summary").click();
 
   await expect(page.getByText("ADVANCED LIVE INTERACTION",{exact:true})).toBeVisible();

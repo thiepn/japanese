@@ -123,7 +123,7 @@ export function C1ResearchQualityLab(){
       <div><span className="course-kicker">C1 RESEARCH QUALITY</span><h2>Turn real-source work into research-grade evidence</h2></div>
       <span className="course-count">quality · provenance · human review</span>
     </div>
-    <p className="course-note">This workspace deepens the real-source environment without adding another mastery layer: structured bibliography, learner-supplied licensed/private excerpts, artifact-bound human review and interest-driven specialist tracks. The app does not automatically scrape or republish external pages.</p>
+    <p className="course-note">External pages are not scraped or republished.</p>
 
     <div className="p16-stats">
       <QualityStat value={quality.bibliographySources} label="sources documented"/>

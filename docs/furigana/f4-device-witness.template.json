@@ -1,0 +1,169 @@
+{
+  "schema": "thiepn-japanese-f4-furigana-device-witness",
+  "schemaVersion": 1,
+  "source": {
+    "baseF3Commit": "1aca20a88a4b12a4634f1d7dad150362927e597e",
+    "sourcePath": "content/seed/jp-core.json",
+    "sourceGitBlobSHA": "e15c8ae44e3aac08750e8fa7e34ec0ad7d333927",
+    "sourceSHA256": "e0d8c314728bad983c84fde7b3cbfb69d95af54ac8dbf43c3b56eee1388ded91"
+  },
+  "status": "NOT_TESTED",
+  "candidateCommit": null,
+  "origin": null,
+  "device": {
+    "model": null,
+    "os": null,
+    "browser": null,
+    "installedPwa": null,
+    "locale": null
+  },
+  "operator": {
+    "label": null,
+    "observedAt": null
+  },
+  "checks": [
+    {
+      "id": "candidate-identity",
+      "category": "identity",
+      "instructions": "Read actual served /release-meta.json on test origin and compare with the exact qualified F4 commit; no production-origin assumption",
+      "result": "NOT_TESTED",
+      "actualObservation": null,
+      "evidenceRefs": [],
+      "evidenceSHA256": null
+    },
+    {
+      "id": "android-installed-pwa",
+      "category": "android",
+      "instructions": "On an authorized physical Android handset, install and cold launch the independent test-origin PWA",
+      "result": "NOT_TESTED",
+      "actualObservation": null,
+      "evidenceRefs": [],
+      "evidenceSHA256": null
+    },
+    {
+      "id": "android-study-a1",
+      "category": "android",
+      "instructions": "Open A1 sentence lesson such as sentence-a1-003; record before/after furigana-toggle screenshots and contextual reading 何",
+      "result": "NOT_TESTED",
+      "actualObservation": null,
+      "evidenceRefs": [],
+      "evidenceSHA256": null
+    },
+    {
+      "id": "android-study-a2",
+      "category": "android",
+      "instructions": "Open A2 lesson grammar-te-iru and sentence-a2-090; confirm verified ruby and show/hide control",
+      "result": "NOT_TESTED",
+      "actualObservation": null,
+      "evidenceRefs": [],
+      "evidenceSHA256": null
+    },
+    {
+      "id": "android-grammar-cloze",
+      "category": "android",
+      "instructions": "Open A1/A2 grammar completion and production prompts; confirm no ruby, no exposed answer; do not submit personal learner data",
+      "result": "NOT_TESTED",
+      "actualObservation": null,
+      "evidenceRefs": [],
+      "evidenceSHA256": null
+    },
+    {
+      "id": "android-reader-a2",
+      "category": "android",
+      "instructions": "In A2 Weekend plans Reader toggle Reading hints off/on; record ruby visibility, lookup and comprehension isolation",
+      "result": "NOT_TESTED",
+      "actualObservation": null,
+      "evidenceRefs": [],
+      "evidenceSHA256": null
+    },
+    {
+      "id": "compact-320",
+      "category": "display",
+      "instructions": "Use real narrow 320px viewport/browser zoom, verify no horizontal overflow or clipped ruby",
+      "result": "NOT_TESTED",
+      "actualObservation": null,
+      "evidenceRefs": [],
+      "evidenceSHA256": null
+    },
+    {
+      "id": "zoom-200",
+      "category": "display",
+      "instructions": "At 200% browser zoom confirm ruby/kanji spacing, no overlap and unchanged controls",
+      "result": "NOT_TESTED",
+      "actualObservation": null,
+      "evidenceRefs": [],
+      "evidenceSHA256": null
+    },
+    {
+      "id": "dark-contrast",
+      "category": "display",
+      "instructions": "Inspect light, dark and forced-color/high-contrast modes for visible ruby text, buttons, focus indicators",
+      "result": "NOT_TESTED",
+      "actualObservation": null,
+      "evidenceRefs": [],
+      "evidenceSHA256": null
+    },
+    {
+      "id": "keyboard-only",
+      "category": "accessibility",
+      "instructions": "With hardware keyboard tab to toggle and activate Enter/Space; verify aria-pressed and focus visibility",
+      "result": "NOT_TESTED",
+      "actualObservation": null,
+      "evidenceRefs": [],
+      "evidenceSHA256": null
+    },
+    {
+      "id": "talkback-reading",
+      "category": "accessibility",
+      "instructions": "With genuine TalkBack confirm understandable voiced Japanese reading and correct logical order; record screen-reader transcript",
+      "result": "NOT_TESTED",
+      "actualObservation": null,
+      "evidenceRefs": [],
+      "evidenceSHA256": null
+    },
+    {
+      "id": "talkback-forms",
+      "category": "accessibility",
+      "instructions": "Use TalkBack to verify cloze/production input has no disclosed answer and controls are announced",
+      "result": "NOT_TESTED",
+      "actualObservation": null,
+      "evidenceRefs": [],
+      "evidenceSHA256": null
+    },
+    {
+      "id": "audio-and-offline",
+      "category": "android",
+      "instructions": "Verify playback independent from furigana state; test installed PWA offline navigation without wiping existing data",
+      "result": "NOT_TESTED",
+      "actualObservation": null,
+      "evidenceRefs": [],
+      "evidenceSHA256": null
+    },
+    {
+      "id": "data-isolation",
+      "category": "integrity",
+      "instructions": "Confirm changing furigana does not mutate score, learner progress, answer or saved session; use disposable/local-only state",
+      "result": "NOT_TESTED",
+      "actualObservation": null,
+      "evidenceRefs": [],
+      "evidenceSHA256": null
+    },
+    {
+      "id": "external-review-match",
+      "category": "identity",
+      "instructions": "Check human linguist assessed exact identical build and issue list; mismatching head is NOT_TESTED",
+      "result": "NOT_TESTED",
+      "actualObservation": null,
+      "evidenceRefs": [],
+      "evidenceSHA256": null
+    }
+  ],
+  "summary": {
+    "independentHumanAcceptance": false,
+    "physicalDeviceAccepted": false,
+    "visualArchive42Cases126Images": "NOT_TESTED",
+    "P21": "HOLD",
+    "P22": "HOLD",
+    "releaseAuthorized": false
+  }
+}

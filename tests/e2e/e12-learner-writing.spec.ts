@@ -1,3 +1,4 @@
+import {openAdditionalLearn} from "./open-additional-learn";
 import {readFileSync} from "node:fs";
 import {expect,test} from "@playwright/test";
 
@@ -38,6 +39,7 @@ test("E12 browser: source-gated guest first message, skip optional checks, revis
  },fixture);
  await page.reload();
  await page.getByRole("button",{name:"Learn",exact:true}).click();
+ await openAdditionalLearn(page,false);
  await page.locator("details.e07-track-list > summary").click();
  const caseCard=page.locator(".e06-course__case").filter({hasText:"Meet someone and ask for help"});
  await expect(caseCard).toBeVisible();
@@ -102,6 +104,7 @@ test("E12 browser: source-gated guest first message, skip optional checks, revis
 
  await page.reload();
  await page.getByRole("button",{name:"Learn",exact:true}).click();
+ await openAdditionalLearn(page,false);
  await page.locator("details.e07-track-list > summary").click();
  const recovered=page.locator(".e06-course__case").filter({hasText:"Meet someone and ask for help"});
  await expect(recovered).toContainText("first message recorded");

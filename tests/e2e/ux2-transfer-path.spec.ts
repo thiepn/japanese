@@ -1,7 +1,9 @@
+import {openAdditionalLearn} from "./open-additional-learn";
 import {expect,test} from "@playwright/test";
 test("UX2 original cumulative cases and all practical studios are navigable",async({page},testInfo)=>{
  await page.goto("./");
  await page.getByRole("button",{name:"Learn",exact:true}).click();
+ await openAdditionalLearn(page,false);
  if(testInfo.project.name==="desktop-chromium"){
   const catalogue=page.locator(".e07-track-list").filter({hasText:"Browse every original A1/A2 situation"});
   await catalogue.locator(":scope > summary").click();

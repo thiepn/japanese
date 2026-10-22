@@ -38,7 +38,7 @@ export function C1Portfolio(){
       <div><span className="course-kicker">C1→C2 LONGITUDINAL PORTFOLIO</span><h2>Longitudinal advanced evidence + external calibration + internal qualification</h2></div>
       <span className="course-count">{portfolio.activeDays} active C1 days</span>
     </div>
-    <p>This portfolio consolidates advanced autonomy, source, research, precision, interaction and audio evidence into a transparent longitudinal readiness matrix: durable advanced performance, repeated broad human review, reviewer calibration and an explicit internal advanced-pathway qualification gate. It remains a product qualification rather than accredited CEFR C2 certification.</p>
+    
     <div className="portfolio-export-actions">
       <button className="unit-action" disabled={exporting} type="button" onClick={()=>void exportPortfolio("json")}>Export C1 JSON</button>
       <button className="quiet-button" disabled={exporting} type="button" onClick={()=>void exportPortfolio("markdown")}>Export C1 Markdown</button>
@@ -58,7 +58,7 @@ export function C1Portfolio(){
     </div>
 
     {environment?<section className="p15-portfolio-environment">
-      <div className="section-heading"><div><span className="course-kicker">AUTHENTIC ENVIRONMENT</span><h3>Real-source research + multi-day production</h3></div><span>{environment.writingProjectsCompleted}/{environment.projects.length} projects complete</span></div>
+      <div className="section-heading"><div><h3>Real-source research + multi-day production</h3></div><span>{environment.writingProjectsCompleted}/{environment.projects.length} projects complete</span></div>
       <div className="portfolio-stats">
         <PortfolioStat value={environment.registeredSources} label="External sources"/>
         <PortfolioStat value={environment.evaluatedSources} label="Evaluated sources"/>
@@ -78,7 +78,7 @@ export function C1Portfolio(){
     </section>:null}
 
     {quality?<section className="p16-portfolio-quality">
-      <div className="section-heading"><div><span className="course-kicker">RESEARCH QUALITY</span><h3>Provenance + human review + specialist depth</h3></div><span>{quality.reviewedProjects} projects human-reviewed</span></div>
+      <div className="section-heading"><div><h3>Provenance + human review + specialist depth</h3></div><span>{quality.reviewedProjects} projects human-reviewed</span></div>
       <div className="portfolio-stats">
         <PortfolioStat value={quality.bibliographySources} label="Sources documented"/>
         <PortfolioStat value={quality.privateExcerpts} label="Private excerpts"/>
@@ -97,7 +97,7 @@ export function C1Portfolio(){
     </section>:null}
 
     {precision?<section className="p17-portfolio">
-      <div className="section-heading"><div><span className="course-kicker">PRECISION BRIDGE</span><h3>Stylistic control + specialist discourse + repair</h3></div><span>{precision.sustainedSpecialistTracks} sustained specialist tracks</span></div>
+      <div className="section-heading"><div><h3>Stylistic control + specialist discourse + repair</h3></div><span>{precision.sustainedSpecialistTracks} sustained specialist tracks</span></div>
       <div className="portfolio-stats">
         <PortfolioStat value={precision.precisionArtifacts.length} label="Precision rewrites"/>
         <PortfolioStat value={precision.precisionModes} label="Precision modes"/>
@@ -117,7 +117,7 @@ export function C1Portfolio(){
     </section>:null}
 
     {interaction?<section className="p18-portfolio">
-      <div className="section-heading"><div><span className="course-kicker">ADVANCED INTERACTION</span><h3>Hidden pressure + real-time repair + real human exchange</h3></div><span>{interaction.robustSessions} robust pressure sessions</span></div>
+      <div className="section-heading"><div><h3>Hidden pressure + real-time repair + real human exchange</h3></div><span>{interaction.robustSessions} robust pressure sessions</span></div>
       <div className="portfolio-stats">
         <PortfolioStat value={interaction.turns.length} label="Pressure turns"/>
         <PortfolioStat value={interaction.pressureTypes} label="Pressure types"/>
@@ -138,7 +138,7 @@ export function C1Portfolio(){
     </section>:null}
 
     {p19?<section className="p19-portfolio">
-      <div className="section-heading"><div><span className="course-kicker">AUDIO + EXTERNAL REVIEW</span><h3>Real signal timing + overlap listening + human qualitative evidence</h3></div><span>{p19.broadlyCoveredReviews} broad external reviews</span></div>
+      <div className="section-heading"><div><h3>Real signal timing + overlap listening + human qualitative evidence</h3></div><span>{p19.broadlyCoveredReviews} broad external reviews</span></div>
       <div className="portfolio-stats">
         <PortfolioStat value={p19.prosodyCaptures.length} label="Prosody captures"/>
         <PortfolioStat value={p19.prosodyTargets} label="Prosody targets"/>
@@ -158,7 +158,7 @@ export function C1Portfolio(){
 
     <div className="portfolio-columns">
       <article>
-        <span className="course-kicker">DOMAIN SPECIALIZATION</span>
+        
         <h3>Breadth first, then sustained evidence</h3>
         <div className="portfolio-mission-list">{portfolio.domains.map((domain)=><div key={domain.missionId}>
           <div><strong>{domain.title}</strong><span>{domain.status.replace("_"," ")}</span></div>
@@ -168,7 +168,7 @@ export function C1Portfolio(){
       </article>
 
       <article>
-        <span className="course-kicker">CROSS-SESSION RELIABILITY</span>
+        
         <h3>Can the same advanced performance survive time?</h3>
         <p>{portfolio.reliability.successfulAttempts} structurally successful attempts across {portfolio.reliability.activeDays} active production days. Reliability requires success on at least two days separated by 20+ hours.</p>
         {portfolio.reliability.artifactEvidence.length?<div className="reliable-task-list">{portfolio.reliability.artifactEvidence.slice(0,10).map((item)=><div key={item.id}>
@@ -179,7 +179,7 @@ export function C1Portfolio(){
     </div>
 
     {portfolio.reliability.interactionEvidence.length?<section className="portfolio-patterns">
-      <span className="course-kicker">SPONTANEOUS INTERACTION RELIABILITY</span>
+      
       <div>{portfolio.reliability.interactionEvidence.map((item)=><article key={item.chainId}>
         <strong>{item.reliableAcrossSessions?"✓":"○"}</strong>
         <p>{item.title}</p>

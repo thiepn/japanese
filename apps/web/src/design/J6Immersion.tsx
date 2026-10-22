@@ -58,15 +58,11 @@ export function J6ImmersionHome({
       </div>
       <div className="j6-hero__copy">
         <JCartouche japanese="浸る" subtitle="Immerse"/>
-        <p className="j6-kicker">READ · LISTEN · NOTICE · RETURN</p>
-        <h1>Enter Japanese,<br/><em>not another lesson.</em></h1>
-        <p>Read connected Japanese, listen before looking when you want the pressure, mine what matters, and move gradually from graded texts into native-source work.</p>
+        
+        <h1>Immersion</h1>
+        
       </div>
-      <div className="j6-hero__issue" aria-hidden="true">
-        <span>日本語</span>
-        <strong>READING<br/>ROOM</strong>
-        <small>VOL. 01</small>
-      </div>
+      
     </header>
 
     {progress?<section className="j6-ledger" aria-label="Immersion activity">
@@ -83,7 +79,7 @@ export function J6ImmersionHome({
     {recommendation?<section className="j6-feature" aria-labelledby="j6-feature-title">
       <div className="j6-feature__mark" aria-hidden="true"><span>次</span><small>NEXT</small></div>
       <div className="j6-feature__copy">
-        <p className="j6-kicker">EDITOR'S PICK · 次に読む</p>
+        
         <h2 id="j6-feature-title">Focus on {recommendation.focus}</h2>
         {recommendation.canonical?<article className="j6-feature__story">
           <div className="j6-feature__meta"><span>{recommendation.canonical.level}</span><span>graded</span><span>{Math.round(recommendation.canonical.readiness*100)}% ready</span></div>
@@ -107,9 +103,9 @@ export function J6ImmersionHome({
     <section className="j6-media" aria-labelledby="j6-media-title">
       <header className="j6-section-head">
         <div>
-          <p className="j6-kicker">THE READING SHELF · 読みもの</p>
+          
           <h2 id="j6-media-title">Japanese to live inside</h2>
-          <p>Choose by medium rather than by lesson number. Readiness guides you; it never locks a text.</p>
+          
         </div>
         <div className="j6-media-filters" aria-label="Text type">
           {(["all","story","dialogue","functional"] as const).map((kind)=><button
@@ -145,12 +141,12 @@ export function J6ImmersionHome({
           </footer>
         </article>)}
       </div>
-      <p className="j6-note">Curated connected audio uses a verified recording when attached; otherwise the interface explicitly identifies device Japanese speech synthesis.</p>
+      
     </section>
 
     {extensiveTracks.length?<section className="extensive-tracks j6-series" aria-labelledby="j6-series-title">
       <header className="j6-section-head">
-        <div><p className="j6-kicker">SERIES · 連載</p><h2 id="j6-series-title">Read across a theme</h2><p>Connected B2→C1 tracks build endurance across several texts instead of turning one passage into a mastery shortcut.</p></div>
+        <div><h2 id="j6-series-title">Read across a theme</h2></div>
         <JSeal label="Series">連</JSeal>
       </header>
       <div className="extensive-grid j6-series__grid">{extensiveTracks.map((track)=><article className="extensive-card j6-series-card" key={track.id}>
@@ -166,7 +162,7 @@ export function J6ImmersionHome({
 
     {missions.length?<section className="autonomy-missions j6-missions" aria-labelledby="j6-missions-title">
       <header className="j6-section-head">
-        <div><p className="j6-kicker">MISSIONS · 実践</p><h2 id="j6-missions-title">Long-form B2 task chains</h2><p>Cross reading, listening and production over time. Completion is inferred from normal StudyEvents rather than a separate mission score.</p></div>
+        <div><h2 id="j6-missions-title">Long-form B2 task chains</h2></div>
         <JSeal label="Missions">実</JSeal>
       </header>
       <div className="mission-grid j6-missions__grid">{missions.map((entry)=>{
@@ -187,7 +183,7 @@ export function J6ImmersionHome({
 
     <section className="j6-studios" aria-labelledby="j6-studios-title">
       <header className="j6-section-head">
-        <div><p className="j6-kicker">ADVANCED STUDIOS · 研究室</p><h2 id="j6-studios-title">Native-source and advanced work</h2><p>Open the specialist studio you need. These tools stay available without making the reading shelf feel like an operations dashboard.</p></div>
+        <div><h2 id="j6-studios-title">Native-source and advanced work</h2></div>
         <JSeal label="Advanced studios">研</JSeal>
       </header>
 

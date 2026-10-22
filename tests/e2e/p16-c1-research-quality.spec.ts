@@ -12,10 +12,10 @@ test("P16 exposes research-quality tooling without creating a new mastery layer"
   await expect(lab.getByRole("heading",{name:"Keep only material you are allowed to keep"})).toBeVisible();
   await expect(lab.getByRole("heading",{name:"Bind expert feedback to the exact finished artifact"})).toBeVisible();
   await expect(lab.getByRole("heading",{name:"Build depth around your actual interests"})).toBeVisible();
-  await expect(lab.getByText(/does not automatically scrape or republish external pages/i)).toBeVisible();
+  await expect(lab.getByText("External pages are not scraped or republished.",{exact:true})).toBeVisible();
 
   await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
   await page.getByTestId("j8-c1-vault").locator("summary").click();
   await expect(page.getByText("C1→C2 LONGITUDINAL PORTFOLIO",{exact:true})).toBeVisible();
-  await expect(page.getByText("RESEARCH QUALITY",{exact:true})).toBeVisible();
+  await expect(page.locator(".p16-portfolio-quality").getByText("Human-reviewed projects",{exact:true})).toBeVisible();
 });

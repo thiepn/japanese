@@ -3,6 +3,7 @@ import {useEffect,useMemo,useRef,useState,type KeyboardEvent} from "react";
 import type {EntityKind} from "@thiepn/domain";
 import type {SearchResult} from "@thiepn/search";
 import {coreContent,senseForLexeme} from "../coreContent";
+import {VocabularyIllustration} from "../study/VocabularyIllustration";
 import {JCartouche,JPattern,JSeal} from "./index";
 
 type FilterKind="all"|Extract<EntityKind,"lexeme"|"kanji"|"grammar"|"sentence"|"lexical_chunk"|"text"|"production_task">;
@@ -65,13 +66,13 @@ export function J7Library({
       <JPattern name="sayagata" className="j7-library__pattern"/>
       <div className="j7-library__spine" aria-hidden="true">
         <span>蔵</span>
-        <small>ARCHIVE</small>
+        
       </div>
       <div className="j7-library__intro">
         <JCartouche japanese="蔵" subtitle="Library"/>
-        <p className="j7-kicker">REFERENCE · SEARCH · CONNECT</p>
+        
         <h1 id="j7-library-title">Japanese knowledge</h1>
-        <p>Search canonical words, collocations, kanji, grammar, sentences and graded texts by Japanese form, reading or English meaning/function.</p>
+        
       </div>
       <JSeal label="Japanese archive">蔵</JSeal>
     </header>
@@ -121,7 +122,7 @@ export function J7Library({
       <section className="j7-index" aria-labelledby="j7-index-title">
         <header className="j7-index__head">
           <div>
-            <p className="j7-kicker">CATALOG · 目録</p>
+            
             <h2 id="j7-index-title">{query.trim()?"Search results":"Starter shelf"}</h2>
           </div>
           <span>{filtered.length}</span>
@@ -164,11 +165,7 @@ export function J7Library({
       </aside>
     </div>
 
-    <footer className="j7-library__footer">
-      <span>LOCAL-FIRST REFERENCE</span>
-      <i/>
-      <p>Search runs against the canonical content bundled with Japanese. Results are reference views, not a second copy of learning content.</p>
-    </footer>
+    
   </section>;
 }
 
@@ -191,6 +188,7 @@ function ReferenceDetail({item}:{item:SearchResult}){
       {detail.primary?<strong>{detail.primary}</strong>:item.subtitle?<strong>{item.subtitle}</strong>:null}
     </div>
 
+    {item.entity.kind==="lexeme"?<VocabularyIllustration key={item.entity.id} lexemeId={item.entity.id} className="vocabulary-visual--reference"/>:null}
     {detail.badges.length?<div className="j7-reference__badges">{detail.badges.map((badge)=><span key={badge}>{badge}</span>)}</div>:null}
 
     {detail.sections.map((section)=><section className="j7-reference__section" key={section.label}>

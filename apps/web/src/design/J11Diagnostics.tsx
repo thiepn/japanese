@@ -10,13 +10,13 @@ import {NativeCurationPanel} from "../immerse/NativeCurationPanel";
 
 type Panel="overview"|"review"|"release"|"deployment"|"runtime"|"account";
 
-const PANELS:readonly {id:Panel;glyph:string;label:string;note:string}[]=[
-  {id:"overview",glyph:"総",label:"Overview",note:"Technical boundary"},
-  {id:"review",glyph:"評",label:"Human review",note:"Advisory evidence"},
-  {id:"release",glyph:"門",label:"Release gates",note:"Curation + qualification"},
-  {id:"deployment",glyph:"版",label:"Deployment",note:"Build identity"},
-  {id:"runtime",glyph:"脈",label:"Runtime",note:"Provider health"},
-  {id:"account",glyph:"認",label:"Account",note:"Sign-in diagnostics"},
+const PANELS:readonly {id:Panel;glyph:string;label:string}[]=[
+  {id:"overview",glyph:"総",label:"Overview"},
+  {id:"review",glyph:"評",label:"Human review"},
+  {id:"release",glyph:"門",label:"Release gates"},
+  {id:"deployment",glyph:"版",label:"Deployment"},
+  {id:"runtime",glyph:"脈",label:"Runtime"},
+  {id:"account",glyph:"認",label:"Account"},
 ];
 
 function initialPanel():Panel{
@@ -47,9 +47,9 @@ export function J11Diagnostics({onExit,accountStatus,accountConnected}:{onExit:(
   return <section className="j11-diagnostics" aria-labelledby="j11-title">
     <header className="j11-diagnostics__masthead">
       <div>
-        <p className="j11-kicker">TECHNICAL WORKSPACE · 診断</p>
+        
         <h1 id="j11-title">Japanese operations</h1>
-        <p>Release qualification, provider health, deployment identity, source curation and reviewer administration live here—not in the learner experience.</p>
+        
       </div>
       <button className="j11-back" type="button" onClick={onExit}><span aria-hidden="true">←</span><strong>Back to Japanese</strong></button>
     </header>
@@ -69,7 +69,7 @@ export function J11Diagnostics({onExit,accountStatus,accountConnected}:{onExit:(
       >
         <span aria-hidden="true">{item.glyph}</span>
         <strong>{item.label}</strong>
-        <small>{item.note}</small>
+        
       </button>)}
     </nav>
 
@@ -87,15 +87,15 @@ export function J11Diagnostics({onExit,accountStatus,accountConnected}:{onExit:(
 function Overview({onOpen}:{onOpen:(panel:Panel)=>void}){
   return <section className="j11-overview" aria-labelledby="j11-overview-title">
     <header>
-      <p className="j11-kicker">SYSTEM MAP · 技術境界</p>
+      
       <h2 id="j11-overview-title">Technical concerns stay technical</h2>
-      <p>The learner surfaces now contain study, immersion, reference and evidence views only. Operational controls are available from this explicit workspace or a direct diagnostics URL.</p>
+      
     </header>
 
     <div className="j11-overview__grid">
       {PANELS.filter((item)=>item.id!=="overview").map((item)=><article key={item.id}>
         <span aria-hidden="true">{item.glyph}</span>
-        <div><small>{item.note}</small><h3>{item.label}</h3><p>{overviewCopy(item.id)}</p></div>
+        <div><h3>{item.label}</h3></div>
         <button type="button" onClick={()=>onOpen(item.id)}>Open {item.label.toLowerCase()}</button>
       </article>)}
     </div>
@@ -109,17 +109,6 @@ function Overview({onOpen}:{onOpen:(panel:Panel)=>void}){
       <code>?diagnostics=1&amp;panel=account</code>
     </div>
   </section>;
-}
-
-function overviewCopy(panel:Panel):string{
-  switch(panel){
-    case "overview":return "Technical workspace overview.";
-    case "review":return "Review productive artifacts and export external-review handoffs without rewriting learner mastery.";
-    case "release":return "Inspect source curation, static release gates, external evidence and physical-device qualification boundaries.";
-    case "deployment":return "Inspect the immutable build/channel metadata actually embedded in the running deployment.";
-    case "runtime":return "Inspect speech/audio/provider availability and operational degradation without exposing it as learner progress.";
-    case "account":return "See the last redacted Google callback failure and installed-PWA environment without revealing tokens or your account ID.";
-  }
 }
 
 
@@ -155,7 +144,7 @@ function AccountDiagnostics({status,connected}:{status:string;connected:boolean}
   }
   return <section className="j11-account-diagnostics" aria-labelledby="j11-account-title">
     <header>
-      <p className="j11-kicker">ACCOUNT · 認証</p>
+      
       <h2 id="j11-account-title">Sign-in diagnostics</h2>
       <p>Local, non-secret troubleshooting details for Google → THIEPN Account → Japanese handoff. These checks do not prove that the OAuth provider is configured correctly.</p>
     </header>

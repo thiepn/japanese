@@ -27,9 +27,9 @@ export function E15RecoveryQueue({reviews,busy,onStart}:Props){
   return <section className="e15-recovery" aria-labelledby="e15-recovery-title">
     <header className="e15-recovery__header">
       <div>
-        <p className="j4-kicker">E15 · ORIGINAL CONTEXT RECOVERY</p>
+        
         <h2 id="e15-recovery-title">Return to what you heard and meant</h2>
-        <p>Short, focused practice drawn from the listening, reply and written follow-up attempts already saved for your own original Japanese situations. A wrong reply returns to the original intention; a completed response can be revisited after time away.</p>
+        
       </div>
       <strong>{ready.length} optional revisits available</strong>
     </header>

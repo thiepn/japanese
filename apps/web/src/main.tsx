@@ -18,6 +18,7 @@ import "./design/j8.css";
 import "./design/j9.css";
 import "./design/j10.css";
 import "./design/j15b.css";
+import "./design/ui-copy.css";
 
 const initialTheme=readJTheme();
 applyJTheme(initialTheme);

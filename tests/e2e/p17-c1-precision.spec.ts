@@ -22,6 +22,6 @@ test("P17 exposes the C1-to-C2 precision bridge and keeps evidence boundaries ex
   await page.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
   await page.getByTestId("j8-c1-vault").locator("summary").click();
   await expect(page.getByText("C1→C2 LONGITUDINAL PORTFOLIO",{exact:true})).toBeVisible();
-  await expect(page.getByText("PRECISION BRIDGE",{exact:true})).toBeVisible();
+  await expect(page.locator(".p17-portfolio").getByText("Precision rewrites",{exact:true})).toBeVisible();
   await expect(page.getByRole("heading",{name:"Stylistic control + specialist discourse + repair"})).toBeVisible();
 });

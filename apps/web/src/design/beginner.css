@@ -4,7 +4,7 @@
 .beginner-entry h1{margin:0;font-size:clamp(27px,4vw,40px);line-height:1.2;}
 .beginner-entry__objective{margin:0;font-size:clamp(18px,2.5vw,23px);font-weight:600;}
 .beginner-entry__actions{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 20px;}
-.beginner-entry__actions button{min-height:50px;padding:12px 20px;font-size:16px;font-weight:700;border-radius:5px;border:1px solid var(--j-line-strong);cursor:pointer;}
+.beginner-entry__actions button{min-height:56px;padding:12px 20px;font-size:16px;font-weight:700;border-radius:5px;border:1px solid var(--j-line-strong);cursor:pointer;}
 .beginner-entry__actions button:focus-visible{outline:3px solid var(--j-season-accent);outline-offset:3px;}
 .beginner-entry__primary{background:var(--j-fg);color:var(--j-bg);flex:1 1 235px;}
 .beginner-entry__review{background:var(--j-bg);color:var(--j-fg);flex:1 1 200px;}
@@ -20,9 +20,30 @@
 .beginner-explore>summary{cursor:pointer;font-size:16px;font-weight:700;padding:16px;border:1px solid var(--j-line);}
 .beginner-explore[open]>summary{margin-bottom:24px;}
 .j5-kana-audio{display:flex;align-items:center;gap:12px;margin-left:auto;}
-.j5-kana-audio button{min-height:44px;padding:8px 15px;font-size:15px;border:1px solid var(--j-line-strong);border-radius:5px;color:var(--j-fg);background:var(--j-bg);cursor:pointer;}
+.j5-kana-audio button{min-height:48px;padding:8px 15px;font-size:15px;border:1px solid var(--j-line-strong);border-radius:5px;color:var(--j-fg);background:var(--j-bg);cursor:pointer;}
 .j5-kana-audio button:focus-visible{outline:3px solid var(--j-season-accent);outline-offset:2px;}
 @media(max-width:600px){.beginner-entry__stages{grid-template-columns:1fr;}.beginner-entry__actions{flex-direction:column;}.beginner-entry__actions button{flex-basis:auto;width:100%;}}
 .beginner-entry__path{margin-top:20px;}
 .beginner-entry__path>summary{min-height:44px;display:list-item;cursor:pointer;font-weight:650;font-size:15px;padding:10px 4px;}
 .beginner-entry__path[open]>summary{margin-bottom:12px;}
+
+.katakana-entry{max-width:780px;margin:20px auto 0;padding:24px;border:1px solid var(--j-line);color:var(--j-fg);background:var(--j-bg-elevated);}
+.katakana-entry__header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.katakana-entry__header h2{font-size:clamp(21px,3vw,27px);line-height:1.25;margin:0;}
+.katakana-entry__header p{font-size:16px;line-height:1.5;margin:8px 0 0;}
+.katakana-entry__action{padding:12px 18px;min-height:48px;min-width:175px;font-size:16px;font-weight:650;background:var(--j-bg);color:var(--j-fg);border:1px solid var(--j-line-strong);border-radius:5px;cursor:pointer;}
+.katakana-entry__action:focus-visible{outline:3px solid var(--j-season-accent);outline-offset:2px;}
+.katakana-entry__action:disabled{opacity:.54;cursor:not-allowed;}
+.katakana-entry progress{display:block;width:100%;height:10px;margin:18px 0 0;accent-color:var(--j-season-accent);}
+.katakana-entry .beginner-entry__path{margin-top:12px;}
+@media(max-width:600px){.katakana-entry{padding:20px}.katakana-entry__action{width:100%}}
+
+.kana-words-entry{max-width:780px;margin:20px auto 0;padding:22px 24px;display:flex;gap:20px;justify-content:space-between;align-items:center;flex-wrap:wrap;border:1px solid var(--j-line);background:var(--j-bg-elevated);color:var(--j-fg);}
+.kana-words-entry h2{margin:0;font-size:clamp(21px,3vw,27px);}
+.kana-words-entry p{margin:8px 0 0;font-size:16px;line-height:1.5;}
+.kana-words-entry__actions{display:grid;gap:10px;flex:1 1 190px;min-width:0;}
+.kana-words-entry__actions button{width:100%;}
+.kana-words-entry button{min-width:180px;min-height:48px;padding:12px 18px;font-size:16px;font-weight:650;color:var(--j-fg);background:var(--j-bg);border:1px solid var(--j-line-strong);border-radius:5px;cursor:pointer;}
+.kana-words-entry button:focus-visible{outline:3px solid var(--j-season-accent);outline-offset:3px;}
+.kana-words-entry button:disabled{opacity:.54;cursor:not-allowed;}
+@media(max-width:600px){.kana-words-entry{padding:20px}.kana-words-entry button{width:100%}}

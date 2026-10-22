@@ -24,7 +24,7 @@ export function E19SourceWritingStudio({overview,busy,onSource,onWrite}:Props){
   ?compareE19Drafts(current.firstDraft!,current.revisedDraft!):null;
  return <section className="e19-writing" aria-labelledby="e19-writing-title">
   <header className="e19-writing__header">
-   <div><p className="j4-kicker">E19 · ORIGINAL A1–A2 WRITING CONTINUITY</p>
+   <div>
     <h2 id="e19-writing-title">Write, compare and revise your own Japanese</h2>
     <p>One original situation, one private first message, then a deliberate independent rewrite grounded in its actual dialogue, notice and audience. Listening and reading comprehension open the writing path. No automated essay grade or CEFR certification.</p>
    </div>
@@ -57,7 +57,7 @@ export function E19SourceWritingStudio({overview,busy,onSource,onWrite}:Props){
     </details>
     {current.firstDraft?<details className="e19-writing__private" aria-label="Private writing comparison">
      <summary>Compare my saved private drafts</summary>
-     <p>These are your actual previously saved local responses for this original situation. They are not a translation, model answer, or automatically evaluated Japanese.</p>
+     
      <div className="e19-writing__comparison">
       <div><strong>First draft · {current.firstAt?new Date(current.firstAt).toLocaleDateString():"saved locally"}</strong><pre lang="ja">{current.firstDraft}</pre></div>
       <div><strong>{current.revisedDraft?"Most recent revision · "+(current.revisionAt?new Date(current.revisionAt).toLocaleDateString():"saved locally"):"Revision not submitted"}</strong>

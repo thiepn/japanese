@@ -1,0 +1,382 @@
+import {describe,expect,it} from "vitest";
+import type {StudyEvent} from "@thiepn/domain";
+import {createStudyEvent,isStudyLesson,type StudyPrompt} from "@thiepn/study-player";
+import {coreContent} from "../apps/web/src/coreContent";
+import {buildBeginnerStage,projectBeginnerOverview,chooseBeginnerContinuation,type BeginnerStageId} from "../apps/web/src/study/beginnerCourse";
+import {buildKanaReadingContext,buildKanaReadingReference,projectKanaReadingContext} from "../apps/web/src/study/kanaReadingContext";
+import {projectKanaWordBridge} from "../apps/web/src/study/kanaWordBridge";
+
+const GROUPS:BeginnerStageId[]=["vowels","k","s","t","n","h","m","y","r","w"];
+function completedHiragana():StudyEvent[]{
+  let events:StudyEvent[]=[];
+  for(const id of GROUPS){
+    const steps=buildBeginnerStage(id,events).filter((step):step is StudyPrompt=>!isStudyLesson(step));
+    const correct=steps.map((prompt,index)=>createStudyEvent({
+      id:"hira-"+id+"-"+index,userId:"test-owner",deviceId:"test-device",prompt,
+      response:prompt.acceptedAnswers[0]!,occurredAt:"2026-10-20T09:00:00.000Z",responseTimeMs:100
+    }));
+    expect(correct.every(event=>event.result==="correct")).toBe(true);
+    events=[...events,...correct];
+  }
+  return events;
+}
+function submitted(prompt:StudyPrompt,answer:string,occurredAt="2026-10-20T09:30:00.000Z",id="reading-"+prompt.id){
+  const graded=createStudyEvent({id,userId:"test-owner",deviceId:"test-device",
+    prompt,response:answer,occurredAt,responseTimeMs:100});
+  return {...graded,result:"skipped" as const,
+    metadata:{...graded.metadata,nonAuthoritative:true,structuralResult:graded.result}};
+}
+describe("original A1 sentences as basic-kana reading transfer",()=>{
+  it("remains locked before all ten original hiragana groups, without gating A1",()=>{
+    expect(projectKanaReadingContext([])).toMatchObject({available:false,completed:0,remaining:0,needsRetry:0,total:7});
+    expect(buildKanaReadingContext([])).toEqual([]);
+    expect(buildKanaReadingReference([])).toEqual([]);
+    const completed=completedHiragana();
+    expect(projectBeginnerOverview(completed).complete).toBe(true);
+    expect(projectKanaReadingContext(completed)).toMatchObject({available:true,revisitable:false,completed:0,remaining:7,needsRetry:0,total:7});
+    expect(buildKanaReadingReference(completed)).toEqual([]);
+    expect(projectKanaWordBridge(completed).readingContext.remaining).toBe(7);
+    expect(chooseBeginnerContinuation(projectBeginnerOverview(completed),
+      {unitId:"source-a1-introduction",status:"not_started"},"next-a1-scene"))
+      .toEqual({kind:"first-conversation"});
+  });
+  it("selects only original sentences with authored basic-kana readings and authentic translations",()=>{
+    const prompts=buildKanaReadingContext(completedHiragana());
+    expect(prompts).toHaveLength(2);
+    expect(prompts.every(step=>!isStudyLesson(step))).toBe(true);
+    expect((prompts[0] as StudyPrompt).explanation).toContain("本 (ほん) — book");
+    expect((prompts[0] as StudyPrompt).explanation).toContain("を — marks the direct object of an action");
+    expect((prompts[0] as StudyPrompt).explanation).toContain("〜ます — polite nonpast verb predicate");
+    const correctPositions=prompts.map(step=>!isStudyLesson(step)&&step.promptType==="choice"?step.choices.indexOf(step.acceptedAnswers[0]!):-1);
+    expect(correctPositions).toEqual([0,1]);
+    const first=prompts[0] as StudyPrompt;
+    expect(first).toMatchObject({
+      id:"a0-source-reading-sentence-a1-004",prompt:"ほんをよみます。",
+      acceptedAnswers:["I read a book."],sourceId:"thiepn-original",
+      primaryTarget:{kind:"sentence",id:"sentence-a1-004"},
+      eventMetadata:{nonAuthoritative:true,schedulerExcluded:true,kanaSourceReadingContext:true}
+    });
+    for(const step of prompts){
+      if(isStudyLesson(step)||step.promptType!=="choice")throw Error("EXPECTED_ORIGINAL_SENTENCE_PROMPT");
+      const sentence=coreContent.sentences.find(row=>row.id===step.primaryTarget.id);
+      expect(sentence).toBeDefined();
+      expect(step.prompt).toBe(sentence?.reading);
+      expect(step.explanation).toContain(sentence!.text);
+      expect(step.explanation).toContain(sentence!.translation);
+      expect(step.choices).toContain(sentence!.translation);
+      expect(step.choices.every(choice=>coreContent.sentences.some(row=>row.translation===choice))).toBe(true);
+      expect(step.promptType).toBe("choice");
+      expect(step.eventMetadata?.nonAuthoritative).toBe(true);
+    }
+  });
+  it("maps every incorrect choice to a different original A1 sentence after answering",()=>{
+    const completed=completedHiragana();
+    let events=[...completed];
+    const reviewed=new Set<string>();
+    for(let index=0;index<7;index++){
+      const first=buildKanaReadingContext(events)[0];
+      if(!first||isStudyLesson(first)||first.promptType!=="choice")
+        throw Error("EXPECTED_AUTHORED_CHOICE");
+      reviewed.add(first.primaryTarget.id);
+      const target=coreContent.sentences.find(sentence=>sentence.id===first.primaryTarget.id)!;
+      const foilFeedback=first.eventMetadata?.e06FoilFeedback;
+      expect(Array.isArray(foilFeedback)).toBe(true);
+      const corrections=foilFeedback as Array<{response:string;feedback:string}>;
+      expect(corrections).toHaveLength(3);
+      expect(new Set(corrections.map(item=>item.response)).size).toBe(3);
+      for(const item of corrections){
+        expect(item.response).not.toBe(target.translation);
+        expect(first.choices).toContain(item.response);
+        const foil=coreContent.sentences.find(sentence=>
+          sentence.level==="A1"&&sentence.sourceIds.includes("thiepn-original")
+          &&sentence.translation===item.response);
+        expect(foil).toBeDefined();
+        expect(foil?.id).not.toBe(target.id);
+        expect(item.feedback).toContain(foil!.text);
+        expect(item.feedback).toContain(foil!.reading!);
+        expect(item.feedback).toContain(target.text);
+        expect(item.feedback).toContain(target.reading!);
+      }
+      // The error contrast is only feedback metadata, not the prompt or grading rubric.
+      for(const item of corrections)expect(first.prompt).not.toContain(item.feedback);
+      expect(first.acceptedAnswers).toEqual([target.translation]);
+      expect(first.eventMetadata).toMatchObject({
+        nonAuthoritative:true,schedulerExcluded:true,kanaSourceReadingContext:true
+      });
+      events.push(submitted(first,first.acceptedAnswers[0]!));
+    }
+    expect(reviewed.size).toBe(7);
+    expect(projectKanaReadingContext(events)).toMatchObject({
+      total:7,completed:7,remaining:0,needsRetry:0
+    });
+  });
+  it("persists original attempts but never awards sentence, vocabulary or FSRS mastery",()=>{
+    const completed=completedHiragana();
+    const first=buildKanaReadingContext(completed)[0];
+    if(!first||isStudyLesson(first)||first.promptType!=="choice")throw Error("EXPECTED_SENTENCE_QUESTION");
+    const wrong=submitted(first,first.choices[1]!);
+    expect(wrong.result).toBe("skipped");
+    expect(wrong.primaryTarget).toEqual({kind:"sentence",id:"sentence-a1-004"});
+    expect(wrong.metadata?.nonAuthoritative).toBe(true);
+    expect(projectKanaReadingContext([...completed,wrong])).toMatchObject({
+      available:true,completed:1,remaining:6,needsRetry:1
+    });
+    expect(projectKanaWordBridge([...completed,wrong]).learned).toBe(0);
+    const next=buildKanaReadingContext([...completed,wrong]);
+    expect(next).toHaveLength(2);
+    expect(next[0]?.id).toBe("a0-source-reading-sentence-a1-008");
+    const forged={...wrong,id:"forged",metadata:{...wrong.metadata,promptId:"unrelated"}};
+    expect(projectKanaReadingContext([...completed,forged]).completed).toBe(0);
+    const graded={...wrong,id:"not-unscored",result:"correct" as const};
+    expect(projectKanaReadingContext([...completed,graded]).completed).toBe(0);
+  });
+  it("varies authored translation contrasts and answer position on source-backed retries",()=>{
+    const kana=completedHiragana();
+    const first=buildKanaReadingContext(kana)[0];
+    if(!first||isStudyLesson(first)||first.promptType!=="choice")
+      throw Error("EXPECTED_FIRST_ORIGINAL_READING");
+    const wrong=first.choices.find(choice=>choice!==first.acceptedAnswers[0])!;
+    const miss=submitted(first,wrong,"2026-10-20T09:31:00.000Z","first-source-miss");
+    let events=[...kana,miss];
+    // New original sentences retain priority before a repeat encounter.
+    for(let i=1;i<7;i++){
+      const next=buildKanaReadingContext(events)[0];
+      if(!next||isStudyLesson(next)||next.promptType!=="choice")
+        throw Error("EXPECTED_NEW_ORIGINAL_READING");
+      expect(next.primaryTarget.id).not.toBe(first.primaryTarget.id);
+      events.push(submitted(next,next.acceptedAnswers[0]!));
+    }
+    expect(projectKanaReadingContext(events)).toMatchObject({
+      total:7,completed:7,needsRetry:1,remaining:0
+    });
+    const retry=buildKanaReadingContext(events)[0];
+    if(!retry||isStudyLesson(retry)||retry.promptType!=="choice")
+      throw Error("EXPECTED_RETRY_ORIGINAL_READING");
+    expect(retry.id).toBe(first.id);
+    expect(retry.primaryTarget).toEqual(first.primaryTarget);
+    expect(retry.sourceId).toBe(first.sourceId);
+    expect(retry.acceptedAnswers).toEqual(first.acceptedAnswers);
+    expect(retry.eventMetadata).toMatchObject({
+      nonAuthoritative:true,schedulerExcluded:true,kanaSourceReadingContext:true
+    });
+    expect(first.choices.indexOf(first.acceptedAnswers[0]!)).toBe(0);
+    expect(retry.choices.indexOf(retry.acceptedAnswers[0]!)).toBe(1);
+    expect(retry.choices).not.toEqual(first.choices);
+    const firstFoils=new Set(first.choices.filter(choice=>choice!==first.acceptedAnswers[0]));
+    const retryFoils=retry.choices.filter(choice=>choice!==retry.acceptedAnswers[0]);
+    expect(retryFoils.some(choice=>!firstFoils.has(choice))).toBe(true);
+    const originalTranslations=new Set(coreContent.sentences
+      .filter(sentence=>sentence.level==="A1"&&sentence.sourceIds.includes("thiepn-original"))
+      .map(sentence=>sentence.translation));
+    for(const choice of retry.choices)expect(originalTranslations.has(choice)).toBe(true);
+    const contrasts=retry.eventMetadata?.e06FoilFeedback as Array<{response:string;feedback:string}>;
+    expect(contrasts).toHaveLength(3);
+    for(const contrast of contrasts){
+      expect(retryFoils).toContain(contrast.response);
+      const original=coreContent.sentences.find(sentence=>sentence.translation===contrast.response);
+      expect(original?.sourceIds).toContain("thiepn-original");
+      expect(contrast.feedback).toContain(original!.text);
+      expect(contrast.feedback).toContain(original!.reading!);
+    }
+    // Recorded evidence, not randomization or a second store, controls session layout.
+    expect(buildKanaReadingContext([...events])[0]).toEqual(retry);
+    const forged={...miss,id:"forged-retry",metadata:{...miss.metadata,promptId:"forged-source-prompt"}};
+    expect(buildKanaReadingContext([...events,forged])[0]).toEqual(retry);
+
+    const missAgain=submitted(retry,retryFoils[0]!,
+      "2026-10-20T10:00:00.000Z","second-source-miss");
+    const twice=[...events,missAgain];
+    const third=buildKanaReadingContext(twice)[0];
+    if(!third||isStudyLesson(third)||third.promptType!=="choice")
+      throw Error("EXPECTED_THIRD_SOURCE_READING");
+    expect(third.acceptedAnswers).toEqual(first.acceptedAnswers);
+    expect(third.choices.indexOf(third.acceptedAnswers[0]!)).toBe(2);
+    // Order of historical records from IndexedDB must not affect retry construction.
+    expect(buildKanaReadingContext([missAgain,...events])[0]).toEqual(third);
+    const recovered=submitted(third,third.acceptedAnswers[0]!,
+      "2026-10-20T10:01:00.000Z","source-recovered");
+    expect(projectKanaReadingContext([...twice,recovered])).toMatchObject({
+      total:7,completed:7,needsRetry:0,remaining:0,available:false
+    });
+    expect(buildKanaReadingContext([...twice,recovered])).toEqual([]);
+  });
+  it("puts unseen source sentences before missed ones and permits an explicit retry",()=>{
+    const original=completedHiragana();
+    let events=[...original];
+    const encountered=new Set<string>();
+    let missed:StudyPrompt|null=null;
+    for(let i=0;i<7;i++){
+      const first=buildKanaReadingContext(events)[0];
+      if(!first||isStudyLesson(first)||first.promptType!=="choice")throw Error("SOURCE_READING_NOT_AVAILABLE");
+      encountered.add(first.primaryTarget.id);
+      if(i===0){
+        missed=first;
+        const wrong=first.choices.find(choice=>choice!==first.acceptedAnswers[0])!;
+        events.push(submitted(first,wrong));
+        expect(projectKanaReadingContext(events)).toMatchObject({completed:1,needsRetry:1,remaining:6});
+      }else{
+        expect(first.primaryTarget.id).not.toBe(missed!.primaryTarget.id);
+        events.push(submitted(first,first.acceptedAnswers[0]!));
+      }
+    }
+    expect(encountered.size).toBe(7);
+    expect(projectKanaReadingContext(events)).toMatchObject({
+      available:true,completed:7,remaining:0,needsRetry:1,total:7
+    });
+    const retry=buildKanaReadingContext(events);
+    expect(retry).toHaveLength(1);
+    expect(retry[0]?.id).toBe(missed!.id);
+    events.push(submitted(missed!,missed!.acceptedAnswers[0]!,
+      "2026-10-20T10:00:00.000Z","retry-"+missed!.id));
+    expect(projectKanaReadingContext(events)).toMatchObject({
+      available:false,completed:7,remaining:0,needsRetry:0
+    });
+    expect(buildKanaReadingContext(events)).toEqual([]);
+    expect(projectBeginnerOverview(events).complete).toBe(true);
+    expect(projectKanaWordBridge(events).learned).toBe(0);
+  });
+  it("uses latest unscored outcome by time, including a lapse and equal-time ambiguity",()=>{
+    const original=completedHiragana();
+    const first=buildKanaReadingContext(original)[0];
+    if(!first||isStudyLesson(first)||first.promptType!=="choice")throw Error("EXPECTED_FIRST_SENTENCE");
+    const correct=submitted(first,first.acceptedAnswers[0]!);
+    const wrongChoice=first.choices.find(choice=>choice!==first.acceptedAnswers[0])!;
+    const laterWrong=submitted(first,wrongChoice,"2026-10-20T10:00:00.000Z","later-wrong");
+    const outOfOrder=[...original,laterWrong,correct];
+    expect(projectKanaReadingContext(outOfOrder)).toMatchObject({
+      completed:1,remaining:6,needsRetry:1
+    });
+    const laterCorrect=submitted(first,first.acceptedAnswers[0]!,
+      "2026-10-20T10:01:00.000Z","later-correct");
+    expect(projectKanaReadingContext([...outOfOrder,laterCorrect]).needsRetry).toBe(0);
+    const equalWrong=submitted(first,wrongChoice,"2026-10-20T10:01:00.000Z","equal-wrong");
+    for(const order of [[laterCorrect,equalWrong],[equalWrong,laterCorrect]]){
+      expect(projectKanaReadingContext([...original,correct,laterWrong,...order]))
+        .toMatchObject({completed:1,remaining:6,needsRetry:1});
+    }
+    const forged={...laterWrong,id:"forged-unscored",
+      metadata:{...laterWrong.metadata,promptId:"not-original"}};
+    const before=projectKanaReadingContext([...original,correct]).needsRetry;
+    expect(projectKanaReadingContext([...original,correct,forged]).needsRetry).toBe(before);
+  });
+  it("allows source rereading after one recorded attempt without revealing six unseen meanings",()=>{
+    const kana=completedHiragana();
+    expect(projectKanaReadingContext(kana)).toMatchObject({revisitable:false,completed:0,remaining:7});
+    expect(buildKanaReadingReference(kana)).toEqual([]);
+
+    const first=buildKanaReadingContext(kana)[0];
+    if(!first||isStudyLesson(first)||first.promptType!=="choice")
+      throw Error("EXPECTED_ORIGINAL_A1_COMPREHENSION");
+    const wrong=first.choices.find(choice=>choice!==first.acceptedAnswers[0])!;
+    const evidence=submitted(first,wrong);
+    const seen=[...kana,evidence];
+    expect(projectKanaReadingContext(seen)).toMatchObject({
+      available:true,revisitable:true,completed:1,remaining:6,needsRetry:1
+    });
+    const readBack=buildKanaReadingReference(seen);
+    expect(readBack).toHaveLength(1);
+    expect(readBack.every(isStudyLesson)).toBe(true);
+    expect(readBack[0]).toMatchObject({
+      kind:"lesson",id:"a0-source-reference-sentence-a1-004",
+      title:"本を読みます。",contextId:"a0-source-sentence-sentence-a1-004"
+    });
+    const next=buildKanaReadingContext(seen)[0];
+    expect(next?.id).toBe("a0-source-reading-sentence-a1-008");
+    expect(readBack.some(step=>step.id==="a0-source-reference-sentence-a1-008")).toBe(false);
+    const forged={...evidence,id:"not-a-real-original-answer",
+      metadata:{...evidence.metadata,promptId:"unrelated"}};
+    expect(projectKanaReadingContext([...kana,forged]).revisitable).toBe(false);
+    expect(buildKanaReadingReference([...kana,forged])).toEqual([]);
+    const authoritative={...evidence,id:"not-unscored",result:"correct" as const};
+    expect(buildKanaReadingReference([...kana,authoritative])).toEqual([]);
+  });
+  it("expands partial source reference only as additional original questions are answered",()=>{
+    const kana=completedHiragana();
+    const first=buildKanaReadingContext(kana)[0];
+    if(!first||isStudyLesson(first))throw Error("MISSING_FIRST_SOURCE_SENTENCE");
+    const once=[...kana,submitted(first,first.acceptedAnswers[0]!)];
+    const second=buildKanaReadingContext(once)[0];
+    if(!second||isStudyLesson(second))throw Error("MISSING_SECOND_SOURCE_SENTENCE");
+    const twice=[...once,submitted(second,second.acceptedAnswers[0]!)];
+    expect(projectKanaReadingContext(twice)).toMatchObject({
+      available:true,revisitable:true,completed:2,total:7,remaining:5
+    });
+    const reference=buildKanaReadingReference(twice);
+    expect(reference.map(step=>step.id)).toEqual([
+      "a0-source-reference-sentence-a1-004",
+      "a0-source-reference-sentence-a1-008"
+    ]);
+    expect(reference.every(isStudyLesson)).toBe(true);
+    expect(reference.some(step=>step.id==="a0-source-reference-sentence-a1-009")).toBe(false);
+    expect(projectBeginnerOverview(twice).complete).toBe(true);
+    expect(projectKanaWordBridge(twice).readingContext.completed).toBe(2);
+  });
+  it("retains read-only original sentence access after all seven encounters",()=>{
+    const original=completedHiragana();
+    let events=[...original];
+    for(let i=0;i<7;i++){
+      const first=buildKanaReadingContext(events)[0];
+      if(!first||isStudyLesson(first))throw Error("EXPECTED_A1_SENTENCE");
+      events.push(submitted(first,first.acceptedAnswers[0]!));
+    }
+    expect(projectKanaReadingContext(events)).toMatchObject({
+      available:false,revisitable:true,completed:7,total:7,remaining:0,needsRetry:0
+    });
+    const immutableCount=events.length;
+    const sourceLessons=buildKanaReadingReference(events);
+    expect(sourceLessons).toHaveLength(7);
+    expect(sourceLessons.every(isStudyLesson)).toBe(true);
+    for(let i=0;i<7;i++){
+      const lesson=sourceLessons[i]!;
+      if(!isStudyLesson(lesson))throw Error("REFERENCE_MUST_NOT_GRADE");
+      const source=coreContent.sentences.find(sentence=>
+        lesson.id==="a0-source-reference-"+sentence.id);
+      expect(source).toBeDefined();
+      expect(source!.sourceIds).toContain("thiepn-original");
+      expect(lesson.title).toBe(source!.text);
+      expect(lesson.body).toContain(source!.translation);
+      expect(lesson.facts).toContainEqual({label:"Kana reading",value:source!.reading,language:"ja"});
+      expect(lesson.sourceLabel).toContain(source!.id);
+      expect(lesson.sourceLabel).toContain("THIEPN original A1");
+      expect(lesson.contextId).toBe("a0-source-sentence-"+source!.id);
+    }
+    expect(new Set(sourceLessons.map(lesson=>lesson.id)).size).toBe(7);
+    expect(events).toHaveLength(immutableCount);
+    expect(projectBeginnerOverview(events).complete).toBe(true);
+    expect(projectKanaWordBridge(events).readingContext.revisitable).toBe(true);
+  });
+  it("allows optional original rereading while missed answers still require unscored correction",()=>{
+    const original=completedHiragana();
+    let events=[...original];
+    for(let i=0;i<7;i++){
+      const first=buildKanaReadingContext(events)[0];
+      if(!first||isStudyLesson(first)||first.promptType!=="choice")
+        throw Error("EXPECTED_SOURCE_CHOICE");
+      const answer=i===0?first.choices.find(choice=>choice!==first.acceptedAnswers[0])!:first.acceptedAnswers[0]!;
+      events.push(submitted(first,answer));
+    }
+    expect(projectKanaReadingContext(events)).toMatchObject({
+      available:true,revisitable:true,completed:7,remaining:0,needsRetry:1
+    });
+    expect(buildKanaReadingReference(events).every(isStudyLesson)).toBe(true);
+    expect(buildKanaReadingContext(events)[0]?.id).toBe("a0-source-reading-sentence-a1-004");
+  });
+  it("finishes all original source readings without duplicating attempts or resetting A0",()=>{
+    const original=completedHiragana();
+    let events=[...original];
+    const ids:string[]=[];
+    for(let i=0;i<7;i++){
+      const next=buildKanaReadingContext(events);
+      expect(next.length).toBeGreaterThan(0);
+      const first=next[0];
+      if(!first||isStudyLesson(first))throw Error("MISSING_SOURCE_READING");
+      ids.push(first.primaryTarget.id);
+      events.push(submitted(first,first.acceptedAnswers[0]!));
+    }
+    expect(new Set(ids).size).toBe(7);
+    expect(projectKanaReadingContext(events)).toMatchObject({available:false,completed:7,remaining:0,needsRetry:0});
+    expect(buildKanaReadingContext(events)).toEqual([]);
+    expect(projectBeginnerOverview(events).complete).toBe(true);
+    expect(projectKanaWordBridge(events).readingContext.completed).toBe(7);
+  });
+});

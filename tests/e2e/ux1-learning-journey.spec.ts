@@ -1,3 +1,4 @@
+import {openAdditionalLearn} from "./open-additional-learn";
 import {expect,test} from "@playwright/test";
 test("UX1 Today source recommendation and mobile Learn path stay connected",async({page},testInfo)=>{
  await page.goto("./");
@@ -5,7 +6,7 @@ test("UX1 Today source recommendation and mobile Learn path stay connected",asyn
  await expect(main.getByRole("heading",{name:"Start Japanese from Zero"})).toBeVisible();
  await page.getByRole("button",{name:"Learn",exact:true}).click();
  await expect(page.getByRole("heading",{name:"Start Japanese from Zero"})).toBeVisible();
- await page.locator(".beginner-explore > summary").click();
+ await openAdditionalLearn(page,false);
  if(testInfo.project.name!=="desktop-chromium"){
   const path=page.locator(".ux1-mobile-path");
   await expect(path.getByRole("heading",{name:"Your learning path"})).toBeVisible();
@@ -25,6 +26,7 @@ test("UX1 Today source recommendation and mobile Learn path stay connected",asyn
   await expect(page.locator(".ux1-cafe-head")).toContainText("A small café");
   await page.getByRole("button",{name:"Exit"}).click();
   await expect(page.locator(".ux1-outcome")).toHaveCount(0);
+  await openAdditionalLearn(page,false);
   await expect(page.locator(".ux1-mobile-path")).toBeVisible();
  }
 });

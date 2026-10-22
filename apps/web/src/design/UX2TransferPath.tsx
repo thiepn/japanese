@@ -28,7 +28,7 @@ export function UX2TransferPath({e06,e05,busy,onSource,onShort,onFull,onPreview,
  const begun=e06.cases.filter(c=>c.canDoId&&(c.status==="learning"||c.status==="waiting"||c.status==="ready"||c.status==="reviewed")).length;
  return <section className="ux2-transfer" aria-labelledby="ux2-transfer-title">
   <div className="ux1-chapter">
-   <p className="ux1-eyebrow">E06–E17 · ORIGINAL CUMULATIVE PRACTICE</p>
+   
    <h2 id="ux2-transfer-title">Use Japanese across situations <span lang="ja">場面をつなぐ</span></h2>
    <p>{e06.prerequisiteReady} / {e06.linked} source-linked cases unlocked · {begun} with assessed attempts</p>
    {e06.unlinked>0?<small>{e06.unlinked} original case(s) remain ungraded reading previews</small>:null}
@@ -68,13 +68,13 @@ export function UX2TransferPath({e06,e05,busy,onSource,onShort,onFull,onPreview,
   </ol>
   <section className="ux2-transfer__tools" aria-labelledby="ux2-transfer-tools-title">
    <h2 id="ux2-transfer-tools-title">Original conversation studios</h2>
-   <p>Open the existing E13–E17 tools. Original prompts, private notes and learner history remain under their existing ownership.</p>
+   
    {e05.repair.pending>0?<button type="button" disabled={busy} onClick={onRepair}>Repair {e05.repair.pending} misunderstood source cue{e05.repair.pending===1?"":"s"}</button>:null}
    <ul>{studios.map(studio=><li key={studio.id}>
     <div><strong>{studio.title}</strong><small>{studio.description}</small></div>
     <button type="button" disabled={busy} onClick={()=>onOpenStudio(studio.id)}>Open studio</button>
    </li>)}</ul>
-   <p className="ux1-path-note">Original Can-do, StudyEvents and FSRS remain authoritative. Device voice, free writing and private notes do not certify proficiency.</p>
+   
   </section>
  </section>;
 }

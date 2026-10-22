@@ -1,3 +1,4 @@
+import {openAdditionalLearn} from "./open-additional-learn";
 import {expect,test,type Page} from "@playwright/test";
 
 const routes=[
@@ -26,8 +27,7 @@ test("D4 keeps the five Japanese surfaces usable at 320 CSS pixels in both theme
     for(const [surface,selector] of routes){
       await nav.getByRole("button",{name:surface,exact:true}).click();
       if(surface==="Learn"){
-        await page.locator(".beginner-explore > summary").click();
-        await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+        await openAdditionalLearn(page,true);
       }
       await expect(page.locator(selector)).toBeVisible();
       await noOverflow(page);
@@ -50,8 +50,7 @@ test("D4 tablet and desktop preserve lazy exhibition composition and technical i
     const nav=page.getByRole("navigation",{name:"Primary"});
     await expect(nav).toBeVisible();
     await nav.getByRole("button",{name:"Learn",exact:true}).click();
-    await page.locator(".beginner-explore > summary").click();
-    await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+    await openAdditionalLearn(page,true);
     await expect(page.locator(".j4-emaki")).toBeVisible();
     await noOverflow(page);
     await nav.getByRole("button",{name:"Library",exact:true}).click();
