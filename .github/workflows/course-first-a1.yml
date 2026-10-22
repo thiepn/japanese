@@ -1,0 +1,36 @@
+name: Course-First A1 Focused Chromium
+on:
+  push:
+    branches:
+      - feature/course-first-a1-c0-c1
+
+permissions:
+  contents: read
+
+concurrency:
+  group: course-first-a1-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  guided-a1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      VITE_PUBLIC_BASE: /japanese/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm exec vitest run tests/study-player/course-first-a1.test.ts
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Real Chromium A1 learner journey across desktop and mobile
+        run: pnpm exec playwright test tests/e2e/course-first-a1.spec.ts --project=desktop-chromium --project=android-mobile --project=compact-mobile --workers=2 --retries=0
