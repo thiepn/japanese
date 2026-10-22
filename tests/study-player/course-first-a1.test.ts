@@ -3,7 +3,7 @@ import {E02_AVAILABLE_SCENES} from "../../apps/web/src/study/a1ExcellenceCourse"
 import {coreContent} from "../../apps/web/src/coreContent";
 import {describe,it,expect} from "vitest";
 import type {StudyEvent} from "@thiepn/domain";
-import {C1_A1_UNITS,C2_A1_UNITS,C2_COVERAGE_LEDGER,C3_A1_UNITS,C3_EDITORIAL_RECORDS,C3_COVERAGE_LEDGER,C4_A1_UNITS,C4_EDITORIAL_RECORDS,C4_COVERAGE_LEDGER,C5_A1_UNITS,C5_EDITORIAL_RECORDS,C5_COVERAGE_LEDGER,buildC1A1CourseLesson,projectC1A1Course,validateC1A1Course,validateC2A1Course,validateC3A1Course,validateC4A1Course,validateC5A1Course} from "../../apps/web/src/study/courseFirstA1";
+import {C1_A1_UNITS,C2_A1_UNITS,C2_COVERAGE_LEDGER,C3_A1_UNITS,C3_EDITORIAL_RECORDS,C3_COVERAGE_LEDGER,C4_A1_UNITS,C4_EDITORIAL_RECORDS,C4_COVERAGE_LEDGER,C5_A1_UNITS,C5_EDITORIAL_RECORDS,C5_COVERAGE_LEDGER,C6_A1_UNITS,C6_EDITORIAL_RECORDS,C6_COVERAGE_LEDGER,buildC1A1CourseLesson,projectC1A1Course,validateC1A1Course,validateC2A1Course,validateC3A1Course,validateC4A1Course,validateC5A1Course,validateC6A1Course} from "../../apps/web/src/study/courseFirstA1";
 import {isStudyLesson} from "../../packages/study-player/src/index";
 
 const mockEvent=(prompt:ReturnType<typeof buildC1A1CourseLesson>[number],result:"correct"|"incorrect",at:number):StudyEvent=>{
@@ -315,7 +315,7 @@ describe("C5 canonical family and café authoring",()=>{
   expect(projectC1A1Course(beforeCafe).nextId).toBe("cf-a1-16-01");
   const cafe=buildC1A1CourseLesson("cf-a1-16-01",beforeCafe);
   expect(cafe.filter(x=>!isStudyLesson(x)&&x.eventMetadata?.nonAuthoritative===true)).toHaveLength(1);
-  expect(projectC1A1Course(evidence(C5_A1_UNITS)).nextId).toBeNull();
+  expect(projectC1A1Course(evidence(C5_A1_UNITS)).nextId).toBe("cf-a1-17-01");
  });
  it("detects rights denial, false evidence, repeated answers and capstone reassignment",()=>{
   const targets=new Map(coreContent.courseUnits.filter(x=>x.level==="A1").map(x=>[x.id,x.canDoId]));
@@ -331,5 +331,80 @@ describe("C5 canonical family and café authoring",()=>{
   const falseEvidence={...meta,measuredStudyMinutes:75} as unknown as typeof meta;
   expect(validateAuthoredCourse([unit],[falseEvidence],targets,scenes,true))
    .toContain("unverified-evidence:a1-unit-16");
+ });
+});
+
+describe("C6 source-linked shopping and transport authoring",()=>{
+ const nativeEvents=(selected:readonly (typeof C6_A1_UNITS)[number][])=>selected.flatMap(unit=>{
+  const target=coreContent.courseUnits.find(x=>x.id===unit.id)?.canDoId;
+  if(!target)throw Error("MISSING_CAN_DO:"+unit.id);
+  return unit.lessons.flatMap(lesson=>{
+   const promptIds="scene" in lesson?
+    ["hear","read","reply","recall"].map(x=>"a1-e02-"+lesson.scene+"-"+x):
+    [...lesson.checks.map((_,i)=>lesson.id+"-choice-"+(i+1)),lesson.id+"-recall"];
+   return promptIds.map((id,i)=>({
+    primaryTarget:{kind:"can_do",id:target},result:"correct",
+    occurredAt:new Date(Date.parse("2026-10-22T10:00:00Z")+i*1000).toISOString(),
+    metadata:{promptId:id}
+   } as unknown as StudyEvent));
+  });
+ });
+ it("enforces source rights, eleven mapped units and exact preservation of all fifty-four original lesson IDs",()=>{
+  expect(validateC6A1Course()).toEqual([]);
+  expect(C6_A1_UNITS.map(u=>u.id)).toEqual([
+   "a1-unit-01","a1-unit-02","a1-unit-03","a1-unit-04","a1-unit-05",
+   "a1-unit-07","a1-unit-12","a1-unit-15","a1-unit-16","a1-unit-17","a1-unit-18"
+  ]);
+  expect(C6_A1_UNITS.slice(0,9).flatMap(u=>u.lessons.map(l=>l.id)))
+   .toEqual(C5_A1_UNITS.flatMap(u=>u.lessons.map(l=>l.id)));
+  expect(C6_A1_UNITS.flatMap(u=>u.lessons)).toHaveLength(66);
+  expect(C6_COVERAGE_LEDGER.map(u=>u.controlledChecks)).toEqual(Array(11).fill(29));
+  expect(C6_EDITORIAL_RECORDS).toHaveLength(11);
+  expect(C6_COVERAGE_LEDGER.every(u=>!u.humanReviewed&&!u.recordedAudioAvailable&&
+   u.verifiedStudyMinutes===null&&!u.independentCompetenceVerified)).toBe(true);
+ });
+ it("keeps E02 shopping and transport prompts intact, never credits the missing canonical units",()=>{
+  for(const [unitId,scene,num] of [
+   ["a1-unit-17","shopping","17"],["a1-unit-18","transport","18"]
+  ]){
+   const unit=C6_A1_UNITS.find(x=>x.id===unitId)!;
+   expect(unit.lessons.map(x=>x.id)).toEqual([1,2,3,4,5,6].map(n=>
+    "cf-a1-"+num+"-"+String(n).padStart(2,"0")));
+   const last=unit.lessons[5];
+   expect(last&&"scene" in last?last.scene:null).toBe(scene);
+   expect(E02_AVAILABLE_SCENES.find(x=>x.id===scene)?.unitId).toBe(unitId);
+  }
+  for(const missing of ["a1-unit-06","a1-unit-08","a1-unit-09",
+   "a1-unit-10","a1-unit-11","a1-unit-13","a1-unit-14"])
+   expect(C6_A1_UNITS.some(x=>x.id===missing)).toBe(false);
+ });
+ it("unlocks new lessons from native events, not parallel checkpoints or unscored writing",()=>{
+  expect(()=>buildC1A1CourseLesson("cf-a1-17-01",[])).toThrow("C1_A1_LESSON_LOCKED");
+  expect(()=>buildC1A1CourseLesson("cf-a1-18-01",[])).toThrow("C1_A1_LESSON_LOCKED");
+  const prior=nativeEvents(C5_A1_UNITS);
+  expect(projectC1A1Course(prior).nextId).toBe("cf-a1-17-01");
+  const shop=buildC1A1CourseLesson("cf-a1-17-01",prior);
+  expect(shop.filter(x=>!isStudyLesson(x)&&x.eventMetadata?.schedulerExcluded!==true)).toHaveLength(0);
+  expect(shop.filter(x=>!isStudyLesson(x)&&x.eventMetadata?.nonAuthoritative===true)).toHaveLength(1);
+  const throughShopping=nativeEvents(C6_A1_UNITS.slice(0,10));
+  expect(projectC1A1Course(throughShopping).nextId).toBe("cf-a1-18-01");
+  const travel=buildC1A1CourseLesson("cf-a1-18-01",throughShopping);
+  expect(travel.filter(x=>!isStudyLesson(x)&&x.eventMetadata?.nonAuthoritative===true)).toHaveLength(1);
+  expect(projectC1A1Course(nativeEvents(C6_A1_UNITS)).nextId).toBeNull();
+ });
+ it("rejects a tampered source, repeated choice foils and swapped canonical capstone",()=>{
+  const targets=new Map(coreContent.courseUnits.filter(x=>x.level==="A1").map(x=>[x.id,x.canDoId]));
+  const scenes=new Map(E02_AVAILABLE_SCENES.map(x=>[x.id,x.unitId]));
+  const unit=C6_A1_UNITS[9]!,meta=C6_EDITORIAL_RECORDS[9]!;
+  expect(validateAuthoredCourse([unit],[meta],targets,scenes,true)).toEqual([]);
+  expect(validateAuthoredCourse([unit],[meta],targets,scenes,false)).toContain("source-rights:a1-unit-17");
+  const broken={...unit,lessons:[{...unit.lessons[0],
+   checks:[["Question","yes","yes","no","Explanation"]]},...unit.lessons.slice(1,-1),
+   {...unit.lessons[5],scene:"transport"}]} as unknown as typeof unit;
+  expect(validateAuthoredCourse([broken],[meta],targets,scenes,true))
+   .toEqual(expect.arrayContaining(["invalid-choice:cf-a1-17-01-choice-1","unlinked-capstone:cf-a1-17-06"]));
+  const inventedHours={...meta,measuredStudyMinutes:90} as unknown as typeof meta;
+  expect(validateAuthoredCourse([unit],[inventedHours],targets,scenes,true))
+   .toContain("unverified-evidence:a1-unit-17");
  });
 });
