@@ -153,18 +153,24 @@ test("C1 owner-keyed IndexedDB records remain separated without an OAuth switch"
  expect(otherOwner).toBe(0);
 });
 
-test("C1 retains explicitly opened optional Learn workspace after native lesson exit",async({page})=>{
+test("C1 retains explicitly opened optional Learn workspace after native lesson exit",async({page},testInfo)=>{
  await seed(page,kana);
  const browse=page.locator(".beginner-explore");
  await browse.locator(":scope > summary").click();
  await expect(browse).toHaveAttribute("open","");
- const expand=page.getByRole("button",{name:"Open full course and advanced practice"});
- await expand.click();
- await expect(page.locator("#ux1-expanded-catalogue")).toHaveAttribute("data-open","yes");
+ if(testInfo.project.name!=="desktop-chromium"){
+  const expand=page.getByRole("button",{name:"Open full course and advanced practice"});
+  await expand.click();
+  await expect(page.locator("#ux1-expanded-catalogue")).toHaveAttribute("data-open","yes");
+ }else{
+  // Desktop renders the original full course directly after opening its drawer.
+  await expect(page.getByRole("heading",{name:"Your Japanese journey"})).toBeVisible();
+ }
  await page.locator(".cf-a1__continue").click();
  await expect(page.getByRole("heading",{name:"Greetings at different times"})).toBeVisible();
  await page.getByRole("button",{name:"Exit",exact:true}).click();
  await expect(browse).toHaveAttribute("open","");
- await expect(page.locator("#ux1-expanded-catalogue")).toHaveAttribute("data-open","yes");
+ if(testInfo.project.name!=="desktop-chromium")
+  await expect(page.locator("#ux1-expanded-catalogue")).toHaveAttribute("data-open","yes");
  await expect(page.getByRole("heading",{name:"Learn Japanese"})).toBeVisible();
 });
