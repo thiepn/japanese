@@ -1,3 +1,4 @@
+import {enterAdvancedLearn} from "./support/courseNavigation";
 import {readFileSync} from "node:fs";
 import {expect,test,type Page} from "@playwright/test";
 
@@ -33,7 +34,7 @@ async function qualifiedLearn(page:Page){
     db.close();
   },source);
   await page.reload();
-  await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await enterAdvancedLearn(page);
 }
 const queue=(page:Page)=>page.getByRole("region",{name:"Return to what you heard and meant"});
 
