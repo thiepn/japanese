@@ -1,7 +1,7 @@
 import {describe,it,expect} from "vitest";
 import type {StudyEvent} from "@thiepn/domain";
 import {C1_A1_UNITS,buildC1A1CourseLesson,projectC1A1Course,validateC1A1Course} from "../../apps/web/src/study/courseFirstA1";
-import {isStudyLesson} from "@thiepn/study-player";
+import {isStudyLesson} from "../../packages/study-player/src/index";
 
 const mockEvent=(prompt:ReturnType<typeof buildC1A1CourseLesson>[number],result:"correct"|"incorrect",at:number):StudyEvent=>{
  if(isStudyLesson(prompt))throw Error("EXPECTED_PROMPT");
