@@ -102,7 +102,7 @@ test("C4 all forty-two authored lessons unlock from canonical native events with
  expect(all).toHaveLength(203);
  await seed(page,[...kana,...all]);
  const path=page.locator(".cf-a1");
- await expect(path).toContainText("30 / 42 lessons");
+ await expect(path).toContainText("42 / 42 lessons");
  await expect(path).toContainText("All 7 available A1 units are complete");
  await expect(page.locator(".cf-a1__continue")).toHaveCount(0);
  await page.reload();
