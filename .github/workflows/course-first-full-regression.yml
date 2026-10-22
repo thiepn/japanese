@@ -40,6 +40,8 @@ jobs:
           node-version: 24.15.0
       - name: Install original pnpm workspace (no committed lockfile)
         run: pnpm install --no-frozen-lockfile
+      - name: Generate canonical study fixture evidence through the original unit suite
+        run: pnpm test
       - name: Produce actual release-mode browser bundle
         run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
