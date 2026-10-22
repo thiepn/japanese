@@ -1,3 +1,4 @@
+import {enterAdvancedLearn} from "./support/courseNavigation";
 import { expect,test } from "@playwright/test";
 
 test("P9 real-world performance, native listening and provider fallbacks survive certified viewports",async({page,context})=>{
@@ -6,9 +7,8 @@ test("P9 real-world performance, native listening and provider fallbacks survive
   });
   await page.goto("./");
 
-  await page.getByRole("button",{name:"Learn"}).click();
-  await page.locator(".beginner-explore > summary").click();
-  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+  await enterAdvancedLearn(page);
+
   await page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"}).locator("summary").click();
   await expect(page.getByRole("heading",{name:"Functional chains under time pressure"})).toBeVisible();
   await expect(page.locator(".performance-chain-grid > article")).toHaveCount(5);
@@ -36,9 +36,8 @@ test("P9 real-world performance, native listening and provider fallbacks survive
   await context.setOffline(true);
   await page.reload();
   await expect(page.getByRole("heading",{name:"Start Japanese from Zero"})).toBeVisible();
-  await page.getByRole("button",{name:"Learn"}).click();
-  await page.locator(".beginner-explore > summary").click();
-  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+  await enterAdvancedLearn(page);
+
   await page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"}).locator("summary").click();
   await expect(page.getByRole("heading",{name:"Functional chains under time pressure"})).toBeVisible();
   // Compact mobile headless Chromium has the same fixed-nav scrollIntoView drift while offline.
