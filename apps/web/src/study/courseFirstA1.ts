@@ -8,13 +8,8 @@ import {buildE02Journey,E02_AVAILABLE_SCENES} from "./a1ExcellenceCourse";
  * second course progress store, grader, scheduler, or CEFR accreditation.
  * All teaching and new questions below are original THIEPN material.
  */
-type Choice=readonly [question:string,answer:string,foil1:string,foil2:string,explanation:string];
-type Authored={id:string;title:string;objective:string;teach:string;
-  examples:readonly (readonly [string,string])[];checks:readonly Choice[];
-  recall:readonly [question:string,answer:string];writing:string};
-type Capstone={id:string;title:string;scene:string;objective:string};
-type Lesson=Authored|Capstone;
-type Unit={id:"a1-unit-01"|"a1-unit-02";title:string;objective:string;lessons:readonly Lesson[]};
+import {C2_A1_DAILY_ROUTINES} from "./c2A1DailyRoutine";
+import {validateAuthoredCourse,courseCoverage,isCourseFirstCapstone,type CourseFirstUnit as Unit,type CourseFirstLesson as Lesson,type EditorialRecord} from "./courseAuthoring";
 
 export const C1_A1_UNITS:readonly Unit[]=[
  {id:"a1-unit-01",title:"Greetings and first contact",
@@ -121,7 +116,20 @@ export const C1_A1_UNITS:readonly Unit[]=[
  ]},
 ] as const;
 
-const byId=new Map(C1_A1_UNITS.flatMap(unit=>unit.lessons.map(lesson=>[lesson.id,{unit,lesson}] as const)));
+/** Original C1 lesson IDs remain stable; C2 expands the same native journey. */
+export const C2_A1_UNITS:readonly Unit[]=[...C1_A1_UNITS,C2_A1_DAILY_ROUTINES];
+export const C2_EDITORIAL_RECORDS:readonly EditorialRecord[]=C2_A1_UNITS.map(unit=>({
+ unitId:unit.id,sourceId:"thiepn-original",level:"A1",rights:"original-owned",
+ stageSequence:["encounter","explain","guided","read","transfer","independent"] as const,
+ lessonObjectives:unit.lessons.map(x=>x.objective),grammarFocus:unit.id==="a1-unit-03"?
+ ["grammar-masu","grammar-ni-destination"]:unit.id==="a1-unit-02"?
+ ["grammar-desu","grammar-wa-topic","grammar-ka-question"]:["grammar-desu","grammar-ne"],
+ recordedAudio:"none",synthesis:"device-only",independentWriting:"ungraded",
+ linguisticReview:"pending",measuredStudyMinutes:null
+}));
+export const C2_COVERAGE_LEDGER=courseCoverage(C2_A1_UNITS,C2_EDITORIAL_RECORDS);
+
+const byId=new Map(C2_A1_UNITS.flatMap(unit=>unit.lessons.map(lesson=>[lesson.id,{unit,lesson}] as const)));
 const ORIGINAL_SOURCE="thiepn-original";
 const anchors=new Map(E02_AVAILABLE_SCENES.map(scene=>[scene.id,scene]));
 function canon(unit:Unit){const record=coreContent.courseUnits.find(x=>x.id===unit.id);
@@ -129,7 +137,7 @@ function canon(unit:Unit){const record=coreContent.courseUnits.find(x=>x.id===un
     throw Error("C1_A1_CANONICAL_UNIT_UNAVAILABLE:"+unit.id);
   return record.canDoId;
 }
-function isCapstone(l:Lesson):l is Capstone{return "scene" in l;}
+const isCapstone=isCourseFirstCapstone;
 function ids(unit:Unit,lesson:Lesson):readonly string[]{
  if(isCapstone(lesson))return ["hear","read","reply","recall"].map(k=>"a1-e02-"+lesson.scene+"-"+k);
  return lesson.checks.map((_,i)=>lesson.id+"-choice-"+(i+1)).concat(lesson.id+"-recall");
@@ -150,7 +158,7 @@ export interface C1A1LessonProgress{id:string;title:string;done:number;required:
 export interface C1A1UnitProgress{id:string;title:string;completed:number;total:number;lessons:C1A1LessonProgress[];}
 export function projectC1A1Course(events:readonly StudyEvent[]):{units:C1A1UnitProgress[];nextId:string|null}{
  let prior=true,nextId:string|null=null;
- const units=C1_A1_UNITS.map(unit=>{
+ const units=C2_A1_UNITS.map(unit=>{
   const lessons=unit.lessons.map(lesson=>{
    const latest=matched(events,unit,lesson);
    const required=ids(unit,lesson);
@@ -233,4 +241,12 @@ export function validateC1A1Course():string[]{
   }
  }
  return errors;
+}
+
+/** Strict publication gate: rights, objective map, 6-stage progression and native E02 anchors. */
+export function validateC2A1Course():string[]{
+ const targets=new Map(coreContent.courseUnits.filter(x=>x.level==="A1").map(x=>[x.id,x.canDoId]));
+ const scenes=new Map(E02_AVAILABLE_SCENES.map(x=>[x.id,x.unitId]));
+ const source=coreContent.sourceRegistry?.sources?.find(x=>x.id==="thiepn-original");
+ return validateAuthoredCourse(C2_A1_UNITS,C2_EDITORIAL_RECORDS,targets,scenes,source?.publicExport===true);
 }
