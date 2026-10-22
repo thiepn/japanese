@@ -156,7 +156,7 @@ test("C1 owner-keyed IndexedDB records remain separated without an OAuth switch"
 test("C1 retains explicitly opened optional Learn workspace after native lesson exit",async({page})=>{
  await seed(page,kana);
  const browse=page.locator(".beginner-explore");
- await browse.locator("summary").click();
+ await browse.locator(":scope > summary").click();
  await expect(browse).toHaveAttribute("open","");
  const expand=page.getByRole("button",{name:"Open full course and advanced practice"});
  await expand.click();

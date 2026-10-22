@@ -5,10 +5,6 @@ on:
       - feature/course-first-a1-c0-c1
     paths:
       - ".github/workflows/course-first-full-regression.yml"
-      - "apps/web/**"
-      - "packages/**"
-      - "tests/e2e/**"
-      - "content/**"
 
 permissions:
   contents: read
