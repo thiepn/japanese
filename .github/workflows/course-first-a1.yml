@@ -33,4 +33,4 @@ jobs:
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
       - name: Real Chromium A1 learner journey across desktop and mobile
-        run: pnpm exec playwright test tests/e2e/course-first-a1.spec.ts --project=desktop-chromium --project=android-mobile --project=compact-mobile --workers=2 --retries=0
+        run: pnpm exec playwright test tests/e2e/course-first-a1.spec.ts tests/e2e/j3-today.spec.ts tests/e2e/beginner-zero.spec.ts tests/e2e/j15d-d4-device-matrix.spec.ts --project=desktop-chromium --project=android-mobile --project=compact-mobile --workers=2 --retries=0
