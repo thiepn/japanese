@@ -14,6 +14,8 @@ import {C3_A1_YESTERDAY} from "./c3A1Yesterday";
 import {C3_A1_ORIGINS} from "./c3A1Origins";
 import {C4_A1_PREFERENCES} from "./c4A1Preferences";
 import {C4_A1_MEETING_TIMES} from "./c4A1MeetingTimes";
+import {C5_A1_FAMILY} from "./c5A1Family";
+import {C5_A1_CAFE} from "./c5A1Cafe";
 import {validateAuthoredCourse,courseCoverage,isCourseFirstCapstone,type CourseFirstUnit as Unit,type CourseFirstLesson as Lesson,type EditorialRecord} from "./courseAuthoring";
 
 export const C1_A1_UNITS:readonly Unit[]=[
@@ -168,7 +170,25 @@ export const C4_EDITORIAL_RECORDS:readonly EditorialRecord[]=[
  }))
 ];
 export const C4_COVERAGE_LEDGER=courseCoverage(C4_A1_UNITS,C4_EDITORIAL_RECORDS);
-const byId=new Map(C4_A1_UNITS.flatMap(unit=>unit.lessons.map(lesson=>[lesson.id,{unit,lesson}] as const)));
+
+/** Next verified E02 scenes: family=15 and food=16. Canonical 13/14 remain unclaimed. */
+export const C5_A1_UNITS:readonly Unit[]=[...C4_A1_UNITS,C5_A1_FAMILY,C5_A1_CAFE];
+export const C5_EDITORIAL_RECORDS:readonly EditorialRecord[]=[
+ ...C4_EDITORIAL_RECORDS,
+ ...[C5_A1_FAMILY,C5_A1_CAFE].map(unit=>({
+  unitId:unit.id,sourceId:"thiepn-original" as const,level:"A1" as const,
+  rights:"original-owned" as const,
+  stageSequence:["encounter","explain","guided","read","transfer","independent"] as const,
+  lessonObjectives:unit.lessons.map(lesson=>lesson.objective),
+  grammarFocus:unit.id==="a1-unit-15"?
+    ["grammar-desu","grammar-wa-topic"]:
+    ["grammar-o-kudasai","grammar-o-object"],
+  recordedAudio:"none" as const,synthesis:"device-only" as const,
+  independentWriting:"ungraded" as const,linguisticReview:"pending" as const,measuredStudyMinutes:null
+ }))
+];
+export const C5_COVERAGE_LEDGER=courseCoverage(C5_A1_UNITS,C5_EDITORIAL_RECORDS);
+const byId=new Map(C5_A1_UNITS.flatMap(unit=>unit.lessons.map(lesson=>[lesson.id,{unit,lesson}] as const)));
 const ORIGINAL_SOURCE="thiepn-original";
 const anchors=new Map(E02_AVAILABLE_SCENES.map(scene=>[scene.id,scene]));
 function canon(unit:Unit){const record=coreContent.courseUnits.find(x=>x.id===unit.id);
@@ -197,7 +217,7 @@ export interface C1A1LessonProgress{id:string;title:string;done:number;required:
 export interface C1A1UnitProgress{id:string;title:string;completed:number;total:number;lessons:C1A1LessonProgress[];}
 export function projectC1A1Course(events:readonly StudyEvent[]):{units:C1A1UnitProgress[];nextId:string|null}{
  let prior=true,nextId:string|null=null;
- const units=C4_A1_UNITS.map(unit=>{
+ const units=C5_A1_UNITS.map(unit=>{
   const lessons=unit.lessons.map(lesson=>{
    const latest=matched(events,unit,lesson);
    const required=ids(unit,lesson);
@@ -304,4 +324,12 @@ export function validateC4A1Course():string[]{
  const scenes=new Map(E02_AVAILABLE_SCENES.map(x=>[x.id,x.unitId]));
  const source=rawRegistry.sources.find(x=>x.id==="thiepn-original");
  return validateAuthoredCourse(C4_A1_UNITS,C4_EDITORIAL_RECORDS,targets,scenes,source?.publicExport===true);
+}
+
+/** C5 validation: original rights, all native can-do targets, six-step lessons and E02 continuity. */
+export function validateC5A1Course():string[]{
+ const targets=new Map(coreContent.courseUnits.filter(x=>x.level==="A1").map(x=>[x.id,x.canDoId]));
+ const scenes=new Map(E02_AVAILABLE_SCENES.map(x=>[x.id,x.unitId]));
+ const source=rawRegistry.sources.find(x=>x.id==="thiepn-original");
+ return validateAuthoredCourse(C5_A1_UNITS,C5_EDITORIAL_RECORDS,targets,scenes,source?.publicExport===true);
 }

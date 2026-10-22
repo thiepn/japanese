@@ -3,7 +3,7 @@ import {E02_AVAILABLE_SCENES} from "../../apps/web/src/study/a1ExcellenceCourse"
 import {coreContent} from "../../apps/web/src/coreContent";
 import {describe,it,expect} from "vitest";
 import type {StudyEvent} from "@thiepn/domain";
-import {C1_A1_UNITS,C2_A1_UNITS,C2_COVERAGE_LEDGER,C3_A1_UNITS,C3_EDITORIAL_RECORDS,C3_COVERAGE_LEDGER,C4_A1_UNITS,C4_EDITORIAL_RECORDS,C4_COVERAGE_LEDGER,buildC1A1CourseLesson,projectC1A1Course,validateC1A1Course,validateC2A1Course,validateC3A1Course,validateC4A1Course} from "../../apps/web/src/study/courseFirstA1";
+import {C1_A1_UNITS,C2_A1_UNITS,C2_COVERAGE_LEDGER,C3_A1_UNITS,C3_EDITORIAL_RECORDS,C3_COVERAGE_LEDGER,C4_A1_UNITS,C4_EDITORIAL_RECORDS,C4_COVERAGE_LEDGER,C5_A1_UNITS,C5_EDITORIAL_RECORDS,C5_COVERAGE_LEDGER,buildC1A1CourseLesson,projectC1A1Course,validateC1A1Course,validateC2A1Course,validateC3A1Course,validateC4A1Course,validateC5A1Course} from "../../apps/web/src/study/courseFirstA1";
 import {isStudyLesson} from "../../packages/study-player/src/index";
 
 const mockEvent=(prompt:ReturnType<typeof buildC1A1CourseLesson>[number],result:"correct"|"incorrect",at:number):StudyEvent=>{
@@ -241,7 +241,7 @@ describe("C4 source-linked preference and meeting-time units",()=>{
   expect(first.filter(s=>!isStudyLesson(s)&&s.eventMetadata?.schedulerExcluded!==true)).toHaveLength(0);
   const allThroughPreference=nativeEvents(C4_A1_UNITS.slice(0,6));
   expect(projectC1A1Course(allThroughPreference).nextId).toBe("cf-a1-12-01");
-  expect(projectC1A1Course(nativeEvents(C4_A1_UNITS)).nextId).toBeNull();
+  expect(projectC1A1Course(nativeEvents(C4_A1_UNITS)).nextId).toBe("cf-a1-15-01");
  });
  it("rejects unlinked capstones, duplicate options, false export rights and fabricated hours",()=>{
   const targets=new Map(coreContent.courseUnits.filter(x=>x.level==="A1").map(x=>[x.id,x.canDoId]));
@@ -257,5 +257,79 @@ describe("C4 source-linked preference and meeting-time units",()=>{
   const falseHours={...metadata,measuredStudyMinutes:120} as unknown as typeof metadata;
   expect(validateAuthoredCourse([unit],[falseHours],targets,scenes,true))
    .toContain("unverified-evidence:a1-unit-07");
+ });
+});
+
+describe("C5 canonical family and café authoring",()=>{
+ const evidence=(selected:readonly (typeof C5_A1_UNITS)[number][])=>selected.flatMap(unit=>{
+  const target=coreContent.courseUnits.find(x=>x.id===unit.id)?.canDoId;
+  if(!target)throw Error("MISSING_CAN_DO:"+unit.id);
+  return unit.lessons.flatMap(lesson=>{
+   const promptIds="scene" in lesson?
+    ["hear","read","reply","recall"].map(x=>"a1-e02-"+lesson.scene+"-"+x):
+    [...lesson.checks.map((_,i)=>lesson.id+"-choice-"+(i+1)),lesson.id+"-recall"];
+   return promptIds.map((id,i)=>({
+    primaryTarget:{kind:"can_do",id:target},result:"correct",
+    occurredAt:new Date(Date.parse("2026-10-22T10:00:00Z")+i*1000).toISOString(),
+    metadata:{promptId:id}
+   } as unknown as StudyEvent));
+  });
+ });
+ it("verifies published rights, source-linked can-do, stable earlier 42 IDs and honest coverage",()=>{
+  expect(validateC5A1Course()).toEqual([]);
+  expect(C5_A1_UNITS.map(x=>x.id)).toEqual([
+   "a1-unit-01","a1-unit-02","a1-unit-03","a1-unit-04",
+   "a1-unit-05","a1-unit-07","a1-unit-12","a1-unit-15","a1-unit-16"
+  ]);
+  expect(C5_A1_UNITS.slice(0,7).flatMap(x=>x.lessons.map(l=>l.id)))
+   .toEqual(C4_A1_UNITS.flatMap(x=>x.lessons.map(l=>l.id)));
+  expect(C5_A1_UNITS.flatMap(x=>x.lessons)).toHaveLength(54);
+  expect(C5_COVERAGE_LEDGER.map(x=>x.controlledChecks)).toEqual(Array(9).fill(29));
+  expect(C5_COVERAGE_LEDGER.every(x=>!x.humanReviewed&&!x.recordedAudioAvailable&&
+   x.verifiedStudyMinutes===null&&!x.independentCompetenceVerified)).toBe(true);
+  expect(C5_EDITORIAL_RECORDS).toHaveLength(9);
+ });
+ it("retains true canonical numbers, maps family/food to original E02 and marks absent units unfinished",()=>{
+  const links=[["a1-unit-15","family","15"],["a1-unit-16","food","16"]];
+  for(const [unitId,scene,num] of links){
+   const unit=C5_A1_UNITS.find(x=>x.id===unitId)!;
+   expect(unit.lessons.map(x=>x.id)).toEqual([1,2,3,4,5,6].map(n=>
+    "cf-a1-"+num+"-"+String(n).padStart(2,"0")));
+   const final=unit.lessons[5];
+   expect(final&&"scene" in final?final.scene:null).toBe(scene);
+   expect(E02_AVAILABLE_SCENES.find(x=>x.id===scene)?.unitId).toBe(unitId);
+  }
+  for(const missing of ["a1-unit-06","a1-unit-08","a1-unit-09",
+    "a1-unit-10","a1-unit-11","a1-unit-13","a1-unit-14"])
+   expect(C5_A1_UNITS.some(x=>x.id===missing)).toBe(false);
+ });
+ it("unlocks family only after all previous checks and café only after original family scene",()=>{
+  expect(()=>buildC1A1CourseLesson("cf-a1-15-01",[])).toThrow("C1_A1_LESSON_LOCKED");
+  expect(()=>buildC1A1CourseLesson("cf-a1-16-01",[])).toThrow("C1_A1_LESSON_LOCKED");
+  const prior=evidence(C4_A1_UNITS);
+  expect(projectC1A1Course(prior).nextId).toBe("cf-a1-15-01");
+  const family=buildC1A1CourseLesson("cf-a1-15-01",prior);
+  expect(family.filter(x=>!isStudyLesson(x)&&x.eventMetadata?.schedulerExcluded!==true)).toHaveLength(0);
+  expect(family.filter(x=>!isStudyLesson(x)&&x.eventMetadata?.nonAuthoritative===true)).toHaveLength(1);
+  const beforeCafe=evidence(C5_A1_UNITS.slice(0,8));
+  expect(projectC1A1Course(beforeCafe).nextId).toBe("cf-a1-16-01");
+  const cafe=buildC1A1CourseLesson("cf-a1-16-01",beforeCafe);
+  expect(cafe.filter(x=>!isStudyLesson(x)&&x.eventMetadata?.nonAuthoritative===true)).toHaveLength(1);
+  expect(projectC1A1Course(evidence(C5_A1_UNITS)).nextId).toBeNull();
+ });
+ it("detects rights denial, false evidence, repeated answers and capstone reassignment",()=>{
+  const targets=new Map(coreContent.courseUnits.filter(x=>x.level==="A1").map(x=>[x.id,x.canDoId]));
+  const scenes=new Map(E02_AVAILABLE_SCENES.map(x=>[x.id,x.unitId]));
+  const unit=C5_A1_UNITS[8]!,meta=C5_EDITORIAL_RECORDS[8]!;
+  expect(validateAuthoredCourse([unit],[meta],targets,scenes,true)).toEqual([]);
+  expect(validateAuthoredCourse([unit],[meta],targets,scenes,false)).toContain("source-rights:a1-unit-16");
+  const invalid={...unit,lessons:[{...unit.lessons[0],
+   checks:[["Question","yes","yes","no","Feedback"]]},...unit.lessons.slice(1,-1),
+   {...unit.lessons[5],scene:"shopping"}]} as unknown as typeof unit;
+  expect(validateAuthoredCourse([invalid],[meta],targets,scenes,true))
+   .toEqual(expect.arrayContaining(["invalid-choice:cf-a1-16-01-choice-1","unlinked-capstone:cf-a1-16-06"]));
+  const falseEvidence={...meta,measuredStudyMinutes:75} as unknown as typeof meta;
+  expect(validateAuthoredCourse([unit],[falseEvidence],targets,scenes,true))
+   .toContain("unverified-evidence:a1-unit-16");
  });
 });

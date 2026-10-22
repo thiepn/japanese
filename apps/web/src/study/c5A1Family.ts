@@ -56,7 +56,7 @@ export const C5_A1_FAMILY:CourseFirstUnit={
  {id:"cf-a1-15-05",title:"Introduce politely and ask back",
   objective:"Complete a respectful family introduction with an appropriate follow-up question and acknowledgment.",
   teach:"When a friend shows a photo, this is a useful sequence: この人はだれですか → 私の兄です → お兄さんは学生ですか → はい、大学生です → そうですか. The person introducing their own brother says 兄, while the listener politely asks about お兄さん. This shift depends on whose relative is being discussed. A short acknowledgment そうですか means 'I see'; it does not confirm that you already knew the answer. You may choose a fictional person rather than disclose private family details.",
-  examples:[["この人はだれですか。","Who is this person?"],["私の兄です。","This is my older brother."],["お兄さんは学生ですか。","Is your older brother a student?"],["はい、大学生です。そうですか。","Yes, a university student. I see (separate turns)."]],
+  examples:[["この人はだれですか。","Who is this person?"],["私の兄です。","This is my older brother."],["お兄さんは学生ですか。","Is your older brother a student?"],["はい、大学生です。","Yes, my older brother is a university student."]],
   checks:[
    ["A classmate says 私の兄です. Which polite follow-up asks about his studies?","お兄さんは学生ですか。","兄はお茶をください。","母は先生です。","For someone else's older brother, お兄さん is the polite reference."],
    ["Someone says 兄は大学生です. What does そうですか acknowledge?","New information about the brother","A request for food","A corrected train schedule","そうですか is an acknowledgment of what was just learned."],
