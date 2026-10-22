@@ -7,8 +7,8 @@ import {readFileSync} from "node:fs";
 const canonical=JSON.parse(readFileSync("content/seed/jp-core.json","utf8")) as {
  courseUnits:Array<{id:string;canDoId:string;level:string}>;
 };
-const units=["a1-unit-01","a1-unit-02"] as const;
-const sceneIds=["greetings","personal"] as const;
+const units=["a1-unit-01","a1-unit-02","a1-unit-03"] as const;
+const sceneIds=["greetings","personal","routine"] as const;
 
 const OWNER="00000000-0000-4000-8000-000000000001";
 const stamp="2026-10-22T08:00:00.000Z";
@@ -76,7 +76,7 @@ test("C1 first A1 Continue loads original lesson and supports interruption/reloa
  await expect(page.getByRole("heading",{name:"Learn Japanese"})).toBeVisible();
  const route=page.locator(".cf-a1");
  await expect(route).toContainText("Greetings at different times");
- await expect(route).toContainText("0 / 12 lessons");
+ await expect(route).toContainText("0 / 18 lessons");
  await expect(route.locator("button.cf-a1__continue")).toBeVisible();
  await route.locator("button.cf-a1__continue").click();
  await expect(page.getByRole("heading",{name:"Greetings at different times"})).toBeVisible();
@@ -94,20 +94,20 @@ test("C1 first A1 Continue loads original lesson and supports interruption/reloa
  await page.getByRole("button",{name:"Continue",exact:true}).click();
  await expect(page.getByText("You enter a shop in the afternoon. Select a greeting.")).toBeVisible();
 });
-test("C1 all twelve lessons unlock from canonical native events without granting unscored mastery",async({page})=>{
+test("C2 all eighteen lessons unlock from canonical native events without granting unscored mastery",async({page})=>{
  // The first five lessons and E02 capstone of each unit retain their original prompt identities.
  // Only genuinely correct controlled answers in owner-local IndexedDB unlock the next lesson.
  const all=courseEvents(Number.MAX_SAFE_INTEGER);
- expect(all.length).toBeGreaterThanOrEqual(58);
- expect(all).toHaveLength(58);
+ expect(all.length).toBeGreaterThanOrEqual(87);
+ expect(all).toHaveLength(87);
  await seed(page,[...kana,...all]);
  const path=page.locator(".cf-a1");
- await expect(path).toContainText("12 / 12 lessons");
- await expect(path).toContainText("Both available A1 units are complete");
+ await expect(path).toContainText("18 / 18 lessons");
+ await expect(path).toContainText("All 3 available A1 units are complete");
  await expect(page.locator(".cf-a1__continue")).toHaveCount(0);
  await page.reload();
  await page.getByRole("button",{name:"Learn",exact:true}).click();
- await expect(page.locator(".cf-a1")).toContainText("12 / 12 lessons");
+ await expect(page.locator(".cf-a1")).toContainText("18 / 18 lessons");
 });
 test("C1 mobile Continue fits viewport and optional advanced navigation remains reachable",async({page},testInfo)=>{
  test.skip(testInfo.project.name==="desktop-chromium","Mobile geometry and touch");
@@ -126,7 +126,7 @@ test("C1 mobile Continue fits viewport and optional advanced navigation remains 
 });
 test("C1 owner-keyed IndexedDB records remain separated without an OAuth switch",async({page})=>{
  await seed(page,kana);
- await expect(page.locator(".cf-a1")).toContainText("0 / 12 lessons");
+ await expect(page.locator(".cf-a1")).toContainText("0 / 18 lessons");
  // Owner changes are modeled by isolating the same UI projection against the real
  // IndexedDB key boundary; this must not be confused with an OAuth-device acceptance.
  const guestDb=await page.evaluate(async()=>{
@@ -173,4 +173,15 @@ test("C1 retains explicitly opened optional Learn workspace after native lesson 
  if(testInfo.project.name!=="desktop-chromium")
   await expect(page.locator("#ux1-expanded-catalogue")).toHaveAttribute("data-open","yes");
  await expect(page.getByRole("heading",{name:"Learn Japanese"})).toBeVisible();
+});
+
+test("C2 routine unit appears as next lesson after original two units",async({page})=>{
+ await seed(page,[...kana,...courseEvents(58)]);
+ const path=page.locator(".cf-a1");
+ await expect(path).toContainText("12 / 18 lessons");
+ await expect(path).toContainText("When do you get up?");
+ await path.locator(".cf-a1__continue").click();
+ await expect(page.getByRole("heading",{name:"When do you get up?"})).toBeVisible();
+ await page.getByRole("button",{name:"Continue",exact:true}).click();
+ await expect(page.getByText("ミナ：毎朝、七時に起きます。 When does Mina get up?")).toBeVisible();
 });

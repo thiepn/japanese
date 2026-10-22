@@ -1,3 +1,4 @@
+import rawRegistry from "../../../../content/sources/registry.json";
 import type {StudyEvent} from "@thiepn/domain";
 import type {StudyLesson,StudyPrompt,StudyStep} from "@thiepn/study-player";
 import {coreContent} from "../coreContent";
@@ -247,6 +248,6 @@ export function validateC1A1Course():string[]{
 export function validateC2A1Course():string[]{
  const targets=new Map(coreContent.courseUnits.filter(x=>x.level==="A1").map(x=>[x.id,x.canDoId]));
  const scenes=new Map(E02_AVAILABLE_SCENES.map(x=>[x.id,x.unitId]));
- const source=coreContent.sourceRegistry?.sources?.find(x=>x.id==="thiepn-original");
+ const source=rawRegistry.sources.find(x=>x.id==="thiepn-original");
  return validateAuthoredCourse(C2_A1_UNITS,C2_EDITORIAL_RECORDS,targets,scenes,source?.publicExport===true);
 }

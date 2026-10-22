@@ -57,3 +57,13 @@ Open draft PR #76 is a **separate unintegrated content seed**; it is not a sourc
 - A1: remaining original situations from E02 can be full unit anchors only after unit-by-unit source mapping, original activity expansion, independent literacy/grammar/speaking tasks, and practical can-do checks. Target breadth cannot be inferred from 13 anchor scenes.
 - A2: map both existing E03/E04 collections to independently defined skill and grammar prerequisites, reading/listening/production outcomes, then author full units and assess them.
 - Fill real audio/reading coverage and improve narrative lesson length before claiming dozens of hours at either level.
+
+
+## C2 — Source-backed authoring pipeline and third A1 unit (2026-10-22)
+
+- `courseAuthoring.ts` defines original-ownership rights, six explicit lesson stages, can-do and E02-capstone mapping, ordered unique prompt IDs, minimum explanation and varied-choice checks, and review/evidence constraints. It can reject an incorrectly mapped or unsupported candidate before publishing.
+- `c2A1DailyRoutine.ts` adds **a third substantive guided unit** on clock times, polite routine verbs, に for time/destination, schedule reading and question/answer transfer. It contains five original authored lessons and the already-existing E02 `routine` capstone; the canonical anchor is `a1-unit-03`.
+- Original C1 first twelve lesson IDs and native event records are unchanged. The guided course now has **18 lessons across 3 units**. Previously completed users continue into Unit 3 through existing StudyEvents. No second engine or content-migration write.
+- Coverage ledger tracks per-unit objectives and controlled checks separately from unscored writing. Recorded audio availability is **false**, independently verified hours are **null**, human language review is **pending**, and independent competence is **not certified**. These flags must not be silently changed by a content batch.
+- The source registry identifies `thiepn-original` as owned and exportable. All new Japanese strings are original; no Marugoto chapter dialogue/scan/audio was copied or repackaged.
+- C2 does not complete A1 or A2. Additional original listening recordings, structured reading and writing, pronunciation work, assessed transfer and remaining units still need authoring and human review.

@@ -83,7 +83,7 @@ export function courseCoverage(units:readonly CourseFirstUnit[],records:readonly
    controlledChecks:unit.lessons.reduce((sum,l)=>sum+(isCourseFirstCapstone(l)?4:l.checks.length+1),0),
    unscoredWritingTasks:unit.lessons.filter(l=>!isCourseFirstCapstone(l)).length,
    sourceId:meta?.sourceId??null,humanReviewed:meta?.linguisticReview==="approved",
-   recordedAudioAvailable:meta?.recordedAudio!=="none",verifiedStudyMinutes:meta?.measuredStudyMinutes??null,
+   recordedAudioAvailable:meta?.recordedAudio==="none"?false:false,verifiedStudyMinutes:meta?.measuredStudyMinutes??null,
    independentCompetenceVerified:false,rights:meta?.rights??"missing"};
  });
 }

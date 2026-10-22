@@ -36,7 +36,7 @@ export function CourseFirstA1Path({owner,busy,onStart}:{owner:string;busy:boolea
      {busy?"Opening…":next.done?"Resume lesson":"Continue lesson"} <span aria-hidden="true">→</span>
     </button>
     <span className="cf-a1__count">{next.done} of {next.required} controlled checks completed</span>
-   </div>:<p role="status">Both available A1 units are complete. Further units are not published yet. You can revisit completed lessons below.</p>}
+   </div>:<p role="status">All {units.length} available A1 units are complete. Further units are not published yet. You can revisit completed lessons below.</p>}
    <div className="cf-a1__units">
     {units.map((unit,index)=><details key={unit.id} open={index===0&&Boolean(nextId&&unit.lessons.some(l=>l.id===nextId))}>
       <summary><strong>Unit {index+1}: {unit.title}</strong><span>{unit.completed}/{unit.total}</span></summary>
