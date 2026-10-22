@@ -1,8 +1,14 @@
 import {expect,test,type Page} from "@playwright/test";
 import {basicHiragana,foundationApplicationPrompts,kanaRecognitionPrompts} from "../../apps/web/src/study/foundationPrompts";
-import {C1_A1_UNITS,buildC1A1CourseLesson,projectC1A1Course} from "../../apps/web/src/study/courseFirstA1";
-import {buildE02Journey} from "../../apps/web/src/study/a1ExcellenceCourse";
-import {isStudyLesson} from "../../packages/study-player/src/index";
+import {readFileSync} from "node:fs";
+
+// Browser fixtures read canonical identifiers from the original JSON seed.
+// Do not import the Vite JSON-backed app runtime into Playwright's Node loader.
+const canonical=JSON.parse(readFileSync("content/seed/jp-core.json","utf8")) as {
+ courseUnits:Array<{id:string;canDoId:string;level:string}>;
+};
+const units=["a1-unit-01","a1-unit-02"] as const;
+const sceneIds=["greetings","personal"] as const;
 
 const OWNER="00000000-0000-4000-8000-000000000001";
 const stamp="2026-10-22T08:00:00.000Z";
@@ -20,18 +26,25 @@ const kana=stages.flatMap(group=>{
 function courseEvents(limit:number){
  const out:Array<Record<string,unknown>>=[];
  let n=0;
- for(const unit of C1_A1_UNITS)for(const lesson of unit.lessons){
-  const steps="scene" in lesson?buildE02Journey(lesson.scene):
-   // Directly constructing the original teaching does not require unlocking in this fixture.
-   buildC1A1CourseLesson(lesson.id,out as never);
-  for(const step of steps){
-   if(isStudyLesson(step)||step.eventMetadata?.nonAuthoritative===true)continue;
-   if("scene" in lesson&&!["hear","read","reply","recall"].some(s=>step.id==="a1-e02-"+lesson.scene+"-"+s))continue;
-   n++;
-   if(n>limit)return out;
-   out.push({id:"cf-seed-"+n,userId:OWNER,result:"correct",
-    occurredAt:new Date(Date.parse(stamp)+n*1000).toISOString(),
-    primaryTarget:step.primaryTarget,metadata:{promptId:step.id,...step.eventMetadata}});
+ for(const [unitIndex,unitId] of units.entries()){
+  const canDoId=canonical.courseUnits.find(x=>x.id===unitId&&x.level==="A1")?.canDoId;
+  if(!canDoId)throw Error("MISSING_CANONICAL_C1_UNIT:"+unitId);
+  const unitNumber=String(unitIndex+1).padStart(2,"0");
+  for(let lessonNumber=1;lessonNumber<=6;lessonNumber++){
+   const lessonId="cf-a1-"+unitNumber+"-"+String(lessonNumber).padStart(2,"0");
+   const capstone=lessonNumber===6;
+   const prompts=capstone
+    ?["hear","read","reply","recall"].map(s=>"a1-e02-"+sceneIds[unitIndex]+"-"+s)
+    :[1,2,3,4].map(n=>lessonId+"-choice-"+n).concat(lessonId+"-recall");
+   for(const promptId of prompts){
+    n++;
+    if(n>limit)return out;
+    out.push({id:"cf-seed-"+n,userId:OWNER,result:"correct",
+      occurredAt:new Date(Date.parse(stamp)+n*1000).toISOString(),
+      primaryTarget:{kind:"can_do",id:canDoId},
+      metadata:capstone?{promptId,e02:true,e02SceneId:sceneIds[unitIndex],e02UnitId:unitId}:
+        {promptId,c1CourseFirst:true,c1LessonId:lessonId,c1UnitId:unitId}});
+   }
   }
  }
  return out;
@@ -86,7 +99,7 @@ test("C1 all twelve lessons unlock from canonical native events without granting
  // Only genuinely correct controlled answers in owner-local IndexedDB unlock the next lesson.
  const all=courseEvents(Number.MAX_SAFE_INTEGER);
  expect(all.length).toBeGreaterThanOrEqual(58);
- expect(projectC1A1Course(all as never).nextId).toBeNull();
+ expect(all).toHaveLength(58);
  await seed(page,[...kana,...all]);
  const path=page.locator(".cf-a1");
  await expect(path).toContainText("12 / 12 lessons");
