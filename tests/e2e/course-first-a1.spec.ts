@@ -111,7 +111,7 @@ test("C1 mobile Continue fits viewport and optional advanced navigation remains 
  await expect(page.getByRole("region",{name:"Your learning path"})).toBeVisible();
  await expect(page.getByRole("button",{name:"Open full course and advanced practice"})).toBeVisible();
 });
-test("C1 does not show another owner's record when switching workspaces",async({page})=>{
+test("C1 owner-keyed IndexedDB records remain separated without an OAuth switch",async({page})=>{
  await seed(page,kana);
  await expect(page.locator(".cf-a1")).toContainText("0 / 12 lessons");
  // Owner changes are modeled by isolating the same UI projection against the real
