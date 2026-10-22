@@ -10,6 +10,8 @@ import {buildE02Journey,E02_AVAILABLE_SCENES} from "./a1ExcellenceCourse";
  * All teaching and new questions below are original THIEPN material.
  */
 import {C2_A1_DAILY_ROUTINES} from "./c2A1DailyRoutine";
+import {C3_A1_YESTERDAY} from "./c3A1Yesterday";
+import {C3_A1_ORIGINS} from "./c3A1Origins";
 import {validateAuthoredCourse,courseCoverage,isCourseFirstCapstone,type CourseFirstUnit as Unit,type CourseFirstLesson as Lesson,type EditorialRecord} from "./courseAuthoring";
 
 export const C1_A1_UNITS:readonly Unit[]=[
@@ -130,7 +132,23 @@ export const C2_EDITORIAL_RECORDS:readonly EditorialRecord[]=C2_A1_UNITS.map(uni
 }));
 export const C2_COVERAGE_LEDGER=courseCoverage(C2_A1_UNITS,C2_EDITORIAL_RECORDS);
 
-const byId=new Map(C2_A1_UNITS.flatMap(unit=>unit.lessons.map(lesson=>[lesson.id,{unit,lesson}] as const)));
+/** C3 expands the original sequential course without changing its first 18 IDs. */
+export const C3_A1_UNITS:readonly Unit[]=[...C2_A1_UNITS,C3_A1_YESTERDAY,C3_A1_ORIGINS];
+export const C3_EDITORIAL_RECORDS:readonly EditorialRecord[]=[
+ ...C2_EDITORIAL_RECORDS,
+ ...[C3_A1_YESTERDAY,C3_A1_ORIGINS].map(unit=>({
+  unitId:unit.id,sourceId:"thiepn-original" as const,level:"A1" as const,rights:"original-owned" as const,
+  stageSequence:["encounter","explain","guided","read","transfer","independent"] as const,
+  lessonObjectives:unit.lessons.map(lesson=>lesson.objective),
+  grammarFocus:unit.id==="a1-unit-04"?
+   ["grammar-masu","grammar-ni-destination","grammar-mo-also"]:
+   ["grammar-ka-question","grammar-masu","grammar-ni-destination"],
+  recordedAudio:"none" as const,synthesis:"device-only" as const,independentWriting:"ungraded" as const,
+  linguisticReview:"pending" as const,measuredStudyMinutes:null
+ }))
+];
+export const C3_COVERAGE_LEDGER=courseCoverage(C3_A1_UNITS,C3_EDITORIAL_RECORDS);
+const byId=new Map(C3_A1_UNITS.flatMap(unit=>unit.lessons.map(lesson=>[lesson.id,{unit,lesson}] as const)));
 const ORIGINAL_SOURCE="thiepn-original";
 const anchors=new Map(E02_AVAILABLE_SCENES.map(scene=>[scene.id,scene]));
 function canon(unit:Unit){const record=coreContent.courseUnits.find(x=>x.id===unit.id);
@@ -159,7 +177,7 @@ export interface C1A1LessonProgress{id:string;title:string;done:number;required:
 export interface C1A1UnitProgress{id:string;title:string;completed:number;total:number;lessons:C1A1LessonProgress[];}
 export function projectC1A1Course(events:readonly StudyEvent[]):{units:C1A1UnitProgress[];nextId:string|null}{
  let prior=true,nextId:string|null=null;
- const units=C2_A1_UNITS.map(unit=>{
+ const units=C3_A1_UNITS.map(unit=>{
   const lessons=unit.lessons.map(lesson=>{
    const latest=matched(events,unit,lesson);
    const required=ids(unit,lesson);
@@ -250,4 +268,12 @@ export function validateC2A1Course():string[]{
  const scenes=new Map(E02_AVAILABLE_SCENES.map(x=>[x.id,x.unitId]));
  const source=rawRegistry.sources.find(x=>x.id==="thiepn-original");
  return validateAuthoredCourse(C2_A1_UNITS,C2_EDITORIAL_RECORDS,targets,scenes,source?.publicExport===true);
+}
+
+/** C3 validation prevents publishing unlinked E02 scenes, malformed checks or rights claims. */
+export function validateC3A1Course():string[]{
+ const targets=new Map(coreContent.courseUnits.filter(x=>x.level==="A1").map(x=>[x.id,x.canDoId]));
+ const scenes=new Map(E02_AVAILABLE_SCENES.map(x=>[x.id,x.unitId]));
+ const source=rawRegistry.sources.find(x=>x.id==="thiepn-original");
+ return validateAuthoredCourse(C3_A1_UNITS,C3_EDITORIAL_RECORDS,targets,scenes,source?.publicExport===true);
 }

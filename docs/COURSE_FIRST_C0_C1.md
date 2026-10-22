@@ -67,3 +67,14 @@ Open draft PR #76 is a **separate unintegrated content seed**; it is not a sourc
 - Coverage ledger tracks per-unit objectives and controlled checks separately from unscored writing. Recorded audio availability is **false**, independently verified hours are **null**, human language review is **pending**, and independent competence is **not certified**. These flags must not be silently changed by a content batch.
 - The source registry identifies `thiepn-original` as owned and exportable. All new Japanese strings are original; no Marugoto chapter dialogue/scan/audio was copied or repackaged.
 - C2 does not complete A1 or A2. Additional original listening recordings, structured reading and writing, pronunciation work, assessed transfer and remaining units still need authoring and human review.
+
+
+## C3 — Original past and origin units
+
+- Canonical `a1-unit-04` / E02 `past` adds five guided lessons and the unchanged source-linked E02 past capstone: yesterday vs habitual activity, polite past `-ました`, past destination questions, two-speaker/two-day reading, and shared experience `も`.
+- Canonical `a1-unit-05` / E02 `origin` adds five guided lessons and unchanged original origin capstone: `どこから来ましたか`, `から` for source vs `に` for destination, polite named return questions, full short reading and a reversed journey transfer.
+- Each authored lesson includes a substantive grammatical explanation, at least four original Japanese-English examples, four distinctive controlled checks, exact-form recall and independent *ungraded* writing with transfer. The 10 new authored lessons are separate from their two preserved native E02 capstones.
+- The same single native Continue path now contains **5 sequential A1 units, 30 lessons, 145 controlled checks**. All **18 existing C0–C2 lesson IDs and prior StudyEvents remain valid**; no migrations, new grader, synthetic FSRS path or source remapping were introduced.
+- C3 uses the existing C2 validation pipeline for per-unit original-rights, canonical can-do, scene mapping, order, unique checks and missing-media/competence assertions. Human linguistic review remains pending and duration unmeasured. Device-synthesized Japanese remains synthetic speech, **not licensed recorded native audio**.
+- Source rights: all newly authored writing is original THIEPN educational content; existing E02 scenes are reused only via native prompt IDs. No user-uploaded Marugoto PDF content or recording is redistributed.
+- This does **not** establish full A1 or A2, verified learning hours, accessible audio comprehensiveness, production fluency or independent CEFR/JLPT proficiency.

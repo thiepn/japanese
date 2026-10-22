@@ -27,7 +27,7 @@ export const C3_A1_ORIGINS:CourseFirstUnit={
    ["Which expression means 'from the station'?","駅から","駅に","駅をください","から marks a starting point; 駅 is station."],
    ["Which statement correctly says 'I went from home to school'?","家から学校に行きました。","家に学校から行きました。","家を学校で行きました。","Source takes から and destination takes に."]
   ],
-  recall:["Write 'from home to school' with 家 and 学校.","家から学校に。"],
+  recall:["Write 'I went from home to school' with 家 and 学校.","家から学校に行きました。"],
   writing:"Describe two actual or fictional journeys with both a starting place and a destination. For each, underline (in your own notes) which place is marked by から and which by に."},
  {id:"cf-a1-05-03",title:"Ask and answer between classmates",
   objective:"Exchange origin information politely and return the question without overusing あなた.",

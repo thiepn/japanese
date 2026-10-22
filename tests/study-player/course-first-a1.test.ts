@@ -3,7 +3,7 @@ import {E02_AVAILABLE_SCENES} from "../../apps/web/src/study/a1ExcellenceCourse"
 import {coreContent} from "../../apps/web/src/coreContent";
 import {describe,it,expect} from "vitest";
 import type {StudyEvent} from "@thiepn/domain";
-import {C1_A1_UNITS,C2_A1_UNITS,C2_COVERAGE_LEDGER,buildC1A1CourseLesson,projectC1A1Course,validateC1A1Course,validateC2A1Course} from "../../apps/web/src/study/courseFirstA1";
+import {C1_A1_UNITS,C2_A1_UNITS,C2_COVERAGE_LEDGER,C3_A1_UNITS,C3_EDITORIAL_RECORDS,C3_COVERAGE_LEDGER,buildC1A1CourseLesson,projectC1A1Course,validateC1A1Course,validateC2A1Course,validateC3A1Course} from "../../apps/web/src/study/courseFirstA1";
 import {isStudyLesson} from "../../packages/study-player/src/index";
 
 const mockEvent=(prompt:ReturnType<typeof buildC1A1CourseLesson>[number],result:"correct"|"incorrect",at:number):StudyEvent=>{
@@ -126,5 +126,62 @@ describe("C2 content authoring pipeline and daily routines",()=>{
   const damaged={...original,lessons:[{...original.lessons[0],checks:[["prompt","yes","yes","no","because"]]},...original.lessons.slice(1)]} as unknown as typeof original;
   expect(validateAuthoredCourse([damaged],[manifest],targets,scenes,true))
    .toContain("invalid-choice:cf-a1-03-01-choice-1");
+ });
+});
+
+describe("C3 substantive A1 past and origin sequence",()=>{
+ const required=(unit:(typeof C3_A1_UNITS)[number])=>unit.lessons.flatMap(lesson=>{
+  const ids="scene" in lesson?["hear","read","reply","recall"].map(k=>"a1-e02-"+lesson.scene+"-"+k):
+   [...lesson.checks.map((_,i)=>lesson.id+"-choice-"+(i+1)),lesson.id+"-recall"];
+  const canonical=coreContent.courseUnits.find(x=>x.id===unit.id)!;
+  return ids.map((id,i)=>({
+   primaryTarget:{kind:"can_do",id:canonical.canDoId},result:"correct",
+   occurredAt:new Date(Date.parse("2026-10-22T10:00:00Z")+i*1000).toISOString(),
+   metadata:{promptId:id}
+  } as unknown as StudyEvent));
+ });
+ it("validates five ordered original-rights A1 units with unchanged predecessor IDs",()=>{
+  expect(validateC3A1Course()).toEqual([]);
+  expect(C3_A1_UNITS.map(u=>u.id)).toEqual(["a1-unit-01","a1-unit-02","a1-unit-03","a1-unit-04","a1-unit-05"]);
+  expect(C3_A1_UNITS.slice(0,3).flatMap(u=>u.lessons.map(l=>l.id)))
+   .toEqual(C2_A1_UNITS.flatMap(u=>u.lessons.map(l=>l.id)));
+  expect(C3_A1_UNITS.flatMap(u=>u.lessons)).toHaveLength(30);
+  expect(C3_COVERAGE_LEDGER.map(x=>x.controlledChecks)).toEqual([29,29,29,29,29]);
+  expect(C3_COVERAGE_LEDGER.every(x=>!x.humanReviewed&&!x.recordedAudioAvailable&&
+   x.verifiedStudyMinutes===null&&!x.independentCompetenceVerified)).toBe(true);
+  expect(C3_EDITORIAL_RECORDS.map(x=>x.unitId)).toEqual(C3_A1_UNITS.map(x=>x.id));
+ });
+ it("uses original mapped E02 past and origin source capstones without changed E02 IDs",()=>{
+  expect(E02_AVAILABLE_SCENES.find(x=>x.id==="past")?.unitId).toBe("a1-unit-04");
+  expect(E02_AVAILABLE_SCENES.find(x=>x.id==="origin")?.unitId).toBe("a1-unit-05");
+  for(const [index,scene] of [[3,"past"],[4,"origin"]] as const){
+   const unit=C3_A1_UNITS[index]!;
+   expect(unit.lessons.map(x=>x.id))
+    .toEqual([1,2,3,4,5,6].map(n=>"cf-a1-"+String(index+1).padStart(2,"0")+"-"+String(n).padStart(2,"0")));
+   expect("scene" in unit.lessons[5]!?unit.lessons[5].scene:null).toBe(scene);
+  }
+ });
+ it("unlocks C3 only after source-linked earlier units; no synthetic writing grade",()=>{
+  expect(()=>buildC1A1CourseLesson("cf-a1-04-01",[])).toThrow("C1_A1_LESSON_LOCKED");
+  expect(()=>buildC1A1CourseLesson("cf-a1-05-01",[])).toThrow("C1_A1_LESSON_LOCKED");
+  const previous=C3_A1_UNITS.slice(0,3).flatMap(required);
+  expect(projectC1A1Course(previous).nextId).toBe("cf-a1-04-01");
+  const first=buildC1A1CourseLesson("cf-a1-04-01",previous);
+  expect(first.filter(x=>!isStudyLesson(x))).toHaveLength(6);
+  const writing=first.find(x=>!isStudyLesson(x)&&x.eventMetadata?.nonAuthoritative===true);
+  expect(writing).toBeTruthy();
+  expect(first.filter(x=>!isStudyLesson(x)&&x.eventMetadata?.schedulerExcluded!==true)).toHaveLength(0);
+  const priorC3=[...previous,...required(C3_A1_UNITS[3]!)];
+  expect(projectC1A1Course(priorC3).nextId).toBe("cf-a1-05-01");
+  expect(buildC1A1CourseLesson("cf-a1-05-01",priorC3).some(x=>!isStudyLesson(x)&&x.eventMetadata?.nonAuthoritative===true)).toBe(true);
+  expect(projectC1A1Course([...priorC3,...required(C3_A1_UNITS[4]!)]).nextId).toBeNull();
+ });
+ it("rejects a misplaced origin capstone and non-unique distractors",()=>{
+  const targets=new Map(coreContent.courseUnits.filter(x=>x.level==="A1").map(x=>[x.id,x.canDoId]));
+  const scenes=new Map(E02_AVAILABLE_SCENES.map(x=>[x.id,x.unitId]));
+  const unit=C3_A1_UNITS[4]!,manifest=C3_EDITORIAL_RECORDS[4]!;
+  const invalid={...unit,lessons:[{...unit.lessons[0],checks:[["Question","X","X","Y","Explanation"]]},...unit.lessons.slice(1,-1),{...unit.lessons[5],scene:"past"}]} as unknown as typeof unit;
+  expect(validateAuthoredCourse([invalid],[manifest],targets,scenes,true))
+   .toEqual(expect.arrayContaining(["invalid-choice:cf-a1-05-01-choice-1","unlinked-capstone:cf-a1-05-06"]));
  });
 });
