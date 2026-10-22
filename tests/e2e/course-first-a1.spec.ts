@@ -178,7 +178,7 @@ test("C1 retains explicitly opened optional Learn workspace after native lesson 
 test("C2 routine unit appears as next lesson after original two units",async({page})=>{
  await seed(page,[...kana,...courseEvents(58)]);
  const path=page.locator(".cf-a1");
- await expect(path).toContainText("12 / 18 lessons");
+ await expect(path).toContainText("12 / 30 lessons");
  await expect(path).toContainText("When do you get up?");
  await path.locator(".cf-a1__continue").click();
  await expect(page.getByRole("heading",{name:"When do you get up?"})).toBeVisible();

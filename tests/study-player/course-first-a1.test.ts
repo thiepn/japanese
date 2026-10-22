@@ -158,7 +158,8 @@ describe("C3 substantive A1 past and origin sequence",()=>{
    const unit=C3_A1_UNITS[index]!;
    expect(unit.lessons.map(x=>x.id))
     .toEqual([1,2,3,4,5,6].map(n=>"cf-a1-"+String(index+1).padStart(2,"0")+"-"+String(n).padStart(2,"0")));
-   expect("scene" in unit.lessons[5]!?unit.lessons[5].scene:null).toBe(scene);
+   const capstone=unit.lessons[5];
+   expect(capstone&&"scene" in capstone?capstone.scene:null).toBe(scene);
   }
  });
  it("unlocks C3 only after source-linked earlier units; no synthetic writing grade",()=>{
