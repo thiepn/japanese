@@ -4,7 +4,7 @@ import type {Page} from "@playwright/test";
 export async function openAdditionalLearn(page:Page,fullCourse=false):Promise<void>{
   const catalogue=page.locator(".beginner-explore");
   if(!await catalogue.evaluate(node=>(node as HTMLDetailsElement).open))
-    await catalogue.locator("summary").click();
+    await catalogue.locator(":scope > summary").click();
   if(!fullCourse)return;
   const expand=page.getByRole("button",{name:"Open full course and advanced practice",exact:true});
   if(await expand.count())await expand.click();
