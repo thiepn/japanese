@@ -1,3 +1,4 @@
+import {revealAdvancedCatalogue} from "./support/courseNavigation";
 import {expect,test} from "@playwright/test";
 
 test("J15D uses only the native Japanese navigation, not the retired shell",async({page})=>{
@@ -9,8 +10,7 @@ test("J15D uses only the native Japanese navigation, not the retired shell",asyn
   await expect(nav).toHaveCSS("box-shadow","none");
   await expect(page.locator(".app-shell,.nav,.topbar,.study-shell,.study-card")).toHaveCount(0);
   await nav.getByRole("button",{name:"Learn",exact:true}).click();
-  await page.locator(".beginner-explore > summary").click();
-  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+  await revealAdvancedCatalogue(page);
   await expect(page.locator(".j4-hero")).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)).toBeLessThanOrEqual(1);
 });

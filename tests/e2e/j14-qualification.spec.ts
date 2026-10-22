@@ -1,3 +1,4 @@
+import {revealAdvancedCatalogue} from "./support/courseNavigation";
 import {expect,test,type Page} from "@playwright/test";
 
 test("J15 presents Japanese editorial navigation instead of SaaS dashboard chrome",async({page},testInfo)=>{
@@ -26,8 +27,7 @@ test("J15 presents Japanese editorial navigation instead of SaaS dashboard chrom
   ] as const){
     await nav.getByRole("button",{name:surface,exact:true}).click();
     if(surface==="Learn"){
-      await page.locator(".beginner-explore > summary").click();
-      await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+      await revealAdvancedCatalogue(page);
     }
     await expect(page.locator(hero)).toHaveCSS("border-radius","0px");
     await expect(page.locator(hero)).toHaveCSS("box-shadow","none");
@@ -65,8 +65,7 @@ test("J14 dark mode is coherent across core and legacy learner surfaces",async({
   expect(tokens.fg.toLowerCase()).toBe("#ede7dc");
 
   await page.getByRole("button",{name:"Learn",exact:true}).click();
-  await page.locator(".beginner-explore > summary").click();
-  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+  await revealAdvancedCatalogue(page);
   const realWorld=page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"});
   await realWorld.locator("summary").click();
   await expect(page.locator(".real-world-performance")).toBeVisible();
@@ -92,8 +91,7 @@ test("J14 removes legacy light islands and restores muted-text contrast in dark 
   await page.goto("./");
 
   await page.getByRole("button",{name:"Learn",exact:true}).click();
-  await page.locator(".beginner-explore > summary").click();
-  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+  await revealAdvancedCatalogue(page);
   const realWorld=page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"});
   await realWorld.locator("summary").click();
   await expectDarkSurface(page,".performance-summary>div");
@@ -169,8 +167,7 @@ test("J14 keeps an already-used dark PWA functional through offline reload",asyn
   await page.getByRole("button",{name:"Use dark theme"}).click();
   await expect(page.locator("html")).toHaveAttribute("data-j-theme","dark");
   await page.getByRole("button",{name:"Learn",exact:true}).click();
-  await page.locator(".beginner-explore > summary").click();
-  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+  await revealAdvancedCatalogue(page);
   const drawer=page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"});
   await drawer.locator("summary").click();
   await expectDarkSurface(page,".real-world-performance");
@@ -180,8 +177,7 @@ test("J14 keeps an already-used dark PWA functional through offline reload",asyn
   await expect(page.locator("html")).toHaveAttribute("data-j-theme","dark");
   await expect(page.getByRole("heading",{name:"Start Japanese from Zero"})).toBeVisible();
   await page.getByRole("button",{name:"Learn",exact:true}).click();
-  await page.locator(".beginner-explore > summary").click();
-  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+  await revealAdvancedCatalogue(page);
   await page.locator(".j4-practice__drawer").filter({hasText:"Real-world performance"}).locator("summary").click();
   await expectDarkSurface(page,".real-world-performance");
   await context.setOffline(false);
@@ -259,7 +255,7 @@ test("J14 exposes visible keyboard focus without pointer-only navigation",async(
   await page.locator(".beginner-explore > summary").focus();
   await expectVisibleFocus(page.locator(".beginner-explore > summary"));
   await page.locator(".beginner-explore > summary").press("Enter");
-  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+  await revealAdvancedCatalogue(page);
   const emaki=page.locator(".j4-emaki");
   await emaki.focus();
   await expectVisibleFocus(emaki);
