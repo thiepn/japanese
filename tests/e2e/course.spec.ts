@@ -1,10 +1,10 @@
+import {openAdditionalLearn} from "./open-additional-learn";
 import { expect,test } from "@playwright/test";
 
 test("structured A1→C1 course and canonical grammar/sentence search work on every certified viewport",async({page})=>{
   await page.goto("./");
   await page.getByRole("button",{name:"Learn"}).click();
-  await page.locator(".beginner-explore > summary").click();
-  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+  await openAdditionalLearn(page,true);
 
   await expect(page.getByRole("heading",{name:"Your Japanese journey"})).toBeVisible();
   await expect(page.locator(".j4-landmark")).toHaveCount(68);

@@ -1,8 +1,10 @@
+import {openAdditionalLearn} from "./open-additional-learn";
 import {expect,test} from "@playwright/test";
 
 test("F2 A2 grammar examples render optional ruby without changing exercise prompts",async({page})=>{
   await page.goto("./");
   await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await openAdditionalLearn(page,true);
   const unit=page.locator(".j4-region").nth(1).locator(".j4-landmark").first();
   await expect(unit.getByRole("heading",{name:"Talk about life in progress"})).toBeVisible();
   await unit.getByRole("button",{name:/Enter landmark|Continue landmark|Review landmark|Study anyway/}).click();

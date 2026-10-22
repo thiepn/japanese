@@ -1,8 +1,10 @@
+import {openAdditionalLearn} from "./open-additional-learn";
 import {expect,test} from "@playwright/test";
 
 test("F3 A2 furigana is accessible by keyboard, keeps toggle state and never changes question grading",async({page})=>{
   await page.goto("./");
   await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await openAdditionalLearn(page,true);
   const unit=page.locator(".j4-region").nth(1).locator(".j4-landmark").first();
   await unit.getByRole("button",{name:/Enter landmark|Continue landmark|Review landmark|Study anyway/}).click();
   await page.getByRole("button",{name:"Continue"}).click();
@@ -25,6 +27,7 @@ test("F3 A2 ruby remains within document at compact 320px viewport",async({page}
   await page.setViewportSize({width:320,height:720});
   await page.goto("./");
   await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await openAdditionalLearn(page,true);
   await page.locator(".j4-region").nth(1).locator(".j4-landmark").first()
     .getByRole("button",{name:/Enter landmark|Continue landmark|Review landmark|Study anyway/}).click();
   await page.getByRole("button",{name:"Continue"}).click();
