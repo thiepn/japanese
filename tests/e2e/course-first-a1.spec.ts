@@ -107,7 +107,7 @@ test("C4 all forty-two authored lessons unlock from canonical native events with
  await expect(page.locator(".cf-a1__continue")).toHaveCount(0);
  await page.reload();
  await page.getByRole("button",{name:"Learn",exact:true}).click();
- await expect(page.locator(".cf-a1")).toContainText("30 / 42 lessons");
+ await expect(page.locator(".cf-a1")).toContainText("42 / 42 lessons");
 });
 test("C1 mobile Continue fits viewport and optional advanced navigation remains reachable",async({page},testInfo)=>{
  test.skip(testInfo.project.name==="desktop-chromium","Mobile geometry and touch");
