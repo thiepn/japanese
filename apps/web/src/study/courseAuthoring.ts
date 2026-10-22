@@ -10,7 +10,7 @@ export type EditorialRecord={
  unitId:string;sourceId:"thiepn-original";level:"A1";rights:"original-owned";
  stageSequence:readonly Stage[];lessonObjectives:readonly string[];grammarFocus:readonly string[];
  recordedAudio:"none";synthesis:"device-only";independentWriting:"ungraded";
- linguisticReview:"pending";measuredStudyMinutes:null;
+ linguisticReview:"pending"|"approved";measuredStudyMinutes:null;
 };
 export const C2_STAGES:readonly Stage[]=["encounter","explain","guided","read","transfer","independent"];
 export function isCourseFirstCapstone(l:CourseFirstLesson):l is CourseFirstCapstone{return "scene" in l;}
@@ -83,7 +83,7 @@ export function courseCoverage(units:readonly CourseFirstUnit[],records:readonly
    controlledChecks:unit.lessons.reduce((sum,l)=>sum+(isCourseFirstCapstone(l)?4:l.checks.length+1),0),
    unscoredWritingTasks:unit.lessons.filter(l=>!isCourseFirstCapstone(l)).length,
    sourceId:meta?.sourceId??null,humanReviewed:meta?.linguisticReview==="approved",
-   recordedAudioAvailable:meta?.recordedAudio==="none"?false:false,verifiedStudyMinutes:meta?.measuredStudyMinutes??null,
+   recordedAudioAvailable:false,verifiedStudyMinutes:meta?.measuredStudyMinutes??null,
    independentCompetenceVerified:false,rights:meta?.rights??"missing"};
  });
 }
