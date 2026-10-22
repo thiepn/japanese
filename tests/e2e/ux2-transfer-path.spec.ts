@@ -2,7 +2,9 @@ import {expect,test} from "@playwright/test";
 test("UX2 original cumulative cases and all practical studios are navigable",async({page},testInfo)=>{
  await page.goto("./");
  await page.getByRole("button",{name:"Learn",exact:true}).click();
+ await page.locator(".beginner-explore > summary").click();
  if(testInfo.project.name==="desktop-chromium"){
+  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
   const catalogue=page.locator(".e07-track-list").filter({hasText:"Browse every original A1/A2 situation"});
   await catalogue.locator(":scope > summary").click();
   await expect(page.getByRole("heading",{name:"Communicate across everyday situations"})).toBeVisible();
@@ -18,6 +20,8 @@ test("UX2 original cumulative cases and all practical studios are navigable",asy
  const first=transfer.locator(".ux2-transfer-case").first();
  await expect(first.getByRole("button",{name:/Read original case|Study prerequisite source|Continue short lesson|Review full original case/})).toBeEnabled();
  const catalogue=page.locator(".ux1-mobile-catalogue-toggle");
+ await catalogue.click();
+ await expect(catalogue).toHaveAttribute("aria-expanded","true");
  await catalogue.click();
  await expect(catalogue).toHaveAttribute("aria-expanded","false");
  await transfer.locator(".ux2-transfer__tools li").filter({hasText:"Conversation and private notebook"}).getByRole("button",{name:"Open studio"}).click();
