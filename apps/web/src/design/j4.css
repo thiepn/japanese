@@ -1234,3 +1234,10 @@
     scroll-behavior:auto;
   }
 }
+
+/* Keyboard focus is functional navigation, including on touch-sized layouts. */
+.j4-practice__drawer>summary:focus,
+.j4-practice__drawer>summary:focus-visible{
+  outline:3px solid var(--j-focus);
+  outline-offset:2px;
+}

@@ -24,6 +24,7 @@ import { productivePracticeSession,productiveTaskSession,productivePrompts } fro
 import { lexicalChunkLessons,lexicalChunkMeaningPrompts,lexicalChunkActivePrompts,lexicalChunkTransferPrompts,lexicalChunkPrompts,lexicalFluencySession } from "./lexicalFluency";
 import { buildNextRealWorldChainSession,buildP9QualificationSession } from "./realWorldPerformance";
 import { c1DiscoursePrompts,c1FoundationPractice } from "./c1Foundation";
+import {buildC1A1CourseLesson,projectC1A1Course} from "./courseFirstA1";
 import {buildE01Journey,buildE01DelayedJourney,e01ReviewPrompts,getE01Progress,type E01Progress} from "./a1Excellence";
 export type {E01Progress} from "./a1Excellence";
 import {buildE02Journey,buildE02DelayedJourney,buildE02Preview,e02ReviewPrompts,getE02Overview,type E02Overview} from "./a1ExcellenceCourse";
@@ -229,6 +230,20 @@ export async function buildE03Session(sceneId:string):Promise<StudyStep[]>{retur
 export async function buildE03DelayedSession(sceneId:string):Promise<StudyStep[]>{return buildE03DelayedJourney(sceneId,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
 export async function getE03Evidence():Promise<E03Overview>{return getE03Overview(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
 export async function buildE02PreviewSession(sceneId:string):Promise<StudyStep[]>{return buildE02Preview(sceneId);}
+/** C1 guided course: native events are authoritative for progress and resume. */
+export async function buildC1A1Session(id:string):Promise<StudyStep[]>{
+ const owner=DEVELOPMENT_ACCOUNT_ID;
+ const events=await listStudyEvents(owner);
+ if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("C1_A1_WORKSPACE_CHANGED_DURING_BUILD");
+ return buildC1A1CourseLesson(id,events);
+}
+export async function buildNextC1A1Session():Promise<StudyStep[]>{
+ const owner=DEVELOPMENT_ACCOUNT_ID;
+ const events=await listStudyEvents(owner);
+ if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("C1_A1_WORKSPACE_CHANGED_DURING_BUILD");
+ const id=projectC1A1Course(events).nextId;
+ return id?buildC1A1CourseLesson(id,events):[];
+}
 export async function buildE02Session(sceneId:string):Promise<StudyStep[]>{return buildE02Journey(sceneId);}
 export async function buildE02DelayedSession(sceneId:string):Promise<StudyStep[]>{return buildE02DelayedJourney(sceneId,await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}
 export async function getE02Evidence():Promise<E02Overview>{return getE02Overview(await listStudyEvents(DEVELOPMENT_ACCOUNT_ID));}

@@ -1,3 +1,4 @@
+import {enterAdvancedLearn} from "./support/courseNavigation";
 import {readFileSync} from "node:fs";
 import {expect,test} from "@playwright/test";
 
@@ -35,7 +36,7 @@ async function unlockOriginalCases(page:import("@playwright/test").Page){
     db.close();
   },fixture);
   await page.reload();
-  await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await enterAdvancedLearn(page);
 }
 
 test("E13 cross-situation mixer exposes source-qualified cases and opens native Japanese player",async({page})=>{

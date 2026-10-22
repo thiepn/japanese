@@ -1,3 +1,4 @@
+import {enterAdvancedLearn} from "./support/courseNavigation";
 import {readFileSync} from "node:fs";
 import {test,expect} from "@playwright/test";
 
@@ -40,9 +41,8 @@ test("E12 unsent revised writing survives offline restart without events, FSRS o
  await page.evaluate(async()=>{await navigator.serviceWorker.ready;});
  await page.reload();
  await expect.poll(()=>page.evaluate(()=>Boolean(navigator.serviceWorker.controller))).toBe(true);
- await page.getByRole("button",{name:"Learn",exact:true}).click();
- await page.locator(".beginner-explore > summary").click();
- await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+ await enterAdvancedLearn(page);
+
  await page.locator("details.e07-track-list > summary").click();
  const card=page.locator(".e06-course__case").filter({hasText:"Meet someone and ask for help"});
  await card.getByRole("button",{name:/Optional E11–E12 conversation/}).click();
@@ -78,9 +78,8 @@ test("E12 unsent revised writing survives offline restart without events, FSRS o
  try{
    await page.reload();
    await expect(page.getByRole("heading",{name:"Start Japanese from Zero"})).toBeVisible();
-   await page.getByRole("button",{name:"Learn",exact:true}).click();
-   await page.locator(".beginner-explore > summary").click();
- await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+   await enterAdvancedLearn(page);
+
  await page.locator("details.e07-track-list > summary").click();
    const returnCard=page.locator(".e06-course__case").filter({hasText:"Meet someone and ask for help"});
    await expect(returnCard).toContainText("first message recorded");

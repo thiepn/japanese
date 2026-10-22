@@ -26,3 +26,7 @@
 .beginner-entry__path{margin-top:20px;}
 .beginner-entry__path>summary{min-height:44px;display:list-item;cursor:pointer;font-weight:650;font-size:15px;padding:10px 4px;}
 .beginner-entry__path[open]>summary{margin-bottom:12px;}
+
+/* Keep the transformed compact PWA shell's effective tap areas >= 48 CSS px. */
+.beginner-entry__actions button{min-height:56px!important;}
+.j5-kana-audio button{min-height:50px!important;}

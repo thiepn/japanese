@@ -1,5 +1,6 @@
 import "./j4.css";
 import {BeginnerEntry} from "./BeginnerEntry";
+import {CourseFirstA1Path} from "./CourseFirstA1Path";
 import type {BeginnerOverview} from "../study/beginnerCourse";
 import "../study/e10DailyStages.css";
 import {useEffect,useMemo,useRef,useState} from "react";
@@ -46,7 +47,9 @@ import type {E07Journey,E07Action} from "../study/e07LearningRoute";
 import {JCartouche,JInkProgress,JPattern,JSeal} from "./index";
 
 type Props={
-   beginner:BeginnerOverview;onStartBeginner:()=>void;onReviewDue:()=>void;
+  advancedOpen:boolean;onAdvancedOpen:(value:boolean)=>void;
+  showFullCourse:boolean;onShowFullCourse:(value:boolean)=>void;
+   beginner:BeginnerOverview;onStartBeginner:()=>void;onStartC1A1:(id:string)=>void;onReviewDue:()=>void;
   e01:E01Progress;onStartE01:()=>void;onStartE01Delayed:()=>void;
   e02:E02Overview;onStartE02:(id:string)=>void;onStartE02Delayed:(id:string)=>void;
   e03:E03Overview;onStartE03:(id:string)=>void;onStartE03Delayed:(id:string)=>void;
@@ -103,23 +106,19 @@ const LEVEL_ORDER=["A1","A2","B1","B2","C1"];
 
 export function J4Learn(props:Props){
   const {
-    beginner,onStartBeginner,onReviewDue,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,e14Reviews,e16WorkspaceId,e16WorkspaceCurrent,onStartE06,onStartE06Full,onStartE11Micro,onStartE13,onStartE18,onStartE14,onStartE15,onStartE10Stage,onStartE06Delayed,onStartE10DelayedStage,onStartE06FullDelayed,onStartE06Preview,e19,onStartE19,e07,onOpenE07,e22Selection,onE22Selection,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
+    advancedOpen,onAdvancedOpen,showFullCourse,onShowFullCourse,
+    beginner,onStartBeginner,onStartC1A1,onReviewDue,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,e14Reviews,e16WorkspaceId,e16WorkspaceCurrent,onStartE06,onStartE06Full,onStartE11Micro,onStartE13,onStartE18,onStartE14,onStartE15,onStartE10Stage,onStartE06Delayed,onStartE10DelayedStage,onStartE06FullDelayed,onStartE06Preview,e19,onStartE19,e07,onOpenE07,e22Selection,onE22Selection,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
     milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,
     onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartAssessment,
     onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,
     onC1Practice,onProductive,onLexicalFluency,onRealWorldChain,onRealWorldQualification,
   }=props;
 
-  const beginnerMode=!beginner.complete||Boolean(e01.unitId&&(e01.status==="not_started"||e01.status==="learning"))||Boolean(e02.nextSceneId);
-  const [showFullCourse,setShowFullCourse]=useState(!beginnerMode);
-  const [advancedOpen,setAdvancedOpen]=useState(!beginnerMode);
   const coachDrawer=useRef<HTMLDetailsElement|null>(null);
-  // Hydrated A0/A1 progress can arrive after this screen initially mounts.
-  useEffect(()=>{if(!beginnerMode){setAdvancedOpen(true);setShowFullCourse(true);}},[beginnerMode]);
   useEffect(()=>{
     if(!preferredCoachChain)return;
-    setAdvancedOpen(true);
-    setShowFullCourse(true);
+    onAdvancedOpen(true);
+    onShowFullCourse(true);
     const frame=window.requestAnimationFrame(()=>{
       const drawer=coachDrawer.current;
       if(!drawer)return;
@@ -143,7 +142,7 @@ export function J4Learn(props:Props){
     });
     return ()=>window.cancelAnimationFrame(frame);
   },[studioTarget,showFullCourse]);
-  const openOriginalStudio=(target:UX2StudioTarget)=>{setShowFullCourse(true);setStudioTarget(target);};
+  const openOriginalStudio=(target:UX2StudioTarget)=>{onShowFullCourse(true);setStudioTarget(target);};
   const groups=useMemo(()=>{
     const byLevel=new Map<string,CourseUnitProgress[]>();
     for(const unit of course){
@@ -169,13 +168,13 @@ export function J4Learn(props:Props){
 
   return <section className="j4-learn" aria-label="Japanese lessons">
     <span className="j13-marginal" aria-hidden="true">学</span>
-    {beginnerMode?<BeginnerEntry overview={beginner}
+    {!beginner.complete?<BeginnerEntry overview={beginner}
       a1Next={e01.unitId&&(e01.status==="not_started"||e01.status==="learning")?"First conversations":
         e02.scenes.find(scene=>scene.id===e02.nextSceneId)?.title??"A1 practice"}
       due={summary.due} busy={status==="loading"}
-      sessionError={status==="error"} onContinue={onStartBeginner} onReview={onReviewDue}/>:null}
+      sessionError={status==="error"} onContinue={onStartBeginner} onReview={onReviewDue}/>:<CourseFirstA1Path owner={e16WorkspaceId} busy={status==="loading"} onStart={onStartC1A1}/>}
     <details className="beginner-explore" open={advancedOpen}
-      onToggle={event=>setAdvancedOpen(event.currentTarget.open)}>
+      onToggle={event=>onAdvancedOpen(event.currentTarget.open)}>
       <summary>Browse other lessons and advanced practice</summary>
     <UX1LearningPath e01={e01} e02={e02} e03={e03} e04={e04} e19={e19} route={e07}
       selection={e22Selection} onSelectionChange={onE22Selection} onE01={onStartE01} onE01Delayed={onStartE01Delayed} busy={status==="loading"} onOpenE07={onOpenE07} onE02={onStartE02} onE02Delayed={onStartE02Delayed} onE02Preview={onStartE02Preview} onE03={onStartE03} onE03Delayed={onStartE03Delayed} onE03Preview={onStartE03Preview} onE04={onStartE04} onE04Delayed={onStartE04Delayed} onE04Preview={onStartE04Preview} onE19={onStartE19}
@@ -197,7 +196,7 @@ export function J4Learn(props:Props){
        onSource={c=>{if(c.anchorCohort==="e02")onStartE02(c.anchorSceneId);else if(c.anchorCohort==="e03")onStartE03(c.anchorSceneId);else onStartE04(c.anchorSceneId);}}
        onShort={onStartE06} onFull={onStartE06Full} onPreview={onStartE06Preview} onReview={onStartE06Delayed} onPractical={onStartE11Micro} onRepair={onStartE05Repair} onOpenStudio={openOriginalStudio}/>
     </div>
-    <button className="ux1-mobile-catalogue-toggle" type="button" aria-controls="ux1-expanded-catalogue" aria-expanded={showFullCourse} onClick={()=>setShowFullCourse(v=>!v)}>{showFullCourse?"Hide full course and advanced practice":"Open full course and advanced practice"}</button>
+    <button className="ux1-mobile-catalogue-toggle" type="button" aria-controls="ux1-expanded-catalogue" aria-expanded={showFullCourse} onClick={()=>onShowFullCourse(!showFullCourse)}>{showFullCourse?"Hide full course and advanced practice":"Open full course and advanced practice"}</button>
     <div id="ux1-expanded-catalogue" className="ux1-expanded-catalogue" data-open={showFullCourse?"yes":"no"}>
     <header className="j4-hero">
       <JPattern name="seigaiha" className="j4-hero__pattern"/>

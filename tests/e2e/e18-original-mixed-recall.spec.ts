@@ -1,3 +1,4 @@
+import {enterAdvancedLearn} from "./support/courseNavigation";
 import {readFileSync} from "node:fs";
 import {expect,test} from "@playwright/test";
 const fixture=JSON.parse(readFileSync("artifacts/e18-browser-seed.json","utf8")) as {
@@ -28,11 +29,11 @@ async function seedOriginalSources(page:import("@playwright/test").Page){
   db.close();
  },fixture);
  await page.reload();
- await page.getByRole("button",{name:"Learn",exact:true}).click();
+ await enterAdvancedLearn(page);
 }
 test("E18 initially sends learner to original linked source rather than offering unsourced mixed grades",async({page})=>{
  await page.goto("./");
- await page.getByRole("button",{name:"Learn",exact:true}).click();
+ await enterAdvancedLearn(page);
  const section=page.getByRole("region",{name:"Recall across real situations"});
  await expect(section).toBeVisible();
  await expect(section).toContainText("Complete all controlled questions in at least two");

@@ -1,3 +1,4 @@
+import {revealAdvancedCatalogue} from "./support/courseNavigation";
 import {expect,test} from "@playwright/test";
 
 test("J15B freezes five distinct editorial page frames and flat navigation",async({page})=>{
@@ -15,8 +16,7 @@ test("J15B freezes five distinct editorial page frames and flat navigation",asyn
   ] as const){
     await nav.getByRole("button",{name,exact:true}).click();
     if(name==="Learn"){
-      await page.locator(".beginner-explore > summary").click();
-      await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+      await revealAdvancedCatalogue(page);
     }
     await expect(page.locator(selector)).toHaveCSS("border-radius","0px");
     await expect(page.locator(selector)).toHaveCSS("box-shadow","none");

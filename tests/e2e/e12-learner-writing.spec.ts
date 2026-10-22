@@ -1,3 +1,4 @@
+import {enterAdvancedLearn} from "./support/courseNavigation";
 import {readFileSync} from "node:fs";
 import {expect,test} from "@playwright/test";
 
@@ -37,7 +38,7 @@ test("E12 browser: source-gated guest first message, skip optional checks, revis
    db.close();
  },fixture);
  await page.reload();
- await page.getByRole("button",{name:"Learn",exact:true}).click();
+ await enterAdvancedLearn(page);
  await page.locator("details.e07-track-list > summary").click();
  const caseCard=page.locator(".e06-course__case").filter({hasText:"Meet someone and ask for help"});
  await expect(caseCard).toBeVisible();
@@ -101,7 +102,7 @@ test("E12 browser: source-gated guest first message, skip optional checks, revis
  expect(evidence.traces).toBe(0); // Skipped optional practice never creates FSRS mastery.
 
  await page.reload();
- await page.getByRole("button",{name:"Learn",exact:true}).click();
+ await enterAdvancedLearn(page);
  await page.locator("details.e07-track-list > summary").click();
  const recovered=page.locator(".e06-course__case").filter({hasText:"Meet someone and ask for help"});
  await expect(recovered).toContainText("first message recorded");

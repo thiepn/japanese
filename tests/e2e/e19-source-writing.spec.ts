@@ -1,3 +1,4 @@
+import {enterAdvancedLearn} from "./support/courseNavigation";
 import {readFileSync} from "node:fs";
 import {expect,test} from "@playwright/test";
 
@@ -29,11 +30,11 @@ async function seedOriginalOwner(page:import("@playwright/test").Page){
   db.close();
  },fixture);
  await page.reload();
- await page.getByRole("button",{name:"Learn",exact:true}).click();
+ await enterAdvancedLearn(page);
 }
 test("E19 source prerequisites lead the learner to the original Japanese listening lesson",async({page})=>{
  await page.goto("./");
- await page.getByRole("button",{name:"Learn",exact:true}).click();
+ await enterAdvancedLearn(page);
  const studio=page.getByRole("region",{name:"Write, compare and revise your own Japanese"});
  await expect(studio).toBeVisible();
  await expect(studio).toContainText("Original listening");
