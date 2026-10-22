@@ -110,7 +110,7 @@ export const SHARED_JAPANESE_CONCEPT_ROWS:readonly SharedJapaneseConceptRow[]=[
 ];
 export interface SharedJapaneseReferenceConcept{ readonly conceptId:string; readonly asset:string; readonly alt:string; readonly originalBlobSha:string; }
 const byLexeme=new Map<string,SharedJapaneseReferenceConcept>(SHARED_JAPANESE_CONCEPT_ROWS.map(([lexemeId,conceptId,asset,alt,originalBlobSha])=>
-  [lexemeId,{conceptId,asset,alt,originalBlobSha}]));
+  [lexemeId,{conceptId,asset,alt,originalBlobSha}] as const));
 /** Fail closed if the original local asset or alt drifts from the shared catalog. */
 export function sharedJapaneseReferenceForLexeme(lexemeId:string):SharedJapaneseReferenceConcept|null{
  const approved=byLexeme.get(lexemeId);
