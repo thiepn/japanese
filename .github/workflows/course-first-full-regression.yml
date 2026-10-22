@@ -38,8 +38,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24.15.0
-      - name: Install authentic locked workspace
-        run: pnpm install --frozen-lockfile
+      - name: Install original pnpm workspace (no committed lockfile)
+        run: pnpm install --no-frozen-lockfile
       - name: Produce actual release-mode browser bundle
         run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
