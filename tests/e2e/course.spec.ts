@@ -22,6 +22,7 @@ test("structured A1→C1 course and canonical grammar/sentence search work on ev
   await expect(page.getByText(/polite/i).first()).toBeVisible();
 
   await page.getByRole("button",{name:"Exit"}).click();
+  await openAdditionalLearn(page,true);
   await expect(page.getByRole("heading",{name:"Your Japanese journey"})).toBeVisible();
   // Compact headless Chromium can re-scroll a fixed nav during actionability checks after StudyPlayer teardown.
   // Mobile geometry/hit targets are certified separately in mobile.spec.ts; invoke the already-visible control directly here.
