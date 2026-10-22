@@ -736,3 +736,6 @@
     transform:none;
   }
 }
+
+/* Match the actual beginner CTA touch target across compact phone sizes. */
+.j3-today .beginner-entry__actions button{min-height:50px;}
