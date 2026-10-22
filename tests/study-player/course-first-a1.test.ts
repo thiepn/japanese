@@ -3,7 +3,7 @@ import {E02_AVAILABLE_SCENES} from "../../apps/web/src/study/a1ExcellenceCourse"
 import {coreContent} from "../../apps/web/src/coreContent";
 import {describe,it,expect} from "vitest";
 import type {StudyEvent} from "@thiepn/domain";
-import {C1_A1_UNITS,C2_A1_UNITS,C2_COVERAGE_LEDGER,C3_A1_UNITS,C3_EDITORIAL_RECORDS,C3_COVERAGE_LEDGER,C4_A1_UNITS,C4_EDITORIAL_RECORDS,C4_COVERAGE_LEDGER,C5_A1_UNITS,C5_EDITORIAL_RECORDS,C5_COVERAGE_LEDGER,C6_A1_UNITS,C6_EDITORIAL_RECORDS,C6_COVERAGE_LEDGER,buildC1A1CourseLesson,projectC1A1Course,validateC1A1Course,validateC2A1Course,validateC3A1Course,validateC4A1Course,validateC5A1Course,validateC6A1Course} from "../../apps/web/src/study/courseFirstA1";
+import {C1_A1_UNITS,C2_A1_UNITS,C2_COVERAGE_LEDGER,C3_A1_UNITS,C3_EDITORIAL_RECORDS,C3_COVERAGE_LEDGER,C4_A1_UNITS,C4_EDITORIAL_RECORDS,C4_COVERAGE_LEDGER,C5_A1_UNITS,C5_EDITORIAL_RECORDS,C5_COVERAGE_LEDGER,C6_A1_UNITS,C6_EDITORIAL_RECORDS,C6_COVERAGE_LEDGER,C7_A1_UNITS,C7_EDITORIAL_RECORDS,C7_COVERAGE_LEDGER,buildC1A1CourseLesson,projectC1A1Course,validateC1A1Course,validateC2A1Course,validateC3A1Course,validateC4A1Course,validateC5A1Course,validateC6A1Course,validateC7A1Course} from "../../apps/web/src/study/courseFirstA1";
 import {isStudyLesson} from "../../packages/study-player/src/index";
 
 const mockEvent=(prompt:ReturnType<typeof buildC1A1CourseLesson>[number],result:"correct"|"incorrect",at:number):StudyEvent=>{
@@ -390,7 +390,7 @@ describe("C6 source-linked shopping and transport authoring",()=>{
   expect(projectC1A1Course(throughShopping).nextId).toBe("cf-a1-18-01");
   const travel=buildC1A1CourseLesson("cf-a1-18-01",throughShopping);
   expect(travel.filter(x=>!isStudyLesson(x)&&x.eventMetadata?.nonAuthoritative===true)).toHaveLength(1);
-  expect(projectC1A1Course(nativeEvents(C6_A1_UNITS)).nextId).toBeNull();
+  expect(projectC1A1Course(nativeEvents(C6_A1_UNITS)).nextId).toBe("cf-a1-19-01");
  });
  it("rejects a tampered source, repeated choice foils and swapped canonical capstone",()=>{
   const targets=new Map(coreContent.courseUnits.filter(x=>x.level==="A1").map(x=>[x.id,x.canDoId]));
@@ -406,5 +406,83 @@ describe("C6 source-linked shopping and transport authoring",()=>{
   const inventedHours={...meta,measuredStudyMinutes:90} as unknown as typeof meta;
   expect(validateAuthoredCourse([unit],[inventedHours],targets,scenes,true))
    .toContain("unverified-evidence:a1-unit-17");
+ });
+});
+
+describe("C7 help and connected conversation course integrity",()=>{
+ const nativeEvidence=(units:readonly (typeof C7_A1_UNITS)[number][])=>units.flatMap(unit=>{
+  const id=coreContent.courseUnits.find(x=>x.id===unit.id)?.canDoId;
+  if(!id)throw Error("MISSING_NATIVE_CAN_DO:"+unit.id);
+  return unit.lessons.flatMap(lesson=>{
+   const promptIds="scene" in lesson?
+    ["hear","read","reply","recall"].map(part=>"a1-e02-"+lesson.scene+"-"+part):
+    [...lesson.checks.map((_,i)=>lesson.id+"-choice-"+(i+1)),lesson.id+"-recall"];
+   return promptIds.map((promptId,i)=>({
+    primaryTarget:{kind:"can_do",id},result:"correct",
+    occurredAt:new Date(Date.parse("2026-10-22T10:00:00Z")+i*1000).toISOString(),
+    metadata:{promptId}
+   } as unknown as StudyEvent));
+  });
+ });
+ it("validates all source rights, ordered objectives, and exactly preserves all prior sixty-six lesson IDs",()=>{
+  expect(validateC7A1Course()).toEqual([]);
+  expect(C7_A1_UNITS.map(u=>u.id)).toEqual([
+   "a1-unit-01","a1-unit-02","a1-unit-03","a1-unit-04","a1-unit-05",
+   "a1-unit-07","a1-unit-12","a1-unit-15","a1-unit-16","a1-unit-17",
+   "a1-unit-18","a1-unit-19","a1-unit-20"
+  ]);
+  expect(C7_A1_UNITS.slice(0,11).flatMap(u=>u.lessons.map(l=>l.id)))
+   .toEqual(C6_A1_UNITS.flatMap(u=>u.lessons.map(l=>l.id)));
+  expect(C7_A1_UNITS.flatMap(u=>u.lessons)).toHaveLength(78);
+  expect(C7_COVERAGE_LEDGER.map(u=>u.controlledChecks)).toEqual(Array(13).fill(29));
+  expect(C7_EDITORIAL_RECORDS).toHaveLength(13);
+  expect(C7_COVERAGE_LEDGER.every(u=>!u.humanReviewed&&!u.recordedAudioAvailable&&
+   u.verifiedStudyMinutes===null&&!u.independentCompetenceVerified)).toBe(true);
+ });
+ it("links the untouched native E02 help and exchange scenes, without filling unrelated canonical gaps",()=>{
+  for(const [unitId,scene,num] of [
+   ["a1-unit-19","help","19"],["a1-unit-20","exchange","20"]
+  ]){
+   const unit=C7_A1_UNITS.find(x=>x.id===unitId)!;
+   expect(unit.lessons.map(x=>x.id)).toEqual([1,2,3,4,5,6].map(n=>
+    "cf-a1-"+num+"-"+String(n).padStart(2,"0")));
+   const capstone=unit.lessons[5];
+   expect(capstone&&"scene" in capstone?capstone.scene:null).toBe(scene);
+   expect(E02_AVAILABLE_SCENES.find(x=>x.id===scene)?.unitId).toBe(unitId);
+  }
+  for(const missing of ["a1-unit-06","a1-unit-08","a1-unit-09",
+   "a1-unit-10","a1-unit-11","a1-unit-13","a1-unit-14"])
+   expect(C7_A1_UNITS.some(x=>x.id===missing)).toBe(false);
+ });
+ it("unlocks help after sixty-six native lessons, then exchange after its source-linked capstone",()=>{
+  expect(()=>buildC1A1CourseLesson("cf-a1-19-01",[])).toThrow("C1_A1_LESSON_LOCKED");
+  expect(()=>buildC1A1CourseLesson("cf-a1-20-01",[])).toThrow("C1_A1_LESSON_LOCKED");
+  const prior=nativeEvidence(C6_A1_UNITS);
+  expect(projectC1A1Course(prior).nextId).toBe("cf-a1-19-01");
+  const help=buildC1A1CourseLesson("cf-a1-19-01",prior);
+  expect(help.filter(x=>!isStudyLesson(x)&&x.eventMetadata?.schedulerExcluded!==true)).toHaveLength(0);
+  expect(help.filter(x=>!isStudyLesson(x)&&x.eventMetadata?.nonAuthoritative===true)).toHaveLength(1);
+  const beforeExchange=nativeEvidence(C7_A1_UNITS.slice(0,12));
+  expect(projectC1A1Course(beforeExchange).nextId).toBe("cf-a1-20-01");
+  const next=buildC1A1CourseLesson("cf-a1-20-01",beforeExchange);
+  expect(next.filter(x=>!isStudyLesson(x)&&x.eventMetadata?.schedulerExcluded!==true)).toHaveLength(0);
+  expect(next.filter(x=>!isStudyLesson(x)&&x.eventMetadata?.nonAuthoritative===true)).toHaveLength(1);
+  expect(projectC1A1Course(nativeEvidence(C7_A1_UNITS)).nextId).toBeNull();
+ });
+ it("refuses wrong E02 mapping, repeated distractors, and false study hours",()=>{
+  const canDos=new Map(coreContent.courseUnits.filter(x=>x.level==="A1").map(x=>[x.id,x.canDoId]));
+  const scenes=new Map(E02_AVAILABLE_SCENES.map(x=>[x.id,x.unitId]));
+  const unit=C7_A1_UNITS[11]!,record=C7_EDITORIAL_RECORDS[11]!;
+  expect(validateAuthoredCourse([unit],[record],canDos,scenes,true)).toEqual([]);
+  expect(validateAuthoredCourse([unit],[record],canDos,scenes,false)).toContain("source-rights:a1-unit-19");
+  const tampered={...unit,lessons:[{...unit.lessons[0],
+   checks:[["Question","yes","yes","no","Explanation"]]},...unit.lessons.slice(1,-1),
+   {...unit.lessons[5],scene:"exchange"}]} as unknown as typeof unit;
+  expect(validateAuthoredCourse([tampered],[record],canDos,scenes,true)).toEqual(
+   expect.arrayContaining(["invalid-choice:cf-a1-19-01-choice-1","unlinked-capstone:cf-a1-19-06"])
+  );
+  const invented={...record,measuredStudyMinutes:85} as unknown as typeof record;
+  expect(validateAuthoredCourse([unit],[invented],canDos,scenes,true))
+   .toContain("unverified-evidence:a1-unit-19");
  });
 });
