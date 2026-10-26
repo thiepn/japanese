@@ -7,7 +7,10 @@ import {countUX1SavedAnswersToday,projectUX1Engagement,type UX1Engagement} from 
 export type {UX1Engagement} from "./ux1Engagement";
 import { getJapaneseDeviceId } from "../deviceIdentity";
 import { replayStudyEvents, type LearnerState } from "@thiepn/learner-engine";
-import { getMemoryTrace, listMemoryTraces, listStudyEvents, saveStudyReview } from "@thiepn/local-db";
+import { getMemoryTrace, listMemoryTraces, listStudyEvents, saveStudyReview, listFlashcardSuspensions, setFlashcardSuspension, undoPendingFlashcardReview } from "@thiepn/local-db";
+import type {MemoryTrace} from "@thiepn/scheduler";
+import type {StudyEvent} from "@thiepn/domain";
+import {buildKanaFlashcards,gradeResult,type FlashcardView,type FlashcardGrade,type FlashcardLimits} from "./flashcards";
 import { createFsrsScheduler, type ReviewGrade } from "@thiepn/scheduler";
 import { createStudyEvent, type StudyPrompt, type StudyStep } from "@thiepn/study-player";
 import { pronunciationLessons, pronunciationPerceptionPrompts } from "./audioPrompts";
@@ -507,6 +510,84 @@ export function recordStudyAnswer(input:{prompt:StudyPrompt;response:string;resu
   pendingReviews.set(key,attempt);
   void attempt.finally(()=>{if(pendingReviews.get(key)===attempt)pendingReviews.delete(key);}).catch(()=>{});
   return attempt;
+}
+
+export interface FlashcardReviewReceipt {
+  accountId:string;originalEventId:string;prompt:StudyPrompt;previous:MemoryTrace|null;updated:MemoryTrace;
+}
+export async function getKanaFlashcardDeck(script:KanaReviewScript,skill:KanaReviewSkill,limits:FlashcardLimits):Promise<{
+  cards:FlashcardView[];suspended:string[];
+}>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const [traces,events,suspended]=await Promise.all([
+    listMemoryTraces(owner),listStudyEvents(owner),listFlashcardSuspensions(owner)
+  ]);
+  if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("FLASHCARD_WORKSPACE_CHANGED");
+  return {cards:buildKanaFlashcards(script,skill,traces,events,new Date(),
+    isApplicationPromptReady,new Set(suspended),limits),suspended};
+}
+export async function setKanaFlashcardSuspended(traceId:string,suspend:boolean):Promise<void>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  await setFlashcardSuspension(owner,traceId,suspend);
+  if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("FLASHCARD_WORKSPACE_CHANGED");
+}
+/** Self-rating uses the SAME FSRS trace identity and atomic review/outbox storage as lessons. */
+export function recordKanaFlashcardGrade(
+  card:FlashcardView,grade:FlashcardGrade,responseTimeMs:number
+):Promise<FlashcardReviewReceipt>{
+  const accountId=DEVELOPMENT_ACCOUNT_ID;
+  const traceId=traceIdFor(card.prompt);
+  if(traceId!==card.id||card.prompt.primaryTarget.kind!=="kana")return Promise.reject(Error("FLASHCARD_IDENTITY_INVALID"));
+  const key=accountId+":"+traceId;
+  const previous=pendingReviews.get(key)??Promise.resolve();
+  let receipt!:FlashcardReviewReceipt;
+  const attempt=previous.catch(()=>{}).then(async()=>{
+    if(accountId!==DEVELOPMENT_ACCOUNT_ID)throw Error("FLASHCARD_WORKSPACE_CHANGED");
+    const existing=await getMemoryTrace(accountId,traceId);
+    const now=new Date().toISOString();
+    const base=existing??scheduler.create({id:traceId,userId:accountId,entity:card.prompt.primaryTarget,
+      skillDimension:card.prompt.skill,cueFamily:card.prompt.cueFamily},now);
+    const event:StudyEvent={
+      id:crypto.randomUUID(),userId:accountId,deviceId:DEVELOPMENT_DEVICE_ID,occurredAt:now,
+      activity:"review",primaryTarget:card.prompt.primaryTarget,skillDimension:card.prompt.skill,
+      promptFamily:card.prompt.cueFamily,responseMode:"flashcard",result:gradeResult(grade),
+      responseTimeMs:Math.max(0,Math.floor(responseTimeMs)),attempts:1,baseRevision:base.revision,
+      ...(card.prompt.contextId?{contextId:card.prompt.contextId}:{}),
+      ...(card.prompt.sourceId?{sourceId:card.prompt.sourceId}:{}),
+      ...(card.prompt.contentVersion?{contentVersion:card.prompt.contentVersion}:{}),
+      metadata:{promptId:card.prompt.id,flashcard:true,selfGraded:true,reviewGrade:grade}
+    };
+    const updated=scheduler.review(base,{grade,reviewedAt:now});
+    await saveStudyReview(event,updated);
+    receipt={accountId,originalEventId:event.id,prompt:card.prompt,previous:existing,updated};
+  });
+  const wrapped=attempt.then(()=>{});
+  pendingReviews.set(key,wrapped);
+  void wrapped.finally(()=>{if(pendingReviews.get(key)===wrapped)pendingReviews.delete(key);}).catch(()=>{});
+  return attempt.then(()=>receipt);
+}
+export function undoKanaFlashcardGrade(receipt:FlashcardReviewReceipt):Promise<void>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  if(owner!==receipt.accountId)return Promise.reject(Error("FLASHCARD_UNDO_OWNER_CHANGED"));
+  const key=owner+":"+receipt.updated.id;
+  const previous=pendingReviews.get(key)??Promise.resolve();
+  const attempt=previous.catch(()=>{}).then(async()=>{
+    const now=new Date().toISOString();
+    const undoEvent:StudyEvent={
+      id:crypto.randomUUID(),userId:owner,deviceId:DEVELOPMENT_DEVICE_ID,occurredAt:now,
+      activity:"review",primaryTarget:receipt.prompt.primaryTarget,
+      skillDimension:receipt.prompt.skill,promptFamily:receipt.prompt.cueFamily,
+      responseMode:"flashcard",result:"skipped",baseRevision:receipt.updated.revision,
+      metadata:{promptId:receipt.prompt.id,flashcard:true,flashcardUndo:true,
+        schedulerExcluded:true,undoOf:receipt.originalEventId}
+    };
+    await undoPendingFlashcardReview({accountId:owner,originalEventId:receipt.originalEventId,
+      previous:receipt.previous,updated:receipt.updated,undoEvent});
+  });
+  const wrapped=attempt.then(()=>{});
+  pendingReviews.set(key,wrapped);
+  void wrapped.finally(()=>{if(pendingReviews.get(key)===wrapped)pendingReviews.delete(key);}).catch(()=>{});
+  return wrapped;
 }
 
 function insertFirstExposureLessons(queue:StudyPrompt[],byId:Map<string,Awaited<ReturnType<typeof listMemoryTraces>>[number]>,extraPrompts:StudyPrompt[]=[]):StudyStep[]{
