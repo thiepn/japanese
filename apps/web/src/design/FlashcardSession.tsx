@@ -32,6 +32,7 @@ export function FlashcardSession({script,skill,onClose}:{
   const request=useRef(0);
   const lock=useRef(false);
   const started=useRef(0);
+  const cardButton=useRef<HTMLButtonElement>(null);
   const [limits,setLimits]=useState<FlashcardLimits>(DEFAULT_FLASHCARD_LIMITS);
   const [queue,setQueue]=useState<PendingFlashcard[]|null>(null);
   const [suspended,setSuspended]=useState<string[]>([]);
@@ -82,6 +83,9 @@ export function FlashcardSession({script,skill,onClose}:{
   const activeIndex=queue?nextAvailableFlashcard(queue,nowMs):-1;
   const current=activeIndex>=0?queue![activeIndex]!.card:null;
   const wait=queue&&queue.length>0&&activeIndex===-1?nextFlashcardWaitMs(queue,nowMs):null;
+  useEffect(()=>{
+    if(current&&!revealed&&!settingsOpen&&!managed)cardButton.current?.focus({preventScroll:true});
+  },[current?.id,revealed,settingsOpen,managed]);
   const reveal=useCallback(()=>{if(current&&!busy)setRevealed(true);},[current,busy]);
 
   const rate=useCallback(async(grade:FlashcardGrade)=>{
@@ -207,10 +211,10 @@ export function FlashcardSession({script,skill,onClose}:{
             <span>{current.state==="new"?"New":current.state==="learning"?"Learning":current.state==="relearning"?"Relearning":"Review"}</span>
             <span>{current.direction}</span>
           </div>
-          <button type="button" className="flashcards-card" aria-label={revealed?"Flashcard answer revealed":"Reveal flashcard answer"}
+          <button ref={cardButton} type="button" className="flashcards-card" aria-label={revealed?"Flashcard answer revealed":"Reveal flashcard answer"}
             aria-expanded={revealed} disabled={busy} onClick={reveal}>
             <span lang={current.prompt.promptLanguage==="ja"?"ja":undefined} className="flashcards-front">{current.front}</span>
-            {revealed?<span className="flashcards-back">{current.back}</span>:<span className="flashcards-hint">Show answer · Space</span>}
+            {revealed?<span lang={current.prompt.skill==="form_selection"?"ja":undefined} className="flashcards-back">{current.back}</span>:<span className="flashcards-hint">Show answer · Space</span>}
           </button>
           {revealed?<div className="flashcards-grades" role="group" aria-label="Rate recall">
             {CHOICES.map(choice=><button key={choice.id} type="button" disabled={busy}
