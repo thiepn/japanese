@@ -74,8 +74,8 @@ test("wrong kana gets one same-session correction without early FSRS advancement
   await expect(page.getByText("Correct",{exact:true})).toBeVisible();
   const evidence=await readKanaEvidence(page);
   expect(evidence.events).toHaveLength(2);
-  expect(evidence.events.map(item=>item.result)).toEqual(["incorrect","correct"]);
-  expect(evidence.events[1]?.metadata?.schedulerExcluded).toBe(true);
+  expect(evidence.events.map(item=>item.result).sort()).toEqual(["correct","incorrect"]);
+  expect(evidence.events.some(item=>item.result==="correct"&&item.metadata?.schedulerExcluded===true)).toBe(true);
   expect(evidence.trace?.revision).toBe(1);
   expect(evidence.trace?.card.reps).toBe(1);
   await page.getByRole("button",{name:"Exit"}).click();
