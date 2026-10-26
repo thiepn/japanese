@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
 import type { UserSettings } from '../types/kana';
 import { X, Download, Upload, Trash2, Volume2, Check, AlertTriangle } from 'lucide-react';
-import { exportProgressJSON, importProgressJSON, resetAllProgress } from '../services/storage';
-import { linkedToJapanese } from '../services/canonicalBridge';
+import { exportProgressJSON, importProgressJSON, resetAllProgress, readStudioCards, readLegacyGuestCards, serializeLegacyKanaBackup } from '../services/storage';
+import { linkedToJapanese, previewLegacyKanaImport, importLegacyKanaSnapshots, type LegacyImportPreview } from '../services/canonicalBridge';
 import { playKanaAudio } from '../services/speech';
 
 interface SettingsModalProps {
@@ -23,6 +23,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const [current, setCurrent] = useState<UserSettings>(settings);
   const [importStatus, setImportStatus] = useState<{ message: string; isError: boolean } | null>(null);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [legacyPreview, setLegacyPreview] = useState<{
+    current:LegacyImportPreview;guest:LegacyImportPreview;guestCount:number
+  } | null>(null);
+  const [legacyBusy, setLegacyBusy] = useState(false);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
@@ -69,6 +74,42 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     } finally {
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
+  };
+
+  const inspectLegacy = async () => {
+    setLegacyBusy(true);
+    try {
+      const [current,guest] = await Promise.all([readStudioCards(),readLegacyGuestCards()]);
+      const [currentPreview,guestPreview] = await Promise.all([
+        previewLegacyKanaImport([...current.values()]),previewLegacyKanaImport(guest)
+      ]);
+      setLegacyPreview({current:currentPreview,guest:guestPreview,guestCount:guest.length});
+      setImportStatus(null);
+    } catch (error) {
+      setImportStatus({isError:true,message:error instanceof Error?error.message:'Could not inspect existing progress.'});
+    } finally {setLegacyBusy(false);}
+  };
+
+  const importLegacy = async (source:'current-studio'|'legacy-guest') => {
+    setLegacyBusy(true);
+    try {
+      const cards = source==='legacy-guest' ? await readLegacyGuestCards() : [...(await readStudioCards()).values()];
+      // Download the untouched original source before a single canonical write.
+      const backup = serializeLegacyKanaBackup(cards,source);
+      const url = URL.createObjectURL(new Blob([backup],{type:'application/json'}));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `kana-${source}-before-import-${new Date().toISOString().slice(0,10)}.json`;
+      document.body.appendChild(link);link.click();link.remove();
+      URL.revokeObjectURL(url);
+      const result = await importLegacyKanaSnapshots(cards,source);
+      await onRefreshData();
+      setLegacyPreview(null);
+      setImportStatus({isError:false,message:
+        `${result.imported} historical schedules transferred; ${result.skipped} already present; ${result.invalid} not eligible. Original Google records remain unchanged.`});
+    } catch (error) {
+      setImportStatus({isError:true,message:error instanceof Error?error.message:'Historical progress import failed.'});
+    } finally {setLegacyBusy(false);}
   };
 
   const handleConfirmReset = async () => {
@@ -263,6 +304,39 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               </div>
             )}
           </div>
+
+          {linkedToJapanese && (
+            <div className="space-y-2 pt-2 border-t border-[#E5E4DE] dark:border-[#262626]">
+              <button type="button" disabled={legacyBusy} onClick={inspectLegacy}
+                className="w-full py-2 px-3 border border-[#DDD] dark:border-[#333] rounded font-semibold hover:bg-[#F7F6F2] dark:hover:bg-[#282828] disabled:opacity-50">
+                {legacyBusy ? 'Checking saved reviews…' : 'Find older Kana review progress'}
+              </button>
+              {legacyPreview && (
+                <div className="space-y-2">
+                  <div className="text-xs font-medium text-[#555] dark:text-[#AAA]">
+                    This workspace: {legacyPreview.current.eligible} transferable, {legacyPreview.current.alreadyCanonical} already in Japanese.
+                  </div>
+                  <button type="button" disabled={legacyBusy || legacyPreview.current.eligible===0}
+                    onClick={()=>void importLegacy('current-studio')}
+                    className="w-full py-2 px-3 rounded border border-[#DDD] dark:border-[#333] font-semibold disabled:opacity-50">
+                    Back up and transfer this workspace
+                  </button>
+                  {legacyPreview.guestCount>0 && (
+                    <>
+                      <div className="text-xs font-medium text-[#555] dark:text-[#AAA]">
+                        Previous standalone guest: {legacyPreview.guest.eligible} transferable, {legacyPreview.guest.alreadyCanonical} already in Japanese.
+                      </div>
+                      <button type="button" disabled={legacyBusy || legacyPreview.guest.eligible===0}
+                        onClick={()=>void importLegacy('legacy-guest')}
+                        className="w-full py-2 px-3 rounded border border-[#DDD] dark:border-[#333] font-semibold disabled:opacity-50">
+                        Back up and claim previous guest reviews
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Reset progress */}
           <div className="space-y-2 pt-2 border-t border-[#E5E4DE] dark:border-[#262626]">
