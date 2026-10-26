@@ -114,7 +114,7 @@ test("flashcard grading commits FSRS and outbox locally while offline",async({pa
   await context.setOffline(true);
   await dialog.getByRole("button",{name:"Show answer",exact:true}).click();
   await dialog.getByRole("button",{name:/Again/}).click();
-  await expect(dialog.getByRole("heading",{name:"Learning cards waiting"})).toBeVisible();
+  await expect(dialog.locator(".flashcards-front")).toHaveText("ア");
   const offline=await page.evaluate(async()=>{
     const opened=indexedDB.open("thiepn-japanese:00000000-0000-4000-8000-000000000001");
     const db=await new Promise<IDBDatabase>((resolve,reject)=>{
