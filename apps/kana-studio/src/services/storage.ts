@@ -1,6 +1,7 @@
 import type { StoredCardData, UserSettings } from '../types/kana';
 import type { ReviewLog } from 'ts-fsrs';
 import { KANA_WORKSPACE_ID } from './japaneseBridge';
+import { overlayJapaneseKanaCards } from './canonicalBridge';
 
 const DB_NAME = 'kana_mastery_v1:' + KANA_WORKSPACE_ID;
 const DB_VERSION = 1;
@@ -72,7 +73,7 @@ const LOCAL_STORAGE_CARDS_KEY = 'kana_app_cards_cache:' + KANA_WORKSPACE_ID;
 const LOCAL_STORAGE_SETTINGS_KEY = 'kana_app_settings_cache:' + KANA_WORKSPACE_ID;
 const memoryCardsMap = new Map<string, StoredCardData>();
 
-export async function getAllStoredCards(): Promise<Map<string, StoredCardData>> {
+async function readStudioCards(): Promise<Map<string, StoredCardData>> {
   try {
     const db = await openDB();
     return new Promise((resolve, reject) => {
@@ -116,6 +117,10 @@ export async function getAllStoredCards(): Promise<Map<string, StoredCardData>> 
     }
     return new Map(memoryCardsMap);
   }
+}
+
+export async function getAllStoredCards(): Promise<Map<string, StoredCardData>> {
+  return overlayJapaneseKanaCards(await readStudioCards());
 }
 
 export async function saveStoredCard(cardData: StoredCardData): Promise<void> {

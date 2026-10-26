@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import type { UserSettings } from '../types/kana';
 import { X, Download, Upload, Trash2, Volume2, Check, AlertTriangle } from 'lucide-react';
 import { exportProgressJSON, importProgressJSON, resetAllProgress } from '../services/storage';
+import { linkedToJapanese } from '../services/canonicalBridge';
 import { playKanaAudio } from '../services/speech';
 
 interface SettingsModalProps {
@@ -271,14 +272,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 className="w-full py-2 px-3 border border-rose-200 dark:border-rose-950 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <Trash2 className="w-3.5 h-3.5" />
-                <span>Reset All Learning Progress</span>
+                <span>{linkedToJapanese ? 'Reset Google-only Progress' : 'Reset All Learning Progress'}</span>
               </button>
             ) : (
               <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 rounded space-y-2">
                 <div className="flex items-start gap-2 text-rose-700 dark:text-rose-300">
                   <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
                   <span>
-                    Are you sure? This permanently deletes all your FSRS card states and review history.
+                    {linkedToJapanese
+                      ? 'This deletes only Google-specific local cards and logs. Shared Japanese FSRS history is preserved.'
+                      : 'Are you sure? This permanently deletes all your FSRS card states and review history.'}
                   </span>
                 </div>
                 <div className="flex gap-2 justify-end">

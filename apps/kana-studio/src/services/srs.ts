@@ -2,6 +2,7 @@ import { createEmptyCard, fsrs, Rating, State, type Card, type ReviewLog, type G
 import type { KanaItem, StoredCardData, UserSettings, DeckStatistics, SrsForecast, ReviewFilterOptions } from '../types/kana';
 import { allKanaItems, kanaMap, confusablePairs } from '../data/kanaData';
 import { getAllStoredCards, saveStoredCard, saveReviewLog } from './storage';
+import { gradeJapaneseKanaCard, toggleJapaneseKanaSuspension, hasCanonicalKanaHistory } from './canonicalBridge';
 
 // Initialize FSRS scheduler with 90% target retention
 export const fScheduler = fsrs({
@@ -58,6 +59,13 @@ export async function gradeCard(
     return { updatedData };
   }
 
+  // For exact-matched cues Japanese's trace and event outbox are the sole scheduler authority.
+  const canonical = await gradeJapaneseKanaCard(storedData, rating, reviewDate);
+  if (canonical) {
+    await saveStoredCard(canonical); // Non-authoritative Google UI/cache copy.
+    return { updatedData: canonical };
+  }
+
   const result = fScheduler.next(storedData.card, reviewDate, rating);
 
   const updatedData: StoredCardData = {
@@ -78,6 +86,9 @@ export async function gradeCard(
  * Resets a card back to new state.
  */
 export async function resetCardProgress(cardId: string): Promise<StoredCardData> {
+  if (await hasCanonicalKanaHistory(cardId)) {
+    throw new Error('This card shares Japanese review history. Resetting it here would discard canonical progress.');
+  }
   const empty = createEmptyCard();
   const resetData: StoredCardData = {
     cardId,
@@ -104,6 +115,7 @@ export async function toggleCardSuspension(cardId: string): Promise<StoredCardDa
     ...existing,
     isSuspended: !existing.isSuspended
   };
+  await toggleJapaneseKanaSuspension(cardId, updated.isSuspended ?? false);
   await saveStoredCard(updated);
   return updated;
 }
