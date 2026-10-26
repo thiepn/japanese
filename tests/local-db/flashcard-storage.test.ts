@@ -1,6 +1,6 @@
 import "fake-indexeddb/auto";
 import {describe,expect,it} from "vitest";
-import {createFsrsScheduler} from "@thiepn/scheduler";
+import {createFsrsScheduler} from "../../packages/scheduler/src/index";
 import type {StudyEvent} from "@thiepn/domain";
 import {getMemoryTrace,listFlashcardSuspensions,listOutbox,listStudyEvents,saveStudyReview,
   setFlashcardSuspension,undoPendingFlashcardReview,acknowledgeOutbox} from "../../packages/local-db/src/index";
