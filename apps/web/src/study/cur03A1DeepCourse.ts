@@ -77,7 +77,7 @@ export function buildCur03CourseUnitSession(unitId:string):StudyStep[]{
   const sourceLabel="THIEPN original CUR-03 teaching · "+unitId+" · "+unit.sourceIds.join(", ");
   const facts=[{label:"Original canonical can-do",value:canDoDescriptor(unit.canDoId).statement}];
   const lesson=(key:string,title:string,body:string,examples:StudyLesson["examples"]):StudyLesson=>
-   ({kind:"lesson",id:prefix+"-"+key,contextId:prefix,title,body,examples,sourceLabel,facts});
+   ({kind:"lesson",id:prefix+"-"+key,contextId:prefix,title,body,examples:examples??[],sourceLabel,facts});
   added.push(lesson("context",c.title,c.situation,c.examples.map(([expression,note])=>({expression,note}))));
   added.push(lesson("explanation","Why it works",c.why+" "+c.contrast,c.examples.slice(0,2).map(([expression,note])=>({expression,note}))));
   c.checks.forEach(([question,answer,foilA,foilB,feedback,noteA,noteB],n)=>{

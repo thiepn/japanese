@@ -7,7 +7,7 @@ import { claimGuestWorkspace } from "@thiepn/local-db";
 import type { SearchResult } from "@thiepn/search";
 import { isStudyLesson,type StudyStep } from "@thiepn/study-player";
 import {buildCur03CourseUnitSession} from "./study/cur03A1DeepCourse";
-import {readCoursePosition,saveCoursePosition,clearCoursePosition,nextSavedPosition} from "./study/cur03CoursePosition";
+import {readCoursePosition,saveCoursePosition,clearCoursePosition} from "./study/cur03CoursePosition";
 import { searchLocalJapanese } from "./content";
 
 import { getImmersionProgress,type ImmersionProgress } from "./immerse/reader";
