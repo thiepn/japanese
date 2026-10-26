@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import type { UserSettings } from '../types/kana';
 import { X, Download, Upload, Trash2, Volume2, Check, AlertTriangle } from 'lucide-react';
-import { exportProgressJSON, previewProgressImportJSON, importProgressJSON, resetAllProgress, readStudioCards, readLegacyGuestCards, serializeLegacyKanaBackup } from '../services/storage';
+import { exportProgressJSON, previewProgressImportJSON, importProgressJSON, restorePortableJapaneseSchedules, resetAllProgress, readStudioCards, readLegacyGuestCards, serializeLegacyKanaBackup } from '../services/storage';
 import { linkedToJapanese, previewLegacyKanaImport, importLegacyKanaSnapshots, type LegacyImportPreview } from '../services/canonicalBridge';
 import { playKanaAudio } from '../services/speech';
 
@@ -24,7 +24,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const [importStatus, setImportStatus] = useState<{ message: string; isError: boolean } | null>(null);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [pendingRestore,setPendingRestore] = useState<{
-    json:string;newCards:number;existingCards:number;logs:number
+    json:string;newCards:number;existingCards:number;logs:number;canonicalEligible:number;restored:boolean
   }|null>(null);
   const [restoreBusy,setRestoreBusy] = useState(false);
 
@@ -79,9 +79,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       const json=await file.text();
       const preview=await previewProgressImportJSON(json);
       setPendingRestore({json,newCards:preview.newCards,
-        existingCards:preview.existingCards,logs:preview.logs});
+        existingCards:preview.existingCards,logs:preview.logs,canonicalEligible:preview.canonicalEligible,restored:false});
       setImportStatus({isError:false,message:
-        `${preview.newCards} missing cards and up to ${preview.logs} original logs available. ${preview.existingCards} existing cards will not be replaced.`});
+        `${preview.newCards} missing Google cards, ${preview.logs} saved logs and ${preview.canonicalEligible} transferable Japanese schedules. ${preview.existingCards} existing Google cards stay unchanged.`});
     } catch(error) {
       setImportStatus({isError:true,message:error instanceof Error?error.message:'Invalid backup file.'});
     } finally {
@@ -97,11 +97,25 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       const result=await importProgressJSON(pendingRestore.json);
       setImportStatus({isError:!result.success,message:result.message});
       if(result.success){
-        setPendingRestore(null);
+        setPendingRestore(prev=>prev?{...prev,restored:true}:null);
         await onRefreshData();
       }
     }catch(error){
       setImportStatus({isError:true,message:error instanceof Error?error.message:'Restore was not completed.'});
+    }finally{setRestoreBusy(false);}
+  };
+
+  const applyPortableSchedules = async () => {
+    if(!pendingRestore?.restored || restoreBusy || pendingRestore.canonicalEligible===0)return;
+    setRestoreBusy(true);
+    try {
+      const result=await restorePortableJapaneseSchedules(pendingRestore.json);
+      await onRefreshData();
+      setPendingRestore(null);
+      setImportStatus({isError:false,message:
+        `${result.imported} Japanese schedules restored; ${result.skipped} already present; ${result.invalid} not eligible. Existing Japanese review history is unchanged.`});
+    }catch(error){
+      setImportStatus({isError:true,message:error instanceof Error?error.message:'Schedule restoration failed.'});
     }finally{setRestoreBusy(false);}
   };
 
@@ -321,10 +335,18 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               />
             </div>
 
-            {pendingRestore && (
+            {pendingRestore && !pendingRestore.restored && (
               <button type="button" disabled={restoreBusy} onClick={()=>void applyBackupRestore()}
                 className="w-full py-2 px-3 border border-[#DDD] dark:border-[#333] rounded font-semibold disabled:opacity-50">
                 {restoreBusy?'Restoring…':'Back up current data and restore missing cards'}
+              </button>
+            )}
+            {pendingRestore?.restored && pendingRestore.canonicalEligible>0 && linkedToJapanese && (
+              <button type="button" disabled={restoreBusy}
+                onClick={()=>void applyPortableSchedules()}
+                className="w-full py-2 px-3 border border-[#DDD] dark:border-[#333] rounded font-semibold disabled:opacity-50">
+                {restoreBusy?'Restoring Japanese schedules…':
+                  `Restore ${pendingRestore.canonicalEligible} missing Japanese schedules`}
               </button>
             )}
             {importStatus && (
