@@ -50,6 +50,63 @@ test("last unsynced flashcard grade can be undone without erasing history",async
   await expect(dialog.locator(".flashcards-front")).not.toHaveText("あ");
 });
 
+test("in-session Again waits for canonical FSRS and resumes due learning after reload",async({page})=>{
+  await page.clock.install({time:new Date("2026-10-26T12:00:00Z")});
+  await page.goto("./");
+  await page.getByRole("button",{name:"Review flashcards"}).click();
+  const dialog=page.getByRole("dialog",{name:"Kana flashcards"});
+  await dialog.getByRole("button",{name:"Deck settings"}).click();
+  await dialog.getByRole("spinbutton",{name:"New cards per session"}).fill("1");
+  await dialog.getByRole("spinbutton",{name:"Reviews per session"}).fill("0");
+  await dialog.getByRole("button",{name:"Save limits and restart deck"}).click();
+  await expect(dialog.locator(".flashcards-front")).toHaveText("あ");
+  await dialog.getByRole("button",{name:"Show answer",exact:true}).click();
+  await dialog.getByRole("button",{name:/Again/}).click();
+  await expect(dialog.getByRole("heading",{name:"Learning cards waiting"})).toBeVisible();
+  const due=await page.evaluate(async()=>{
+    const request=indexedDB.open("thiepn-japanese:00000000-0000-4000-8000-000000000001");
+    const db=await new Promise<IDBDatabase>((resolve,reject)=>{
+      request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error);
+    });
+    const record=await new Promise<{card:{due:string;state:number};revision:number}>((resolve,reject)=>{
+      const tx=db.transaction("memory_traces","readonly");
+      const get=tx.objectStore("memory_traces").get("kana:hiragana-あ:recognition:kana-to-sound");
+      get.onsuccess=()=>resolve(get.result);get.onerror=()=>reject(get.error);
+    });db.close();return record;
+  });
+  expect(due.card.state).toBe(1);
+  expect(due.revision).toBe(1);
+  const waitMs=Date.parse(due.card.due)-Date.now();
+  expect(waitMs).toBeGreaterThan(0);
+  await page.clock.fastForward(waitMs+1000);
+  await expect(dialog.locator(".flashcards-front")).toHaveText("あ");
+  await expect(dialog.getByText("Learning",{exact:true})).toBeVisible();
+  await dialog.getByRole("button",{name:"Close flashcards"}).click();
+  await page.reload();
+  await page.getByRole("button",{name:"Review flashcards"}).click();
+  const restarted=page.getByRole("dialog",{name:"Kana flashcards"});
+  await restarted.getByRole("button",{name:"Deck settings"}).click();
+  await expect(restarted.getByRole("spinbutton",{name:"New cards per session"})).toHaveValue("1");
+  await expect(restarted.getByRole("spinbutton",{name:"Reviews per session"})).toHaveValue("0");
+  await restarted.getByRole("spinbutton",{name:"Reviews per session"}).fill("1");
+  await restarted.getByRole("button",{name:"Save limits and restart deck"}).click();
+  await expect(restarted.locator(".flashcards-front")).toHaveText("あ");
+  await restarted.getByRole("button",{name:"Show answer",exact:true}).click();
+  await restarted.getByRole("button",{name:/Good/}).click();
+  const after=await page.evaluate(async()=>{
+    const request=indexedDB.open("thiepn-japanese:00000000-0000-4000-8000-000000000001");
+    const db=await new Promise<IDBDatabase>((resolve,reject)=>{
+      request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error);
+    });
+    const result=await new Promise<{revision:number}>((resolve,reject)=>{
+      const get=db.transaction("memory_traces","readonly").objectStore("memory_traces")
+        .get("kana:hiragana-あ:recognition:kana-to-sound");
+      get.onsuccess=()=>resolve(get.result);get.onerror=()=>reject(get.error);
+    });db.close();return result.revision;
+  });
+  expect(after).toBe(2);
+});
+
 test.describe("touch-sized flashcard controls",()=>{
   test.use({viewport:{width:390,height:844},hasTouch:true});
   test("tap reveal, suspend and restore cards on mobile",async({page})=>{
