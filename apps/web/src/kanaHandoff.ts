@@ -21,7 +21,8 @@ export function publishKanaOwnerLease(owner: string): KanaOwnerLease {
   const previous = readKanaOwnerLease();
   if (previous?.owner === owner) return previous;
   const lease = { owner, epoch: crypto.randomUUID() };
-  localStorage.setItem(KANA_OWNER_KEY, JSON.stringify(lease));
+  try {localStorage.setItem(KANA_OWNER_KEY, JSON.stringify(lease));}
+  catch { /* Japanese itself must remain usable even without browser storage. */ }
   return lease;
 }
 export function openKanaStudio(owner: string): void {
