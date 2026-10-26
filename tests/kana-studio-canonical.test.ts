@@ -113,6 +113,43 @@ describe('AI Studio Kana ↔ canonical Japanese study bridge', () => {
     expect(imported.imported).toBe(1);
     expect((await storage.readLegacyGuestCards()).length).toBe(1);
   });
+  it('validates entire backups before writing and restores only missing Google cards and logs',async()=>{
+    vi.stubGlobal('window',{indexedDB});
+    const storage=await import('../apps/kana-studio/src/services/storage');
+    const safe=await import('../apps/kana-studio/src/services/backupRestore');
+    const earlier=createEmptyCard(new Date('2026-10-20T08:00:00.000Z'));
+    earlier.due=new Date('2030-02-01T08:00:00.000Z');
+    earlier.reps=5;earlier.state=2;
+    await storage.saveStoredCard({cardId:'h-o',card:earlier,direction:'kana-to-romaji',
+      totalReviews:5,totalLapses:0});
+    const incoming=createEmptyCard(new Date('2026-10-20T08:00:00.000Z'));
+    incoming.due=new Date('2027-01-01T08:00:00.000Z');
+    incoming.reps=1;incoming.state=2;
+    const cards=['h-o','h-e'].map(cardId=>({cardId,card:incoming,direction:'kana-to-romaji',
+      totalReviews:1,totalLapses:0}));
+    const original={version:1,appName:'KANA',cards,
+      logs:[{cardId:'h-e',reviewTime:'2026-10-20T08:00:00.000Z',log:{rating:3}}],settings:null};
+    const json=JSON.stringify(original);
+    expect((await storage.previewProgressImportJSON(json))).toMatchObject({
+      newCards:1,existingCards:1,logs:1
+    });
+    const malformed=JSON.stringify({...original,cards:[
+      ...cards,{...cards[0],cardId:'h-a',card:{...incoming,due:'invalid'}}]});
+    await expect(storage.previewProgressImportJSON(malformed)).rejects.toThrow('BACKUP_INVALID_CARD');
+    expect(safe.parseKanaBackup(json).cards).toHaveLength(2);
+    const first=await storage.importProgressJSON(json);
+    expect(first).toMatchObject({success:true,count:1});
+    expect((await storage.readStudioCards()).get('h-o')?.card.due.toISOString())
+      .toBe('2030-02-01T08:00:00.000Z');
+    expect((await storage.readStudioCards()).get('h-e')?.totalReviews).toBe(1);
+    expect((await storage.getReviewLogs()).filter(x=>x.cardId==='h-e')).toHaveLength(1);
+    const again=await storage.importProgressJSON(json);
+    expect(again).toMatchObject({success:true,count:0});
+    expect((await storage.getReviewLogs()).filter(x=>x.cardId==='h-e')).toHaveLength(1);
+    const archived=JSON.parse(await storage.exportProgressJSON());
+    expect(archived.cards.find((x:{cardId:string})=>x.cardId==='h-o').card.due)
+      .toBe('2030-02-01T08:00:00.000Z');
+  });
   it('keeps account-scoped suspensions and fails closed on a changed handoff', async () => {
     await bridge.toggleJapaneseKanaSuspension('h-a', true);
     expect((await bridge.overlayJapaneseKanaCards(new Map())).get('h-a')?.isSuspended).toBe(true);
