@@ -13,7 +13,11 @@
     "react-dom": "19.3.0",
     "lucide-react": "0.546.0",
     "motion": "12.23.24",
-    "ts-fsrs": "5.4.2"
+    "ts-fsrs": "5.4.2",
+    "@thiepn/domain": "workspace:*",
+    "@thiepn/local-db": "workspace:*",
+    "@thiepn/scheduler": "workspace:*",
+    "@thiepn/study-player": "workspace:*"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "6.1.1",
