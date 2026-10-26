@@ -550,13 +550,22 @@ export function App(){
     if(accountResolving)return;
     const url=new URL(window.location.href);
     if(url.searchParams.get("kana")!=="resume")return;
-    // Resolve and attach the current Account before issuing a one-tab Kana handoff.
-    const owner=getDevelopmentAccountId();
-    if(account.status==="authenticated"&&accountConnected&&account.accountId!==owner)return;
-    url.searchParams.delete("kana");
-    window.history.replaceState({},"",url.pathname+url.search+url.hash);
-    try { openKanaStudio(owner); }
-    catch { /* Retain the working Japanese app when browser storage is blocked. */ }
+    let cancelled=false;
+    void JAPANESE_ACCOUNT.getCurrentContext().then((current)=>{
+      if(cancelled)return;
+      // The initial auth refresh can finish before the asynchronous account
+      // attachment finishes. Never route that interim guest state as an owner.
+      if(current.status==="authenticated"&&
+        (account.status!=="authenticated"||current.accountId!==account.accountId))return;
+      if(current.status!=="authenticated"&&account.status==="authenticated")return;
+      const owner=getDevelopmentAccountId();
+      if(accountConnected&&account.accountId!==owner)return;
+      url.searchParams.delete("kana");
+      window.history.replaceState({},"",url.pathname+url.search+url.hash);
+      try {openKanaStudio(owner);}
+      catch { /* Keep Japanese usable if storage is blocked. */ }
+    }).catch(()=>{/* Keep the user in Japanese rather than guessing the account. */});
+    return ()=>{cancelled=true;};
   },[accountResolving,account.status,account.accountId,accountConnected]);
   const navigateSurface=(next:Surface)=>{
     if(diagnosticsMode){
