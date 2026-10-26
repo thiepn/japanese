@@ -2,7 +2,7 @@ import { createEmptyCard, fsrs, Rating, State, type Card, type ReviewLog, type G
 import type { KanaItem, StoredCardData, UserSettings, DeckStatistics, SrsForecast, ReviewFilterOptions } from '../types/kana';
 import { allKanaItems, kanaMap, confusablePairs } from '../data/kanaData';
 import { getAllStoredCards, saveStoredCard, saveReviewLog } from './storage';
-import { gradeJapaneseKanaCard, toggleJapaneseKanaSuspension, hasCanonicalKanaHistory, isCanonicalKanaCard } from './canonicalBridge';
+import { gradeJapaneseKanaCard, toggleJapaneseKanaSuspension, hasCanonicalKanaHistory } from './canonicalBridge';
 
 // Initialize FSRS scheduler with 90% target retention
 export const fScheduler = fsrs({
