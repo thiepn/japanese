@@ -1,5 +1,5 @@
 import {describe,it,expect} from "vitest";
-import {isStudyLesson} from "@thiepn/study-player";
+import {isStudyLesson} from "../../packages/study-player/src/index";
 import {coreContent} from "../../apps/web/src/coreContent";
 import {courseUnitSession} from "../../apps/web/src/study/grammarCourse";
 import {buildCur03CourseUnitSession,deepTeachingAnchors} from "../../apps/web/src/study/cur03A1DeepCourse";
