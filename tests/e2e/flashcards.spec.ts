@@ -1,0 +1,68 @@
+import {expect,test} from "@playwright/test";
+
+test("front/back flashcards preserve canonical FSRS schedule after keyboard review and reload",async({page})=>{
+  await page.goto("./");
+  const review=page.getByRole("region",{name:"Kana Review"});
+  await expect(review).toBeVisible();
+  await review.getByRole("button",{name:"Review flashcards"}).click();
+  const dialog=page.getByRole("dialog",{name:"Kana flashcards"});
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator(".flashcards-front")).toHaveText("あ");
+  await expect(dialog.locator(".flashcards-back")).toHaveCount(0);
+  await page.keyboard.press("Space");
+  await expect(dialog.locator(".flashcards-back")).toHaveText("a");
+  await page.keyboard.press("3");
+  await expect(dialog.locator(".flashcards-front")).not.toHaveText("あ");
+  const saved=await page.evaluate(async()=>{
+    const name="thiepn-japanese:00000000-0000-4000-8000-000000000001";
+    const db=await new Promise<IDBDatabase>((resolve,reject)=>{
+      const request=indexedDB.open(name);request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error);
+    });
+    const result=await new Promise<{trace:any;events:any[]}>((resolve,reject)=>{
+      const tx=db.transaction(["memory_traces","study_events"],"readonly");
+      const a=tx.objectStore("memory_traces").get("kana:hiragana-あ:recognition:kana-to-sound");
+      const b=tx.objectStore("study_events").getAll();
+      tx.oncomplete=()=>resolve({trace:a.result,events:b.result});tx.onerror=()=>reject(tx.error);
+    });db.close();return result;
+  });
+  expect(saved.trace).toBeTruthy();
+  expect(saved.trace.revision).toBe(1);
+  expect(saved.trace.card.due).toBeTruthy();
+  expect(saved.events.some(event=>event.responseMode==="flashcard"&&event.metadata?.reviewGrade==="good")).toBe(true);
+  await dialog.getByRole("button",{name:"Close flashcards"}).click();
+  await page.reload();
+  await expect(page.getByRole("region",{name:"Kana Review"})).toBeVisible();
+  await page.getByRole("button",{name:"Review flashcards"}).click();
+  await expect(page.getByRole("dialog",{name:"Kana flashcards"})).toBeVisible();
+  await expect(page.getByRole("dialog",{name:"Kana flashcards"}).locator(".flashcards-front")).not.toHaveText("あ");
+});
+
+test("last unsynced flashcard grade can be undone without erasing history",async({page})=>{
+  await page.goto("./");
+  await page.getByRole("button",{name:"Review flashcards"}).click();
+  const dialog=page.getByRole("dialog",{name:"Kana flashcards"});
+  await dialog.getByRole("button",{name:"Show answer",exact:true}).last().click();
+  await dialog.getByRole("button",{name:/Good/}).click();
+  await dialog.getByRole("button",{name:/Undo last review/}).click();
+  await expect(dialog.locator(".flashcards-front")).toHaveText("あ");
+  await expect(dialog.locator(".flashcards-back")).toHaveText("a");
+  await dialog.getByRole("button",{name:/Again/}).click();
+  await expect(dialog.locator(".flashcards-front")).not.toHaveText("あ");
+});
+
+test.describe("touch-sized flashcard controls",()=>{
+  test.use({viewport:{width:390,height:844},hasTouch:true});
+  test("tap reveal, suspend and restore cards on mobile",async({page})=>{
+    await page.goto("./");
+    await page.getByRole("button",{name:"Review flashcards"}).click();
+    const dialog=page.getByRole("dialog",{name:"Kana flashcards"});
+    await expect(dialog).toBeVisible();
+    await dialog.getByRole("button",{name:"Reveal flashcard answer"}).tap();
+    await expect(dialog.locator(".flashcards-back")).toBeVisible();
+    await dialog.getByRole("button",{name:"Suspend card"}).tap();
+    await dialog.getByRole("button",{name:"Suspended (1)"}).tap();
+    await expect(dialog.getByRole("button",{name:"Restore"})).toBeVisible();
+    await dialog.getByRole("button",{name:"Restore"}).tap();
+    await expect(dialog.getByRole("button",{name:"Suspended (0)"})).toBeVisible();
+  });
+});
