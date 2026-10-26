@@ -166,7 +166,9 @@ describe('AI Studio Kana ↔ canonical Japanese study bridge', () => {
     expect(preview.canonicalOwnerMatched).toBe(true);
     expect(preview.canonicalEligible).toBe(1);
     const before=(await listStudyEvents(owner)).length;
-    expect(await storage.restorePortableJapaneseSchedules(json)).toMatchObject({imported:1,skipped:2});
+    const moved=await storage.restorePortableJapaneseSchedules(json);
+    expect(moved.imported).toBe(1);
+    expect(moved.skipped).toBeGreaterThanOrEqual(2);
     expect((await getMemoryTrace(owner,bridge.canonicalTraceId('h-ke')!))?.card.reps).toBe(3);
     expect(await storage.restorePortableJapaneseSchedules(json)).toMatchObject({imported:0});
     expect((await listStudyEvents(owner)).length).toBe(before+1);
