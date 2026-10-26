@@ -11,7 +11,7 @@ import {JCartouche,JDivider,JInkProgress,JPattern,JSeal} from "./index";
 
 type J3TodayProps={
   beginner:BeginnerOverview;onStartBeginner:()=>void;onReviewDue:()=>void;
-  kanaReview:KanaReviewOverview;onStartKanaReview:(script:KanaReviewScript,skill:KanaReviewSkill)=>void;
+  kanaReview:KanaReviewOverview;onStartKanaReview:(script:KanaReviewScript,skill:KanaReviewSkill)=>void;onFlashcardsChanged:()=>void;
   engagement:UX1Engagement;
   summary:StudySummary;
   completedToday:number;
@@ -46,7 +46,7 @@ function japaneseDate(now=new Date()):string{
   }
 }
 
-export function J3Today({beginner,onStartBeginner,onReviewDue,kanaReview,onStartKanaReview,engagement,summary,completedToday,status,onStart,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,e05,onStartE05Repair,e06,onStartE06,onStartE06Delayed,onStartE11Micro,e07,onOpenE07}:J3TodayProps){
+export function J3Today({beginner,onStartBeginner,onReviewDue,kanaReview,onStartKanaReview,onFlashcardsChanged,engagement,summary,completedToday,status,onStart,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,e05,onStartE05Repair,e06,onStartE06,onStartE06Delayed,onStartE11Micro,e07,onOpenE07}:J3TodayProps){
   const route=useMemo<RouteItem[]>(()=>[
     {id:"review",japanese:"復",label:"Review",count:summary.due,tone:"review"},
     {id:"learn",japanese:"学",label:"Learn",count:summary.newKana+summary.newVocabulary+summary.course,tone:"learn"},
@@ -68,13 +68,13 @@ export function J3Today({beginner,onStartBeginner,onReviewDue,kanaReview,onStart
           e02.scenes.find(scene=>scene.id===e02.nextSceneId)?.title??"A1 practice"}
         due={summary.due} busy={status==="loading"} sessionError={status==="error"}
         onContinue={onStartBeginner} onReview={onReviewDue}/>
-      <KanaReview overview={kanaReview} busy={status==="loading"} status={status} onStart={onStartKanaReview}/>
+      <KanaReview overview={kanaReview} busy={status==="loading"} status={status} onStart={onStartKanaReview} onFlashcardsChanged={onFlashcardsChanged}/>
     </section>;
   }
   return <section className="j3-today" aria-labelledby="ux1-today-title">
     <span className="j13-marginal" aria-hidden="true">今日</span>
     <UX1Today engagement={engagement} route={e07} summary={summary} status={status} completedToday={completedToday} onActivate={onOpenE07} onStartQueue={onStart}/>
-    <KanaReview overview={kanaReview} busy={status==="loading"} status={status} onStart={onStartKanaReview}/>
+    <KanaReview overview={kanaReview} busy={status==="loading"} status={status} onStart={onStartKanaReview} onFlashcardsChanged={onFlashcardsChanged}/>
     <details className="e07-track-list">
       <summary>Browse the original E01–E09 lesson entry points</summary>
     <section className="e01-entry" aria-label="A1 first conversations practice">
