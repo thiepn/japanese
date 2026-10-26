@@ -93,7 +93,7 @@ test("in-session Again waits for canonical FSRS and resumes due learning after r
   await expect(restarted.locator(".flashcards-front")).toHaveText("あ");
   await restarted.getByRole("button",{name:"Show answer",exact:true}).click();
   await restarted.getByRole("button",{name:/Good/}).click();
-  const after=await page.evaluate(async()=>{
+  await expect.poll(async()=>page.evaluate(async()=>{
     const request=indexedDB.open("thiepn-japanese:00000000-0000-4000-8000-000000000001");
     const db=await new Promise<IDBDatabase>((resolve,reject)=>{
       request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error);
@@ -103,8 +103,7 @@ test("in-session Again waits for canonical FSRS and resumes due learning after r
         .get("kana:hiragana-あ:recognition:kana-to-sound");
       get.onsuccess=()=>resolve(get.result);get.onerror=()=>reject(get.error);
     });db.close();return result.revision;
-  });
-  expect(after).toBe(2);
+  })).toBe(2);
 });
 
 test.describe("touch-sized flashcard controls",()=>{
