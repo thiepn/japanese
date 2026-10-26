@@ -3,6 +3,8 @@ import type {StudyEvent} from "@thiepn/domain";
 import type {MemoryTrace} from "@thiepn/scheduler";
 import {foundationPrompts,foundationApplicationPrompts} from "../apps/web/src/study/foundationPrompts";
 import {kanaReviewTraceId,kanaReviewPrompts,selectKanaReview,projectKanaReviewOverview} from "../apps/web/src/study/kanaReview";
+import {presentedKanaChoices} from "../apps/web/src/study/kanaChoiceOrder";
+import {appendKanaCorrection} from "../apps/web/src/study/kanaRetry";
 
 const today=new Date("2026-10-26T10:00:00Z");
 const prompt=(id:string,skill:string)=>[...foundationPrompts,...foundationApplicationPrompts]
@@ -14,7 +16,7 @@ const trace=(item:ReturnType<typeof prompt>,due:string,lapses=0,difficulty=2):Me
     reps:1,lapses,state:2,lastReviewAt:"2026-10-25T10:00:00Z"}
 });
 const event=(item:ReturnType<typeof prompt>,result:"correct"|"incorrect",at="2026-10-25T10:00:00Z")=>
-  ({primaryTarget:item.primaryTarget,skillDimension:item.skill,result,occurredAt:at} as StudyEvent);
+  ({primaryTarget:item.primaryTarget,skillDimension:item.skill,promptFamily:item.cueFamily,result,occurredAt:at,metadata:{promptId:item.id}} as StudyEvent);
 const ready=()=>true;
 describe("dedicated kana FSRS review",()=>{
   it("selects the original kana prompt identities in all three skill dimensions",()=>{
@@ -54,9 +56,10 @@ describe("dedicated kana FSRS review",()=>{
     const requireRecognized=(item:ReturnType<typeof prompt>,known:ReadonlySet<string>)=>
       known.has("kana:"+item.primaryTarget.id+":recognition:kana-to-sound");
     const empty=selectKanaReview("hiragana","reading",[],[],today,requireRecognized);
-    expect(empty.counts.new).toBe(0);
+    expect(empty.counts.new).toBe(1);
+    expect(empty.prompts[0]?.primaryTarget.id).toBe("hiragana-small-tsu");
     const hi=prompt("hiragana-あ","recognition");
-    const started=selectKanaReview("hiragana","reading",[trace(hi,"2026-11-01T10:00:00Z")],[],today,requireRecognized);
+    const started=selectKanaReview("hiragana","reading",[trace(hi,"2026-11-01T10:00:00Z")],[event(hi,"correct")],today,requireRecognized);
     expect(started.counts.new).toBeGreaterThan(0);
     expect(started.prompts.some(item=>item.primaryTarget.id==="hiragana-あ"&&item.skill==="reading")).toBe(true);
   });
@@ -75,4 +78,69 @@ describe("dedicated kana FSRS review",()=>{
     expect(kanaReviewPrompts.every(item=>["recognition","reading","form_selection"].includes(item.skill))).toBe(true);
     expect(kanaReviewPrompts.some(item=>item.primaryTarget.id==="katakana-long-vowel-mark")).toBe(true);
   });
+  it("introduces special small-tsu and long vowels without self-referential prerequisites",()=>{
+    const hira=selectKanaReview("hiragana","reading",[],[],today,()=>false);
+    const kata=selectKanaReview("katakana","reading",[],[],today,()=>false);
+    expect(hira.prompts.map(item=>item.primaryTarget.id)).toContain("hiragana-small-tsu");
+    expect(kata.prompts.map(item=>item.primaryTarget.id)).toEqual(expect.arrayContaining(["katakana-small-tsu","katakana-long-vowel-mark"]));
+    expect(selectKanaReview("katakana","form_selection",[],[],today,()=>false).counts.new).toBe(0);
+  });
+  it("mixes both scripts in the first five unseen prompts and introduces recall once recognition succeeds",()=>{
+    const fresh=selectKanaReview("mixed","recognition",[],[],today,ready);
+    expect(fresh.prompts.slice(0,5).map(item=>item.primaryTarget.id.split("-")[0]))
+      .toEqual(["hiragana","katakana","hiragana","katakana","hiragana"]);
+    const hi=prompt("hiragana-あ","recognition");
+    const ka=prompt("katakana-ア","recognition");
+    const known=[trace(hi,"2026-11-01T10:00:00Z"),trace(ka,"2026-11-01T10:00:00Z")];
+    const after=selectKanaReview("mixed","all",known,[event(hi,"correct"),event(ka,"correct")],today,ready);
+    expect(after.prompts.some(item=>item.skill==="reading"&&item.primaryTarget.id==="hiragana-あ")).toBe(true);
+    expect(after.prompts.some(item=>item.skill==="form_selection")).toBe(true);
+  });
+  it("does not unlock recall after an incorrect recognition trace",()=>{
+    const hi=prompt("hiragana-あ","recognition");
+    const blocked=selectKanaReview("hiragana","reading",[trace(hi,"2026-11-01T10:00:00Z")],[event(hi,"incorrect")],today,ready);
+    expect(blocked.prompts.every(item=>item.primaryTarget.id!=="hiragana-あ")).toBe(true);
+    expect(selectKanaReview("hiragana","reading",[trace(hi,"2026-11-01T10:00:00Z")],[event(hi,"correct")],today,ready)
+      .prompts.some(item=>item.primaryTarget.id==="hiragana-あ")).toBe(true);
+  });
+  it("prioritizes per-cue failures and ignores immediate correction events",()=>{
+    const hi=prompt("hiragana-あ","recognition");
+    const reading=prompt("hiragana-あ","reading");
+    const traces=[trace(hi,"2026-10-25T10:00:00Z"),trace(reading,"2026-10-25T10:00:00Z")];
+    const primary=event(hi,"incorrect");
+    const queued=selectKanaReview("hiragana","all",traces,[primary],today,ready);
+    expect(queued.counts.weakDue).toBe(1);
+    expect(queued.prompts[0]?.skill).toBe("recognition");
+    const practice={...event(hi,"correct","2026-10-26T09:00:00Z"),metadata:{schedulerExcluded:true}};
+    const after=selectKanaReview("hiragana","all",traces,[primary,practice],today,ready);
+    expect(after.counts.weakDue).toBe(1);
+    expect(after.prompts[0]?.skill).toBe("recognition");
+  });
+  it("shuffles canonical kana choice order per presentation without changing original answers",()=>{
+    const hi=prompt("hiragana-あ","recognition");
+    if(hi.promptType!=="choice")throw Error("EXPECTED_CHOICE");
+    const canonical=[...hi.choices];
+    const positions=new Set<number>();
+    for(let n=0;n<32;n++){
+      const rotated=presentedKanaChoices(hi,String(n));
+      expect([...rotated].sort()).toEqual([...canonical].sort());
+      positions.add(rotated.indexOf("a"));
+    }
+    expect(positions.size).toBeGreaterThanOrEqual(3);
+    expect(hi.choices).toEqual(canonical);
+  });
+  it("adds one non-authoritative-to-FSRS correction and leaves the original due card intact",()=>{
+    const hi=prompt("hiragana-あ","recognition");
+    const seen=new Set<string>();
+    const first=appendKanaCorrection([hi],hi,seen);
+    expect(first).toHaveLength(2);
+    const correction=first[1]!;
+    if("kind" in correction)throw Error("EXPECTED_PROMPT");
+    expect(correction.id).toBe(hi.id);
+    expect(correction.eventMetadata).toMatchObject({schedulerExcluded:true,kanaImmediateRetry:true});
+    expect(appendKanaCorrection(first,hi,seen)).toHaveLength(2);
+    expect(appendKanaCorrection(first,correction,seen)).toHaveLength(2);
+    expect(hi.eventMetadata?.schedulerExcluded).not.toBe(true);
+  });
+
 });

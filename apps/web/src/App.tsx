@@ -22,6 +22,7 @@ import "./study/e07Journey.css";
 
 import {deriveE07Journey,type E07Action} from "./study/e07LearningRoute";
 import {chooseBeginnerContinuation,projectBeginnerOverview} from "./study/beginnerCourse";
+import {appendKanaCorrection} from "./study/kanaRetry";
 import {createEmptyKanaReviewOverview,type KanaReviewOverview,type KanaReviewScript,type KanaReviewSkill} from "./study/kanaReview";
 import "./study/e06IndependentCourse.css";
 import { StudySessionFence } from "./study/sessionFence";
@@ -147,6 +148,8 @@ export function App(){
   const dashboardRefreshGuard=useRef(new DashboardRefreshGuard());
   const workspaceLease=useRef(new AccountWorkspaceLease());
   const sessionOwner=useRef<string|null>(null);
+  const sessionMode=useRef<"standard"|"kana">("standard");
+  const retriedKana=useRef(new Set<string>());
 
   // Never leave the previous owner's learner state visible after switching.
   function clearLearnerView(){
@@ -154,6 +157,8 @@ export function App(){
     dashboardRefreshGuard.current.invalidate();
     JAPANESE_LANGUAGE_DASHBOARD.invalidate();
     sessionOwner.current=null;
+    sessionMode.current="standard";
+    retriedKana.current.clear();
     setSession(null);
     setUx1Outcome(null);
     setE22Selection(null);
@@ -420,7 +425,9 @@ export function App(){
     }
   }
 
-  function openSession(queue:StudyStep[]){
+  function openSession(queue:StudyStep[],mode:"standard"|"kana"="standard"){
+    sessionMode.current=mode;
+    retriedKana.current.clear();
     sessionOrigin.current=surface;
     setUx1Outcome(null);
     const audio=queue.filter((step)=>Boolean(step.audio)).flatMap((step)=>step.audio?[step.audio]:[]);
@@ -429,13 +436,13 @@ export function App(){
     setSession(queue.length?queue:null);
   }
 
-  async function loadStudySession(build:()=>Promise<StudyStep[]>){
+  async function loadStudySession(build:()=>Promise<StudyStep[]>,mode:"standard"|"kana"="standard"){
     const ticket=sessionFence.current.begin(getDevelopmentAccountId());
     setSessionStatus("loading");
     try{
       const queue=await build();
       if(!sessionFence.current.accepts(ticket,getDevelopmentAccountId()))return;
-      openSession(queue);
+      openSession(queue,mode);
       setSessionStatus(queue.length?"idle":"empty");
     }catch{
       if(sessionFence.current.accepts(ticket,getDevelopmentAccountId()))setSessionStatus("error");
@@ -452,7 +459,7 @@ export function App(){
   };
   const reviewDue=()=>loadStudySession(()=>buildDueReviewSession());
   const startKanaReview=(script:KanaReviewScript,skill:KanaReviewSkill)=>
-    loadStudySession(()=>buildKanaReviewSession(script,skill));
+    loadStudySession(()=>buildKanaReviewSession(script,skill),"kana");
   const startE06=(id:string)=>loadStudySession(()=>buildE06Session(id));
   const startE06Full=(id:string)=>loadStudySession(()=>buildE06FullSession(id));
   const startE11Micro=(id:string)=>loadStudySession(()=>buildE11MicroSession(id));
@@ -496,7 +503,13 @@ export function App(){
     const workspaceId=getDevelopmentAccountId();
     if(sessionOwner.current!==workspaceId)throw new Error("Study session belongs to a different workspace.");
     await recordStudyAnswer({prompt:answer.prompt,response:answer.response,result:answer.grade.result,responseTimeMs:answer.responseTimeMs});
-    if(getDevelopmentAccountId()===workspaceId)setCompletedToday((value)=>value+1);
+    if(getDevelopmentAccountId()===workspaceId){
+      if(sessionMode.current==="kana"&&answer.grade.result==="incorrect"&&
+        !answer.prompt.eventMetadata?.kanaImmediateRetry){
+        setSession(steps=>steps?appendKanaCorrection(steps,answer.prompt,retriedKana.current):steps);
+      }
+      setCompletedToday((value)=>value+1);
+    }
   }
   function finishSession(reason:"complete"|"exit"){
     const owner=getDevelopmentAccountId();
@@ -504,6 +517,8 @@ export function App(){
     const origin=sessionOrigin.current;
     sessionFence.current.invalidate();
     sessionOwner.current=null;
+    sessionMode.current="standard";
+    retriedKana.current.clear();
     const active=document.activeElement;
     if(active instanceof HTMLElement)active.blur();
     setSession(null);
