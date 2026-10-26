@@ -344,21 +344,28 @@ export async function resetAllProgress(): Promise<void> {
   }
 }
 
+/** Opening an absent legacy database never creates a replacement empty database.
+ * This works on browsers without the optional indexedDB.databases() API. */
+async function openExistingLegacyGuestDB():Promise<IDBDatabase|null>{
+  assertKanaWorkspace();
+  if(typeof indexedDB==='undefined')return null;
+  return new Promise((resolve,reject)=>{
+    let absent=false;
+    const req=indexedDB.open('kana_mastery_v1:local-guest',1);
+    req.onupgradeneeded=()=>{absent=true;req.transaction?.abort();};
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>absent?resolve(null):reject(req.error);
+  });
+}
 /** The original standalone guest DB is read-only here. It is never claimed implicitly. */
 export async function readLegacyGuestCards(): Promise<StoredCardData[]> {
   assertKanaWorkspace();
   const name = 'kana_mastery_v1:local-guest';
   let cards: StoredCardData[] = [];
   try {
-    const names = typeof indexedDB.databases === 'function' ? await indexedDB.databases() : [];
+    const db=await openExistingLegacyGuestDB();
     assertKanaWorkspace();
-    if (names.some(item => item.name === name)) {
-      const db = await new Promise<IDBDatabase>((resolve,reject) => {
-        const req = indexedDB.open(name, 1);
-        req.onupgradeneeded = () => {req.transaction?.abort();};
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => reject(req.error);
-      });
+    if(db){
       try {
         const values = await new Promise<StoredCardData[]>((resolve,reject) => {
           if (!db.objectStoreNames.contains('cards')) return resolve([]);
@@ -387,18 +394,9 @@ export async function readLegacyGuestCards(): Promise<StoredCardData[]> {
 }
 async function readLegacyGuestArchive(): Promise<{logs: unknown[];settings: UserSettings | null}> {
   assertKanaWorkspace();
-  const name = 'kana_mastery_v1:local-guest';
-  if (typeof indexedDB.databases !== 'function' ||
-      !(await indexedDB.databases()).some(item => item.name === name)) {
-    return {logs:[],settings:null};
-  }
+  const db=await openExistingLegacyGuestDB();
+  if(!db)return {logs:[],settings:null};
   assertKanaWorkspace();
-  const db = await new Promise<IDBDatabase>((resolve,reject) => {
-    const req=indexedDB.open(name,1);
-    req.onupgradeneeded=()=>{req.transaction?.abort();};
-    req.onsuccess=()=>resolve(req.result);
-    req.onerror=()=>reject(req.error);
-  });
   try {
     const records=await Promise.all(['review_logs','settings'].map(store=>
       new Promise<unknown[]>((resolve,reject)=>{
@@ -419,7 +417,7 @@ export async function serializeLegacyKanaBackup(
 ): Promise<string> {
   assertKanaWorkspace();
   const archive = source === 'legacy-guest'
-    ? await readLegacyGuestArchive().catch(()=>({logs:[],settings:null}))
+    ? await readLegacyGuestArchive()
     : {logs:await getReviewLogs(),settings:await getSettings()};
   assertKanaWorkspace();
   return JSON.stringify({
