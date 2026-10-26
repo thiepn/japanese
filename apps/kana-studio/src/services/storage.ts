@@ -1,7 +1,7 @@
 import type { StoredCardData, UserSettings } from '../types/kana';
 import type { ReviewLog } from 'ts-fsrs';
 import { KANA_WORKSPACE_ID, assertKanaWorkspace } from './japaneseBridge';
-import { overlayJapaneseKanaCards } from './canonicalBridge';
+import { overlayJapaneseKanaCards, exportPortableJapaneseKanaSnapshots, previewLegacyKanaImport, importLegacyKanaSnapshots } from './canonicalBridge';
 import {parseKanaBackup,previewKanaRestore,type KanaRestorePreview} from './backupRestore';
 
 const DB_NAME = 'kana_mastery_v1:' + KANA_WORKSPACE_ID;
@@ -253,25 +253,41 @@ export async function saveSettings(settings: UserSettings): Promise<void> {
  * to be an original review. The canonical projection is supplementary only. */
 export async function exportProgressJSON(): Promise<string> {
   assertKanaWorkspace();
-  const [originalCards,projectedCards,logs,settings] = await Promise.all([
-    readStudioCards(),getAllStoredCards(),getReviewLogs(),getSettings()
+  const [originalCards,canonicalProjection,logs,settings] = await Promise.all([
+    readStudioCards(),exportPortableJapaneseKanaSnapshots(),getReviewLogs(),getSettings()
   ]);
   assertKanaWorkspace();
   return JSON.stringify({
-    version:2,appName:'KANA',exportedAt:new Date().toISOString(),
-    cards:[...originalCards.values()],
-    canonicalProjection:[...projectedCards.values()].filter(card=>
-      !originalCards.has(card.cardId)||card.card.reps!==originalCards.get(card.cardId)?.card.reps),
-    logs,settings
+    version:3,appName:'KANA',exportedAt:new Date().toISOString(),
+    owner:KANA_WORKSPACE_ID,
+    cards:[...originalCards.values()],canonicalProjection,logs,settings
   },null,2);
 }
 
-export async function previewProgressImportJSON(jsonString:string):Promise<KanaRestorePreview>{
+export async function previewProgressImportJSON(jsonString:string):Promise<
+  KanaRestorePreview&{canonicalEligible:number;canonicalOwnerMatched:boolean}
+>{
   assertKanaWorkspace();
   const backup=parseKanaBackup(jsonString);
+  if(backup.sourceOwner!==null&&backup.sourceOwner!==KANA_WORKSPACE_ID)
+    throw Error('BACKUP_ACCOUNT_MISMATCH');
   const current=await readStudioCards();
+  const preview=previewKanaRestore(backup,current);
+  const canonicalOwnerMatched=backup.sourceOwner===KANA_WORKSPACE_ID;
+  const canonicalEligible=canonicalOwnerMatched
+    ?(await previewLegacyKanaImport(backup.canonicalProjection)).eligible:0;
   assertKanaWorkspace();
-  return previewKanaRestore(backup,current);
+  return {...preview,canonicalEligible,canonicalOwnerMatched};
+}
+
+/** Optional, separate confirmation: copy only missing Japanese FSRS snapshots
+ * for the SAME account. Never synthesize graded review history. */
+export async function restorePortableJapaneseSchedules(jsonString:string):
+ Promise<{imported:number;skipped:number;invalid:number}>{
+  assertKanaWorkspace();
+  const backup=parseKanaBackup(jsonString);
+  if(backup.sourceOwner!==KANA_WORKSPACE_ID)throw Error('BACKUP_ACCOUNT_MISMATCH');
+  return importLegacyKanaSnapshots(backup.canonicalProjection,'portable-backup');
 }
 
 export async function importProgressJSON(jsonString:string):
@@ -279,6 +295,8 @@ export async function importProgressJSON(jsonString:string):
   assertKanaWorkspace();
   try {
     const backup=parseKanaBackup(jsonString);
+    if(backup.sourceOwner!==null&&backup.sourceOwner!==KANA_WORKSPACE_ID)
+      throw Error('BACKUP_ACCOUNT_MISMATCH');
     const db=await openDB();
     assertKanaWorkspace();
     // Preserve every existing Google card and its FSRS schedule. Import only
