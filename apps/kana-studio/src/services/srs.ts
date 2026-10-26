@@ -2,7 +2,7 @@ import { createEmptyCard, fsrs, Rating, State, type Card, type ReviewLog, type G
 import type { KanaItem, StoredCardData, UserSettings, DeckStatistics, SrsForecast, ReviewFilterOptions } from '../types/kana';
 import { allKanaItems, kanaMap, confusablePairs } from '../data/kanaData';
 import { getAllStoredCards, saveStoredCard, saveReviewLog } from './storage';
-import { gradeJapaneseKanaCard, toggleJapaneseKanaSuspension, hasCanonicalKanaHistory } from './canonicalBridge';
+import { gradeJapaneseKanaCard, toggleJapaneseKanaSuspension, hasCanonicalKanaHistory, isCanonicalKanaCard } from './canonicalBridge';
 
 // Initialize FSRS scheduler with 90% target retention
 export const fScheduler = fsrs({
@@ -49,14 +49,10 @@ export async function gradeCard(
   isCram: boolean = false
 ): Promise<{ updatedData: StoredCardData; log?: ReviewLog }> {
   if (isCram) {
-    // In Cram mode, do not disturb the scientific FSRS interval, just record total reviews/lapses
-    const updatedData: StoredCardData = {
-      ...storedData,
-      totalReviews: storedData.totalReviews + 1,
-      totalLapses: rating === Rating.Again ? storedData.totalLapses + 1 : storedData.totalLapses
-    };
-    await saveStoredCard(updatedData);
-    return { updatedData };
+    // Cram is temporary practice. Never mutate either Japanese's authoritative
+    // schedule or the Google copy used to project a canonical trace.
+    // Session statistics are tracked by ReviewView, not by altering FSRS history.
+    return { updatedData: storedData };
   }
 
   // For exact-matched cues Japanese's trace and event outbox are the sole scheduler authority.
