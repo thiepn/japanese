@@ -18,3 +18,7 @@ jobs:
       - run: pnpm exec vitest run tests/kana-studio-canonical.test.ts
       - run: pnpm build
       - run: test -s apps/web/dist/kana/index.html
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Verify original Google Kana in real browser
+        run: pnpm exec playwright test tests/e2e/kana-studio-runtime.spec.ts --project=desktop-chromium --workers=1
