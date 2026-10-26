@@ -19,12 +19,22 @@ on:
       - "tests/e2e/kana-*.spec.ts"
       - ".github/workflows/kana-srs-validation.yml"
   push:
-    branches: [main]
+    branches: [main, feature/kana-anki-flashcards-20261026]
     paths:
       - "apps/web/src/study/kana*.ts"
+      - "apps/web/src/study/flashcards.ts"
+      - "apps/web/src/study/runtime.ts"
+      - "apps/web/src/design/FlashcardSession.tsx"
+      - "apps/web/src/design/KanaReview.tsx"
+      - "apps/web/src/design/flashcardSession.css"
       - "apps/web/src/study/StudyPlayer.tsx"
       - "apps/web/src/App.tsx"
+      - "packages/local-db/src/index.ts"
+      - "packages/learner-engine/src/index.ts"
       - "tests/kana-review.test.ts"
+      - "tests/flashcards.test.ts"
+      - "tests/local-db/flashcard-storage.test.ts"
+      - "tests/e2e/flashcards.spec.ts"
       - "tests/e2e/kana-*.spec.ts"
       - ".github/workflows/kana-srs-validation.yml"
 
