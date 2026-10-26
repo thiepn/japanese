@@ -1,4 +1,4 @@
-import {isStudyLesson,type StudyStep} from "@thiepn/study-player";
+import type {StudyStep} from "@thiepn/study-player";
 
 /** Navigation only. Learner's Japanese, audio, answers and grades never enter this store. */
 const PREFIX="thiepn-japanese-cur03-position-v1:";

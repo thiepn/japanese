@@ -20,7 +20,7 @@ export function eligibleE07Draft(prompt:StudyPrompt):boolean{
   &&prompt.eventMetadata?.nonAuthoritative===true
   &&(prompt.eventMetadata?.e01===true||prompt.eventMetadata?.e02===true
    ||prompt.eventMetadata?.e03===true||prompt.eventMetadata?.e04===true
-   ||prompt.eventMetadata?.e06===true);
+   ||prompt.eventMetadata?.e06===true||prompt.eventMetadata?.cur03===true);
 }
 export function e07DraftPreference(owner:string):boolean{
  try{return safeStorage()?.getItem(PREFERENCE+":"+ownerKey(owner))==="yes";}

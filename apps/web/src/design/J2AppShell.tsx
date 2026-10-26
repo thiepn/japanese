@@ -16,7 +16,7 @@ const SURFACES:readonly {
   hint:string;
 }[]=[
   {id:"Today",japanese:"今日",english:"Today",glyph:"今",hint:"Daily study"},
-  {id:"Learn",japanese:"学ぶ",english:"Learn",glyph:"学",hint:"Course path"},
+  {id:"Learn",japanese:"学ぶ",english:"Course",glyph:"学",hint:"Course"},
   {id:"Immerse",japanese:"浸る",english:"Immerse",glyph:"浸",hint:"Read and listen"},
   {id:"Library",japanese:"蔵",english:"Library",glyph:"蔵",hint:"Knowledge archive"},
   {id:"Progress",japanese:"道",english:"Progress",glyph:"道",hint:"Your path"},
