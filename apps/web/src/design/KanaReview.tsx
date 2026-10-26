@@ -12,9 +12,10 @@ const SKILLS:readonly {id:KanaReviewSkill;label:string}[]=[
   {id:"reading",label:"Reading recall"},{id:"form_selection",label:"Form selection"}
 ];
 
-export function KanaReview({overview,busy,status,onStart}:{
+export function KanaReview({overview,busy,status,onStart,onFlashcardsChanged}:{
   overview:KanaReviewOverview;busy:boolean;status:string;
   onStart:(script:KanaReviewScript,skill:KanaReviewSkill)=>void;
+  onFlashcardsChanged?:()=>void;
 }){
   const [script,setScript]=useState<KanaReviewScript>("mixed");
   const [skill,setSkill]=useState<KanaReviewSkill>("recognition");
@@ -47,6 +48,7 @@ export function KanaReview({overview,busy,status,onStart}:{
     {!available?<p role="status">No eligible kana for this selection.</p>:null}
     {flashOpen?<FlashcardSession script={script} skill={skill} onClose={()=>{
       setFlashOpen(false);
+      onFlashcardsChanged?.();
       void getKanaReviewOverview().then(setLocalOverview).catch(()=>{/* Counts refresh on the next dashboard load. */});
     }}/>:null}
     {status==="error"?<p role="alert">Kana practice could not be opened. Try again.</p>:null}
