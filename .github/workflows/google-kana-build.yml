@@ -1,0 +1,25 @@
+name: Build integrated Kana Studio
+on:
+  push:
+    branches: [feature/google-aistudio-kana-20261026]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      VITE_PUBLIC_BASE: /japanese/
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm build
+      - name: Confirm Kana Studio ships with Japanese app
+        run: |
+          test -s apps/web/dist/kana/index.html
+          test -s apps/web/dist/index.html
+          grep -q '/japanese/kana/assets/' apps/web/dist/kana/index.html
