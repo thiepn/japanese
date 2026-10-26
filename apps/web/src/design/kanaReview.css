@@ -12,3 +12,9 @@
 .kana-review__start:disabled,.kana-review__choices button:disabled{opacity:.55;cursor:not-allowed}
 .kana-review p{margin:0;font-size:16px}
 @media(max-width:560px){.kana-review{margin:12px auto}.kana-review__choices button{flex:1 1 auto}.kana-review__start{width:100%}}
+
+.kana-review__actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.kana-review__secondary{min-height:48px;padding:10px 18px;border:1px solid var(--j-line-strong);border-radius:3px;background:transparent;color:inherit;font:inherit;cursor:pointer}
+.kana-review__secondary:disabled{opacity:.55;cursor:not-allowed}
+.kana-review__secondary:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+@media(max-width:560px){.kana-review__actions{flex-direction:column}.kana-review__actions button{width:100%}}

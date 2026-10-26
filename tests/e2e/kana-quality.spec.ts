@@ -6,7 +6,7 @@ async function startKatakana(page:Page){
   const review=page.getByRole("region",{name:"Kana Review"});
   await review.getByRole("button",{name:"Katakana"}).click();
   await review.getByRole("button",{name:"Recognition"}).click();
-  await review.getByRole("button",{name:"Start kana practice"}).click();
+  await review.getByRole("button",{name:"Multiple-choice practice"}).click();
   await expect(page.locator(".study-lesson")).toBeVisible();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
   return review;
@@ -89,7 +89,7 @@ test("mixed kana includes both scripts in the initial session",async({page})=>{
   const review=page.getByRole("region",{name:"Kana Review"});
   await review.getByRole("button",{name:"Mixed"}).click();
   await review.getByRole("button",{name:"Recognition"}).click();
-  await review.getByRole("button",{name:"Start kana practice"}).click();
+  await review.getByRole("button",{name:"Multiple-choice practice"}).click();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
   await expect(page.locator(".j5-prompt")).toContainText("あ");
   await page.locator(".j5-choices").getByRole("button",{name:"a",exact:true}).click();

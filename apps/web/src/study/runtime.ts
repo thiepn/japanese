@@ -6,8 +6,11 @@ export type {BeginnerOverview} from "./beginnerCourse";
 import {countUX1SavedAnswersToday,projectUX1Engagement,type UX1Engagement} from "./ux1Engagement";
 export type {UX1Engagement} from "./ux1Engagement";
 import { getJapaneseDeviceId } from "../deviceIdentity";
-import { replayStudyEvents, type LearnerState } from "@thiepn/learner-engine";
-import { getMemoryTrace, listMemoryTraces, listStudyEvents, saveStudyReview } from "@thiepn/local-db";
+import { effectiveStudyEvents, replayStudyEvents, type LearnerState } from "@thiepn/learner-engine";
+import { getMemoryTrace, listMemoryTraces, listStudyEvents, saveStudyReview, listFlashcardSuspensions, setFlashcardSuspension, undoPendingFlashcardReview, getFlashcardDeckLimits, saveFlashcardDeckLimits } from "@thiepn/local-db";
+import type {MemoryTrace} from "@thiepn/scheduler";
+import type {StudyEvent} from "@thiepn/domain";
+import {buildKanaFlashcards,gradeResult,type FlashcardView,type FlashcardGrade,type FlashcardLimits} from "./flashcards";
 import { createFsrsScheduler, type ReviewGrade } from "@thiepn/scheduler";
 import { createStudyEvent, type StudyPrompt, type StudyStep } from "@thiepn/study-player";
 import { pronunciationLessons, pronunciationPerceptionPrompts } from "./audioPrompts";
@@ -316,7 +319,7 @@ export async function getUX1Engagement(now=new Date()):Promise<UX1Engagement>{
  const owner=DEVELOPMENT_ACCOUNT_ID;
  const events=await listStudyEvents(owner);
  if(DEVELOPMENT_ACCOUNT_ID!==owner)throw new Error("UX1_ENGAGEMENT_WORKSPACE_CHANGED");
- return projectUX1Engagement(events,now);
+ return projectUX1Engagement(effectiveStudyEvents(events),now);
 }
 
 // Derive the daily counter from durable, account-scoped events. React component
@@ -325,7 +328,7 @@ export async function getCompletedTodayCount(now=new Date()):Promise<number>{
   const owner=DEVELOPMENT_ACCOUNT_ID;
   const events=await listStudyEvents(owner);
   if(DEVELOPMENT_ACCOUNT_ID!==owner)throw new Error("UX1_DAILY_COUNT_WORKSPACE_CHANGED");
-  return countUX1SavedAnswersToday(events,now);
+  return countUX1SavedAnswersToday(effectiveStudyEvents(events),now);
 }
 
 export async function getStudySummary(now=new Date()):Promise<StudySummary>{
@@ -509,6 +512,96 @@ export function recordStudyAnswer(input:{prompt:StudyPrompt;response:string;resu
   return attempt;
 }
 
+export async function getKanaFlashcardLimits(script:KanaReviewScript,skill:KanaReviewSkill):Promise<FlashcardLimits|null>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const limits=await getFlashcardDeckLimits(owner,script+":"+skill);
+  if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("FLASHCARD_WORKSPACE_CHANGED");
+  return limits;
+}
+export async function saveKanaFlashcardLimits(script:KanaReviewScript,skill:KanaReviewSkill,
+  limits:FlashcardLimits):Promise<void>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  await saveFlashcardDeckLimits(owner,script+":"+skill,limits);
+  if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("FLASHCARD_WORKSPACE_CHANGED");
+}
+export interface FlashcardReviewReceipt {
+  accountId:string;originalEventId:string;prompt:StudyPrompt;previous:MemoryTrace|null;updated:MemoryTrace;
+}
+export async function getKanaFlashcardDeck(script:KanaReviewScript,skill:KanaReviewSkill,limits:FlashcardLimits):Promise<{
+  cards:FlashcardView[];suspended:string[];
+}>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const [traces,events,suspended]=await Promise.all([
+    listMemoryTraces(owner),listStudyEvents(owner),listFlashcardSuspensions(owner)
+  ]);
+  if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("FLASHCARD_WORKSPACE_CHANGED");
+  return {cards:buildKanaFlashcards(script,skill,traces,events,new Date(),
+    isApplicationPromptReady,new Set(suspended),limits),suspended};
+}
+export async function setKanaFlashcardSuspended(traceId:string,suspend:boolean):Promise<void>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  await setFlashcardSuspension(owner,traceId,suspend);
+  if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("FLASHCARD_WORKSPACE_CHANGED");
+}
+/** Self-rating uses the SAME FSRS trace identity and atomic review/outbox storage as lessons. */
+export function recordKanaFlashcardGrade(
+  card:FlashcardView,grade:FlashcardGrade,responseTimeMs:number
+):Promise<FlashcardReviewReceipt>{
+  const accountId=DEVELOPMENT_ACCOUNT_ID;
+  const traceId=traceIdFor(card.prompt);
+  if(traceId!==card.id||card.prompt.primaryTarget.kind!=="kana")return Promise.reject(Error("FLASHCARD_IDENTITY_INVALID"));
+  const key=accountId+":"+traceId;
+  const previous=pendingReviews.get(key)??Promise.resolve();
+  let receipt!:FlashcardReviewReceipt;
+  const attempt=previous.catch(()=>{}).then(async()=>{
+    if(accountId!==DEVELOPMENT_ACCOUNT_ID)throw Error("FLASHCARD_WORKSPACE_CHANGED");
+    const existing=await getMemoryTrace(accountId,traceId);
+    const now=new Date().toISOString();
+    const base=existing??scheduler.create({id:traceId,userId:accountId,entity:card.prompt.primaryTarget,
+      skillDimension:card.prompt.skill,cueFamily:card.prompt.cueFamily},now);
+    const event:StudyEvent={
+      id:crypto.randomUUID(),userId:accountId,deviceId:DEVELOPMENT_DEVICE_ID,occurredAt:now,
+      activity:"review",primaryTarget:card.prompt.primaryTarget,skillDimension:card.prompt.skill,
+      promptFamily:card.prompt.cueFamily,responseMode:"flashcard",result:gradeResult(grade),
+      responseTimeMs:Math.max(0,Math.floor(responseTimeMs)),attempts:1,baseRevision:base.revision,
+      ...(card.prompt.contextId?{contextId:card.prompt.contextId}:{}),
+      ...(card.prompt.sourceId?{sourceId:card.prompt.sourceId}:{}),
+      ...(card.prompt.contentVersion?{contentVersion:card.prompt.contentVersion}:{}),
+      metadata:{promptId:card.prompt.id,flashcard:true,selfGraded:true,reviewGrade:grade}
+    };
+    const updated=scheduler.review(base,{grade,reviewedAt:now});
+    await saveStudyReview(event,updated);
+    receipt={accountId,originalEventId:event.id,prompt:card.prompt,previous:existing,updated};
+  });
+  const wrapped=attempt.then(()=>{});
+  pendingReviews.set(key,wrapped);
+  void wrapped.finally(()=>{if(pendingReviews.get(key)===wrapped)pendingReviews.delete(key);}).catch(()=>{});
+  return attempt.then(()=>receipt);
+}
+export function undoKanaFlashcardGrade(receipt:FlashcardReviewReceipt):Promise<void>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  if(owner!==receipt.accountId)return Promise.reject(Error("FLASHCARD_UNDO_OWNER_CHANGED"));
+  const key=owner+":"+receipt.updated.id;
+  const previous=pendingReviews.get(key)??Promise.resolve();
+  const attempt=previous.catch(()=>{}).then(async()=>{
+    const now=new Date().toISOString();
+    const undoEvent:StudyEvent={
+      id:crypto.randomUUID(),userId:owner,deviceId:DEVELOPMENT_DEVICE_ID,occurredAt:now,
+      activity:"review",primaryTarget:receipt.prompt.primaryTarget,
+      skillDimension:receipt.prompt.skill,promptFamily:receipt.prompt.cueFamily,
+      responseMode:"flashcard",result:"skipped",baseRevision:receipt.updated.revision,
+      metadata:{promptId:receipt.prompt.id,flashcard:true,flashcardUndo:true,
+        schedulerExcluded:true,undoOf:receipt.originalEventId}
+    };
+    await undoPendingFlashcardReview({accountId:owner,originalEventId:receipt.originalEventId,
+      previous:receipt.previous,updated:receipt.updated,undoEvent});
+  });
+  const wrapped=attempt.then(()=>{});
+  pendingReviews.set(key,wrapped);
+  void wrapped.finally(()=>{if(pendingReviews.get(key)===wrapped)pendingReviews.delete(key);}).catch(()=>{});
+  return wrapped;
+}
+
 function insertFirstExposureLessons(queue:StudyPrompt[],byId:Map<string,Awaited<ReturnType<typeof listMemoryTraces>>[number]>,extraPrompts:StudyPrompt[]=[]):StudyStep[]{
   const lessons={...foundationLessons,...vocabularyLessons,...pronunciationLessons,...grammarCourseLessons,...conjugationLessons,...lexicalChunkLessons};
   const promptByTrace=new Map([...allPrompts(),...extraPrompts].map((prompt)=>[traceIdFor(prompt),prompt]));
@@ -613,7 +706,7 @@ function selectBalancedApplications(prompts:StudyPrompt[],limit:number):StudyPro
 function uniqueSkillPrompts(prompts:StudyPrompt[]):StudyPrompt[]{const seen=new Set<string>();return prompts.filter((prompt)=>{const key=entityKey(prompt.primaryTarget,prompt.skill);if(seen.has(key))return false;seen.add(key);return true;});}
 function projectionsFor(prompts:StudyPrompt[],state:LearnerState){return prompts.map((prompt)=>state.mastery[entityKey(prompt.primaryTarget,prompt.skill)]).filter((value)=>value!==undefined);}
 function scoreFor(prompts:StudyPrompt[],state:LearnerState):number{if(!prompts.length)return 0;return prompts.reduce((sum,prompt)=>sum+(state.mastery[entityKey(prompt.primaryTarget,prompt.skill)]?.estimate??0),0)/prompts.length;}
-function gradedEvents(events:Awaited<ReturnType<typeof listStudyEvents>>,kind:"kana"|"lexeme"|"grammar"|"sentence"){return events.filter((event)=>event.primaryTarget?.kind===kind&&["correct","incorrect","partial","revealed"].includes(event.result??"")&&!(kind==="kana"&&event.metadata?.kanaImmediateRetry===true&&event.metadata?.schedulerExcluded===true));}
+function gradedEvents(events:Awaited<ReturnType<typeof listStudyEvents>>,kind:"kana"|"lexeme"|"grammar"|"sentence"){return effectiveStudyEvents(events).filter((event)=>event.primaryTarget?.kind===kind&&["correct","incorrect","partial","revealed"].includes(event.result??"")&&!(kind==="kana"&&event.metadata?.kanaImmediateRetry===true&&event.metadata?.schedulerExcluded===true));}
 function accuracyFor(events:ReturnType<typeof gradedEvents>):number{if(!events.length)return 0;return events.filter((event)=>event.result==="correct").length/events.length;}
 function meanConfidence(projections:ReturnType<typeof projectionsFor>,expected:number):number{if(!expected)return 0;return projections.reduce((sum,item)=>sum+item.confidence,0)/expected;}
 function matureCount(projections:ReturnType<typeof projectionsFor>):number{return projections.filter((item)=>item.estimate>=0.72&&item.confidence>=0.35).length;}

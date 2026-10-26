@@ -5,8 +5,7 @@ export const LEARNER_MODEL_VERSION = "p1.3";
 export const initialLearnerState: LearnerState = { mastery: {}, eventCount: 0 };
 
 export function reduceStudyEvent(state: LearnerState, event: StudyEvent): LearnerState {
-  // Immediate Kana Review corrections are saved for accountability, not
-  // independent spaced-repetition or mastery evidence.
+  // A saved Kana same-session correction is not independent mastery evidence.
   if (event.metadata?.kanaImmediateRetry === true && event.metadata?.schedulerExcluded === true) {
     return { ...state, eventCount: state.eventCount + 1 };
   }
@@ -24,8 +23,14 @@ export function reduceStudyEvent(state: LearnerState, event: StudyEvent): Learne
   return { mastery: { ...state.mastery, [key]: projection }, eventCount: state.eventCount + 1 };
 }
 
+/** Keep append-only events while excluding reviews cancelled by explicit undo records. */
+export function effectiveStudyEvents(events:readonly StudyEvent[]):StudyEvent[]{
+  const undone=new Set(events.filter(event=>event.metadata?.flashcardUndo===true&&
+    typeof event.metadata.undoOf==="string").map(event=>event.metadata!.undoOf as string));
+  return events.filter(event=>!undone.has(event.id)&&event.metadata?.flashcardUndo!==true);
+}
 export function replayStudyEvents(events: readonly StudyEvent[]): LearnerState {
-  const ordered = [...events].sort((a,b) => a.occurredAt.localeCompare(b.occurredAt) || a.id.localeCompare(b.id));
+  const ordered = effectiveStudyEvents(events).sort((a,b) => a.occurredAt.localeCompare(b.occurredAt) || a.id.localeCompare(b.id));
   return ordered.reduce(reduceStudyEvent, initialLearnerState);
 }
 
