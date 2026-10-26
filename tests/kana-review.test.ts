@@ -5,6 +5,8 @@ import {foundationPrompts,foundationApplicationPrompts} from "../apps/web/src/st
 import {kanaReviewTraceId,kanaReviewPrompts,selectKanaReview,projectKanaReviewOverview} from "../apps/web/src/study/kanaReview";
 import {presentedKanaChoices} from "../apps/web/src/study/kanaChoiceOrder";
 import {appendKanaCorrection} from "../apps/web/src/study/kanaRetry";
+import {replayStudyEvents} from "../packages/learner-engine/src/index";
+import {projectBeginnerOverview} from "../apps/web/src/study/beginnerCourse";
 
 const today=new Date("2026-10-26T10:00:00Z");
 const prompt=(id:string,skill:string)=>[...foundationPrompts,...foundationApplicationPrompts]
@@ -141,6 +143,28 @@ describe("dedicated kana FSRS review",()=>{
     expect(appendKanaCorrection(first,hi,seen)).toHaveLength(2);
     expect(appendKanaCorrection(first,correction,seen)).toHaveLength(2);
     expect(hi.eventMetadata?.schedulerExcluded).not.toBe(true);
+  });
+
+  it("does not treat an excluded same-session correction as recognition, mastery or beginner completion",()=>{
+    const hi=prompt("hiragana-あ","recognition");
+    const failed=event(hi,"incorrect","2026-10-25T09:00:00Z");
+    const correction={
+      ...event(hi,"correct","2026-10-25T09:03:00Z"),
+      metadata:{promptId:hi.id,kanaImmediateRetry:true,schedulerExcluded:true}
+    };
+    const existing=trace(hi,"2026-11-01T10:00:00Z");
+    const reading=selectKanaReview("hiragana","reading",[existing],[failed,correction],today,ready);
+    const form=selectKanaReview("hiragana","form_selection",[existing],[failed,correction],today,ready);
+    expect(reading.prompts.every(item=>item.primaryTarget.id!=="hiragana-あ")).toBe(true);
+    expect(form.prompts.every(item=>item.primaryTarget.id!=="hiragana-あ")).toBe(true);
+    const fromOriginal=replayStudyEvents([failed]);
+    const withCorrection=replayStudyEvents([failed,correction]);
+    expect(withCorrection.mastery).toEqual(fromOriginal.mastery);
+    expect(withCorrection.eventCount).toBe(fromOriginal.eventCount+1);
+    expect(projectBeginnerOverview([failed,correction]).stages[0].correct).toBe(0);
+    const authoritative=event(hi,"correct","2026-10-25T09:04:00Z");
+    expect(selectKanaReview("hiragana","reading",[existing],[failed,correction,authoritative],today,ready)
+      .prompts.some(item=>item.primaryTarget.id==="hiragana-あ")).toBe(true);
   });
 
 });
