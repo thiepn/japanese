@@ -193,6 +193,46 @@ export async function setSyncCursor(accountId: string, cursor: string): Promise<
   db.close();
 }
 
+export interface FlashcardDeckLimitsRecord {newCards:number;reviews:number}
+const DECK_LIMITS_KEY="flashcard:deck-limits:";
+function deckLimitsKey(deckId:string):string{
+  if(!/^(hiragana|katakana|mixed):(all|recognition|reading|form_selection)$/.test(deckId))
+    throw Error("FLASHCARD_DECK_ID_INVALID");
+  return DECK_LIMITS_KEY+deckId;
+}
+export async function getFlashcardDeckLimits(accountId:string,deckId:string):Promise<FlashcardDeckLimitsRecord|null>{
+  const key=deckLimitsKey(deckId);
+  const db=await openLocalDb(accountId);
+  try{
+    const value=await new Promise<string|null>((resolve,reject)=>{
+      const request=db.transaction(SYNC_META,"readonly").objectStore(SYNC_META).get(key);
+      request.onsuccess=()=>resolve((request.result as SyncMetaRecord|undefined)?.value??null);
+      request.onerror=()=>reject(request.error);
+    });
+    if(value===null)return null;
+    try{
+      const data:unknown=JSON.parse(value);
+      if(typeof data!=="object"||data===null)return null;
+      const limits=data as Record<string,unknown>;
+      if(typeof limits.newCards!=="number"||!Number.isInteger(limits.newCards)||
+        limits.newCards<0||limits.newCards>30||
+        typeof limits.reviews!=="number"||!Number.isInteger(limits.reviews)||
+        limits.reviews<0||limits.reviews>100)return null;
+      return {newCards:limits.newCards,reviews:limits.reviews};
+    }catch{return null;}
+  }finally{db.close();}
+}
+export async function saveFlashcardDeckLimits(
+  accountId:string,deckId:string,limits:FlashcardDeckLimitsRecord
+):Promise<void>{
+  const key=deckLimitsKey(deckId);
+  if(!Number.isInteger(limits.newCards)||limits.newCards<0||limits.newCards>30||
+    !Number.isInteger(limits.reviews)||limits.reviews<0||limits.reviews>100)
+    throw Error("FLASHCARD_DECK_LIMITS_INVALID");
+  const db=await openLocalDb(accountId);
+  try{await putOne(db,SYNC_META,{key,value:JSON.stringify(limits)} satisfies SyncMetaRecord);}
+  finally{db.close();}
+}
 /** Suspensions are account-scoped local preferences, not new FSRS identities. */
 export async function listFlashcardSuspensions(accountId:string):Promise<string[]>{
   const records=await getAllFromStore<SyncMetaRecord>(accountId,SYNC_META);
