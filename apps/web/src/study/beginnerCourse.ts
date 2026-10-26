@@ -51,7 +51,7 @@ const A0_CANONICAL_IDENTITIES=new Set(GROUPS.flatMap(group=>
     .map(prompt=>prompt.id+"|"+prompt.primaryTarget.id)));
 function correctlyAnswered(events:readonly StudyEvent[]):Set<string>{
   return new Set(events.filter(event=>event.result==="correct"&&event.primaryTarget?.kind==="kana"
-    &&event.metadata?.nonAuthoritative!==true&&typeof event.metadata?.promptId==="string")
+    &&event.metadata?.nonAuthoritative!==true&&event.metadata?.schedulerExcluded!==true&&typeof event.metadata?.promptId==="string")
     .map(event=>String(event.metadata?.promptId)+"|"+event.primaryTarget!.id));
 }
 export function projectBeginnerOverview(events:readonly StudyEvent[]):BeginnerOverview{
@@ -69,7 +69,7 @@ export function projectBeginnerOverview(events:readonly StudyEvent[]):BeginnerOv
   return {stages,completed:stages.filter(s=>s.completed).length,total:stages.length,nextId,
     started:events.some(event=>event.primaryTarget?.kind==="kana"
       &&(event.result==="correct"||event.result==="incorrect")
-      &&event.metadata?.nonAuthoritative!==true
+      &&event.metadata?.nonAuthoritative!==true&&event.metadata?.schedulerExcluded!==true
       &&A0_CANONICAL_IDENTITIES.has(String(event.metadata?.promptId)+"|"+event.primaryTarget.id)),
     complete:nextId===null};
 }

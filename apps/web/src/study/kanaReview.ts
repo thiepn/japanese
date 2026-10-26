@@ -45,7 +45,7 @@ function latestFailures(events:readonly StudyEvent[]):Map<string,boolean>{
 function recognitionSucceeded(events:readonly StudyEvent[]):Set<string>{
   return new Set(events.filter(event=>event.primaryTarget?.kind==="kana"&&
     event.skillDimension==="recognition"&&event.result==="correct"&&
-    event.metadata?.nonAuthoritative!==true)
+    event.metadata?.nonAuthoritative!==true&&event.metadata?.schedulerExcluded!==true)
     .map(event=>event.primaryTarget!.id));
 }
 function weakness(prompt:StudyPrompt,trace:MemoryTrace|undefined,failed:ReadonlyMap<string,boolean>):number{
