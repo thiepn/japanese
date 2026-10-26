@@ -59,13 +59,25 @@ describe("durable kana flashcard storage",()=>{
   expect(await getMemoryTrace(owner,id)).toEqual(updated);
   expect((await listStudyEvents(owner)).map(row=>row.id)).toEqual([event.id]);
  });
+ it("rejects a stale concurrent flashcard grade atomically without losing the winning review",async()=>{
+  const owner="flashcard-race-1";const {id,updated,event}=prepared(owner);
+  await saveStudyReview(event,updated);
+  const stale:StudyEvent={...event,id:"stale-"+owner,occurredAt:"2026-10-26T10:01:01Z"};
+  await expect(saveStudyReview(stale,updated)).rejects.toThrow("FLASHCARD_REVISION_CONFLICT");
+  expect(await getMemoryTrace(owner,id)).toEqual(updated);
+  expect((await listStudyEvents(owner)).map(row=>row.id)).toEqual([event.id]);
+  expect((await listOutbox(owner)).map(row=>row.mutation_id)).toEqual([event.id]);
+ });
  it("rejects rollback after a newer FSRS update and keeps original event intact",async()=>{
   const owner="flashcard-conflict-1";const {id,original,updated,event,undo}=prepared(owner);
   const later=scheduler.review(updated,{grade:"good",reviewedAt:"2026-10-26T10:03:00Z"});
-  await saveStudyReview(event,later);
+  await saveStudyReview(event,updated);
+  const newer:StudyEvent={...event,id:"newer-"+owner,occurredAt:"2026-10-26T10:03:00Z",
+    baseRevision:updated.revision};
+  await saveStudyReview(newer,later);
   await expect(undoPendingFlashcardReview({accountId:owner,originalEventId:event.id,
     previous:original,updated,undoEvent:undo})).rejects.toThrow();
   expect(await getMemoryTrace(owner,id)).toEqual(later);
-  expect((await listStudyEvents(owner)).map(row=>row.id)).toEqual([event.id]);
+  expect((await listStudyEvents(owner)).map(row=>row.id).sort()).toEqual([event.id,newer.id].sort());
  });
 });
