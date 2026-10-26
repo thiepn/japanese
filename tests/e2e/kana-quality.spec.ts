@@ -61,7 +61,7 @@ test("wrong kana gets one same-session correction without early FSRS advancement
   const initialCounter=await page.locator(".j5-study-head .j5-step-count").textContent();
   const total=Number(initialCounter?.split("/")[1]?.trim());
   await page.locator(".j5-choices").getByRole("button",{name:"i",exact:true}).click();
-  await expect(page.getByText("Incorrect",{exact:true})).toBeVisible();
+  await expect(page.locator(".j5-feedback.incorrect")).toBeVisible();
   expect(await page.locator(".j5-study-head .j5-step-count").textContent()).toContain("/ "+(total+1));
   await page.getByRole("button",{name:"Continue",exact:true}).click();
   for(const answer of ["i","u","e","o"]){
