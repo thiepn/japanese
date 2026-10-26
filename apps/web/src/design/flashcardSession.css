@@ -37,3 +37,7 @@
  .flashcards-header__actions button{padding:7px}
 }
 @media(prefers-reduced-motion:reduce){.flashcards-overlay *{scroll-behavior:auto!important}}
+
+.flashcards-manage{display:grid;gap:12px}
+.flashcards-finished p{margin:0;font-size:18px}
+.flashcards-settings input:focus-visible{outline:3px solid currentColor;outline-offset:2px}
