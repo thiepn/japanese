@@ -39,7 +39,7 @@ export function KanaReview({overview,busy,status,onStart}:{
     <div className="kana-review__actions">
       <button type="button" className="kana-review__start" disabled={busy}
         onClick={()=>{
-          openKanaStudio(getDevelopmentAccountId());
+          openKanaStudio(getDevelopmentAccountId(),"review");
         }}>Review flashcards</button>
       <button type="button" className="kana-review__secondary" disabled={busy||!available}
         onClick={()=>onStart(script,skill)}>Multiple-choice practice</button>
