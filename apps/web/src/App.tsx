@@ -1,4 +1,5 @@
 import { Suspense,lazy,useEffect,useLayoutEffect,useRef,useState } from "react";
+import {openKanaStudio,publishKanaOwnerLease} from "./kanaHandoff";
 import {UX1Outcome} from "./design/UX1Outcome";
 import "./design/ux1.css";
 import { createThiepnAccountAuthProvider,getRecentJapaneseAuthFailure,type AuthContext } from "@thiepn/auth";
@@ -199,6 +200,7 @@ export function App(){
     const switchWorkspace=(accountId:string)=>{
       if(getDevelopmentAccountId()!==accountId)clearLearnerView();
       setDevelopmentAccountId(accountId);
+      publishKanaOwnerLease(accountId);
       setAuthenticAccountId(accountId);
     };
     const useGuestWorkspace=()=>{
@@ -387,6 +389,7 @@ export function App(){
         if(!attachment?.connected||!lease.isCurrent(ticket))return;
         if(getDevelopmentAccountId()!==accountId)clearLearnerView();
         setDevelopmentAccountId(accountId);
+        publishKanaOwnerLease(accountId);
         setAuthenticAccountId(accountId);
         setAccountConnected(true);
         setAccountMessage(
@@ -412,6 +415,7 @@ export function App(){
       if(!lease.isAnonymous())return;
       if(getDevelopmentAccountId()!==GUEST_ACCOUNT_ID)clearLearnerView();
       setDevelopmentAccountId(GUEST_ACCOUNT_ID);
+      publishKanaOwnerLease(GUEST_ACCOUNT_ID);
       setAuthenticAccountId(AUTHENTIC_GUEST_ACCOUNT_ID);
       setAccountConnected(false);
       setAccount(ANONYMOUS_AUTH);
@@ -542,6 +546,27 @@ export function App(){
   const [diagnosticsMode,setDiagnosticsMode]=useState(
     ()=>new URLSearchParams(window.location.search).get("diagnostics")==="1",
   );
+  useEffect(()=>{
+    if(accountResolving)return;
+    const url=new URL(window.location.href);
+    if(url.searchParams.get("kana")!=="resume")return;
+    let cancelled=false;
+    void JAPANESE_ACCOUNT.getCurrentContext().then((current)=>{
+      if(cancelled)return;
+      // The initial auth refresh can finish before the asynchronous account
+      // attachment finishes. Never route that interim guest state as an owner.
+      if(current.status==="authenticated"&&
+        (account.status!=="authenticated"||current.accountId!==account.accountId))return;
+      if(current.status!=="authenticated"&&account.status==="authenticated")return;
+      const owner=getDevelopmentAccountId();
+      if(accountConnected&&account.accountId!==owner)return;
+      url.searchParams.delete("kana");
+      window.history.replaceState({},"",url.pathname+url.search+url.hash);
+      try {openKanaStudio(owner);}
+      catch { /* Keep Japanese usable if storage is blocked. */ }
+    }).catch(()=>{/* Keep the user in Japanese rather than guessing the account. */});
+    return ()=>{cancelled=true;};
+  },[accountResolving,account.status,account.accountId,accountConnected]);
   const navigateSurface=(next:Surface)=>{
     if(diagnosticsMode){
       const url=new URL(window.location.href);

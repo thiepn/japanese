@@ -5,6 +5,9 @@ export const LEARNER_MODEL_VERSION = "p1.3";
 export const initialLearnerState: LearnerState = { mastery: {}, eventCount: 0 };
 
 export function reduceStudyEvent(state: LearnerState, event: StudyEvent): LearnerState {
+  if (event.metadata?.kanaStudioImport === true && event.metadata?.schedulerExcluded === true) {
+    return { ...state, eventCount: state.eventCount + 1 };
+  }
   // A saved Kana same-session correction is not independent mastery evidence.
   if (event.metadata?.kanaImmediateRetry === true && event.metadata?.schedulerExcluded === true) {
     return { ...state, eventCount: state.eventCount + 1 };

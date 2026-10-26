@@ -1,5 +1,6 @@
 import {useState} from "react";
 import {getDevelopmentAccountId} from "../study/runtime";
+import {openKanaStudio} from "../kanaHandoff";
 import type {KanaReviewOverview,KanaReviewScript,KanaReviewSkill} from "../study/kanaReview";
 import "./kanaReview.css";
 
@@ -38,9 +39,7 @@ export function KanaReview({overview,busy,status,onStart}:{
     <div className="kana-review__actions">
       <button type="button" className="kana-review__start" disabled={busy}
         onClick={()=>{
-          try { sessionStorage.setItem("thiepn:japanese:kana-handoff",JSON.stringify({owner:getDevelopmentAccountId(),at:Date.now()})); }
-          catch { /* The dedicated module uses its isolated local guest workspace. */ }
-          window.location.assign("/japanese/kana/");
+          openKanaStudio(getDevelopmentAccountId());
         }}>Review flashcards</button>
       <button type="button" className="kana-review__secondary" disabled={busy||!available}
         onClick={()=>onStart(script,skill)}>Multiple-choice practice</button>

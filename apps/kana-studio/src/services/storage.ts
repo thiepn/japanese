@@ -1,6 +1,6 @@
 import type { StoredCardData, UserSettings } from '../types/kana';
 import type { ReviewLog } from 'ts-fsrs';
-import { KANA_WORKSPACE_ID } from './japaneseBridge';
+import { KANA_WORKSPACE_ID, assertKanaWorkspace } from './japaneseBridge';
 import { overlayJapaneseKanaCards } from './canonicalBridge';
 
 const DB_NAME = 'kana_mastery_v1:' + KANA_WORKSPACE_ID;
@@ -73,9 +73,11 @@ const LOCAL_STORAGE_CARDS_KEY = 'kana_app_cards_cache:' + KANA_WORKSPACE_ID;
 const LOCAL_STORAGE_SETTINGS_KEY = 'kana_app_settings_cache:' + KANA_WORKSPACE_ID;
 const memoryCardsMap = new Map<string, StoredCardData>();
 
-async function readStudioCards(): Promise<Map<string, StoredCardData>> {
+export async function readStudioCards(): Promise<Map<string, StoredCardData>> {
+  assertKanaWorkspace();
   try {
     const db = await openDB();
+    assertKanaWorkspace();
     return new Promise((resolve, reject) => {
       const tx = db.transaction(STORES.CARDS, 'readonly');
       const store = tx.objectStore(STORES.CARDS);
@@ -92,12 +94,13 @@ async function readStudioCards(): Promise<Map<string, StoredCardData>> {
           }
           map.set(item.cardId, item);
         }
-        resolve(map);
+        try { assertKanaWorkspace(); resolve(map); } catch(error) { reject(error); }
       };
 
       req.onerror = () => reject(req.error);
     });
   } catch (err) {
+    assertKanaWorkspace();
     try {
       if (typeof localStorage !== 'undefined') {
         const raw = localStorage.getItem(LOCAL_STORAGE_CARDS_KEY);
@@ -120,15 +123,20 @@ async function readStudioCards(): Promise<Map<string, StoredCardData>> {
 }
 
 export async function getAllStoredCards(): Promise<Map<string, StoredCardData>> {
-  return overlayJapaneseKanaCards(await readStudioCards());
+  assertKanaWorkspace();
+  const cards = await overlayJapaneseKanaCards(await readStudioCards());
+  assertKanaWorkspace();
+  return cards;
 }
 
 export async function saveStoredCard(cardData: StoredCardData): Promise<void> {
+  assertKanaWorkspace();
   // Always update memory cache so sync works in any environment
   memoryCardsMap.set(cardData.cardId, cardData);
 
   try {
     const db = await openDB();
+    assertKanaWorkspace();
     await new Promise<void>((resolve, reject) => {
       const tx = db.transaction(STORES.CARDS, 'readwrite');
       const store = tx.objectStore(STORES.CARDS);
@@ -137,9 +145,10 @@ export async function saveStoredCard(cardData: StoredCardData): Promise<void> {
       req.onerror = () => reject(req.error);
     });
   } catch (err) {
+    assertKanaWorkspace();
     try {
       if (typeof localStorage !== 'undefined') {
-        const current = await getAllStoredCards();
+        const current = await readStudioCards();
         current.set(cardData.cardId, cardData);
         localStorage.setItem(LOCAL_STORAGE_CARDS_KEY, JSON.stringify(Array.from(current.values())));
       }
@@ -151,6 +160,7 @@ export async function saveStoredCard(cardData: StoredCardData): Promise<void> {
 
 
 export async function saveReviewLog(log: ReviewLog, cardId: string): Promise<void> {
+  assertKanaWorkspace();
   try {
     const db = await openDB();
     await new Promise<void>((resolve, reject) => {
@@ -212,6 +222,7 @@ export async function getSettings(): Promise<UserSettings> {
 }
 
 export async function saveSettings(settings: UserSettings): Promise<void> {
+  assertKanaWorkspace();
   try {
     const db = await openDB();
     await new Promise<void>((resolve, reject) => {
@@ -248,6 +259,7 @@ export async function exportProgressJSON(): Promise<string> {
 }
 
 export async function importProgressJSON(jsonString: string): Promise<{ success: boolean; count: number; message: string }> {
+  assertKanaWorkspace();
   try {
     const data = JSON.parse(jsonString);
     if (!data || typeof data !== 'object') {
@@ -297,6 +309,7 @@ export async function importProgressJSON(jsonString: string): Promise<{ success:
 }
 
 export async function resetAllProgress(): Promise<void> {
+  assertKanaWorkspace();
   try {
     const db = await openDB();
     await new Promise<void>((resolve, reject) => {
@@ -310,4 +323,89 @@ export async function resetAllProgress(): Promise<void> {
     // fallback
     localStorage.removeItem(LOCAL_STORAGE_CARDS_KEY);
   }
+}
+
+/** The original standalone guest DB is read-only here. It is never claimed implicitly. */
+export async function readLegacyGuestCards(): Promise<StoredCardData[]> {
+  assertKanaWorkspace();
+  const name = 'kana_mastery_v1:local-guest';
+  let cards: StoredCardData[] = [];
+  try {
+    const names = typeof indexedDB.databases === 'function' ? await indexedDB.databases() : [];
+    assertKanaWorkspace();
+    if (names.some(item => item.name === name)) {
+      const db = await new Promise<IDBDatabase>((resolve,reject) => {
+        const req = indexedDB.open(name, 1);
+        req.onupgradeneeded = () => {req.transaction?.abort();};
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+      try {
+        const values = await new Promise<StoredCardData[]>((resolve,reject) => {
+          if (!db.objectStoreNames.contains('cards')) return resolve([]);
+          const req = db.transaction('cards','readonly').objectStore('cards').getAll();
+          req.onsuccess = () => resolve(req.result as StoredCardData[]);
+          req.onerror = () => reject(req.error);
+        });
+        cards = values.map(item => ({
+          ...item,card:{...item.card,due:new Date(item.card.due),
+            last_review:item.card.last_review ? new Date(item.card.last_review) : undefined}
+        }));
+      } finally {db.close();}
+    }
+  } catch { assertKanaWorkspace(); }
+  if (cards.length === 0) {
+    try {
+      const raw = localStorage.getItem('kana_app_cards_cache:local-guest');
+      const parsed: unknown = raw ? JSON.parse(raw) : null;
+      if (Array.isArray(parsed)) cards = parsed.filter(item=>item&&typeof item.cardId==='string'&&item.card)
+        .map(item=>({...item,card:{...item.card,due:new Date(item.card.due),
+          last_review:item.card.last_review?new Date(item.card.last_review):undefined}}));
+    } catch { /* No guest fallback. */ }
+  }
+  assertKanaWorkspace();
+  return cards;
+}
+async function readLegacyGuestArchive(): Promise<{logs: unknown[];settings: UserSettings | null}> {
+  assertKanaWorkspace();
+  const name = 'kana_mastery_v1:local-guest';
+  if (typeof indexedDB.databases !== 'function' ||
+      !(await indexedDB.databases()).some(item => item.name === name)) {
+    return {logs:[],settings:null};
+  }
+  assertKanaWorkspace();
+  const db = await new Promise<IDBDatabase>((resolve,reject) => {
+    const req=indexedDB.open(name,1);
+    req.onupgradeneeded=()=>{req.transaction?.abort();};
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+  try {
+    const records=await Promise.all(['review_logs','settings'].map(store=>
+      new Promise<unknown[]>((resolve,reject)=>{
+        if(!db.objectStoreNames.contains(store))return resolve([]);
+        const req=db.transaction(store,'readonly').objectStore(store).getAll();
+        req.onsuccess=()=>resolve(req.result as unknown[]);
+        req.onerror=()=>reject(req.error);
+      })
+    ));
+    assertKanaWorkspace();
+    const found=records[1]?.find((item):item is {key:string;value:UserSettings} =>
+      typeof item === 'object' && item !== null && (item as {key?:string}).key === 'app_settings');
+    return {logs:records[0]??[],settings:found?.value??null};
+  } finally {db.close();}
+}
+export async function serializeLegacyKanaBackup(
+  cards: readonly StoredCardData[], source: 'current-studio'|'legacy-guest'
+): Promise<string> {
+  assertKanaWorkspace();
+  const archive = source === 'legacy-guest'
+    ? await readLegacyGuestArchive().catch(()=>({logs:[],settings:null}))
+    : {logs:await getReviewLogs(),settings:await getSettings()};
+  assertKanaWorkspace();
+  return JSON.stringify({
+    format:'thiepn-kana-legacy-backup-v1',source,createdAt:new Date().toISOString(),
+    cards,logs:archive.logs,settings:archive.settings,
+    note:'Historical logs are preserved verbatim; only exact FSRS snapshots are imported as ungraded Japanese provenance.'
+  },null,2);
 }
