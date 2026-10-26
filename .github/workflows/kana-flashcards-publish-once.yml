@@ -1,0 +1,55 @@
+name: Publish Japanese Kana Flashcards Now
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/kana-flashcards-publish-once.yml"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: japanese-kana-flashcards-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      VITE_PUBLIC_BASE: /japanese/
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - name: Install app dependencies
+        run: pnpm install --no-frozen-lockfile
+      - name: Embed exact candidate version
+        env:
+          PUBLISH_COMMIT: ${{ github.sha }}
+        run: pnpm release:p22:meta --commit "$PUBLISH_COMMIT" --channel candidate
+      - name: Build live Japanese app
+        run: pnpm build
+      - name: Preserve SPA and Account callback
+        run: |
+          cp apps/web/dist/index.html apps/web/dist/404.html
+          mkdir -p apps/web/dist/auth/callback
+          cp apps/web/dist/index.html apps/web/dist/auth/callback/index.html
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/web/dist
+      - name: Deploy Japanese app to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
