@@ -1,5 +1,7 @@
 import { entityKey } from "@thiepn/domain";
 import {buildBeginnerStage,projectBeginnerOverview,type BeginnerStageId,type BeginnerOverview} from "./beginnerCourse";
+import {projectKanaReviewOverview,selectKanaReview,type KanaReviewScript,type KanaReviewSkill,type KanaReviewOverview} from "./kanaReview";
+export type {KanaReviewScript,KanaReviewSkill,KanaReviewOverview} from "./kanaReview";
 export type {BeginnerOverview} from "./beginnerCourse";
 import {countUX1SavedAnswersToday,projectUX1Engagement,type UX1Engagement} from "./ux1Engagement";
 export type {UX1Engagement} from "./ux1Engagement";
@@ -140,6 +142,20 @@ export async function buildTodayQueue(now=new Date()):Promise<StudyStep[]>{
   addUnique(queue,unseenVocabulary.slice(0,Math.min(NEW_VOCAB_PER_SESSION,slots(queue))));
   if(queue.length<MAX_QUEUE_SIZE)addUnique(queue,due.slice(0,MAX_QUEUE_SIZE));
   return insertFirstExposureLessons(queue,byId,privatePrompts);
+}
+
+export async function getKanaReviewOverview(now=new Date()):Promise<KanaReviewOverview>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const [traces,events]=await Promise.all([listMemoryTraces(owner),listStudyEvents(owner)]);
+  if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("KANA_REVIEW_WORKSPACE_CHANGED_DURING_READ");
+  return projectKanaReviewOverview(traces,events,now,isApplicationPromptReady);
+}
+export async function buildKanaReviewSession(script:KanaReviewScript,skill:KanaReviewSkill,now=new Date()):Promise<StudyStep[]>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const [traces,events]=await Promise.all([listMemoryTraces(owner),listStudyEvents(owner)]);
+  if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("KANA_REVIEW_WORKSPACE_CHANGED_DURING_BUILD");
+  const picked=selectKanaReview(script,skill,traces,events,now,isApplicationPromptReady);
+  return insertFirstExposureLessons(picked.prompts,new Map(traces.map(trace=>[trace.id,trace])));
 }
 
 export async function getBeginnerOverview():Promise<BeginnerOverview>{

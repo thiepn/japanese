@@ -1,5 +1,7 @@
 import "./j4.css";
 import {BeginnerEntry} from "./BeginnerEntry";
+import {KanaReview} from "./KanaReview";
+import type {KanaReviewOverview,KanaReviewScript,KanaReviewSkill} from "../study/kanaReview";
 import type {BeginnerOverview} from "../study/beginnerCourse";
 import "../study/e10DailyStages.css";
 import {useEffect,useMemo,useRef,useState} from "react";
@@ -47,6 +49,7 @@ import {JCartouche,JInkProgress,JPattern,JSeal} from "./index";
 
 type Props={
    beginner:BeginnerOverview;onStartBeginner:()=>void;onReviewDue:()=>void;
+   kanaReview:KanaReviewOverview;onStartKanaReview:(script:KanaReviewScript,skill:KanaReviewSkill)=>void;
   e01:E01Progress;onStartE01:()=>void;onStartE01Delayed:()=>void;
   e02:E02Overview;onStartE02:(id:string)=>void;onStartE02Delayed:(id:string)=>void;
   e03:E03Overview;onStartE03:(id:string)=>void;onStartE03Delayed:(id:string)=>void;
@@ -103,7 +106,7 @@ const LEVEL_ORDER=["A1","A2","B1","B2","C1"];
 
 export function J4Learn(props:Props){
   const {
-    beginner,onStartBeginner,onReviewDue,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,e14Reviews,e16WorkspaceId,e16WorkspaceCurrent,onStartE06,onStartE06Full,onStartE11Micro,onStartE13,onStartE18,onStartE14,onStartE15,onStartE10Stage,onStartE06Delayed,onStartE10DelayedStage,onStartE06FullDelayed,onStartE06Preview,e19,onStartE19,e07,onOpenE07,e22Selection,onE22Selection,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
+    beginner,onStartBeginner,onReviewDue,kanaReview,onStartKanaReview,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,e14Reviews,e16WorkspaceId,e16WorkspaceCurrent,onStartE06,onStartE06Full,onStartE11Micro,onStartE13,onStartE18,onStartE14,onStartE15,onStartE10Stage,onStartE06Delayed,onStartE10DelayedStage,onStartE06FullDelayed,onStartE06Preview,e19,onStartE19,e07,onOpenE07,e22Selection,onE22Selection,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
     milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,
     onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartAssessment,
     onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,
@@ -174,6 +177,7 @@ export function J4Learn(props:Props){
         e02.scenes.find(scene=>scene.id===e02.nextSceneId)?.title??"A1 practice"}
       due={summary.due} busy={status==="loading"}
       sessionError={status==="error"} onContinue={onStartBeginner} onReview={onReviewDue}/>:null}
+    <KanaReview overview={kanaReview} busy={status==="loading"} status={status} onStart={onStartKanaReview}/>
     <details className="beginner-explore" open={advancedOpen}
       onToggle={event=>setAdvancedOpen(event.currentTarget.open)}>
       <summary>Browse other lessons and advanced practice</summary>
