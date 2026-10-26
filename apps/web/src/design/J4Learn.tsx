@@ -1,4 +1,5 @@
 import "./j4.css";
+import {CourseCatalog} from "./CourseCatalog";
 import {BeginnerEntry} from "./BeginnerEntry";
 import {KanaReview} from "./KanaReview";
 import type {KanaReviewOverview,KanaReviewScript,KanaReviewSkill} from "../study/kanaReview";
@@ -172,6 +173,7 @@ export function J4Learn(props:Props){
 
   return <section className="j4-learn" aria-label="Japanese lessons">
     <span className="j13-marginal" aria-hidden="true">学</span>
+    <CourseCatalog course={course} status={status} onStartUnit={onStartUnit} onStartAssessment={onStartAssessment}/>
     {beginnerMode?<BeginnerEntry overview={beginner}
       a1Next={e01.unitId&&(e01.status==="not_started"||e01.status==="learning")?"First conversations":
         e02.scenes.find(scene=>scene.id===e02.nextSceneId)?.title??"A1 practice"}

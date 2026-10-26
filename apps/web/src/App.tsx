@@ -101,7 +101,8 @@ const StudyPlayer=lazy(()=>import("./study/StudyPlayer").then(m=>({default:m.Stu
 const J11Diagnostics=lazy(()=>import("./design/J11Diagnostics").then((module)=>({default:module.J11Diagnostics})));
 
 export function App(){
-  const [surface,setSurface]=useState<Surface>("Today");
+  const [surface,setSurface]=useState<Surface>(()=>typeof window!=="undefined"&&/^#course\//.test(window.location.hash)?"Learn":"Today");
+  useEffect(()=>{const sync=()=>{if(/^#course\//.test(window.location.hash))setSurface("Learn");};window.addEventListener("popstate",sync);window.addEventListener("hashchange",sync);return()=>{window.removeEventListener("popstate",sync);window.removeEventListener("hashchange",sync);};},[]);
   const [query,setQuery]=useState("");
   const [results,setResults]=useState<SearchResult[]>([]);
   const [libraryStatus,setLibraryStatus]=useState<"idle"|"loading"|"ready"|"error">("idle");
