@@ -165,6 +165,7 @@ export async function saveReviewLog(log: ReviewLog, cardId: string): Promise<voi
   assertKanaWorkspace();
   try {
     const db = await openDB();
+    assertKanaWorkspace();
     await new Promise<void>((resolve, reject) => {
       const tx = db.transaction(STORES.LOGS, 'readwrite');
       const store = tx.objectStore(STORES.LOGS);
@@ -182,37 +183,42 @@ export async function saveReviewLog(log: ReviewLog, cardId: string): Promise<voi
 }
 
 export async function getReviewLogs(): Promise<Array<{ cardId: string; log: ReviewLog; reviewTime: string }>> {
+  assertKanaWorkspace();
   try {
     const db = await openDB();
+    assertKanaWorkspace();
     return new Promise((resolve, reject) => {
       const tx = db.transaction(STORES.LOGS, 'readonly');
       const store = tx.objectStore(STORES.LOGS);
       const req = store.getAll();
-      req.onsuccess = () => resolve(req.result || []);
+      req.onsuccess = () => {try {assertKanaWorkspace();resolve(req.result || []);}catch(error){reject(error);}};
       req.onerror = () => reject(req.error);
     });
-  } catch {
+  } catch(error) {
+    assertKanaWorkspace();
     return [];
   }
 }
 
 export async function getSettings(): Promise<UserSettings> {
+  assertKanaWorkspace();
   try {
     const db = await openDB();
-    return new Promise((resolve) => {
+    assertKanaWorkspace();
+    return new Promise((resolve,reject) => {
       const tx = db.transaction(STORES.SETTINGS, 'readonly');
       const store = tx.objectStore(STORES.SETTINGS);
       const req = store.get('app_settings');
       req.onsuccess = () => {
-        if (req.result && req.result.value) {
-          resolve({ ...defaultSettings, ...req.result.value });
-        } else {
-          resolve(defaultSettings);
-        }
+        try {
+          assertKanaWorkspace();
+          resolve(req.result?.value ? {...defaultSettings,...req.result.value} : defaultSettings);
+        } catch(error){reject(error);}
       };
       req.onerror = () => resolve(defaultSettings);
     });
-  } catch {
+  } catch(error) {
+    assertKanaWorkspace();
     try {
       const raw = localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY);
       if (raw) return { ...defaultSettings, ...JSON.parse(raw) };
@@ -331,6 +337,7 @@ export async function resetAllProgress(): Promise<void> {
   assertKanaWorkspace();
   try {
     const db = await openDB();
+    assertKanaWorkspace();
     await new Promise<void>((resolve, reject) => {
       const tx = db.transaction([STORES.CARDS, STORES.LOGS], 'readwrite');
       tx.objectStore(STORES.CARDS).clear();
