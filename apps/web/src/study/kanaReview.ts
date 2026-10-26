@@ -112,7 +112,11 @@ export function selectKanaReview(
   events:readonly StudyEvent[],
   now:Date,
   ready:KanaReviewReadiness,
+  options?:{maxDue?:number;maxNew?:number;maxSession?:number;excluded?:ReadonlySet<string>},
 ):{counts:KanaReviewCounts;prompts:StudyPrompt[]}{
+  const maxSession=Math.max(0,Math.min(100,Math.floor(options?.maxSession??MAX_SESSION)));
+  const maxDue=Math.max(0,Math.min(maxSession,Math.floor(options?.maxDue??MAX_SESSION)));
+  const maxNew=Math.max(0,Math.min(maxSession,Math.floor(options?.maxNew??MAX_NEW)));
   const indexed=new Map(traces.map(trace=>[trace.id,trace]));
   const known=new Set(indexed.keys());
   const failed=latestFailures(events);
@@ -120,7 +124,7 @@ export function selectKanaReview(
   const due:StudyPrompt[]=[];
   const fresh:StudyPrompt[]=[];
   for(const prompt of kanaReviewPrompts){
-    if(!inScope(prompt,script,skill))continue;
+    if(!inScope(prompt,script,skill)||options?.excluded?.has(kanaReviewTraceId(prompt)))continue;
     const trace=indexed.get(kanaReviewTraceId(prompt));
     if(trace){
       const dueAt=Date.parse(trace.card.due);
@@ -140,9 +144,9 @@ export function selectKanaReview(
   const weak=due.filter(prompt=>isWeak(prompt,indexed.get(kanaReviewTraceId(prompt)),failed));
   const ordinary=due.filter(prompt=>!isWeak(prompt,indexed.get(kanaReviewTraceId(prompt)),failed));
   const orderedDue=script==="mixed"?[...alternateScripts(weak),...alternateScripts(ordinary)]:due;
-  const queued=orderedDue.slice(0,MAX_SESSION);
-  if(due.length<DUE_ONLY_THRESHOLD){
-    queued.push(...orderNew(fresh,script,skill).slice(0,Math.min(MAX_NEW,MAX_SESSION-queued.length)));
+  const queued=orderedDue.slice(0,maxDue);
+  if(due.length<DUE_ONLY_THRESHOLD||options?.maxNew!==undefined){
+    queued.push(...orderNew(fresh,script,skill).slice(0,Math.min(maxNew,maxSession-queued.length)));
   }
   return {counts:{due:due.length,new:fresh.length,weakDue:weak.length},prompts:queued};
 }
