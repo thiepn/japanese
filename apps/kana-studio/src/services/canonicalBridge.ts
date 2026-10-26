@@ -176,6 +176,25 @@ export async function hasCanonicalKanaHistory(cardId: string): Promise<boolean> 
   return (await getMemoryTrace(owner, id)) !== null;
 }
 
+/** Transferable, current canonical schedules only; no Google-only cards and no fabricated historical grades. */
+export async function exportPortableJapaneseKanaSnapshots():Promise<StoredCardData[]> {
+  if(!linkedToJapanese)return [];
+  assertKanaWorkspace();
+  const traces=await listMemoryTraces(owner);
+  assertKanaWorkspace();
+  const byId=new Map(traces.map(trace=>[trace.id,trace]));
+  const records:StoredCardData[]=[];
+  for(const item of kanaMap.values()){
+    for(const cardId of [item.id,item.id+':rev']){
+      const id=canonicalTraceId(cardId);
+      const trace=id?byId.get(id):undefined;
+      if(!trace||trace.card.reps===0)continue;
+      records.push(toStudio(trace,cardId));
+    }
+  }
+  return records;
+}
+
 export interface LegacyImportPreview {
   eligible: number;
   alreadyCanonical: number;
