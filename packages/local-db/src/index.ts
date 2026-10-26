@@ -193,6 +193,61 @@ export async function setSyncCursor(accountId: string, cursor: string): Promise<
   db.close();
 }
 
+/** Suspensions are account-scoped local preferences, not new FSRS identities. */
+export async function listFlashcardSuspensions(accountId:string):Promise<string[]>{
+  const records=await getAllFromStore<SyncMetaRecord>(accountId,SYNC_META);
+  return records.filter(item=>item.key.startsWith("flashcard:suspend:")&&item.value==="1")
+    .map(item=>item.key.slice("flashcard:suspend:".length));
+}
+export async function setFlashcardSuspension(accountId:string,traceId:string,suspend:boolean):Promise<void>{
+  if(!traceId.startsWith("kana:"))throw Error("FLASHCARD_SUSPEND_INVALID_TRACE");
+  const db=await openLocalDb(accountId);
+  try{
+    await new Promise<void>((resolve,reject)=>{
+      const tx=db.transaction(SYNC_META,"readwrite");
+      const store=tx.objectStore(SYNC_META);
+      if(suspend)store.put({key:"flashcard:suspend:"+traceId,value:"1"} satisfies SyncMetaRecord);
+      else store.delete("flashcard:suspend:"+traceId);
+      tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);
+    });
+  }finally{db.close();}
+}
+/** Undo appends a compensating event and rolls back only the still-pending local trace.
+ * Acknowledged reviews or subsequent changes are never overwritten. */
+export async function undoPendingFlashcardReview(input:{
+  accountId:string;originalEventId:string;updated:MemoryTrace;previous:MemoryTrace|null;undoEvent:StudyEvent;
+}):Promise<void>{
+  const {accountId,originalEventId,updated,previous,undoEvent}=input;
+  if(updated.userId!==accountId||previous&&previous.userId!==accountId||undoEvent.userId!==accountId)
+    throw Error("FLASHCARD_UNDO_OWNER_MISMATCH");
+  if(previous&&previous.id!==updated.id)throw Error("FLASHCARD_UNDO_TRACE_MISMATCH");
+  const db=await openLocalDb(accountId);
+  const mutation=studyEventToMutation(undoEvent);
+  try{
+    await new Promise<void>((resolve,reject)=>{
+      const tx=db.transaction([STUDY_EVENTS,OUTBOX,MEMORY_TRACES],"readwrite");
+      const traces=tx.objectStore(MEMORY_TRACES);
+      const pending=tx.objectStore(OUTBOX);
+      const original=pending.get(originalEventId);
+      const current=traces.get(updated.id);
+      let rejected=false;
+      const fail=()=>{if(!rejected){rejected=true;tx.abort();}};
+      original.onsuccess=()=>{if(!original.result)fail();};
+      current.onsuccess=()=>{
+        const actual=current.result as MemoryTrace|undefined;
+        if(!actual||actual.revision!==updated.revision||
+          actual.card.lastReviewAt!==updated.card.lastReviewAt){fail();return;}
+        tx.objectStore(STUDY_EVENTS).add(undoEvent);
+        pending.put(mutation);
+        if(previous)traces.put(previous);else traces.delete(updated.id);
+      };
+      tx.oncomplete=()=>resolve();
+      tx.onerror=()=>reject(tx.error??Error("FLASHCARD_UNDO_FAILED"));
+      tx.onabort=()=>reject(tx.error??Error("FLASHCARD_UNDO_CONFLICT_OR_SYNCED"));
+    });
+  }finally{db.close();}
+}
+
 export async function savePrivateDocument(accountId:string,document:PrivateDocumentRecord):Promise<void>{
   if(document.accountId!==accountId)throw new Error("PRIVATE_DOCUMENT_ACCOUNT_MISMATCH");
   const db=await openLocalDb(accountId);await putOne(db,PRIVATE_DOCUMENTS,document);db.close();
