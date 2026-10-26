@@ -20,7 +20,7 @@ describe("CUR-03 deep original Japanese lessons",()=>{
    let last=-1;
    for(const step of before){
     const at=after.findIndex((candidate,i)=>i>last&&candidate.id===step.id);
-    expect(at).toBeGreaterThan(last);expect(after[at]).toBe(step);last=at;
+    expect(at).toBeGreaterThan(last);expect(after[at]).toEqual(step);last=at;
    }
    const extra=after.filter(step=>!isStudyLesson(step)&&step.eventMetadata?.cur03===true);
    expect(extra).toHaveLength(deepTeachingAnchors(unit.id).length*4);
