@@ -1,6 +1,5 @@
-import {useEffect,useState} from "react";
-import {FlashcardSession} from "./FlashcardSession";
-import {getKanaReviewOverview} from "../study/runtime";
+import {useState} from "react";
+import {getDevelopmentAccountId} from "../study/runtime";
 import type {KanaReviewOverview,KanaReviewScript,KanaReviewSkill} from "../study/kanaReview";
 import "./kanaReview.css";
 
@@ -12,17 +11,14 @@ const SKILLS:readonly {id:KanaReviewSkill;label:string}[]=[
   {id:"reading",label:"Reading recall"},{id:"form_selection",label:"Form selection"}
 ];
 
-export function KanaReview({overview,busy,status,onStart,onFlashcardsChanged}:{
+export function KanaReview({overview,busy,status,onStart}:{
   overview:KanaReviewOverview;busy:boolean;status:string;
   onStart:(script:KanaReviewScript,skill:KanaReviewSkill)=>void;
   onFlashcardsChanged?:()=>void;
 }){
   const [script,setScript]=useState<KanaReviewScript>("mixed");
   const [skill,setSkill]=useState<KanaReviewSkill>("recognition");
-  const [flashOpen,setFlashOpen]=useState(false);
-  const [localOverview,setLocalOverview]=useState<KanaReviewOverview|null>(null);
-  useEffect(()=>setLocalOverview(null),[overview]);
-  const counts=(localOverview??overview)[script][skill];
+  const counts=overview[script][skill];
   const available=counts.due+counts.new>0;
   return <section className="kana-review" aria-label="Kana Review">
     <h2>Kana Review</h2>
@@ -41,16 +37,15 @@ export function KanaReview({overview,busy,status,onStart,onFlashcardsChanged}:{
     </dl>
     <div className="kana-review__actions">
       <button type="button" className="kana-review__start" disabled={busy}
-        onClick={()=>setFlashOpen(true)}>Review flashcards</button>
+        onClick={()=>{
+          try { sessionStorage.setItem("thiepn:japanese:kana-handoff",JSON.stringify({owner:getDevelopmentAccountId(),at:Date.now()})); }
+          catch { /* The dedicated module uses its isolated local guest workspace. */ }
+          window.location.assign("/japanese/kana/");
+        }}>Review flashcards</button>
       <button type="button" className="kana-review__secondary" disabled={busy||!available}
         onClick={()=>onStart(script,skill)}>Multiple-choice practice</button>
     </div>
     {!available?<p role="status">No eligible kana for this selection.</p>:null}
-    {flashOpen?<FlashcardSession script={script} skill={skill} onClose={()=>{
-      setFlashOpen(false);
-      onFlashcardsChanged?.();
-      void getKanaReviewOverview().then(setLocalOverview).catch(()=>{/* Counts refresh on the next dashboard load. */});
-    }}/>:null}
     {status==="error"?<p role="alert">Kana practice could not be opened. Try again.</p>:null}
   </section>;
 }
