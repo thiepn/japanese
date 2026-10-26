@@ -1,5 +1,5 @@
 import { createEmptyCard, type Card, type Grade, Rating } from 'ts-fsrs';
-import { getMemoryTrace, listMemoryTraces, listFlashcardSuspensions, saveStudyReview, setFlashcardSuspension } from '@thiepn/local-db';
+import { getMemoryTrace, listMemoryTraces, listFlashcardSuspensions, saveStudyReview, setFlashcardSuspension, importKanaSnapshotIfMissing } from '@thiepn/local-db';
 import { createFsrsScheduler, type MemoryTrace, type FsrsCardSnapshot, type ReviewGrade } from '@thiepn/scheduler';
 import type { StudyEvent } from '@thiepn/domain';
 import type { StudyPrompt } from '@thiepn/study-player';
@@ -174,4 +174,85 @@ export async function hasCanonicalKanaHistory(cardId: string): Promise<boolean> 
   if (!id) return false;
   assertKanaWorkspace();
   return (await getMemoryTrace(owner, id)) !== null;
+}
+
+export interface LegacyImportPreview {
+  eligible: number;
+  alreadyCanonical: number;
+  unmatched: number;
+  untouchedNew: number;
+}
+function validLegacySnapshot(value: StoredCardData): boolean {
+  const card = value.card;
+  const due = new Date(card?.due ?? NaN).getTime();
+  const reviewed = card?.last_review ? new Date(card.last_review).getTime() : null;
+  return Number.isFinite(due) && (reviewed === null || Number.isFinite(reviewed)) &&
+    [0,1,2,3].includes(Number(card?.state)) &&
+    [card?.stability,card?.difficulty,card?.elapsed_days,card?.scheduled_days,
+      card?.learning_steps,card?.reps,card?.lapses].every(x => typeof x === 'number' && Number.isFinite(x) && x >= 0) &&
+    Number.isInteger(card.reps) && Number.isInteger(card.lapses) && Number.isInteger(value.totalReviews) &&
+    value.totalReviews > 0 && card.reps > 0;
+}
+export async function previewLegacyKanaImport(cards: readonly StoredCardData[]): Promise<LegacyImportPreview> {
+  assertKanaWorkspace();
+  const present = new Set((await listMemoryTraces(owner)).map(trace=>trace.id));
+  assertKanaWorkspace();
+  const result: LegacyImportPreview = {eligible:0,alreadyCanonical:0,unmatched:0,untouchedNew:0};
+  const seen = new Set<string>();
+  for (const card of cards) {
+    const id = canonicalTraceId(card.cardId);
+    if (!id) { result.unmatched++; continue; }
+    if (seen.has(id)) { result.alreadyCanonical++; continue; }
+    seen.add(id);
+    if (present.has(id)) result.alreadyCanonical++;
+    else if (validLegacySnapshot(card)) result.eligible++;
+    else result.untouchedNew++;
+  }
+  return result;
+}
+/** Explicit, owner-checked transfer of FSRS state only. Never replay old logs as
+ * scored Japanese events. Existing Japanese traces always win, even across tabs. */
+export async function importLegacyKanaSnapshots(
+  cards: readonly StoredCardData[], source: 'current-studio' | 'legacy-guest'
+): Promise<{ imported:number; skipped:number; invalid:number }> {
+  assertKanaWorkspace();
+  if (!linkedToJapanese) throw Error("KANA_IMPORT_REQUIRES_JAPANESE_WORKSPACE");
+  const result = { imported:0, skipped:0, invalid:0 };
+  const seen = new Set<string>();
+  for (const card of cards) {
+    assertKanaWorkspace();
+    const prompt = matchedPrompt(card.cardId);
+    const id = canonicalTraceId(card.cardId);
+    if (!prompt || !id || !validLegacySnapshot(card)) { result.invalid++; continue; }
+    if (seen.has(id)) { result.skipped++; continue; }
+    seen.add(id);
+    const at = new Date().toISOString();
+    const trace: MemoryTrace = {
+      ...canonicalScheduler.create({
+        id,userId:owner,entity:prompt.primaryTarget,skillDimension:prompt.skill,
+        cueFamily:prompt.cueFamily
+      },at),
+      card: toSnapshot(card.card)
+    };
+    const event: StudyEvent = {
+      id:crypto.randomUUID(),userId:owner,deviceId:getJapaneseDeviceId(),
+      occurredAt:at,activity:'review',primaryTarget:prompt.primaryTarget,
+      skillDimension:prompt.skill,promptFamily:prompt.cueFamily,
+      responseMode:'flashcard',result:'skipped',baseRevision:0,
+      metadata:{
+        promptId:prompt.id,kanaStudioImport:true,schedulerExcluded:true,
+        nonAuthoritative:true,legacySource:source,sourceCardId:card.cardId,
+        sourceReviewCount:card.totalReviews,sourceLastReviewAt:card.lastReviewedAt ?? null
+      }
+    };
+    const inserted = await importKanaSnapshotIfMissing(owner,trace,event);
+    assertKanaWorkspace();
+    if (inserted) result.imported++;
+    else result.skipped++;
+    if (inserted && card.isSuspended) {
+      await setFlashcardSuspension(owner,id,true);
+      assertKanaWorkspace();
+    }
+  }
+  return result;
 }
