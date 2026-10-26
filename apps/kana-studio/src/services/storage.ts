@@ -338,17 +338,24 @@ export async function resetAllProgress(): Promise<void> {
   try {
     const db = await openDB();
     assertKanaWorkspace();
-    await new Promise<void>((resolve, reject) => {
-      const tx = db.transaction([STORES.CARDS, STORES.LOGS], 'readwrite');
+    await new Promise<void>((resolve,reject)=>{
+      const tx=db.transaction([STORES.CARDS,STORES.LOGS],'readwrite');
       tx.objectStore(STORES.CARDS).clear();
       tx.objectStore(STORES.LOGS).clear();
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
+      tx.oncomplete=()=>resolve();
+      tx.onerror=()=>reject(tx.error);
+      tx.onabort=()=>reject(tx.error);
     });
-  } catch {
-    // fallback
-    localStorage.removeItem(LOCAL_STORAGE_CARDS_KEY);
+    assertKanaWorkspace();
+  } catch(error) {
+    assertKanaWorkspace();
+    if (isIndexedDBSupported()) throw error;
   }
+  // Clear all local Google caches as well; the canonical Japanese database
+  // remains untouched and will be projected on the next read.
+  assertKanaWorkspace();
+  memoryCardsMap.clear();
+  try {localStorage.removeItem(LOCAL_STORAGE_CARDS_KEY);}catch{/* Restricted storage. */}
 }
 
 /** Opening an absent legacy database never creates a replacement empty database.
