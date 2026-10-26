@@ -6,7 +6,7 @@ export type {BeginnerOverview} from "./beginnerCourse";
 import {countUX1SavedAnswersToday,projectUX1Engagement,type UX1Engagement} from "./ux1Engagement";
 export type {UX1Engagement} from "./ux1Engagement";
 import { getJapaneseDeviceId } from "../deviceIdentity";
-import { replayStudyEvents, type LearnerState } from "@thiepn/learner-engine";
+import { effectiveStudyEvents, replayStudyEvents, type LearnerState } from "@thiepn/learner-engine";
 import { getMemoryTrace, listMemoryTraces, listStudyEvents, saveStudyReview, listFlashcardSuspensions, setFlashcardSuspension, undoPendingFlashcardReview } from "@thiepn/local-db";
 import type {MemoryTrace} from "@thiepn/scheduler";
 import type {StudyEvent} from "@thiepn/domain";
@@ -319,7 +319,7 @@ export async function getUX1Engagement(now=new Date()):Promise<UX1Engagement>{
  const owner=DEVELOPMENT_ACCOUNT_ID;
  const events=await listStudyEvents(owner);
  if(DEVELOPMENT_ACCOUNT_ID!==owner)throw new Error("UX1_ENGAGEMENT_WORKSPACE_CHANGED");
- return projectUX1Engagement(events,now);
+ return projectUX1Engagement(effectiveStudyEvents(events),now);
 }
 
 // Derive the daily counter from durable, account-scoped events. React component
@@ -328,7 +328,7 @@ export async function getCompletedTodayCount(now=new Date()):Promise<number>{
   const owner=DEVELOPMENT_ACCOUNT_ID;
   const events=await listStudyEvents(owner);
   if(DEVELOPMENT_ACCOUNT_ID!==owner)throw new Error("UX1_DAILY_COUNT_WORKSPACE_CHANGED");
-  return countUX1SavedAnswersToday(events,now);
+  return countUX1SavedAnswersToday(effectiveStudyEvents(events),now);
 }
 
 export async function getStudySummary(now=new Date()):Promise<StudySummary>{
@@ -694,7 +694,7 @@ function selectBalancedApplications(prompts:StudyPrompt[],limit:number):StudyPro
 function uniqueSkillPrompts(prompts:StudyPrompt[]):StudyPrompt[]{const seen=new Set<string>();return prompts.filter((prompt)=>{const key=entityKey(prompt.primaryTarget,prompt.skill);if(seen.has(key))return false;seen.add(key);return true;});}
 function projectionsFor(prompts:StudyPrompt[],state:LearnerState){return prompts.map((prompt)=>state.mastery[entityKey(prompt.primaryTarget,prompt.skill)]).filter((value)=>value!==undefined);}
 function scoreFor(prompts:StudyPrompt[],state:LearnerState):number{if(!prompts.length)return 0;return prompts.reduce((sum,prompt)=>sum+(state.mastery[entityKey(prompt.primaryTarget,prompt.skill)]?.estimate??0),0)/prompts.length;}
-function gradedEvents(events:Awaited<ReturnType<typeof listStudyEvents>>,kind:"kana"|"lexeme"|"grammar"|"sentence"){return events.filter((event)=>event.primaryTarget?.kind===kind&&["correct","incorrect","partial","revealed"].includes(event.result??""));}
+function gradedEvents(events:Awaited<ReturnType<typeof listStudyEvents>>,kind:"kana"|"lexeme"|"grammar"|"sentence"){return effectiveStudyEvents(events).filter((event)=>event.primaryTarget?.kind===kind&&["correct","incorrect","partial","revealed"].includes(event.result??""));}
 function accuracyFor(events:ReturnType<typeof gradedEvents>):number{if(!events.length)return 0;return events.filter((event)=>event.result==="correct").length/events.length;}
 function meanConfidence(projections:ReturnType<typeof projectionsFor>,expected:number):number{if(!expected)return 0;return projections.reduce((sum,item)=>sum+item.confidence,0)/expected;}
 function matureCount(projections:ReturnType<typeof projectionsFor>):number{return projections.filter((item)=>item.estimate>=0.72&&item.confidence>=0.35).length;}
