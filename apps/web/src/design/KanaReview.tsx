@@ -1,4 +1,6 @@
-import {useState} from "react";
+import {useEffect,useState} from "react";
+import {FlashcardSession} from "./FlashcardSession";
+import {getKanaReviewOverview} from "../study/runtime";
 import type {KanaReviewOverview,KanaReviewScript,KanaReviewSkill} from "../study/kanaReview";
 import "./kanaReview.css";
 
@@ -15,8 +17,11 @@ export function KanaReview({overview,busy,status,onStart}:{
   onStart:(script:KanaReviewScript,skill:KanaReviewSkill)=>void;
 }){
   const [script,setScript]=useState<KanaReviewScript>("mixed");
-  const [skill,setSkill]=useState<KanaReviewSkill>("all");
-  const counts=overview[script][skill];
+  const [skill,setSkill]=useState<KanaReviewSkill>("recognition");
+  const [flashOpen,setFlashOpen]=useState(false);
+  const [localOverview,setLocalOverview]=useState<KanaReviewOverview|null>(null);
+  useEffect(()=>setLocalOverview(null),[overview]);
+  const counts=(localOverview??overview)[script][skill];
   const available=counts.due+counts.new>0;
   return <section className="kana-review" aria-label="Kana Review">
     <h2>Kana Review</h2>
@@ -33,9 +38,17 @@ export function KanaReview({overview,busy,status,onStart}:{
       <div><dt>New</dt><dd>{counts.new}</dd></div>
       <div><dt>Weak due</dt><dd>{counts.weakDue}</dd></div>
     </dl>
-    <button type="button" className="kana-review__start" disabled={busy||!available}
-      onClick={()=>onStart(script,skill)}>{busy?"Opening…":"Start kana practice"}</button>
+    <div className="kana-review__actions">
+      <button type="button" className="kana-review__start" disabled={busy}
+        onClick={()=>setFlashOpen(true)}>Review flashcards</button>
+      <button type="button" className="kana-review__secondary" disabled={busy||!available}
+        onClick={()=>onStart(script,skill)}>Multiple-choice practice</button>
+    </div>
     {!available?<p role="status">No eligible kana for this selection.</p>:null}
+    {flashOpen?<FlashcardSession script={script} skill={skill} onClose={()=>{
+      setFlashOpen(false);
+      void getKanaReviewOverview().then(setLocalOverview).catch(()=>{/* Counts refresh on the next dashboard load. */});
+    }}/>:null}
     {status==="error"?<p role="alert">Kana practice could not be opened. Try again.</p>:null}
   </section>;
 }
