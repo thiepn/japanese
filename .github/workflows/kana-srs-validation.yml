@@ -1,0 +1,40 @@
+name: Kana SRS Focused Validation
+
+on:
+  pull_request:
+    paths:
+      - "apps/web/src/study/kana*.ts"
+      - "apps/web/src/study/StudyPlayer.tsx"
+      - "apps/web/src/App.tsx"
+      - "tests/kana-review.test.ts"
+      - "tests/e2e/kana-*.spec.ts"
+      - ".github/workflows/kana-srs-validation.yml"
+  push:
+    branches: [main]
+    paths:
+      - "apps/web/src/study/kana*.ts"
+      - "apps/web/src/study/StudyPlayer.tsx"
+      - "apps/web/src/App.tsx"
+      - "tests/kana-review.test.ts"
+      - "tests/e2e/kana-*.spec.ts"
+      - ".github/workflows/kana-srs-validation.yml"
+
+jobs:
+  kana:
+    runs-on: ubuntu-latest
+    env:
+      VITE_PUBLIC_BASE: /japanese/
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm exec vitest run tests/kana-review.test.ts tests/beginner-zero.test.ts
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm exec playwright test tests/e2e/kana-review.spec.ts tests/e2e/kana-quality.spec.ts --project=desktop-chromium --workers=2

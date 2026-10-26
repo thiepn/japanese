@@ -3,7 +3,8 @@ import "../design/beginner.css";
 import {UX1CafeHeader,UX1CafeTiles,isUX1CafeJourney} from "./UX1Cafe";
 import "./e11Practice.css";
 import "./e08Revision.css";
-import {useEffect,useRef,useState,type ReactNode} from "react";
+import {useEffect,useMemo,useRef,useState,type ReactNode} from "react";
+import {presentedKanaChoices} from "./kanaChoiceOrder";
 import {eligibleE07Draft,e07DraftPreference,setE07DraftPreference,saveE07Draft,readE07Draft,clearE07Draft,clearAllE07Drafts,findE07RestorableStep,E07_DRAFT_LIMIT} from "./e07DraftBuffer";
 import {getDefaultAudioProvider} from "@thiepn/audio";
 import {gradeStudyPrompt,isStudyLesson,type GradeResult,type StudyPrompt,type StudyStep} from "@thiepn/study-player";
@@ -51,6 +52,9 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
   const cueGeneration=useRef(0);
   const savingRef=useRef(false);
   const step=steps[index];
+  const kanaShuffleNonce=useRef(Math.random().toString(36).slice(2));
+  const visibleKanaChoices=useMemo(()=>step&&!isStudyLesson(step)&&step.promptType==="choice"
+    ?presentedKanaChoices(step,kanaShuffleNonce.current+":"+index):[],[step,index]);
   const ux1Cafe=isUX1CafeJourney(steps);
   const restorableIndex=findE07RestorableStep(accountScope,steps);
 
@@ -354,6 +358,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         <small>Submissions after the target are still accepted but recorded as outside the time limit.</small>
       </div>:null}
 
+      {currentPrompt.eventMetadata?.kanaImmediateRetry===true?<p role="status">Correction practice. The original spaced-repetition due date is unchanged.</p>:null}
       {hasListeningCue
         ?<div className="audio-question j5-listening">
           <p className="audio-question-label">{currentPrompt.prompt}</p>
@@ -380,7 +385,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         :<div className={"j5-prompt j5-prompt--"+mode.mode} lang={currentPrompt.promptLanguage}>{currentPrompt.prompt}</div>}
 
       {currentPrompt.promptType==="choice"
-        ?<div className="j5-choices">{currentPrompt.choices.map((choice,index)=><button
+        ?<div className="j5-choices">{visibleKanaChoices.map((choice,index)=><button
           disabled={Boolean(feedback)||saving||interactionLocked}
           type="button"
           key={choice}
