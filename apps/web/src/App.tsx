@@ -560,9 +560,11 @@ export function App(){
       if(current.status!=="authenticated"&&account.status==="authenticated")return;
       const owner=getDevelopmentAccountId();
       if(accountConnected&&account.accountId!==owner)return;
+      const requestedView=url.searchParams.get("kanaView");
       url.searchParams.delete("kana");
+      url.searchParams.delete("kanaView");
       window.history.replaceState({},"",url.pathname+url.search+url.hash);
-      try {openKanaStudio(owner);}
+      try {openKanaStudio(owner,requestedView==="learn"||requestedView==="review"||requestedView==="words"||requestedView==="chart"?requestedView:"home");}
       catch { /* Keep Japanese usable if storage is blocked. */ }
     }).catch(()=>{/* Keep the user in Japanese rather than guessing the account. */});
     return ()=>{cancelled=true;};
