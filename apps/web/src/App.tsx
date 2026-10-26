@@ -1,4 +1,5 @@
 import { Suspense,lazy,useEffect,useLayoutEffect,useRef,useState } from "react";
+import {openKanaStudio,publishKanaOwnerLease} from "./kanaHandoff";
 import {UX1Outcome} from "./design/UX1Outcome";
 import "./design/ux1.css";
 import { createThiepnAccountAuthProvider,getRecentJapaneseAuthFailure,type AuthContext } from "@thiepn/auth";
@@ -199,6 +200,7 @@ export function App(){
     const switchWorkspace=(accountId:string)=>{
       if(getDevelopmentAccountId()!==accountId)clearLearnerView();
       setDevelopmentAccountId(accountId);
+      publishKanaOwnerLease(accountId);
       setAuthenticAccountId(accountId);
     };
     const useGuestWorkspace=()=>{
@@ -387,6 +389,7 @@ export function App(){
         if(!attachment?.connected||!lease.isCurrent(ticket))return;
         if(getDevelopmentAccountId()!==accountId)clearLearnerView();
         setDevelopmentAccountId(accountId);
+        publishKanaOwnerLease(accountId);
         setAuthenticAccountId(accountId);
         setAccountConnected(true);
         setAccountMessage(
@@ -412,6 +415,7 @@ export function App(){
       if(!lease.isAnonymous())return;
       if(getDevelopmentAccountId()!==GUEST_ACCOUNT_ID)clearLearnerView();
       setDevelopmentAccountId(GUEST_ACCOUNT_ID);
+      publishKanaOwnerLease(GUEST_ACCOUNT_ID);
       setAuthenticAccountId(AUTHENTIC_GUEST_ACCOUNT_ID);
       setAccountConnected(false);
       setAccount(ANONYMOUS_AUTH);
@@ -542,6 +546,18 @@ export function App(){
   const [diagnosticsMode,setDiagnosticsMode]=useState(
     ()=>new URLSearchParams(window.location.search).get("diagnostics")==="1",
   );
+  useEffect(()=>{
+    if(accountResolving)return;
+    const url=new URL(window.location.href);
+    if(url.searchParams.get("kana")!=="resume")return;
+    // Resolve and attach the current Account before issuing a one-tab Kana handoff.
+    const owner=getDevelopmentAccountId();
+    if(account.status==="authenticated"&&accountConnected&&account.accountId!==owner)return;
+    url.searchParams.delete("kana");
+    window.history.replaceState({},"",url.pathname+url.search+url.hash);
+    try { openKanaStudio(owner); }
+    catch { /* Retain the working Japanese app when browser storage is blocked. */ }
+  },[accountResolving,account.status,account.accountId,accountConnected]);
   const navigateSurface=(next:Surface)=>{
     if(diagnosticsMode){
       const url=new URL(window.location.href);
