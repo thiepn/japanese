@@ -33,6 +33,11 @@ function currentHandoff(): Handoff | null {
     return active?.owner === data.owner && active.epoch === data.epoch ? data : null;
   } catch { return null; }
 }
+export type KanaStudioView = 'home'|'learn'|'review'|'words'|'chart';
+export function currentKanaView(): KanaStudioView {
+  const value = new URLSearchParams(window.location.search).get('view');
+  return value === 'learn' || value === 'review' || value === 'words' || value === 'chart' ? value : 'home';
+}
 export function hasValidKanaHandoff(): boolean {
   return currentHandoff() !== null;
 }
@@ -57,7 +62,8 @@ export function watchKanaWorkspace(): () => void {
     if (!hasValidKanaHandoff() ||
         currentHandoff()?.owner !== START_LEASE?.owner ||
         currentHandoff()?.epoch !== START_LEASE?.epoch) {
-      window.location.replace('/japanese/?kana=resume');
+      const view=currentKanaView();
+      window.location.replace('/japanese/?kana=resume' + (view === 'home' ? '' : '&kanaView=' + view));
     }
   };
   const onStorage = (event: StorageEvent) => {

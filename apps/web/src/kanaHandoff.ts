@@ -25,8 +25,9 @@ export function publishKanaOwnerLease(owner: string): KanaOwnerLease {
   catch { /* Japanese itself must remain usable even without browser storage. */ }
   return lease;
 }
-export function openKanaStudio(owner: string): void {
+export type KanaStudioView = "home" | "learn" | "review" | "words" | "chart";
+export function openKanaStudio(owner: string, view: KanaStudioView = "home"): void {
   const lease = publishKanaOwnerLease(owner);
   sessionStorage.setItem(KANA_HANDOFF_KEY, JSON.stringify({...lease, at: Date.now()}));
-  window.location.assign("/japanese/kana/");
+  window.location.assign("/japanese/kana/" + (view === "home" ? "" : "?view=" + view));
 }

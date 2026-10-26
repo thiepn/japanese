@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import type { UserSettings } from '../types/kana';
 import { X, Download, Upload, Trash2, Volume2, Check, AlertTriangle } from 'lucide-react';
-import { exportProgressJSON, importProgressJSON, resetAllProgress, readStudioCards, readLegacyGuestCards, serializeLegacyKanaBackup } from '../services/storage';
+import { exportProgressJSON, previewProgressImportJSON, importProgressJSON, resetAllProgress, readStudioCards, readLegacyGuestCards, serializeLegacyKanaBackup } from '../services/storage';
 import { linkedToJapanese, previewLegacyKanaImport, importLegacyKanaSnapshots, type LegacyImportPreview } from '../services/canonicalBridge';
 import { playKanaAudio } from '../services/speech';
 
@@ -23,6 +23,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const [current, setCurrent] = useState<UserSettings>(settings);
   const [importStatus, setImportStatus] = useState<{ message: string; isError: boolean } | null>(null);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [pendingRestore,setPendingRestore] = useState<{
+    json:string;newCards:number;existingCards:number;logs:number
+  }|null>(null);
+  const [restoreBusy,setRestoreBusy] = useState(false);
+
   const [legacyPreview, setLegacyPreview] = useState<{
     current:LegacyImportPreview;guest:LegacyImportPreview;guestCount:number
   } | null>(null);
@@ -56,24 +61,48 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     }
   };
 
+  const saveBackup = (json:string,name:string) => {
+    const blob=new Blob([json],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const link=document.createElement('a');
+    link.href=url;link.download=name;
+    document.body.appendChild(link);link.click();link.remove();
+    // Defer revocation so the browser can finish starting its download.
+    window.setTimeout(()=>URL.revokeObjectURL(url),2000);
+  };
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+    const file=e.target.files?.[0];
+    if(!file)return;
+    setPendingRestore(null);
     try {
-      const text = await file.text();
-      const res = await importProgressJSON(text);
-      if (res.success) {
-        setImportStatus({ message: res.message, isError: false });
-        await onRefreshData();
-      } else {
-        setImportStatus({ message: res.message, isError: true });
-      }
-    } catch {
-      setImportStatus({ message: 'Failed to read backup file.', isError: true });
+      if(file.size>12*1024*1024)throw Error('Backup exceeds 12 MB.');
+      const json=await file.text();
+      const preview=await previewProgressImportJSON(json);
+      setPendingRestore({json,newCards:preview.newCards,
+        existingCards:preview.existingCards,logs:preview.logs});
+      setImportStatus({isError:false,message:
+        `${preview.newCards} missing cards and up to ${preview.logs} original logs available. ${preview.existingCards} existing cards will not be replaced.`});
+    } catch(error) {
+      setImportStatus({isError:true,message:error instanceof Error?error.message:'Invalid backup file.'});
     } finally {
-      if (fileInputRef.current) fileInputRef.current.value = '';
+      if(fileInputRef.current)fileInputRef.current.value='';
     }
+  };
+  const applyBackupRestore = async () => {
+    if(!pendingRestore||restoreBusy)return;
+    setRestoreBusy(true);
+    try {
+      const backup=await exportProgressJSON();
+      saveBackup(backup,`kana-before-restore-${new Date().toISOString().slice(0,10)}.json`);
+      const result=await importProgressJSON(pendingRestore.json);
+      setImportStatus({isError:!result.success,message:result.message});
+      if(result.success){
+        setPendingRestore(null);
+        await onRefreshData();
+      }
+    }catch(error){
+      setImportStatus({isError:true,message:error instanceof Error?error.message:'Restore was not completed.'});
+    }finally{setRestoreBusy(false);}
   };
 
   const inspectLegacy = async () => {
@@ -292,6 +321,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               />
             </div>
 
+            {pendingRestore && (
+              <button type="button" disabled={restoreBusy} onClick={()=>void applyBackupRestore()}
+                className="w-full py-2 px-3 border border-[#DDD] dark:border-[#333] rounded font-semibold disabled:opacity-50">
+                {restoreBusy?'Restoring…':'Back up current data and restore missing cards'}
+              </button>
+            )}
             {importStatus && (
               <div
                 className={`p-2 rounded text-[11px] ${
