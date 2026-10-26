@@ -84,6 +84,8 @@ export const KanaDetailModal: React.FC<KanaDetailModalProps> = ({
       await resetCardProgress(kana.id);
       setShowResetConfirm(false);
       await onRefreshData?.();
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : 'Could not reset this card.');
     } finally {
       setIsUpdating(false);
     }
