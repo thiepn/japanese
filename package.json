@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "pnpm --filter @thiepn/japanese-web dev",
-    "build": "pnpm -r build && node scripts/p22-bundle-budget.mjs && node scripts/j14-experience-budget.mjs && node scripts/j15-theme-audit.mjs && node scripts/j15b-visual-grammar-audit.mjs && node scripts/j15c-legibility-audit.mjs && node scripts/j15d-native-css-audit.mjs && node scripts/j15d-css-ownership-inventory.mjs && node scripts/j15d-d3-css-boundary.mjs --dist",
+    "build": "pnpm -r build && node scripts/p22-bundle-budget.mjs && node scripts/j14-experience-budget.mjs && node scripts/j15-theme-audit.mjs && node scripts/j15b-visual-grammar-audit.mjs && node scripts/j15c-legibility-audit.mjs && node scripts/j15d-native-css-audit.mjs && node scripts/j15d-css-ownership-inventory.mjs && node scripts/j15d-d3-css-boundary.mjs --dist && node scripts/copy-kana-studio.mjs",
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run",
     "test:e2e": "playwright test",
