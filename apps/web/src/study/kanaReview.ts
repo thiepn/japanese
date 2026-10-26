@@ -46,7 +46,7 @@ function recognitionSucceeded(events:readonly StudyEvent[]):Set<string>{
   return new Set(events.filter(event=>event.primaryTarget?.kind==="kana"&&
     event.skillDimension==="recognition"&&event.result==="correct"&&
     event.metadata?.nonAuthoritative!==true)
-    .map(event=>event.primaryTarget.id));
+    .map(event=>event.primaryTarget!.id));
 }
 function weakness(prompt:StudyPrompt,trace:MemoryTrace|undefined,failed:ReadonlyMap<string,boolean>):number{
   return (failed.get(kanaReviewTraceId(prompt))?40:0)+
