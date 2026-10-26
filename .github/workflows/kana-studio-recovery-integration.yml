@@ -1,7 +1,7 @@
 name: Kana Studio Recovery Integration
 on:
   push:
-    branches: [feature/kana-studio-recovery-runtime-20261026]
+    branches: [feature/kana-studio-recovery-runtime-20261026, feature/kana-studio-portable-progress-20261026]
   workflow_dispatch:
 jobs:
   focused:
@@ -21,4 +21,4 @@ jobs:
       - name: Install Chromium
         run: pnpm exec playwright install --with-deps chromium
       - name: Verify original Google Kana in real browser
-        run: pnpm exec playwright test tests/e2e/kana-studio-runtime.spec.ts --project=desktop-chromium --workers=1
+        run: pnpm exec playwright test tests/e2e/kana-studio-runtime.spec.ts tests/e2e/kana-studio-portable.spec.ts --project=desktop-chromium --workers=1

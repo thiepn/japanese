@@ -5,6 +5,8 @@ export interface RestorableKanaBackup {
   cards: StoredCardData[];
   logs: Array<{cardId:string;reviewTime:string;log:unknown}>;
   settings: UserSettings|null;
+  sourceOwner: string|null;
+  canonicalProjection: StoredCardData[];
 }
 export interface KanaRestorePreview {
   newCards:number;
@@ -90,7 +92,18 @@ export function parseKanaBackup(json:string):RestorableKanaBackup{
     return {cardId:log.cardId,reviewTime:log.reviewTime as string,log:log.log};
   });
   const settings=parseSettings(payload.settings);
-  return {cards,logs,settings};
+  if(payload.owner!==undefined && (typeof payload.owner!=='string' || !/^[a-zA-Z0-9_-]{1,128}$/.test(payload.owner)))
+    throw Error('BACKUP_INVALID_OWNER');
+  const canonicalRaw=payload.canonicalProjection??[];
+  if(!Array.isArray(canonicalRaw)||canonicalRaw.length>MAX_CARDS)throw Error('BACKUP_INVALID_CANONICAL');
+  const seenCanonical=new Set<string>();
+  const canonicalProjection=canonicalRaw.map(value=>{
+    const card=parseCard(value);
+    if(seenCanonical.has(card.cardId))throw Error('BACKUP_DUPLICATE_CANONICAL');
+    seenCanonical.add(card.cardId);
+    return card;
+  });
+  return {cards,logs,settings,sourceOwner:typeof payload.owner==='string'?payload.owner:null,canonicalProjection};
 }
 export function previewKanaRestore(
   backup:RestorableKanaBackup,existing:ReadonlyMap<string,StoredCardData>

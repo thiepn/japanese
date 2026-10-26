@@ -150,6 +150,42 @@ describe('AI Studio Kana ↔ canonical Japanese study bridge', () => {
     expect(archived.cards.find((x:{cardId:string})=>x.cardId==='h-o').card.due)
       .toBe('2030-02-01T08:00:00.000Z');
   });
+  it('portable backup retains canonical schedules without duplicating review evidence on same-owner restore', async () => {
+    const storage=await import('../apps/kana-studio/src/services/storage');
+    const original=await storage.exportProgressJSON();
+    const data=JSON.parse(original);
+    expect(data.owner).toBe(owner);
+    expect(data.canonicalProjection.some((card:{cardId:string})=>card.cardId==='h-a')).toBe(true);
+    const candidate=createEmptyCard(new Date('2026-10-19T12:00:00.000Z'));
+    candidate.reps=3;candidate.state=2;candidate.stability=4;
+    candidate.difficulty=4;candidate.due=new Date('2026-11-10T12:00:00.000Z');
+    data.canonicalProjection.push({cardId:'h-ke',card:candidate,direction:'kana-to-romaji',
+      totalReviews:3,totalLapses:0,lastReviewedAt:'2026-10-19T12:00:00.000Z'});
+    const json=JSON.stringify(data);
+    const preview=await storage.previewProgressImportJSON(json);
+    expect(preview.canonicalOwnerMatched).toBe(true);
+    expect(preview.canonicalEligible).toBe(1);
+    const before=(await listStudyEvents(owner)).length;
+    const moved=await storage.restorePortableJapaneseSchedules(json);
+    expect(moved.imported).toBe(1);
+    expect(moved.skipped).toBeGreaterThanOrEqual(2);
+    expect((await getMemoryTrace(owner,bridge.canonicalTraceId('h-ke')!))?.card.reps).toBe(3);
+    expect(await storage.restorePortableJapaneseSchedules(json)).toMatchObject({imported:0});
+    expect((await listStudyEvents(owner)).length).toBe(before+1);
+    const foreign=JSON.stringify({...data,owner:'different-account'});
+    await expect(storage.previewProgressImportJSON(foreign)).rejects.toThrow('BACKUP_ACCOUNT_MISMATCH');
+    await expect(storage.restorePortableJapaneseSchedules(foreign)).rejects.toThrow('BACKUP_ACCOUNT_MISMATCH');
+    expect((await storage.importProgressJSON(foreign)).success).toBe(false);
+  });
+  it('cram review does not change canonical or Google FSRS schedules',async()=>{
+    const srs=await import('../apps/kana-studio/src/services/srs');
+    const card=srs.createNewCardData('h-a');
+    const original=await getMemoryTrace(owner,bridge.canonicalTraceId('h-a')!);
+    const reviewed=await srs.gradeCard(card,Rating.Again as Grade,new Date(),true);
+    expect(reviewed.updatedData.totalReviews).toBe(card.totalReviews);
+    expect(reviewed.updatedData.card.due).toEqual(card.card.due);
+    expect(await getMemoryTrace(owner,bridge.canonicalTraceId('h-a')!)).toEqual(original);
+  });
   it('keeps account-scoped suspensions and fails closed on a changed handoff', async () => {
     await bridge.toggleJapaneseKanaSuspension('h-a', true);
     expect((await bridge.overlayJapaneseKanaCards(new Map())).get('h-a')?.isSuspended).toBe(true);

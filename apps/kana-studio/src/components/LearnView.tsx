@@ -39,7 +39,7 @@ export const LearnView: React.FC<LearnViewProps> = ({
     let introduced = 0;
     for (const id of stage.kanaIds) {
       const card = storedCards.get(id);
-      if (card && (card.totalReviews > 0 || card.card.state !== 0)) {
+      if (card && (!!card.introducedAt || card.totalReviews > 0 || card.card.state !== 0)) {
         introduced++;
       }
     }

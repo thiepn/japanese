@@ -81,8 +81,8 @@ function toStudio(trace: MemoryTrace, cardId: string, local?: StoredCardData, su
   return {
     cardId, card: toCard(trace.card),
     direction: cardId.endsWith(':rev') ? 'romaji-to-kana' : 'kana-to-romaji',
-    totalReviews: Math.max(local?.totalReviews ?? 0, trace.card.reps),
-    totalLapses: Math.max(local?.totalLapses ?? 0, trace.card.lapses),
+    totalReviews: trace.card.reps,
+    totalLapses: trace.card.lapses,
     introducedAt: local?.introducedAt ?? trace.card.lastReviewAt ?? new Date(trace.card.due).toISOString(),
     lastReviewedAt: trace.card.lastReviewAt ?? local?.lastReviewedAt,
     isSuspended: suspended
@@ -176,6 +176,25 @@ export async function hasCanonicalKanaHistory(cardId: string): Promise<boolean> 
   return (await getMemoryTrace(owner, id)) !== null;
 }
 
+/** Transferable, current canonical schedules only; no Google-only cards and no fabricated historical grades. */
+export async function exportPortableJapaneseKanaSnapshots():Promise<StoredCardData[]> {
+  if(!linkedToJapanese)return [];
+  assertKanaWorkspace();
+  const traces=await listMemoryTraces(owner);
+  assertKanaWorkspace();
+  const byId=new Map(traces.map(trace=>[trace.id,trace]));
+  const records:StoredCardData[]=[];
+  for(const item of kanaMap.values()){
+    for(const cardId of [item.id,item.id+':rev']){
+      const id=canonicalTraceId(cardId);
+      const trace=id?byId.get(id):undefined;
+      if(!trace||trace.card.reps===0)continue;
+      records.push(toStudio(trace,cardId));
+    }
+  }
+  return records;
+}
+
 export interface LegacyImportPreview {
   eligible: number;
   alreadyCanonical: number;
@@ -213,7 +232,7 @@ export async function previewLegacyKanaImport(cards: readonly StoredCardData[]):
 /** Explicit, owner-checked transfer of FSRS state only. Never replay old logs as
  * scored Japanese events. Existing Japanese traces always win, even across tabs. */
 export async function importLegacyKanaSnapshots(
-  cards: readonly StoredCardData[], source: 'current-studio' | 'legacy-guest'
+  cards: readonly StoredCardData[], source: 'current-studio' | 'legacy-guest' | 'portable-backup'
 ): Promise<{ imported:number; skipped:number; invalid:number }> {
   assertKanaWorkspace();
   if (!linkedToJapanese) throw Error("KANA_IMPORT_REQUIRES_JAPANESE_WORKSPACE");
