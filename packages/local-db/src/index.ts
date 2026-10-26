@@ -125,12 +125,27 @@ export async function saveStudyReview(event: StudyEvent, trace?: MemoryTrace): P
   try {
     await new Promise<void>((resolve, reject) => {
       const transaction = db.transaction([STUDY_EVENTS, OUTBOX, MEMORY_TRACES], "readwrite");
+      let conflict=false;
       try {
         // StudyEvents are immutable: a duplicate ID aborts the entire review,
         // including its outbox mutation and scheduler projection.
         transaction.objectStore(STUDY_EVENTS).add(event);
         transaction.objectStore(OUTBOX).put(mutation);
-        if (trace) transaction.objectStore(MEMORY_TRACES).put(trace);
+        if (trace && event.metadata?.flashcard===true) {
+          const expected=event.baseRevision;
+          if(expected===undefined||trace.revision!==expected+1)
+            throw Error("FLASHCARD_REVISION_CONFLICT");
+          const traces=transaction.objectStore(MEMORY_TRACES);
+          const current=traces.get(trace.id);
+          current.onsuccess=()=>{
+            const saved=current.result as MemoryTrace|undefined;
+            if((saved?.revision??0)!==expected){
+              conflict=true;transaction.abort();return;
+            }
+            traces.put(trace);
+          };
+          current.onerror=()=>{conflict=true;transaction.abort();};
+        } else if (trace) transaction.objectStore(MEMORY_TRACES).put(trace);
       } catch (error) {
         transaction.abort();
         reject(error);
@@ -138,7 +153,7 @@ export async function saveStudyReview(event: StudyEvent, trace?: MemoryTrace): P
       }
       transaction.oncomplete = () => resolve();
       transaction.onerror = () => reject(transaction.error);
-      transaction.onabort = () => reject(transaction.error);
+      transaction.onabort = () => reject(conflict?Error("FLASHCARD_REVISION_CONFLICT"):transaction.error);
     });
   } finally { db.close(); }
   return mutation;
