@@ -1,3 +1,4 @@
+import {effectiveStudyEvents} from "@thiepn/learner-engine";
 import type {StudyEvent} from "@thiepn/domain";
 import type {MemoryTrace} from "@thiepn/scheduler";
 import type {StudyPrompt} from "@thiepn/study-player";
@@ -119,8 +120,9 @@ export function selectKanaReview(
   const maxNew=Math.max(0,Math.min(maxSession,Math.floor(options?.maxNew??MAX_NEW)));
   const indexed=new Map(traces.map(trace=>[trace.id,trace]));
   const known=new Set(indexed.keys());
-  const failed=latestFailures(events);
-  const recognized=recognitionSucceeded(events);
+  const effective=effectiveStudyEvents(events);
+  const failed=latestFailures(effective);
+  const recognized=recognitionSucceeded(effective);
   const due:StudyPrompt[]=[];
   const fresh:StudyPrompt[]=[];
   for(const prompt of kanaReviewPrompts){
