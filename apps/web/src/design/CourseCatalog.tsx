@@ -1,6 +1,7 @@
 import {useEffect,useMemo,useState} from "react";
 import type {CourseUnitProgress} from "../study/runtime";
 import {buildJapaneseLevelCatalog,COURSE_LEVELS,courseLocation,parseCourseLocation,type CourseLevel} from "../study/cefrCourseCatalog";
+import {deepTeachingAnchors} from "../study/cur03A1DeepCourse";
 import "./courseCatalog.css";
 
 export function CourseCatalog({course,status,onStartUnit,onStartAssessment}:{
@@ -55,7 +56,7 @@ export function CourseCatalog({course,status,onStartUnit,onStartAssessment}:{
             const progress=lesson.progress;
             const active=selected?.id===lesson.id;
             const action=progress?.status==="mastered"?"Review":progress?.status==="learning"?"Continue":"Open";
-            return <li className={active?"cur01-active":""} key={lesson.id}>
+            return <li className={active?"cur01-active":""} data-cur03-deep={deepTeachingAnchors(lesson.legacyUnitId).length>0?"true":undefined} key={lesson.id}>
               <span className="cur01-number">{String(lesson.number).padStart(2,"0")}</span>
               <div className="cur01-lesson-main"><h3>{lesson.title}</h3><p>{lesson.canDo}</p>
                 {progress?.evidenceCount?<span>{progress.evidenceCount} recorded responses</span>:null}

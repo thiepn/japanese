@@ -1,13 +1,10 @@
 import {test,expect} from "@playwright/test";
-import {coreContent} from "../../apps/web/src/coreContent";
-import {deepTeachingAnchors} from "../../apps/web/src/study/cur03A1DeepCourse";
-const sample=coreContent.courseUnits.find(u=>u.level==="A1"&&deepTeachingAnchors(u.id).length);
-test("CUR-03 original contextual lesson position survives reload on the same learner",async({page})=>{
- expect(sample).toBeTruthy();
- await page.goto("./#course/A1/"+encodeURIComponent(sample!.id));
+test("CUR-03 original contextual lesson position survives reload for one account",async({page})=>{
+ await page.goto("./#course/A1");
  const catalog=page.getByRole("region",{name:"Six-level course catalog"});
  await expect(catalog).toBeVisible();
- const row=catalog.locator(".cur01-lessons li").filter({hasText:sample!.title}).first();
+ const row=catalog.locator(".cur01-lessons li[data-cur03-deep=true]").first();
+ await expect(row).toBeVisible();
  await row.getByRole("button",{name:/lesson \d+:/i}).click();
  await expect(page.locator(".study-lesson h1")).toBeVisible();
  await page.getByRole("button",{name:"Continue",exact:true}).click();
@@ -18,7 +15,8 @@ test("CUR-03 original contextual lesson position survives reload on the same lea
  await page.getByRole("button",{name:"Exit"}).click();
  await page.reload();
  await expect(catalog).toBeVisible();
- await catalog.locator(".cur01-lessons li").filter({hasText:sample!.title}).first().getByRole("button",{name:/lesson \d+:/i}).click();
+ await catalog.locator(".cur01-lessons li[data-cur03-deep=true]").first()
+   .getByRole("button",{name:/lesson \d+:/i}).click();
  await expect(page.locator(".study-lesson h1")).toHaveText(second);
 });
 test("CUR-03 respects direct B1 entry and truthful empty C2",async({page})=>{
