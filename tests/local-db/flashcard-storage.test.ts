@@ -2,8 +2,8 @@ import "fake-indexeddb/auto";
 import {describe,expect,it} from "vitest";
 import {createFsrsScheduler} from "../../packages/scheduler/src/index";
 import type {StudyEvent} from "@thiepn/domain";
-import {getMemoryTrace,listFlashcardSuspensions,listOutbox,listStudyEvents,saveStudyReview,
-  setFlashcardSuspension,undoPendingFlashcardReview,acknowledgeOutbox} from "../../packages/local-db/src/index";
+import {getMemoryTrace,listMemoryTraces,listFlashcardSuspensions,listOutbox,listStudyEvents,saveStudyReview,
+  setFlashcardSuspension,undoPendingFlashcardReview,acknowledgeOutbox,getFlashcardDeckLimits,saveFlashcardDeckLimits} from "../../packages/local-db/src/index";
 
 const scheduler=createFsrsScheduler();
 function prepared(owner:string){
@@ -28,6 +28,19 @@ describe("durable kana flashcard storage",()=>{
   expect(await listStudyEvents(user)).toEqual([]);
   await setFlashcardSuspension(user,"kana:hiragana-あ:recognition:kana-to-sound",false);
   expect(await listFlashcardSuspensions(user)).toEqual([]);
+ });
+ it("persists per-deck offline limits without leaking across accounts or deck selections",async()=>{
+  const a="flashcard-limits-1",b="flashcard-limits-2";
+  await expect(getFlashcardDeckLimits(a,"mixed:recognition")).resolves.toBeNull();
+  await saveFlashcardDeckLimits(a,"mixed:recognition",{newCards:3,reviews:24});
+  await saveFlashcardDeckLimits(a,"hiragana:reading",{newCards:0,reviews:10});
+  expect(await getFlashcardDeckLimits(a,"mixed:recognition")).toEqual({newCards:3,reviews:24});
+  expect(await getFlashcardDeckLimits(a,"hiragana:reading")).toEqual({newCards:0,reviews:10});
+  expect(await getFlashcardDeckLimits(b,"mixed:recognition")).toBeNull();
+  await expect(saveFlashcardDeckLimits(a,"mixed:recognition",{newCards:31,reviews:4})).rejects.toThrow();
+  await expect(saveFlashcardDeckLimits(a,"invalid:reading",{newCards:1,reviews:4})).rejects.toThrow();
+  expect((await listMemoryTraces(a))).toEqual([]);
+  expect((await listStudyEvents(a))).toEqual([]);
  });
  it("atomically appends an undo marker and reverts the previous FSRS snapshot",async()=>{
   const owner="flashcard-undo-1";const {id,original,updated,event,undo}=prepared(owner);
