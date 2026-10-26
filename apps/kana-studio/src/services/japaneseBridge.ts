@@ -18,6 +18,11 @@ export function getKanaWorkspace(): string {
 }
 
 export const KANA_WORKSPACE_ID = getKanaWorkspace();
+/** A stale page must not keep writing to another account after its handoff expires or changes. */
+export function assertKanaWorkspace(): void {
+  if (getKanaWorkspace() !== KANA_WORKSPACE_ID) throw new Error('KANA_WORKSPACE_CHANGED_REOPEN_JAPANESE');
+}
+
 export function returnToJapanese(): void {
   try { sessionStorage.removeItem(HANDOFF_KEY); } catch { /* Disabled storage. */ }
   window.location.assign('/japanese/');
