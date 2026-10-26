@@ -2,6 +2,7 @@ import type { StoredCardData, UserSettings } from '../types/kana';
 import type { ReviewLog } from 'ts-fsrs';
 import { KANA_WORKSPACE_ID, assertKanaWorkspace } from './japaneseBridge';
 import { overlayJapaneseKanaCards } from './canonicalBridge';
+import {parseKanaBackup,previewKanaRestore,type KanaRestorePreview} from './backupRestore';
 
 const DB_NAME = 'kana_mastery_v1:' + KANA_WORKSPACE_ID;
 const DB_VERSION = 1;
@@ -57,13 +58,14 @@ function openDB(): Promise<IDBDatabase> {
     };
 
     request.onsuccess = () => {
+      request.result.onversionchange = () => {request.result.close();dbPromise=null;};
       resolve(request.result);
     };
 
     request.onerror = () => {
       reject(request.error);
     };
-  });
+  }).catch(error=>{dbPromise=null;throw error;});
 
   return dbPromise;
 }
@@ -241,70 +243,87 @@ export async function saveSettings(settings: UserSettings): Promise<void> {
   }
 }
 
+/** The backup retains the original Google snapshots, not an overlay pretending
+ * to be an original review. The canonical projection is supplementary only. */
 export async function exportProgressJSON(): Promise<string> {
-  const cardsMap = await getAllStoredCards();
-  const logs = await getReviewLogs();
-  const settings = await getSettings();
-
-  const payload = {
-    version: 1,
-    appName: 'KANA',
-    exportedAt: new Date().toISOString(),
-    cards: Array.from(cardsMap.values()),
-    logs,
-    settings
-  };
-
-  return JSON.stringify(payload, null, 2);
+  assertKanaWorkspace();
+  const [originalCards,projectedCards,logs,settings] = await Promise.all([
+    readStudioCards(),getAllStoredCards(),getReviewLogs(),getSettings()
+  ]);
+  assertKanaWorkspace();
+  return JSON.stringify({
+    version:2,appName:'KANA',exportedAt:new Date().toISOString(),
+    cards:[...originalCards.values()],
+    canonicalProjection:[...projectedCards.values()].filter(card=>
+      !originalCards.has(card.cardId)||card.card.reps!==originalCards.get(card.cardId)?.card.reps),
+    logs,settings
+  },null,2);
 }
 
-export async function importProgressJSON(jsonString: string): Promise<{ success: boolean; count: number; message: string }> {
+export async function previewProgressImportJSON(jsonString:string):Promise<KanaRestorePreview>{
+  assertKanaWorkspace();
+  const backup=parseKanaBackup(jsonString);
+  const current=await readStudioCards();
+  assertKanaWorkspace();
+  return previewKanaRestore(backup,current);
+}
+
+export async function importProgressJSON(jsonString:string):
+  Promise<{success:boolean;count:number;message:string}>{
   assertKanaWorkspace();
   try {
-    const data = JSON.parse(jsonString);
-    if (!data || typeof data !== 'object') {
-      return { success: false, count: 0, message: 'Invalid JSON file format.' };
-    }
-
-    if (!Array.isArray(data.cards)) {
-      return { success: false, count: 0, message: 'Malformed file: missing cards array.' };
-    }
-
-    // Validate each card
-    const validCards: StoredCardData[] = [];
-    for (const item of data.cards) {
-      if (item && item.cardId && item.card) {
-        validCards.push({
-          cardId: String(item.cardId),
-          direction: item.direction || 'kana-to-romaji',
-          totalReviews: Number(item.totalReviews || 0),
-          totalLapses: Number(item.totalLapses || 0),
-          lastReviewedAt: item.lastReviewedAt,
-          card: {
-            ...item.card,
-            due: new Date(item.card.due || Date.now()),
-            last_review: item.card.last_review ? new Date(item.card.last_review) : undefined
-          }
-        });
+    const backup=parseKanaBackup(jsonString);
+    const db=await openDB();
+    assertKanaWorkspace();
+    // Preserve every existing Google card and its FSRS schedule. Import only
+    // missing card IDs. No canonical Japanese trace is written by this action.
+    const existingLogs=await getReviewLogs();
+    const fingerprints=new Set(existingLogs.map(item=>
+      JSON.stringify({cardId:item.cardId,reviewTime:item.reviewTime,log:item.log})));
+    assertKanaWorkspace();
+    const summary=await new Promise<{added:number;skipped:number;logs:number}>((resolve,reject)=>{
+      const tx=db.transaction([STORES.CARDS,STORES.LOGS,STORES.SETTINGS],'readwrite');
+      const cards=tx.objectStore(STORES.CARDS),logs=tx.objectStore(STORES.LOGS);
+      const prefs=tx.objectStore(STORES.SETTINGS);
+      let added=0,skipped=0,addedLogs=0;
+      for(const card of backup.cards){
+        const request=cards.get(card.cardId);
+        request.onsuccess=()=>{
+          if(request.result){skipped++;return;}
+          cards.add(card);
+          added++;
+        };
       }
-    }
-
-    for (const card of validCards) {
-      await saveStoredCard(card);
-    }
-
-    if (data.settings && typeof data.settings === 'object') {
-      await saveSettings({ ...defaultSettings, ...data.settings });
-    }
-
-    return {
-      success: true,
-      count: validCards.length,
-      message: `Successfully imported ${validCards.length} cards.`
-    };
-  } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : 'Unknown parsing error';
-    return { success: false, count: 0, message: `Import error: ${errorMsg}` };
+      for(const record of backup.logs){
+        const key=JSON.stringify(record);
+        if(fingerprints.has(key))continue;
+        fingerprints.add(key);
+        // This transaction-local marker also protects concurrent restore tabs.
+        const marker='restore-log:'+key;
+        const request=prefs.get(marker);
+        request.onsuccess=()=>{
+          if(request.result)return;
+          prefs.add({key:marker,value:'1'});
+          logs.add(record);
+          addedLogs++;
+        };
+      }
+      if(backup.settings){
+        const request=prefs.get('app_settings');
+        request.onsuccess=()=>{
+          if(!request.result)prefs.add({key:'app_settings',value:backup.settings});
+        };
+      }
+      tx.oncomplete=()=>resolve({added,skipped,logs:addedLogs});
+      tx.onerror=()=>reject(tx.error??Error('RESTORE_TRANSACTION_FAILED'));
+      tx.onabort=()=>reject(tx.error??Error('RESTORE_TRANSACTION_ABORTED'));
+    });
+    assertKanaWorkspace();
+    return {success:true,count:summary.added,
+      message:`Restored ${summary.added} missing cards and ${summary.logs} review logs. Kept ${summary.skipped} existing cards and their schedules unchanged.`};
+  } catch(error){
+    // A wrong owner or broken storage must never silently report a completed restore.
+    return {success:false,count:0,message:error instanceof Error?error.message:'Unable to restore backup.'};
   }
 }
 
