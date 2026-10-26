@@ -115,7 +115,7 @@ export function selectKanaReview(
   ready:KanaReviewReadiness,
   options?:{maxDue?:number;maxNew?:number;maxSession?:number;excluded?:ReadonlySet<string>},
 ):{counts:KanaReviewCounts;prompts:StudyPrompt[]}{
-  const maxSession=Math.max(0,Math.min(100,Math.floor(options?.maxSession??MAX_SESSION)));
+  const maxSession=Math.max(0,Math.min(130,Math.floor(options?.maxSession??MAX_SESSION)));
   const maxDue=Math.max(0,Math.min(maxSession,Math.floor(options?.maxDue??MAX_SESSION)));
   const maxNew=Math.max(0,Math.min(maxSession,Math.floor(options?.maxNew??MAX_NEW)));
   const indexed=new Map(traces.map(trace=>[trace.id,trace]));
