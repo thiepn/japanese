@@ -22,7 +22,7 @@ describe("dedicated kana FSRS review",()=>{
   it("selects the original kana prompt identities in all three skill dimensions",()=>{
     const view=selectKanaReview("mixed","all",[],[],today,ready);
     expect(view.counts.due).toBe(0);
-    expect(view.counts.new).toBe(kanaReviewPrompts.length);
+    expect(view.counts.new).toBe(foundationPrompts.length);
     expect(view.prompts).toHaveLength(5);
     expect(view.prompts.every(item=>kanaReviewPrompts.includes(item))).toBe(true);
     expect(new Set(view.prompts.map(item=>item.id)).size).toBe(view.prompts.length);

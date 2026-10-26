@@ -72,8 +72,10 @@ function alternateScripts(prompts:readonly StudyPrompt[]):StudyPrompt[]{
 }
 function orderNew(prompts:readonly StudyPrompt[],script:KanaReviewScript,skill:KanaReviewSkill):StudyPrompt[]{
   if(skill!=="all")return script==="mixed"?alternateScripts(prompts):[...prompts];
+  const introductions=prompts.filter(isSpecialIntroduction);
+  const normal=prompts.filter(prompt=>!isSpecialIntroduction(prompt));
   const buckets=new Map<string,StudyPrompt[]>();
-  for(const prompt of prompts){
+  for(const prompt of normal){
     const key=scriptOf(prompt)+":"+prompt.skill;
     const items=buckets.get(key)??[];
     items.push(prompt);
@@ -81,7 +83,7 @@ function orderNew(prompts:readonly StudyPrompt[],script:KanaReviewScript,skill:K
   }
   const scripts=script==="mixed"?["hiragana","katakana"] as const:[script] as const;
   const result:StudyPrompt[]=[];
-  while(result.length<prompts.length){
+  while(result.length<normal.length){
     let advanced=false;
     // Interleave scripts first; rotate eligible skills rather than delaying
     // typed recall until every kana recognition card has been introduced.
@@ -93,7 +95,9 @@ function orderNew(prompts:readonly StudyPrompt[],script:KanaReviewScript,skill:K
     }
     if(!advanced)break;
   }
-  return result;
+  // Introduce exception rules after a few ordinary kana; do not bury them
+  // behind the entire basic and voiced alphabet.
+  return [...result.slice(0,6),...introductions,...result.slice(6)];
 }
 function isSpecialIntroduction(prompt:StudyPrompt):boolean{
   return prompt.skill==="reading"&&(
