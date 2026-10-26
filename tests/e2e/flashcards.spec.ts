@@ -106,6 +106,52 @@ test("in-session Again waits for canonical FSRS and resumes due learning after r
   })).toBe(2);
 });
 
+test("flashcard grading commits FSRS and outbox locally while offline",async({page,context})=>{
+  await page.goto("./");
+  await page.getByRole("button",{name:"Review flashcards"}).click();
+  const dialog=page.getByRole("dialog",{name:"Kana flashcards"});
+  await expect(dialog.locator(".flashcards-front")).toHaveText("あ");
+  await context.setOffline(true);
+  await dialog.getByRole("button",{name:"Show answer",exact:true}).click();
+  await dialog.getByRole("button",{name:/Again/}).click();
+  await expect(dialog.getByRole("heading",{name:"Learning cards waiting"})).toBeVisible();
+  const offline=await page.evaluate(async()=>{
+    const opened=indexedDB.open("thiepn-japanese:00000000-0000-4000-8000-000000000001");
+    const db=await new Promise<IDBDatabase>((resolve,reject)=>{
+      opened.onsuccess=()=>resolve(opened.result);opened.onerror=()=>reject(opened.error);
+    });
+    const result=await new Promise<{revision:number;due:string;events:number;outbox:number}>((resolve,reject)=>{
+      const tx=db.transaction(["memory_traces","study_events","sync_outbox"],"readonly");
+      const trace=tx.objectStore("memory_traces").get("kana:hiragana-あ:recognition:kana-to-sound");
+      const events=tx.objectStore("study_events").getAll();
+      const outbox=tx.objectStore("sync_outbox").getAll();
+      tx.oncomplete=()=>resolve({revision:trace.result.revision,due:trace.result.card.due,
+        events:events.result.length,outbox:outbox.result.length});
+      tx.onerror=()=>reject(tx.error);
+    });db.close();return result;
+  });
+  expect(offline.revision).toBe(1);
+  expect(Number.isFinite(Date.parse(offline.due))).toBe(true);
+  expect(offline.events).toBe(1);
+  expect(offline.outbox).toBe(1);
+  await context.setOffline(false);
+  await dialog.getByRole("button",{name:"Close flashcards"}).click();
+  await page.reload();
+  const after=await page.evaluate(async()=>{
+    const opened=indexedDB.open("thiepn-japanese:00000000-0000-4000-8000-000000000001");
+    const db=await new Promise<IDBDatabase>((resolve,reject)=>{
+      opened.onsuccess=()=>resolve(opened.result);opened.onerror=()=>reject(opened.error);
+    });
+    const result=await new Promise<{revision:number;due:string}>((resolve,reject)=>{
+      const get=db.transaction("memory_traces","readonly").objectStore("memory_traces")
+        .get("kana:hiragana-あ:recognition:kana-to-sound");
+      get.onsuccess=()=>resolve({revision:get.result.revision,due:get.result.card.due});
+      get.onerror=()=>reject(get.error);
+    });db.close();return result;
+  });
+  expect(after).toEqual({revision:offline.revision,due:offline.due});
+});
+
 test.describe("touch-sized flashcard controls",()=>{
   test.use({viewport:{width:390,height:844},hasTouch:true});
   test("tap reveal, suspend and restore cards on mobile",async({page})=>{
