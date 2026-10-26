@@ -95,7 +95,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     try {
       const cards = source==='legacy-guest' ? await readLegacyGuestCards() : [...(await readStudioCards()).values()];
       // Download the untouched original source before a single canonical write.
-      const backup = serializeLegacyKanaBackup(cards,source);
+      const backup = await serializeLegacyKanaBackup(cards,source);
       const url = URL.createObjectURL(new Blob([backup],{type:'application/json'}));
       const link = document.createElement('a');
       link.href = url;
