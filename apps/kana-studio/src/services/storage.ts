@@ -35,7 +35,7 @@ function isIndexedDBSupported(): boolean {
 function openDB(): Promise<IDBDatabase> {
   if (dbPromise) return dbPromise;
 
-  dbPromise = new Promise((resolve, reject) => {
+  dbPromise = new Promise<IDBDatabase>((resolve, reject) => {
     if (!isIndexedDBSupported()) {
       return reject(new Error('IndexedDB not supported or blocked in this environment'));
     }
