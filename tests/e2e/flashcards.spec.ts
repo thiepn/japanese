@@ -76,7 +76,7 @@ test("in-session Again waits for canonical FSRS and resumes due learning after r
   });
   expect(due.card.state).toBe(1);
   expect(due.revision).toBe(1);
-  const waitMs=Date.parse(due.card.due)-Date.now();
+  const waitMs=Date.parse(due.card.due)-await page.evaluate(()=>Date.now());
   expect(waitMs).toBeGreaterThan(0);
   await page.clock.fastForward(waitMs+1000);
   await expect(dialog.locator(".flashcards-front")).toHaveText("あ");
