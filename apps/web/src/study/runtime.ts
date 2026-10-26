@@ -7,7 +7,7 @@ import {countUX1SavedAnswersToday,projectUX1Engagement,type UX1Engagement} from 
 export type {UX1Engagement} from "./ux1Engagement";
 import { getJapaneseDeviceId } from "../deviceIdentity";
 import { effectiveStudyEvents, replayStudyEvents, type LearnerState } from "@thiepn/learner-engine";
-import { getMemoryTrace, listMemoryTraces, listStudyEvents, saveStudyReview, listFlashcardSuspensions, setFlashcardSuspension, undoPendingFlashcardReview } from "@thiepn/local-db";
+import { getMemoryTrace, listMemoryTraces, listStudyEvents, saveStudyReview, listFlashcardSuspensions, setFlashcardSuspension, undoPendingFlashcardReview, getFlashcardDeckLimits, saveFlashcardDeckLimits } from "@thiepn/local-db";
 import type {MemoryTrace} from "@thiepn/scheduler";
 import type {StudyEvent} from "@thiepn/domain";
 import {buildKanaFlashcards,gradeResult,type FlashcardView,type FlashcardGrade,type FlashcardLimits} from "./flashcards";
@@ -512,6 +512,18 @@ export function recordStudyAnswer(input:{prompt:StudyPrompt;response:string;resu
   return attempt;
 }
 
+export async function getKanaFlashcardLimits(script:KanaReviewScript,skill:KanaReviewSkill):Promise<FlashcardLimits|null>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  const limits=await getFlashcardDeckLimits(owner,script+":"+skill);
+  if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("FLASHCARD_WORKSPACE_CHANGED");
+  return limits;
+}
+export async function saveKanaFlashcardLimits(script:KanaReviewScript,skill:KanaReviewSkill,
+  limits:FlashcardLimits):Promise<void>{
+  const owner=DEVELOPMENT_ACCOUNT_ID;
+  await saveFlashcardDeckLimits(owner,script+":"+skill,limits);
+  if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("FLASHCARD_WORKSPACE_CHANGED");
+}
 export interface FlashcardReviewReceipt {
   accountId:string;originalEventId:string;prompt:StudyPrompt;previous:MemoryTrace|null;updated:MemoryTrace;
 }
