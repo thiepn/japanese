@@ -81,8 +81,8 @@ function toStudio(trace: MemoryTrace, cardId: string, local?: StoredCardData, su
   return {
     cardId, card: toCard(trace.card),
     direction: cardId.endsWith(':rev') ? 'romaji-to-kana' : 'kana-to-romaji',
-    totalReviews: Math.max(local?.totalReviews ?? 0, trace.card.reps),
-    totalLapses: Math.max(local?.totalLapses ?? 0, trace.card.lapses),
+    totalReviews: trace.card.reps,
+    totalLapses: trace.card.lapses,
     introducedAt: local?.introducedAt ?? trace.card.lastReviewAt ?? new Date(trace.card.due).toISOString(),
     lastReviewedAt: trace.card.lastReviewAt ?? local?.lastReviewedAt,
     isSuspended: suspended
@@ -213,7 +213,7 @@ export async function previewLegacyKanaImport(cards: readonly StoredCardData[]):
 /** Explicit, owner-checked transfer of FSRS state only. Never replay old logs as
  * scored Japanese events. Existing Japanese traces always win, even across tabs. */
 export async function importLegacyKanaSnapshots(
-  cards: readonly StoredCardData[], source: 'current-studio' | 'legacy-guest'
+  cards: readonly StoredCardData[], source: 'current-studio' | 'legacy-guest' | 'portable-backup'
 ): Promise<{ imported:number; skipped:number; invalid:number }> {
   assertKanaWorkspace();
   if (!linkedToJapanese) throw Error("KANA_IMPORT_REQUIRES_JAPANESE_WORKSPACE");
