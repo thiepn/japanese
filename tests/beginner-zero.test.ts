@@ -1,6 +1,6 @@
 import {describe,expect,it} from "vitest";
 import type {StudyEvent} from "@thiepn/domain";
-import {isStudyLesson} from "@thiepn/study-player";
+import {isStudyLesson} from "../packages/study-player/src/index";
 import {buildBeginnerStage,chooseBeginnerContinuation,projectBeginnerOverview} from "../apps/web/src/study/beginnerCourse";
 import {foundationPrompts,foundationApplicationPrompts} from "../apps/web/src/study/foundationPrompts";
 const canonical=[...foundationPrompts,...foundationApplicationPrompts];
