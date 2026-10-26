@@ -83,14 +83,15 @@ test('romaji answer checking handles canonical and valid aliases', () => {
   assert.equal(checkAnswer('h-a', '   ').isCorrect, false);
 });
 
-test('cram mode grading preserves card due date while recording review count', async () => {
+test('cram mode grading leaves due date, canonical state, and review counts unchanged', async () => {
   const cardData = createNewCardData('h-sa');
   // Set fixed due date in future
   const futureDue = new Date(Date.now() + 86400000 * 5);
   cardData.card.due = futureDue;
 
   const { updatedData } = await (await import('./srs')).gradeCard(cardData, Rating.Good, new Date(), true);
-  assert.equal(updatedData.totalReviews, 1);
+  assert.equal(updatedData.totalReviews, 0);
+  assert.equal(updatedData.card.reps, 0);
   assert.equal(updatedData.card.due.getTime(), futureDue.getTime(), 'Due date should not change in cram mode');
 });
 
