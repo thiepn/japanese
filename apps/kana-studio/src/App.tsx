@@ -4,6 +4,7 @@ import { defaultSettings, getAllStoredCards, getSettings, saveSettings } from '.
 import { calculateDeckStatistics } from './services/srs';
 import { initSpeech } from './services/speech';
 import { kanaMap } from './data/kanaData';
+import { currentKanaView } from './services/japaneseBridge';
 import { Navigation } from './components/Navigation';
 import { HomeView } from './components/HomeView';
 import { LearnView } from './components/LearnView';
@@ -18,7 +19,7 @@ import { SrsScheduleModal } from './components/SrsScheduleModal';
 import { KanaDetailModal } from './components/KanaDetailModal';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<'home' | 'learn' | 'review' | 'words' | 'chart'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'learn' | 'review' | 'words' | 'chart'>(currentKanaView);
   const [settings, setSettings] = useState<UserSettings>(defaultSettings);
   const [storedCards, setStoredCards] = useState<Map<string, StoredCardData>>(new Map());
   const [stats, setStats] = useState<DeckStatistics>({
