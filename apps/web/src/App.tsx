@@ -551,6 +551,9 @@ export function App(){
       window.history.replaceState({},"",url.pathname+url.search+url.hash);
       setDiagnosticsMode(false);
     }
+    if(next!=="Learn"&&window.location.hash.startsWith("#course/")){
+      window.history.replaceState(window.history.state,"",window.location.pathname+window.location.search);
+    }
     setSurface(next);
   };
 

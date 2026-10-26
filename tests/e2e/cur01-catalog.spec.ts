@@ -8,7 +8,7 @@ test("CUR-01 selectable A1–C2 catalog and direct B1 entry",async({page})=>{
   await expect(catalog.locator(".cur01-lessons li").first()).toBeVisible();
   const first=catalog.locator(".cur01-lessons li").first();
   await first.getByRole("button",{name:/lesson 1:/i}).click();
-  await expect(page.getByRole("heading",{name:"Course"})).toHaveCount(0);
+  await expect(page.locator("main.j5-study-shell")).toBeVisible();
   await page.getByRole("button",{name:"Exit"}).click();
   await expect(page).toHaveURL(/#course\/B1\//);
   await page.reload();
