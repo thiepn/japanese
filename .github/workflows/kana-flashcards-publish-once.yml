@@ -4,6 +4,10 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/kana-flashcards-publish-once.yml"
+      - "apps/kana-studio/**"
+      - "scripts/copy-kana-studio.mjs"
+      - "apps/web/src/design/KanaReview.tsx"
+      - "package.json"
 
 permissions:
   contents: read
