@@ -1,7 +1,7 @@
 import 'fake-indexeddb/auto';
 import { beforeAll, afterAll, describe, expect, it, vi } from 'vitest';
 import { createEmptyCard, Rating, type Grade } from 'ts-fsrs';
-import { getMemoryTrace, listOutbox, listStudyEvents } from '@thiepn/local-db';
+import { getMemoryTrace, listOutbox, listStudyEvents } from '../packages/local-db/src/index';
 import type { StoredCardData } from '../apps/kana-studio/src/types/kana';
 
 const owner = 'kana-test-' + crypto.randomUUID();
