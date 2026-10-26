@@ -5,7 +5,7 @@ test("Kana Review is accessible from Learn and launches native study without a n
   await page.getByRole("button",{name:"Learn",exact:true}).click();
   const review=page.getByRole("region",{name:"Kana Review"});
   await expect(review).toBeVisible();
-  await expect(review.locator("dt").filter({hasText:"Due"})).toBeVisible();
+  await expect(review.getByText("Due",{exact:true})).toBeVisible();
   await expect(review.locator("dt").filter({hasText:"New"})).toBeVisible();
   await review.getByRole("button",{name:"Katakana"}).click();
   await expect(review.getByRole("button",{name:"Katakana"})).toHaveAttribute("aria-pressed","true");
