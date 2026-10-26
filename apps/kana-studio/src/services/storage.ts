@@ -366,10 +366,46 @@ export async function readLegacyGuestCards(): Promise<StoredCardData[]> {
   assertKanaWorkspace();
   return cards;
 }
-export function serializeLegacyKanaBackup(cards: readonly StoredCardData[], source: string): string {
+async function readLegacyGuestArchive(): Promise<{logs: unknown[];settings: UserSettings | null}> {
+  assertKanaWorkspace();
+  const name = 'kana_mastery_v1:local-guest';
+  if (typeof indexedDB.databases !== 'function' ||
+      !(await indexedDB.databases()).some(item => item.name === name)) {
+    return {logs:[],settings:null};
+  }
+  assertKanaWorkspace();
+  const db = await new Promise<IDBDatabase>((resolve,reject) => {
+    const req=indexedDB.open(name,1);
+    req.onupgradeneeded=()=>{req.transaction?.abort();};
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+  try {
+    const records=await Promise.all(['review_logs','settings'].map(store=>
+      new Promise<unknown[]>((resolve,reject)=>{
+        if(!db.objectStoreNames.contains(store))return resolve([]);
+        const req=db.transaction(store,'readonly').objectStore(store).getAll();
+        req.onsuccess=()=>resolve(req.result as unknown[]);
+        req.onerror=()=>reject(req.error);
+      })
+    ));
+    assertKanaWorkspace();
+    const found=records[1]?.find((item):item is {key:string;value:UserSettings} =>
+      typeof item === 'object' && item !== null && (item as {key?:string}).key === 'app_settings');
+    return {logs:records[0]??[],settings:found?.value??null};
+  } finally {db.close();}
+}
+export async function serializeLegacyKanaBackup(
+  cards: readonly StoredCardData[], source: 'current-studio'|'legacy-guest'
+): Promise<string> {
+  assertKanaWorkspace();
+  const archive = source === 'legacy-guest'
+    ? await readLegacyGuestArchive().catch(()=>({logs:[],settings:null}))
+    : {logs:await getReviewLogs(),settings:await getSettings()};
   assertKanaWorkspace();
   return JSON.stringify({
     format:'thiepn-kana-legacy-backup-v1',source,createdAt:new Date().toISOString(),
-    cards
+    cards,logs:archive.logs,settings:archive.settings,
+    note:'Historical logs are preserved verbatim; only exact FSRS snapshots are imported as ungraded Japanese provenance.'
   },null,2);
 }
