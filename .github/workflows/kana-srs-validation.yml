@@ -46,4 +46,7 @@ jobs:
       - run: pnpm exec vitest run tests/kana-review.test.ts tests/flashcards.test.ts tests/local-db/flashcard-storage.test.ts tests/beginner-zero.test.ts
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm exec playwright test tests/e2e/kana-review.spec.ts tests/e2e/kana-quality.spec.ts tests/e2e/flashcards.spec.ts --project=desktop-chromium --project=android-mobile --project=compact-mobile --workers=2
+      - name: Existing kana practice and quality (desktop)
+        run: env -u CI pnpm exec playwright test tests/e2e/kana-review.spec.ts tests/e2e/kana-quality.spec.ts --project=desktop-chromium --workers=2
+      - name: New flashcards (desktop, Android and compact touch)
+        run: env -u CI pnpm exec playwright test tests/e2e/flashcards.spec.ts --project=desktop-chromium --project=android-mobile --project=compact-mobile --workers=2
