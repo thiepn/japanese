@@ -1,5 +1,6 @@
 import "./j4.css";
 import {CourseCatalog} from "./CourseCatalog";
+import type {CourseLevelReviewOverview,CourseReviewLevel} from "../study/cur05LevelReview";
 import {BeginnerEntry} from "./BeginnerEntry";
 import {KanaReview} from "./KanaReview";
 import type {KanaReviewOverview,KanaReviewScript,KanaReviewSkill} from "../study/kanaReview";
@@ -67,6 +68,9 @@ type Props={
   sentence:SentenceMasterySummary;
   lexicalFluency:LexicalFluencySummary;
   course:CourseUnitProgress[];
+  reviewOverview:CourseLevelReviewOverview|null;
+  onReviewLevels:(levels:readonly CourseReviewLevel[])=>void;
+  onPreviewWord:(id:string)=>void;
   milestone:A1MilestoneProgress;
   b1Milestone:B1MilestoneProgress;
   b2Milestone:B2MilestoneProgress;
@@ -109,7 +113,7 @@ export function J4Learn(props:Props){
   const {
     beginner,onStartBeginner,onReviewDue,kanaReview,onStartKanaReview,onFlashcardsChanged,e01,onStartE01,onStartE01Delayed,e02,onStartE02,onStartE02Delayed,e03,onStartE03,onStartE03Delayed,e04,onStartE04,onStartE04Delayed,onStartE04Preview,e05,onStartE05Repair,onStartE03Preview,onStartE02Preview,e06,e14Reviews,e16WorkspaceId,e16WorkspaceCurrent,onStartE06,onStartE06Full,onStartE11Micro,onStartE13,onStartE18,onStartE14,onStartE15,onStartE10Stage,onStartE06Delayed,onStartE10DelayedStage,onStartE06FullDelayed,onStartE06Preview,e19,onStartE19,e07,onOpenE07,e22Selection,onE22Selection,summary,kana,vocab,conjugation,grammar,sentence,lexicalFluency,course,
     milestone,b1Milestone,b2Milestone,c1Foundation,preferredCoachChain,
-    onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartAssessment,
+    onPreferredCoachChainApplied,status,onStart,onStartUnit,onStartAssessment,reviewOverview,onReviewLevels,onPreviewWord,
     onStartMilestone,onStartB1Milestone,onStartB2Milestone,onStartC1Foundation,
     onC1Practice,onProductive,onLexicalFluency,onRealWorldChain,onRealWorldQualification,
   }=props;
@@ -173,7 +177,7 @@ export function J4Learn(props:Props){
 
   return <section className="j4-learn" aria-label="Japanese lessons">
     <span className="j13-marginal" aria-hidden="true">学</span>
-    <CourseCatalog course={course} status={status} ownerId={e16WorkspaceId} onStartUnit={onStartUnit} onStartAssessment={onStartAssessment}/>
+    <CourseCatalog course={course} status={status} ownerId={e16WorkspaceId} reviewOverview={reviewOverview} onReviewDue={onReviewDue} onReviewLevels={onReviewLevels} onPreviewWord={onPreviewWord} onStartUnit={onStartUnit} onStartAssessment={onStartAssessment}/>
     {beginnerMode?<BeginnerEntry overview={beginner}
       a1Next={e01.unitId&&(e01.status==="not_started"||e01.status==="learning")?"First conversations":
         e02.scenes.find(scene=>scene.id===e02.nextSceneId)?.title??"A1 practice"}

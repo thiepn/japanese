@@ -3,12 +3,18 @@ import type {CourseUnitProgress} from "../study/runtime";
 import {buildJapaneseLevelCatalog,COURSE_LEVELS,courseLocation,parseCourseLocation,type CourseLevel} from "../study/cefrCourseCatalog";
 import {deepTeachingAnchors,buildCur03CourseUnitSession} from "../study/cur03A1DeepCourse";
 import {readCoursePosition} from "../study/cur03CoursePosition";
+import {Cur05LevelReview} from "./Cur05LevelReview";
+import type {CourseLevelReviewOverview,CourseReviewLevel} from "../study/cur05LevelReview";
 import {ENTRY_SELF_REPORT,recommendCourseEntry,type EntrySelfReport} from "../study/cur04Placement";
 import "./courseCatalog.css";
 
-export function CourseCatalog({course,status,ownerId,onStartUnit,onStartAssessment}:{
+export function CourseCatalog({course,status,ownerId,reviewOverview,onReviewDue,onReviewLevels,onPreviewWord,onStartUnit,onStartAssessment}:{
   course:readonly CourseUnitProgress[];
   ownerId:string;
+  reviewOverview:CourseLevelReviewOverview|null;
+  onReviewDue:()=>void;
+  onReviewLevels:(levels:readonly CourseReviewLevel[])=>void;
+  onPreviewWord:(id:string)=>void;
   status:string;
   onStartUnit:(id:string,intent?:"resume"|"restart")=>void;
   onStartAssessment:(id:string)=>void;
@@ -71,6 +77,9 @@ export function CourseCatalog({course,status,ownerId,onStartUnit,onStartAssessme
         </button>;
       })}
     </div>
+    <Cur05LevelReview ownerId={ownerId} overview={reviewOverview} activeLevel={current.level} busy={busy}
+      onReviewDue={onReviewDue} onReviewLevels={onReviewLevels} onPreview={onPreviewWord}
+      onOpenUnit={(unitId,level)=>select(level,unitId)}/>
     <div className="cur01-detail" id="cur01-lessons" role="tabpanel" aria-labelledby={"cur01-tab-"+current.level}>
       <div className="cur01-section-heading">
         <div><h2>{current.level} lessons</h2><p>{current.lessons.length?current.lessons.length+" existing course units":"No lessons published yet"}</p></div>
