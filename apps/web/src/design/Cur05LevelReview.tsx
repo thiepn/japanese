@@ -2,7 +2,8 @@ import {useEffect,useMemo,useState} from "react";
 import type {CourseLevelReviewOverview,CourseReviewLevel} from "../study/cur05LevelReview";
 import {normalizeCourseReviewLevels,reviewSelectionCounts} from "../study/cur05LevelReview";
 import {COURSE_LEVELS,type CourseLevel} from "../study/cefrCourseCatalog";
-import type {Cur06Mode} from "../study/cur06VocabularyJourney";
+import {buildCur06VocabularyJourney,type Cur06Mode} from "../study/cur06VocabularyJourney";
+import {readCoursePosition} from "../study/cur03CoursePosition";
 import "./cur05LevelReview.css";
 
 export function Cur05LevelReview({ownerId,overview,activeLevel,busy,onReviewDue,onReviewLevels,onPreview,onOpenUnit,onCur06Journey}:{
@@ -77,7 +78,14 @@ export function Cur05LevelReview({ownerId,overview,activeLevel,busy,onReviewDue,
       <button type="button" disabled={busy} onClick={()=>onCur06Journey(word.id,"explore")}
         aria-label={"Explore original contexts for "+word.writing+" without reviews"}>Contexts</button>
       <button type="button" disabled={busy} onClick={()=>onCur06Journey(word.id,"practice")}
-        aria-label={"Practice "+word.writing+" with unscored guided and independent recall"}>Practice</button>
+        aria-label={"Practice "+word.writing+" with unscored guided and independent recall"}>{
+          (()=>{
+            try{return readCoursePosition(ownerId,"cur06-"+word.id,buildCur06VocabularyJourney(word.id,"practice"))>0?"Resume practice":"Practice";}
+            catch{return "Practice";}
+          })()
+        }</button>
+      <button type="button" disabled={busy} onClick={()=>onCur06Journey(word.id,"practice",undefined,"restart")}
+        aria-label={"Restart unscored vocabulary practice for "+word.writing+" from first section without deleting recorded answers"}>Restart</button>
     </div>
    </li>)}</ol>:<p>No source-linked words are assigned to this selection.</p>}
    {showCount<words.length?<button type="button" className="cur05-more" onClick={()=>setShowCount(value=>value+18)}>Show more words</button>:null}
