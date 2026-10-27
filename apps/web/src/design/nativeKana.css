@@ -48,3 +48,9 @@
   .j2-kana-route__sections button{min-width:91px;min-height:50px}
   .j2-native-kana .max-w-6xl{max-width:100%}
 }
+
+/* Google dialogs are now nested inside Japanese's content surface. Raise the
+ * entire containing stacking context while a dialog is open so its backdrop,
+ * controls and focus are never obscured by the primary nav or sticky header. */
+.j2-workspace:has(.j2-native-kana [role="dialog"][aria-modal="true"]){z-index:80}
+.j2-content:has(.j2-native-kana [role="dialog"][aria-modal="true"]){z-index:90}
