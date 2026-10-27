@@ -34,3 +34,39 @@ test('Kana retains native Japanese header on mobile and has no horizontal overfl
   const width=await page.evaluate(()=>[document.documentElement.scrollWidth,document.documentElement.clientWidth]);
   expect(width[0]).toBeLessThanOrEqual(width[1]+1);
 });
+
+test('native Japanese account-switch invalidates old Kana without exposing previous cards',async({page,context})=>{
+  await page.goto('./');
+  await page.getByRole('navigation',{name:'Primary'}).getByRole('button',{name:'Kana'}).click();
+  await expect(page.locator('.kana-native')).toBeVisible();
+  const second=await context.newPage();
+  await second.goto('./');
+  await second.evaluate(()=>{
+    localStorage.setItem('thiepn:japanese:kana-owner:v2',
+      JSON.stringify({owner:'other-workspace',epoch:'b'.repeat(32)}));
+  });
+  await expect(page.getByRole('alert')).toContainText('Account changed');
+  await expect(page.locator('.kana-native')).toHaveCount(0);
+  await second.close();
+});
+
+test('native flashcard review uses canonical Japanese FSRS and exports portable evidence',async({page})=>{
+  await page.goto('./');
+  await page.getByRole('navigation',{name:'Primary'}).getByRole('button',{name:'Kana'}).click();
+  await page.getByRole('navigation',{name:'Kana sections'}).getByRole('button',{name:/Flashcards/}).click();
+  const answer=page.getByPlaceholder('Type romaji... (or Space to reveal)');
+  await expect(answer).toBeVisible();
+  await answer.fill('a');
+  await answer.press('Enter');
+  await expect(page.getByRole('button',{name:/3. Good/})).toBeVisible();
+  await page.getByRole('button',{name:/3. Good/}).click();
+  await page.getByRole('button',{name:'Settings & backup'}).click();
+  const download=page.waitForEvent('download');
+  await page.getByRole('button',{name:/Export Progress/}).click();
+  const file=await download;
+  const fs=await import('node:fs/promises');
+  const archive=JSON.parse(await fs.readFile(await file.path(),'utf8'));
+  expect(archive.owner).toBe('00000000-0000-4000-8000-000000000001');
+  expect(archive.canonicalProjection.some((card:{cardId:string;totalReviews:number})=>
+    card.cardId==='h-a'&&card.totalReviews>0)).toBe(true);
+});
