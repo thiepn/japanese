@@ -1,4 +1,4 @@
-name: CUR-03 Japanese Deep Course and Resume
+name: CUR-04 Japanese Course Entry and Recovery
 on:
   push:
     branches: [feature/cur01-six-level-curriculum-20261026]
@@ -27,10 +27,10 @@ jobs:
       - name: Typecheck native app and CUR-03
         run: pnpm typecheck
       - name: Native original teaching, checkpoints and canonical regression
-        run: pnpm exec vitest run tests/study-player/cur03-deep-course.test.ts tests/study-player/cur01-catalog.test.ts tests/study-player/grammar-course.test.ts tests/study-player/study-player.test.ts
+        run: pnpm exec vitest run tests/study-player/cur04-navigation.test.ts tests/study-player/cur03-deep-course.test.ts tests/study-player/cur01-catalog.test.ts tests/study-player/grammar-course.test.ts tests/study-player/study-player.test.ts
       - name: Build Japanese without deployment
         run: pnpm build
       - name: Install Chromium
         run: pnpm exec playwright install --with-deps chromium
-      - name: Real desktop and mobile section restore
-        run: pnpm exec playwright test tests/e2e/cur03-deep-course.spec.ts tests/e2e/cur01-catalog.spec.ts --project=desktop-chromium --project=compact-mobile --workers=2
+      - name: Real desktop and mobile restart, placement and section restore
+        run: pnpm exec playwright test tests/e2e/cur04-navigation.spec.ts tests/e2e/cur03-deep-course.spec.ts tests/e2e/cur01-catalog.spec.ts --project=desktop-chromium --project=compact-mobile --workers=2
