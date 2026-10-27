@@ -8,11 +8,11 @@ import { generateKanaDistractors } from '../utils/distractors';
 
 interface KanaDetailModalProps {
   kana: KanaItem | null;
-  storedData?: StoredCardData;
+  storedData?: StoredCardData | undefined;
   onClose: () => void;
   enableAudio: boolean;
   onSelectKana: (kanaId: string) => void;
-  onRefreshData?: () => Promise<void>;
+  onRefreshData?: (() => Promise<void>) | undefined;
 }
 
 export const KanaDetailModal: React.FC<KanaDetailModalProps> = ({
