@@ -39,7 +39,7 @@ export function Cur05LevelReview({ownerId,overview,activeLevel,busy,onReviewDue,
    <button type="button" aria-pressed={scope==="multi"} onClick={()=>{setScope("multi");setCustom(old=>old.includes(activeLevel)?old:[...old,activeLevel]);}}>Choose levels</button>
   </div>
   {scope==="multi"?<fieldset className="cur05-level-choices"><legend>Include one or more source-linked levels</legend>
-   {[...COURSE_LEVELS,"unassigned" as const].map(level=><label key={level}><input type="checkbox" checked={custom.includes(level)}
+   {[...COURSE_LEVELS,"unassigned" as const].map(level=><label key={level}><input type="checkbox" aria-label={level==="unassigned"?"Unassigned":level} checked={custom.includes(level)}
     onChange={()=>toggle(level)}/><span>{level==="unassigned"?"Unassigned":level}</span>
     <small>{current?.perLevel.find(s=>s.level===level)?.due??0} due</small></label>)}
   </fieldset>:null}
