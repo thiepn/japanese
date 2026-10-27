@@ -64,6 +64,7 @@ test('native flashcard review uses canonical Japanese FSRS and exports portable 
   await answer.press('Enter');
   await expect(page.getByRole('button',{name:/3. Good/})).toBeVisible();
   await page.getByRole('button',{name:/3. Good/}).click();
+  await page.getByRole('button',{name:'Study tools'}).click();
   await page.getByRole('button',{name:'Settings & backup'}).click();
   const download=page.waitForEvent('download');
   await page.getByRole('button',{name:/Export Progress/}).click();
