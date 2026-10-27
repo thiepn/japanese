@@ -21,7 +21,7 @@ export function J2KanaNavigation({selected,onSelect,onTool}:{
     <header className="j2-kana-route__intro">
       <div>
         <p className="j2-kana-route__eyebrow">日本語 · LEARN</p>
-        <h1>Kana <span lang="ja">仮名</span></h1>
+        <h1>Kana <span lang="ja" aria-hidden="true">仮名</span></h1>
       </div>
       <button type="button" className="j2-kana-route__tools-toggle" aria-expanded={toolsOpen}
         aria-controls="japanese-kana-tools" onClick={()=>setToolsOpen(value=>!value)}>
