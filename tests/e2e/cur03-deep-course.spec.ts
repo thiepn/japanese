@@ -5,7 +5,7 @@ test("CUR-03 original contextual lesson position survives reload for one account
  await expect(catalog).toBeVisible();
  const row=catalog.locator(".cur01-lessons li[data-cur03-deep=true]").first();
  await expect(row).toBeVisible();
- await row.getByRole("button",{name:/lesson \d+:/i}).click();
+ await row.getByRole("button",{name:/^(Open|Resume) lesson \d+:/i}).click();
  await expect(page.locator(".study-lesson h1")).toBeVisible();
  await page.getByRole("button",{name:"Continue",exact:true}).click();
  const first=await page.locator(".study-lesson h1").innerText();
@@ -16,7 +16,7 @@ test("CUR-03 original contextual lesson position survives reload for one account
  await page.reload();
  await expect(catalog).toBeVisible();
  await catalog.locator(".cur01-lessons li[data-cur03-deep=true]").first()
-   .getByRole("button",{name:/lesson \d+:/i}).click();
+   .getByRole("button",{name:/^(Open|Resume) lesson \d+:/i}).click();
  await expect(page.locator(".study-lesson h1")).toHaveText(second);
 });
 test("CUR-03 respects direct B1 entry and truthful empty C2",async({page})=>{
