@@ -133,33 +133,35 @@ export async function getAllStoredCards(): Promise<Map<string, StoredCardData>> 
 
 export async function saveStoredCard(cardData: StoredCardData): Promise<void> {
   assertKanaWorkspace();
-  // Always update memory cache so sync works in any environment
-  memoryCardsMap.set(cardData.cardId, cardData);
-
-  try {
-    const db = await openDB();
-    assertKanaWorkspace();
-    await new Promise<void>((resolve, reject) => {
-      const tx = db.transaction(STORES.CARDS, 'readwrite');
-      const store = tx.objectStore(STORES.CARDS);
-      const req = store.put(cardData);
-      req.onsuccess = () => resolve();
-      req.onerror = () => reject(req.error);
+  // IndexedDB request success is not transaction commit. An aborted transaction
+  // must not be reported as saved or shadowed with volatile memory state.
+  let db:IDBDatabase|null=null;
+  try {db=await openDB();} catch {assertKanaWorkspace();}
+  assertKanaWorkspace();
+  if(db){
+    await new Promise<void>((resolve,reject)=>{
+      const tx=db.transaction(STORES.CARDS,'readwrite');
+      tx.objectStore(STORES.CARDS).put(cardData);
+      tx.oncomplete=()=>resolve();
+      tx.onerror=()=>reject(tx.error??Error('KANA_CARD_WRITE_FAILED'));
+      tx.onabort=()=>reject(tx.error??Error('KANA_CARD_WRITE_ABORTED'));
     });
-  } catch (err) {
     assertKanaWorkspace();
-    try {
-      if (typeof localStorage !== 'undefined') {
-        const current = await readStudioCards();
-        current.set(cardData.cardId, cardData);
-        localStorage.setItem(LOCAL_STORAGE_CARDS_KEY, JSON.stringify(Array.from(current.values())));
-      }
-    } catch {
-      // Ignored
-    }
+    memoryCardsMap.set(cardData.cardId,cardData);
+    return;
   }
+  // The durable fallback is only used when opening IndexedDB itself failed.
+  const current=await readStudioCards();
+  assertKanaWorkspace();
+  current.set(cardData.cardId,cardData);
+  try {
+    localStorage.setItem(LOCAL_STORAGE_CARDS_KEY,JSON.stringify([...current.values()]));
+  } catch {
+    throw Error('KANA_CARD_STORAGE_UNAVAILABLE');
+  }
+  assertKanaWorkspace();
+  memoryCardsMap.set(cardData.cardId,cardData);
 }
-
 
 export async function saveReviewLog(log: ReviewLog, cardId: string): Promise<void> {
   assertKanaWorkspace();
