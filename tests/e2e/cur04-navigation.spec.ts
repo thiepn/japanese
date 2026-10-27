@@ -11,8 +11,9 @@ test("CUR-04 restart is explicit and never clears source-owned learner events",a
  const saved=await page.locator(".study-lesson h1").innerText();
  expect(saved).not.toBe(first);
  await page.getByRole("button",{name:"Exit"}).click();
+ await expect(catalog.locator(".cur01-lessons li[data-cur03-deep=true]").first().getByRole("button",{name:/^Resume lesson/})).toBeVisible();
  await catalog.locator(".cur01-lessons li[data-cur03-deep=true]").first()
-  .getByRole("button",{name:/^(Open|Resume) lesson/}).click();
+  .getByRole("button",{name:/^Resume lesson/}).click();
  await expect(page.locator(".study-lesson h1")).toHaveText(saved);
  await page.getByRole("button",{name:"Exit"}).click();
  await catalog.locator(".cur01-lessons li[data-cur03-deep=true]").first()
