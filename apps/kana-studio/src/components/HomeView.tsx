@@ -5,6 +5,7 @@ import type { DeckStatistics, UserSettings } from '../types/kana';
 interface HomeViewProps {
   stats: DeckStatistics;
   settings: UserSettings;
+  embedded?:boolean;
   onNavigate: (view: 'home' | 'learn' | 'review' | 'words' | 'chart') => void;
   onOpenScheduleModal?: () => void;
   onOpenCategoryModal?: () => void;
@@ -13,6 +14,7 @@ interface HomeViewProps {
 export const HomeView: React.FC<HomeViewProps> = ({
   stats,
   settings,
+  embedded=false,
   onNavigate,
   onOpenScheduleModal,
   onOpenCategoryModal
@@ -50,7 +52,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-[#E5E4DE] dark:border-[#262626] pb-4 gap-2">
           <div>
             <h1 className="text-3xl sm:text-5xl font-serif font-bold tracking-tight text-[#202020] dark:text-[#F0EFEB]">
-              KANA
+              {embedded ? 'Your Kana' : 'KANA'}
             </h1>
             <p className="mt-1 text-xs sm:text-base text-[#737373] dark:text-[#9E9E9E] font-sans">
               Japanese Kana Mastery with Spaced Repetition

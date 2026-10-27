@@ -40,7 +40,7 @@ export const CategoryReviewModal: React.FC<CategoryReviewModalProps> = ({
     const filter: ReviewFilterOptions = {
       script,
       category,
-      row: category === 'basic' && selectedRow !== 'all' ? selectedRow : undefined,
+      ...(category === 'basic' && selectedRow !== 'all' ? {row:selectedRow} : {}),
       cramMode
     };
     onStartSession(filter, direction);

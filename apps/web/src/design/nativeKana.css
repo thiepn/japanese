@@ -1,0 +1,79 @@
+@import "tailwindcss/theme";
+@import "tailwindcss/utilities" source(none);
+@source "../../../kana-studio/src";
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Preserve original Google learning controls, but use Japanese's existing
+ * shell, account, page colors, and primary navigation—not a second app chrome. */
+.j2-native-kana {
+  width:100%;
+  min-width:0;
+  color:var(--j-fg);
+  position:relative;
+}
+.j2-native-kana .kana-native {
+  min-width:0;
+  width:100%;
+  color:var(--j-fg);
+  background:transparent;
+}
+.kana-native__toolbar {
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  padding:0 0 18px;
+  margin-bottom:14px;
+  border-bottom:1px solid var(--j-line);
+}
+.kana-native__heading {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+.kana-native__heading h1 {
+  margin:2px 0;
+  font-size:clamp(25px,4vw,42px);
+  letter-spacing:-.035em;
+  color:var(--j-fg);
+}
+.kana-native__tabs {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:6px;
+}
+.kana-native__tabs button,
+.kana-native__actions button,
+.kana-native__return {
+  min-height:42px;
+  border:1px solid var(--j-line);
+  border-radius:8px;
+  padding:9px 12px;
+  color:var(--j-fg);
+  background:var(--j-bg-elevated);
+  font-size:13px;
+  font-weight:650;
+  cursor:pointer;
+}
+.kana-native__tabs button[aria-current="page"]{
+  background:var(--j-control-strong);
+  color:var(--j-on-strong);
+  border-color:transparent;
+}
+.kana-native__tabs small{font-size:10px}
+.kana-native__actions{display:flex;gap:6px;flex-wrap:wrap}
+.kana-native__actions button{font-size:12px;min-height:36px}
+.kana-native__return{background:transparent}
+.j2-native-kana .font-kana {
+  font-family:"Noto Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+}
+.j2-native-kana .font-serif {
+  font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;
+}
+@media(max-width:640px){
+  .kana-native__tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .kana-native__tabs button{padding:8px 4px;font-size:12px}
+  .kana-native__heading{align-items:flex-start}
+  .j2-native-kana .max-w-6xl{max-width:100%}
+}

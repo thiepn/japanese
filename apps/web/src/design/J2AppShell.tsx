@@ -6,7 +6,7 @@ import {j10SeasonLabel,j10SeasonPattern,resolveJ10Season} from "./j10Season";
 import {syncJ12ThemeColor} from "./j12Pwa";
 import {applyJTheme,persistJTheme,readJTheme} from "./j14Theme";
 
-export type J2Surface="Today"|"Learn"|"Immerse"|"Library"|"Progress";
+export type J2Surface="Today"|"Learn"|"Kana"|"Immerse"|"Library"|"Progress";
 
 const SURFACES:readonly {
   id:J2Surface;
@@ -17,6 +17,7 @@ const SURFACES:readonly {
 }[]=[
   {id:"Today",japanese:"今日",english:"Today",glyph:"今",hint:"Daily study"},
   {id:"Learn",japanese:"学ぶ",english:"Learn",glyph:"学",hint:"Course path"},
+  {id:"Kana",japanese:"仮名",english:"Kana",glyph:"かな",hint:"Lessons · flashcards"},
   {id:"Immerse",japanese:"浸る",english:"Immerse",glyph:"浸",hint:"Read and listen"},
   {id:"Library",japanese:"蔵",english:"Library",glyph:"蔵",hint:"Knowledge archive"},
   {id:"Progress",japanese:"道",english:"Progress",glyph:"道",hint:"Your path"},

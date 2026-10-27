@@ -4,7 +4,7 @@ import { KANA_WORKSPACE_ID, assertKanaWorkspace } from './japaneseBridge';
 import { overlayJapaneseKanaCards, exportPortableJapaneseKanaSnapshots, previewLegacyKanaImport, importLegacyKanaSnapshots } from './canonicalBridge';
 import {parseKanaBackup,previewKanaRestore,type KanaRestorePreview} from './backupRestore';
 
-const DB_NAME = 'kana_mastery_v1:' + KANA_WORKSPACE_ID;
+const dbName = () => 'kana_mastery_v1:' + KANA_WORKSPACE_ID;
 const DB_VERSION = 1;
 
 const STORES = {
@@ -23,6 +23,7 @@ export const defaultSettings: UserSettings = {
 };
 
 let dbPromise: Promise<IDBDatabase> | null = null;
+let databaseOwner:string|null=null;
 
 function isIndexedDBSupported(): boolean {
   try {
@@ -33,6 +34,13 @@ function isIndexedDBSupported(): boolean {
 }
 
 function openDB(): Promise<IDBDatabase> {
+  assertKanaWorkspace();
+  if(databaseOwner!==KANA_WORKSPACE_ID){
+    if(dbPromise)void dbPromise.then(db=>db.close()).catch(()=>{});
+    dbPromise=null;
+    databaseOwner=KANA_WORKSPACE_ID;
+    memoryCardsMap.clear();
+  }
   if (dbPromise) return dbPromise;
 
   dbPromise = new Promise<IDBDatabase>((resolve, reject) => {
@@ -40,7 +48,7 @@ function openDB(): Promise<IDBDatabase> {
       return reject(new Error('IndexedDB not supported or blocked in this environment'));
     }
 
-    const request = window.indexedDB.open(DB_NAME, DB_VERSION);
+    const request = window.indexedDB.open(dbName(), DB_VERSION);
 
     request.onupgradeneeded = (event) => {
       const db = (event.target as IDBOpenDBRequest).result;
@@ -71,8 +79,8 @@ function openDB(): Promise<IDBDatabase> {
 }
 
 // LocalStorage Fallback Cache
-const LOCAL_STORAGE_CARDS_KEY = 'kana_app_cards_cache:' + KANA_WORKSPACE_ID;
-const LOCAL_STORAGE_SETTINGS_KEY = 'kana_app_settings_cache:' + KANA_WORKSPACE_ID;
+const cardCacheKey = () => 'kana_app_cards_cache:' + KANA_WORKSPACE_ID;
+const settingCacheKey = () => 'kana_app_settings_cache:' + KANA_WORKSPACE_ID;
 const memoryCardsMap = new Map<string, StoredCardData>();
 
 export async function readStudioCards(): Promise<Map<string, StoredCardData>> {
@@ -105,7 +113,7 @@ export async function readStudioCards(): Promise<Map<string, StoredCardData>> {
     assertKanaWorkspace();
     try {
       if (typeof localStorage !== 'undefined') {
-        const raw = localStorage.getItem(LOCAL_STORAGE_CARDS_KEY);
+        const raw = localStorage.getItem(cardCacheKey());
         const map = new Map<string, StoredCardData>();
         if (raw) {
           const parsed: StoredCardData[] = JSON.parse(raw);
@@ -155,7 +163,7 @@ export async function saveStoredCard(cardData: StoredCardData): Promise<void> {
   assertKanaWorkspace();
   current.set(cardData.cardId,cardData);
   try {
-    localStorage.setItem(LOCAL_STORAGE_CARDS_KEY,JSON.stringify([...current.values()]));
+    localStorage.setItem(cardCacheKey(),JSON.stringify([...current.values()]));
   } catch {
     throw Error('KANA_CARD_STORAGE_UNAVAILABLE');
   }
@@ -222,7 +230,7 @@ export async function getSettings(): Promise<UserSettings> {
   } catch(error) {
     assertKanaWorkspace();
     try {
-      const raw = localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY);
+      const raw = localStorage.getItem(settingCacheKey());
       if (raw) return { ...defaultSettings, ...JSON.parse(raw) };
     } catch {
       // fallback
@@ -244,7 +252,7 @@ export async function saveSettings(settings: UserSettings): Promise<void> {
     });
   } catch {
     try {
-      localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings));
+      localStorage.setItem(settingCacheKey(), JSON.stringify(settings));
     } catch {
       // fallback
     }
@@ -375,7 +383,7 @@ export async function resetAllProgress(): Promise<void> {
   // remains untouched and will be projected on the next read.
   assertKanaWorkspace();
   memoryCardsMap.clear();
-  try {localStorage.removeItem(LOCAL_STORAGE_CARDS_KEY);}catch{/* Restricted storage. */}
+  try {localStorage.removeItem(cardCacheKey());}catch{/* Restricted storage. */}
 }
 
 /** Opening an absent legacy database never creates a replacement empty database.
@@ -409,7 +417,7 @@ export async function readLegacyGuestCards(): Promise<StoredCardData[]> {
         });
         cards = values.map(item => ({
           ...item,card:{...item.card,due:new Date(item.card.due),
-            last_review:item.card.last_review ? new Date(item.card.last_review) : undefined}
+            ...(item.card.last_review ? {last_review:new Date(item.card.last_review)} : {})}
         }));
       } finally {db.close();}
     }
@@ -420,7 +428,7 @@ export async function readLegacyGuestCards(): Promise<StoredCardData[]> {
       const parsed: unknown = raw ? JSON.parse(raw) : null;
       if (Array.isArray(parsed)) cards = parsed.filter(item=>item&&typeof item.cardId==='string'&&item.card)
         .map(item=>({...item,card:{...item.card,due:new Date(item.card.due),
-          last_review:item.card.last_review?new Date(item.card.last_review):undefined}}));
+          ...(item.card.last_review?{last_review:new Date(item.card.last_review)}:{})}}));
     } catch { /* No guest fallback. */ }
   }
   assertKanaWorkspace();

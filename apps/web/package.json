@@ -23,12 +23,17 @@
     "@thiepn/audio": "workspace:*",
     "@thiepn/coach": "workspace:*",
     "@thiepn/japanese-nlp": "workspace:*",
-    "@thiepn/languages": "github:thiepn/languages#55d369f2e855b3cd98666492052304b3a0c68f6c"
+    "@thiepn/languages": "github:thiepn/languages#55d369f2e855b3cd98666492052304b3a0c68f6c",
+    "ts-fsrs": "5.4.2",
+    "lucide-react": "0.546.0",
+    "motion": "12.23.24"
   },
   "devDependencies": {
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "6.1.1",
-    "vite": "8.3.1"
+    "vite": "8.3.1",
+    "tailwindcss": "4.3.3",
+    "@tailwindcss/vite": "4.3.3"
   }
 }
