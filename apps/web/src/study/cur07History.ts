@@ -54,6 +54,14 @@ function identity(source:StudyStep[],sectionId:string,sectionHash:string):number
  return coursePositionFingerprint([matching[0]!.step])===sectionHash?matching[0]!.index:null;
 }
 export function cur07HistoryKey(owner:string,sessionKey:string):string{return keyFor(owner,sessionKey)}
+export function cur07PracticeKey(wordId:string,firstUnit?:string,secondUnit?:string):string{
+ const ids=[wordId,firstUnit,secondUnit].filter((id):id is string=>Boolean(id));
+ if(ids.some(id=>!/^[-a-z0-9]+$/i.test(id)||id.length>65)||secondUnit&&!firstUnit)
+  throw Error("CUR07_INVALID_KEY_PART");
+ const result=secondUnit?"cur07-"+wordId+"-"+firstUnit+"-"+secondUnit:"cur06-"+wordId;
+ if(result.length>MAX_KEY)throw Error("CUR07_KEY_TOO_LONG");
+ return result;
+}
 /** Saves only the original source section's hash and bounded device-local position. */
 export function rememberCur07Section(owner:string,sessionKey:string,steps:StudyStep[],ordinal:number,
  store:Cur07HistoryStore|null=defaultStore(),now=Date.now()):boolean{
