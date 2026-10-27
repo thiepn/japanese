@@ -160,9 +160,11 @@ export const KanaChartView: React.FC<KanaChartViewProps> = ({
       if (!found) {
         // Default to first valid cell
         for (let r = 0; r < currentNavGrid.length; r++) {
-          for (let c = 0; c < currentNavGrid[r].length; c++) {
-            if (currentNavGrid[r][c]) {
-              setFocusedCellId(currentNavGrid[r][c]);
+          for (let c = 0; c < (currentNavGrid[r]?.length ?? 0); c++) {
+            if (currentNavGrid[r]?.[c]) {
+              const first=currentNavGrid[r]?.[c];
+              if(!first)continue;
+              setFocusedCellId(first);
               return;
             }
           }
@@ -177,7 +179,7 @@ export const KanaChartView: React.FC<KanaChartViewProps> = ({
       if (e.key === 'ArrowRight') {
         nextC = (curC + 1) % (currentNavGrid[curR]?.length ?? 1);
       } else if (e.key === 'ArrowLeft') {
-        nextC = (curC - 1 + currentNavGrid[curR].length) % currentNavGrid[curR].length;
+        nextC = (curC - 1 + (currentNavGrid[curR]?.length ?? 1)) % (currentNavGrid[curR]?.length ?? 1);
       } else if (e.key === 'ArrowDown') {
         nextR = (curR + 1) % currentNavGrid.length;
       } else if (e.key === 'ArrowUp') {
