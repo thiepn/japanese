@@ -288,6 +288,7 @@ export function KanaExperience({embedded=false,initialView,onExit,onViewChange,r
 
       {/* Modals */}
       <SettingsModal
+        embedded={embedded}
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         settings={settings}
