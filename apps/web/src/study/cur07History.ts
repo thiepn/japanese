@@ -54,6 +54,34 @@ function identity(source:StudyStep[],sectionId:string,sectionHash:string):number
  return coursePositionFingerprint([matching[0]!.step])===sectionHash?matching[0]!.index:null;
 }
 export function cur07HistoryKey(owner:string,sessionKey:string):string{return keyFor(owner,sessionKey)}
+/** Only canonical original unit IDs; no answer, grade, prompt text or FSRS information. */
+function selectionKey(owner:string,wordId:string):string{
+ const base=cur07PracticeKey(wordId);
+ coursePositionKey(owner,base);
+ return PREFIX+"comparison:"+encodeURIComponent(owner)+":"+wordId;
+}
+export type Cur07SavedPair={first:string;second:string};
+export function readCur07Pair(owner:string,wordId:string,available:readonly string[],
+ store:Cur07HistoryStore|null=defaultStore()):Cur07SavedPair|null{
+ const key=selectionKey(owner,wordId);
+ try{
+  const raw=store?.getItem(key);
+  if(!raw||raw.length>300)return null;
+  const data=JSON.parse(raw) as {version?:unknown;first?:unknown;second?:unknown};
+  if(data.version!==1||typeof data.first!=="string"||typeof data.second!=="string"||
+   data.first===data.second||!available.includes(data.first)||!available.includes(data.second))return null;
+  cur07PracticeKey(wordId,data.first,data.second);
+  return {first:data.first,second:data.second};
+ }catch{return null}
+}
+export function saveCur07Pair(owner:string,wordId:string,first:string,second:string,available:readonly string[],
+ store:Cur07HistoryStore|null=defaultStore()):boolean{
+ const key=selectionKey(owner,wordId);
+ if(first===second||!available.includes(first)||!available.includes(second))return false;
+ cur07PracticeKey(wordId,first,second);
+ try{if(!store)return false;store.setItem(key,JSON.stringify({version:1,first,second}));return true;}
+ catch{return false}
+}
 export function cur07PracticeKey(wordId:string,firstUnit?:string,secondUnit?:string):string{
  const ids=[wordId,firstUnit,secondUnit].filter((id):id is string=>Boolean(id));
  if(ids.some(id=>!/^[-a-z0-9]+$/i.test(id)||id.length>65)||secondUnit&&!firstUnit)
