@@ -417,7 +417,7 @@ export async function readLegacyGuestCards(): Promise<StoredCardData[]> {
         });
         cards = values.map(item => ({
           ...item,card:{...item.card,due:new Date(item.card.due),
-            last_review:item.card.last_review ? new Date(item.card.last_review) : undefined}
+            ...(item.card.last_review ? {last_review:new Date(item.card.last_review)} : {})}
         }));
       } finally {db.close();}
     }
@@ -428,7 +428,7 @@ export async function readLegacyGuestCards(): Promise<StoredCardData[]> {
       const parsed: unknown = raw ? JSON.parse(raw) : null;
       if (Array.isArray(parsed)) cards = parsed.filter(item=>item&&typeof item.cardId==='string'&&item.card)
         .map(item=>({...item,card:{...item.card,due:new Date(item.card.due),
-          last_review:item.card.last_review?new Date(item.card.last_review):undefined}}));
+          ...(item.card.last_review?{last_review:new Date(item.card.last_review)}:{})}}));
     } catch { /* No guest fallback. */ }
   }
   assertKanaWorkspace();
