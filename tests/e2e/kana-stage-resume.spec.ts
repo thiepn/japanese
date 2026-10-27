@@ -64,7 +64,7 @@ test('review finishes after the remaining daily new card and preserves the summa
   const textbox=page.getByPlaceholder('Type romaji... (or Space to reveal)');
   await expect(textbox).toBeVisible();
   await textbox.press('Enter');
-  await page.getByRole('button',{name:/1\\. Again/}).click();
+  await page.getByRole('button',{name:/Again/}).click();
   await expect(page.getByRole('heading',{name:'Review Summary'})).toBeVisible();
   await page.waitForTimeout(300);
   await expect(page.getByRole('heading',{name:'Review Summary'})).toBeVisible();
