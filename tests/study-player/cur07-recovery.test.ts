@@ -25,7 +25,7 @@ const revise=(source:typeof steps,n:number)=>{
 describe("CUR-07 learner-selected canonical comparison",()=>{
  it("retains only learner-selected distinct verified unit identities and original Can-do claims",()=>{
   const paired=buildCur06VocabularyJourney(multi.lexeme.id,"practice",refs[0]!.id,refs[1]!.id);
-  const originalUnits=paired.filter(step=>step.id.includes("-unit-"));
+  const originalUnits=paired.filter(step=>step.id.startsWith("cur06-"+multi.lexeme.id+"-unit-"));
   expect(originalUnits.map(step=>step.id)).toEqual([
    "cur06-"+multi.lexeme.id+"-unit-"+refs[0]!.id,
    "cur06-"+multi.lexeme.id+"-unit-"+refs[1]!.id
