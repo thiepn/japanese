@@ -1,5 +1,5 @@
-import {useEffect,useState,type ComponentType} from "react";
-import {bindEmbeddedKanaWorkspace,unbindEmbeddedKanaWorkspace,type KanaStudioView}
+import {useEffect,useRef,useState,type ComponentType} from "react";
+import {bindEmbeddedKanaWorkspace,unbindEmbeddedKanaWorkspace}
   from "../../../kana-studio/src/services/japaneseBridge";
 import {publishKanaOwnerLease} from "../kanaHandoff";
 import "./nativeKana.css";
@@ -10,6 +10,8 @@ type Embedded=ComponentType<{embedded?:boolean;initialView?:View;onExit?:()=>voi
 
 export function NativeKanaWorkspace({owner,initialView,onExit,onProgressChange}:Props){
   const [Screen,setScreen]=useState<Embedded|null>(null);
+  const progressRef=useRef(onProgressChange);
+  useEffect(()=>{progressRef.current=onProgressChange;},[onProgressChange]);
   const [error,setError]=useState<string|null>(null);
   const [dark,setDark]=useState(false);
 
@@ -40,9 +42,9 @@ export function NativeKanaWorkspace({owner,initialView,onExit,onProgressChange}:
     return()=>{
       active=false;
       unbindEmbeddedKanaWorkspace(owner);
-      onProgressChange();
+      progressRef.current();
     };
-  },[owner,onProgressChange]);
+  },[owner]);
 
   return <section className={"j2-native-kana"+(dark?" dark":"")} aria-label="Kana learning">
     {error?<div role="alert"><p>{error}</p><button type="button" onClick={onExit}>Return to Japanese</button></div>:null}
