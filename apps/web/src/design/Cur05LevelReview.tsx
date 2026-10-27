@@ -4,13 +4,15 @@ import {normalizeCourseReviewLevels,reviewSelectionCounts} from "../study/cur05L
 import {COURSE_LEVELS,type CourseLevel} from "../study/cefrCourseCatalog";
 import {buildCur06VocabularyJourney,type Cur06Mode} from "../study/cur06VocabularyJourney";
 import {readCoursePosition} from "../study/cur03CoursePosition";
+import {Cur07UnitComparison,type Cur07Recover} from "./Cur07UnitComparison";
 import "./cur05LevelReview.css";
 
-export function Cur05LevelReview({ownerId,overview,activeLevel,busy,onReviewDue,onReviewLevels,onPreview,onOpenUnit,onCur06Journey}:{
+export function Cur05LevelReview({ownerId,overview,activeLevel,busy,onReviewDue,onReviewLevels,onPreview,onOpenUnit,onCur06Journey,onCur07Recover}:{
  ownerId:string;overview:CourseLevelReviewOverview|null;activeLevel:CourseLevel;busy:boolean;
  onReviewDue:()=>void;onReviewLevels:(levels:readonly CourseReviewLevel[])=>void;
  onPreview:(lexemeId:string)=>void;onOpenUnit:(unitId:string,level:CourseLevel)=>void;
- onCur06Journey:(id:string,mode:Cur06Mode,unitId?:string,intent?:"resume"|"restart")=>void;
+ onCur06Journey:(id:string,mode:Cur06Mode,unitId?:string,intent?:"resume"|"restart",contrastId?:string)=>void;
+ onCur07Recover:Cur07Recover;
 }){
  const [scope,setScope]=useState<"active"|"all"|"multi">("active");
  const [custom,setCustom]=useState<CourseReviewLevel[]>(["A1"]);
@@ -87,6 +89,7 @@ export function Cur05LevelReview({ownerId,overview,activeLevel,busy,onReviewDue,
       <button type="button" disabled={busy} onClick={()=>onCur06Journey(word.id,"practice",undefined,"restart")}
         aria-label={"Restart unscored vocabulary practice for "+word.writing+" from first section without deleting recorded answers"}>Restart</button>
     </div>
+    <div className="cur07-comparison-slot"><Cur07UnitComparison owner={ownerId} word={word} busy={busy} onLaunch={onCur06Journey} onRecover={onCur07Recover}/></div>
    </li>)}</ol>:<p>No source-linked words are assigned to this selection.</p>}
    {showCount<words.length?<button type="button" className="cur05-more" onClick={()=>setShowCount(value=>value+18)}>Show more words</button>:null}
   </div>}
