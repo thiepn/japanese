@@ -51,6 +51,39 @@ const CASES:readonly Case[]=[
    ["Which sentence says 'I study Japanese at school'?","学校で日本語を勉強します。","学校に日本語を勉強します。","学校を日本語に行きます。","で identifies the action location, and を marks the object of studying.","に does not mark this deliberate action location.","The particles and verb do not express the intended studying event."]
   ],
   independent:"Describe one place where you study and one destination you travel to. Use different verbs and decide independently whether で or に fits."}
+ ,{anchor:"grammar-ni-destination",title:"Plan a route: arrival point versus action location",
+  situation:"You are meeting a friend after class. First you say 駅に行きます because the station is where you intend to go. Later, while explaining the meeting, you say 駅で待ちます, because waiting takes place at the station. The same noun can play different roles depending on the verb.",
+  why:"に commonly marks the destination with movement verbs such as 行きます or 来ます. で commonly marks the scene of an activity, such as 待ちます or 勉強します. A change in the verb can change the particle even when the place word is identical.",
+  contrast:"駅に行きます means go to the station; 駅で待ちます means wait at the station. Do not decide between に and で based only on whether the word is a place.",
+  examples:[["駅に行きます。","I will go to the station; a destination."],["駅で待ちます。","I will wait at the station; an action location."],["学校に行きます。","I go to school."],["学校で勉強します。","I study at school."]],
+  checks:[
+   ["Which means that the station is your destination?","駅に行きます。","駅で待ちます。","駅を飲みます。","に with 行きます marks the destination.","で with 待ちます identifies where an activity happens, not where you are going.","を飲みます requires a drinkable object, not a station."],
+   ["You are already at the station and will wait. Which particle fits? 駅＿＿待ちます。","で","に","を","で marks the place of the waiting action.","に could mark destination with movement, but 待ちます is an action here.","を would make the station a direct object in this sentence."],
+   ["Which statement is true?","A place can take に or で depending on the event.","All place nouns must take に.","で always means travel to a destination.","The verb and the intended role determine the particle.","Places where actions happen often use で.","The destination of movement is generally marked by に here."]
+  ],
+  independent:"Write a two-sentence plan: where you will travel and where you will wait for a classmate. Explain to yourself why the particles differ."},
+ {anchor:"grammar-suki-ga",title:"Talk about preferences without treating 好き as a verb",
+  situation:"Two students discuss free-time interests. One says 私は本が好きです and the other replies 私は音楽が好きです. Each is naming something liked, not describing an action performed on that thing. Japanese commonly uses が for the liked object with 好き.",
+  why:"好き is a な-adjectival noun-like predicate expressing liking; in the basic pattern X が好きです, が identifies what is liked. This differs from the verb 読みます, where a book being read is an object marked by を. The topic of whose preference is discussed can be expressed by は.",
+  contrast:"本が好きです: I like books. 本を読みます: I read a book. Do not change が to を just because an English translation uses the verb 'like'.",
+  examples:[["私は本が好きです。","I like books."],["音楽が好きです。","I like music."],["本を読みます。","I read a book."],["何が好きですか。","What do you like?"]],
+  checks:[
+   ["Complete 'I like music': 音楽＿＿好きです。","が","を","で","が commonly marks what is liked with 好き.","を normally marks the object of an action verb, not 好き in this beginner pattern.","で can locate an action, not indicate a liked object."],
+   ["Which sentence describes the action of reading a book?","本を読みます。","本が好きです。","本で好きです。","読みます is the reading action and takes the book as direct object.","好きです names a preference, not the reading action.","で好きです is not the ordinary preference construction."],
+   ["What is the natural response to 何が好きですか。?","音楽が好きです。","駅に行きます。","八時です。","The question asks what is liked, so a preference is relevant.","This gives a destination rather than a preference.","This gives a time rather than a preference."]
+  ],
+  independent:"Write a short conversation about two different things you and a classmate like. Add one sentence describing an action involving one of those things."},
+ {anchor:"grammar-aru-iru",title:"Find people and objects: あります and います",
+  situation:"A learner looks for a teacher and a textbook before class. 教室に先生がいます tells us a teacher is present in the classroom. かばんに本があります tells us a book is in the bag. The type of entity changes the existence verb, even though the location is marked similarly.",
+  why:"For simple location and existence statements, います is used for people and animals, while あります is used for most inanimate things. The entity that exists commonly takes が; the location often takes に. Do not confuse a destination with the location in which something exists.",
+  contrast:"教室に先生がいます is about a person; 教室に本があります is about a thing. Both refer to existence in a place, so the verb depends on the entity rather than which building is being described.",
+  examples:[["教室に先生がいます。","A teacher is in the classroom."],["かばんに本があります。","There is a book in the bag."],["庭に猫がいます。","A cat is in the garden."],["机にペンがあります。","A pen is on the desk."]],
+  checks:[
+   ["Your teacher is in the classroom. Complete: 教室に先生が＿＿。","います","あります","行きます","A person exists at the location, so use います.","あります is the usual existence verb for things, not people.","行きます means goes; it does not state that the teacher is present."],
+   ["A pen is on the desk. Complete: 机にペンが＿＿。","あります","います","飲みます","A pen is an inanimate thing, so use あります.","います is generally used for people and animals.","飲みます means drinks and cannot describe this existence relation."],
+   ["Which sentence says there is a cat in the garden?","庭に猫がいます。","庭に猫があります。","庭で猫を飲みます。","Cats are animals, so the basic existence verb is います.","あります is not the usual existence predicate for cats.","The action verb and object are semantically wrong."]
+  ],
+  independent:"Describe where one person or animal and one inanimate object are located, choosing います and あります deliberately."}
 ];
 
 function requireSourceUnit(unitId:string){
