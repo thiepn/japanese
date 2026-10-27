@@ -1,7 +1,7 @@
 import {useEffect,useRef,useState,type ComponentType} from "react";
 import {bindEmbeddedKanaWorkspace,unbindEmbeddedKanaWorkspace}
   from "../../../kana-studio/src/services/japaneseBridge";
-import {publishKanaOwnerLease} from "../kanaHandoff";
+import {publishKanaOwnerLease,readKanaOwnerLease,KANA_OWNER_KEY} from "../kanaHandoff";
 import "./nativeKana.css";
 
 type View="home"|"learn"|"review"|"words"|"chart";
@@ -24,6 +24,27 @@ export function NativeKanaWorkspace({owner,initialView,onExit,onProgressChange}:
     observer.observe(shell,{attributes:true,attributeFilter:["data-j-theme"]});
     return()=>observer.disconnect();
   },[]);
+  useEffect(()=>{
+    const lease=readKanaOwnerLease();
+    const check=()=>{
+      const current=readKanaOwnerLease();
+      if(!lease||current?.owner!==owner||current.epoch!==lease.epoch){
+        setScreen(null);
+        setError("Japanese Account changed in another tab. Return to Japanese to reopen your current workspace.");
+      }
+    };
+    const onStorage=(event:StorageEvent)=>{
+      if(event.key===KANA_OWNER_KEY||event.key===null)check();
+    };
+    window.addEventListener("storage",onStorage);
+    window.addEventListener("pageshow",check);
+    window.addEventListener("focus",check);
+    return()=>{
+      window.removeEventListener("storage",onStorage);
+      window.removeEventListener("pageshow",check);
+      window.removeEventListener("focus",check);
+    };
+  },[owner]);
   useEffect(()=>{
     let active=true;
     setScreen(null);
