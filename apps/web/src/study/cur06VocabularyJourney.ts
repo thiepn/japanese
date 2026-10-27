@@ -82,12 +82,16 @@ function foilWords(id:string){
   &&item.lexeme.sourceIds.every(source=>PUBLIC_SOURCES.has(source));
  return [...words,...fallback].filter(valid).filter((item,i,arr)=>arr.findIndex(x=>x.lexeme.id===item.lexeme.id)===i);
 }
-export function buildCur06VocabularyJourney(id:string,mode:Cur06Mode,focusUnitId?:string):StudyStep[]{
+export function buildCur06VocabularyJourney(id:string,mode:Cur06Mode,focusUnitId?:string,contrastUnitId?:string):StudyStep[]{
  if(mode!=="explore"&&mode!=="practice")throw Error("CUR06_UNKNOWN_MODE");
  const {lexeme,item,sense}=sourceWord(id),coverage=inspectCur06Word(id);
  const units=linkedUnits(id);
  if(focusUnitId&&!units.some(u=>u.id===focusUnitId))throw Error("CUR06_UNLINKED_FOCUS_UNIT:"+focusUnitId);
- const linked=focusUnitId?[units.find(u=>u.id===focusUnitId)!]:units;
+ if(contrastUnitId&&(!focusUnitId||mode!=="practice"||contrastUnitId===focusUnitId||
+    !units.some(u=>u.id===contrastUnitId)))throw Error("CUR07_INVALID_CONTRAST:"+contrastUnitId);
+ const linked=contrastUnitId
+   ?[units.find(u=>u.id===focusUnitId)!,units.find(u=>u.id===contrastUnitId)!]
+   :focusUnitId?[units.find(u=>u.id===focusUnitId)!]:units;
  // Unbounded cross-unit browsing belongs to Explore, not a 20-page prerequisite to practice.
  // Practice includes the first native unit and a second distinct level when available.
  const far=linked.find(u=>u.level!==linked[0]?.level)??linked[linked.length-1];
@@ -126,6 +130,15 @@ export function buildCur06VocabularyJourney(id:string,mode:Cur06Mode,focusUnitId
       {label:"Source Can-do",value:canDo.id}],
     examples));
    void n;
+  }
+  if(contrastUnitId&&picked.length===2){
+   const a=picked[0]!,b=picked[1]!;
+   const ac=canDoDescriptor(a.canDoId),bc=canDoDescriptor(b.canDoId);
+   steps.push(lesson(context+"-compare-"+a.id+"-"+b.id,
+    "Compare two authentic communication contexts",
+    "You chose these two different original source units. Compare their documented Can-do aims and the attested Japanese sentences on the preceding screens. A word shared by both units does not alone establish linguistic proficiency or identical communicative function. Where no attested example exists, refrain from supplying a model sentence.",
+    [a,b].flatMap(u=>u.sourceIds).map(sourceTitle).filter((v,i,arr)=>arr.indexOf(v)===i).join(" · "),
+    [{label:a.level+" · "+a.title,value:ac.statement},{label:b.level+" · "+b.title,value:bc.statement}]));
   }
  }else{
   steps.push(lesson(context+"-unassigned","No original course-unit attribution",
