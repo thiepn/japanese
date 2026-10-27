@@ -7,7 +7,7 @@ test("CUR-01 selectable A1–C2 catalog and direct B1 entry",async({page})=>{
   await expect(catalog.getByRole("tab",{name:/B1/})).toHaveAttribute("aria-selected","true");
   await expect(catalog.locator(".cur01-lessons li").first()).toBeVisible();
   const first=catalog.locator(".cur01-lessons li").first();
-  await first.getByRole("button",{name:/lesson 1:/i}).click();
+  await first.getByRole("button",{name:/^(Open|Resume) lesson 1:/i}).click();
   await expect(page.locator("main.j5-study-shell")).toBeVisible();
   await page.getByRole("button",{name:"Exit"}).click();
   await expect(page).toHaveURL(/#course\/B1\//);
