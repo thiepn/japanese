@@ -1,4 +1,6 @@
 import {useEffect,useRef,useState,type ReactNode} from "react";
+import {J2KanaNavigation,type KanaTool} from "./J2KanaNavigation";
+import type {KanaView} from "../../../kana-studio/src/App";
 import {JPattern,JSeal,type JTheme} from "./index";
 import {j9SensoryFeedback,readJ9SensoryEnabled,setJ9SensoryEnabled} from "./j9Sensory";
 import {J10SeasonalWorld} from "./J10SeasonalWorld";
@@ -6,7 +8,7 @@ import {j10SeasonLabel,j10SeasonPattern,resolveJ10Season} from "./j10Season";
 import {syncJ12ThemeColor} from "./j12Pwa";
 import {applyJTheme,persistJTheme,readJTheme} from "./j14Theme";
 
-export type J2Surface="Today"|"Learn"|"Immerse"|"Library"|"Progress";
+export type J2Surface="Today"|"Learn"|"Kana"|"Immerse"|"Library"|"Progress";
 
 const SURFACES:readonly {
   id:J2Surface;
@@ -17,6 +19,7 @@ const SURFACES:readonly {
 }[]=[
   {id:"Today",japanese:"今日",english:"Today",glyph:"今",hint:"Daily study"},
   {id:"Learn",japanese:"学ぶ",english:"Course",glyph:"学",hint:"Course"},
+  {id:"Kana",japanese:"仮名",english:"Kana",glyph:"かな",hint:"Lessons · flashcards"},
   {id:"Immerse",japanese:"浸る",english:"Immerse",glyph:"浸",hint:"Read and listen"},
   {id:"Library",japanese:"蔵",english:"Library",glyph:"蔵",hint:"Knowledge archive"},
   {id:"Progress",japanese:"道",english:"Progress",glyph:"道",hint:"Your path"},
@@ -34,6 +37,11 @@ export function J2AppShell({
   localRecoveryBusy=false,
   localRecoveryStatus=null,
   diagnosticsMode=false,
+  kanaView="home",
+  onKanaViewChange,
+  onKanaStandardReview,
+  onKanaToolAction,
+  kanaDueCount=null,
   children,
 }:{
   surface:J2Surface;
@@ -47,6 +55,11 @@ export function J2AppShell({
   localRecoveryBusy?:boolean;
   localRecoveryStatus?:string|null;
   diagnosticsMode?:boolean;
+  kanaView?:KanaView;
+  onKanaViewChange?:(view:KanaView)=>void;
+  onKanaStandardReview?:()=>void;
+  onKanaToolAction?:(tool:KanaTool)=>void;
+  kanaDueCount?:number|null;
   children:ReactNode;
 }){
   const [theme,setTheme]=useState<JTheme>(readJTheme);
@@ -251,6 +264,11 @@ export function J2AppShell({
       </nav>:null}      <main className={"j2-content"+(diagnosticsMode?" j2-content--diagnostics":"")} id="main-content" tabIndex={-1}>
         <div className={"j9-fusuma j9-fusuma--"+surface.toLowerCase()} key={(diagnosticsMode?"diagnostics":surface)+"-transition"} aria-hidden="true"/>
         {accountStatus?<p className="j2-account-status" role="status">{accountStatus}</p>:null}
+        {!diagnosticsMode&&surface==="Kana"&&onKanaViewChange&&onKanaToolAction
+          ?<J2KanaNavigation selected={kanaView}
+            onSelect={view=>view==="review"&&onKanaStandardReview?onKanaStandardReview():onKanaViewChange(view)}
+            onTool={onKanaToolAction} dueCount={kanaDueCount}/>
+          :null}
         {children}
       </main>
     </div>

@@ -1,170 +1,118 @@
-import {expect,test} from "@playwright/test";
+import {expect,test,type Page} from "@playwright/test";
 
-test("front/back flashcards preserve canonical FSRS schedule after keyboard review and reload",async({page})=>{
+const OWNER="00000000-0000-4000-8000-000000000001";
+const READING_TRACE="kana:hiragana-あ:reading:kana-to-romaji-recall";
+
+async function openIntegratedFlashcards(page:Page){
   await page.goto("./");
   const review=page.getByRole("region",{name:"Kana Review"});
   await expect(review).toBeVisible();
   await review.getByRole("button",{name:"Review flashcards"}).click();
-  const dialog=page.getByRole("dialog",{name:"Kana flashcards"});
-  await expect(dialog).toBeVisible();
-  await expect(dialog.locator(".flashcards-front")).toHaveText("あ");
-  await expect(dialog.locator(".flashcards-back")).toHaveCount(0);
-  await page.keyboard.press("Space");
-  await expect(dialog.locator(".flashcards-back")).toHaveText("a");
-  await page.keyboard.press("3");
-  await expect(dialog.locator(".flashcards-front")).not.toHaveText("あ");
-  const saved=await page.evaluate(async()=>{
-    const name="thiepn-japanese:00000000-0000-4000-8000-000000000001";
-    const db=await new Promise<IDBDatabase>((resolve,reject)=>{
-      const request=indexedDB.open(name);request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error);
-    });
-    const result=await new Promise<{trace:any;events:any[]}>((resolve,reject)=>{
-      const tx=db.transaction(["memory_traces","study_events"],"readonly");
-      const a=tx.objectStore("memory_traces").get("kana:hiragana-あ:recognition:kana-to-sound");
-      const b=tx.objectStore("study_events").getAll();
-      tx.oncomplete=()=>resolve({trace:a.result,events:b.result});tx.onerror=()=>reject(tx.error);
-    });db.close();return result;
-  });
-  expect(saved.trace).toBeTruthy();
-  expect(saved.trace.revision).toBe(1);
-  expect(saved.trace.card.due).toBeTruthy();
-  expect(saved.events.some(event=>event.responseMode==="flashcard"&&event.metadata?.reviewGrade==="good")).toBe(true);
-  await dialog.getByRole("button",{name:"Close flashcards"}).click();
-  await page.reload();
-  await expect(page.getByRole("region",{name:"Kana Review"})).toBeVisible();
-  await page.getByRole("button",{name:"Review flashcards"}).click();
-  await expect(page.getByRole("dialog",{name:"Kana flashcards"})).toBeVisible();
-  await expect(page.getByRole("dialog",{name:"Kana flashcards"}).locator(".flashcards-front")).not.toHaveText("あ");
-});
-
-test("last unsynced flashcard grade can be undone without erasing history",async({page})=>{
-  await page.goto("./");
-  await page.getByRole("button",{name:"Review flashcards"}).click();
-  const dialog=page.getByRole("dialog",{name:"Kana flashcards"});
-  await dialog.getByRole("button",{name:"Show answer",exact:true}).last().click();
-  await dialog.getByRole("button",{name:/Good/}).click();
-  await dialog.getByRole("button",{name:/Undo last review/}).click();
-  await expect(dialog.locator(".flashcards-front")).toHaveText("あ");
-  await expect(dialog.locator(".flashcards-back")).toHaveText("a");
-  await dialog.getByRole("button",{name:/Again/}).click();
-  await expect(dialog.locator(".flashcards-front")).not.toHaveText("あ");
-});
-
-test("in-session Again waits for canonical FSRS and resumes due learning after reload",async({page})=>{
-  await page.clock.install({time:new Date("2026-10-26T12:00:00Z")});
-  await page.goto("./");
-  await page.getByRole("button",{name:"Review flashcards"}).click();
-  const dialog=page.getByRole("dialog",{name:"Kana flashcards"});
-  await dialog.getByRole("button",{name:"Deck settings"}).click();
-  await dialog.getByRole("spinbutton",{name:"New cards per session"}).fill("1");
-  await dialog.getByRole("spinbutton",{name:"Reviews per session"}).fill("0");
-  await dialog.getByRole("button",{name:"Save limits and restart deck"}).click();
-  await expect(dialog.locator(".flashcards-front")).toHaveText("あ");
-  await dialog.getByRole("button",{name:"Show answer",exact:true}).click();
-  await dialog.getByRole("button",{name:/Again/}).click();
-  await expect(dialog.getByRole("heading",{name:"Learning cards waiting"})).toBeVisible();
-  const due=await page.evaluate(async()=>{
-    const request=indexedDB.open("thiepn-japanese:00000000-0000-4000-8000-000000000001");
+  await expect(page.getByRole("navigation",{name:"Primary"}).getByRole("button",{name:"Kana"}))
+    .toHaveAttribute("aria-current","page");
+  await expect(page.getByRole("navigation",{name:"Kana sections"})
+    .getByRole("button",{name:/Flashcards/})).toHaveAttribute("aria-current","page");
+  await expect(page.getByPlaceholder("Type romaji... (or Space to reveal)")).toBeVisible();
+}
+async function evidence(page:Page){
+  return page.evaluate(async({owner,id})=>{
+    const request=indexedDB.open("thiepn-japanese:"+owner);
     const db=await new Promise<IDBDatabase>((resolve,reject)=>{
       request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error);
     });
-    const record=await new Promise<{card:{due:string;state:number};revision:number}>((resolve,reject)=>{
-      const tx=db.transaction("memory_traces","readonly");
-      const get=tx.objectStore("memory_traces").get("kana:hiragana-あ:recognition:kana-to-sound");
-      get.onsuccess=()=>resolve(get.result);get.onerror=()=>reject(get.error);
-    });db.close();return record;
-  });
-  expect(due.card.state).toBe(1);
-  expect(due.revision).toBe(1);
-  const waitMs=Date.parse(due.card.due)-await page.evaluate(()=>Date.now());
-  expect(waitMs).toBeGreaterThan(0);
-  await page.clock.fastForward(waitMs+1000);
-  await expect(dialog.locator(".flashcards-front")).toHaveText("あ");
-  await expect(dialog.getByText("Learning",{exact:true})).toBeVisible();
-  await dialog.getByRole("button",{name:"Close flashcards"}).click();
+    try{
+      return await new Promise<{trace:{revision:number;card:{due:string;reps:number}}|null;events:any[];outbox:any[]}>((resolve,reject)=>{
+        const tx=db.transaction(["memory_traces","study_events","sync_outbox"],"readonly");
+        const trace=tx.objectStore("memory_traces").get(id);
+        const events=tx.objectStore("study_events").getAll();
+        const outbox=tx.objectStore("sync_outbox").getAll();
+        tx.oncomplete=()=>resolve({trace:trace.result??null,events:events.result,outbox:outbox.result});
+        tx.onerror=()=>reject(tx.error);
+      });
+    }finally{db.close();}
+  },{owner:OWNER,id:READING_TRACE});
+}
+
+test("Japanese flashcard entry uses native Kana and canonical FSRS after reload",async({page})=>{
+  await openIntegratedFlashcards(page);
+  await expect(page.getByRole("dialog",{name:"Kana flashcards"})).toHaveCount(0);
+  const input=page.getByPlaceholder("Type romaji... (or Space to reveal)");
+  await input.fill("a");
+  await input.press("Enter");
+  await expect(page.getByText("Correct",{exact:true})).toBeVisible();
+  await page.getByRole("button",{name:/3. Good/}).click();
+  await expect.poll(async()=>(await evidence(page)).trace?.revision,{timeout:15000}).toBe(1);
+  const saved=await evidence(page);
+  expect(saved.trace?.revision).toBe(1);
+  expect(saved.trace?.card.reps).toBe(1);
+  expect(Number.isFinite(Date.parse(saved.trace!.card.due))).toBe(true);
+  expect(saved.events.some(e=>e.primaryTarget?.id==="hiragana-あ"&&e.metadata?.googleKanaStudio&&
+    e.metadata?.reviewGrade==="good")).toBe(true);
   await page.reload();
-  await page.getByRole("button",{name:"Review flashcards"}).click();
-  const restarted=page.getByRole("dialog",{name:"Kana flashcards"});
-  await restarted.getByRole("button",{name:"Deck settings"}).click();
-  await expect(restarted.getByRole("spinbutton",{name:"New cards per session"})).toHaveValue("1");
-  await expect(restarted.getByRole("spinbutton",{name:"Reviews per session"})).toHaveValue("0");
-  await restarted.getByRole("spinbutton",{name:"Reviews per session"}).fill("1");
-  await restarted.getByRole("button",{name:"Save limits and restart deck"}).click();
-  await expect(restarted.locator(".flashcards-front")).toHaveText("あ");
-  await restarted.getByRole("button",{name:"Show answer",exact:true}).click();
-  await restarted.getByRole("button",{name:/Good/}).click();
-  await expect.poll(async()=>page.evaluate(async()=>{
-    const request=indexedDB.open("thiepn-japanese:00000000-0000-4000-8000-000000000001");
-    const db=await new Promise<IDBDatabase>((resolve,reject)=>{
-      request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error);
-    });
-    const result=await new Promise<{revision:number}>((resolve,reject)=>{
-      const get=db.transaction("memory_traces","readonly").objectStore("memory_traces")
-        .get("kana:hiragana-あ:recognition:kana-to-sound");
-      get.onsuccess=()=>resolve(get.result);get.onerror=()=>reject(get.error);
-    });db.close();return result.revision;
-  })).toBe(2);
+  const persisted=await evidence(page);
+  expect(persisted.trace).toEqual(saved.trace);
+  expect(persisted.events).toEqual(saved.events);
 });
 
-test("flashcard grading commits FSRS and outbox locally while offline",async({page,context})=>{
-  await page.goto("./");
-  await page.getByRole("button",{name:"Review flashcards"}).click();
-  const dialog=page.getByRole("dialog",{name:"Kana flashcards"});
-  await expect(dialog.locator(".flashcards-front")).toHaveText("あ");
+test("revealing a Kana answer without rating does not fabricate review evidence",async({page})=>{
+  await openIntegratedFlashcards(page);
+  const input=page.getByPlaceholder("Type romaji... (or Space to reveal)");
+  await input.press("Enter");
+  await expect(page.getByRole("button",{name:/1. Again/})).toBeVisible();
+  const before=await evidence(page);
+  expect(before.events.filter(e=>e.primaryTarget?.id==="hiragana-あ")).toHaveLength(0);
+  await page.getByRole("navigation",{name:"Kana sections"}).getByRole("button",{name:/Words/}).click();
+  const after=await evidence(page);
+  expect(after.trace).toEqual(before.trace);
+  expect(after.events).toEqual(before.events);
+});
+
+test("incorrect answer locks grading to Again and commits one canonical grade",async({page})=>{
+  await openIntegratedFlashcards(page);
+  const input=page.getByPlaceholder("Type romaji... (or Space to reveal)");
+  await input.fill("wrong");
+  await input.press("Enter");
+  await expect(page.getByText("Incorrect",{exact:false}).first()).toBeVisible();
+  await expect(page.getByRole("button",{name:/3. Good/})).toBeDisabled();
+  await page.getByRole("button",{name:/1. Again/}).click();
+  await expect.poll(async()=>(await evidence(page)).trace?.revision,{timeout:15000}).toBe(1);
+  const saved=await evidence(page);
+  expect(saved.trace?.revision).toBe(1);
+  expect(saved.trace?.card.reps).toBe(1);
+  expect(saved.events.filter(e=>e.primaryTarget?.id==="hiragana-あ"&&e.metadata?.reviewGrade==="again")).toHaveLength(1);
+});
+
+test("offline native Kana grading preserves Japanese FSRS and sync outbox",async({page,context})=>{
+  await openIntegratedFlashcards(page);
+  const input=page.getByPlaceholder("Type romaji... (or Space to reveal)");
+  await input.fill("a");
+  await input.press("Enter");
+  await expect(page.getByRole("button",{name:/3. Good/})).toBeVisible();
   await context.setOffline(true);
-  await dialog.getByRole("button",{name:"Show answer",exact:true}).click();
-  await dialog.getByRole("button",{name:/Again/}).click();
-  await expect(dialog.locator(".flashcards-front")).toHaveText("ア");
-  const offline=await page.evaluate(async()=>{
-    const opened=indexedDB.open("thiepn-japanese:00000000-0000-4000-8000-000000000001");
-    const db=await new Promise<IDBDatabase>((resolve,reject)=>{
-      opened.onsuccess=()=>resolve(opened.result);opened.onerror=()=>reject(opened.error);
-    });
-    const result=await new Promise<{revision:number;due:string;events:number;outbox:number}>((resolve,reject)=>{
-      const tx=db.transaction(["memory_traces","study_events","sync_outbox"],"readonly");
-      const trace=tx.objectStore("memory_traces").get("kana:hiragana-あ:recognition:kana-to-sound");
-      const events=tx.objectStore("study_events").getAll();
-      const outbox=tx.objectStore("sync_outbox").getAll();
-      tx.oncomplete=()=>resolve({revision:trace.result.revision,due:trace.result.card.due,
-        events:events.result.length,outbox:outbox.result.length});
-      tx.onerror=()=>reject(tx.error);
-    });db.close();return result;
-  });
-  expect(offline.revision).toBe(1);
-  expect(Number.isFinite(Date.parse(offline.due))).toBe(true);
-  expect(offline.events).toBe(1);
-  expect(offline.outbox).toBe(1);
-  await context.setOffline(false);
-  await dialog.getByRole("button",{name:"Close flashcards"}).click();
-  await page.reload();
-  const after=await page.evaluate(async()=>{
-    const opened=indexedDB.open("thiepn-japanese:00000000-0000-4000-8000-000000000001");
-    const db=await new Promise<IDBDatabase>((resolve,reject)=>{
-      opened.onsuccess=()=>resolve(opened.result);opened.onerror=()=>reject(opened.error);
-    });
-    const result=await new Promise<{revision:number;due:string}>((resolve,reject)=>{
-      const get=db.transaction("memory_traces","readonly").objectStore("memory_traces")
-        .get("kana:hiragana-あ:recognition:kana-to-sound");
-      get.onsuccess=()=>resolve({revision:get.result.revision,due:get.result.card.due});
-      get.onerror=()=>reject(get.error);
-    });db.close();return result;
-  });
-  expect(after).toEqual({revision:offline.revision,due:offline.due});
+  try{
+    await page.getByRole("button",{name:/3. Good/}).click();
+    await expect.poll(async()=>(await evidence(page)).trace?.revision,{timeout:15000}).toBe(1);
+    const offline=await evidence(page);
+    expect(offline.trace?.revision).toBe(1);
+    expect(offline.events).toHaveLength(1);
+    expect(offline.outbox.length).toBeGreaterThanOrEqual(1);
+  }finally{await context.setOffline(false);}
 });
 
-test.describe("touch-sized flashcard controls",()=>{
+test.describe("mobile Kana controls",()=>{
   test.use({viewport:{width:390,height:844},hasTouch:true});
-  test("tap reveal, suspend and restore cards on mobile",async({page})=>{
-    await page.goto("./");
-    await page.getByRole("button",{name:"Review flashcards"}).click();
-    const dialog=page.getByRole("dialog",{name:"Kana flashcards"});
-    await expect(dialog).toBeVisible();
-    await dialog.getByRole("button",{name:"Reveal flashcard answer"}).tap();
-    await expect(dialog.locator(".flashcards-back")).toBeVisible();
-    await dialog.getByRole("button",{name:"Suspend card"}).tap();
-    await dialog.getByRole("button",{name:"Suspended (1)"}).tap();
-    await expect(dialog.getByRole("button",{name:"Restore"})).toBeVisible();
-    await dialog.getByRole("button",{name:"Restore"}).tap();
-    await expect(dialog.getByRole("button",{name:"Suspended (0)"})).toBeVisible();
+  test("native flashcard review and study tools remain touch-accessible",async({page})=>{
+    await openIntegratedFlashcards(page);
+    const input=page.getByPlaceholder("Type romaji... (or Space to reveal)");
+    await input.tap();
+    await input.fill("a");
+    await input.press("Enter");
+    await expect(page.getByRole("button",{name:/3. Good/})).toBeVisible();
+    await page.getByRole("button",{name:"Study tools"}).tap();
+    await page.getByRole("button",{name:"Review schedule"}).tap();
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await expect(page.locator(".j2-brand")).toBeVisible();
+    const widths=await page.evaluate(()=>[document.documentElement.scrollWidth,document.documentElement.clientWidth]);
+    expect(widths[0]).toBeLessThanOrEqual(widths[1]+1);
   });
 });

@@ -159,6 +159,41 @@ export async function saveStudyReview(event: StudyEvent, trace?: MemoryTrace): P
   return mutation;
 }
 
+/** Import a historical Google Kana FSRS snapshot only if the canonical cue has no trace.
+ * The ungraded source event is provenance, never a fabricated correct answer.
+ * Trace, event and outbox are committed atomically. Repeating an import is idempotent.
+ */
+export async function importKanaSnapshotIfMissing(
+  accountId: string, trace: MemoryTrace, provenance: StudyEvent
+): Promise<boolean> {
+  if (trace.userId !== accountId || provenance.userId !== accountId ||
+      !trace.id.startsWith("kana:") ||
+      provenance.metadata?.kanaStudioImport !== true ||
+      provenance.metadata?.schedulerExcluded !== true ||
+      provenance.result !== "skipped" || trace.revision !== 0)
+    throw Error("KANA_SNAPSHOT_INVALID");
+  const db = await openLocalDb(accountId);
+  const mutation = studyEventToMutation(provenance);
+  try {
+    return await new Promise<boolean>((resolve, reject) => {
+      const tx = db.transaction([MEMORY_TRACES, STUDY_EVENTS, OUTBOX], "readwrite");
+      const traces = tx.objectStore(MEMORY_TRACES);
+      let inserted = false;
+      const current = traces.get(trace.id);
+      current.onsuccess = () => {
+        if (current.result) return;
+        inserted = true;
+        traces.add(trace);
+        tx.objectStore(STUDY_EVENTS).add(provenance);
+        tx.objectStore(OUTBOX).put(mutation);
+      };
+      tx.oncomplete = () => resolve(inserted);
+      tx.onerror = () => reject(tx.error ?? Error("KANA_SNAPSHOT_IMPORT_FAILED"));
+      tx.onabort = () => reject(tx.error ?? Error("KANA_SNAPSHOT_IMPORT_ABORTED"));
+    });
+  } finally { db.close(); }
+}
+
 export async function saveMemoryTrace(accountId: string, trace: MemoryTrace): Promise<void> {
   if (trace.userId !== accountId) throw new Error("MEMORY_TRACE_ACCOUNT_MISMATCH");
   const db = await openLocalDb(accountId);

@@ -4,6 +4,7 @@ import { defaultSettings, getAllStoredCards, getSettings, saveSettings } from '.
 import { calculateDeckStatistics } from './services/srs';
 import { initSpeech } from './services/speech';
 import { kanaMap } from './data/kanaData';
+import { currentKanaView } from './services/japaneseBridge';
 import { Navigation } from './components/Navigation';
 import { HomeView } from './components/HomeView';
 import { LearnView } from './components/LearnView';
@@ -17,8 +18,30 @@ import { CategoryReviewModal } from './components/CategoryReviewModal';
 import { SrsScheduleModal } from './components/SrsScheduleModal';
 import { KanaDetailModal } from './components/KanaDetailModal';
 
-export default function App() {
-  const [currentView, setCurrentView] = useState<'home' | 'learn' | 'review' | 'words' | 'chart'>('home');
+export type KanaView='home'|'learn'|'review'|'words'|'chart';
+export type KanaTool='similar'|'schedule'|'shortcuts'|'settings'|'filter';
+export type KanaToolRequest={id:number;tool:KanaTool};
+export function KanaExperience({embedded=false,initialView,onExit,onViewChange,requestedTool,standardReviewRequest=0,onDueCountChange,onProgressChange}:{
+  embedded?:boolean;initialView?:KanaView;onExit?:()=>void;
+  onViewChange?:(view:KanaView)=>void;
+  requestedTool?:KanaToolRequest|null;
+  standardReviewRequest?:number;
+  onDueCountChange?:(count:number)=>void;
+  onProgressChange?:()=>void;
+}) {
+  const [localView,setLocalView]=useState<KanaView>(initialView ?? currentKanaView);
+  // Japanese owns the section route in embedded mode; no secondary router.
+  const currentView=embedded&&onViewChange ? (initialView??'home') : localView;
+  const setCurrentView=(next:KanaView)=>{
+    if(embedded&&onViewChange)onViewChange(next);
+    else setLocalView(next);
+  };
+  const progressCallback=React.useRef(onProgressChange);
+  const dueCountCallback=React.useRef(onDueCountChange);
+  useEffect(()=>{progressCallback.current=onProgressChange;},[onProgressChange]);
+  useEffect(()=>{dueCountCallback.current=onDueCountChange;},[onDueCountChange]);
+  const [reviewSessionKey,setReviewSessionKey]=useState(0);
+  const observedStandardRequest=React.useRef(standardReviewRequest);
   const [settings, setSettings] = useState<UserSettings>(defaultSettings);
   const [storedCards, setStoredCards] = useState<Map<string, StoredCardData>>(new Map());
   const [stats, setStats] = useState<DeckStatistics>({
@@ -58,6 +81,8 @@ export default function App() {
 
       const computedStats = await calculateDeckStatistics(userSettings);
       setStats(computedStats);
+      dueCountCallback.current?.(computedStats.dueNowCount);
+      progressCallback.current?.();
     } catch (err) {
       console.error('Error refreshing app data:', err);
     }
@@ -70,10 +95,21 @@ export default function App() {
 
     // Check for autostart query param
     const params = new URLSearchParams(window.location.search);
-    if (params.get('autostart') === '1') {
+    if (!embedded && params.get('autostart') === '1') {
       setCurrentView('review');
     }
-  }, [refreshData]);
+  }, [refreshData,embedded]);
+
+  useEffect(()=>{
+    if(!embedded||!requestedTool)return;
+    switch(requestedTool.tool){
+      case 'similar':setIsConfusablesOpen(true);break;
+      case 'schedule':setIsScheduleModalOpen(true);break;
+      case 'shortcuts':setIsShortcutsOpen(true);break;
+      case 'settings':setIsSettingsOpen(true);break;
+      case 'filter':setIsCategoryModalOpen(true);break;
+    }
+  },[embedded,requestedTool?.id]);
 
   // Sync theme
   useEffect(() => {
@@ -87,10 +123,9 @@ export default function App() {
         dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       }
       setIsDark(dark);
-      if (dark) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
+      // The embedded Kana section inherits Japanese's single global theme.
+      if(!embedded){
+        document.documentElement.classList.toggle('dark',dark);
       }
     };
 
@@ -102,7 +137,7 @@ export default function App() {
     };
     mediaQuery.addEventListener('change', listener);
     return () => mediaQuery.removeEventListener('change', listener);
-  }, [settings.theme]);
+  }, [settings.theme,embedded]);
 
   // Handle settings update
   const handleUpdateSettings = async (partial: Partial<UserSettings>) => {
@@ -127,7 +162,9 @@ export default function App() {
 
   const handleDrillKana = (ids: string[]) => {
     setDrillKanaIds(ids);
-    setCustomFilterOptions(undefined);
+    // The chart advertises "Drill", not a scheduled review. Keep row
+    // practice strictly ungraded so it cannot advance Japanese FSRS history.
+    setCustomFilterOptions({cramMode:true});
     setReviewDirection('kana-to-romaji');
     setCurrentView('review');
   };
@@ -145,6 +182,18 @@ export default function App() {
     setReviewDirection('kana-to-romaji');
     setCurrentView('review');
   };
+
+  // Primary Japanese navigation must replace a custom/drill review with the
+  // standard due queue even when Flashcards is already the active section.
+  useEffect(()=>{
+    if(!embedded||standardReviewRequest===observedStandardRequest.current)return;
+    observedStandardRequest.current=standardReviewRequest;
+    setDrillKanaIds(undefined);
+    setCustomFilterOptions(undefined);
+    setReviewDirection('kana-to-romaji');
+    setReviewSessionKey(key=>key+1);
+    setCurrentView('review');
+  },[embedded,standardReviewRequest]);
 
   // Global shortcut listeners: '?' for shortcuts, 'Escape' to close open modals
   useEffect(() => {
@@ -176,9 +225,11 @@ export default function App() {
   const activeKanaItem = activeModalKanaId ? kanaMap.get(activeModalKanaId) || null : null;
 
   return (
-    <div className="min-h-screen bg-[#F7F6F2] dark:bg-[#151515] text-[#202020] dark:text-[#F0EFEB] flex flex-col font-sans selection:bg-[#C94B3C]/20 selection:text-[#C94B3C] transition-colors duration-200">
+    <div className={embedded
+      ? "kana-native text-[#202020] dark:text-[#F0EFEB] font-sans"
+      : "min-h-screen bg-[#F7F6F2] dark:bg-[#151515] text-[#202020] dark:text-[#F0EFEB] flex flex-col font-sans selection:bg-[#C94B3C]/20 selection:text-[#C94B3C] transition-colors duration-200"}>
       {/* Navigation */}
-      <Navigation
+      {!embedded?<Navigation
         currentView={currentView}
         onNavigate={(view) => {
           if (view === 'review') {
@@ -195,12 +246,13 @@ export default function App() {
         onOpenConfusables={() => setIsConfusablesOpen(true)}
         isDark={isDark}
         onToggleTheme={toggleTheme}
-      />
+      />:null}
 
       {/* Main View Area */}
-      <main className="flex-1 w-full max-w-6xl mx-auto pb-16">
+      <div className="flex-1 w-full max-w-6xl mx-auto pb-16">
         {currentView === 'home' && (
           <HomeView
+            embedded={embedded}
             stats={stats}
             settings={settings}
             onNavigate={(view) => {
@@ -226,6 +278,7 @@ export default function App() {
 
         {currentView === 'review' && (
           <ReviewView
+            key={reviewSessionKey}
             settings={settings}
             onExit={() => setCurrentView('home')}
             onRefreshData={refreshData}
@@ -253,10 +306,11 @@ export default function App() {
             onRefreshData={refreshData}
           />
         )}
-      </main>
+      </div>
 
       {/* Modals */}
       <SettingsModal
+        embedded={embedded}
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         settings={settings}
@@ -303,3 +357,5 @@ export default function App() {
   );
 }
 
+
+export default function App(){return <KanaExperience/>;}

@@ -1,9 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
-const from = path.resolve('apps/kana-studio/dist');
-const to = path.resolve('apps/web/dist/kana');
-if (!fs.existsSync(path.join(from, 'index.html'))) {
-  throw new Error('KANA_STUDIO_BUILD_MISSING: build apps/kana-studio before packaging the Japanese site');
-}
-fs.cpSync(from, to, {recursive: true, force: true});
-console.log('Kana Studio included at /japanese/kana/');
+
+// Legacy Kana URLs now enter the original Japanese shell. All indexedDB records
+// remain on this origin; redirecting the old page does not move or delete them.
+const compiled=path.resolve('apps/kana-studio/dist/index.html');
+if(!fs.existsSync(compiled))throw Error('KANA_STUDIO_BUILD_MISSING');
+const target=path.resolve('apps/web/dist/kana');
+fs.mkdirSync(target,{recursive:true});
+fs.writeFileSync(path.join(target,'index.html'),`<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Japanese · Kana</title>
+<script>var view=new URLSearchParams(location.search).get("view")||"home";var allowed=["home","learn","review","words","chart"];if(!allowed.includes(view))view="home";location.replace("/japanese/?kana=resume&kanaView="+encodeURIComponent(view));</script>
+<noscript><meta http-equiv="refresh" content="0;url=/japanese/"></noscript></head>
+<body><p>Continue in <a href="/japanese/">Japanese</a>.</p></body></html>`,'utf8');
+console.log('Legacy /japanese/kana/ redirects into the Japanese app.');

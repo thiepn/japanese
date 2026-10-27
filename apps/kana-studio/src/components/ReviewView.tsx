@@ -14,8 +14,8 @@ interface ReviewViewProps {
   onRefreshData: () => Promise<void>;
   enableAudio: boolean;
   initialDirection?: 'kana-to-romaji' | 'romaji-to-kana';
-  drillKanaIds?: string[];
-  filterOptions?: ReviewFilterOptions;
+  drillKanaIds?: string[] | undefined;
+  filterOptions?: ReviewFilterOptions | undefined;
   onOpenCategoryModal?: () => void;
 }
 
@@ -32,6 +32,9 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
   const [direction, setDirection] = useState<'kana-to-romaji' | 'romaji-to-kana'>(initialDirection);
   const [queue, setQueue] = useState<ScheduledQueueItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [queueError,setQueueError]=useState<string|null>(null);
+  const [gradeError,setGradeError]=useState<string|null>(null);
+  const [missedIds,setMissedIds]=useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Card reveal state
@@ -59,6 +62,7 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
   const cardContainerRef = useRef<HTMLDivElement>(null);
+  const queueRequest=useRef(0);
 
   // Check speech synthesis availability
   useEffect(() => {
@@ -67,7 +71,12 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
 
   // Load review queue
   const loadQueue = useCallback(async (dir: 'kana-to-romaji' | 'romaji-to-kana', customDrill?: string[], fOpts?: ReviewFilterOptions) => {
+    const request=++queueRequest.current;
     setLoading(true);
+    setQueueError(null);
+    setGradeError(null);
+    setMissedIds([]);
+    setStats({cardsReviewed:0,correctAnswers:0,incorrectAnswers:0,scheduledLater:0,startTime:Date.now()});
     setCurrentIndex(0);
     setIsRevealed(false);
     setTypedInput('');
@@ -75,13 +84,22 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
     setAnswerResult(null);
     setSessionComplete(false);
 
-    const items = await buildReviewQueue(settings, true, dir, customDrill, fOpts);
-    setQueue(items);
-    setLoading(false);
-  }, [settings]);
+    try {
+      const items = await buildReviewQueue(settings, true, dir, customDrill, fOpts);
+      if(request===queueRequest.current)setQueue(items);
+    } catch(error) {
+      if(request===queueRequest.current){
+        setQueue([]);
+        setQueueError(error instanceof Error?error.message:'Could not load Kana cards.');
+      }
+    } finally {
+      if(request===queueRequest.current)setLoading(false);
+    }
+  }, [settings.preferredScript, settings.dailyNewLimit]);
 
   useEffect(() => {
-    loadQueue(direction, drillKanaIds, filterOptions);
+    void loadQueue(direction, drillKanaIds, filterOptions);
+    return ()=>{queueRequest.current++;};
   }, [direction, drillKanaIds, filterOptions, loadQueue]);
 
   const currentItem: ScheduledQueueItem | undefined = queue[currentIndex];
@@ -174,12 +192,15 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
     setIsGrading(true);
 
     try {
+      setGradeError(null);
       await gradeCard(currentItem.storedData, rating, new Date(), currentItem.isCram);
-
+      if((answerResult?.submitted&&!answerResult.isCorrect)||rating===Rating.Again){
+        setMissedIds(prev=>prev.includes(currentItem.kana.id)?prev:[...prev,currentItem.kana.id]);
+      }
       setStats(prev => ({
         ...prev,
         cardsReviewed: prev.cardsReviewed + 1,
-        scheduledLater: prev.scheduledLater + 1
+        scheduledLater: prev.scheduledLater + (currentItem.isCram?0:1)
       }));
 
       // Advance to next card or complete session
@@ -187,6 +208,9 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
         setSessionComplete(true);
         await onRefreshData();
       } else {
+        // Keep Japanese's native due count and course dashboard in sync after
+        // each committed FSRS grade, not only after the final card.
+        void onRefreshData();
         setCurrentIndex(prev => prev + 1);
         setIsRevealed(false);
         setTypedInput('');
@@ -194,15 +218,20 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
         setAnswerResult(null);
       }
     } catch (err) {
-      console.error('Failed to grade card:', err);
+      setGradeError(err instanceof Error?err.message:'Review could not be saved.');
     } finally {
       setIsGrading(false);
     }
-  }, [currentItem, currentIndex, queue.length, isGrading, onRefreshData]);
+  }, [currentItem, currentIndex, queue.length, isGrading, onRefreshData, answerResult]);
 
   // Keyboard navigation handler
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || e.isComposing || e.ctrlKey || e.altKey || e.metaKey) return;
+      if (document.querySelector('[role="dialog"][aria-modal="true"]')) return;
+      const target=e.target as HTMLElement | null;
+      const editing=target && (target.tagName==='INPUT' || target.tagName==='TEXTAREA' || target.isContentEditable);
+      if(editing && target!==inputRef.current)return;
       if (e.key === 'Escape') {
         e.preventDefault();
         onExit();
@@ -296,6 +325,14 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
     );
   }
 
+  if (queueError) {
+    return <div className="max-w-md mx-auto px-4 py-16 text-center space-y-4">
+      <p role="alert" className="text-sm text-rose-700 dark:text-rose-400">{queueError}</p>
+      <button type="button" onClick={()=>void loadQueue(direction,drillKanaIds,filterOptions)}
+        className="px-5 py-2.5 bg-[#C94B3C] text-white text-sm font-semibold rounded">Retry</button>
+    </div>;
+  }
+
   // Empty queue state
   if (!currentItem || queue.length === 0) {
     return (
@@ -321,7 +358,7 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
             <button
               onClick={() => {
                 const sampleH = ['h-a', 'h-i', 'h-u', 'h-e', 'h-o', 'h-ka', 'h-ki', 'h-ku', 'h-ke', 'h-ko'];
-                loadQueue('kana-to-romaji', sampleH);
+                loadQueue('kana-to-romaji', sampleH, {cramMode:true});
               }}
               className="p-2.5 rounded border border-[#DDD] dark:border-[#333] hover:border-[#C94B3C] text-xs font-medium text-center cursor-pointer transition-colors"
             >
@@ -330,7 +367,7 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
             <button
               onClick={() => {
                 const sampleK = ['k-a', 'k-i', 'k-u', 'k-e', 'k-o', 'k-shi', 'k-tsu', 'k-so', 'k-n', 'k-ku'];
-                loadQueue('kana-to-romaji', sampleK);
+                loadQueue('kana-to-romaji', sampleK, {cramMode:true});
               }}
               className="p-2.5 rounded border border-[#DDD] dark:border-[#333] hover:border-[#C94B3C] text-xs font-medium text-center cursor-pointer transition-colors"
             >
@@ -339,7 +376,7 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
             <button
               onClick={() => {
                 const confusableIds = ['k-shi', 'k-tsu', 'k-so', 'k-n', 'h-nu', 'h-me', 'h-re', 'h-ne', 'h-ru', 'h-ro', 'k-ku', 'k-ke'];
-                loadQueue('kana-to-romaji', confusableIds);
+                loadQueue('kana-to-romaji', confusableIds, {cramMode:true});
               }}
               className="p-2.5 rounded border border-[#DDD] dark:border-[#333] hover:border-[#C94B3C] text-xs font-medium text-center cursor-pointer transition-colors"
             >
@@ -351,10 +388,10 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
                 const stored = await getAllStoredCards();
                 const ids = Array.from(stored.keys()).filter(id => !id.endsWith(':rev'));
                 if (ids.length > 0) {
-                  loadQueue('kana-to-romaji', ids);
+                  loadQueue('kana-to-romaji', ids, {cramMode:true});
                 } else {
                   // Fallback sample
-                  loadQueue('kana-to-romaji', ['h-a', 'h-i', 'h-u', 'h-e', 'h-o']);
+                  loadQueue('kana-to-romaji', ['h-a', 'h-i', 'h-u', 'h-e', 'h-o'], {cramMode:true});
                 }
               }}
               className="p-2.5 rounded border border-[#DDD] dark:border-[#333] hover:border-[#C94B3C] text-xs font-medium text-center cursor-pointer transition-colors"
@@ -425,6 +462,13 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
         </div>
 
         <div className="flex justify-center gap-4">
+          {missedIds.length>0 && (
+            <button type="button"
+              onClick={()=>void loadQueue(direction,missedIds,{cramMode:true})}
+              className="px-6 py-2.5 border border-[#C94B3C] text-[#C94B3C] dark:text-[#E06A5B] text-xs font-semibold rounded">
+              Retry {missedIds.length} missed (practice only)
+            </button>
+          )}
           <button
             onClick={onExit}
             className="px-6 py-2.5 bg-[#C94B3C] hover:bg-[#B23F31] text-white text-xs font-bold rounded shadow-xs cursor-pointer"
@@ -672,6 +716,7 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
           </div>
 
           <div className="grid grid-cols-4 gap-2">
+            {gradeError && <p role="alert" className="col-span-full text-sm text-rose-600 dark:text-rose-400">{gradeError}</p>}
             {/* 1. Again */}
             <button
               onClick={() => handleGrade(Rating.Again as Grade)}

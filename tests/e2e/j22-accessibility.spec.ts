@@ -9,8 +9,8 @@ test("J22 keyboard, semantic navigation and theme hold across all learner destin
   await expect(page.getByRole("link",{name:"Skip to main content"})).toBeFocused();
   await expect(page.getByRole("link",{name:"Skip to main content"})).toHaveAttribute("href","#main-content");
   const nav=page.getByRole("navigation",{name:"Primary"});
-  await expect(nav.getByRole("button")).toHaveCount(5);
-  for(const name of ["Today","Learn","Immerse","Library","Progress"] as const){
+  await expect(nav.getByRole("button")).toHaveCount(6);
+  for(const name of ["Today","Learn","Kana","Immerse","Library","Progress"] as const){
     const button=nav.getByRole("button",{name,exact:true});
     await button.click();
     await expect(button).toHaveAttribute("aria-current","page");
@@ -26,8 +26,8 @@ test("J22 320px responsive focus and 200% text do not hide navigation",async({pa
   await page.setViewportSize({width:320,height:700});
   await page.goto("./");
   const nav=page.getByRole("navigation",{name:"Primary"});
-  await expect(nav.getByRole("button")).toHaveCount(5);
-  for(const name of ["Today","Library","Progress"] as const){
+  await expect(nav.getByRole("button")).toHaveCount(6);
+  for(const name of ["Today","Kana","Library","Progress"] as const){
     await nav.getByRole("button",{name,exact:true}).click();
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)).toBeLessThanOrEqual(1);
   }

@@ -2,6 +2,7 @@ import { createEmptyCard, fsrs, Rating, State, type Card, type ReviewLog, type G
 import type { KanaItem, StoredCardData, UserSettings, DeckStatistics, SrsForecast, ReviewFilterOptions } from '../types/kana';
 import { allKanaItems, kanaMap, confusablePairs } from '../data/kanaData';
 import { getAllStoredCards, saveStoredCard, saveReviewLog } from './storage';
+import { gradeJapaneseKanaCard, toggleJapaneseKanaSuspension, hasCanonicalKanaHistory } from './canonicalBridge';
 
 // Initialize FSRS scheduler with 90% target retention
 export const fScheduler = fsrs({
@@ -32,7 +33,7 @@ export function createNewCardData(
     direction,
     totalReviews: 0,
     totalLapses: 0,
-    introducedAt: isIntroduced ? new Date().toISOString() : undefined,
+    ...(isIntroduced ? {introducedAt:new Date().toISOString()} : {}),
     isSuspended: false
   };
 }
@@ -48,14 +49,20 @@ export async function gradeCard(
   isCram: boolean = false
 ): Promise<{ updatedData: StoredCardData; log?: ReviewLog }> {
   if (isCram) {
-    // In Cram mode, do not disturb the scientific FSRS interval, just record total reviews/lapses
-    const updatedData: StoredCardData = {
-      ...storedData,
-      totalReviews: storedData.totalReviews + 1,
-      totalLapses: rating === Rating.Again ? storedData.totalLapses + 1 : storedData.totalLapses
-    };
-    await saveStoredCard(updatedData);
-    return { updatedData };
+    // Cram is temporary practice. Never mutate either Japanese's authoritative
+    // schedule or the Google copy used to project a canonical trace.
+    // Session statistics are tracked by ReviewView, not by altering FSRS history.
+    return { updatedData: storedData };
+  }
+
+  // For exact-matched cues Japanese's trace and event outbox are the sole scheduler authority.
+  const canonical = await gradeJapaneseKanaCard(storedData, rating, reviewDate);
+  if (canonical) {
+    // Japanese FSRS + event outbox have already committed atomically. A failure
+    // in this optional Google cache must not invite a duplicate grade on retry.
+    try {await saveStoredCard(canonical);}
+    catch(error){console.warn('Canonical Kana grade saved; Google cache refresh unavailable:',error);}
+    return { updatedData: canonical };
   }
 
   const result = fScheduler.next(storedData.card, reviewDate, rating);
@@ -64,6 +71,8 @@ export async function gradeCard(
     ...storedData,
     card: result.card,
     lastReviewedAt: reviewDate.toISOString(),
+    ...(storedData.firstReviewedAt || storedData.totalReviews===0
+      ? {firstReviewedAt:storedData.firstReviewedAt ?? reviewDate.toISOString()} : {}),
     totalReviews: storedData.totalReviews + 1,
     totalLapses: rating === Rating.Again ? storedData.totalLapses + 1 : storedData.totalLapses
   };
@@ -78,6 +87,9 @@ export async function gradeCard(
  * Resets a card back to new state.
  */
 export async function resetCardProgress(cardId: string): Promise<StoredCardData> {
+  if (await hasCanonicalKanaHistory(cardId)) {
+    throw new Error('This card shares Japanese review history. Resetting it here would discard canonical progress.');
+  }
   const empty = createEmptyCard();
   const resetData: StoredCardData = {
     cardId,
@@ -104,6 +116,7 @@ export async function toggleCardSuspension(cardId: string): Promise<StoredCardDa
     ...existing,
     isSuspended: !existing.isSuspended
   };
+  await toggleJapaneseKanaSuspension(cardId, updated.isSuspended ?? false);
   await saveStoredCard(updated);
   return updated;
 }
@@ -332,9 +345,10 @@ export async function buildReviewQueue(
     const drillItems: ScheduledQueueItem[] = [];
     for (const id of explicitIds) {
       const item = kanaMap.get(id);
-      if (!item) continue;
+      if (!item || item.category === 'mechanic') continue;
       const storageKey = direction === 'romaji-to-kana' ? `${id}:rev` : id;
       const data = storedCards.get(storageKey) || createNewCardData(id, direction, true);
+      if(data.isSuspended || storedCards.get(id)?.isSuspended)continue;
       drillItems.push({
         kana: item,
         storedData: data,
@@ -431,13 +445,21 @@ export async function buildReviewQueue(
   // Sort due reviews by most overdue
   dueReview.sort((a, b) => new Date(a.storedData.card.due).getTime() - new Date(b.storedData.card.due).getTime());
 
-  const queue = [...dueLearning, ...dueReview, ...dueNewIntroduced];
-
-  if (includeNewCards && queue.length === 0 && unintroducedCandidates.length > 0) {
-    return unintroducedCandidates.slice(0, settings.dailyNewLimit);
-  }
-
-  return queue;
+  // Due learning and reviews always take priority. Newly introduced cards and
+  // unseen Kana share a bounded new-card allowance rather than letting a due
+  // backlog block all further progression indefinitely.
+  const dayStart=new Date(now);dayStart.setHours(0,0,0,0);
+  const studiedToday=[...storedCards.values()].filter(card=>{
+    if(!card.firstReviewedAt)return false;
+    const date=new Date(card.firstReviewedAt);
+    return Number.isFinite(date.getTime())&&date>=dayStart&&date<=now;
+  }).length;
+  const limit = includeNewCards ?
+    Math.max(0, Math.floor(settings.dailyNewLimit)-studiedToday) : 0;
+  const introducedNew = dueNewIntroduced.slice(0, limit);
+  const remaining = Math.max(0, limit - introducedNew.length);
+  const unseenNew = unintroducedCandidates.slice(0, remaining);
+  return [...dueLearning, ...dueReview, ...introducedNew, ...unseenNew];
 }
 
 

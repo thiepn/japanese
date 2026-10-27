@@ -47,6 +47,7 @@ export interface StoredCardData {
   card: Card; // ts-fsrs Card object (serialized dates)
   direction: 'kana-to-romaji' | 'romaji-to-kana';
   lastReviewedAt?: string;
+  firstReviewedAt?: string;
   introducedAt?: string;
   totalReviews: number;
   totalLapses: number;

@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { learningStages, type LearningStage } from '../data/kanaData';
 import { kanaMap } from '../data/kanaData';
 import { Volume2, ArrowLeft, ArrowRight, Check, Sparkles } from 'lucide-react';
 import type { KanaItem, StoredCardData } from '../types/kana';
 import { createNewCardData } from '../services/srs';
 import { saveStoredCard } from '../services/storage';
+import {wasKanaIntroduced,nextStageCharacterIndex} from '../services/stageProgress';
 import { playKanaAudio } from '../services/speech';
 import { checkAnswer } from '../utils/romaji';
 
@@ -27,6 +28,10 @@ export const LearnView: React.FC<LearnViewProps> = ({
   const [testedInput, setTestedInput] = useState('');
   const [showRecallTest, setShowRecallTest] = useState(false);
   const [recallSuccess, setRecallSuccess] = useState<boolean | null>(null);
+  const [advanceBusy,setAdvanceBusy]=useState(false);
+  const advanceLock=useRef(false);
+  const lastAdvanceAt=useRef(0);
+  const [stageError,setStageError]=useState<string|null>(null);
 
   const filteredStages = learningStages.filter(stage => {
     if (activeScriptFilter === 'all') return true;
@@ -39,7 +44,7 @@ export const LearnView: React.FC<LearnViewProps> = ({
     let introduced = 0;
     for (const id of stage.kanaIds) {
       const card = storedCards.get(id);
-      if (card && (card.totalReviews > 0 || card.card.state !== 0)) {
+      if (wasKanaIntroduced(card)) {
         introduced++;
       }
     }
@@ -52,7 +57,8 @@ export const LearnView: React.FC<LearnViewProps> = ({
 
   const startStage = (stage: LearningStage) => {
     setSelectedStage(stage);
-    setCardIndex(0);
+    setCardIndex(nextStageCharacterIndex(stage,storedCards));
+    setStageError(null);
     setShowRecallTest(false);
     setTestedInput('');
     setRecallSuccess(null);
@@ -66,7 +72,7 @@ export const LearnView: React.FC<LearnViewProps> = ({
   // If inside an active learning lesson
   if (selectedStage) {
     const currentKanaId = selectedStage.kanaIds[cardIndex];
-    const currentKana: KanaItem | undefined = kanaMap.get(currentKanaId);
+    const currentKana: KanaItem | undefined = currentKanaId ? kanaMap.get(currentKanaId) : undefined;
 
     if (!currentKana) {
       return (
@@ -96,20 +102,32 @@ export const LearnView: React.FC<LearnViewProps> = ({
     };
 
     const handleAdvance = async () => {
-      // Mark as introduced in SRS storage
-      if (!storedCards.has(currentKana.id)) {
-        const newCard = createNewCardData(currentKana.id);
-        await saveStoredCard(newCard);
-        await onRefreshData();
-      }
-
-      if (isLastCard) {
-        exitStage();
-      } else {
-        setCardIndex(prev => prev + 1);
-        setShowRecallTest(false);
-        setTestedInput('');
-        setRecallSuccess(null);
+      const now=Date.now();
+      // Touch double-taps must not unintentionally skip a second Kana.
+      if(advanceLock.current || now-lastAdvanceAt.current<350)return;
+      lastAdvanceAt.current=now;
+      advanceLock.current=true;
+      setAdvanceBusy(true);
+      setStageError(null);
+      try {
+        if (!wasKanaIntroduced(storedCards.get(currentKana.id))) {
+          const newCard = createNewCardData(currentKana.id);
+          await saveStoredCard(newCard);
+          await onRefreshData();
+        }
+        if (isLastCard) {
+          await exitStage();
+        } else {
+          setCardIndex(prev => prev + 1);
+          setShowRecallTest(false);
+          setTestedInput('');
+          setRecallSuccess(null);
+        }
+      } catch(error){
+        setStageError(error instanceof Error?error.message:'Unable to save your lesson progress.');
+      } finally {
+        advanceLock.current=false;
+        setAdvanceBusy(false);
       }
     };
 
@@ -259,11 +277,13 @@ export const LearnView: React.FC<LearnViewProps> = ({
               <span>Previous</span>
             </button>
 
+            {stageError && <p role="alert" className="text-sm text-rose-600 dark:text-rose-400">{stageError}</p>}
             <button
               onClick={handleAdvance}
+              disabled={advanceBusy}
               className="px-5 py-2.5 bg-[#C94B3C] hover:bg-[#B23F31] text-white text-xs font-bold rounded flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
             >
-              <span>{isLastCard ? 'Complete Stage' : 'Next Character'}</span>
+              <span>{advanceBusy ? 'Saving…' : isLastCard ? 'Complete Stage' : 'Next Character'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
