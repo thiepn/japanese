@@ -15,6 +15,10 @@ test('native Kana is part of Japanese primary navigation, with all Google learni
   await page.getByRole('navigation',{name:'Kana sections'}).getByRole('button',{name:'Words'}).click();
   await page.getByRole('navigation',{name:'Kana sections'}).getByRole('button',{name:'Kana chart'}).click();
   await expect(page.locator('.kana-native')).toBeVisible();
+  await expect(page.locator('.kana-native__toolbar')).toHaveCount(0);
+  await expect(page.getByRole('button',{name:'Study tools'})).toBeVisible();
+  await expect(page.locator('.kana-native__toolbar')).toHaveCount(0);
+  await page.getByRole('button',{name:'Study tools'}).click();
   await page.getByRole('button',{name:'Settings & backup'}).click();
   await expect(page.getByRole('dialog',{name:'',exact:true}).first()).toBeVisible();
   await expect(page.getByText('Export Progress',{exact:false})).toBeVisible();
@@ -69,4 +73,40 @@ test('native flashcard review uses canonical Japanese FSRS and exports portable 
   expect(archive.owner).toBe('00000000-0000-4000-8000-000000000001');
   expect(archive.canonicalProjection.some((card:{cardId:string;totalReviews:number})=>
     card.cardId==='h-a'&&card.totalReviews>0)).toBe(true);
+});
+
+test('native shell owns Kana tools and remembers route changes made inside Google components',async({page})=>{
+  await page.goto('./');
+  const primary=page.getByRole('navigation',{name:'Primary'});
+  await primary.getByRole('button',{name:'Kana'}).click();
+  const sections=page.getByRole('navigation',{name:'Kana sections'});
+  await sections.getByRole('button',{name:/Overview/}).click();
+  await page.getByRole('button',{name:/Explore Vocabulary/}).click();
+  await expect(sections.getByRole('button',{name:/Words/})).toHaveAttribute('aria-current','page');
+  await expect(page.getByRole('navigation',{name:'Primary'}).getByRole('button',{name:'Kana'}))
+    .toHaveAttribute('aria-current','page');
+  await page.getByRole('button',{name:'Study tools'}).click();
+  await page.getByRole('button',{name:'Similar kana'}).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await page.getByRole('button',{name:'Close',exact:true}).first().click();
+  await page.getByRole('button',{name:'Study tools'}).click();
+  await page.getByRole('button',{name:'Review schedule'}).click();
+  await expect(page.getByText('SRS Schedule',{exact:false}).first()).toBeVisible();
+  await expect(page.locator('.kana-native__toolbar')).toHaveCount(0);
+  await expect(page.locator('.j2-brand')).toBeVisible();
+});
+
+test('legacy Kana route never loads a separate application header even with a valid lease',async({page})=>{
+  await page.addInitScript(()=>{
+    const owner='00000000-0000-4000-8000-000000000001';
+    const lease={owner,epoch:'a'.repeat(32)};
+    localStorage.setItem('thiepn:japanese:kana-owner:v2',JSON.stringify(lease));
+    sessionStorage.setItem('thiepn:japanese:kana-handoff',JSON.stringify({...lease,at:Date.now()}));
+  });
+  await page.goto('kana/?view=words');
+  await expect(page).toHaveURL(/\/japanese\/?$/);
+  await expect(page.locator('.j2-brand')).toBeVisible();
+  await expect(page.getByRole('navigation',{name:'Kana sections'}).getByRole('button',{name:/Words/})).toHaveAttribute('aria-current','page');
+  await expect(page.getByRole('button',{name:'KANA home'})).toHaveCount(0);
+  await expect(page.getByRole('button',{name:'Back to Japanese app'})).toHaveCount(0);
 });
