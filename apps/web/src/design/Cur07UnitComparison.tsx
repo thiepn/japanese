@@ -1,6 +1,6 @@
 import {useState} from "react";
 import {buildCur06VocabularyJourney} from "../study/cur06VocabularyJourney";
-import {cur07PracticeKey,inspectCur07History,type Cur07Receipt} from "../study/cur07History";
+import {cur07PracticeKey,inspectCur07History,readCur07Pair,saveCur07Pair,type Cur07Receipt} from "../study/cur07History";
 import {readCoursePosition} from "../study/cur03CoursePosition";
 import type {VocabularyCourseLink,CourseReviewWord} from "../study/cur05LevelReview";
 
@@ -30,10 +30,12 @@ function RestoreChoices({owner,wordId,first,second,onRecover}:{owner:string;word
 export function Cur07UnitComparison({owner,word,onLaunch,onRecover,busy}:{
  owner:string;word:CourseReviewWord;onLaunch:Cur07Launch;onRecover:Cur07Recover;busy:boolean;
 }){
- const [expanded,setExpanded]=useState(false);
- const [first,setFirst]=useState(word.units[0]?.id??"");
- const [second,setSecond]=useState(word.units[1]?.id??"");
  const units=word.units;
+ const stored=readCur07Pair(owner,word.id,units.map(u=>u.id));
+ const [expanded,setExpanded]=useState(Boolean(stored));
+ const [first,setFirst]=useState(stored?.first??word.units[0]?.id??"");
+ const [second,setSecond]=useState(stored?.second??word.units[1]?.id??"");
+ const keepPair=(a:string,b:string)=>saveCur07Pair(owner,word.id,a,b,units.map(u=>u.id));
  const valid=units.length>1&&first!==second&&units.some(unit=>unit.id===first)&&units.some(unit=>unit.id===second);
  const firstUnit=units.find(unit=>unit.id===first);
  const secondUnit=units.find(unit=>unit.id===second);
@@ -52,21 +54,23 @@ export function Cur07UnitComparison({owner,word,onLaunch,onRecover,busy}:{
     <label>First source unit
      <select aria-label="First source unit" value={first} onChange={event=>{
       const next=event.target.value;setFirst(next);
-      if(next===second)setSecond(units.find(unit=>unit.id!==next)?.id??"");
+      const revised=next===second?(units.find(unit=>unit.id!==next)?.id??""):second;
+      if(next===second)setSecond(revised);
+      keepPair(next,revised);
      }}>
       {units.map(unit=><option key={unit.id} value={unit.id}>{describe(unit)}</option>)}
      </select>
     </label>
     <label>Contrasting source unit
-     <select aria-label="Contrasting source unit" value={second} onChange={event=>setSecond(event.target.value)}>
+     <select aria-label="Contrasting source unit" value={second} onChange={event=>{setSecond(event.target.value);keepPair(first,event.target.value);}}>
       {units.filter(unit=>unit.id!==first).map(unit=><option key={unit.id} value={unit.id}>{describe(unit)}</option>)}
      </select>
     </label>
     {valid?<p className="cur07-pair-summary">{firstUnit?.level} · {firstUnit?.title} versus {secondUnit?.level} · {secondUnit?.title}</p>:null}
     <div className="cur07-pair-actions">
-     <button disabled={busy||!valid} type="button" onClick={()=>onLaunch(word.id,"practice",first,"resume",second)}>
+     <button disabled={busy||!valid} type="button" onClick={()=>{keepPair(first,second);onLaunch(word.id,"practice",first,"resume",second);}}>
       {canResume?"Resume comparison":"Practice comparison"}</button>
-     <button disabled={busy||!valid} type="button" onClick={()=>onLaunch(word.id,"practice",first,"restart",second)}>Restart comparison</button>
+     <button disabled={busy||!valid} type="button" onClick={()=>{keepPair(first,second);onLaunch(word.id,"practice",first,"restart",second);}}>Restart comparison</button>
     </div>
     {valid?<RestoreChoices owner={owner} wordId={word.id} first={first} second={second} onRecover={onRecover}/>:null}
    </section>:null}
