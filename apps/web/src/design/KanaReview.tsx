@@ -10,7 +10,7 @@ const SKILLS:readonly {id:KanaReviewSkill;label:string}[]=[
   {id:"reading",label:"Reading recall"},{id:"form_selection",label:"Form selection"}
 ];
 
-export function KanaReview({overview,busy,status,onStart}:{
+export function KanaReview({overview,busy,status,onStart,onFlashcardsChanged}:{
   overview:KanaReviewOverview;busy:boolean;status:string;
   onStart:(script:KanaReviewScript,skill:KanaReviewSkill)=>void;
   onFlashcardsChanged:()=>void;
