@@ -9,7 +9,7 @@ const MAX_STEPS=1200;
 type Position={version:2;unitId:string;stepId:string;ordinal:number;fingerprint:string;updatedAt:number};
 export interface PositionStore {getItem(key:string):string|null;setItem(key:string,value:string):void;removeItem(key:string):void;}
 export function coursePositionKey(owner:string,unitId:string):string{
- if(!owner.trim()||owner.length>250||!/^[-a-z0-9]+$/i.test(unitId))throw Error("CUR04_BAD_SCOPE");
+ if(!owner.trim()||owner.length>250||!/^[-a-z0-9]+$/i.test(unitId))throw Error("CUR03_BAD_SCOPE");
  return PREFIX+encodeURIComponent(owner)+":"+unitId;
 }
 function storage():PositionStore|null{try{return typeof localStorage==="undefined"?null:localStorage}catch{return null}}
@@ -21,9 +21,9 @@ function hashSource(text:string):string{
 }
 export function coursePositionFingerprint(steps:readonly StudyStep[]):string{
  if(!steps.length||steps.length>MAX_STEPS||steps.some(step=>!step||!step.id||step.id.length>200))
-  throw Error("CUR04_INVALID_STEPS");
+  throw Error("CUR03_INVALID_STEPS");
  const ids=steps.map(step=>step.id);
- if(new Set(ids).size!==ids.length)throw Error("CUR04_DUPLICATE_STEP");
+ if(new Set(ids).size!==ids.length)throw Error("CUR03_DUPLICATE_STEP");
  // Includes source/content version, actual instructional explanations, option
  // semantics and per-prompt provenance, not just the old display order.
  return hashSource(JSON.stringify(steps));
@@ -42,7 +42,7 @@ export function readCoursePosition(owner:string,unitId:string,steps:readonly Stu
 }
 export function saveCoursePosition(owner:string,unitId:string,steps:readonly StudyStep[],index:number,store:PositionStore|null=storage()):boolean{
  const key=coursePositionKey(owner,unitId),fingerprint=coursePositionFingerprint(steps);
- if(!Number.isSafeInteger(index)||index<0||index>=steps.length)throw Error("CUR04_BAD_POSITION");
+ if(!Number.isSafeInteger(index)||index<0||index>=steps.length)throw Error("CUR03_BAD_POSITION");
  const next:Position={version:2,unitId,stepId:steps[index]!.id,ordinal:index,fingerprint,updatedAt:Date.now()};
  try{if(!store)return false;store.setItem(key,JSON.stringify(next));return true}catch{return false}
 }
@@ -53,6 +53,6 @@ export function clearCoursePosition(owner:string,unitId:string,store:PositionSto
 /** A saved answer makes the following step the safe starting point. */
 export function nextSavedPosition(index:number,steps:readonly StudyStep[]):number{
  coursePositionFingerprint(steps);
- if(!Number.isSafeInteger(index)||index<0||index>=steps.length)throw Error("CUR04_BAD_POSITION");
+ if(!Number.isSafeInteger(index)||index<0||index>=steps.length)throw Error("CUR03_BAD_POSITION");
  return Math.min(index+1,steps.length-1);
 }
