@@ -67,7 +67,7 @@ export function projectCourseLevelReview(input:{
  for(const prompt of vocabularyPrompts){
   if(prompt.primaryTarget.kind!=="lexeme")throw Error("CUR05_NON_VOCAB_PROMPT");
   const word=wordsById.get(prompt.primaryTarget.id);
-  if(!word||!trustedLexemeSource(word.sourceIds)||!word.sourceIds.includes(prompt.sourceId))
+  if(!word||!trustedLexemeSource(word.sourceIds)||!prompt.sourceId||!word.sourceIds.includes(prompt.sourceId))
    throw Error("CUR05_UNKNOWN_OR_UNLICENSED_WORD:"+prompt.id);
   const arr=grouped.get(word.id)??[];
   if(!arr.some(p=>courseReviewTraceId(p)===courseReviewTraceId(prompt)))arr.push(prompt);
@@ -88,8 +88,8 @@ export function projectCourseLevelReview(input:{
  }
  const knownDue=new Set<string>();
  for(const prompt of vocabularyPrompts)if(due(prompt))knownDue.add(courseReviewTraceId(prompt));
- const perLevel:CourseLevelReviewOverview["perLevel"]=[...COURSE_LEVELS,"unassigned"].map(level=>{
-  const selected=words.filter(word=>level==="unassigned"?!word.levels.length:word.levels.includes(level));
+ const perLevel:CourseLevelReviewOverview["perLevel"]=([...COURSE_LEVELS,"unassigned"] as CourseReviewLevel[]).map(level=>{
+  const selected=words.filter(word=>level==="unassigned"?!word.levels.length:word.levels.includes(level as CourseLevel));
   return {level,wordCount:selected.length,due:selected.reduce((total,word)=>total+word.due,0),
    scheduled:selected.reduce((total,word)=>total+word.scheduled,0)};
  });
