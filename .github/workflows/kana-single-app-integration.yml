@@ -1,7 +1,7 @@
 name: Native Japanese Kana One App Integration
 on:
   push:
-    branches: [feature/native-japanese-kana-unified-20261027]
+    branches: [feature/native-japanese-kana-unified-20261027, feature/japanese-kana-unified-mobile-progress-20261027]
   workflow_dispatch:
 jobs:
   native-kana:
@@ -17,10 +17,12 @@ jobs:
       - run: pnpm install --no-frozen-lockfile
       - name: Canonical and Google progress tests
         run: pnpm exec vitest run tests/kana-studio-canonical.test.ts tests/kana-stage-progress.test.ts
+      - name: Type-check unified shell and account-safe Kana
+        run: pnpm typecheck
       - name: Build integrated Japanese and Kana
         run: pnpm build
       - run: test -s apps/web/dist/kana/index.html
       - name: Install Chromium browser
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install chromium
       - name: Native Japanese desktop and mobile integration
-        run: pnpm exec playwright test tests/e2e/native-kana.spec.ts --project=desktop-chromium --project=android-mobile --project=compact-mobile --workers=2
+        run: pnpm exec playwright test tests/e2e/native-kana.spec.ts tests/e2e/kana-single-app-progress.spec.ts tests/e2e/j22-accessibility.spec.ts --project=desktop-chromium --project=android-mobile --project=compact-mobile --workers=2

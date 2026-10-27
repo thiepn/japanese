@@ -9,19 +9,25 @@ type Props={
   owner:string;initialView:KanaView;onExit:()=>void;
   onViewChange:(view:KanaView)=>void;
   requestedTool:KanaToolRequest|null;
+  standardReviewRequest:number;
+  onDueCount:(count:number)=>void;
   onProgressChange:()=>void;
 };
 type Embedded=ComponentType<{
   embedded?:boolean;initialView?:KanaView;onExit?:()=>void;
   onViewChange?:(view:KanaView)=>void;
   requestedTool?:KanaToolRequest|null;
+  standardReviewRequest?:number;
+  onDueCountChange?:(count:number)=>void;
   onProgressChange?:()=>void;
 }>;
 
-export function NativeKanaWorkspace({owner,initialView,onExit,onViewChange,requestedTool,onProgressChange}:Props){
+export function NativeKanaWorkspace({owner,initialView,onExit,onViewChange,requestedTool,standardReviewRequest,onDueCount,onProgressChange}:Props){
   const [Screen,setScreen]=useState<Embedded|null>(null);
   const progressRef=useRef(onProgressChange);
+  const dueRef=useRef(onDueCount);
   useEffect(()=>{progressRef.current=onProgressChange;},[onProgressChange]);
+  useEffect(()=>{dueRef.current=onDueCount;},[onDueCount]);
   const [error,setError]=useState<string|null>(null);
   const [dark,setDark]=useState(false);
 
@@ -81,6 +87,11 @@ export function NativeKanaWorkspace({owner,initialView,onExit,onViewChange,reque
     {error?<div role="alert"><p>{error}</p><button type="button" onClick={onExit}>Return to Japanese</button></div>:null}
     {!error&&!Screen?<p role="status">Opening Kana lessons and reviews…</p>:null}
     {Screen&&!error?<Screen embedded initialView={initialView} onExit={onExit} onViewChange={onViewChange}
-      requestedTool={requestedTool} onProgressChange={()=>progressRef.current()}/>:null}
+      requestedTool={requestedTool} standardReviewRequest={standardReviewRequest}
+      onDueCountChange={count=>{
+        const lease=readKanaOwnerLease();
+        if(lease?.owner===owner)dueRef.current(count);
+      }}
+      onProgressChange={()=>progressRef.current()}/>:null}
   </section>;
 }

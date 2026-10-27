@@ -39,7 +39,9 @@ export function J2AppShell({
   diagnosticsMode=false,
   kanaView="home",
   onKanaViewChange,
+  onKanaStandardReview,
   onKanaToolAction,
+  kanaDueCount=null,
   children,
 }:{
   surface:J2Surface;
@@ -55,7 +57,9 @@ export function J2AppShell({
   diagnosticsMode?:boolean;
   kanaView?:KanaView;
   onKanaViewChange?:(view:KanaView)=>void;
+  onKanaStandardReview?:()=>void;
   onKanaToolAction?:(tool:KanaTool)=>void;
+  kanaDueCount?:number|null;
   children:ReactNode;
 }){
   const [theme,setTheme]=useState<JTheme>(readJTheme);
@@ -261,7 +265,9 @@ export function J2AppShell({
         <div className={"j9-fusuma j9-fusuma--"+surface.toLowerCase()} key={(diagnosticsMode?"diagnostics":surface)+"-transition"} aria-hidden="true"/>
         {accountStatus?<p className="j2-account-status" role="status">{accountStatus}</p>:null}
         {!diagnosticsMode&&surface==="Kana"&&onKanaViewChange&&onKanaToolAction
-          ?<J2KanaNavigation selected={kanaView} onSelect={onKanaViewChange} onTool={onKanaToolAction}/>
+          ?<J2KanaNavigation selected={kanaView}
+            onSelect={view=>view==="review"&&onKanaStandardReview?onKanaStandardReview():onKanaViewChange(view)}
+            onTool={onKanaToolAction} dueCount={kanaDueCount}/>
           :null}
         {children}
       </main>

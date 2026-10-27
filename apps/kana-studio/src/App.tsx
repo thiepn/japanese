@@ -21,10 +21,12 @@ import { KanaDetailModal } from './components/KanaDetailModal';
 export type KanaView='home'|'learn'|'review'|'words'|'chart';
 export type KanaTool='similar'|'schedule'|'shortcuts'|'settings'|'filter';
 export type KanaToolRequest={id:number;tool:KanaTool};
-export function KanaExperience({embedded=false,initialView,onExit,onViewChange,requestedTool,onProgressChange}:{
+export function KanaExperience({embedded=false,initialView,onExit,onViewChange,requestedTool,standardReviewRequest=0,onDueCountChange,onProgressChange}:{
   embedded?:boolean;initialView?:KanaView;onExit?:()=>void;
   onViewChange?:(view:KanaView)=>void;
   requestedTool?:KanaToolRequest|null;
+  standardReviewRequest?:number;
+  onDueCountChange?:(count:number)=>void;
   onProgressChange?:()=>void;
 }) {
   const [localView,setLocalView]=useState<KanaView>(initialView ?? currentKanaView);
@@ -35,7 +37,11 @@ export function KanaExperience({embedded=false,initialView,onExit,onViewChange,r
     else setLocalView(next);
   };
   const progressCallback=React.useRef(onProgressChange);
+  const dueCountCallback=React.useRef(onDueCountChange);
   useEffect(()=>{progressCallback.current=onProgressChange;},[onProgressChange]);
+  useEffect(()=>{dueCountCallback.current=onDueCountChange;},[onDueCountChange]);
+  const [reviewSessionKey,setReviewSessionKey]=useState(0);
+  const observedStandardRequest=React.useRef(standardReviewRequest);
   const [settings, setSettings] = useState<UserSettings>(defaultSettings);
   const [storedCards, setStoredCards] = useState<Map<string, StoredCardData>>(new Map());
   const [stats, setStats] = useState<DeckStatistics>({
@@ -75,6 +81,7 @@ export function KanaExperience({embedded=false,initialView,onExit,onViewChange,r
 
       const computedStats = await calculateDeckStatistics(userSettings);
       setStats(computedStats);
+      dueCountCallback.current?.(computedStats.dueNowCount);
       progressCallback.current?.();
     } catch (err) {
       console.error('Error refreshing app data:', err);
@@ -155,7 +162,9 @@ export function KanaExperience({embedded=false,initialView,onExit,onViewChange,r
 
   const handleDrillKana = (ids: string[]) => {
     setDrillKanaIds(ids);
-    setCustomFilterOptions(undefined);
+    // The chart advertises "Drill", not a scheduled review. Keep row
+    // practice strictly ungraded so it cannot advance Japanese FSRS history.
+    setCustomFilterOptions({cramMode:true});
     setReviewDirection('kana-to-romaji');
     setCurrentView('review');
   };
@@ -173,6 +182,18 @@ export function KanaExperience({embedded=false,initialView,onExit,onViewChange,r
     setReviewDirection('kana-to-romaji');
     setCurrentView('review');
   };
+
+  // Primary Japanese navigation must replace a custom/drill review with the
+  // standard due queue even when Flashcards is already the active section.
+  useEffect(()=>{
+    if(!embedded||standardReviewRequest===observedStandardRequest.current)return;
+    observedStandardRequest.current=standardReviewRequest;
+    setDrillKanaIds(undefined);
+    setCustomFilterOptions(undefined);
+    setReviewDirection('kana-to-romaji');
+    setReviewSessionKey(key=>key+1);
+    setCurrentView('review');
+  },[embedded,standardReviewRequest]);
 
   // Global shortcut listeners: '?' for shortcuts, 'Escape' to close open modals
   useEffect(() => {
@@ -257,6 +278,7 @@ export function KanaExperience({embedded=false,initialView,onExit,onViewChange,r
 
         {currentView === 'review' && (
           <ReviewView
+            key={reviewSessionKey}
             settings={settings}
             onExit={() => setCurrentView('home')}
             onRefreshData={refreshData}

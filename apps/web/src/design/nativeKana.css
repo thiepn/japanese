@@ -35,6 +35,11 @@
 }
 .j2-kana-route__sections button[aria-current="page"]{color:var(--j-fg);border-bottom-color:var(--j-season-accent);background:color-mix(in srgb,var(--j-season-accent) 6%,transparent)}
 .j2-kana-route__sections button small{font-size:9px;font-weight:500;color:var(--j-fg-muted)}
+.j2-kana-route__due{
+  display:inline-flex;min-width:18px;min-height:18px;align-items:center;justify-content:center;
+  margin-inline-start:5px;padding:1px 5px;border-radius:12px;
+  background:var(--j-season-accent);color:#fff8ef;font-size:10px;font-weight:800;
+}
 .j2-kana-route__tools{display:flex;flex-wrap:wrap;gap:7px;padding:13px 0}
 .j2-kana-route button:focus-visible{outline:2px solid var(--j-season-accent);outline-offset:2px}
 .j2-native-kana .font-kana {
