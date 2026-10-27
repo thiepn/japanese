@@ -1,4 +1,6 @@
 import {useEffect,useRef,useState,type ReactNode} from "react";
+import {J2KanaNavigation,type KanaTool} from "./J2KanaNavigation";
+import type {KanaView} from "../../../kana-studio/src/App";
 import {JPattern,JSeal,type JTheme} from "./index";
 import {j9SensoryFeedback,readJ9SensoryEnabled,setJ9SensoryEnabled} from "./j9Sensory";
 import {J10SeasonalWorld} from "./J10SeasonalWorld";
@@ -35,6 +37,9 @@ export function J2AppShell({
   localRecoveryBusy=false,
   localRecoveryStatus=null,
   diagnosticsMode=false,
+  kanaView="home",
+  onKanaViewChange,
+  onKanaToolAction,
   children,
 }:{
   surface:J2Surface;
@@ -48,6 +53,9 @@ export function J2AppShell({
   localRecoveryBusy?:boolean;
   localRecoveryStatus?:string|null;
   diagnosticsMode?:boolean;
+  kanaView?:KanaView;
+  onKanaViewChange?:(view:KanaView)=>void;
+  onKanaToolAction?:(tool:KanaTool)=>void;
   children:ReactNode;
 }){
   const [theme,setTheme]=useState<JTheme>(readJTheme);
@@ -252,6 +260,9 @@ export function J2AppShell({
       </nav>:null}      <main className={"j2-content"+(diagnosticsMode?" j2-content--diagnostics":"")} id="main-content" tabIndex={-1}>
         <div className={"j9-fusuma j9-fusuma--"+surface.toLowerCase()} key={(diagnosticsMode?"diagnostics":surface)+"-transition"} aria-hidden="true"/>
         {accountStatus?<p className="j2-account-status" role="status">{accountStatus}</p>:null}
+        {!diagnosticsMode&&surface==="Kana"&&onKanaViewChange&&onKanaToolAction
+          ?<J2KanaNavigation selected={kanaView} onSelect={onKanaViewChange} onTool={onKanaToolAction}/>
+          :null}
         {children}
       </main>
     </div>

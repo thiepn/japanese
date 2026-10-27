@@ -16,6 +16,8 @@ test('a partially introduced lesson resumes at the first unfinished character af
   await page.getByRole('button',{name:'Next Character'}).dblclick({delay:25});
   await expect(page.getByText('Character 2 of 5')).toBeVisible();
   await page.reload();
+  await page.getByRole('navigation',{name:'Primary'}).getByRole('button',{name:'Kana'}).click();
+  await page.getByRole('navigation',{name:'Kana sections'}).getByRole('button',{name:/Lessons/}).click();
   await page.getByRole('button',{name:'Continue',exact:true}).first().click();
   await expect(page.getByText('Character 2 of 5')).toBeVisible();
 });
@@ -24,7 +26,7 @@ test('Kana Learn and Review have no sideways page overflow at mobile widths',asy
   if(!isMobile)test.skip();
   for(const view of ['learn','review']){
     await page.goto('kana/?view='+view);
-    await expect(page.getByRole('button',{name:'Back to Japanese app'})).toBeVisible();
+    await expect(page.locator('.j2-brand')).toBeVisible();
     const widths=await page.evaluate(()=>({
       content:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth
     }));
@@ -34,7 +36,7 @@ test('Kana Learn and Review have no sideways page overflow at mobile widths',asy
 
 test('review finishes after the remaining daily new card and preserves the summary on refresh',async({page})=>{
   await page.goto('kana/?view=review');
-  await expect(page.getByRole('button',{name:'Back to Japanese app'})).toBeVisible();
+  await expect(page.locator('.j2-brand')).toBeVisible();
   await page.evaluate(async({owner})=>{
     const db=await new Promise<IDBDatabase>((resolve,reject)=>{
       const req=indexedDB.open('kana_mastery_v1:'+owner,1);
@@ -61,6 +63,8 @@ test('review finishes after the remaining daily new card and preserves the summa
     db.close();
   },{owner});
   await page.reload();
+  await page.getByRole('navigation',{name:'Primary'}).getByRole('button',{name:'Kana'}).click();
+  await page.getByRole('navigation',{name:'Kana sections'}).getByRole('button',{name:/Flashcards/}).click();
   const textbox=page.getByPlaceholder('Type romaji... (or Space to reveal)');
   await expect(textbox).toBeVisible();
   await textbox.press('Enter');

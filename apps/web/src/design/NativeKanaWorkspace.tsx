@@ -1,14 +1,24 @@
 import {useEffect,useRef,useState,type ComponentType} from "react";
+import type {KanaView,KanaToolRequest} from "../../../kana-studio/src/App";
 import {bindEmbeddedKanaWorkspace,unbindEmbeddedKanaWorkspace}
   from "../../../kana-studio/src/services/japaneseBridge";
 import {publishKanaOwnerLease,readKanaOwnerLease,KANA_OWNER_KEY} from "../kanaHandoff";
 import "./nativeKana.css";
 
-type View="home"|"learn"|"review"|"words"|"chart";
-type Props={owner:string;initialView:View;onExit:()=>void;onProgressChange:()=>void};
-type Embedded=ComponentType<{embedded?:boolean;initialView?:View;onExit?:()=>void}>;
+type Props={
+  owner:string;initialView:KanaView;onExit:()=>void;
+  onViewChange:(view:KanaView)=>void;
+  requestedTool:KanaToolRequest|null;
+  onProgressChange:()=>void;
+};
+type Embedded=ComponentType<{
+  embedded?:boolean;initialView?:KanaView;onExit?:()=>void;
+  onViewChange?:(view:KanaView)=>void;
+  requestedTool?:KanaToolRequest|null;
+  onProgressChange?:()=>void;
+}>;
 
-export function NativeKanaWorkspace({owner,initialView,onExit,onProgressChange}:Props){
+export function NativeKanaWorkspace({owner,initialView,onExit,onViewChange,requestedTool,onProgressChange}:Props){
   const [Screen,setScreen]=useState<Embedded|null>(null);
   const progressRef=useRef(onProgressChange);
   useEffect(()=>{progressRef.current=onProgressChange;},[onProgressChange]);
@@ -70,6 +80,7 @@ export function NativeKanaWorkspace({owner,initialView,onExit,onProgressChange}:
   return <section className={"j2-native-kana"+(dark?" dark":"")} aria-label="Kana learning">
     {error?<div role="alert"><p>{error}</p><button type="button" onClick={onExit}>Return to Japanese</button></div>:null}
     {!error&&!Screen?<p role="status">Opening Kana lessons and reviews…</p>:null}
-    {Screen&&!error?<Screen embedded initialView={initialView} onExit={onExit}/>:null}
+    {Screen&&!error?<Screen embedded initialView={initialView} onExit={onExit} onViewChange={onViewChange}
+      requestedTool={requestedTool} onProgressChange={()=>progressRef.current()}/>:null}
   </section>;
 }

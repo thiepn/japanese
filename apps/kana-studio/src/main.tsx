@@ -1,12 +1,8 @@
-import {createRoot} from 'react-dom/client';
-import App from './App.tsx';
-import { hasValidKanaHandoff, watchKanaWorkspace, currentKanaView } from './services/japaneseBridge';
-import './index.css';
+import {currentKanaView} from './services/japaneseBridge';
 
-if (!hasValidKanaHandoff()) {
-  const view = currentKanaView();
-  window.location.replace('/japanese/?kana=resume' + (view === 'home' ? '' : '&kanaView=' + view));
-} else {
-  watchKanaWorkspace();
-  createRoot(document.getElementById('root')!).render(<App />);
-}
+// Compatibility endpoint only. Kana lessons, flashcards, vocabulary and charts
+// now run inside the one Japanese application and its existing Account shell.
+// No standalone Google page mounts, even with a previously valid handoff.
+const view=currentKanaView();
+const requested=view==='home'?'':'&kanaView='+encodeURIComponent(view);
+window.location.replace('/japanese/?kana=resume'+requested);

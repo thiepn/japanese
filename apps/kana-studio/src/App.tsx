@@ -19,10 +19,23 @@ import { SrsScheduleModal } from './components/SrsScheduleModal';
 import { KanaDetailModal } from './components/KanaDetailModal';
 
 export type KanaView='home'|'learn'|'review'|'words'|'chart';
-export function KanaExperience({embedded=false,initialView,onExit}:{
+export type KanaTool='similar'|'schedule'|'shortcuts'|'settings'|'filter';
+export type KanaToolRequest={id:number;tool:KanaTool};
+export function KanaExperience({embedded=false,initialView,onExit,onViewChange,requestedTool,onProgressChange}:{
   embedded?:boolean;initialView?:KanaView;onExit?:()=>void;
+  onViewChange?:(view:KanaView)=>void;
+  requestedTool?:KanaToolRequest|null;
+  onProgressChange?:()=>void;
 }) {
-  const [currentView, setCurrentView] = useState<KanaView>(initialView ?? currentKanaView);
+  const [localView,setLocalView]=useState<KanaView>(initialView ?? currentKanaView);
+  // Japanese owns the section route in embedded mode; no secondary router.
+  const currentView=embedded&&onViewChange ? (initialView??'home') : localView;
+  const setCurrentView=(next:KanaView)=>{
+    if(embedded&&onViewChange)onViewChange(next);
+    else setLocalView(next);
+  };
+  const progressCallback=React.useRef(onProgressChange);
+  useEffect(()=>{progressCallback.current=onProgressChange;},[onProgressChange]);
   const [settings, setSettings] = useState<UserSettings>(defaultSettings);
   const [storedCards, setStoredCards] = useState<Map<string, StoredCardData>>(new Map());
   const [stats, setStats] = useState<DeckStatistics>({
@@ -62,6 +75,7 @@ export function KanaExperience({embedded=false,initialView,onExit}:{
 
       const computedStats = await calculateDeckStatistics(userSettings);
       setStats(computedStats);
+      progressCallback.current?.();
     } catch (err) {
       console.error('Error refreshing app data:', err);
     }
@@ -74,10 +88,21 @@ export function KanaExperience({embedded=false,initialView,onExit}:{
 
     // Check for autostart query param
     const params = new URLSearchParams(window.location.search);
-    if (params.get('autostart') === '1') {
+    if (!embedded && params.get('autostart') === '1') {
       setCurrentView('review');
     }
-  }, [refreshData]);
+  }, [refreshData,embedded]);
+
+  useEffect(()=>{
+    if(!embedded||!requestedTool)return;
+    switch(requestedTool.tool){
+      case 'similar':setIsConfusablesOpen(true);break;
+      case 'schedule':setIsScheduleModalOpen(true);break;
+      case 'shortcuts':setIsShortcutsOpen(true);break;
+      case 'settings':setIsSettingsOpen(true);break;
+      case 'filter':setIsCategoryModalOpen(true);break;
+    }
+  },[embedded,requestedTool?.id]);
 
   // Sync theme
   useEffect(() => {
@@ -200,28 +225,7 @@ export function KanaExperience({embedded=false,initialView,onExit}:{
         onOpenConfusables={() => setIsConfusablesOpen(true)}
         isDark={isDark}
         onToggleTheme={toggleTheme}
-      />:<section className="kana-native__toolbar" aria-label="Kana learning tools">
-        <div className="kana-native__heading">
-          <div><p className="eyebrow">LEARN · KANA</p><h1>Kana</h1></div>
-          {onExit?<button type="button" className="kana-native__return" onClick={onExit}>Return to Japanese</button>:null}
-        </div>
-        <nav className="kana-native__tabs" aria-label="Kana sections">
-          {([
-            ["home","Overview"],["learn","Lessons"],["review","Flashcards"],
-            ["words","Words"],["chart","Kana chart"]
-          ] as const).map(([view,label])=><button key={view} type="button"
-            aria-current={currentView===view?"page":undefined}
-            onClick={()=>view==="review"?handleStandardReview():setCurrentView(view)}>
-              {label}{view==="review"&&stats.dueNowCount>0?<small> {stats.dueNowCount} due</small>:null}
-            </button>)}
-        </nav>
-        <div className="kana-native__actions">
-          <button onClick={()=>setIsConfusablesOpen(true)} type="button">Similar kana</button>
-          <button onClick={()=>setIsScheduleModalOpen(true)} type="button">Schedule</button>
-          <button onClick={()=>setIsShortcutsOpen(true)} type="button">Shortcuts</button>
-          <button onClick={()=>setIsSettingsOpen(true)} type="button">Settings & backup</button>
-        </div>
-      </section>}
+      />:null}
 
       {/* Main View Area */}
       <div className="flex-1 w-full max-w-6xl mx-auto pb-16">
@@ -284,6 +288,7 @@ export function KanaExperience({embedded=false,initialView,onExit}:{
 
       {/* Modals */}
       <SettingsModal
+        embedded={embedded}
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         settings={settings}

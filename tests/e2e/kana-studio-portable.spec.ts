@@ -34,7 +34,9 @@ test('portable backup restores Google cards and separately opts into same-accoun
     cards:[entries('h-ka')],canonicalProjection:[entries('h-ke')],
     logs:[{cardId:'h-ka',reviewTime:'2026-10-18T12:00:00.000Z',log:{rating:3}}]
   };
-  await page.getByRole('button',{name:'Open Settings'}).click();
+  await expect(page.getByRole('navigation',{name:'Primary'})).toBeVisible();
+  await page.getByRole('button',{name:'Study tools'}).click();
+  await page.getByRole('button',{name:'Settings & backup'}).click();
   await page.locator('input[type="file"]').setInputFiles({
     name:'kana-backup.json',mimeType:'application/json',
     buffer:Buffer.from(JSON.stringify(payload))
