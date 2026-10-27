@@ -58,7 +58,10 @@ export async function gradeCard(
   // For exact-matched cues Japanese's trace and event outbox are the sole scheduler authority.
   const canonical = await gradeJapaneseKanaCard(storedData, rating, reviewDate);
   if (canonical) {
-    await saveStoredCard(canonical); // Non-authoritative Google UI/cache copy.
+    // Japanese FSRS + event outbox have already committed atomically. A failure
+    // in this optional Google cache must not invite a duplicate grade on retry.
+    try {await saveStoredCard(canonical);}
+    catch(error){console.warn('Canonical Kana grade saved; Google cache refresh unavailable:',error);}
     return { updatedData: canonical };
   }
 
