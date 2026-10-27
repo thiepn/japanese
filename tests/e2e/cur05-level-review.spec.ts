@@ -14,7 +14,7 @@ test("CUR-05 scope changes update original vocabulary and retain global due coun
  await panel.getByLabel("Unassigned").check();
  await expect(panel.getByRole("button",{name:"Choose levels"})).toHaveAttribute("aria-pressed","true");
  await expect(panel.locator(".cur05-global strong")).toHaveText(global);
- await expect(panel.getByText("Source-linked vocabulary")).toBeVisible();
+ await expect(panel.getByRole("heading",{name:"Source-linked vocabulary",exact:true})).toBeVisible();
  const sample=panel.locator(".cur05-vocabulary li").first();
  await expect(sample).toBeVisible();
  await sample.getByRole("button",{name:/^Preview /}).click();
