@@ -208,6 +208,9 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
         setSessionComplete(true);
         await onRefreshData();
       } else {
+        // Keep Japanese's native due count and course dashboard in sync after
+        // each committed FSRS grade, not only after the final card.
+        void onRefreshData();
         setCurrentIndex(prev => prev + 1);
         setIsRevealed(false);
         setTypedInput('');
