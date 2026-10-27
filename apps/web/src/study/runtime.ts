@@ -197,8 +197,8 @@ export async function buildCourseLevelDueReviewSession(levels:readonly CourseRev
  return selectCourseDuePrompts({levels,overview,prompts,traces,now,limit:MAX_QUEUE_SIZE});
 }
 /** Pure content preview, without a study prompt: does not create a StudyEvent or move FSRS due dates. */
-export function buildCur06VocabularyPractice(lexemeId:string,mode:Cur06Mode,unitId?:string):StudyStep[]{
- return buildCur06VocabularyJourney(lexemeId,mode,unitId);
+export function buildCur06VocabularyPractice(lexemeId:string,mode:Cur06Mode,unitId?:string,contrastUnitId?:string):StudyStep[]{
+ return buildCur06VocabularyJourney(lexemeId,mode,unitId,contrastUnitId);
 }
 export function buildCourseVocabularyPreview(lexemeId:string):StudyStep[]{
  const lexeme=coreContent.lexemes.find(item=>item.id===lexemeId);
