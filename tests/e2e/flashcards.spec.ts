@@ -91,6 +91,7 @@ test("offline native Kana grading preserves Japanese FSRS and sync outbox",async
   await context.setOffline(true);
   try{
     await page.getByRole("button",{name:/3. Good/}).click();
+    await expect.poll(async()=>(await evidence(page)).trace?.revision,{timeout:15000}).toBe(1);
     const offline=await evidence(page);
     expect(offline.trace?.revision).toBe(1);
     expect(offline.events).toHaveLength(1);
