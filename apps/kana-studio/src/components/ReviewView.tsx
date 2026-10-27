@@ -14,8 +14,8 @@ interface ReviewViewProps {
   onRefreshData: () => Promise<void>;
   enableAudio: boolean;
   initialDirection?: 'kana-to-romaji' | 'romaji-to-kana';
-  drillKanaIds?: string[];
-  filterOptions?: ReviewFilterOptions;
+  drillKanaIds?: string[] | undefined;
+  filterOptions?: ReviewFilterOptions | undefined;
   onOpenCategoryModal?: () => void;
 }
 
