@@ -1,0 +1,52 @@
+import {useEffect,useState,type ComponentType} from "react";
+import {bindEmbeddedKanaWorkspace,unbindEmbeddedKanaWorkspace,type KanaStudioView}
+  from "../../../kana-studio/src/services/japaneseBridge";
+import {publishKanaOwnerLease} from "../kanaHandoff";
+import "./nativeKana.css";
+
+type View="home"|"learn"|"review"|"words"|"chart";
+type Props={owner:string;initialView:View;onExit:()=>void;onProgressChange:()=>void};
+type Embedded=ComponentType<{embedded?:boolean;initialView?:View;onExit?:()=>void}>;
+
+export function NativeKanaWorkspace({owner,initialView,onExit,onProgressChange}:Props){
+  const [Screen,setScreen]=useState<Embedded|null>(null);
+  const [error,setError]=useState<string|null>(null);
+  const [dark,setDark]=useState(false);
+
+  useEffect(()=>{
+    const shell=document.querySelector(".j2-shell");
+    const sync=()=>setDark(shell?.getAttribute("data-j-theme")==="dark");
+    sync();
+    if(!shell)return;
+    const observer=new MutationObserver(sync);
+    observer.observe(shell,{attributes:true,attributeFilter:["data-j-theme"]});
+    return()=>observer.disconnect();
+  },[]);
+  useEffect(()=>{
+    let active=true;
+    setScreen(null);
+    setError(null);
+    try {
+      publishKanaOwnerLease(owner);
+      bindEmbeddedKanaWorkspace(owner);
+      void import("../../../kana-studio/src/App").then(module=>{
+        if(active)setScreen(()=>module.KanaExperience);
+      }).catch(error=>{
+        if(active)setError(error instanceof Error?error.message:"Could not open Kana.");
+      });
+    } catch(error){
+      setError(error instanceof Error?error.message:"Kana workspace unavailable.");
+    }
+    return()=>{
+      active=false;
+      unbindEmbeddedKanaWorkspace(owner);
+      onProgressChange();
+    };
+  },[owner,onProgressChange]);
+
+  return <section className={"j2-native-kana"+(dark?" dark":"")} aria-label="Kana learning">
+    {error?<div role="alert"><p>{error}</p><button type="button" onClick={onExit}>Return to Japanese</button></div>:null}
+    {!error&&!Screen?<p role="status">Opening Kana lessons and reviews…</p>:null}
+    {Screen&&!error?<Screen embedded initialView={initialView} onExit={onExit}/>:null}
+  </section>;
+}
