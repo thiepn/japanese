@@ -6,6 +6,7 @@ import { linkedToJapanese, previewLegacyKanaImport, importLegacyKanaSnapshots, t
 import { playKanaAudio } from '../services/speech';
 
 interface SettingsModalProps {
+  embedded?:boolean;
   isOpen: boolean;
   onClose: () => void;
   settings: UserSettings;
@@ -14,6 +15,7 @@ interface SettingsModalProps {
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
+  embedded=false,
   isOpen,
   onClose,
   settings,
@@ -185,8 +187,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
         {/* Content */}
         <div className="p-5 space-y-6 max-h-[75vh] overflow-y-auto text-xs">
-          {/* Theme selection */}
-          <div className="space-y-2">
+          {/* Japanese owns the theme in embedded mode; do not show a second switch. */}
+          {!embedded && <div className="space-y-2">
             <label className="font-mono uppercase font-bold text-[#737373] block text-[10px]">
               Color Theme
             </label>
@@ -211,7 +213,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </button>
               ))}
             </div>
-          </div>
+          </div>}
 
           {/* Daily New Limit */}
           <div className="space-y-2">
