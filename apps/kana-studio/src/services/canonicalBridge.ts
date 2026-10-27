@@ -21,8 +21,7 @@ for (const prompt of foundationApplicationPrompts) {
       (prompt.skill !== 'form_selection' || prompt.cueFamily !== 'sound-to-kana')) continue;
   prompts.set(prompt.primaryTarget.id + ':' + prompt.skill, prompt);
 }
-const owner = KANA_WORKSPACE_ID;
-export const linkedToJapanese = owner !== 'local-guest';
+export const linkedToJapanese = true; // Japanese App now always supplies its KANA_WORKSPACE_ID.
 
 function matchedPrompt(cardId: string): StudyPrompt | null {
   const reverse = cardId.endsWith(':rev');
@@ -95,7 +94,7 @@ export async function overlayJapaneseKanaCards(cards: Map<string, StoredCardData
   if (!linkedToJapanese) return cards;
   assertKanaWorkspace();
   const [traces, suspensions] = await Promise.all([
-    listMemoryTraces(owner), listFlashcardSuspensions(owner)
+    listMemoryTraces(KANA_WORKSPACE_ID), listFlashcardSuspensions(KANA_WORKSPACE_ID)
   ]);
   assertKanaWorkspace();
   const byTrace = new Map(traces.map(trace => [trace.id, trace]));
@@ -123,10 +122,10 @@ export async function gradeJapaneseKanaCard(
   if (!prompt) return null;
   assertKanaWorkspace();
   const traceId = canonicalTraceId(current.cardId)!;
-  const previous = await getMemoryTrace(owner, traceId);
+  const previous = await getMemoryTrace(KANA_WORKSPACE_ID, traceId);
   assertKanaWorkspace();
   const fresh = canonicalScheduler.create({
-    id: traceId, userId: owner,
+    id: traceId, userId: KANA_WORKSPACE_ID,
     entity: prompt.primaryTarget, skillDimension: prompt.skill, cueFamily: prompt.cueFamily
   }, reviewedAt.toISOString());
   // Preserve a previously studied Google-only schedule when the canonical cue has no trace.
@@ -140,7 +139,7 @@ export async function gradeJapaneseKanaCard(
     rating === Rating.Again ? 'again' : rating === Rating.Hard ? 'hard' :
     rating === Rating.Easy ? 'easy' : 'good';
   const event: StudyEvent = {
-    id: crypto.randomUUID(), userId: owner, deviceId: getJapaneseDeviceId(),
+    id: crypto.randomUUID(), userId: KANA_WORKSPACE_ID, deviceId: getJapaneseDeviceId(),
     occurredAt: reviewedAt.toISOString(), activity: 'review',
     primaryTarget: prompt.primaryTarget, skillDimension: prompt.skill,
     promptFamily: prompt.cueFamily, responseMode: 'flashcard',
@@ -169,7 +168,7 @@ export async function toggleJapaneseKanaSuspension(cardId: string, suspended: bo
   const traceId = canonicalTraceId(cardId);
   if (!traceId) return false;
   assertKanaWorkspace();
-  await setFlashcardSuspension(owner, traceId, suspended);
+  await setFlashcardSuspension(KANA_WORKSPACE_ID, traceId, suspended);
   assertKanaWorkspace();
   return true;
 }
@@ -178,14 +177,14 @@ export async function hasCanonicalKanaHistory(cardId: string): Promise<boolean> 
   const id = canonicalTraceId(cardId);
   if (!id) return false;
   assertKanaWorkspace();
-  return (await getMemoryTrace(owner, id)) !== null;
+  return (await getMemoryTrace(KANA_WORKSPACE_ID, id)) !== null;
 }
 
 /** Transferable, current canonical schedules only; no Google-only cards and no fabricated historical grades. */
 export async function exportPortableJapaneseKanaSnapshots():Promise<StoredCardData[]> {
   if(!linkedToJapanese)return [];
   assertKanaWorkspace();
-  const traces=await listMemoryTraces(owner);
+  const traces=await listMemoryTraces(KANA_WORKSPACE_ID);
   assertKanaWorkspace();
   const byId=new Map(traces.map(trace=>[trace.id,trace]));
   const records:StoredCardData[]=[];
@@ -219,7 +218,7 @@ function validLegacySnapshot(value: StoredCardData): boolean {
 }
 export async function previewLegacyKanaImport(cards: readonly StoredCardData[]): Promise<LegacyImportPreview> {
   assertKanaWorkspace();
-  const present = new Set((await listMemoryTraces(owner)).map(trace=>trace.id));
+  const present = new Set((await listMemoryTraces(KANA_WORKSPACE_ID)).map(trace=>trace.id));
   assertKanaWorkspace();
   const result: LegacyImportPreview = {eligible:0,alreadyCanonical:0,unmatched:0,untouchedNew:0};
   const seen = new Set<string>();
@@ -234,7 +233,7 @@ export async function previewLegacyKanaImport(cards: readonly StoredCardData[]):
   }
   return result;
 }
-/** Explicit, owner-checked transfer of FSRS state only. Never replay old logs as
+/** Explicit, KANA_WORKSPACE_ID-checked transfer of FSRS state only. Never replay old logs as
  * scored Japanese events. Existing Japanese traces always win, even across tabs. */
 export async function importLegacyKanaSnapshots(
   cards: readonly StoredCardData[], source: 'current-studio' | 'legacy-guest' | 'portable-backup'
@@ -253,13 +252,13 @@ export async function importLegacyKanaSnapshots(
     const at = new Date().toISOString();
     const trace: MemoryTrace = {
       ...canonicalScheduler.create({
-        id,userId:owner,entity:prompt.primaryTarget,skillDimension:prompt.skill,
+        id,userId:KANA_WORKSPACE_ID,entity:prompt.primaryTarget,skillDimension:prompt.skill,
         cueFamily:prompt.cueFamily
       },at),
       card: toSnapshot(card.card)
     };
     const event: StudyEvent = {
-      id:crypto.randomUUID(),userId:owner,deviceId:getJapaneseDeviceId(),
+      id:crypto.randomUUID(),userId:KANA_WORKSPACE_ID,deviceId:getJapaneseDeviceId(),
       occurredAt:at,activity:'review',primaryTarget:prompt.primaryTarget,
       skillDimension:prompt.skill,promptFamily:prompt.cueFamily,
       responseMode:'flashcard',result:'skipped',baseRevision:0,
@@ -269,12 +268,12 @@ export async function importLegacyKanaSnapshots(
         sourceReviewCount:card.totalReviews,sourceLastReviewAt:card.lastReviewedAt ?? null
       }
     };
-    const inserted = await importKanaSnapshotIfMissing(owner,trace,event);
+    const inserted = await importKanaSnapshotIfMissing(KANA_WORKSPACE_ID,trace,event);
     assertKanaWorkspace();
     if (inserted) result.imported++;
     else result.skipped++;
     if (inserted && card.isSuspended) {
-      await setFlashcardSuspension(owner,id,true);
+      await setFlashcardSuspension(KANA_WORKSPACE_ID,id,true);
       assertKanaWorkspace();
     }
   }
