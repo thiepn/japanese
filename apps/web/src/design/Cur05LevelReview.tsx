@@ -2,12 +2,14 @@ import {useEffect,useMemo,useState} from "react";
 import type {CourseLevelReviewOverview,CourseReviewLevel} from "../study/cur05LevelReview";
 import {normalizeCourseReviewLevels,reviewSelectionCounts} from "../study/cur05LevelReview";
 import {COURSE_LEVELS,type CourseLevel} from "../study/cefrCourseCatalog";
+import type {Cur06Mode} from "../study/cur06VocabularyJourney";
 import "./cur05LevelReview.css";
 
-export function Cur05LevelReview({ownerId,overview,activeLevel,busy,onReviewDue,onReviewLevels,onPreview,onOpenUnit}:{
+export function Cur05LevelReview({ownerId,overview,activeLevel,busy,onReviewDue,onReviewLevels,onPreview,onOpenUnit,onCur06Journey}:{
  ownerId:string;overview:CourseLevelReviewOverview|null;activeLevel:CourseLevel;busy:boolean;
  onReviewDue:()=>void;onReviewLevels:(levels:readonly CourseReviewLevel[])=>void;
  onPreview:(lexemeId:string)=>void;onOpenUnit:(unitId:string,level:CourseLevel)=>void;
+ onCur06Journey:(id:string,mode:Cur06Mode,unitId?:string,intent?:"resume"|"restart")=>void;
 }){
  const [scope,setScope]=useState<"active"|"all"|"multi">("active");
  const [custom,setCustom]=useState<CourseReviewLevel[]>(["A1"]);
@@ -57,7 +59,7 @@ export function Cur05LevelReview({ownerId,overview,activeLevel,busy,onReviewDue,
     All Japanese due ({current?.globalDue??0})
    </button>
   </div>
-  <p className="cur05-boundary">The global count also includes kana, grammar, private words and other original reviews. Source-linked vocabulary can appear in several levels: combined totals count each prompt only once. Unassigned words have no verified canonical unit-level mapping. Reading a word does not change its due date.</p>
+  <p className="cur05-boundary">Contexts are original source-linked study pages with no FSRS review. Practice offers unscored guided choices, independent recall, and optional writing; only scheduled graded review buttons affect FSRS. The global count also includes kana, grammar, private words and other original reviews. Source-linked vocabulary can appear in several levels: combined totals count each prompt only once. Unassigned words have no verified canonical unit-level mapping. Reading a word does not change its due date.</p>
   {current&&<div className="cur05-vocabulary">
    <div className="cur05-vocab-heading"><h3>Source-linked vocabulary</h3><span>Showing {Math.min(showCount,words.length)} of {words.length}</span></div>
    {words.length?<ol>{words.slice(0,showCount).map(word=><li key={word.id}>
@@ -69,7 +71,14 @@ export function Cur05LevelReview({ownerId,overview,activeLevel,busy,onReviewDue,
       {word.units.length?<div className="cur05-links">{word.units.map(unit=><button key={unit.id} type="button" onClick={()=>onOpenUnit(unit.id,unit.level)} title={"Find "+unit.title}>
         {unit.level} · {unit.title}</button>)}</div>:<small>No canonical course-unit link</small>}
     </div>
-    <button className="cur05-preview" type="button" disabled={busy} onClick={()=>onPreview(word.id)} aria-label={"Preview "+word.writing+" without recording a review"}>Preview</button>
+    <div className="cur06-word-actions">
+      <button className="cur05-preview" type="button" disabled={busy} onClick={()=>onPreview(word.id)}
+        aria-label={"Preview "+word.writing+" without recording a review"}>Preview</button>
+      <button type="button" disabled={busy} onClick={()=>onCur06Journey(word.id,"explore")}
+        aria-label={"Explore original contexts for "+word.writing+" without reviews"}>Contexts</button>
+      <button type="button" disabled={busy} onClick={()=>onCur06Journey(word.id,"practice")}
+        aria-label={"Practice "+word.writing+" with unscored guided and independent recall"}>Practice</button>
+    </div>
    </li>)}</ol>:<p>No source-linked words are assigned to this selection.</p>}
    {showCount<words.length?<button type="button" className="cur05-more" onClick={()=>setShowCount(value=>value+18)}>Show more words</button>:null}
   </div>}

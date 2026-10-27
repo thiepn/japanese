@@ -24,6 +24,7 @@ import {
 } from "./assessment";
 import { VOCABULARY_TOTAL, vocabularyApplicationPrompts, vocabularyLessons, vocabularyMeaningPrompts } from "./vocabulary";
 import {projectCourseLevelReview,selectCourseDuePrompts,type CourseLevelReviewOverview,type CourseReviewLevel} from "./cur05LevelReview";
+import {buildCur06VocabularyJourney,type Cur06Mode} from "./cur06VocabularyJourney";
 export type {CourseLevelReviewOverview,CourseReviewLevel} from "./cur05LevelReview";
 import { buildPrivateVocabularyPrompts } from "./privateVocabulary";
 import { buildPrivateSentencePrompts } from "./privateSentences";
@@ -196,6 +197,9 @@ export async function buildCourseLevelDueReviewSession(levels:readonly CourseRev
  return selectCourseDuePrompts({levels,overview,prompts,traces,now,limit:MAX_QUEUE_SIZE});
 }
 /** Pure content preview, without a study prompt: does not create a StudyEvent or move FSRS due dates. */
+export function buildCur06VocabularyPractice(lexemeId:string,mode:Cur06Mode,unitId?:string):StudyStep[]{
+ return buildCur06VocabularyJourney(lexemeId,mode,unitId);
+}
 export function buildCourseVocabularyPreview(lexemeId:string):StudyStep[]{
  const lexeme=coreContent.lexemes.find(item=>item.id===lexemeId);
  if(!lexeme)throw Error("CUR05_UNKNOWN_LEXEME");
