@@ -162,7 +162,9 @@ export function KanaExperience({embedded=false,initialView,onExit,onViewChange,r
 
   const handleDrillKana = (ids: string[]) => {
     setDrillKanaIds(ids);
-    setCustomFilterOptions(undefined);
+    // The chart advertises "Drill", not a scheduled review. Keep row
+    // practice strictly ungraded so it cannot advance Japanese FSRS history.
+    setCustomFilterOptions({cramMode:true});
     setReviewDirection('kana-to-romaji');
     setCurrentView('review');
   };
