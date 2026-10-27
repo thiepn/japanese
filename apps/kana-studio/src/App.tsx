@@ -210,9 +210,10 @@ export function KanaExperience({embedded=false,initialView,onExit,onViewChange,r
 
       // Don't trigger '?' if typing in an input
       const target = e.target as HTMLElement;
-      const isInput = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA');
-
-      if (e.key === '?' && !isInput) {
+      const isInput = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.isContentEditable || Boolean(target.closest('[contenteditable="true"], [role="textbox"]')));
+      // Japanese owns global keyboard shortcuts while Kana is embedded. Avoid
+      // opening a second shortcut dialog over the parent application's UI.
+      if (e.key === '?' && !embedded && !isInput && !e.altKey && !e.ctrlKey && !e.metaKey) {
         e.preventDefault();
         setIsShortcutsOpen(prev => !prev);
       }
@@ -220,7 +221,7 @@ export function KanaExperience({embedded=false,initialView,onExit,onViewChange,r
 
     window.addEventListener('keydown', handleGlobalKeyDown);
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
-  }, []);
+  }, [embedded]);
 
   const activeKanaItem = activeModalKanaId ? kanaMap.get(activeModalKanaId) || null : null;
 
