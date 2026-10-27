@@ -83,7 +83,7 @@ function toStudio(trace: MemoryTrace, cardId: string, local?: StoredCardData, su
     totalReviews: trace.card.reps,
     totalLapses: trace.card.lapses,
     introducedAt: local?.introducedAt ?? trace.card.lastReviewAt ?? new Date(trace.card.due).toISOString(),
-    ...(trace.card.lastReviewAt || local?.lastReviewedAt ? {lastReviewedAt:trace.card.lastReviewAt ?? local?.lastReviewedAt} : {}),
+    ...(trace.card.lastReviewAt || local?.lastReviewedAt ? {lastReviewedAt:(trace.card.lastReviewAt ?? local?.lastReviewedAt)!} : {}),
     ...(local?.firstReviewedAt ? {firstReviewedAt:local.firstReviewedAt} : {}),
     isSuspended: suspended
   };
