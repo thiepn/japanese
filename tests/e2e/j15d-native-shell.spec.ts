@@ -5,7 +5,8 @@ test("J15D uses only the native Japanese navigation, not the retired shell",asyn
   const nav=page.getByRole("navigation",{name:"Primary"});
   await expect(page.locator(".j2-shell")).toBeVisible();
   await expect(nav).toBeVisible();
-  await expect(nav.getByRole("button")).toHaveCount(5);
+  await expect(nav.getByRole("button")).toHaveCount(6);
+  await expect(nav.getByRole("button",{name:"Kana",exact:true})).toBeVisible();
   await expect(nav).toHaveCSS("box-shadow","none");
   await expect(page.locator(".app-shell,.nav,.topbar,.study-shell,.study-card")).toHaveCount(0);
   await nav.getByRole("button",{name:"Learn",exact:true}).click();
