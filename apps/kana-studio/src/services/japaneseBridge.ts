@@ -41,10 +41,27 @@ export function currentKanaView(): KanaStudioView {
 export function hasValidKanaHandoff(): boolean {
   return currentHandoff() !== null;
 }
-export const KANA_WORKSPACE_ID = currentHandoff()?.owner ?? 'local-guest';
+export let KANA_WORKSPACE_ID = currentHandoff()?.owner ?? 'local-guest';
 const START_LEASE = currentHandoff();
+let embeddedLease:Lease|null=null;
 
+/** The existing Japanese Account owns this workspace; no second login is created. */
+export function bindEmbeddedKanaWorkspace(owner:string):void {
+  const active=getActiveLease();
+  if(!active || active.owner!==owner)throw Error('KANA_OWNER_NOT_ATTACHED');
+  embeddedLease={...active};
+  KANA_WORKSPACE_ID=owner;
+}
+export function unbindEmbeddedKanaWorkspace(owner:string):void {
+  if(embeddedLease?.owner===owner)embeddedLease=null;
+}
 export function assertKanaWorkspace(): void {
+  if(embeddedLease){
+    const active=getActiveLease();
+    if(active?.owner!==embeddedLease.owner || active.epoch!==embeddedLease.epoch ||
+       KANA_WORKSPACE_ID!==embeddedLease.owner)throw Error('KANA_WORKSPACE_CHANGED_REOPEN_JAPANESE');
+    return;
+  }
   const current = currentHandoff();
   if (!START_LEASE || !current || current.owner !== START_LEASE.owner ||
       current.epoch !== START_LEASE.epoch)
