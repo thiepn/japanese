@@ -33,7 +33,7 @@ export function createNewCardData(
     direction,
     totalReviews: 0,
     totalLapses: 0,
-    introducedAt: isIntroduced ? new Date().toISOString() : undefined,
+    ...(isIntroduced ? {introducedAt:new Date().toISOString()} : {}),
     isSuspended: false
   };
 }
@@ -71,8 +71,8 @@ export async function gradeCard(
     ...storedData,
     card: result.card,
     lastReviewedAt: reviewDate.toISOString(),
-    firstReviewedAt: storedData.firstReviewedAt ??
-      (storedData.totalReviews===0 ? reviewDate.toISOString():undefined),
+    ...(storedData.firstReviewedAt || storedData.totalReviews===0
+      ? {firstReviewedAt:storedData.firstReviewedAt ?? reviewDate.toISOString()} : {}),
     totalReviews: storedData.totalReviews + 1,
     totalLapses: rating === Rating.Again ? storedData.totalLapses + 1 : storedData.totalLapses
   };
