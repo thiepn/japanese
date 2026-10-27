@@ -30,6 +30,7 @@ export const LearnView: React.FC<LearnViewProps> = ({
   const [recallSuccess, setRecallSuccess] = useState<boolean | null>(null);
   const [advanceBusy,setAdvanceBusy]=useState(false);
   const advanceLock=useRef(false);
+  const lastAdvanceAt=useRef(0);
   const [stageError,setStageError]=useState<string|null>(null);
 
   const filteredStages = learningStages.filter(stage => {
@@ -101,7 +102,10 @@ export const LearnView: React.FC<LearnViewProps> = ({
     };
 
     const handleAdvance = async () => {
-      if(advanceLock.current)return;
+      const now=Date.now();
+      // Touch double-taps must not unintentionally skip a second Kana.
+      if(advanceLock.current || now-lastAdvanceAt.current<350)return;
+      lastAdvanceAt.current=now;
       advanceLock.current=true;
       setAdvanceBusy(true);
       setStageError(null);
