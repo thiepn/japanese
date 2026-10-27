@@ -67,7 +67,7 @@ function prompt(id:string,wordId:string,instruction:string,question:string,answe
   explanation:kind==="reading"
    ?"Check the original reading listed for "+lexeme.canonicalForm+". This guided check does not schedule a review."
    :"Compare the installed lexical sense and each other source word, not merely the character shapes.",
-  contextId:"cur06-"+wordId,sourceId:lexeme.sourceIds[0],contentVersion:coreContent.version,
+  contextId:"cur06-"+wordId,sourceId:lexeme.sourceIds[0]!,contentVersion:coreContent.version,
   activity:"review",languageActivity:"reading",
   eventMetadata:{cur06:true,cur06WordId:wordId,nonAuthoritative:true,schedulerExcluded:true,
     independentCompetenceVerified:false,
@@ -151,14 +151,14 @@ export function buildCur06VocabularyJourney(id:string,mode:Cur06Mode,focusUnitId
   prompt:lexeme.canonicalForm,promptLanguage:"ja",placeholder:"かな…",
   acceptedAnswers:lexeme.readings.map(r=>r.text),displayAnswer:item.reading,
   explanation:"Compare the kana you produced with the original recorded reading. This practice is not a scheduled FSRS review.",
-  contextId:context,sourceId:lexeme.sourceIds[0],contentVersion:coreContent.version,
+  contextId:context,sourceId:lexeme.sourceIds[0]!,contentVersion:coreContent.version,
   activity:"review",languageActivity:"reading",answerNormalization:"japanese",eventMetadata:metadata});
  steps.push({id:context+"-word-recall",primaryTarget:{kind:"lexeme",id},skill:"active_use",
   cueFamily:"cur06-independent-word",promptType:"typed",instruction:"Independent Japanese word recall (unscored)",
   prompt:item.meaning,promptLanguage:"en",placeholder:"日本語…",
   acceptedAnswers:[...new Set([lexeme.canonicalForm,...lexeme.forms.map(f=>f.text),...lexeme.readings.map(r=>r.text)])],
   displayAnswer:lexeme.canonicalForm,explanation:"Compare your response with the original lexical entry; recognition or a bounded match is not proof of free production.",
-  contextId:context,sourceId:lexeme.sourceIds[0],contentVersion:coreContent.version,
+  contextId:context,sourceId:lexeme.sourceIds[0]!,contentVersion:coreContent.version,
   activity:"review",languageActivity:"writing",answerNormalization:"japanese",eventMetadata:metadata});
  steps.push(lesson(context+"-transfer-guide","Use the word in your own situation",
   "Write a short Japanese exchange using this word, then compare its intended meaning and reading with the installed lexical entry and its original unit contexts. No automatic semantic or proficiency grade is awarded.",
@@ -169,7 +169,7 @@ export function buildCur06VocabularyJourney(id:string,mode:Cur06Mode,focusUnitId
    ". Check the word's meaning and your particle choices; treat this as self-review rather than a certified assessment.",
   promptLanguage:"en",placeholder:"日本語で書いてください…",acceptedAnswers:[],
   displayAnswer:"Self-review only.",explanation:"No automatic grade of communicative accuracy. Compare with the original licensed lexical and unit records.",
-  contextId:context,sourceId:lexeme.sourceIds[0],contentVersion:coreContent.version,
+  contextId:context,sourceId:lexeme.sourceIds[0]!,contentVersion:coreContent.version,
   activity:"writing",languageActivity:"writing",eventMetadata:metadata});
  return steps;
 }
