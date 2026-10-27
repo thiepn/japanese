@@ -234,6 +234,13 @@ describe('AI Studio Kana ↔ canonical Japanese study bridge', () => {
       .parseKanaBackup(JSON.stringify(backup));
     expect(parsed.cards.find(x=>x.cardId==='h-mi')?.firstReviewedAt).toBe(reviewedAt);
   });
+  it('rejects an IndexedDB card write that cannot commit without manufacturing saved progress',async()=>{
+    const storage=await import('../apps/kana-studio/src/services/storage');
+    const srs=await import('../apps/kana-studio/src/services/srs');
+    const damaged=Object.assign(srs.createNewCardData('h-ya'),{invalidValue:()=>1});
+    await expect(storage.saveStoredCard(damaged)).rejects.toThrow();
+    expect((await storage.readStudioCards()).has('h-ya')).toBe(false);
+  });
   it('keeps account-scoped suspensions and fails closed on a changed handoff', async () => {
     await bridge.toggleJapaneseKanaSuspension('h-a', true);
     expect((await bridge.overlayJapaneseKanaCards(new Map())).get('h-a')?.isSuspended).toBe(true);
