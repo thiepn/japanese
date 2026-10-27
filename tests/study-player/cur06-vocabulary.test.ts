@@ -50,6 +50,19 @@ describe("CUR-06 installed source-owned contextual vocabulary journeys",()=>{
   expect(steps.some(s=>isStudyLesson(s)&&s.id.endsWith("-unassigned"))).toBe(true);
   expect(steps.every(isStudyLesson)).toBe(true);
  });
+ it("bounds practice to two original contexts while retaining complete exploration",()=>{
+  for(const word of starterVocabulary.slice(0,60)){
+   const explore=buildCur06VocabularyJourney(word.lexeme.id,"explore");
+   const practice=buildCur06VocabularyJourney(word.lexeme.id,"practice");
+   const sourceIds=new Set(explore.filter(step=>step.id.includes("-unit-")).map(step=>step.id));
+   const selected=practice.filter(step=>step.id.includes("-unit-")).map(step=>step.id);
+   expect(selected.length).toBeLessThanOrEqual(2);
+   expect(selected.every(id=>sourceIds.has(id))).toBe(true);
+   const firstCheck=practice.findIndex(step=>step.id.endsWith("-meaning-check"));
+   expect(firstCheck).toBeGreaterThanOrEqual(2);
+   expect(firstCheck).toBeLessThanOrEqual(4);
+  }
+ });
  it("guided semantic/reading foils cite real other lexeme forms and give answer-specific repair",()=>{
   const checks=getChecks(linked.lexeme.id);
   const meaning=checks.find(step=>step.id.endsWith("-meaning-check"))!;
