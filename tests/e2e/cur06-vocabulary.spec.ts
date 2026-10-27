@@ -42,7 +42,8 @@ test("CUR-06 guided misconception correction declares no grade or scheduled FSRS
  await page.goto("./#course/A1");
  const row=page.getByRole("region",{name:"Vocabulary and level reviews"}).locator(".cur05-vocabulary li").first();
  await row.getByRole("button",{name:/Practice .*unscored guided/}).click();
- for(let i=0;i<20&&await page.locator(".study-lesson").count();i++)
+ await expect(page.locator(".study-lesson h1")).toBeVisible();
+ for(let i=0;i<8&&await page.locator(".study-lesson").count();i++)
    await page.getByRole("button",{name:"Continue",exact:true}).click();
  const choices=page.locator(".j5-choices");
  await expect(choices).toBeVisible();
