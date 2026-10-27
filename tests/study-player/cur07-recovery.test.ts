@@ -4,7 +4,7 @@ import {coreContent} from "../../apps/web/src/coreContent";
 import {starterVocabulary,vocabularyMeaningPrompts,vocabularyApplicationPrompts} from "../../apps/web/src/study/vocabulary";
 import {buildCur06VocabularyJourney} from "../../apps/web/src/study/cur06VocabularyJourney";
 import {readCoursePosition,coursePositionFingerprint} from "../../apps/web/src/study/cur03CoursePosition";
-import {rememberCur07Section,inspectCur07History,restoreCur07Section,cur07HistoryKey,cur07PracticeKey,type Cur07HistoryStore} from "../../apps/web/src/study/cur07History";
+import {rememberCur07Section,inspectCur07History,restoreCur07Section,cur07HistoryKey,cur07PracticeKey,readCur07Pair,saveCur07Pair,type Cur07HistoryStore} from "../../apps/web/src/study/cur07History";
 class Store implements Cur07HistoryStore {
  values=new Map<string,string>();
  getItem(k:string){return this.values.get(k)??null}
@@ -107,6 +107,19 @@ describe("CUR-07 learner-selected canonical comparison",()=>{
   expect(data).toHaveLength(4);
   expect(new Set(data.map((x:{sessionHash:string})=>x.sessionHash)).size).toBe(4);
   expect(inspectCur07History("alice",sessionKey,version,store,now+80)).toHaveLength(3);
+ });
+ it("remembers only independently selected canonical unit IDs under their Account owner",()=>{
+  const store=new Store();
+  const ids=refs.map(u=>u.id),a=ids[0]!,b=ids[1]!;
+  expect(saveCur07Pair("alice",multi.lexeme.id,a,b,ids,store)).toBe(true);
+  expect(readCur07Pair("alice",multi.lexeme.id,ids,store)).toEqual({first:a,second:b});
+  expect(readCur07Pair("bob",multi.lexeme.id,ids,store)).toBeNull();
+  expect(readCur07Pair("alice",multi.lexeme.id,[a],store)).toBeNull();
+  expect(saveCur07Pair("alice",multi.lexeme.id,a,a,ids,store)).toBe(false);
+  expect(saveCur07Pair("alice",multi.lexeme.id,a,"invented",ids,store)).toBe(false);
+  const copies=[...store.values.values()];
+  expect(copies.join(" ")).not.toContain("acceptedAnswers");
+  expect(copies.join(" ")).not.toContain("日本語");
  });
  it("rejects tampered or oversized storage, future receipts and failed storage writes",()=>{
   const store=new Store();

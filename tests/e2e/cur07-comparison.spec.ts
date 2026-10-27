@@ -46,5 +46,7 @@ test("CUR-07 retains complete independent source exploration and original level 
  await row.getByRole("button",{name:/Explore original contexts/}).click();
  await expect(page.locator(".study-lesson")).toBeVisible();
  await page.getByRole("button",{name:"Exit"}).click();
+ await expect(panel.getByRole("button",{name:"This level (A1)"})).toHaveAttribute("aria-pressed","true");
+ await panel.getByRole("button",{name:"All levels",exact:true}).click();
  await expect(panel.getByRole("button",{name:"All levels",exact:true})).toHaveAttribute("aria-pressed","true");
 });
