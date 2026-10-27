@@ -83,8 +83,8 @@ function toStudio(trace: MemoryTrace, cardId: string, local?: StoredCardData, su
     totalReviews: trace.card.reps,
     totalLapses: trace.card.lapses,
     introducedAt: local?.introducedAt ?? trace.card.lastReviewAt ?? new Date(trace.card.due).toISOString(),
-    lastReviewedAt: trace.card.lastReviewAt ?? local?.lastReviewedAt,
-    firstReviewedAt: local?.firstReviewedAt,
+    ...(trace.card.lastReviewAt || local?.lastReviewedAt ? {lastReviewedAt:trace.card.lastReviewAt ?? local?.lastReviewedAt} : {}),
+    ...(local?.firstReviewedAt ? {firstReviewedAt:local.firstReviewedAt} : {}),
     isSuspended: suspended
   };
 }
@@ -159,8 +159,8 @@ export async function gradeJapaneseKanaCard(
   assertKanaWorkspace();
   return toStudio(updated, current.cardId, {
     ...current,
-    firstReviewedAt: current.firstReviewedAt ??
-      (current.totalReviews===0 ? reviewedAt.toISOString():undefined)
+    ...(current.firstReviewedAt || current.totalReviews===0
+      ? {firstReviewedAt:current.firstReviewedAt ?? reviewedAt.toISOString()} : {})
   });
 }
 export async function toggleJapaneseKanaSuspension(cardId: string, suspended: boolean): Promise<boolean> {
