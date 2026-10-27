@@ -206,6 +206,34 @@ describe('AI Studio Kana ↔ canonical Japanese study bridge', () => {
       ['h-yu'],{cramMode:true});
     expect(drill).toHaveLength(0);
   });
+  it('honors the daily new-card budget across restarted sessions and carries first-review dates in backups',async()=>{
+    const srs=await import('../apps/kana-studio/src/services/srs');
+    const storage=await import('../apps/kana-studio/src/services/storage');
+    const reviewedAt=new Date().toISOString();
+    const reviewed=createEmptyCard();
+    reviewed.reps=1;
+    reviewed.state=2;
+    reviewed.due=new Date(Date.now()+86400000*10);
+    await storage.saveStoredCard({cardId:'h-mi',card:reviewed,direction:'kana-to-romaji',
+      totalReviews:1,totalLapses:0,firstReviewedAt:reviewedAt,lastReviewedAt:reviewedAt,
+      introducedAt:reviewedAt});
+    const queue=await srs.buildReviewQueue({...storage.defaultSettings,
+      preferredScript:'hiragana',dailyNewLimit:2},true);
+    expect(queue.filter(x=>x.isNew)).toHaveLength(1);
+    const repeat=await srs.buildReviewQueue({...storage.defaultSettings,
+      preferredScript:'hiragana',dailyNewLimit:2},true);
+    expect(repeat.filter(x=>x.isNew).map(x=>x.kana.id))
+      .toEqual(queue.filter(x=>x.isNew).map(x=>x.kana.id));
+    const paused=await srs.buildReviewQueue({...storage.defaultSettings,
+      preferredScript:'hiragana',dailyNewLimit:0},true);
+    expect(paused.filter(x=>x.isNew)).toHaveLength(0);
+    const backup=JSON.parse(await storage.exportProgressJSON());
+    expect(backup.cards.find((x:{cardId:string})=>x.cardId==='h-mi').firstReviewedAt)
+      .toBe(reviewedAt);
+    const parsed=(await import('../apps/kana-studio/src/services/backupRestore'))
+      .parseKanaBackup(JSON.stringify(backup));
+    expect(parsed.cards.find(x=>x.cardId==='h-mi')?.firstReviewedAt).toBe(reviewedAt);
+  });
   it('keeps account-scoped suspensions and fails closed on a changed handoff', async () => {
     await bridge.toggleJapaneseKanaSuspension('h-a', true);
     expect((await bridge.overlayJapaneseKanaCards(new Map())).get('h-a')?.isSuspended).toBe(true);
