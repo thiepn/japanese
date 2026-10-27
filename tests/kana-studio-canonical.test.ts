@@ -186,6 +186,26 @@ describe('AI Studio Kana ↔ canonical Japanese study bridge', () => {
     expect(reviewed.updatedData.card.due).toEqual(card.card.due);
     expect(await getMemoryTrace(owner,bridge.canonicalTraceId('h-a')!)).toEqual(original);
   });
+  it('offers a bounded set of new Kana alongside overdue reviews and excludes suspended drills',async()=>{
+    const srs=await import('../apps/kana-studio/src/services/srs');
+    const storage=await import('../apps/kana-studio/src/services/storage');
+    const due=createEmptyCard(new Date('2020-01-01T12:00:00.000Z'));
+    due.due=new Date('2020-01-02T12:00:00.000Z');
+    due.reps=2;due.state=2;
+    const record:StoredCardData={cardId:'h-yu',card:due,direction:'kana-to-romaji',
+      totalReviews:2,totalLapses:0,introducedAt:'2020-01-01T12:00:00.000Z'};
+    await storage.saveStoredCard(record);
+    const queue=await srs.buildReviewQueue({
+      ...storage.defaultSettings,preferredScript:'hiragana',dailyNewLimit:2
+    },true,'kana-to-romaji');
+    expect(queue.some(item=>item.kana.id==='h-yu'&&!item.isNew)).toBe(true);
+    expect(queue.filter(item=>item.isNew).length).toBe(2);
+    expect(queue[0].isNew).toBe(false);
+    await storage.saveStoredCard({...record,isSuspended:true});
+    const drill=await srs.buildReviewQueue(storage.defaultSettings,true,'kana-to-romaji',
+      ['h-yu'],{cramMode:true});
+    expect(drill).toHaveLength(0);
+  });
   it('keeps account-scoped suspensions and fails closed on a changed handoff', async () => {
     await bridge.toggleJapaneseKanaSuspension('h-a', true);
     expect((await bridge.overlayJapaneseKanaCards(new Map())).get('h-a')?.isSuspended).toBe(true);
