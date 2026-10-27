@@ -20,6 +20,8 @@ test("CUR-07 learner chooses two original unit Can-dos and resumes the same boun
  await page.getByRole("button",{name:"Continue",exact:true}).click();
  const saved=await page.locator(".study-lesson h1").innerText();
  await page.getByRole("button",{name:"Exit"}).click();
+ // The existing Course filter defaults to A1 on remount; restore the original all-level browsing scope.
+ await panel.getByRole("button",{name:"All levels",exact:true}).click();
  await expect(cmp.getByRole("button",{name:"Resume comparison"})).toBeVisible();
  await page.reload();
  const panel2=page.getByRole("region",{name:"Vocabulary and level reviews"});
@@ -30,6 +32,7 @@ test("CUR-07 learner chooses two original unit Can-dos and resumes the same boun
  await cmp2.getByRole("button",{name:"Resume comparison"}).click();
  await expect(page.locator(".study-lesson h1")).toHaveText(saved);
  await page.getByRole("button",{name:"Exit"}).click();
+ await panel2.getByRole("button",{name:"All levels",exact:true}).click();
  await cmp2.getByRole("button",{name:"Restart comparison"}).click();
  await expect(page.locator(".study-lesson h1")).not.toHaveText(saved);
  await page.getByRole("button",{name:"Exit"}).click();
