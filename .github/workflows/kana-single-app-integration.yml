@@ -23,6 +23,6 @@ jobs:
         run: pnpm build
       - run: test -s apps/web/dist/kana/index.html
       - name: Install Chromium browser
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install chromium
       - name: Native Japanese desktop and mobile integration
         run: pnpm exec playwright test tests/e2e/native-kana.spec.ts tests/e2e/kana-single-app-progress.spec.ts tests/e2e/j22-accessibility.spec.ts --project=desktop-chromium --project=android-mobile --project=compact-mobile --workers=2
