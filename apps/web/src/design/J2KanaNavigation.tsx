@@ -28,7 +28,7 @@ export function J2KanaNavigation({selected,onSelect,onTool,dueCount=null}:{
     const left=active.offsetLeft-container.offsetLeft;
     const target=left+active.offsetWidth/2-container.clientWidth/2;
     if(target>container.scrollLeft+1||target<container.scrollLeft-1)
-      container.scrollTo({left:Math.max(0,target),behavior:"instant"});
+      container.scrollTo({left:Math.max(0,target),behavior:"auto"});
   },[selected]);
   return <section className="j2-kana-route" aria-label="Japanese Kana study">
     <header className="j2-kana-route__intro">
