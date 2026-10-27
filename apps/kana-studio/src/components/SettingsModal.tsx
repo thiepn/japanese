@@ -48,16 +48,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const handleExport = async () => {
     try {
       const json = await exportProgressJSON();
-      const blob = new Blob([json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
       const dateStr = new Date().toISOString().split('T')[0];
-      link.href = url;
-      link.download = `kana-backup-${dateStr}.json`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      saveBackup(json,`kana-backup-${dateStr}.json`);
     } catch (err) {
       console.error('Export failed:', err);
     }
@@ -141,12 +133,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       const cards = source==='legacy-guest' ? await readLegacyGuestCards() : [...(await readStudioCards()).values()];
       // Download the untouched original source before a single canonical write.
       const backup = await serializeLegacyKanaBackup(cards,source);
-      const url = URL.createObjectURL(new Blob([backup],{type:'application/json'}));
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `kana-${source}-before-import-${new Date().toISOString().slice(0,10)}.json`;
-      document.body.appendChild(link);link.click();link.remove();
-      URL.revokeObjectURL(url);
+      saveBackup(backup,`kana-${source}-before-import-${new Date().toISOString().slice(0,10)}.json`);
       const result = await importLegacyKanaSnapshots(cards,source);
       await onRefreshData();
       setLegacyPreview(null);
