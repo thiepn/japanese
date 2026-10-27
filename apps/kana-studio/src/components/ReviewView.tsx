@@ -95,7 +95,7 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
     } finally {
       if(request===queueRequest.current)setLoading(false);
     }
-  }, [settings]);
+  }, [settings.preferredScript, settings.dailyNewLimit]);
 
   useEffect(() => {
     void loadQueue(direction, drillKanaIds, filterOptions);
