@@ -75,7 +75,7 @@ type Props={
   onPreferredCoachChainApplied:()=>void;
   status:string;
   onStart:()=>void;
-  onStartUnit:(id:string)=>void;
+  onStartUnit:(id:string,intent?:"resume"|"restart")=>void;
   onStartAssessment:(id:string)=>void;
   onStartMilestone:()=>void;
   onStartB1Milestone:()=>void;

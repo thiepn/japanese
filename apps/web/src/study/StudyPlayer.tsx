@@ -29,9 +29,9 @@ function e06FoilCorrection(prompt:StudyPrompt,response:string):string|undefined{
   const matched=raw.find(item=>typeof item==="object"&&item!==null&&item.response===response&&typeof item.feedback==="string");
   return typeof matched?.feedback==="string"?matched.feedback:undefined;
 }
-export function StudyPlayer({steps,accountScope,initialIndex=0,onPositionSave,onAnswer,onComplete,onExit}:{steps:StudyStep[];accountScope:string;initialIndex?:number;onPositionSave?:(index:number)=>boolean;onAnswer:(answer:StudyAnswer)=>Promise<void>|void;onComplete:()=>void;onExit:()=>void;}){
+export function StudyPlayer({steps,accountScope,initialIndex=0,initialPositionUnavailable=false,onPositionSave,onAnswer,onComplete,onExit}:{steps:StudyStep[];accountScope:string;initialIndex?:number;initialPositionUnavailable?:boolean;onPositionSave?:(index:number)=>boolean;onAnswer:(answer:StudyAnswer)=>Promise<void>|void;onComplete:()=>void;onExit:()=>void;}){
   const [index,setIndex]=useState(()=>Number.isInteger(initialIndex)&&initialIndex>=0&&initialIndex<steps.length?initialIndex:0);
-  const [positionUnavailable,setPositionUnavailable]=useState(false);
+  const [positionUnavailable,setPositionUnavailable]=useState(initialPositionUnavailable);
   const notePosition=(next:number)=>{
     if(!onPositionSave)return;
     setPositionUnavailable(!onPositionSave(next));

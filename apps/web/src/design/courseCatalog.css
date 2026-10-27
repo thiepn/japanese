@@ -21,3 +21,18 @@
 .cur01-empty{font-size:15px;line-height:1.6;padding:20px 0}
 .cur01-assessment{margin-top:16px}
 @media(max-width:650px){.cur01-levels{grid-template-columns:repeat(3,minmax(0,1fr))}.cur01-lessons li{grid-template-columns:34px minmax(0,1fr);gap:8px}.cur01-lessons li>button{grid-column:2;justify-self:start}.cur01-section-heading h2{font-size:19px}.cur01-lesson-main h3{font-size:16px}}
+
+.cur04-placement{margin:16px 0;border-top:1px solid var(--j-line);border-bottom:1px solid var(--j-line);padding:12px 0}
+.cur04-placement>summary{cursor:pointer;font-size:16px;font-weight:650;min-height:40px;display:flex;align-items:center}
+.cur04-placement fieldset{margin:8px 0 0;padding:0;border:0;min-width:0}
+.cur04-placement legend{font-size:15px;font-weight:500;margin-bottom:12px}
+.cur04-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.cur04-choices label{display:flex;align-items:center;gap:10px;min-height:44px;padding:10px;border:1px solid var(--j-line);cursor:pointer;border-radius:3px}
+.cur04-choices input{flex:none;accent-color:var(--j-season-accent)}
+.cur04-advice{margin:14px 0;padding:12px 0;border-top:1px solid var(--j-line);font-size:15px}
+.cur04-advice>strong{display:block;font-size:17px}
+.cur04-advice p{line-height:1.5;margin:6px 0 12px}
+.cur04-advice button{padding:9px 13px;min-height:44px;border:1px solid var(--j-line);border-radius:3px;margin:0 8px 6px 0}
+.cur04-lesson-actions{display:flex;gap:6px;align-items:center}
+.cur01-lessons li>.cur04-lesson-actions button{padding:10px;min-height:44px;min-width:72px;border:1px solid var(--j-line);border-radius:3px;background:var(--j-bg-muted);color:inherit;cursor:pointer;font-size:14px;font-weight:650}
+@media(max-width:650px){.cur04-choices{grid-template-columns:1fr}.cur01-lessons li>.cur04-lesson-actions{grid-column:2;justify-self:start;flex-wrap:wrap}}

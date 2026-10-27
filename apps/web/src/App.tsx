@@ -110,6 +110,7 @@ export function App(){
   const [libraryStatus,setLibraryStatus]=useState<"idle"|"loading"|"ready"|"error">("idle");
   const [session,setSession]=useState<StudyStep[]|null>(null);
   const [sessionInitialIndex,setSessionInitialIndex]=useState(0);
+  const [sessionPositionUnavailable,setSessionPositionUnavailable]=useState(false);
   const coursePositionRef=useRef<{unitId:string;ownerId:string;steps:StudyStep[]}|null>(null);
   const [ux1Outcome,setUx1Outcome]=useState<{owner:string;origin:Surface;pending:boolean;failed:boolean}|null>(null);
   const [e22Selection,setE22Selection]=useState<{owner:string;value:E22Selection}|null>(null);
@@ -164,6 +165,7 @@ export function App(){
     sessionOwner.current=null;
     coursePositionRef.current=null;
     setSessionInitialIndex(0);
+    setSessionPositionUnavailable(false);
     sessionMode.current="standard";
     retriedKana.current.clear();
     setSession(null);
@@ -432,7 +434,7 @@ export function App(){
     }
   }
 
-  function openSession(queue:StudyStep[],mode:"standard"|"kana"="standard",courseUnitId?:string){
+  function openSession(queue:StudyStep[],mode:"standard"|"kana"="standard",courseUnitId?:string,intent:"resume"|"restart"="resume"){
     sessionMode.current=mode;
     retriedKana.current.clear();
     sessionOrigin.current=surface;
@@ -442,17 +444,19 @@ export function App(){
     sessionOwner.current=queue.length?getDevelopmentAccountId():null;
     const owner=sessionOwner.current;
     coursePositionRef.current=owner&&courseUnitId?{unitId:courseUnitId,ownerId:owner,steps:queue}:null;
-    setSessionInitialIndex(owner&&courseUnitId?readCoursePosition(owner,courseUnitId,queue):0);
+    const restarting=Boolean(owner&&courseUnitId&&intent==="restart"&&queue.length);
+    setSessionInitialIndex(owner&&courseUnitId&&!restarting?readCoursePosition(owner,courseUnitId,queue):0);
+    setSessionPositionUnavailable(restarting&&!saveCoursePosition(owner!,courseUnitId!,queue,0));
     setSession(queue.length?queue:null);
   }
 
-  async function loadStudySession(build:()=>Promise<StudyStep[]>,mode:"standard"|"kana"="standard",courseUnitId?:string){
+  async function loadStudySession(build:()=>Promise<StudyStep[]>,mode:"standard"|"kana"="standard",courseUnitId?:string,intent:"resume"|"restart"="resume"){
     const ticket=sessionFence.current.begin(getDevelopmentAccountId());
     setSessionStatus("loading");
     try{
       const queue=await build();
       if(!sessionFence.current.accepts(ticket,getDevelopmentAccountId()))return;
-      openSession(queue,mode,courseUnitId);
+      openSession(queue,mode,courseUnitId,intent);
       setSessionStatus(queue.length?"idle":"empty");
     }catch{
       if(sessionFence.current.accepts(ticket,getDevelopmentAccountId()))setSessionStatus("error");
@@ -495,7 +499,7 @@ export function App(){
   const startE02Delayed=(id:string)=>loadStudySession(()=>buildE02DelayedSession(id));
   const startE01=()=>loadStudySession(()=>buildE01Session());
   const startE01Delayed=()=>loadStudySession(()=>buildE01DelayedSession());
-  const startCourseUnit=(unitId:string)=>loadStudySession(()=>Promise.resolve(buildCur03CourseUnitSession(unitId)),"standard",unitId);
+  const startCourseUnit=(unitId:string,intent:"resume"|"restart"="resume")=>loadStudySession(()=>Promise.resolve(buildCur03CourseUnitSession(unitId)),"standard",unitId,intent);
   const startUnitAssessment=(unitId:string)=>loadStudySession(()=>buildUnitAssessmentSession(unitId));
   const startMilestoneAssessment=()=>loadStudySession(()=>buildA1MilestoneSession());
   const startB1MilestoneAssessment=()=>loadStudySession(()=>buildB1MilestoneSession());
@@ -591,7 +595,7 @@ export function App(){
   return <>
     <a className="skip-link" href="#main-content">Skip to main content</a>
     {session
-      ?<main className="j5-study-shell" id="main-content" tabIndex={-1}><Suspense fallback={<p role="status">Preparing your study session…</p>}><StudyPlayer steps={session} accountScope={getDevelopmentAccountId()} initialIndex={sessionInitialIndex}
+      ?<main className="j5-study-shell" id="main-content" tabIndex={-1}><Suspense fallback={<p role="status">Preparing your study session…</p>}><StudyPlayer steps={session} accountScope={getDevelopmentAccountId()} initialIndex={sessionInitialIndex} initialPositionUnavailable={sessionPositionUnavailable}
         onPositionSave={index=>{
           const active=coursePositionRef.current;
           if(!active||active.ownerId!==getDevelopmentAccountId()||sessionOwner.current!==active.ownerId)return false;
