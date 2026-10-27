@@ -51,9 +51,13 @@ export const HomeView: React.FC<HomeViewProps> = ({
       <section className="space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-[#E5E4DE] dark:border-[#262626] pb-4 gap-2">
           <div>
-            <h1 className="text-3xl sm:text-5xl font-serif font-bold tracking-tight text-[#202020] dark:text-[#F0EFEB]">
-              {embedded ? 'Your Kana' : 'KANA'}
-            </h1>
+            {embedded
+              ?<h2 className="text-xl sm:text-2xl font-serif font-bold tracking-tight text-[#202020] dark:text-[#F0EFEB]">
+                Your learning progress
+              </h2>
+              :<h1 className="text-3xl sm:text-5xl font-serif font-bold tracking-tight text-[#202020] dark:text-[#F0EFEB]">
+                KANA
+              </h1>}
             <p className="mt-1 text-xs sm:text-base text-[#737373] dark:text-[#9E9E9E] font-sans">
               Japanese Kana Mastery with Spaced Repetition
             </p>
