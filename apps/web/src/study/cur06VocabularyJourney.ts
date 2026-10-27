@@ -87,7 +87,13 @@ export function buildCur06VocabularyJourney(id:string,mode:Cur06Mode,focusUnitId
  const {lexeme,item,sense}=sourceWord(id),coverage=inspectCur06Word(id);
  const units=linkedUnits(id);
  if(focusUnitId&&!units.some(u=>u.id===focusUnitId))throw Error("CUR06_UNLINKED_FOCUS_UNIT:"+focusUnitId);
- const picked=focusUnitId?[units.find(u=>u.id===focusUnitId)!]:units;
+ const linked=focusUnitId?[units.find(u=>u.id===focusUnitId)!]:units;
+ // Unbounded cross-unit browsing belongs to Explore, not a 20-page prerequisite to practice.
+ // Practice includes the first native unit and a second distinct level when available.
+ const far=linked.find(u=>u.level!==linked[0]?.level)??linked[linked.length-1];
+ const picked=mode==="practice"&&linked.length>2
+   ?[linked[0]!,...(far&&far.id!==linked[0]?.id?[far]:[])]
+   :linked;
  const original=vocabularyLessons["vocab-"+id]!;
  const source=lexeme.sourceIds.map(sourceTitle).join(" · ");
  const context="cur06-"+id;
