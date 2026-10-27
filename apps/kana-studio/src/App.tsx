@@ -227,6 +227,7 @@ export function KanaExperience({embedded=false,initialView,onExit}:{
       <div className="flex-1 w-full max-w-6xl mx-auto pb-16">
         {currentView === 'home' && (
           <HomeView
+            embedded={embedded}
             stats={stats}
             settings={settings}
             onNavigate={(view) => {
