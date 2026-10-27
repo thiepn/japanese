@@ -68,6 +68,8 @@ export async function gradeCard(
     ...storedData,
     card: result.card,
     lastReviewedAt: reviewDate.toISOString(),
+    firstReviewedAt: storedData.firstReviewedAt ??
+      (storedData.totalReviews===0 ? reviewDate.toISOString():undefined),
     totalReviews: storedData.totalReviews + 1,
     totalLapses: rating === Rating.Again ? storedData.totalLapses + 1 : storedData.totalLapses
   };
@@ -443,7 +445,14 @@ export async function buildReviewQueue(
   // Due learning and reviews always take priority. Newly introduced cards and
   // unseen Kana share a bounded new-card allowance rather than letting a due
   // backlog block all further progression indefinitely.
-  const limit = includeNewCards ? Math.max(0, Math.floor(settings.dailyNewLimit)) : 0;
+  const dayStart=new Date(now);dayStart.setHours(0,0,0,0);
+  const studiedToday=[...storedCards.values()].filter(card=>{
+    if(!card.firstReviewedAt)return false;
+    const date=new Date(card.firstReviewedAt);
+    return Number.isFinite(date.getTime())&&date>=dayStart&&date<=now;
+  }).length;
+  const limit = includeNewCards ?
+    Math.max(0, Math.floor(settings.dailyNewLimit)-studiedToday) : 0;
   const introducedNew = dueNewIntroduced.slice(0, limit);
   const remaining = Math.max(0, limit - introducedNew.length);
   const unseenNew = unintroducedCandidates.slice(0, remaining);
