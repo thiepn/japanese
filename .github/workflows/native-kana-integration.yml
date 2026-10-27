@@ -1,0 +1,23 @@
+name: Native Kana Integration
+on:
+  push:
+    branches: [feature/native-kana-workspace-20261027]
+  workflow_dispatch:
+jobs:
+  integrated:
+    runs-on: ubuntu-latest
+    env: {VITE_PUBLIC_BASE: /japanese/}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: {version: 11.19.0}
+      - uses: actions/setup-node@v4
+        with: {node-version: 24.15.0}
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm exec vitest run tests/kana-studio-canonical.test.ts tests/kana-stage-progress.test.ts
+      - run: pnpm build
+      - run: test -s apps/web/dist/kana/index.html
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Native Japanese + Kana browser acceptance
+        run: pnpm exec playwright test tests/e2e/native-kana.spec.ts --project=desktop-chromium --project=android-mobile --project=compact-mobile --workers=2
