@@ -85,6 +85,7 @@ function toStudio(trace: MemoryTrace, cardId: string, local?: StoredCardData, su
     totalLapses: trace.card.lapses,
     introducedAt: local?.introducedAt ?? trace.card.lastReviewAt ?? new Date(trace.card.due).toISOString(),
     lastReviewedAt: trace.card.lastReviewAt ?? local?.lastReviewedAt,
+    firstReviewedAt: local?.firstReviewedAt,
     isSuspended: suspended
   };
 }
@@ -157,7 +158,11 @@ export async function gradeJapaneseKanaCard(
   const updated = canonicalScheduler.review(base, { grade, reviewedAt: reviewedAt.toISOString() });
   await saveStudyReview(event, updated);
   assertKanaWorkspace();
-  return toStudio(updated, current.cardId, current);
+  return toStudio(updated, current.cardId, {
+    ...current,
+    firstReviewedAt: current.firstReviewedAt ??
+      (current.totalReviews===0 ? reviewedAt.toISOString():undefined)
+  });
 }
 export async function toggleJapaneseKanaSuspension(cardId: string, suspended: boolean): Promise<boolean> {
   if (!linkedToJapanese) return false;

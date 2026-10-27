@@ -41,6 +41,7 @@ function parseCard(input:unknown):StoredCardData{
       !Number.isInteger(raw.totalReviews)||!finiteNonnegative(raw.totalReviews) ||
       !Number.isInteger(raw.totalLapses)||!finiteNonnegative(raw.totalLapses) ||
       (raw.lastReviewedAt!==undefined&&!validDate(raw.lastReviewedAt)) ||
+      (raw.firstReviewedAt!==undefined&&!validDate(raw.firstReviewedAt)) ||
       (raw.introducedAt!==undefined&&!validDate(raw.introducedAt)) ||
       (raw.isSuspended!==undefined&&typeof raw.isSuspended!=='boolean'))
     throw Error('BACKUP_INVALID_CARD');
@@ -50,6 +51,7 @@ function parseCard(input:unknown):StoredCardData{
       last_review:state.last_review?new Date(state.last_review as string):undefined} as StoredCardData['card'],
     totalReviews:raw.totalReviews as number,totalLapses:raw.totalLapses as number,
     ...(typeof raw.lastReviewedAt==='string'?{lastReviewedAt:raw.lastReviewedAt}:{}),
+    ...(typeof raw.firstReviewedAt==='string'?{firstReviewedAt:raw.firstReviewedAt}:{}),
     ...(typeof raw.introducedAt==='string'?{introducedAt:raw.introducedAt}:{}),
     ...(typeof raw.isSuspended==='boolean'?{isSuspended:raw.isSuspended}:{})
   };

@@ -62,6 +62,7 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
   const cardContainerRef = useRef<HTMLDivElement>(null);
+  const queueRequest=useRef(0);
 
   // Check speech synthesis availability
   useEffect(() => {
@@ -70,6 +71,7 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
 
   // Load review queue
   const loadQueue = useCallback(async (dir: 'kana-to-romaji' | 'romaji-to-kana', customDrill?: string[], fOpts?: ReviewFilterOptions) => {
+    const request=++queueRequest.current;
     setLoading(true);
     setQueueError(null);
     setGradeError(null);
@@ -84,17 +86,20 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
 
     try {
       const items = await buildReviewQueue(settings, true, dir, customDrill, fOpts);
-      setQueue(items);
+      if(request===queueRequest.current)setQueue(items);
     } catch(error) {
-      setQueue([]);
-      setQueueError(error instanceof Error?error.message:'Could not load Kana cards.');
+      if(request===queueRequest.current){
+        setQueue([]);
+        setQueueError(error instanceof Error?error.message:'Could not load Kana cards.');
+      }
     } finally {
-      setLoading(false);
+      if(request===queueRequest.current)setLoading(false);
     }
-  }, [settings]);
+  }, [settings.preferredScript, settings.dailyNewLimit]);
 
   useEffect(() => {
-    loadQueue(direction, drillKanaIds, filterOptions);
+    void loadQueue(direction, drillKanaIds, filterOptions);
+    return ()=>{queueRequest.current++;};
   }, [direction, drillKanaIds, filterOptions, loadQueue]);
 
   const currentItem: ScheduledQueueItem | undefined = queue[currentIndex];
@@ -219,6 +224,11 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
   // Keyboard navigation handler
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || e.isComposing || e.ctrlKey || e.altKey || e.metaKey) return;
+      if (document.querySelector('[role="dialog"][aria-modal="true"]')) return;
+      const target=e.target as HTMLElement | null;
+      const editing=target && (target.tagName==='INPUT' || target.tagName==='TEXTAREA' || target.isContentEditable);
+      if(editing && target!==inputRef.current)return;
       if (e.key === 'Escape') {
         e.preventDefault();
         onExit();

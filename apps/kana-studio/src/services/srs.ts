@@ -58,7 +58,10 @@ export async function gradeCard(
   // For exact-matched cues Japanese's trace and event outbox are the sole scheduler authority.
   const canonical = await gradeJapaneseKanaCard(storedData, rating, reviewDate);
   if (canonical) {
-    await saveStoredCard(canonical); // Non-authoritative Google UI/cache copy.
+    // Japanese FSRS + event outbox have already committed atomically. A failure
+    // in this optional Google cache must not invite a duplicate grade on retry.
+    try {await saveStoredCard(canonical);}
+    catch(error){console.warn('Canonical Kana grade saved; Google cache refresh unavailable:',error);}
     return { updatedData: canonical };
   }
 
@@ -68,6 +71,8 @@ export async function gradeCard(
     ...storedData,
     card: result.card,
     lastReviewedAt: reviewDate.toISOString(),
+    firstReviewedAt: storedData.firstReviewedAt ??
+      (storedData.totalReviews===0 ? reviewDate.toISOString():undefined),
     totalReviews: storedData.totalReviews + 1,
     totalLapses: rating === Rating.Again ? storedData.totalLapses + 1 : storedData.totalLapses
   };
@@ -340,9 +345,10 @@ export async function buildReviewQueue(
     const drillItems: ScheduledQueueItem[] = [];
     for (const id of explicitIds) {
       const item = kanaMap.get(id);
-      if (!item) continue;
+      if (!item || item.category === 'mechanic') continue;
       const storageKey = direction === 'romaji-to-kana' ? `${id}:rev` : id;
       const data = storedCards.get(storageKey) || createNewCardData(id, direction, true);
+      if(data.isSuspended || storedCards.get(id)?.isSuspended)continue;
       drillItems.push({
         kana: item,
         storedData: data,
@@ -439,13 +445,21 @@ export async function buildReviewQueue(
   // Sort due reviews by most overdue
   dueReview.sort((a, b) => new Date(a.storedData.card.due).getTime() - new Date(b.storedData.card.due).getTime());
 
-  const queue = [...dueLearning, ...dueReview, ...dueNewIntroduced];
-
-  if (includeNewCards && queue.length === 0 && unintroducedCandidates.length > 0) {
-    return unintroducedCandidates.slice(0, settings.dailyNewLimit);
-  }
-
-  return queue;
+  // Due learning and reviews always take priority. Newly introduced cards and
+  // unseen Kana share a bounded new-card allowance rather than letting a due
+  // backlog block all further progression indefinitely.
+  const dayStart=new Date(now);dayStart.setHours(0,0,0,0);
+  const studiedToday=[...storedCards.values()].filter(card=>{
+    if(!card.firstReviewedAt)return false;
+    const date=new Date(card.firstReviewedAt);
+    return Number.isFinite(date.getTime())&&date>=dayStart&&date<=now;
+  }).length;
+  const limit = includeNewCards ?
+    Math.max(0, Math.floor(settings.dailyNewLimit)-studiedToday) : 0;
+  const introducedNew = dueNewIntroduced.slice(0, limit);
+  const remaining = Math.max(0, limit - introducedNew.length);
+  const unseenNew = unintroducedCandidates.slice(0, remaining);
+  return [...dueLearning, ...dueReview, ...introducedNew, ...unseenNew];
 }
 
 
