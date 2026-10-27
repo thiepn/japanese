@@ -1,0 +1,53 @@
+import {test,expect} from "@playwright/test";
+test("CUR-06 original contextual vocabulary pages remain non-review and show source-linked unit",async({page})=>{
+ await page.goto("./#course/A1");
+ const panel=page.getByRole("region",{name:"Vocabulary and level reviews"});
+ await expect(panel).toBeVisible();
+ const row=panel.locator(".cur05-vocabulary li").first();
+ await expect(row).toBeVisible();
+ await row.getByRole("button",{name:/Explore original contexts/}).click();
+ await expect(page.locator(".study-lesson h1")).toBeVisible();
+ await expect(page.locator(".j5-choices")).toHaveCount(0);
+ await page.getByRole("button",{name:"Continue",exact:true}).click();
+ await expect(page.locator(".study-lesson h1")).toHaveText("Spelling, reading and meaning");
+ await expect(page.locator(".j5-choices")).toHaveCount(0);
+ await page.getByRole("button",{name:"Continue",exact:true}).click();
+ await expect(page.locator(".study-lesson")).toBeVisible();
+ await page.getByRole("button",{name:"Exit"}).click();
+ await expect(panel).toBeVisible();
+});
+test("CUR-06 practice resumes exact section; explicit restart preserves the original vocabulary",async({page})=>{
+ await page.goto("./#course/A1");
+ const panel=page.getByRole("region",{name:"Vocabulary and level reviews"});
+ const row=panel.locator(".cur05-vocabulary li").first();
+ await expect(row).toBeVisible();
+ await row.getByRole("button",{name:/Practice .*unscored guided/}).click();
+ const first=await page.locator(".study-lesson h1").innerText();
+ await page.getByRole("button",{name:"Continue",exact:true}).click();
+ const second=await page.locator(".study-lesson h1").innerText();
+ expect(second).not.toBe(first);
+ await page.getByRole("button",{name:"Exit"}).click();
+ await expect(row.getByRole("button",{name:/Practice .*unscored guided/})).toHaveText("Resume practice");
+ await page.reload();
+ await expect(row.getByRole("button",{name:/Practice .*unscored guided/})).toHaveText("Resume practice");
+ await row.getByRole("button",{name:/Practice .*unscored guided/}).click();
+ await expect(page.locator(".study-lesson h1")).toHaveText(second);
+ await page.getByRole("button",{name:"Exit"}).click();
+ await row.getByRole("button",{name:/Restart unscored vocabulary/}).click();
+ await expect(page.locator(".study-lesson h1")).toHaveText(first);
+ await page.getByRole("button",{name:"Exit"}).click();
+ await expect(panel).toBeVisible();
+});
+test("CUR-06 guided misconception correction declares no grade or scheduled FSRS evidence",async({page})=>{
+ await page.goto("./#course/A1");
+ const row=page.getByRole("region",{name:"Vocabulary and level reviews"}).locator(".cur05-vocabulary li").first();
+ await row.getByRole("button",{name:/Practice .*unscored guided/}).click();
+ for(let i=0;i<20&&await page.locator(".study-lesson").count();i++)
+   await page.getByRole("button",{name:"Continue",exact:true}).click();
+ const choices=page.locator(".j5-choices");
+ await expect(choices).toBeVisible();
+ await choices.getByRole("button").last().click();
+ await expect(page.getByText("UNSCORED CONTEXT CHECK")).toBeVisible();
+ await expect(page.getByText(/not an FSRS grade|not a mastery grade/).first()).toBeVisible();
+ await page.getByRole("button",{name:"Exit"}).click();
+});
