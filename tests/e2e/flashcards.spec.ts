@@ -41,6 +41,7 @@ test("Japanese flashcard entry uses native Kana and canonical FSRS after reload"
   await input.press("Enter");
   await expect(page.getByText("Correct",{exact:true})).toBeVisible();
   await page.getByRole("button",{name:/3. Good/}).click();
+  await expect.poll(async()=>(await evidence(page)).trace?.revision,{timeout:15000}).toBe(1);
   const saved=await evidence(page);
   expect(saved.trace?.revision).toBe(1);
   expect(saved.trace?.card.reps).toBe(1);
@@ -74,6 +75,7 @@ test("incorrect answer locks grading to Again and commits one canonical grade",a
   await expect(page.getByText("Incorrect",{exact:false}).first()).toBeVisible();
   await expect(page.getByRole("button",{name:/3. Good/})).toBeDisabled();
   await page.getByRole("button",{name:/1. Again/}).click();
+  await expect.poll(async()=>(await evidence(page)).trace?.revision,{timeout:15000}).toBe(1);
   const saved=await evidence(page);
   expect(saved.trace?.revision).toBe(1);
   expect(saved.trace?.card.reps).toBe(1);
