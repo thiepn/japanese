@@ -1,6 +1,4 @@
 import {useState} from "react";
-import {getDevelopmentAccountId} from "../study/runtime";
-import {openKanaStudio} from "../kanaHandoff";
 import type {KanaReviewOverview,KanaReviewScript,KanaReviewSkill} from "../study/kanaReview";
 import "./kanaReview.css";
 
@@ -15,7 +13,7 @@ const SKILLS:readonly {id:KanaReviewSkill;label:string}[]=[
 export function KanaReview({overview,busy,status,onStart}:{
   overview:KanaReviewOverview;busy:boolean;status:string;
   onStart:(script:KanaReviewScript,skill:KanaReviewSkill)=>void;
-  onFlashcardsChanged?:()=>void;
+  onFlashcardsChanged:()=>void;
 }){
   const [script,setScript]=useState<KanaReviewScript>("mixed");
   const [skill,setSkill]=useState<KanaReviewSkill>("recognition");
@@ -38,9 +36,7 @@ export function KanaReview({overview,busy,status,onStart}:{
     </dl>
     <div className="kana-review__actions">
       <button type="button" className="kana-review__start" disabled={busy}
-        onClick={()=>{
-          openKanaStudio(getDevelopmentAccountId(),"review");
-        }}>Review flashcards</button>
+        onClick={onFlashcardsChanged}>Review flashcards</button>
       <button type="button" className="kana-review__secondary" disabled={busy||!available}
         onClick={()=>onStart(script,skill)}>Multiple-choice practice</button>
     </div>
