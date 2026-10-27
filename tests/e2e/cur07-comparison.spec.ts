@@ -27,7 +27,7 @@ test("CUR-07 learner chooses two original unit Can-dos and resumes the same boun
  const panel2=page.getByRole("region",{name:"Vocabulary and level reviews"});
  await panel2.getByRole("button",{name:"All levels",exact:true}).click();
  const row2=panel2.locator(".cur05-vocabulary li").filter({has:page.getByRole("button",{name:/Compare original source units/})}).first();
- await row2.getByRole("button",{name:/Compare original source units/}).click();
+ await expect(row2.getByRole("button",{name:/Compare original source units/})).toHaveAttribute("aria-expanded","true");
  const cmp2=row2.getByRole("region",{name:/Compare unit contexts/});
  await cmp2.getByRole("button",{name:"Resume comparison"}).click();
  await expect(page.locator(".study-lesson h1")).toHaveText(saved);
