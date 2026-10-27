@@ -72,7 +72,7 @@ export const LearnView: React.FC<LearnViewProps> = ({
   // If inside an active learning lesson
   if (selectedStage) {
     const currentKanaId = selectedStage.kanaIds[cardIndex];
-    const currentKana: KanaItem | undefined = kanaMap.get(currentKanaId);
+    const currentKana: KanaItem | undefined = currentKanaId ? kanaMap.get(currentKanaId) : undefined;
 
     if (!currentKana) {
       return (
