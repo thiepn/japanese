@@ -18,8 +18,11 @@ import { CategoryReviewModal } from './components/CategoryReviewModal';
 import { SrsScheduleModal } from './components/SrsScheduleModal';
 import { KanaDetailModal } from './components/KanaDetailModal';
 
-export default function App() {
-  const [currentView, setCurrentView] = useState<'home' | 'learn' | 'review' | 'words' | 'chart'>(currentKanaView);
+export type KanaView='home'|'learn'|'review'|'words'|'chart';
+export function KanaExperience({embedded=false,initialView,onExit}:{
+  embedded?:boolean;initialView?:KanaView;onExit?:()=>void;
+}) {
+  const [currentView, setCurrentView] = useState<KanaView>(initialView ?? currentKanaView);
   const [settings, setSettings] = useState<UserSettings>(defaultSettings);
   const [storedCards, setStoredCards] = useState<Map<string, StoredCardData>>(new Map());
   const [stats, setStats] = useState<DeckStatistics>({
@@ -88,10 +91,9 @@ export default function App() {
         dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       }
       setIsDark(dark);
-      if (dark) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
+      // The embedded Kana section inherits Japanese's single global theme.
+      if(!embedded){
+        document.documentElement.classList.toggle('dark',dark);
       }
     };
 
@@ -103,7 +105,7 @@ export default function App() {
     };
     mediaQuery.addEventListener('change', listener);
     return () => mediaQuery.removeEventListener('change', listener);
-  }, [settings.theme]);
+  }, [settings.theme,embedded]);
 
   // Handle settings update
   const handleUpdateSettings = async (partial: Partial<UserSettings>) => {
@@ -177,9 +179,11 @@ export default function App() {
   const activeKanaItem = activeModalKanaId ? kanaMap.get(activeModalKanaId) || null : null;
 
   return (
-    <div className="min-h-screen bg-[#F7F6F2] dark:bg-[#151515] text-[#202020] dark:text-[#F0EFEB] flex flex-col font-sans selection:bg-[#C94B3C]/20 selection:text-[#C94B3C] transition-colors duration-200">
+    <div className={embedded
+      ? "kana-native text-[#202020] dark:text-[#F0EFEB] font-sans"
+      : "min-h-screen bg-[#F7F6F2] dark:bg-[#151515] text-[#202020] dark:text-[#F0EFEB] flex flex-col font-sans selection:bg-[#C94B3C]/20 selection:text-[#C94B3C] transition-colors duration-200"}>
       {/* Navigation */}
-      <Navigation
+      {!embedded?<Navigation
         currentView={currentView}
         onNavigate={(view) => {
           if (view === 'review') {
@@ -196,10 +200,31 @@ export default function App() {
         onOpenConfusables={() => setIsConfusablesOpen(true)}
         isDark={isDark}
         onToggleTheme={toggleTheme}
-      />
+      />:<section className="kana-native__toolbar" aria-label="Kana learning tools">
+        <div className="kana-native__heading">
+          <div><p className="eyebrow">LEARN · KANA</p><h1>Kana</h1></div>
+          {onExit?<button type="button" className="kana-native__return" onClick={onExit}>Return to Japanese</button>:null}
+        </div>
+        <nav className="kana-native__tabs" aria-label="Kana sections">
+          {([
+            ["home","Overview"],["learn","Lessons"],["review","Flashcards"],
+            ["words","Words"],["chart","Kana chart"]
+          ] as const).map(([view,label])=><button key={view} type="button"
+            aria-current={currentView===view?"page":undefined}
+            onClick={()=>view==="review"?handleStandardReview():setCurrentView(view)}>
+              {label}{view==="review"&&stats.dueNowCount>0?<small> {stats.dueNowCount} due</small>:null}
+            </button>)}
+        </nav>
+        <div className="kana-native__actions">
+          <button onClick={()=>setIsConfusablesOpen(true)} type="button">Similar kana</button>
+          <button onClick={()=>setIsScheduleModalOpen(true)} type="button">Schedule</button>
+          <button onClick={()=>setIsShortcutsOpen(true)} type="button">Shortcuts</button>
+          <button onClick={()=>setIsSettingsOpen(true)} type="button">Settings & backup</button>
+        </div>
+      </section>}
 
       {/* Main View Area */}
-      <main className="flex-1 w-full max-w-6xl mx-auto pb-16">
+      <div className="flex-1 w-full max-w-6xl mx-auto pb-16">
         {currentView === 'home' && (
           <HomeView
             stats={stats}
@@ -254,7 +279,7 @@ export default function App() {
             onRefreshData={refreshData}
           />
         )}
-      </main>
+      </div>
 
       {/* Modals */}
       <SettingsModal
@@ -304,3 +329,5 @@ export default function App() {
   );
 }
 
+
+export default function App(){return <KanaExperience/>;}
