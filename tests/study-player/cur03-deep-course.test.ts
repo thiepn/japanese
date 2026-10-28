@@ -81,3 +81,45 @@ describe("CUR-03 exact-section checkpoint contract",()=>{
   expect(clearCoursePosition("owner-a",unit.id,broken)).toBe(false);
  });
 });
+describe("CUR-10 four original source-grounded A1 teaching contexts",()=>{
+ const cases=[
+  ["a1-unit-09","grammar-demonstrative-pronouns"],
+  ["a1-unit-12","grammar-kara-made"],
+  ["a1-unit-18","grammar-de-means"],
+  ["a1-unit-19","grammar-te-kudasai"]
+ ] as const;
+ it("uses exact sentences from the corresponding canonical source unit",()=>{
+  for(const [unitId,anchor] of cases){
+   const unit=coreContent.courseUnits.find(item=>item.id===unitId)!;
+   expect(unit.level).toBe("A1");
+   expect(unit.grammarIds).toContain(anchor);
+   expect(deepTeachingAnchors(unitId)).toContain(anchor);
+   const session=buildCur03CourseUnitSession(unitId);
+   const context=session.find(step=>isStudyLesson(step)&&step.id==="cur03-"+unitId+"-"+anchor+"-context");
+   expect(context).toBeDefined();
+   if(!context||!isStudyLesson(context))throw Error("CUR10_CONTEXT_MISSING");
+   const originalTexts=new Set(coreContent.sentences.filter(item=>unit.sentenceIds.includes(item.id)).map(item=>item.text));
+   expect(context.examples).toHaveLength(4);
+   for(const example of context.examples??[])expect(originalTexts.has(example.expression)).toBe(true);
+  }
+ });
+ it("adds three distinct unscored guided choices and one independent writing task for each anchor",()=>{
+  for(const [unitId,anchor] of cases){
+   const session=buildCur03CourseUnitSession(unitId);
+   const prompts=session.filter(step=>!isStudyLesson(step)&&step.eventMetadata?.cur03Anchor===anchor);
+   expect(prompts).toHaveLength(4);
+   expect(prompts.filter(step=>step.kind==="prompt"&&step.promptType==="choice")).toHaveLength(3);
+   expect(prompts.filter(step=>step.kind==="prompt"&&step.promptType==="textarea")).toHaveLength(1);
+   for(const step of prompts)if(!isStudyLesson(step)){
+    expect(step.primaryTarget.kind).toBe("can_do");
+    expect(step.sourceId).toBe("thiepn-original");
+    expect(step.eventMetadata).toMatchObject({nonAuthoritative:true,schedulerExcluded:true,independentCompetenceVerified:false});
+    if(step.promptType==="choice"){
+      expect(step.choices).toHaveLength(3);
+      expect(new Set(step.choices).size).toBe(3);
+      expect(step.choices).toContain(step.acceptedAnswers[0]);
+    }
+   }
+  }
+ });
+});
