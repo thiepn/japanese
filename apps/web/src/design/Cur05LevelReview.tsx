@@ -1,6 +1,6 @@
 import {useEffect,useMemo,useState} from "react";
 import type {CourseLevelReviewOverview,CourseReviewLevel} from "../study/cur05LevelReview";
-import {normalizeCourseReviewLevels,reviewSelectionCounts} from "../study/cur05LevelReview";
+import {normalizeCourseReviewLevels,reviewSelectionCounts,courseReviewBatchPlan} from "../study/cur05LevelReview";
 import {COURSE_LEVELS,type CourseLevel} from "../study/cefrCourseCatalog";
 import {buildCur06VocabularyJourney,type Cur06Mode} from "../study/cur06VocabularyJourney";
 import {readCoursePosition} from "../study/cur03CoursePosition";
@@ -22,6 +22,7 @@ export function Cur05LevelReview({ownerId,overview,activeLevel,busy,onReviewDue,
   scope==="all"?[...COURSE_LEVELS,"unassigned"]:custom),[scope,activeLevel,custom]);
  const current=overview?.accountId===ownerId?overview:null;
  const counts=current?reviewSelectionCounts(current,selected):null;
+ const batch=current?courseReviewBatchPlan(current,selected):null;
  const words=useMemo(()=>current?.words.filter(word=>(!word.levels.length&&selected.includes("unassigned"))
    ||word.levels.some(level=>selected.includes(level))).sort((a,b)=>b.due-a.due||a.id.localeCompare(b.id))??[],
   [current,selected]);
@@ -56,12 +57,18 @@ export function Cur05LevelReview({ownerId,overview,activeLevel,busy,onReviewDue,
   </div>:<p role="status">Review counts are loading from this learner's local FSRS history.</p>}
   <div className="cur05-actions">
    <button type="button" disabled={busy||!current||(counts?.due??0)===0} onClick={()=>onReviewLevels(selected)}>
-    Review selected due ({counts?.due??0})
+    {batch?.remainingDue
+      ?"Review next "+batch.queueSize+" of "+batch.selectionDue+" due"
+      :"Review selected due ("+(batch?.queueSize??0)+")"}
    </button>
    <button type="button" disabled={busy||!current||current.globalDue===0} onClick={onReviewDue}>
     All Japanese due ({current?.globalDue??0})
    </button>
   </div>
+  {batch&&batch.remainingDue>0?<p className="cur05-batch-note" role="status">
+    This session contains {batch.queueSize} of {batch.selectionDue} original due prompts; {batch.remainingDue} remain due until you review them.
+    {batch.order==="balanced"?" Selected source levels are interleaved without duplicating cross-level words.":""}
+  </p>:null}
   <p className="cur05-boundary">Contexts are original source-linked study pages with no FSRS review. Practice offers unscored guided choices, independent recall, and optional writing; only scheduled graded review buttons affect FSRS. The global count also includes kana, grammar, private words and other original reviews. Source-linked vocabulary can appear in several levels: combined totals count each prompt only once. Unassigned words have no verified canonical unit-level mapping. Reading a word does not change its due date.</p>
   {current&&<div className="cur05-vocabulary">
    <div className="cur05-vocab-heading"><h3>Source-linked vocabulary</h3><span>Showing {Math.min(showCount,words.length)} of {words.length}</span></div>

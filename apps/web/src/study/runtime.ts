@@ -23,7 +23,7 @@ import {
   type MilestoneAssessmentProgress,type UnitAssessmentProgress
 } from "./assessment";
 import { VOCABULARY_TOTAL, vocabularyApplicationPrompts, vocabularyLessons, vocabularyMeaningPrompts } from "./vocabulary";
-import {projectCourseLevelReview,selectCourseDuePrompts,type CourseLevelReviewOverview,type CourseReviewLevel} from "./cur05LevelReview";
+import {projectCourseLevelReview,selectCourseDuePrompts,CUR08_REVIEW_BATCH_SIZE,type CourseLevelReviewOverview,type CourseReviewLevel} from "./cur05LevelReview";
 import {buildCur06VocabularyJourney,type Cur06Mode} from "./cur06VocabularyJourney";
 export type {CourseLevelReviewOverview,CourseReviewLevel} from "./cur05LevelReview";
 import { buildPrivateVocabularyPrompts } from "./privateVocabulary";
@@ -194,7 +194,7 @@ export async function buildCourseLevelDueReviewSession(levels:readonly CourseRev
  if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("CUR05_WORKSPACE_CHANGED");
  const prompts=[...vocabularyMeaningPrompts,...vocabularyApplicationPrompts];
  const overview=projectCourseLevelReview({accountId:owner,traces,vocabularyPrompts:prompts,globalPrompts:prompts,now});
- return selectCourseDuePrompts({levels,overview,prompts,traces,now,limit:MAX_QUEUE_SIZE});
+ return selectCourseDuePrompts({levels,overview,prompts,traces,now,limit:CUR08_REVIEW_BATCH_SIZE});
 }
 /** Pure content preview, without a study prompt: does not create a StudyEvent or move FSRS due dates. */
 export function buildCur06VocabularyPractice(lexemeId:string,mode:Cur06Mode,unitId?:string,contrastUnitId?:string):StudyStep[]{
