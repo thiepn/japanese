@@ -1,4 +1,4 @@
-name: CUR-08 Japanese Source-Aware Review Batches
+name: CUR-09 Japanese Review Continuity and Source Recovery
 on:
   push:
     branches: [feature/cur08-source-aware-review-batches-20261028]
@@ -27,10 +27,10 @@ jobs:
       - name: Typecheck merged native app
         run: pnpm typecheck
       - name: Source-aware native batch and earlier original course regressions
-        run: pnpm exec vitest run tests/study-player/cur08-review-batches.test.ts tests/study-player/cur07-recovery.test.ts tests/study-player/cur06-vocabulary.test.ts tests/study-player/cur05-level-review.test.ts tests/study-player/cur04-external-mapping.test.ts tests/study-player/cur04-navigation.test.ts tests/study-player/cur03-deep-course.test.ts tests/study-player/cur01-catalog.test.ts tests/study-player/grammar-course.test.ts tests/study-player/study-player.test.ts
+        run: pnpm exec vitest run tests/study-player/cur09-review-continuity.test.ts tests/study-player/cur08-review-batches.test.ts tests/study-player/cur07-recovery.test.ts tests/study-player/cur06-vocabulary.test.ts tests/study-player/cur05-level-review.test.ts tests/study-player/cur04-external-mapping.test.ts tests/study-player/cur04-navigation.test.ts tests/study-player/cur03-deep-course.test.ts tests/study-player/cur01-catalog.test.ts tests/study-player/grammar-course.test.ts tests/study-player/study-player.test.ts
       - name: Production build without deployment
         run: pnpm build
       - name: Install Chromium
         run: pnpm exec playwright install --with-deps chromium
-      - name: Real desktop and compact mobile source review and course navigation
-        run: pnpm exec playwright test tests/e2e/cur08-review-batches.spec.ts tests/e2e/cur07-comparison.spec.ts tests/e2e/cur06-vocabulary.spec.ts tests/e2e/cur05-level-review.spec.ts tests/e2e/cur04-navigation.spec.ts tests/e2e/cur03-deep-course.spec.ts tests/e2e/cur01-catalog.spec.ts --project=desktop-chromium --project=compact-mobile --workers=2
+      - name: Real desktop and compact mobile due resumption, isolation and course navigation
+        run: pnpm exec playwright test tests/e2e/cur09-review-continuity.spec.ts tests/e2e/cur08-review-batches.spec.ts tests/e2e/cur07-comparison.spec.ts tests/e2e/cur06-vocabulary.spec.ts tests/e2e/cur05-level-review.spec.ts tests/e2e/cur04-navigation.spec.ts tests/e2e/cur03-deep-course.spec.ts tests/e2e/cur01-catalog.spec.ts --project=desktop-chromium --project=compact-mobile --workers=2
