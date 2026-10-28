@@ -1,0 +1,36 @@
+name: CUR-07 Japanese Context Contrast and History Recovery
+on:
+  push:
+    branches: [feature/cur01-six-level-curriculum-20261026]
+permissions:
+  contents: read
+concurrency:
+  group: cur03-japanese-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  deep-course:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      VITE_PUBLIC_BASE: /japanese/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - run: pnpm install --no-frozen-lockfile
+      - name: Typecheck native app and CUR-03
+        run: pnpm typecheck
+      - name: Native original teaching, checkpoints and canonical regression
+        run: pnpm exec vitest run tests/study-player/cur07-recovery.test.ts tests/study-player/cur06-vocabulary.test.ts tests/study-player/cur05-level-review.test.ts tests/study-player/cur04-external-mapping.test.ts tests/study-player/cur04-navigation.test.ts tests/study-player/cur03-deep-course.test.ts tests/study-player/cur01-catalog.test.ts tests/study-player/grammar-course.test.ts tests/study-player/study-player.test.ts
+      - name: Build Japanese without deployment
+        run: pnpm build
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Real desktop and mobile original vocabulary context, unscored recall and recovery
+        run: pnpm exec playwright test tests/e2e/cur07-comparison.spec.ts tests/e2e/cur06-vocabulary.spec.ts tests/e2e/cur05-level-review.spec.ts tests/e2e/cur04-navigation.spec.ts tests/e2e/cur03-deep-course.spec.ts tests/e2e/cur01-catalog.spec.ts --project=desktop-chromium --project=compact-mobile --workers=2

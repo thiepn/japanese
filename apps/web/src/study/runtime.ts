@@ -23,6 +23,9 @@ import {
   type MilestoneAssessmentProgress,type UnitAssessmentProgress
 } from "./assessment";
 import { VOCABULARY_TOTAL, vocabularyApplicationPrompts, vocabularyLessons, vocabularyMeaningPrompts } from "./vocabulary";
+import {projectCourseLevelReview,selectCourseDuePrompts,type CourseLevelReviewOverview,type CourseReviewLevel} from "./cur05LevelReview";
+import {buildCur06VocabularyJourney,type Cur06Mode} from "./cur06VocabularyJourney";
+export type {CourseLevelReviewOverview,CourseReviewLevel} from "./cur05LevelReview";
 import { buildPrivateVocabularyPrompts } from "./privateVocabulary";
 import { buildPrivateSentencePrompts } from "./privateSentences";
 import { productivePracticeSession,productiveTaskSession,productivePrompts } from "./productivePractice";
@@ -173,6 +176,38 @@ export async function buildBeginnerStageSession(id:BeginnerStageId):Promise<Stud
   if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("BEGINNER_WORKSPACE_CHANGED_DURING_BUILD");
   return buildBeginnerStage(id,events);
 }
+/** Same authoritative due sources as getStudySummary and buildDueReviewSession; no writes. */
+export async function getCourseLevelReviewOverview(now=new Date()):Promise<CourseLevelReviewOverview>{
+ const owner=DEVELOPMENT_ACCOUNT_ID;
+ const [traces,privateSet,privateSentences]=await Promise.all([
+  listMemoryTraces(owner),buildPrivateVocabularyPrompts(),buildPrivateSentencePrompts()
+ ]);
+ if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("CUR05_WORKSPACE_CHANGED");
+ return projectCourseLevelReview({accountId:owner,traces,
+  vocabularyPrompts:[...vocabularyMeaningPrompts,...vocabularyApplicationPrompts],
+  globalPrompts:[...allPrompts(),...privateSet.meaning,...privateSet.application,...privateSentences],now});
+}
+/** Returns original due prompts, sorted without modifying timestamps, grades or source identity. */
+export async function buildCourseLevelDueReviewSession(levels:readonly CourseReviewLevel[],now=new Date()):Promise<StudyStep[]>{
+ const owner=DEVELOPMENT_ACCOUNT_ID;
+ const traces=await listMemoryTraces(owner);
+ if(owner!==DEVELOPMENT_ACCOUNT_ID)throw Error("CUR05_WORKSPACE_CHANGED");
+ const prompts=[...vocabularyMeaningPrompts,...vocabularyApplicationPrompts];
+ const overview=projectCourseLevelReview({accountId:owner,traces,vocabularyPrompts:prompts,globalPrompts:prompts,now});
+ return selectCourseDuePrompts({levels,overview,prompts,traces,now,limit:MAX_QUEUE_SIZE});
+}
+/** Pure content preview, without a study prompt: does not create a StudyEvent or move FSRS due dates. */
+export function buildCur06VocabularyPractice(lexemeId:string,mode:Cur06Mode,unitId?:string,contrastUnitId?:string):StudyStep[]{
+ return buildCur06VocabularyJourney(lexemeId,mode,unitId,contrastUnitId);
+}
+export function buildCourseVocabularyPreview(lexemeId:string):StudyStep[]{
+ const lexeme=coreContent.lexemes.find(item=>item.id===lexemeId);
+ if(!lexeme)throw Error("CUR05_UNKNOWN_LEXEME");
+ const lesson=vocabularyLessons["vocab-"+lexemeId];
+ if(!lesson)throw Error("CUR05_MISSING_ORIGINAL_VOCABULARY_LESSON");
+ return [lesson];
+}
+
 export async function buildDueReviewSession(now=new Date()):Promise<StudyStep[]>{
   const owner=DEVELOPMENT_ACCOUNT_ID;
   const [traces,privateSet,privateSentences]=await Promise.all([

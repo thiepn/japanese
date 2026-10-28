@@ -1,0 +1,9 @@
+# CUR-03 Japanese A1 instruction and exact-section continuation
+
+New original situational lessons extend the installed canonical A1 course-unit player through grammar-linked situations: topic omissions and introduction, confirmation questions, object-marking in café requests, and action-location versus destination. Every included canonical source and Can-do link is checked before content is shown. Each case has two teaching sections, four original contextual examples, three controlled comprehension contrasts with specific mistake feedback, and independent ungraded writing. Existing courseUnitSession steps preserve the same canonical IDs and full step values; original source IDs, accepted answers, and native StudyEvents/FSRS are unchanged. New contextual checks are explicitly nonAuthoritative and schedulerExcluded.
+
+The account-scoped local position saves only unit ID, step ID, index and exact step list fingerprint, never learner text or grades. Answer completion saves the NEXT position only after the authoritative original StudyEvent writer completes. Exit retains the position; completing a session clears it. Changed source queues fail closed. Unavailable offline storage is visibly reported. E07's existing opt-in unsent-draft buffer also accepts new unscored writing.
+
+PR #103 is an independent unmerged owner of cf-a1-* guided lessons (78 lessons) and is not copied, rebased or claimed to be installed. The shared Languages PR #30 owns LessonV1 and LanguagePluginV1; no parallel package, writer, grader or scheduler is introduced. Future integration requires original IDs and rights checks, not content duplication. C2 is still planned and no CEFR proficiency is certified.
+
+Release remains default denied; no migrations, merges, publication or deployment. Checkpoints on this device are navigation-only and are not automatically synced/backed up.

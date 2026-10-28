@@ -29,8 +29,13 @@ function e06FoilCorrection(prompt:StudyPrompt,response:string):string|undefined{
   const matched=raw.find(item=>typeof item==="object"&&item!==null&&item.response===response&&typeof item.feedback==="string");
   return typeof matched?.feedback==="string"?matched.feedback:undefined;
 }
-export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{steps:StudyStep[];accountScope:string;onAnswer:(answer:StudyAnswer)=>Promise<void>|void;onComplete:()=>void;onExit:()=>void;}){
-  const [index,setIndex]=useState(0);
+export function StudyPlayer({steps,accountScope,initialIndex=0,initialPositionUnavailable=false,onPositionSave,onAnswer,onComplete,onExit}:{steps:StudyStep[];accountScope:string;initialIndex?:number;initialPositionUnavailable?:boolean;onPositionSave?:(index:number)=>boolean;onAnswer:(answer:StudyAnswer)=>Promise<void>|void;onComplete:()=>void;onExit:()=>void;}){
+  const [index,setIndex]=useState(()=>Number.isInteger(initialIndex)&&initialIndex>=0&&initialIndex<steps.length?initialIndex:0);
+  const [positionUnavailable,setPositionUnavailable]=useState(initialPositionUnavailable);
+  const notePosition=(next:number)=>{
+    if(!onPositionSave)return;
+    setPositionUnavailable(!onPositionSave(next));
+  };
   const [response,setResponse]=useState("");
   const [draftEnabled,setDraftEnabled]=useState(()=>e07DraftPreference(accountScope));
   const [draftNotice,setDraftNotice]=useState<"idle"|"saved"|"restored"|"unavailable">("idle");
@@ -173,6 +178,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
     audioProvider.current.stop();
     setE08Checks([]);
     if(index+1>=steps.length){onComplete();return;}
+    notePosition(index+1);
     setIndex((value)=>value+1);
     setResponse("");
     setDraftNotice("idle");
@@ -261,6 +267,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         <div><strong>Your optional E11 message was recorded</strong><p>Continue with its independent revision; skipped contextual questions receive no completion or grading evidence.</p></div>
         <button type="button" onClick={()=>{setIndex(e12RevisionIndex);setResponse("");setFeedback(null);setSaveError(false);setE08Checks([]);startedAt.current=performance.now();}}>Continue E12 revision</button>
       </div>:null}
+      {positionUnavailable?<p role="alert">This browser could not save your course position. Your recorded answers remain separate.</p>:null}
       <div className="study-lesson j5-sheet j5-sheet--lesson">
         <div className="j5-sheet__cap">
           <span className="eyebrow">LEARN</span>
@@ -324,6 +331,8 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
         grade,
         responseTimeMs:Math.max(0,Math.round(performance.now()-startedAt.current)),
       });
+      // Only after the original immutable StudyEvent commits can the next prompt be resumed.
+      notePosition(Math.min(index+1,steps.length-1));
       if(currentPrompt.eventMetadata?.e06===true&&currentPrompt.promptType==="textarea"&&currentPrompt.id.endsWith("-write")){
         setE08FirstDraft(value);
       }
@@ -346,6 +355,7 @@ export function StudyPlayer({steps,accountScope,onAnswer,onComplete,onExit}:{ste
   return <StudyFrame mode={mode} theme={theme} season={season} index={index} total={steps.length} completed={Boolean(feedback)} onExit={()=>{if(!savingRef.current)onExit();}} onTheme={toggleTheme}>
     {ux1Cafe?<UX1CafeHeader steps={steps} index={index}/>:null}
     {draftEnabled&&restorableIndex>index?<div className="e07-draft-resume" role="status"><p>Continue unfinished unscored production from this device; earlier prompts are not marked completed by this shortcut.</p><button type="button" onClick={resumeIndependentDraft}>Resume saved draft <span aria-hidden="true">→</span></button></div>:null}
+    {positionUnavailable?<p role="alert">Course position could not be saved. Your recorded answers remain separate.</p>:null}
     <div className={"j5-sheet j5-sheet--"+mode.mode}>
       <div className="j5-sheet__cap">
         <span className="eyebrow">{currentPrompt.instruction.toUpperCase()}</span>
