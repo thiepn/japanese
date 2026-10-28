@@ -103,6 +103,14 @@ export function saveCur09Review(owner:string,receipt:Cur09ReviewReceipt,
  if(!hasValidShape(receipt,owner,now))throw Error("CUR09_INVALID_RECEIPT");
  try{if(!store)return false;store.setItem(key,JSON.stringify(receipt));return true;}catch{return false;}
 }
+/** A navigation-only skip must never suppress an original FSRS due prompt.
+ * The App provides only IDs observed after the native original StudyEvent commit. */
+export function canAdvanceCur09AfterCommit(steps:readonly StudyPrompt[],cursor:number,next:number,
+ committed:ReadonlySet<string>):boolean{
+ if(!Number.isSafeInteger(cursor)||!Number.isSafeInteger(next)||cursor<0||cursor>=steps.length||
+  next<cursor||next>=steps.length)return false;
+ return next===cursor||(next===cursor+1&&committed.has(steps[cursor]!.id));
+}
 /** Called only after original StudyPlayer successfully commits an original StudyEvent. */
 export function advanceCur09Review(owner:string,steps:readonly StudyPrompt[],next:number,
  store:Cur09ReviewStore|null=liveStore(),now=Date.now()):boolean{

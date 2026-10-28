@@ -10,7 +10,7 @@ import { isStudyLesson,type StudyStep } from "@thiepn/study-player";
 import {buildCur03CourseUnitSession} from "./study/cur03A1DeepCourse";
 import {readCoursePosition,saveCoursePosition,clearCoursePosition} from "./study/cur03CoursePosition";
 import {cur07PracticeKey,rememberCur07Section,restoreCur07Section,type Cur07Receipt} from "./study/cur07History";
-import {advanceCur09Review,clearCur09Review,saveCur09Review} from "./study/cur09ReviewContinuity";
+import {advanceCur09Review,canAdvanceCur09AfterCommit,clearCur09Review,readCur09Review,saveCur09Review} from "./study/cur09ReviewContinuity";
 import { searchLocalJapanese } from "./content";
 
 import { getImmersionProgress,type ImmersionProgress } from "./immerse/reader";
@@ -122,6 +122,7 @@ export function App(){
   const [reviewOverview,setReviewOverview]=useState<CourseLevelReviewOverview|null>(null);
   const [sessionPositionUnavailable,setSessionPositionUnavailable]=useState(false);
   const coursePositionRef=useRef<{unitId:string;ownerId:string;steps:StudyStep[]}|null>(null);
+  const cur09CommittedPromptIds=useRef(new Set<string>());
   const [ux1Outcome,setUx1Outcome]=useState<{owner:string;origin:Surface;pending:boolean;failed:boolean}|null>(null);
   const [e22Selection,setE22Selection]=useState<{owner:string;value:E22Selection}|null>(null);
   const sessionOrigin=useRef<Surface>("Today");
@@ -174,6 +175,7 @@ export function App(){
     JAPANESE_LANGUAGE_DASHBOARD.invalidate();
     sessionOwner.current=null;
     coursePositionRef.current=null;
+    cur09CommittedPromptIds.current.clear();
     setSessionInitialIndex(0);
     setSessionPositionUnavailable(false);
     sessionMode.current="standard";
@@ -449,6 +451,7 @@ export function App(){
   }
 
   function openSession(queue:StudyStep[],mode:"standard"|"kana"="standard",courseUnitId?:string,intent:"resume"|"restart"="resume"){
+    cur09CommittedPromptIds.current.clear();
     sessionMode.current=mode;
     retriedKana.current.clear();
     sessionOrigin.current=surface;
@@ -568,6 +571,10 @@ export function App(){
     const workspaceId=getDevelopmentAccountId();
     if(sessionOwner.current!==workspaceId)throw new Error("Study session belongs to a different workspace.");
     await recordStudyAnswer({prompt:answer.prompt,response:answer.response,result:answer.grade.result,responseTimeMs:answer.responseTimeMs});
+    const review=coursePositionRef.current;
+    if(review?.unitId.startsWith("cur09-review-")&&review.ownerId===workspaceId&&
+      review.steps.some(step=>step.id===answer.prompt.id))
+      cur09CommittedPromptIds.current.add(answer.prompt.id);
     if(getDevelopmentAccountId()===workspaceId){
       if(sessionMode.current==="kana"&&answer.grade.result==="incorrect"&&
         !answer.prompt.eventMetadata?.kanaImmediateRetry){
@@ -584,6 +591,7 @@ export function App(){
       clearCoursePosition(owner,position.unitId);
     }
     coursePositionRef.current=null;
+    cur09CommittedPromptIds.current.clear();
     setSessionInitialIndex(0);
     const cafe=reason==="complete"&&Boolean(session?.some(step=>step.id==="a1-e02-food-setup"));
     const origin=sessionOrigin.current;
@@ -686,6 +694,14 @@ export function App(){
         onPositionSave={index=>{
           const active=coursePositionRef.current;
           if(!active||active.ownerId!==getDevelopmentAccountId()||sessionOwner.current!==active.ownerId)return false;
+          if(active.unitId.startsWith("cur09-review-")){
+            const receipt=readCur09Review(active.ownerId);
+            if(!receipt)return false;
+            // StudyPlayer may navigate past an unavailable audio cue without grading.
+            // A skip is allowed on-screen but never advances saved original review credit.
+            if(!canAdvanceCur09AfterCommit(active.steps as import("@thiepn/study-player").StudyPrompt[],
+              receipt.cursor,index,cur09CommittedPromptIds.current))return true;
+          }
           const saved=saveCoursePosition(active.ownerId,active.unitId,active.steps,index);
           if(saved&&active.unitId.startsWith("cur09-review-"))
             return advanceCur09Review(active.ownerId,active.steps as import("@thiepn/study-player").StudyPrompt[],index);

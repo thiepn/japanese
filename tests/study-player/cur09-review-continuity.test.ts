@@ -3,7 +3,7 @@ import type {MemoryTrace} from "../../packages/scheduler/src/index";
 import {vocabularyMeaningPrompts,vocabularyApplicationPrompts} from "../../apps/web/src/study/vocabulary";
 import {projectCourseLevelReview,selectCourseDuePrompts,courseReviewTraceId,
  CUR08_REVIEW_BATCH_SIZE} from "../../apps/web/src/study/cur05LevelReview";
-import {createCur09Review,readCur09Review,saveCur09Review,advanceCur09Review,
+import {createCur09Review,readCur09Review,saveCur09Review,advanceCur09Review,canAdvanceCur09AfterCommit,
  resolveCur09Review,clearCur09Review,type Cur09ReviewStore} from "../../apps/web/src/study/cur09ReviewContinuity";
 class Store implements Cur09ReviewStore{
  records=new Map<string,string>();
@@ -78,6 +78,18 @@ describe("CUR-09 original Account-fenced review continuity",()=>{
   const wrong={...original[1]!,entity:{kind:"lexeme" as const,id:"forged"}};
   expect(()=>resolveCur09Review("alice",r,prompts,[original[0]!,wrong,original[2]!],
    overview(original),now)).toThrow(/CUR09_TRACE_IDENTITY_CONFLICT/);
+ });
+ it("never advances saved review navigation for an ungraded skip or later out-of-order answer",()=>{
+  const committed=new Set<string>();
+  expect(canAdvanceCur09AfterCommit(initial,0,1,committed)).toBe(false);
+  committed.add(initial[1]!.id);
+  expect(canAdvanceCur09AfterCommit(initial,0,1,committed)).toBe(false);
+  committed.add(initial[0]!.id);
+  expect(canAdvanceCur09AfterCommit(initial,0,1,committed)).toBe(true);
+  expect(canAdvanceCur09AfterCommit(initial,1,2,committed)).toBe(true);
+  committed.delete(initial[1]!.id);
+  expect(canAdvanceCur09AfterCommit(initial,1,2,committed)).toBe(false);
+  expect(canAdvanceCur09AfterCommit(initial,0,2,committed)).toBe(false);
  });
  it("prevents a local cursor from silently skipping multiple prompts",()=>{
   const store=new Store(),r=receipt();saveCur09Review("alice",r,store,now);
