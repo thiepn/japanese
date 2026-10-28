@@ -1,0 +1,38 @@
+name: Kana PR 122 qualification
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - "apps/kana-studio/**"
+      - "tests/kana-*.test.ts"
+      - "tests/e2e/kana-native-integration.spec.ts"
+      - ".github/workflows/kana-pr122-qualification.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  kana-focused:
+    # The existing full CI intentionally skips draft PRs. Qualify only the
+    # named integration branch here, without changing that release boundary.
+    if: github.event.pull_request.head.ref == 'fix/kana-embedded-shortcuts-20261027'
+    runs-on: ubuntu-latest
+    env:
+      VITE_PUBLIC_BASE: /japanese/
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm typecheck
+      - name: Focused Kana progress, shortcut and canonical account regression
+        run: pnpm exec vitest run tests/kana-progress-refresh.test.ts tests/kana-shortcut-policy.test.ts tests/kana-studio-canonical.test.ts
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Real desktop, Android emulation and compact mobile Chromium
+        run: pnpm exec playwright test tests/e2e/kana-native-integration.spec.ts --project desktop-chromium --project android-mobile --project compact-mobile
