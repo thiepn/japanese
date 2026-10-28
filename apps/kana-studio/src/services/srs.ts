@@ -244,8 +244,13 @@ export async function calculateSrsForecast(settings: UserSettings): Promise<SrsF
 /**
  * Computes deck statistics and progress counters from stored cards.
  */
-export async function calculateDeckStatistics(settings: UserSettings): Promise<DeckStatistics> {
-  const storedCards = await getAllStoredCards();
+export async function calculateDeckStatistics(
+  settings: UserSettings,
+  projectedCards?: Map<string, StoredCardData>
+): Promise<DeckStatistics> {
+  // The embedded Japanese dashboard must derive counts from the exact same
+  // canonical projection shown by Kana, not a second racing IndexedDB read.
+  const storedCards = projectedCards ?? await getAllStoredCards();
   const now = new Date();
 
   const eligibleItems = allKanaItems.filter((item) => {
