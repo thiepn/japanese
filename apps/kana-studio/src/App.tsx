@@ -71,16 +71,21 @@ export function KanaExperience({embedded=false,initialView,onExit,onViewChange,r
 
   const [isDark, setIsDark] = useState(false);
 
+  // Only the latest refresh may publish a Kana progress snapshot. A slower
+  // earlier IndexedDB read must not roll the Japanese dashboard backwards.
+  const refreshGeneration = React.useRef(0);
+  useEffect(() => () => { refreshGeneration.current += 1; }, []);
+
   // Load app data
   const refreshData = useCallback(async () => {
+    const generation = ++refreshGeneration.current;
     try {
       const userSettings = await getSettings();
-      setSettings(userSettings);
-
       const cards = await getAllStoredCards();
-      setStoredCards(cards);
-
       const computedStats = await calculateDeckStatistics(userSettings);
+      if (generation !== refreshGeneration.current) return;
+      setSettings(userSettings);
+      setStoredCards(cards);
       setStats(computedStats);
       dueCountCallback.current?.(computedStats.dueNowCount);
       progressCallback.current?.();
