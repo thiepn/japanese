@@ -5,6 +5,6 @@ export function shouldOpenKanaShortcuts(
 ): boolean {
   if (embedded || event.key !== '?' || event.altKey || event.ctrlKey || event.metaKey) return false;
   const target = event.target;
-  if (!(target instanceof Element)) return true;
+  if (typeof Element === 'undefined' || !(target instanceof Element)) return true;
   return !target.closest('input, textarea, select, [contenteditable], [role="textbox"]');
 }
