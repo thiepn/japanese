@@ -108,8 +108,8 @@ describe("CUR-10 four original source-grounded A1 teaching contexts",()=>{
    const session=buildCur03CourseUnitSession(unitId);
    const prompts=session.filter(step=>!isStudyLesson(step)&&step.eventMetadata?.cur03Anchor===anchor);
    expect(prompts).toHaveLength(4);
-   expect(prompts.filter(step=>step.kind==="prompt"&&step.promptType==="choice")).toHaveLength(3);
-   expect(prompts.filter(step=>step.kind==="prompt"&&step.promptType==="textarea")).toHaveLength(1);
+   expect(prompts.filter(step=>!isStudyLesson(step)&&step.promptType==="choice")).toHaveLength(3);
+   expect(prompts.filter(step=>!isStudyLesson(step)&&step.promptType==="textarea")).toHaveLength(1);
    for(const step of prompts)if(!isStudyLesson(step)){
     expect(step.primaryTarget.kind).toBe("can_do");
     expect(step.sourceId).toBe("thiepn-original");
