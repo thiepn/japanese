@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { shouldOpenKanaShortcuts } from '../apps/kana-studio/src/services/shortcutPolicy';
 
 const key = (target: EventTarget | null, extra: Record<string, unknown> = {}) =>
@@ -15,17 +15,26 @@ describe('Kana shortcut ownership', () => {
       expect(shouldOpenKanaShortcuts(key(null,extra),false)).toBe(false);
     }
   });
-  it('never intercepts editable fields or their descendants', () => {
-    if (typeof document === 'undefined') return; // DOM case runs in browser tests
-    for (const tag of ['input','textarea','select','div']) {
-      const host = document.createElement(tag);
-      if (tag === 'div') host.setAttribute('contenteditable','true');
-      const child = document.createElement('span');
-      host.append(child);
-      expect(shouldOpenKanaShortcuts(key(child),false)).toBe(false);
+  it('does not crash without browser DOM globals', () => {
+    expect(shouldOpenKanaShortcuts(key(null),false)).toBe(true);
+  });
+  it('rejects editable descendants using real selector matching semantics', () => {
+    const previous = globalThis.Element;
+    class FakeElement {
+      constructor(private readonly selectors: string[]) {}
+      closest(selector: string): FakeElement | null {
+        return selector.split(',').some(s => this.selectors.includes(s.trim())) ? this : null;
+      }
     }
-    const textbox = document.createElement('div');
-    textbox.setAttribute('role','textbox');
-    expect(shouldOpenKanaShortcuts(key(textbox),false)).toBe(false);
+    vi.stubGlobal('Element', FakeElement);
+    try {
+      for (const selector of ['input','textarea','select','[contenteditable]','[role="textbox"]']) {
+        expect(shouldOpenKanaShortcuts(key(new FakeElement([selector]) as unknown as EventTarget),false)).toBe(false);
+      }
+      expect(shouldOpenKanaShortcuts(key(new FakeElement([]) as unknown as EventTarget),false)).toBe(true);
+    } finally {
+      if (previous === undefined) vi.unstubAllGlobals();
+      else vi.stubGlobal('Element', previous);
+    }
   });
 });
