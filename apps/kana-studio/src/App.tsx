@@ -5,6 +5,7 @@ import { calculateDeckStatistics } from './services/srs';
 import { initSpeech } from './services/speech';
 import { kanaMap } from './data/kanaData';
 import { currentKanaView } from './services/japaneseBridge';
+import { shouldOpenKanaShortcuts } from './services/shortcutPolicy';
 import { Navigation } from './components/Navigation';
 import { HomeView } from './components/HomeView';
 import { LearnView } from './components/LearnView';
@@ -208,12 +209,8 @@ export function KanaExperience({embedded=false,initialView,onExit,onViewChange,r
         return;
       }
 
-      // Don't trigger '?' if typing in an input
-      const target = e.target as HTMLElement;
-      const isInput = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.isContentEditable || Boolean(target.closest('[contenteditable="true"], [role="textbox"]')));
-      // Japanese owns global keyboard shortcuts while Kana is embedded. Avoid
-      // opening a second shortcut dialog over the parent application's UI.
-      if (e.key === '?' && !embedded && !isInput && !e.altKey && !e.ctrlKey && !e.metaKey) {
+      // Japanese owns global shortcuts when Kana is embedded.
+      if (shouldOpenKanaShortcuts(e, embedded)) {
         e.preventDefault();
         setIsShortcutsOpen(prev => !prev);
       }
