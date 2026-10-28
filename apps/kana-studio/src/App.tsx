@@ -6,6 +6,7 @@ import { initSpeech } from './services/speech';
 import { kanaMap } from './data/kanaData';
 import { currentKanaView } from './services/japaneseBridge';
 import { shouldOpenKanaShortcuts } from './services/shortcutPolicy';
+import { refreshLatestKanaProgress } from './services/progressRefresh';
 import { Navigation } from './components/Navigation';
 import { HomeView } from './components/HomeView';
 import { LearnView } from './components/LearnView';
@@ -76,22 +77,22 @@ export function KanaExperience({embedded=false,initialView,onExit,onViewChange,r
   const refreshGeneration = React.useRef(0);
   useEffect(() => () => { refreshGeneration.current += 1; }, []);
 
-  // Load app data
+  // Load Kana and canonical Japanese projected progress as one consistent
+  // read-only snapshot; outdated or unmounted refreshes never notify Japanese.
   const refreshData = useCallback(async () => {
-    const generation = ++refreshGeneration.current;
-    try {
-      const userSettings = await getSettings();
-      const cards = await getAllStoredCards();
-      const computedStats = await calculateDeckStatistics(userSettings);
-      if (generation !== refreshGeneration.current) return;
-      setSettings(userSettings);
-      setStoredCards(cards);
-      setStats(computedStats);
-      dueCountCallback.current?.(computedStats.dueNowCount);
-      progressCallback.current?.();
-    } catch (err) {
-      console.error('Error refreshing app data:', err);
-    }
+    await refreshLatestKanaProgress(refreshGeneration, {
+      readSettings: getSettings,
+      readCards: getAllStoredCards,
+      calculateStats: (userSettings, cards) => calculateDeckStatistics(userSettings, cards),
+      publish: ({ settings: nextSettings, cards, stats: computedStats }) => {
+        setSettings(nextSettings);
+        setStoredCards(cards);
+        setStats(computedStats);
+        dueCountCallback.current?.(computedStats.dueNowCount);
+        progressCallback.current?.();
+      },
+      onError: (err) => console.error('Error refreshing app data:', err),
+    });
   }, []);
 
   // Initial load & speech synthesis
