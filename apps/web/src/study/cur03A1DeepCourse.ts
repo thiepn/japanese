@@ -303,6 +303,273 @@ const CASES:readonly Case[]=[
       "分かりません reports that something is not understood."
     ]
   ]
+},
+{
+  "anchor": "grammar-to-with",
+  "title": "Talk with someone, or add someone too",
+  "situation": "Two classmates describe their day. 友達と話します。 describes talking with a friend; 友達も学生です。 adds a friend to a group already described as students. The noun 友達 is shared, but its grammatical relationship differs.",
+  "why": "The companion particle と identifies someone who joins an activity. In contrast, も means 'also' or 'too': it includes another participant or entity in a previously understood group or claim. Use the verb and discourse context to decide, not the English word 'friend' alone.",
+  "contrast": "友達と話します。 = talk with a friend. 友達も学生です。 = the friend is also a student. 友達と does not mean 'also' in the second sentence.",
+  "examples": [
+    [
+      "友達と話します。",
+      "と marks the person participating in the conversation."
+    ],
+    [
+      "友達も学生です。",
+      "も adds another person with the same characteristic."
+    ],
+    [
+      "駅で友達と話します。",
+      "駅で locates the talking; 友達と marks the companion."
+    ]
+  ],
+  "checks": [
+    [
+      "Say you talk WITH a friend. 友達＿＿話します。",
+      "と",
+      "も",
+      "を",
+      "と indicates the person in the activity.",
+      "も is additive, not the companion marker in this original statement.",
+      "を marks an object, not the participant here."
+    ],
+    [
+      "A classmate is already a student. You say your friend is ALSO a student. 友達＿＿学生です。",
+      "も",
+      "と",
+      "で",
+      "も adds a parallel student to the discussion.",
+      "と would indicate a companion, not inclusion in this predicate.",
+      "で would not mark the added student in the noun predicate."
+    ],
+    [
+      "Which installed sentence says you talk with a friend at the station?",
+      "駅で友達と話します。",
+      "友達も学生です。",
+      "友達と話します。",
+      "駅で is the location and 友達と the companion.",
+      "This adds a student but does not mention conversation.",
+      "This mentions a conversation but gives no location."
+    ]
+  ],
+  "independent": "Write one sentence about doing something with a friend, then one that says someone else shares a stated characteristic. Explain why you chose と or も."
+},
+{
+  "anchor": "grammar-masen",
+  "title": "Going, not going, and what already happened",
+  "situation": "Today, a learner can say 今日は学校に行きます。 or 今日は学校に行きません。 The second statement negates today's plan. お茶を飲みました。 describes a separate completed action rather than a present or future plan.",
+  "why": "Polite ます is nonpast affirmative, ません is nonpast negative, and ました is past affirmative. The nonpast form can describe a habit, a current situation, or a planned future event depending on context. Tense and polarity are distinct choices.",
+  "contrast": "行きません is not a past tense. 飲みました does not mean 'will not drink'. A past negative requires a form such as ませんでした, which belongs to another lesson.",
+  "examples": [
+    [
+      "今日は学校に行きます。",
+      "行きます states today's affirmative plan."
+    ],
+    [
+      "今日は学校に行きません。",
+      "行きません negates that nonpast plan."
+    ],
+    [
+      "お茶を飲みました。",
+      "飲みました states a completed action."
+    ]
+  ],
+  "checks": [
+    [
+      "You are NOT going to school today. Choose the exact sentence.",
+      "今日は学校に行きません。",
+      "今日は学校に行きます。",
+      "お茶を飲みました。",
+      "行きません is nonpast negative in this context.",
+      "行きます confirms going; it does not negate the plan.",
+      "This is a different action in the past."
+    ],
+    [
+      "Choose the completed affirmative action.",
+      "お茶を飲みました。",
+      "お茶を飲みません。",
+      "お茶を飲みます。",
+      "ました expresses past affirmative here.",
+      "ません expresses nonpast negative.",
+      "ます expresses nonpast affirmative."
+    ],
+    [
+      "Which explanation is correct for 行きません?",
+      "Polite nonpast negative.",
+      "Polite past affirmative.",
+      "Always a statement about yesterday.",
+      "ません negates a nonpast action; context supplies the time.",
+      "Past affirmative uses ました, not ません.",
+      "There is no inherent 'yesterday' in this form."
+    ]
+  ],
+  "independent": "Write two lines about today's plans, one affirmative and one negative, and one line about an activity completed earlier. Verify the endings ます, ません, and ました."
+},
+{
+  "anchor": "grammar-no-attribute",
+  "title": "Relate nouns with の, or list items with と",
+  "situation": "This book belongs to someone: これは私の本です。 The form 私の describes the book. When shopping, パンと水を買います。 lists two things to buy instead. The connecting particles do different work.",
+  "why": "Noun A + の + noun B can express possession, naming or other relationships: 私の本, 先生の名前, 家族の写真. The particle と can join two nouns in a complete list. An English apostrophe is not a reliable translation for every relationship shown by の.",
+  "contrast": "私の本 = my book; パンと水 = bread and water. の makes one noun determine another, while と coordinates listed nouns.",
+  "examples": [
+    [
+      "これは私の本です。",
+      "私の connects the book to the speaker."
+    ],
+    [
+      "先生の名前は何ですか。",
+      "先生の identifies whose name is asked about."
+    ],
+    [
+      "パンと水を買います。",
+      "パンと水 lists two purchases."
+    ],
+    [
+      "家族の写真です。",
+      "家族の relates the photograph to family."
+    ]
+  ],
+  "checks": [
+    [
+      "Complete 'This is my book': これは私＿＿本です。",
+      "の",
+      "と",
+      "を",
+      "の links the owner to the book.",
+      "と joins nouns but does not express this possessive relation.",
+      "を is an object particle, not a noun modifier."
+    ],
+    [
+      "Buy bread AND water. パン＿＿水を買います。",
+      "と",
+      "の",
+      "が",
+      "と connects two listed purchase items.",
+      "の would make a different noun relationship.",
+      "が does not enumerate the two objects here."
+    ],
+    [
+      "Which source sentence asks for a teacher's name?",
+      "先生の名前は何ですか。",
+      "家族の写真です。",
+      "これは私の本です。",
+      "先生の specifies the person whose name is sought.",
+      "This identifies a family photograph.",
+      "This states ownership of a book."
+    ]
+  ],
+  "independent": "Write a label for a personal object with の, then a separate shopping sentence joining two items with と. Do not reuse the source objects."
+},
+{
+  "anchor": "grammar-i-adj-past",
+  "title": "Past and negative forms for two adjective types",
+  "situation": "Yesterday was hot: 昨日は暑かったです。 Today is not cold: 今日は寒くないです。 A different adjective type appears in 昨日は静かじゃなかったです。 ('It was not quiet yesterday').",
+  "why": "An い-adjective usually replaces final い with かった to form past affirmative, and with くない for nonpast negative. A な-adjective such as 静か uses a noun-like predicate; the attested past-negative form is 静かじゃなかったです. Do not add でした to an unchanged い-adjective.",
+  "contrast": "暑かったです = was hot; 寒くないです = is not cold; 静かじゃなかったです = was not quiet. Adjective class and time/polarity each matter.",
+  "examples": [
+    [
+      "昨日は暑かったです。",
+      "暑い becomes 暑かった for past affirmative."
+    ],
+    [
+      "今日は寒くないです。",
+      "寒い becomes 寒くない for nonpast negative."
+    ],
+    [
+      "ここは静かです。",
+      "静か is a な-adjective with a noun-like predicate."
+    ],
+    [
+      "昨日は静かじゃなかったです。",
+      "静かじゃなかった is past negative."
+    ]
+  ],
+  "checks": [
+    [
+      "You want to say 'It was hot yesterday'. 昨日は＿＿。",
+      "暑かったです",
+      "暑いでした",
+      "暑くないです",
+      "暑かったです is the correct い-adjective past.",
+      "Do not append でした to an unchanged い-adjective.",
+      "暑くないです is a nonpast negative."
+    ],
+    [
+      "Say 'It is not cold today'. 今日は＿＿。",
+      "寒くないです",
+      "寒かったです",
+      "寒いでした",
+      "寒くないです is the nonpast negative.",
+      "寒かったです is past affirmative.",
+      "寒いでした incorrectly adds でした."
+    ],
+    [
+      "Which source sentence says it was NOT quiet yesterday?",
+      "昨日は静かじゃなかったです。",
+      "ここは静かです。",
+      "昨日は暑かったです。",
+      "静かじゃなかったです is past negative.",
+      "This affirms that it is quiet here.",
+      "This is past hot weather, not a negative quietness statement."
+    ]
+  ],
+  "independent": "Describe yesterday and today with one past い-adjective, one negative い-adjective and one past-negative な-adjective. Check the form of each ending."
+},
+{
+  "anchor": "grammar-counter-tsu",
+  "title": "Order quantities with 一つ and 二つ",
+  "situation": "At a small counter, パンを二つください。 orders two bread items. 水を一つください。 asks for one water item or serving. コーヒーをください。 shows that a simple item request does not always specify a number.",
+  "why": "The structure noun + を + quantity/counter + ください politely requests items and quantities. The common native counter forms are 一つ (ひとつ) and 二つ (ふたつ), not mechanical readings of the numerals. Without a quantity, noun + をください still requests the item.",
+  "contrast": "パンを二つください requests two items; 野菜を食べます describes eating rather than ordering. ください is a request expression, not the same as an action verb in a statement.",
+  "examples": [
+    [
+      "パンを二つください。",
+      "二つ gives the quantity of bread items."
+    ],
+    [
+      "水を一つください。",
+      "一つ requests one water item or serving."
+    ],
+    [
+      "コーヒーをください。",
+      "Coffee is requested without stating a count."
+    ],
+    [
+      "野菜を食べます。",
+      "食べます describes eating instead of making an order."
+    ]
+  ],
+  "checks": [
+    [
+      "Order TWO bread items. パンを＿＿ください。",
+      "二つ",
+      "一つ",
+      "二人",
+      "二つ is the correct two-item counter here.",
+      "一つ means one item.",
+      "二人 counts people, not bread items."
+    ],
+    [
+      "Which source sentence requests ONE water serving?",
+      "水を一つください。",
+      "コーヒーをください。",
+      "野菜を食べます。",
+      "水を一つ specifies one item or serving.",
+      "This requests coffee without an explicit count.",
+      "This describes eating vegetables."
+    ],
+    [
+      "What does コーヒーをください。 specify?",
+      "Coffee, without an explicit quantity.",
+      "Exactly two cups of coffee.",
+      "That the speaker drank coffee yesterday.",
+      "This is an item request without a numeral/counter.",
+      "The sentence has no 二つ or other counted quantity.",
+      "A completed drinking action would have a different verb form."
+    ]
+  ],
+  "independent": "Write an order for one item and another for two, using the correct つ forms. Add a simple third request without stating a number."
 }
 ];
 

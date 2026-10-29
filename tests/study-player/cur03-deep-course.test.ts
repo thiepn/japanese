@@ -123,3 +123,61 @@ describe("CUR-10 four original source-grounded A1 teaching contexts",()=>{
   }
  });
 });
+
+describe("CUR-11 canonical-source A1 grammar transfer",()=>{
+ const added=[
+  ["a1-unit-05","grammar-to-with",3],
+  ["a1-unit-08","grammar-masen",3],
+  ["a1-unit-11","grammar-no-attribute",4],
+  ["a1-unit-14","grammar-i-adj-past",4],
+  ["a1-unit-16","grammar-counter-tsu",4]
+ ] as const;
+ it("links all example sentences to the correct canonical A1 source unit",()=>{
+  for(const [unitId,anchor,expected] of added){
+   const u=coreContent.courseUnits.find(unit=>unit.id===unitId)!;
+   expect(u.level).toBe("A1");
+   expect(u.sourceIds).toEqual(["thiepn-original"]);
+   expect(u.grammarIds).toContain(anchor);
+   expect(deepTeachingAnchors(unitId)).toContain(anchor);
+   const steps=buildCur03CourseUnitSession(unitId);
+   expect(new Set(steps.map(step=>step.id)).size).toBe(steps.length);
+   const context=steps.find(step=>step.id==="cur03-"+unitId+"-"+anchor+"-context");
+   if(!context||!isStudyLesson(context))throw Error("CUR11_MISSING_CONTEXT");
+   expect(context.examples).toHaveLength(expected);
+   const source=new Set(coreContent.sentences.filter(s=>u.sentenceIds.includes(s.id)).map(s=>s.text));
+   for(const example of context.examples??[])expect(source.has(example.expression)).toBe(true);
+  }
+ });
+ it("preserves all original steps and fences new prompts from authoritative FSRS",()=>{
+  for(const [unitId,anchor] of added){
+   const u=coreContent.courseUnits.find(unit=>unit.id===unitId)!;
+   const original=courseUnitSession(unitId),steps=buildCur03CourseUnitSession(unitId);
+   let previous=-1;
+   for(const step of original){
+    const i=steps.findIndex((v,j)=>j>previous&&v.id===step.id);
+    expect(i).toBeGreaterThan(previous);
+    expect(steps[i]).toEqual(step);
+    previous=i;
+   }
+   const extra=steps.filter(step=>!isStudyLesson(step)&&step.eventMetadata?.cur03Anchor===anchor);
+   expect(extra).toHaveLength(4);
+   expect(extra.filter(step=>!isStudyLesson(step)&&step.promptType==="choice")).toHaveLength(3);
+   expect(extra.filter(step=>!isStudyLesson(step)&&step.promptType==="textarea")).toHaveLength(1);
+   for(const step of extra)if(!isStudyLesson(step)){
+    expect(step.primaryTarget).toEqual({kind:"can_do",id:u.canDoId});
+    expect(step.sourceId).toBe("thiepn-original");
+    expect(step.eventMetadata).toMatchObject({cur03UnitId:unitId,cur03Anchor:anchor,
+     nonAuthoritative:true,schedulerExcluded:true,independentCompetenceVerified:false});
+    if(step.promptType==="choice"){
+     expect(step.choices).toHaveLength(3);
+     expect(new Set(step.choices).size).toBe(3);
+     expect(step.choices).toContain(step.acceptedAnswers[0]);
+     expect(step.eventMetadata?.e06FoilFeedback).toHaveLength(2);
+    }else{
+     expect(step.promptType).toBe("textarea");
+     expect(step.acceptedAnswers).toEqual([]);
+    }
+   }
+  }
+ });
+});
