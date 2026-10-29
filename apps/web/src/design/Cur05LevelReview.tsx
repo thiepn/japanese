@@ -1,15 +1,17 @@
 import {useEffect,useMemo,useState} from "react";
 import type {CourseLevelReviewOverview,CourseReviewLevel} from "../study/cur05LevelReview";
-import {normalizeCourseReviewLevels,reviewSelectionCounts} from "../study/cur05LevelReview";
+import {normalizeCourseReviewLevels,reviewSelectionCounts,courseReviewBatchPlan} from "../study/cur05LevelReview";
 import {COURSE_LEVELS,type CourseLevel} from "../study/cefrCourseCatalog";
 import {buildCur06VocabularyJourney,type Cur06Mode} from "../study/cur06VocabularyJourney";
 import {readCoursePosition} from "../study/cur03CoursePosition";
 import {Cur07UnitComparison,type Cur07Recover} from "./Cur07UnitComparison";
+import {readCur09Review} from "../study/cur09ReviewContinuity";
 import "./cur05LevelReview.css";
 
-export function Cur05LevelReview({ownerId,overview,activeLevel,busy,onReviewDue,onReviewLevels,onPreview,onOpenUnit,onCur06Journey,onCur07Recover}:{
+export function Cur05LevelReview({ownerId,overview,activeLevel,busy,onReviewDue,onReviewLevels,onResumeReview,onPreview,onOpenUnit,onCur06Journey,onCur07Recover}:{
  ownerId:string;overview:CourseLevelReviewOverview|null;activeLevel:CourseLevel;busy:boolean;
  onReviewDue:()=>void;onReviewLevels:(levels:readonly CourseReviewLevel[])=>void;
+ onResumeReview:()=>void;
  onPreview:(lexemeId:string)=>void;onOpenUnit:(unitId:string,level:CourseLevel)=>void;
  onCur06Journey:(id:string,mode:Cur06Mode,unitId?:string,intent?:"resume"|"restart",contrastId?:string)=>void;
  onCur07Recover:Cur07Recover;
@@ -22,6 +24,8 @@ export function Cur05LevelReview({ownerId,overview,activeLevel,busy,onReviewDue,
   scope==="all"?[...COURSE_LEVELS,"unassigned"]:custom),[scope,activeLevel,custom]);
  const current=overview?.accountId===ownerId?overview:null;
  const counts=current?reviewSelectionCounts(current,selected):null;
+ const batch=current?courseReviewBatchPlan(current,selected):null;
+ const unfinished=current?readCur09Review(ownerId):null;
  const words=useMemo(()=>current?.words.filter(word=>(!word.levels.length&&selected.includes("unassigned"))
    ||word.levels.some(level=>selected.includes(level))).sort((a,b)=>b.due-a.due||a.id.localeCompare(b.id))??[],
   [current,selected]);
@@ -56,12 +60,24 @@ export function Cur05LevelReview({ownerId,overview,activeLevel,busy,onReviewDue,
   </div>:<p role="status">Review counts are loading from this learner's local FSRS history.</p>}
   <div className="cur05-actions">
    <button type="button" disabled={busy||!current||(counts?.due??0)===0} onClick={()=>onReviewLevels(selected)}>
-    Review selected due ({counts?.due??0})
+    {batch?.remainingDue
+      ?"Review next "+batch.queueSize+" of "+batch.selectionDue+" due"
+      :"Review selected due ("+(batch?.queueSize??0)+")"}
    </button>
    <button type="button" disabled={busy||!current||current.globalDue===0} onClick={onReviewDue}>
     All Japanese due ({current?.globalDue??0})
    </button>
   </div>
+  {unfinished?<section className="cur09-resume" aria-label="Unfinished original review">
+    <div><strong>Unfinished review</strong>
+      <p>{unfinished.queue.length-unfinished.cursor} original prompts remain in a saved navigation snapshot
+       ({unfinished.levels.join(" / ")}). Due dates and source revisions will be rechecked before opening.</p></div>
+    <button type="button" disabled={busy} onClick={onResumeReview}>Resume unfinished review</button>
+  </section>:null}
+  {batch&&batch.remainingDue>0?<p className="cur05-batch-note" role="status">
+    This session contains {batch.queueSize} of {batch.selectionDue} original due prompts; {batch.remainingDue} remain due until you review them.
+    {batch.order==="balanced"?" Selected source levels are interleaved without duplicating cross-level words.":""}
+  </p>:null}
   <p className="cur05-boundary">Contexts are original source-linked study pages with no FSRS review. Practice offers unscored guided choices, independent recall, and optional writing; only scheduled graded review buttons affect FSRS. The global count also includes kana, grammar, private words and other original reviews. Source-linked vocabulary can appear in several levels: combined totals count each prompt only once. Unassigned words have no verified canonical unit-level mapping. Reading a word does not change its due date.</p>
   {current&&<div className="cur05-vocabulary">
    <div className="cur05-vocab-heading"><h3>Source-linked vocabulary</h3><span>Showing {Math.min(showCount,words.length)} of {words.length}</span></div>

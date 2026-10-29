@@ -10,12 +10,13 @@ import type {CourseLevelReviewOverview,CourseReviewLevel} from "../study/cur05Le
 import {ENTRY_SELF_REPORT,recommendCourseEntry,type EntrySelfReport} from "../study/cur04Placement";
 import "./courseCatalog.css";
 
-export function CourseCatalog({course,status,ownerId,reviewOverview,onReviewDue,onReviewLevels,onPreviewWord,onCur06Journey,onCur07Recover,onStartUnit,onStartAssessment}:{
+export function CourseCatalog({course,status,ownerId,reviewOverview,onReviewDue,onReviewLevels,onResumeReview,onPreviewWord,onCur06Journey,onCur07Recover,onStartUnit,onStartAssessment}:{
   course:readonly CourseUnitProgress[];
   ownerId:string;
   reviewOverview:CourseLevelReviewOverview|null;
   onReviewDue:()=>void;
   onReviewLevels:(levels:readonly CourseReviewLevel[])=>void;
+  onResumeReview:()=>void;
   onPreviewWord:(id:string)=>void;
   onCur06Journey:(id:string,mode:Cur06Mode,unitId?:string,intent?:"resume"|"restart",contrastId?:string)=>void;
   onCur07Recover:Cur07Recover;
@@ -82,7 +83,7 @@ export function CourseCatalog({course,status,ownerId,reviewOverview,onReviewDue,
       })}
     </div>
     <Cur05LevelReview ownerId={ownerId} overview={reviewOverview} activeLevel={current.level} busy={busy}
-      onReviewDue={onReviewDue} onReviewLevels={onReviewLevels} onPreview={onPreviewWord} onCur06Journey={onCur06Journey} onCur07Recover={onCur07Recover}
+      onReviewDue={onReviewDue} onReviewLevels={onReviewLevels} onResumeReview={onResumeReview} onPreview={onPreviewWord} onCur06Journey={onCur06Journey} onCur07Recover={onCur07Recover}
       onOpenUnit={(unitId,level)=>select(level,unitId)}/>
     <div className="cur01-detail" id="cur01-lessons" role="tabpanel" aria-labelledby={"cur01-tab-"+current.level}>
       <div className="cur01-section-heading">

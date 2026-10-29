@@ -5,6 +5,14 @@ import {COURSE_LEVELS,type CourseLevel} from "./cefrCourseCatalog";
 import registry from "../../../../content/sources/registry.json";
 
 export type CourseReviewLevel=CourseLevel|"unassigned";
+/** Must match the existing native StudyPlayer session capacity, not create a second scheduler. */
+export const CUR08_REVIEW_BATCH_SIZE=16;
+export type Cur08ReviewOrder="earliest"|"balanced";
+export interface Cur08ReviewBatchPlan {
+ readonly selectionDue:number;readonly queueSize:number;readonly remainingDue:number;
+ readonly selectedLevels:number;readonly order:Cur08ReviewOrder;
+}
+
 export interface VocabularyCourseLink {readonly id:string;readonly title:string;readonly level:CourseLevel;}
 export interface CourseReviewWord {
  readonly id:string;readonly writing:string;readonly reading:string;readonly meaning:string;
@@ -22,6 +30,14 @@ const sourceById=new Map(registry.sources.map(source=>[source.id,source]));
 const levels=new Set<string>(COURSE_LEVELS);
 export const courseReviewTraceId=(prompt:StudyPrompt):string=>
  prompt.primaryTarget.kind+":"+prompt.primaryTarget.id+":"+prompt.skill+":"+prompt.cueFamily;
+/** Never trust a stored due timestamp when its canonical identity fields disagree. */
+function assertTraceIdentity(prompt:StudyPrompt,trace:MemoryTrace):void{
+ if(trace.id!==courseReviewTraceId(prompt)||trace.entity.kind!==prompt.primaryTarget.kind||
+  trace.entity.id!==prompt.primaryTarget.id||trace.skillDimension!==prompt.skill||
+  trace.cueFamily!==prompt.cueFamily)
+   throw Error("CUR08_TRACE_IDENTITY_CONFLICT:"+trace.id);
+}
+
 
 export function normalizeCourseReviewLevels(input:readonly CourseReviewLevel[]):CourseReviewLevel[]{
  if(!input.length||input.some(v=>v!=="unassigned"&&!levels.has(v)))throw Error("CUR05_INVALID_LEVEL_SELECTION");
@@ -45,6 +61,7 @@ export function projectCourseLevelReview(input:{
  const due=(prompt:StudyPrompt):boolean=>{
   const trace=tracesById.get(courseReviewTraceId(prompt));
   if(!trace)return false;
+  assertTraceIdentity(prompt,trace);
   const at=Date.parse(trace.card.due);
   if(!Number.isFinite(at))throw Error("CUR05_INVALID_DUE_DATE:"+trace.id);
   return at<=now.getTime();
@@ -80,7 +97,7 @@ export function projectCourseLevelReview(input:{
   const usedLevels=COURSE_LEVELS.filter(level=>units.some(unit=>unit.level===level));
   const sourceIds=lexeme.sourceIds.filter(id=>sourceById.get(id)?.publicExport);
   const sense=senseForLexeme(lexeme);
-  const active=prompts.filter(p=>tracesById.has(courseReviewTraceId(p)));
+  const active=prompts.filter(p=>{const trace=tracesById.get(courseReviewTraceId(p));if(trace)assertTraceIdentity(p,trace);return Boolean(trace);});
   words.push({id:lexeme.id,writing:lexeme.canonicalForm,reading:lexeme.readings[0]?.text??lexeme.canonicalForm,
    meaning:sense.glosses.join(" / "),sourceIds,sourceTitles:sourceIds.map(sourceTitle),
    levels:usedLevels,units,due:prompts.filter(due).length,
@@ -100,26 +117,67 @@ export function projectCourseLevelReview(input:{
 export function selectCourseDuePrompts(input:{
  levels:readonly CourseReviewLevel[];overview:CourseLevelReviewOverview;
  prompts:readonly StudyPrompt[];traces:readonly MemoryTrace[];now:Date;limit?:number;
+ order?:Cur08ReviewOrder;
 }):StudyPrompt[]{
  const selected=normalizeCourseReviewLevels(input.levels);
  if(!Number.isFinite(input.now.getTime()))throw Error("CUR05_INVALID_CLOCK");
- const limit=input.limit??16;
+ const limit=input.limit??CUR08_REVIEW_BATCH_SIZE;
  if(!Number.isSafeInteger(limit)||limit<1||limit>64)throw Error("CUR05_INVALID_LIMIT");
- const words=new Set(input.overview.words.filter(word=>selected.includes("unassigned")&&!word.levels.length
-  ||word.levels.some(level=>selected.includes(level))).map(word=>word.id));
+ const order=input.order??(selected.length>1?"balanced":"earliest");
+ if(order!=="earliest"&&order!=="balanced")throw Error("CUR08_INVALID_ORDER");
+ const chosenWords=input.overview.words.filter(word=>selected.includes("unassigned")&&!word.levels.length
+  ||word.levels.some(level=>selected.includes(level)));
+ const words=new Set(chosenWords.map(word=>word.id));
+ const byWord=new Map(chosenWords.map(word=>[word.id,word] as const));
  const traces=new Map(input.traces.map(trace=>[trace.id,trace]));
  if(input.traces.some(trace=>trace.userId!==input.overview.accountId)||traces.size!==input.traces.length)
   throw Error("CUR05_CROSS_OWNER_OR_DUPLICATE_TRACE");
  const candidates=new Map<string,{prompt:StudyPrompt;due:number}>();
  for(const prompt of input.prompts){
   if(prompt.primaryTarget.kind!=="lexeme"||!words.has(prompt.primaryTarget.id))continue;
+  const word=byWord.get(prompt.primaryTarget.id);
+  if(!word||!prompt.sourceId||!word.sourceIds.includes(prompt.sourceId)||
+    !Boolean(sourceById.get(prompt.sourceId)?.publicExport))
+    throw Error("CUR08_SOURCE_ATTRIBUTION_CONFLICT:"+prompt.id);
   const id=courseReviewTraceId(prompt),trace=traces.get(id);if(!trace)continue;
+  assertTraceIdentity(prompt,trace);
   const at=Date.parse(trace.card.due);
   if(!Number.isFinite(at))throw Error("CUR05_INVALID_DUE_DATE:"+id);
   if(at<=input.now.getTime())candidates.set(id,{prompt,due:at});
  }
- return [...candidates.values()].sort((a,b)=>a.due-b.due||a.prompt.id.localeCompare(b.prompt.id))
-  .slice(0,limit).map(x=>x.prompt);
+ const due=[...candidates.values()].sort((a,b)=>a.due-b.due||a.prompt.id.localeCompare(b.prompt.id));
+ if(order==="earliest"||selected.length===1)return due.slice(0,limit).map(x=>x.prompt);
+ // Each original due trace enters exactly one bucket; shared-unit words never get duplicated.
+ // Within each source-level bucket, the original FSRS due priority stays chronological.
+ const buckets=new Map(selected.map(level=>[level,[] as typeof due]));
+ for(const entry of due){
+  const word=byWord.get(entry.prompt.primaryTarget.id)!;
+  const eligible=selected.filter(level=>level==="unassigned"?!word.levels.length:word.levels.includes(level));
+  if(!eligible.length)throw Error("CUR08_UNATTRIBUTED_REVIEW:"+entry.prompt.id);
+  const target=eligible.reduce((best,level)=>buckets.get(level)!.length<buckets.get(best)!.length?level:best,eligible[0]!);
+  buckets.get(target)!.push(entry);
+ }
+ const result:StudyPrompt[]=[];
+ let cursor=0;
+ while(result.length<limit){
+  let added=false;
+  for(const level of selected){
+   const bucket=buckets.get(level)!;
+   if(cursor<bucket.length){result.push(bucket[cursor]!.prompt);added=true;}
+   if(result.length===limit)break;
+  }
+  if(!added)break;
+  cursor++;
+ }
+ return result;
+}
+export function courseReviewBatchPlan(overview:CourseLevelReviewOverview,selection:readonly CourseReviewLevel[]):Cur08ReviewBatchPlan{
+ const levels=normalizeCourseReviewLevels(selection);
+ const due=reviewSelectionCounts(overview,levels).due;
+ if(!Number.isSafeInteger(due)||due<0)throw Error("CUR08_INVALID_DUE_COUNT");
+ const queueSize=Math.min(due,CUR08_REVIEW_BATCH_SIZE);
+ return {selectionDue:due,queueSize,remainingDue:due-queueSize,
+  selectedLevels:levels.length,order:levels.length>1?"balanced":"earliest"};
 }
 export function reviewSelectionCounts(overview:CourseLevelReviewOverview,selection:readonly CourseReviewLevel[]){
  const active=normalizeCourseReviewLevels(selection);

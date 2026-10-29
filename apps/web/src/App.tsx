@@ -10,6 +10,7 @@ import { isStudyLesson,type StudyStep } from "@thiepn/study-player";
 import {buildCur03CourseUnitSession} from "./study/cur03A1DeepCourse";
 import {readCoursePosition,saveCoursePosition,clearCoursePosition} from "./study/cur03CoursePosition";
 import {cur07PracticeKey,rememberCur07Section,restoreCur07Section,type Cur07Receipt} from "./study/cur07History";
+import {advanceCur09Review,canAdvanceCur09AfterCommit,clearCur09Review,readCur09Review,saveCur09Review} from "./study/cur09ReviewContinuity";
 import { searchLocalJapanese } from "./content";
 
 import { getImmersionProgress,type ImmersionProgress } from "./immerse/reader";
@@ -42,7 +43,7 @@ import { J3Today } from "./design/J3Today";
 
 import { createJapaneseLanguageDashboardPublisher } from "./languageDashboard";
 import {
-  buildA1MilestoneSession,buildE01Session,buildE01DelayedSession,getE01Evidence,buildE02Session,buildE02DelayedSession,getE02Evidence,buildE03Session,buildE03DelayedSession,getE03Evidence,buildE04Session,buildE04DelayedSession,buildE04PreviewSession,getE04Evidence,buildE03PreviewSession,buildE02PreviewSession,buildE05RepairSession,getE05Dashboard,buildE06Session,buildE06FullSession,buildE11MicroSession,buildE13PracticalSession,buildE18MixedReviewSession,buildE19WritingPractice,getE19WritingOverview,buildE14HandoffPractice,getE14PrivateHandoffReviews,buildE15RecoverySession,buildE10DailyStageSession,buildE06PreviewSession,buildE06DelayedSession,buildE10DelayedStageSession,buildE06FullDelayedSession,getE06Evidence,buildB1MilestoneSession,buildB2MilestoneSession,buildC1FoundationPractice,buildC1FoundationSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildP13C1SynthesisSession,buildP9RealWorldChainSession,buildP9RealWorldQualificationSession,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildDueReviewSession,buildKanaReviewSession,getKanaReviewOverview,buildBeginnerStageSession,getBeginnerOverview,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getC1FoundationAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getCompletedTodayCount,getUX1Engagement,getStudySummary,getVocabularyMasterySummary,getCourseLevelReviewOverview,buildCourseLevelDueReviewSession,buildCourseVocabularyPreview,buildCur06VocabularyPractice,recordStudyAnswer,GUEST_ACCOUNT_ID,getDevelopmentAccountId,setDevelopmentAccountId,
+  buildA1MilestoneSession,buildE01Session,buildE01DelayedSession,getE01Evidence,buildE02Session,buildE02DelayedSession,getE02Evidence,buildE03Session,buildE03DelayedSession,getE03Evidence,buildE04Session,buildE04DelayedSession,buildE04PreviewSession,getE04Evidence,buildE03PreviewSession,buildE02PreviewSession,buildE05RepairSession,getE05Dashboard,buildE06Session,buildE06FullSession,buildE11MicroSession,buildE13PracticalSession,buildE18MixedReviewSession,buildE19WritingPractice,getE19WritingOverview,buildE14HandoffPractice,getE14PrivateHandoffReviews,buildE15RecoverySession,buildE10DailyStageSession,buildE06PreviewSession,buildE06DelayedSession,buildE10DelayedStageSession,buildE06FullDelayedSession,getE06Evidence,buildB1MilestoneSession,buildB2MilestoneSession,buildC1FoundationPractice,buildC1FoundationSession,buildCourseUnitSession,buildLexicalFluencyPractice,buildP13C1SynthesisSession,buildP9RealWorldChainSession,buildP9RealWorldQualificationSession,buildProductivePractice,buildProductiveTaskPractice,buildTodayQueue,buildDueReviewSession,buildKanaReviewSession,getKanaReviewOverview,buildBeginnerStageSession,getBeginnerOverview,buildUnitAssessmentSession,getA1MilestoneAssessmentProgress,getB1MilestoneAssessmentProgress,getB2MilestoneAssessmentProgress,getC1FoundationAssessmentProgress,getConjugationMasterySummary,getCourseProgress,getGrammarMasterySummary,getKanaMasterySummary,getLexicalFluencySummary,getSentenceMasterySummary,getCompletedTodayCount,getUX1Engagement,getStudySummary,getVocabularyMasterySummary,getCourseLevelReviewOverview,buildCourseLevelDueReviewSession,buildCur09CourseReviewLaunch,buildCourseVocabularyPreview,buildCur06VocabularyPractice,recordStudyAnswer,GUEST_ACCOUNT_ID,getDevelopmentAccountId,setDevelopmentAccountId,
   type BeginnerOverview,type UX1Engagement,type E13PracticeMode,type E18Mode,type E19Overview,type E14HandoffMode,type E14HandoffReview,type E15Focus,type E01Progress,type E02Overview,type E03Overview,type E04Overview,type E05Evidence,type E06Overview,type A1MilestoneProgress,type B1MilestoneProgress,type B2MilestoneProgress,type C1FoundationProgress,type ConjugationMasterySummary,type CourseUnitProgress,type GrammarMasterySummary,type KanaMasterySummary,type LexicalFluencySummary,type SentenceMasterySummary,type StudySummary,type VocabularyMasterySummary,type CourseLevelReviewOverview,type CourseReviewLevel
 } from "./study/runtime";
 
@@ -121,6 +122,7 @@ export function App(){
   const [reviewOverview,setReviewOverview]=useState<CourseLevelReviewOverview|null>(null);
   const [sessionPositionUnavailable,setSessionPositionUnavailable]=useState(false);
   const coursePositionRef=useRef<{unitId:string;ownerId:string;steps:StudyStep[]}|null>(null);
+  const cur09CommittedPromptIds=useRef(new Set<string>());
   const [ux1Outcome,setUx1Outcome]=useState<{owner:string;origin:Surface;pending:boolean;failed:boolean}|null>(null);
   const [e22Selection,setE22Selection]=useState<{owner:string;value:E22Selection}|null>(null);
   const sessionOrigin=useRef<Surface>("Today");
@@ -173,6 +175,7 @@ export function App(){
     JAPANESE_LANGUAGE_DASHBOARD.invalidate();
     sessionOwner.current=null;
     coursePositionRef.current=null;
+    cur09CommittedPromptIds.current.clear();
     setSessionInitialIndex(0);
     setSessionPositionUnavailable(false);
     sessionMode.current="standard";
@@ -448,6 +451,7 @@ export function App(){
   }
 
   function openSession(queue:StudyStep[],mode:"standard"|"kana"="standard",courseUnitId?:string,intent:"resume"|"restart"="resume"){
+    cur09CommittedPromptIds.current.clear();
     sessionMode.current=mode;
     retriedKana.current.clear();
     sessionOrigin.current=surface;
@@ -485,8 +489,28 @@ export function App(){
     return loadStudySession(()=>buildTodayQueue());
   };
   const reviewDue=()=>loadStudySession(()=>buildDueReviewSession());
-  const startLevelReview=(levels:readonly CourseReviewLevel[])=>
-    loadStudySession(()=>buildCourseLevelDueReviewSession(levels));
+  // Original due prompts and FSRS traces are re-read on EVERY launch. No detached
+  // local pointer is allowed to assert a grade, due time, or Account identity.
+  async function launchCur09Review(levels?:readonly CourseReviewLevel[]){
+    const owner=getDevelopmentAccountId(),ticket=sessionFence.current.begin(owner);
+    setSessionStatus("loading");
+    try{
+      const {queue,receipt}=await buildCur09CourseReviewLaunch(levels);
+      if(!sessionFence.current.accepts(ticket,getDevelopmentAccountId()))return;
+      if(!queue.length||!receipt){
+        if(!levels)clearCur09Review(owner);
+        setSessionStatus("empty");return;
+      }
+      const persisted=saveCur09Review(owner,receipt);
+      const navigationKey="cur09-review-"+receipt.levels.join("-");
+      openSession(queue,"standard",persisted?navigationKey:undefined,"restart");
+      setSessionStatus("idle");
+    }catch{
+      if(sessionFence.current.accepts(ticket,getDevelopmentAccountId()))setSessionStatus("error");
+    }
+  }
+  const startLevelReview=(levels:readonly CourseReviewLevel[])=>launchCur09Review(levels);
+  const resumeLevelReview=()=>launchCur09Review();
   const previewCourseWord=(id:string)=>
     loadStudySession(()=>Promise.resolve(buildCourseVocabularyPreview(id)));
   const openVocabularyJourney=(id:string,mode:"explore"|"practice",unitId?:string,intent:"resume"|"restart"="resume",contrastId?:string)=>
@@ -547,6 +571,10 @@ export function App(){
     const workspaceId=getDevelopmentAccountId();
     if(sessionOwner.current!==workspaceId)throw new Error("Study session belongs to a different workspace.");
     await recordStudyAnswer({prompt:answer.prompt,response:answer.response,result:answer.grade.result,responseTimeMs:answer.responseTimeMs});
+    const review=coursePositionRef.current;
+    if(review?.unitId.startsWith("cur09-review-")&&review.ownerId===workspaceId&&
+      review.steps.some(step=>step.id===answer.prompt.id))
+      cur09CommittedPromptIds.current.add(answer.prompt.id);
     if(getDevelopmentAccountId()===workspaceId){
       if(sessionMode.current==="kana"&&answer.grade.result==="incorrect"&&
         !answer.prompt.eventMetadata?.kanaImmediateRetry){
@@ -558,8 +586,12 @@ export function App(){
   function finishSession(reason:"complete"|"exit"){
     const owner=getDevelopmentAccountId();
     const position=coursePositionRef.current;
-    if(reason==="complete"&&position?.ownerId===owner)clearCoursePosition(owner,position.unitId);
+    if(reason==="complete"&&position?.ownerId===owner){
+      if(position.unitId.startsWith("cur09-review-"))clearCur09Review(owner);
+      clearCoursePosition(owner,position.unitId);
+    }
     coursePositionRef.current=null;
+    cur09CommittedPromptIds.current.clear();
     setSessionInitialIndex(0);
     const cafe=reason==="complete"&&Boolean(session?.some(step=>step.id==="a1-e02-food-setup"));
     const origin=sessionOrigin.current;
@@ -662,7 +694,17 @@ export function App(){
         onPositionSave={index=>{
           const active=coursePositionRef.current;
           if(!active||active.ownerId!==getDevelopmentAccountId()||sessionOwner.current!==active.ownerId)return false;
+          if(active.unitId.startsWith("cur09-review-")){
+            const receipt=readCur09Review(active.ownerId);
+            if(!receipt)return false;
+            // StudyPlayer may navigate past an unavailable audio cue without grading.
+            // A skip is allowed on-screen but never advances saved original review credit.
+            if(!canAdvanceCur09AfterCommit(active.steps as import("@thiepn/study-player").StudyPrompt[],
+              receipt.cursor,index,cur09CommittedPromptIds.current))return true;
+          }
           const saved=saveCoursePosition(active.ownerId,active.unitId,active.steps,index);
+          if(saved&&active.unitId.startsWith("cur09-review-"))
+            return advanceCur09Review(active.ownerId,active.steps as import("@thiepn/study-player").StudyPrompt[],index);
           if(saved&&(active.unitId.startsWith("cur06-")||active.unitId.startsWith("cur07-")))
             rememberCur07Section(active.ownerId,active.unitId,active.steps,index);
           return saved;
@@ -694,7 +736,7 @@ export function App(){
             {surface==="Today"&&<J3Today key={getDevelopmentAccountId()} beginner={beginner} onStartBeginner={()=>void startBeginner()} onReviewDue={()=>void reviewDue()} kanaReview={kanaReview} onStartKanaReview={(script,skill)=>void startKanaReview(script,skill)} onFlashcardsChanged={()=>{setKanaToolRequest(null);requestKanaStandardReview();setSurface("Kana");}} engagement={engagement} e07={e07} onOpenE07={openE07Action} e06={e06} onStartE06={(id)=>void startE06(id)} onStartE11Micro={(id)=>void startE11Micro(id)} onStartE06Delayed={(id)=>void startE06Delayed(id)} e05={e05} onStartE05Repair={()=>void startE05Repair()} e04={e04} onStartE04={(id)=>void startE04(id)} onStartE04Delayed={(id)=>void startE04Delayed(id)} e03={e03} onStartE03={(id)=>void startE03(id)} onStartE03Delayed={(id)=>void startE03Delayed(id)} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE02Delayed={(id)=>void startE02Delayed(id)} summary={summary} completedToday={completedToday} status={sessionStatus} e01={e01} onStartE01={()=>void startE01()} onStartE01Delayed={()=>void startE01Delayed()} onStart={()=>void startStudy()}/>}
             {surface==="Learn"&&<J4Learn key={getDevelopmentAccountId()} beginner={beginner} onStartBeginner={()=>void startBeginner()} onReviewDue={()=>void reviewDue()} kanaReview={kanaReview} onStartKanaReview={(script,skill)=>void startKanaReview(script,skill)} onFlashcardsChanged={()=>{setKanaToolRequest(null);requestKanaStandardReview();setSurface("Kana");}} e07={e07} onOpenE07={openE07Action}
               e22Selection={resolveE22OwnerSelection(currentE17Owner,e22Selection)}
-              onE22Selection={value=>{if(e17WorkspaceCurrent())setE22Selection({owner:currentE17Owner,value});}} e06={e06} e16WorkspaceId={currentE17Owner} e16WorkspaceCurrent={e17WorkspaceCurrent} onStartE06={(id)=>void startE06(id)} onStartE06Full={(id)=>void startE06Full(id)} onStartE11Micro={(id)=>void startE11Micro(id)} onStartE13={(ids,mode)=>void startE13(ids,mode)} onStartE18={(keys,mode)=>void startE18(keys,mode)} e19={e19} onStartE19={key=>void startE19(key)} e14Reviews={e14Reviews} onStartE14={(id,mode)=>void startE14(id,mode)} onStartE15={(id,focus)=>void startE15(id,focus)} onStartE10Stage={(id,stage)=>void startE10Stage(id,stage)} onStartE06Delayed={(id)=>void startE06Delayed(id)} onStartE06FullDelayed={(id)=>void startE06FullDelayed(id)} onStartE10DelayedStage={(id,stage)=>void startE10DelayedStage(id,stage)} onStartE06Preview={(id)=>void startE06Preview(id)} e05={e05} onStartE05Repair={()=>void startE05Repair()} onStartE03Preview={(id)=>void startE03Preview(id)} onStartE02Preview={(id)=>void startE02Preview(id)} e04={e04} onStartE04={(id)=>void startE04(id)} onStartE04Delayed={(id)=>void startE04Delayed(id)} onStartE04Preview={(id)=>void startE04Preview(id)} e03={e03} onStartE03={(id)=>void startE03(id)} onStartE03Delayed={(id)=>void startE03Delayed(id)} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE02Delayed={(id)=>void startE02Delayed(id)} e01={e01} onStartE01={()=>void startE01()} onStartE01Delayed={()=>void startE01Delayed()} summary={summary} reviewOverview={reviewOverview} onReviewLevels={(levels)=>void startLevelReview(levels)} onPreviewWord={(id)=>void previewCourseWord(id)} onCur06Journey={(id,mode,unitId,intent,contrastId)=>void openVocabularyJourney(id,mode,unitId,intent,contrastId)} onCur07Recover={restoreVocabularyJourney} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} onPreferredCoachChainApplied={()=>setPreferredCoachChain(null)} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id,intent)=>void startCourseUnit(id,intent)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>}
+              onE22Selection={value=>{if(e17WorkspaceCurrent())setE22Selection({owner:currentE17Owner,value});}} e06={e06} e16WorkspaceId={currentE17Owner} e16WorkspaceCurrent={e17WorkspaceCurrent} onStartE06={(id)=>void startE06(id)} onStartE06Full={(id)=>void startE06Full(id)} onStartE11Micro={(id)=>void startE11Micro(id)} onStartE13={(ids,mode)=>void startE13(ids,mode)} onStartE18={(keys,mode)=>void startE18(keys,mode)} e19={e19} onStartE19={key=>void startE19(key)} e14Reviews={e14Reviews} onStartE14={(id,mode)=>void startE14(id,mode)} onStartE15={(id,focus)=>void startE15(id,focus)} onStartE10Stage={(id,stage)=>void startE10Stage(id,stage)} onStartE06Delayed={(id)=>void startE06Delayed(id)} onStartE06FullDelayed={(id)=>void startE06FullDelayed(id)} onStartE10DelayedStage={(id,stage)=>void startE10DelayedStage(id,stage)} onStartE06Preview={(id)=>void startE06Preview(id)} e05={e05} onStartE05Repair={()=>void startE05Repair()} onStartE03Preview={(id)=>void startE03Preview(id)} onStartE02Preview={(id)=>void startE02Preview(id)} e04={e04} onStartE04={(id)=>void startE04(id)} onStartE04Delayed={(id)=>void startE04Delayed(id)} onStartE04Preview={(id)=>void startE04Preview(id)} e03={e03} onStartE03={(id)=>void startE03(id)} onStartE03Delayed={(id)=>void startE03Delayed(id)} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE02Delayed={(id)=>void startE02Delayed(id)} e01={e01} onStartE01={()=>void startE01()} onStartE01Delayed={()=>void startE01Delayed()} summary={summary} reviewOverview={reviewOverview} onReviewLevels={(levels)=>void startLevelReview(levels)} onResumeReview={()=>void resumeLevelReview()} onPreviewWord={(id)=>void previewCourseWord(id)} onCur06Journey={(id,mode,unitId,intent,contrastId)=>void openVocabularyJourney(id,mode,unitId,intent,contrastId)} onCur07Recover={restoreVocabularyJourney} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} onPreferredCoachChainApplied={()=>setPreferredCoachChain(null)} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id,intent)=>void startCourseUnit(id,intent)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>}
             {surface==="Kana"&&<NativeKanaWorkspace key={getDevelopmentAccountId()} owner={getDevelopmentAccountId()}
               initialView={kanaEntryView} onViewChange={setKanaEntryView} requestedTool={kanaToolRequest}
               standardReviewRequest={kanaStandardRequest}

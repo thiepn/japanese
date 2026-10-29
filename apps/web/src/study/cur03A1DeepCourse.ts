@@ -83,7 +83,227 @@ const CASES:readonly Case[]=[
    ["A pen is on the desk. Complete: 机にペンが＿＿。","あります","います","飲みます","A pen is an inanimate thing, so use あります.","います is generally used for people and animals.","飲みます means drinks and cannot describe this existence relation."],
    ["Which sentence says there is a cat in the garden?","庭に猫がいます。","庭に猫があります。","庭で猫を飲みます。","Cats are animals, so the basic existence verb is います.","あります is not the usual existence predicate for cats.","The action verb and object are semantically wrong."]
   ],
-  independent:"Describe where one person or animal and one inanimate object are located, choosing います and あります deliberately."}
+  independent:"Describe where one person or animal and one inanimate object are located, choosing います and あります deliberately."},
+{
+  "anchor": "grammar-demonstrative-pronouns",
+  "title": "Point to things: これ versus この",
+  "situation": "At a classroom desk, a learner points to a book and says これは本です。 A little later, the learner uses この本は日本語です to describe the same book. The first demonstrative stands alone; the second must go directly before its noun.",
+  "why": "これ, それ and あれ can stand as noun-like expressions ('this', 'that near you', 'that over there'). この, その and あの must modify a following noun. Both sets reflect the situation of speaker, listener and referent rather than translating every English 'this' into the same Japanese word.",
+  "contrast": "これは本です。 is complete because これ stands alone. この本は日本語です。 requires 本 immediately after この. Do not write このは本です or これ本は日本語です.",
+  "checks": [
+    [
+      "You are pointing to a book. Complete: ＿＿は本です。",
+      "これ",
+      "この",
+      "その",
+      "これ can be the topic without an accompanying noun.",
+      "この requires an immediately following noun.",
+      "その also needs a noun; it cannot stand alone here."
+    ],
+    [
+      "You want to describe this particular book. Complete: ＿＿本は日本語です。",
+      "この",
+      "これ",
+      "あれ",
+      "この modifies 本 directly.",
+      "これ is a pronoun and cannot directly modify 本.",
+      "あれ stands alone; あの would modify 本."
+    ],
+    [
+      "Which source sentence points to a school over there?",
+      "あれは学校です。",
+      "それは水です。",
+      "この本は日本語です。",
+      "あれ stands alone and indicates a distant referent.",
+      "それ here identifies water, not the distant school.",
+      "この本 identifies a particular book, not a school."
+    ]
+  ],
+  "independent": "Point to two objects at different distances. Write one line using a standalone demonstrative and another using a demonstrative followed by a noun. Self-check the noun placement.",
+  "examples": [
+    [
+      "これは本です。",
+      "これ stands on its own as 'this'."
+    ],
+    [
+      "それは水です。",
+      "それ refers to something near the listener or otherwise in context."
+    ],
+    [
+      "あれは学校です。",
+      "あれ points to something distant from both speakers."
+    ],
+    [
+      "この本は日本語です。",
+      "この directly determines the noun 本."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-kara-made",
+  "title": "From when to when: から and まで",
+  "situation": "A learner tells a colleague 九時から五時まで働きます。 The time range begins at nine and ends at five. A separate sentence 八時に学校に行きます gives one scheduled time rather than a start-to-end interval.",
+  "why": "から marks the starting boundary and まで the endpoint of a range. The particles can frame a period with a verb describing what happens during it. に in 八時に学校に行きます instead marks when that movement is scheduled.",
+  "contrast": "九時から五時まで働きます。 reports a range. 八時に学校に行きます。 reports a time point. Do not use まで to mean 'at' or mistake から for the destination particle.",
+  "checks": [
+    [
+      "Complete the start of the work interval: 九時＿＿五時まで働きます。",
+      "から",
+      "まで",
+      "に",
+      "から introduces the starting boundary.",
+      "まで introduces an endpoint and is already attached to 五時.",
+      "に would describe a time point, not this marked start-to-end frame."
+    ],
+    [
+      "Complete the endpoint: 九時から五時＿＿働きます。",
+      "まで",
+      "から",
+      "で",
+      "まで marks the end of this time interval.",
+      "から is already the starting marker after 九時.",
+      "で marks other relations, not this endpoint."
+    ],
+    [
+      "Which original sentence gives a single school departure time rather than a work interval?",
+      "八時に学校に行きます。",
+      "九時から五時まで働きます。",
+      "七時半です。",
+      "八時に marks the time of going to school.",
+      "This reports working over a period of time.",
+      "This tells the current clock time but not a scheduled school trip."
+    ]
+  ],
+  "independent": "Write a two-line schedule: one action at a specific clock time and one activity over an interval. Check に against から…まで without using a model answer.",
+  "examples": [
+    [
+      "九時から五時まで働きます。",
+      "から gives the start; まで gives the endpoint."
+    ],
+    [
+      "八時に学校に行きます。",
+      "に marks a specific clock time for the action."
+    ],
+    [
+      "七時半です。",
+      "半 means half past in this clock-time statement."
+    ],
+    [
+      "明日は十時に来ます。",
+      "十時に identifies a time point on the next day."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-de-means",
+  "title": "By train or to the station: two roles for particles",
+  "situation": "A classmate asks how you travel to school. 電車で学校に行きます answers with a mode of travel and a destination. In バスで駅に行きます the bus is still the means, while the station is where the movement is headed.",
+  "why": "With transportation expressions, で can mark the means of travel; に commonly marks the movement destination. The same sentence can have both particles, each with a different function. Do not confuse this means-で with the action-location で encountered earlier.",
+  "contrast": "電車で学校に行きます: 電車で is how, 学校に is where to. 駅はどこですか。 asks for the station's location, but gives no means of travel.",
+  "checks": [
+    [
+      "Complete the travel means: 電車＿＿学校に行きます。",
+      "で",
+      "に",
+      "を",
+      "で marks the train as the means of travel.",
+      "に identifies a destination here, not a vehicle used to travel.",
+      "を would not express travel by train in this pattern."
+    ],
+    [
+      "Which source sentence means going to the station by bus?",
+      "バスで駅に行きます。",
+      "電車で学校に行きます。",
+      "自転車で家に帰ります。",
+      "バスで states the means and 駅に the destination.",
+      "This travels by train to school.",
+      "This returns home by bicycle."
+    ],
+    [
+      "Which sentence asks where the station is, instead of identifying a travel means?",
+      "駅はどこですか。",
+      "バスで駅に行きます。",
+      "電車で学校に行きます。",
+      "どこ asks where, with no means of transport specified.",
+      "This describes traveling by bus.",
+      "This describes traveling by train."
+    ]
+  ],
+  "independent": "Write two lines for different journeys, each giving a vehicle and a destination. Then write one separate question asking where one destination is.",
+  "examples": [
+    [
+      "電車で学校に行きます。",
+      "電車で marks transport; 学校に is the destination."
+    ],
+    [
+      "バスで駅に行きます。",
+      "バスで is the means; 駅に is the destination."
+    ],
+    [
+      "自転車で家に帰ります。",
+      "自転車で marks bicycle travel; 家に is homeward movement."
+    ],
+    [
+      "駅はどこですか。",
+      "どこですか asks for the place, not how to travel."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-te-kudasai",
+  "title": "Ask someone to repeat or slow down",
+  "situation": "A learner cannot follow a fast explanation. Instead of pretending to understand, the learner says ゆっくり話してください。 If a word is missed, もう一度言ってください。 asks for it again. These are requests for another person's action.",
+  "why": "Verb て-form plus ください makes a polite request for an action. 言ってください asks the listener to say something; 話してください asks them to speak. 分かりません can report not understanding, but it does not by itself specify what help is being requested.",
+  "contrast": "もう一度言ってください。 requests repetition; 分かりません。 reports lack of understanding. Noun + をください, used to request an item, is a different construction from verb て-form + ください.",
+  "checks": [
+    [
+      "Your partner is speaking too quickly. Which response directly requests slower speech?",
+      "ゆっくり話してください。",
+      "もう一度言ってください。",
+      "分かりません。",
+      "ゆっくり specifies slower speech, and 話してください makes the request.",
+      "This asks for repetition, not specifically for a slower pace.",
+      "This reports a problem without asking for a specific action."
+    ],
+    [
+      "You missed a sentence. Which response politely requests repetition?",
+      "もう一度言ってください。",
+      "ここに書いてください。",
+      "分かりません。",
+      "もう一度 together with 言ってください asks the speaker to say it again.",
+      "This asks someone to write here.",
+      "This reports non-understanding rather than a specific repeat request."
+    ],
+    [
+      "Which statement about ください in these examples is correct?",
+      "Verb て-form + ください asks someone to perform an action.",
+      "Verb dictionary form + をください requests an action.",
+      "分かりません is a verb て-form request.",
+      "The source examples use て-form verbs before ください.",
+      "をください with a noun requests an item, not a verb action.",
+      "分かりません is a statement, not an action request."
+    ]
+  ],
+  "independent": "Write a three-turn conversation: you do not understand, you ask for a specific kind of help, and you acknowledge the response. Treat the exchange as ungraded writing.",
+  "examples": [
+    [
+      "もう一度言ってください。",
+      "言ってください asks for another utterance."
+    ],
+    [
+      "ゆっくり話してください。",
+      "ゆっくり plus 話してください requests slower speech."
+    ],
+    [
+      "ここに書いてください。",
+      "書いてください asks someone to write in the indicated location."
+    ],
+    [
+      "分かりません。",
+      "分かりません reports that something is not understood."
+    ]
+  ]
+}
 ];
 
 function requireSourceUnit(unitId:string){
