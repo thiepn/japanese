@@ -132,6 +132,21 @@ describe("CUR-11 canonical-source A1 grammar transfer",()=>{
   ["a1-unit-14","grammar-i-adj-past",4],
   ["a1-unit-16","grammar-counter-tsu",4]
  ] as const;
+ it("does not show source-specific examples in other A1 units sharing an anchor",()=>{
+  for(const [unitId,anchor] of [
+   ["a1-unit-08","grammar-masen"],
+   ["a1-unit-11","grammar-no-attribute"],
+   ["a1-unit-16","grammar-counter-tsu"]
+  ] as const){
+   const otherUnits=coreContent.courseUnits.filter(u=>u.level==="A1"&&u.id!==unitId&&u.grammarIds.includes(anchor));
+   expect(otherUnits.length).toBeGreaterThan(0);
+   for(const other of otherUnits){
+    expect(deepTeachingAnchors(other.id)).not.toContain(anchor);
+    expect(buildCur03CourseUnitSession(other.id).some(step=>
+      step.id==="cur03-"+other.id+"-"+anchor+"-context")).toBe(false);
+   }
+  }
+ });
  it("links all example sentences to the correct canonical A1 source unit",()=>{
   for(const [unitId,anchor,expected] of added){
    const u=coreContent.courseUnits.find(unit=>unit.id===unitId)!;

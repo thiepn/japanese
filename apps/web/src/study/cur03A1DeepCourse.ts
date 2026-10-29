@@ -4,7 +4,7 @@ import {courseUnitSession} from "./grammarCourse";
 
 /** New original teaching around canonical grammar anchors, not a fork of the independent CF-A1 PR #103. */
 type Check=readonly [question:string,answer:string,foilA:string,foilB:string,feedback:string,foilANote:string,foilBNote:string];
-type Case=Readonly<{anchor:string;title:string;situation:string;why:string;contrast:string;
+type Case=Readonly<{anchor:string;unitId?:string;title:string;situation:string;why:string;contrast:string;
  examples:readonly (readonly [string,string])[];checks:readonly Check[];independent:string}>;
 const CASES:readonly Case[]=[
  {anchor:"grammar-wa-topic",title:"Introduce yourself without repeating the subject",
@@ -306,6 +306,7 @@ const CASES:readonly Case[]=[
 },
 {
   "anchor": "grammar-to-with",
+  "unitId": "a1-unit-05",
   "title": "Talk with someone, or add someone too",
   "situation": "Two classmates describe their day. 友達と話します。 describes talking with a friend; 友達も学生です。 adds a friend to a group already described as students. The noun 友達 is shared, but its grammatical relationship differs.",
   "why": "The companion particle と identifies someone who joins an activity. In contrast, も means 'also' or 'too': it includes another participant or entity in a previously understood group or claim. Use the verb and discourse context to decide, not the English word 'friend' alone.",
@@ -357,6 +358,7 @@ const CASES:readonly Case[]=[
 },
 {
   "anchor": "grammar-masen",
+  "unitId": "a1-unit-08",
   "title": "Going, not going, and what already happened",
   "situation": "Today, a learner can say 今日は学校に行きます。 or 今日は学校に行きません。 The second statement negates today's plan. お茶を飲みました。 describes a separate completed action rather than a present or future plan.",
   "why": "Polite ます is nonpast affirmative, ません is nonpast negative, and ました is past affirmative. The nonpast form can describe a habit, a current situation, or a planned future event depending on context. Tense and polarity are distinct choices.",
@@ -408,6 +410,7 @@ const CASES:readonly Case[]=[
 },
 {
   "anchor": "grammar-no-attribute",
+  "unitId": "a1-unit-11",
   "title": "Relate nouns with の, or list items with と",
   "situation": "This book belongs to someone: これは私の本です。 The form 私の describes the book. When shopping, パンと水を買います。 lists two things to buy instead. The connecting particles do different work.",
   "why": "Noun A + の + noun B can express possession, naming or other relationships: 私の本, 先生の名前, 家族の写真. The particle と can join two nouns in a complete list. An English apostrophe is not a reliable translation for every relationship shown by の.",
@@ -463,6 +466,7 @@ const CASES:readonly Case[]=[
 },
 {
   "anchor": "grammar-i-adj-past",
+  "unitId": "a1-unit-14",
   "title": "Past and negative forms for two adjective types",
   "situation": "Yesterday was hot: 昨日は暑かったです。 Today is not cold: 今日は寒くないです。 A different adjective type appears in 昨日は静かじゃなかったです。 ('It was not quiet yesterday').",
   "why": "An い-adjective usually replaces final い with かった to form past affirmative, and with くない for nonpast negative. A な-adjective such as 静か uses a noun-like predicate; the attested past-negative form is 静かじゃなかったです. Do not add でした to an unchanged い-adjective.",
@@ -518,6 +522,7 @@ const CASES:readonly Case[]=[
 },
 {
   "anchor": "grammar-counter-tsu",
+  "unitId": "a1-unit-16",
   "title": "Order quantities with 一つ and 二つ",
   "situation": "At a small counter, パンを二つください。 orders two bread items. 水を一つください。 asks for one water item or serving. コーヒーをください。 shows that a simple item request does not always specify a number.",
   "why": "The structure noun + を + quantity/counter + ください politely requests items and quantities. The common native counter forms are 一つ (ひとつ) and 二つ (ふたつ), not mechanical readings of the numerals. Without a quantity, noun + をください still requests the item.",
@@ -583,14 +588,14 @@ function requireSourceUnit(unitId:string){
 export function deepTeachingAnchors(unitId:string):readonly string[]{
  const unit=requireSourceUnit(unitId);
  if(!unit)return [];
- return CASES.filter(c=>unit.grammarIds.includes(c.anchor)).map(c=>c.anchor);
+ return CASES.filter(c=>(!c.unitId||c.unitId===unit.id)&&unit.grammarIds.includes(c.anchor)).map(c=>c.anchor);
 }
 /** The original course prompts are passed through unchanged: no duplicate canonical IDs or FSRS engine. */
 export function buildCur03CourseUnitSession(unitId:string):StudyStep[]{
  const base=courseUnitSession(unitId);
  const unit=requireSourceUnit(unitId);
  if(!unit)return base;
- const situations=CASES.filter(c=>unit.grammarIds.includes(c.anchor));
+ const situations=CASES.filter(c=>(!c.unitId||c.unitId===unit.id)&&unit.grammarIds.includes(c.anchor));
  const added:StudyStep[]=[];
  for(const c of situations){
   const prefix="cur03-"+unitId+"-"+c.anchor;
