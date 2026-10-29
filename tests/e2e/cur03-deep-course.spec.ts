@@ -32,7 +32,7 @@ for(const [unitTitle,teachingTitle,sourceText] of [["People together","Talk with
   const catalog=page.getByRole("region",{name:"Six-level course catalog"});
   const row=catalog.locator(".cur01-lessons li").filter({has:page.getByRole("heading",{name:unitTitle,exact:true})});
   await expect(row).toBeVisible();
-  await row.getByRole("button",{name:/^(Open|Resume) lesson \\d+:/i}).click();
+  await row.getByRole("button",{name:/^(Open|Resume) lesson \d+:/i}).click();
   await expect(page.locator(".study-lesson h1")).toBeVisible();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
   await expect(page.locator(".study-lesson h1")).toHaveText(teachingTitle);
