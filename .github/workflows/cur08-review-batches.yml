@@ -1,7 +1,7 @@
-name: CUR-09 Japanese Review Continuity and Source Recovery
+name: CUR-11 Japanese Canonical A1 Instruction and Review Regression
 on:
   push:
-    branches: [feature/cur08-source-aware-review-batches-20261028]
+    branches: [feature/cur08-source-aware-review-batches-20261028, feature/cur11-source-grounded-a1-transfer-20261029]
 permissions:
   contents: read
 concurrency:
