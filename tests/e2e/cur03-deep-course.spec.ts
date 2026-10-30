@@ -72,7 +72,7 @@ for(const [unitTitle,teachingTitle,sourceText] of [["Talk about family","Talk ab
  });
 }
 
-for(const [unitTitle,teachingTitle,sourceText] of [["Identify people","Identify someone with a polite noun predicate","学生です。"],["Talk about actions","State an everyday action or ask what someone will do","本を読みます。"],["Where things and people are","Say what exists in a place: に, が and existence verbs","学校に先生がいます。"],["Order food and request items","Request an item, or report an action","コーヒーをください。"]] as const){
+for(const [unitTitle,teachingTitle,sourceText] of [["Identify people","Identify someone with a polite noun predicate","学生です。"],["Talk about actions","State an everyday action or ask what someone will do","本を読みます。"],["Where things and people are","Say what exists in a place: に, が and existence verbs","学校に先生がいます。"],] as const){
  test("CUR-14 foundation and source-link: "+unitTitle,async({page})=>{
   await page.goto("./#course/A1");
   const catalog=page.getByRole("region",{name:"Six-level course catalog"});
@@ -87,3 +87,33 @@ for(const [unitTitle,teachingTitle,sourceText] of [["Identify people","Identify 
   await expect(page.locator(".study-lesson h1")).toHaveText("Why it works");
  });
 }
+
+test("CUR-14 item requests follow the preserved CUR-11 counter lesson in the same unit",async({page})=>{
+ await page.goto("./#course/A1");
+ const catalog=page.getByRole("region",{name:"Six-level course catalog"});
+ const row=catalog.locator(".cur01-lessons li").filter({has:page.getByRole("heading",{name:"Order food and request items",exact:true})});
+ await expect(row).toBeVisible();
+ await row.getByRole("button",{name:/^(Open|Resume) lesson \d+:/i}).click();
+ await expect(page.locator(".study-lesson h1")).toBeVisible();
+ await page.getByRole("button",{name:"Continue",exact:true}).click();
+ await expect(page.locator(".study-lesson h1")).toHaveText("Order quantities with 一つ and 二つ");
+ await page.getByRole("button",{name:"Continue",exact:true}).click();
+ await expect(page.locator(".study-lesson h1")).toHaveText("Why it works");
+ await page.getByRole("button",{name:"Continue",exact:true}).click();
+ for(let i=0;i<3;i++){
+  const choices=page.locator(".j5-choices");
+  await expect(choices).toBeVisible();
+  await choices.getByRole("button").first().click();
+  await expect(page.getByText("UNSCORED CONTEXT CHECK")).toBeVisible();
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+ }
+ await expect(page.locator(".study-lesson h1")).toHaveText("Use it in a different situation");
+ await page.getByRole("button",{name:"Continue",exact:true}).click();
+ await expect(page.locator(".j5-writing textarea")).toBeVisible();
+ await page.locator(".j5-writing textarea").fill("パンを二つください。");
+ await page.getByRole("button",{name:"Record unscored writing"}).click();
+ await expect(page.getByText("UNSCORED RESPONSE")).toBeVisible();
+ await page.getByRole("button",{name:"Continue",exact:true}).click();
+ await expect(page.locator(".study-lesson h1")).toHaveText("Request an item, or report an action");
+ await expect(page.locator(".lesson-examples strong[lang='ja']").first()).toHaveText("コーヒーをください。");
+});

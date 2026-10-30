@@ -346,11 +346,18 @@ describe("CUR-14 exact source-backed foundational A1 teaching",()=>{
    expect(u.level).toBe("A1");
    expect(u.sourceIds).toEqual(["thiepn-original"]);
    expect(u.grammarIds).toContain(anchor);
-   expect(deepTeachingAnchors(id)[0]).toBe(anchor);
+   expect(deepTeachingAnchors(id)).toContain(anchor);
    const session=buildCur03CourseUnitSession(id);
-   const intro=session[1];
+   const intro=session.find(s=>s.id==="cur03-"+id+"-"+anchor+"-context");
    if(!intro||!isStudyLesson(intro))throw Error("CUR14_CONTEXT_NOT_FOUND");
-   expect(intro.id).toBe("cur03-"+id+"-"+anchor+"-context");
+   // Unit 16 already starts with the established CUR-11 quantity case; never invalidate that order.
+   if(id==="a1-unit-16"){
+    expect(deepTeachingAnchors(id)[0]).toBe("grammar-counter-tsu");
+    expect(session[1]?.id).toBe("cur03-"+id+"-grammar-counter-tsu-context");
+   }else{
+    expect(deepTeachingAnchors(id)[0]).toBe(anchor);
+    expect(session[1]?.id).toBe(intro.id);
+   }
    expect(intro.examples).toHaveLength(count);
    const sourceTexts=new Set(coreContent.sentences.filter(s=>u.sentenceIds.includes(s.id)).map(s=>s.text));
    for(const e of intro.examples??[])expect(sourceTexts.has(e.expression)).toBe(true);
