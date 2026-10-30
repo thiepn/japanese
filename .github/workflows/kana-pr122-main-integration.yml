@@ -20,7 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VITE_PUBLIC_BASE: /japanese/
-      BASE_SHA: ${{ github.event.pull_request.base.sha }}
       HEAD_SHA: ${{ github.event.pull_request.head.sha }}
     steps:
       - uses: actions/checkout@v4
@@ -31,8 +30,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # GitHub's pull_request.base.sha may be stale after main advances.
+          # Explicitly resolve the current remote main HEAD at execution time.
+          git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
+          BASE_SHA="$(git rev-parse refs/remotes/origin/main)"
           git cat-file -e "${BASE_SHA}^{commit}"
           git cat-file -e "${HEAD_SHA}^{commit}"
+          echo "Current remote main: $BASE_SHA"
+          echo "Exact PR head: $HEAD_SHA"
           git checkout --detach "$BASE_SHA"
           git -c user.name="Japanese CI" -c user.email="ci@users.noreply.github.com" \
             merge --no-ff --no-edit "$HEAD_SHA"
