@@ -7,16 +7,28 @@ unmerged and NO_GO until all independent release gates are satisfied.
 ## Current technical source of truth
 
 - Qualify **the newest exact PR HEAD**, not a copied SHA or the mutable main branch.
-- The `Kana PR 122 qualification` workflow checks out
+- The `Kana PR 122 qualification` GitHub Actions workflow (not Cloudflare) checks out
   `github.event.pull_request.head.sha`, writes `release-meta.json` using
   `channel: candidate` and that exact SHA, builds with
   `VITE_PUBLIC_BASE=/japanese/`, then checks Kana/Account regressions.
 - After successful checks, the workflow uploads `kana-pr122-static-candidate`
   (14-day retention), including `index.html`, `404.html`,
   `auth/callback/index.html`, `kana/index.html`, `release-meta.json`,
-  `sw.js`, icons and `manifest.webmanifest`. **No deployment occurs**.
-- The artifact is constructed for the **/japanese/** URL prefix. Hosting the
-  unchanged artifact at `/` or a different prefix is not a qualified preview.
+  `sw.js`, icons and `manifest.webmanifest`. **This GitHub Actions job
+  does not deploy**. Independent Cloudflare GitHub integration may still
+  automatically create a preview deployment on any branch push.
+- The uploaded GitHub Actions artifact is constructed for the **/japanese/**
+  URL prefix. Hosting the unchanged artifact at `/` or a different prefix
+  is not a qualified preview.
+- **Live Cloudflare configuration (read 30 October 2026):** the `japanese`
+  Pages project allows preview branches (`preview_branch_includes: ['*']`).
+  Pushes to this draft PR have triggered Cloudflare preview deployment records.
+  The Cloudflare build uses Vite's default **root `/` base**, which is
+  **different from** the `/japanese/` GitHub Actions artifact. Neither build
+  verifies the other's routes or installation behavior. A queued preview
+  record or a URL is not proof that a deploy succeeded or serves the right SHA.
+  Existing `docs/DOMAIN_DEPLOYMENT.md` says previews are off, but that
+  statement is stale relative to the live configuration.
 - The current-main integration workflow independently tests a temporary,
   unpushed merge. That merged tree has a **different commit identity** from
   the PR-only artifact: its passing tests do not certify a deployed merged build.
@@ -25,18 +37,23 @@ unmerged and NO_GO until all independent release gates are satisfied.
 
 ## Exact-SHA HTTPS preview: approval boundary
 
-1. An authorized operator must choose a disposable, **separate-origin** HTTPS
-   preview serving the complete artifact under `/japanese/`. Do not use
-   the public `thiepn.dev/japanese/` route, replace production Pages,
+1. Prefer an existing, verified Cloudflare branch preview at its own
+   **separate-origin** HTTPS URL **only if** its exact SHA, deployment success,
+   root-base assets and route checks are verified. For the GitHub Actions
+   artifact instead, an authorized operator may host it under `/japanese/`
+   at a separate HTTPS origin. **Do not confuse these two builds.** Do not
+   use the public `thiepn.dev/japanese/` route, replace production Pages,
    trigger `P22 Candidate Pages Deploy`, or switch Cloudflare main DNS.
-   Cloudflare branch preview is currently configured off; this protocol does
-   not authorize switching it on.
-2. After publication **by an authorized independent operator**, read
-   `/japanese/release-meta.json` with cache disabled and record its exact
+   This protocol does not authorize changing Pages preview configuration.
+2. From the verified preview URL, read `release-meta.json` **at that
+   deployment's actual root** with cache disabled and record its exact
    `commit` and `channel: candidate`. Compare with the unchanged GitHub PR
-   head and verify the deployed artifact SHA/digest from its workflow run.
-   If any value differs, stop. Check the callback route, manifest scope,
-   service worker MIME type and icons without submitting credentials.
+   head; for a separately hosted artifact also verify the uploaded ZIP
+   digest. If any value differs, stop. Check the correct-base asset paths,
+   callback route, manifest scope, service worker MIME type and icons without
+   submitting credentials. Cloudflare's root preview also needs an actual
+   check of legacy `/kana/` navigation; the shared source currently writes
+   a `/japanese/` redirect for that legacy route.
 3. The web artifact carries an unchanged Japanese OAuth implementation whose
    Account callback points to `https://thiepn.dev/japanese/auth/callback/`.
    **Do not press Sign in or attempt two-owner OAuth on an unregistered preview
