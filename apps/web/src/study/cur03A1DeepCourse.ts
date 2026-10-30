@@ -815,6 +815,238 @@ const CASES:readonly Case[]=[
     ]
   ],
   "independent": "Write a short encounter: state one shared observation with ね, give one useful fact with よ, and ask a direct yes/no question with か. Review each sentence's purpose."
+},
+{
+  "anchor": "grammar-counter-nin",
+  "title": "Talk about your family: people, roles, and locations",
+  "situation": "At a class welcome event, a learner says 私の家族は四人です。 and then identifies relatives: 父は先生です。, 母は会社員です。 Later the learner describes where a younger sister and the parents are: 妹は家にいます。 and 両親は日本にいます。",
+  "why": "人 is a counter for people. In 四人 (よにん), the counter expresses the number of family members; it does not label a person's occupation. For roles such as 先生 or 会社員, the polite nominal predicate ends with です. To say someone is at a place, location に and います are used. Keep number, role and location as separate information needs.",
+  "contrast": "私の家族は四人です。 gives a count. 父は先生です。 describes a role. 妹は家にいます。 gives a person's location. Do not answer 'Where is your sister?' with a family size.",
+  "checks": [
+    [
+      "How many people are in this family? Choose the installed sentence that gives the count.",
+      "私の家族は四人です。",
+      "父は先生です。",
+      "妹は家にいます。",
+      "四人 is the family size, using the people counter 人.",
+      "This identifies the father's role but gives no count.",
+      "This identifies a person's location, not the total."
+    ],
+    [
+      "A classmate asks where the learner's younger sister is. Select the matching original sentence.",
+      "妹は家にいます。",
+      "母は会社員です。",
+      "私の家族は四人です。",
+      "家にいます states where the sister is.",
+      "This is the mother's occupation, not a location.",
+      "A people count does not answer a location question."
+    ],
+    [
+      "Which answer gives the father's job rather than the family size or where someone lives?",
+      "父は先生です。",
+      "両親は日本にいます。",
+      "私の家族は四人です。",
+      "先生です states the occupation.",
+      "日本にいます states a location.",
+      "四人 counts people in the family."
+    ]
+  ],
+  "independent": "Introduce a small imaginary family in four short Japanese lines: give its size with 人, introduce one person's role, and locate two family members. Self-check each sentence's information type.",
+  "unitId": "a1-unit-15",
+  "examples": [
+    [
+      "私の家族は四人です。",
+      "四人 (よにん) counts the people in the family."
+    ],
+    [
+      "父は先生です。",
+      "先生です describes the father's occupation."
+    ],
+    [
+      "母は会社員です。",
+      "会社員です describes the mother's occupation."
+    ],
+    [
+      "妹は家にいます。",
+      "家にいます locates the younger sister."
+    ],
+    [
+      "両親は日本にいます。",
+      "日本にいます locates the parents."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-time-counters",
+  "title": "Read the clock and set a precise meeting time",
+  "situation": "Someone checks the clock: 今は七時です。 A little later, 七時半です。 means half past seven, not seven-thirty minutes of activity. When planning a trip, 八時に学校に行きます。 identifies a specific time of travel, while 九時から五時まで働きます。 reports a work interval.",
+  "why": "時 identifies clock hours. 半 after the hour expresses half past; 七時半 is seven thirty. For an activity at a specific clock time, に can mark the time, as in 八時に学校に行きます. For an interval, から marks the start and まで the endpoint. A clock reading and a scheduled event answer different questions.",
+  "contrast": "七時半です。 reports the clock reading. 八時に学校に行きます。 names when something happens. 九時から五時まで働きます。 spans a start and end. Do not treat 半 as a counter for duration in these source examples.",
+  "checks": [
+    [
+      "A friend asks what time it is: it is half past seven. Choose the original clock reading.",
+      "七時半です。",
+      "今は七時です。",
+      "八時に学校に行きます。",
+      "半 after 七時 gives half past seven.",
+      "This is seven o'clock, not half past.",
+      "This gives the scheduled time of an action rather than the requested clock reading."
+    ],
+    [
+      "Choose the sentence that says when school travel happens.",
+      "八時に学校に行きます。",
+      "七時半です。",
+      "九時から五時まで働きます。",
+      "八時に identifies the event's clock time.",
+      "This states a clock reading, not an action time.",
+      "This describes a work interval, not a school trip."
+    ],
+    [
+      "Which sentence describes a start-to-end work schedule rather than one clock reading?",
+      "九時から五時まで働きます。",
+      "今は七時です。",
+      "七時半です。",
+      "から…まで expresses the beginning and endpoint of the work period.",
+      "This only states the current hour.",
+      "This is a single clock reading."
+    ]
+  ],
+  "independent": "Write a short schedule with a clock reading, a fixed meeting time using に, and a work or study interval using から…まで. Check that the expressions answer three different questions.",
+  "unitId": "a1-unit-12",
+  "examples": [
+    [
+      "今は七時です。",
+      "七時 identifies the current hour."
+    ],
+    [
+      "七時半です。",
+      "七時半 means half past seven."
+    ],
+    [
+      "八時に学校に行きます。",
+      "八時に marks the time of going to school."
+    ],
+    [
+      "九時から五時まで働きます。",
+      "から and まで bound the working interval."
+    ],
+    [
+      "明日は十時に来ます。",
+      "十時に states a planned arrival time tomorrow."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-i-adj-polite",
+  "title": "Describe an object instead of stating a preference",
+  "situation": "A learner says 本が好きです。 to express liking books. Later, the learner describes something physical: 家は大きいです。 and 本は小さいです。 These last two sentences describe size; they do not mean that the learner likes the house or the book.",
+  "why": "好きです expresses a preference and commonly marks what is liked with が in the beginner pattern. 大きい and 小さい are い-adjectives used as predicates; です adds politeness but the adjective keeps its final い. は identifies the topic being described. Distinguish subjective preference from an observed quality.",
+  "contrast": "本が好きです。 reports liking. 本は小さいです。 reports size. Do not replace が好き with an adjective merely because both English translations use 'is', and do not change 大きいです to 大きです.",
+  "checks": [
+    [
+      "You want to say the HOUSE is big rather than that you like it. Choose the original description.",
+      "家は大きいです。",
+      "本が好きです。",
+      "本は小さいです。",
+      "大きいです describes the house's size.",
+      "好きです expresses liking, not size.",
+      "小さいです describes a small book, not a big house."
+    ],
+    [
+      "Someone asks whether the book is small. Choose the installed size description.",
+      "本は小さいです。",
+      "日本語が好きですか。",
+      "家は大きいです。",
+      "小さいです is a size predicate referring to the book.",
+      "This asks about a preference, not size.",
+      "This describes a different object as big."
+    ],
+    [
+      "Which sentence asks about liking Japanese rather than describing size?",
+      "日本語が好きですか。",
+      "家は大きいです。",
+      "本は小さいです。",
+      "好きですか asks a polite question about preference.",
+      "大きい describes physical size.",
+      "小さい describes physical size."
+    ]
+  ],
+  "independent": "Write two independent lines describing the size of different objects, and a third line asking about someone's preference. Use い-adjectives and 好きですか for different communicative purposes.",
+  "unitId": "a1-unit-07",
+  "examples": [
+    [
+      "本が好きです。",
+      "本が好きです expresses a preference."
+    ],
+    [
+      "日本語が好きですか。",
+      "か turns the preference into a polite question."
+    ],
+    [
+      "家は大きいです。",
+      "大きいです describes the house's size."
+    ],
+    [
+      "本は小さいです。",
+      "小さいです describes a book's size."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-te-form",
+  "title": "Build polite requests from the verb て-form",
+  "situation": "At school, a learner needs different kinds of help. ここに書いてください。 requests writing at a location. もう一度言ってください。 requests repetition, and ゆっくり話してください。 requests slower speech. 分かりません。 states that the learner does not understand, but it is not itself an action request.",
+  "why": "In these source expressions, the verb's て-form comes before ください: 書く→書いて, 言う→言って, 話す→話して. The surface shape varies with the verb; simply attaching て to every dictionary form would be incorrect. ください attaches to the completed て-form when asking someone to perform the action. Learn these attested combinations before extending the rule to other verbs.",
+  "contrast": "書いてください, 言ってください and 話してください request actions. 分かりません reports a problem. Noun + をください requests an item instead and is not interchangeable with verb て-form + ください.",
+  "checks": [
+    [
+      "You want the teacher to WRITE here. Which source request fits?",
+      "ここに書いてください。",
+      "もう一度言ってください。",
+      "分かりません。",
+      "書いてください requests the writing action; ここに gives the place.",
+      "This asks someone to say something again.",
+      "This reports non-understanding, not writing."
+    ],
+    [
+      "Which source request uses the て-form 言って rather than 話して?",
+      "もう一度言ってください。",
+      "ゆっくり話してください。",
+      "ここに書いてください。",
+      "言ってください requests saying something again.",
+      "話してください asks for speech, with the slower manner given by ゆっくり.",
+      "書いてください asks someone to write."
+    ],
+    [
+      "Which analysis of the attested verb request is correct?",
+      "話す becomes 話して before ください.",
+      "All dictionary forms simply add て unchanged.",
+      "分かりません is a て-form request.",
+      "話して is the attested て-form in 話してください.",
+      "Verbs have different て-form changes; 話す does not become 話すて.",
+      "分かりません is a statement about understanding."
+    ]
+  ],
+  "independent": "In a new classroom situation, write three polite requests asking for writing, repetition, and slower speech. Then add a separate line stating you do not understand. Check the て-form before ください.",
+  "unitId": "a1-unit-19",
+  "examples": [
+    [
+      "ここに書いてください。",
+      "書いてください uses 書く→書いて to request writing."
+    ],
+    [
+      "もう一度言ってください。",
+      "言ってください uses 言う→言って to request repetition."
+    ],
+    [
+      "ゆっくり話してください。",
+      "話してください uses 話す→話して for slower speech."
+    ],
+    [
+      "分かりません。",
+      "分かりません reports non-understanding, not a request."
+    ]
+  ]
 }
 ];
 

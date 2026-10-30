@@ -55,3 +55,19 @@ for(const [unitTitle,teachingTitle,sourceText] of [["Ask where and which","Ask w
   await expect(page.locator(".study-lesson h1")).toHaveText("Why it works");
  });
 }
+
+for(const [unitTitle,teachingTitle,sourceText] of [["Talk about family","Talk about your family: people, roles, and locations","私の家族は四人です。"],["Tell time and schedules","Read the clock and set a precise meeting time","今は七時です。"],["Preferences and descriptions","Describe an object instead of stating a preference","本が好きです。"],["Ask for repetition and help","Build polite requests from the verb て-form","ここに書いてください。"]] as const){
+ test("CUR-13 source-owned A1 transfer: "+unitTitle,async({page})=>{
+  await page.goto("./#course/A1");
+  const catalog=page.getByRole("region",{name:"Six-level course catalog"});
+  const row=catalog.locator(".cur01-lessons li").filter({has:page.getByRole("heading",{name:unitTitle,exact:true})});
+  await expect(row).toBeVisible();
+  await row.getByRole("button",{name:/^(Open|Resume) lesson \d+:/i}).click();
+  await expect(page.locator(".study-lesson h1")).toBeVisible();
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await expect(page.locator(".study-lesson h1")).toHaveText(teachingTitle);
+  await expect(page.locator(".lesson-examples strong[lang='ja']").first()).toHaveText(sourceText);
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await expect(page.locator(".study-lesson h1")).toHaveText("Why it works");
+ });
+}
