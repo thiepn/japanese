@@ -1047,6 +1047,214 @@ const CASES:readonly Case[]=[
       "分かりません reports non-understanding, not a request."
     ]
   ]
+},
+{
+  "anchor": "grammar-desu",
+  "title": "Identify someone with a polite noun predicate",
+  "situation": "In a new classroom, someone can answer a question about their role with 学生です。 Someone else can say 先生です。 Neither answer supplies an explicit topic; the listener understands who is being identified from the conversation.",
+  "why": "Noun + です makes a simple polite identification, such as 学生です or 先生です. The omitted topic can be supplied by context. です does not make a noun into a verb action. The identities are statements, not questions; a question would additionally require the appropriate question form.",
+  "contrast": "学生です。 identifies a student; 先生です。 identifies a teacher. The difference is the noun, not a different ending. Do not treat です as the same verb ending as ます for actions.",
+  "checks": [
+    [
+      "At a school introduction, you want to identify yourself as a STUDENT. Choose the exact original answer.",
+      "学生です。",
+      "先生です。",
+      "本を読みます。",
+      "学生です identifies the student role with a polite noun predicate.",
+      "先生です identifies a teacher instead.",
+      "読みます reports an action rather than a person's role."
+    ],
+    [
+      "Your colleague identifies themself as a TEACHER. Which canonical answer matches?",
+      "先生です。",
+      "学生です。",
+      "お茶を飲みます。",
+      "先生です gives the teacher role, with です.",
+      "学生です gives the student role instead.",
+      "飲みます is an action verb, not a noun predicate."
+    ],
+    [
+      "What grammatical purpose does です serve in 学生です。?",
+      "It makes a polite identification using a noun.",
+      "It marks the object of reading a book.",
+      "It is the same verb ending as 飲みます.",
+      "Noun + です expresses a polite noun predicate.",
+      "The direct object of an action is marked differently, for example with を.",
+      "Verb + ます and noun + です have different roles."
+    ]
+  ],
+  "independent": "Write a three-turn classroom introduction: a question about someone's role, a polite role answer with a noun + です, and a different person's role. Decide from context when you need to state the topic.",
+  "unitId": "a1-unit-01",
+  "examples": [
+    [
+      "学生です。",
+      "学生 is the identifying noun and です keeps the answer polite."
+    ],
+    [
+      "先生です。",
+      "先生 is the role being identified, with the same です predicate."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-masu",
+  "title": "State an everyday action or ask what someone will do",
+  "situation": "A learner describes a routine: 本を読みます。 or お茶を飲みます。 At lunch they say ご飯を食べます。 A friend asks 何を食べますか。 to find out what the learner will eat. These sentences use a polite action verb rather than a noun identity.",
+  "why": "In these original sentences, 読みます, 飲みます and 食べます are polite nonpast action verbs. ます itself does not uniquely indicate 'right now' or 'tomorrow': habitual and future interpretations depend on time and conversation. The object particle を tells what is read, drunk or eaten; 何を makes that object the missing information in a question.",
+  "contrast": "本を読みます。 says an action involving a book; 学生です。 would instead identify a person. 何を食べますか。 asks for an object, whereas ご飯を食べます。 supplies one.",
+  "checks": [
+    [
+      "You want to say you READ a book, not drink tea. Which source sentence fits?",
+      "本を読みます。",
+      "お茶を飲みます。",
+      "ご飯を食べます。",
+      "読みます gives the action of reading, with 本を as its object.",
+      "飲みます is drinking, not reading.",
+      "食べます is eating, not reading."
+    ],
+    [
+      "Your partner asks WHAT you will eat. Which original question do they ask?",
+      "何を食べますか。",
+      "ご飯を食べます。",
+      "本を読みます。",
+      "何を asks for the missing object of 食べます.",
+      "This supplies a meal but is not a question.",
+      "This describes reading a book instead."
+    ],
+    [
+      "Which interpretation of 飲みます is accurate without further time context?",
+      "A polite nonpast action, with time determined by context.",
+      "Necessarily an action completed yesterday.",
+      "A polite noun identification ending with です.",
+      "ます is the polite nonpast action ending here; context supplies habitual or future meaning.",
+      "A completed past action uses a past ending, not bare ます.",
+      "飲みます is a verb predicate, not a noun + です statement."
+    ]
+  ],
+  "independent": "Describe three different everyday actions with polite ます verbs, then ask one what-object question using 何を. Make sure each object matches its action.",
+  "unitId": "a1-unit-03",
+  "examples": [
+    [
+      "本を読みます。",
+      "読みます expresses reading a book in the polite nonpast."
+    ],
+    [
+      "お茶を飲みます。",
+      "飲みます expresses drinking tea."
+    ],
+    [
+      "ご飯を食べます。",
+      "食べます expresses eating a meal."
+    ],
+    [
+      "何を食べますか。",
+      "何を makes the eaten object the subject of a question."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-ga-subject",
+  "title": "Say what exists in a place: に, が and existence verbs",
+  "situation": "A visitor says 学校に先生がいます。 to report a teacher at school. At home, a learner says 家に本があります。 to report a book. Both answers give a location and identify what is present, but the person and object require different existence verbs.",
+  "why": "In these existence statements, に marks the location, while が identifies the person or thing whose existence is asserted. 先生が goes with います for a person; 本が goes with あります for an inanimate object. This use of が does not by itself mean 'likes' or indicate a direct object. The broader contrast between います and あります is covered in the existing anchor; this lesson focuses on the grammatical roles of に and が.",
+  "contrast": "学校に is where; 先生が is who exists there. 家に is where; 本が is what exists there. Replacing が with を would no longer give the same simple existence pattern.",
+  "checks": [
+    [
+      "You want to say a teacher is present AT SCHOOL. Which original sentence does that?",
+      "学校に先生がいます。",
+      "家に本があります。",
+      "本を読みます。",
+      "学校に identifies the location and 先生が names the person.",
+      "This describes a book at home, not a teacher at school.",
+      "This reports a reading action, not presence at school."
+    ],
+    [
+      "Which part of 家に本があります。 tells WHAT is present?",
+      "本が",
+      "家に",
+      "あります",
+      "本が identifies the thing whose existence is asserted.",
+      "家に identifies where it exists.",
+      "あります tells that an inanimate thing exists; it is not its name."
+    ],
+    [
+      "What is the role of が in 学校に先生がいます。?",
+      "It marks the person whose existence is asserted.",
+      "It marks school as the movement destination.",
+      "It marks the person as the direct object of reading.",
+      "先生が identifies the existing person; 学校に supplies the location.",
+      "学校に marks a location, but が is attached to 先生.",
+      "A direct object of an action would usually be marked with を, not this existence が."
+    ]
+  ],
+  "independent": "Write two brief location descriptions: one person somewhere and one inanimate object elsewhere. Label the location に and the existing noun が in your own sentences.",
+  "unitId": "a1-unit-06",
+  "examples": [
+    [
+      "学校に先生がいます。",
+      "学校に indicates the place; 先生が names the person present."
+    ],
+    [
+      "家に本があります。",
+      "家に indicates the place; 本が names the object present."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-o-kudasai",
+  "title": "Request an item, or report an action",
+  "situation": "At a food counter, a customer says コーヒーをください。 The same pattern can specify a count: パンを二つください。 and 水を一つください。 In contrast, 野菜を食べます。 describes eating and is not an order. もう一度お願いします。 is a separate polite request to repeat, without naming a food item.",
+  "why": "Noun + をください politely requests an item, and a quantity such as 一つ or 二つ can make the count explicit. を identifies the requested item; ください is the requesting expression. This differs from an action report with a ます verb and from the verb て-form + ください request for another person's action. The separate counting lesson covers how to form the numerals.",
+  "contrast": "コーヒーをください。 asks for coffee. 野菜を食べます。 says someone eats vegetables. The two sentences both use を, but only the first is an item request. For an action request, use a suitable verb て-form before ください, not an item noun + を.",
+  "checks": [
+    [
+      "You are ready to order coffee without naming a quantity. Which original line fits?",
+      "コーヒーをください。",
+      "野菜を食べます。",
+      "パンを二つください。",
+      "コーヒーをください is a direct request for the item.",
+      "食べます reports eating rather than asking for coffee.",
+      "This requests bread and specifies a count, not coffee."
+    ],
+    [
+      "Which source sentence requests two bread items rather than reporting an action?",
+      "パンを二つください。",
+      "野菜を食べます。",
+      "水を一つください。",
+      "パンを二つください uses noun + を + quantity + ください.",
+      "This reports eating vegetables, not ordering items.",
+      "This orders one water item, not two bread items."
+    ],
+    [
+      "What does を mark in コーヒーをください。?",
+      "The item being requested.",
+      "A clock-time point for the order.",
+      "A polite て-form action request.",
+      "コーヒーを identifies coffee as the requested item.",
+      "Time points may use に, but no time is stated here.",
+      "There is no verb て-form in this item request."
+    ]
+  ],
+  "independent": "Write two restaurant orders with and without a quantity, and a separate statement of something you eat. Explain why only the first two are item requests.",
+  "unitId": "a1-unit-16",
+  "examples": [
+    [
+      "コーヒーをください。",
+      "コーヒーをください requests an item without stating its count."
+    ],
+    [
+      "パンを二つください。",
+      "パンを二つください requests two bread items."
+    ],
+    [
+      "水を一つください。",
+      "水を一つください requests one water item or serving."
+    ],
+    [
+      "野菜を食べます。",
+      "野菜を食べます reports eating rather than ordering."
+    ]
+  ]
 }
 ];
 

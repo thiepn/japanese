@@ -332,3 +332,67 @@ describe("CUR-13 source-owned A1 functional transfers",()=>{
   }
  });
 });
+
+describe("CUR-14 exact source-backed foundational A1 teaching",()=>{
+ const additions=[
+  ["a1-unit-01","grammar-desu",2],
+  ["a1-unit-03","grammar-masu",4],
+  ["a1-unit-06","grammar-ga-subject",2],
+  ["a1-unit-16","grammar-o-kudasai",4]
+ ] as const;
+ it("starts with each unit's own lesson and renders only its canonical original Japanese sentences",()=>{
+  for(const [id,anchor,count] of additions){
+   const u=coreContent.courseUnits.find(x=>x.id===id)!;
+   expect(u.level).toBe("A1");
+   expect(u.sourceIds).toEqual(["thiepn-original"]);
+   expect(u.grammarIds).toContain(anchor);
+   expect(deepTeachingAnchors(id)[0]).toBe(anchor);
+   const session=buildCur03CourseUnitSession(id);
+   const intro=session[1];
+   if(!intro||!isStudyLesson(intro))throw Error("CUR14_CONTEXT_NOT_FOUND");
+   expect(intro.id).toBe("cur03-"+id+"-"+anchor+"-context");
+   expect(intro.examples).toHaveLength(count);
+   const sourceTexts=new Set(coreContent.sentences.filter(s=>u.sentenceIds.includes(s.id)).map(s=>s.text));
+   for(const e of intro.examples??[])expect(sourceTexts.has(e.expression)).toBe(true);
+   expect(new Set(session.map(s=>s.id)).size).toBe(session.length);
+  }
+ });
+ it("preserves original session steps and keeps all teaching responses excluded from FSRS",()=>{
+  for(const [id,anchor] of additions){
+   const original=courseUnitSession(id),actual=buildCur03CourseUnitSession(id);
+   let last=-1;
+   for(const step of original){
+    const i=actual.findIndex((s,k)=>k>last&&s.id===step.id);
+    expect(i).toBeGreaterThan(last);
+    expect(actual[i]).toEqual(step);
+    last=i;
+   }
+   const u=coreContent.courseUnits.find(x=>x.id===id)!;
+   const prompts=actual.filter(s=>!isStudyLesson(s)&&s.eventMetadata?.cur03Anchor===anchor);
+   expect(prompts).toHaveLength(4);
+   expect(prompts.filter(s=>!isStudyLesson(s)&&s.promptType==="choice")).toHaveLength(3);
+   expect(prompts.filter(s=>!isStudyLesson(s)&&s.promptType==="textarea")).toHaveLength(1);
+   for(const step of prompts)if(!isStudyLesson(step)){
+    expect(step.primaryTarget).toEqual({kind:"can_do",id:u.canDoId});
+    expect(step.sourceId).toBe("thiepn-original");
+    expect(step.eventMetadata).toMatchObject({cur03UnitId:id,cur03Anchor:anchor,
+      nonAuthoritative:true,schedulerExcluded:true,independentCompetenceVerified:false});
+    if(step.promptType==="choice"){
+     expect(step.choices).toHaveLength(3);
+     expect(new Set(step.choices).size).toBe(3);
+     expect(step.choices).toContain(step.acceptedAnswers[0]);
+     expect(step.eventMetadata?.e06FoilFeedback).toHaveLength(2);
+    }else expect(step.acceptedAnswers).toEqual([]);
+   }
+  }
+ });
+ it("does not leak unit-specific examples to other units with the same grammar",()=>{
+  for(const [id,anchor] of additions){
+   const others=coreContent.courseUnits.filter(u=>u.level==="A1"&&u.id!==id&&u.grammarIds.includes(anchor));
+   for(const u of others){
+    expect(deepTeachingAnchors(u.id)).not.toContain(anchor);
+    expect(buildCur03CourseUnitSession(u.id).some(s=>s.id==="cur03-"+u.id+"-"+anchor+"-context")).toBe(false);
+   }
+  }
+ });
+});
