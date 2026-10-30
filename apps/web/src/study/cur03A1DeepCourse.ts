@@ -575,6 +575,246 @@ const CASES:readonly Case[]=[
     ]
   ],
   "independent": "Write an order for one item and another for two, using the correct つ forms. Add a simple third request without stating a number."
+},
+{
+  "anchor": "grammar-location-words",
+  "unitId": "a1-unit-10",
+  "title": "Ask where, what, which, or who",
+  "situation": "You are new to a school building. 学校はどこですか。 asks for a location, and トイレはあそこです。 points to a distant place. At the same reception desk, これは何ですか。 asks about an object, どの本ですか。 narrows down a book, and あの人はだれですか。 asks about a person.",
+  "why": "どこ requests a place; 何 asks what something is; だれ asks who someone is. どの directly modifies a following noun, unlike standalone どれ. Location terms ここ, そこ, あそこ point from a speaker's spatial perspective. Select the question word by the missing kind of information, not simply by a question-mark translation.",
+  "contrast": "学校はどこですか。 asks where the school is, not which school. どの本ですか。 includes a noun after どの; これは何ですか。 asks what the pointed-to object is.",
+  "examples": [
+    [
+      "学校はどこですか。",
+      "どこ requests the school's location."
+    ],
+    [
+      "トイレはあそこです。",
+      "あそこ places the restroom over there."
+    ],
+    [
+      "これは何ですか。",
+      "何 asks the identity of an object."
+    ],
+    [
+      "どの本ですか。",
+      "どの must precede 本."
+    ],
+    [
+      "あの人はだれですか。",
+      "だれ asks the identity of a person."
+    ]
+  ],
+  "checks": [
+    [
+      "You need the school location. Choose the matching source question.",
+      "学校はどこですか。",
+      "これは何ですか。",
+      "どの本ですか。",
+      "どこ asks for a place, matching a school-location request.",
+      "何 asks what an object is, not where a school is.",
+      "どの本 asks which book, not where a school is."
+    ],
+    [
+      "You see several books and ask which book someone means.",
+      "どの本ですか。",
+      "学校はどこですか。",
+      "あの人はだれですか。",
+      "どの directly modifies 本 to ask which one.",
+      "どこ asks a location, not selection among books.",
+      "だれ asks who a person is, not which book."
+    ],
+    [
+      "Which source sentence asks who the distant person is?",
+      "あの人はだれですか。",
+      "トイレはあそこです。",
+      "これは何ですか。",
+      "あの人 identifies the distant person and だれ asks who.",
+      "This points to a restroom without asking a person.",
+      "This asks what an object is, not who someone is."
+    ]
+  ],
+  "independent": "Write a short exchange at an unfamiliar school: ask for a room, identify one object, and distinguish a person from several possible people. Use different question words deliberately."
+},
+{
+  "anchor": "grammar-masen-deshita",
+  "unitId": "a1-unit-13",
+  "title": "Tell your routine and what did not happen",
+  "situation": "A learner describes a normal weekday: 毎日七時に起きます。, 朝ご飯を食べます。, and 夜十時に寝ます。 But a report about yesterday differs: 昨日は勉強しませんでした。 states that the studying did not happen.",
+  "why": "〜ます describes a polite nonpast action, often habitual with 毎日. に can mark the specific time 七時 or 十時. For a past negative, ませんでした combines negative polarity with past time. By contrast, ません alone is nonpast negative and ました is past affirmative.",
+  "contrast": "勉強しませんでした means 'did not study', not 'do not study'. 毎日七時に起きます。 tells a habitual time. The temporal marker 昨日は and the verb ending together make the past-negative meaning clear.",
+  "examples": [
+    [
+      "毎日七時に起きます。",
+      "毎日 makes getting up at seven a daily routine."
+    ],
+    [
+      "朝ご飯を食べます。",
+      "食べます expresses the habitual breakfast action."
+    ],
+    [
+      "学校で日本語を勉強します。",
+      "学校で identifies where the studying happens."
+    ],
+    [
+      "夜十時に寝ます。",
+      "十時に specifies the bedtime."
+    ],
+    [
+      "昨日は勉強しませんでした。",
+      "しませんでした is the past negative of します."
+    ]
+  ],
+  "checks": [
+    [
+      "Yesterday you did NOT study. Which original line states that?",
+      "昨日は勉強しませんでした。",
+      "学校で日本語を勉強します。",
+      "朝ご飯を食べます。",
+      "しませんでした reports a past non-event; 昨日は sets yesterday.",
+      "This describes studying at school in the nonpast.",
+      "This describes eating breakfast, not a past study omission."
+    ],
+    [
+      "Which original sentence gives a habitual wake-up time?",
+      "毎日七時に起きます。",
+      "夜十時に寝ます。",
+      "昨日は勉強しませんでした。",
+      "毎日 makes the seven-o'clock event a routine; 七時に gives the clock time.",
+      "This gives a bedtime, not a wake-up time.",
+      "This describes a past negative action, not a repeated morning routine."
+    ],
+    [
+      "Which ending marks polite PAST NEGATIVE in this unit?",
+      "ませんでした",
+      "ません",
+      "ました",
+      "ませんでした combines past tense and negative meaning.",
+      "ません is nonpast negative; it does not itself indicate past.",
+      "ました is past affirmative, not past negative."
+    ]
+  ],
+  "independent": "Write three lines about an ordinary day with specific times. Then report one thing you did not do yesterday using a past-negative verb, without copying the model."
+},
+{
+  "anchor": "grammar-question-words",
+  "unitId": "a1-unit-17",
+  "title": "Ask a price and choose what to buy",
+  "situation": "At a shop, これはいくらですか。 asks a price. The reply 三百円です。 gives a yen amount. You then consider その本は高いです。 versus このパンは安いです。, choose an item, and say りんごを三つください。 to request three apples.",
+  "why": "いくら asks how much an item costs; 円 labels the stated currency amount. どれを買いますか。 instead asks which item someone will purchase. 高い and 安い express relative expense; a quantity with をください specifies what to request, not what the price is.",
+  "contrast": "これはいくらですか。 asks the price; どれを買いますか。 asks which object. 三百円です。 answers the price question but is not itself an order. りんごを三つください。 is an order with an item count, not a price question.",
+  "examples": [
+    [
+      "これはいくらですか。",
+      "いくら requests the item's price."
+    ],
+    [
+      "三百円です。",
+      "三百円です gives a yen amount."
+    ],
+    [
+      "その本は高いです。",
+      "高い describes the book as expensive."
+    ],
+    [
+      "りんごを三つください。",
+      "三つ counts the apples being requested."
+    ],
+    [
+      "どれを買いますか。",
+      "どれ requests a choice among items."
+    ]
+  ],
+  "checks": [
+    [
+      "You want the price of the object near you. What do you ask?",
+      "これはいくらですか。",
+      "どれを買いますか。",
+      "りんごを三つください。",
+      "いくら asks how much it costs.",
+      "どれ asks which item will be purchased, not its price.",
+      "This places an order for three apples rather than asking cost."
+    ],
+    [
+      "A clerk states the price is three hundred yen. Which original reply fits?",
+      "三百円です。",
+      "その本は高いです。",
+      "りんごを三つください。",
+      "三百円です states an amount in yen.",
+      "高い evaluates a relative price, without giving a numerical amount.",
+      "This is a quantity request, not a numerical price answer."
+    ],
+    [
+      "You have chosen three apples and want to order them. Which is the request?",
+      "りんごを三つください。",
+      "これはいくらですか。",
+      "どれを買いますか。",
+      "りんごを三つください identifies the item and number to request.",
+      "This asks a price; no order is made.",
+      "This asks what will be bought; no order is made."
+    ]
+  ],
+  "independent": "Write a three-turn shopping dialogue: ask the price, receive a numerical yen response, then request a quantity of an item. Add a different question about which item to buy."
+},
+{
+  "anchor": "grammar-ne",
+  "unitId": "a1-unit-20",
+  "title": "Invite agreement or provide new information",
+  "situation": "Two people comment on the weather: 今日は寒いですね。 invites the listener's agreement. Another speaker gives useful directions: 駅はあそこですよ。 presents information to the listener. 日本語は難しいですか。 is instead a direct question, which can be answered with a relevant yes/no response.",
+  "why": "Sentence-final ね often seeks shared recognition or agreement, whereas よ signals information the speaker presents assertively to the listener. か marks a straightforward polite question. These are pragmatic tendencies, not fixed translations of English question tags; audience and context matter.",
+  "contrast": "今日は寒いですね。 shares an observation and invites agreement. 駅はあそこですよ。 offers information. 日本語は難しいですか。 asks a question. Do not treat ね, よ and か as interchangeable punctuation.",
+  "examples": [
+    [
+      "今日は寒いですね。",
+      "ね invites agreement on a weather observation."
+    ],
+    [
+      "この店はいいですね。",
+      "ね can also invite agreement about a shop."
+    ],
+    [
+      "駅はあそこですよ。",
+      "よ actively provides the station's location."
+    ],
+    [
+      "日本語は難しいですか。",
+      "か makes a direct question about Japanese."
+    ],
+    [
+      "はい、少し分かります。",
+      "はい introduces a relevant affirmative response."
+    ]
+  ],
+  "checks": [
+    [
+      "You and a friend both feel it is cold. Which source sentence invites shared agreement?",
+      "今日は寒いですね。",
+      "駅はあそこですよ。",
+      "日本語は難しいですか。",
+      "ね seeks agreement on a shared observation.",
+      "よ actively informs the listener about the station.",
+      "か asks a yes/no question about Japanese rather than sharing the weather."
+    ],
+    [
+      "A visitor needs to find the station. Which source sentence actively tells them where it is?",
+      "駅はあそこですよ。",
+      "この店はいいですね。",
+      "日本語は難しいですか。",
+      "よ conveys the location as information for the listener.",
+      "ね invites agreement about a shop, not a direction.",
+      "か asks a question unrelated to directions."
+    ],
+    [
+      "You want to ask whether Japanese is difficult. Which ending belongs in the source question?",
+      "か",
+      "ね",
+      "よ",
+      "か creates the polite question here.",
+      "ね commonly invites alignment with an observation, not this direct question.",
+      "よ signals information being presented, not the intended direct question."
+    ]
+  ],
+  "independent": "Write a short encounter: state one shared observation with ね, give one useful fact with よ, and ask a direct yes/no question with か. Review each sentence's purpose."
 }
 ];
 

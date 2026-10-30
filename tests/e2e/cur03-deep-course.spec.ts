@@ -39,3 +39,19 @@ for(const [unitTitle,teachingTitle,sourceText] of [["People together","Talk with
   await expect(page.locator(".lesson-examples strong[lang='ja']").first()).toHaveText(sourceText);
  });
 }
+
+for(const [unitTitle,teachingTitle,sourceText] of [["Ask where and which","Ask where, what, which, or who","学校はどこですか。"],["Daily routines across time","Tell your routine and what did not happen","毎日七時に起きます。"],["Shop for basic things","Ask a price and choose what to buy","これはいくらですか。"],["Keep a simple exchange natural","Invite agreement or provide new information","今日は寒いですね。"]] as const){
+ test("CUR-12 original A1 communication source: "+unitTitle,async({page})=>{
+  await page.goto("./#course/A1");
+  const catalog=page.getByRole("region",{name:"Six-level course catalog"});
+  const row=catalog.locator(".cur01-lessons li").filter({has:page.getByRole("heading",{name:unitTitle,exact:true})});
+  await expect(row).toBeVisible();
+  await row.getByRole("button",{name:/^(Open|Resume) lesson \d+:/i}).click();
+  await expect(page.locator(".study-lesson h1")).toBeVisible();
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await expect(page.locator(".study-lesson h1")).toHaveText(teachingTitle);
+  await expect(page.locator(".lesson-examples strong[lang='ja']").first()).toHaveText(sourceText);
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await expect(page.locator(".study-lesson h1")).toHaveText("Why it works");
+ });
+}
