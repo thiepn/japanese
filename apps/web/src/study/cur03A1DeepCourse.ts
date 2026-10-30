@@ -828,14 +828,14 @@ function requireSourceUnit(unitId:string){
 export function deepTeachingAnchors(unitId:string):readonly string[]{
  const unit=requireSourceUnit(unitId);
  if(!unit)return [];
- return CASES.filter(c=>(!c.unitId||c.unitId===unit.id)&&unit.grammarIds.includes(c.anchor)).map(c=>c.anchor);
+ return CASES.filter(c=>(!c.unitId||c.unitId===unit.id)&&unit.grammarIds.includes(c.anchor)).sort((a,b)=>Number(Boolean(b.unitId))-Number(Boolean(a.unitId))).map(c=>c.anchor);
 }
 /** The original course prompts are passed through unchanged: no duplicate canonical IDs or FSRS engine. */
 export function buildCur03CourseUnitSession(unitId:string):StudyStep[]{
  const base=courseUnitSession(unitId);
  const unit=requireSourceUnit(unitId);
  if(!unit)return base;
- const situations=CASES.filter(c=>(!c.unitId||c.unitId===unit.id)&&unit.grammarIds.includes(c.anchor));
+ const situations=CASES.filter(c=>(!c.unitId||c.unitId===unit.id)&&unit.grammarIds.includes(c.anchor)).sort((a,b)=>Number(Boolean(b.unitId))-Number(Boolean(a.unitId)));
  const added:StudyStep[]=[];
  for(const c of situations){
   const prefix="cur03-"+unitId+"-"+c.anchor;

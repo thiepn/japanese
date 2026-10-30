@@ -205,6 +205,17 @@ describe("CUR-12 four complete source-owned A1 communication journeys",()=>{
   ["a1-unit-17","grammar-question-words",5],
   ["a1-unit-20","grammar-ne",5]
  ] as const;
+ it("places the selected unit's authored context before generic shared-question instruction",()=>{
+  for(const [unitId,anchor] of [
+   ["a1-unit-10","grammar-location-words"],
+   ["a1-unit-20","grammar-ne"]
+  ] as const){
+   const steps=buildCur03CourseUnitSession(unitId);
+   expect(steps[1]?.id).toBe("cur03-"+unitId+"-"+anchor+"-context");
+   expect(deepTeachingAnchors(unitId)[0]).toBe(anchor);
+   expect(steps.some(x=>x.id==="cur03-"+unitId+"-grammar-ka-question-context")).toBe(true);
+  }
+ });
  it("uses only sentences linked to each original canonical A1 unit",()=>{
   for(const [unitId,anchor,expectedCount] of additions){
    const unit=coreContent.courseUnits.find(x=>x.id===unitId)!;
