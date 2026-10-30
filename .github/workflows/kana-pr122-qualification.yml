@@ -8,6 +8,7 @@ on:
       - "tests/kana-*.test.ts"
       - "tests/e2e/kana-native-integration.spec.ts"
       - ".github/workflows/kana-pr122-qualification.yml"
+      - "docs/KANA_PR122_PREVIEW_ACCEPTANCE.md"
 
 permissions:
   contents: read
@@ -20,8 +21,14 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VITE_PUBLIC_BASE: /japanese/
+      PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Verify the source is the exact feature-branch commit
+        run: test "$(git rev-parse HEAD)" = "$PR_HEAD_SHA"
       - uses: pnpm/action-setup@v4
         with:
           version: 11.19.0
@@ -29,6 +36,8 @@ jobs:
         with:
           node-version: 24.15.0
       - run: pnpm install --no-frozen-lockfile
+      - name: Stamp candidate build identity (never deploy or promote)
+        run: pnpm release:p22:meta --commit "$PR_HEAD_SHA" --channel candidate
       - run: pnpm typecheck
       - name: Focused Kana progress, shortcut and canonical account regression
         run: pnpm exec vitest run tests/kana-progress-refresh.test.ts tests/kana-shortcut-policy.test.ts tests/kana-studio-canonical.test.ts
@@ -36,3 +45,34 @@ jobs:
       - run: pnpm exec playwright install --with-deps chromium
       - name: Real desktop, Android emulation and compact mobile Chromium
         run: pnpm exec playwright test tests/e2e/kana-native-integration.spec.ts --project desktop-chromium --project android-mobile --project compact-mobile
+      - name: Assemble verified static preview artifact (no hosting or deployment)
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s apps/web/dist/index.html
+          test -s apps/web/dist/kana/index.html
+          test -s apps/web/dist/manifest.webmanifest
+          test -s apps/web/dist/sw.js
+          test -s apps/web/dist/release-meta.json
+          grep -q '/japanese/assets/' apps/web/dist/index.html
+          cp apps/web/dist/index.html apps/web/dist/404.html
+          mkdir -p apps/web/dist/auth/callback
+          cp apps/web/dist/index.html apps/web/dist/auth/callback/index.html
+          node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';
+          const base='apps/web/dist/';
+          const meta=JSON.parse(readFileSync(base+'release-meta.json','utf8'));
+          const manifest=JSON.parse(readFileSync(base+'manifest.webmanifest','utf8'));
+          if(meta.commit!==process.env.PR_HEAD_SHA||meta.channel!=='candidate'||meta.schema!=='thiepn-japanese-release-meta')throw Error('KANA_PREVIEW_BUILD_IDENTITY_MISMATCH');
+          if(manifest.display!=='standalone'||manifest.scope!=='./'||manifest.start_url!=='./')throw Error('KANA_PREVIEW_PWA_SCOPE_MISMATCH');
+          console.log('Verified candidate-only static artifact for '+meta.commit+' at /japanese/ (NOT DEPLOYED)');
+          NODE
+          echo "Candidate-only static artifact: \`$PR_HEAD_SHA\` (NOT DEPLOYED)" >> "$GITHUB_STEP_SUMMARY"
+          echo "Hosting must be isolated at HTTPS /japanese/; real Account OAuth is NOT CERTIFIED for a new origin." >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload exact-head static candidate for independent approved preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: kana-pr122-static-candidate
+          path: apps/web/dist
+          if-no-files-found: error
+          retention-days: 14
