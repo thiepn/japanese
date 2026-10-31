@@ -4,7 +4,7 @@ import {courseUnitSession} from "./grammarCourse";
 
 /** New original teaching around canonical grammar anchors, not a fork of the independent CF-A1 PR #103. */
 type Check=readonly [question:string,answer:string,foilA:string,foilB:string,feedback:string,foilANote:string,foilBNote:string];
-type Case=Readonly<{anchor:string;unitId?:string;title:string;situation:string;why:string;contrast:string;
+type Case=Readonly<{anchor:string;unitId?:string;afterExisting?:boolean;title:string;situation:string;why:string;contrast:string;
  examples:readonly (readonly [string,string])[];checks:readonly Check[];independent:string}>;
 const CASES:readonly Case[]=[
  {anchor:"grammar-wa-topic",title:"Introduce yourself without repeating the subject",
@@ -1258,6 +1258,7 @@ const CASES:readonly Case[]=[
 },
 {
   "anchor": "grammar-demonstrative-determiners",
+  "afterExisting": true,
   "title": "Choose この or その before a noun",
   "situation": "Two people identify things in a room. The learner says この本は日本語です。 about a book near the speaker. The teacher says その人は先生です。 about a person understood in the listener's context. The same area also contains これは本です。, それは水です。 and あれは学校です。 for referring to things without placing a noun immediately after the demonstrative.",
   "why": "この, その and あの modify a following noun, whereas これ, それ and あれ can stand alone. The こ-series often relates to the speaker's vicinity, the そ-series to the listener or something already contextually established, and the あ-series to something distant from both; exact reference depends on context. First decide whether you need a noun modifier, then which referent you intend.",
@@ -1318,6 +1319,7 @@ const CASES:readonly Case[]=[
 },
 {
   "anchor": "grammar-time-ni",
+  "afterExisting": true,
   "title": "When versus where: に and で in a daily routine",
   "situation": "A learner describes a weekday: 毎日七時に起きます。 and 夜十時に寝ます。 name particular times; 学校で日本語を勉強します。 identifies where an action takes place. 朝ご飯を食べます。 reports a meal without an explicit time, while 昨日は勉強しませんでした。 reports yesterday's negative event.",
   "why": "A specific clock time can take に as the point when an event occurs, as with 七時に or 十時に. In these original sentences, 学校で identifies the place where studying happens instead; school is not a clock time. 毎日 provides routine frequency and does not itself need the に time-point construction. One sentence can answer 'when' or 'where', but the particles serve different roles.",
@@ -1378,6 +1380,7 @@ const CASES:readonly Case[]=[
 },
 {
   "anchor": "grammar-na-noun-negative",
+  "afterExisting": true,
   "title": "Negative descriptions: くない and じゃなかった",
   "situation": "Someone contrasts two descriptions: 今日は寒くないです。 means it is not cold today. The same source unit says ここは静かです。 about a quiet place, while 昨日は静かじゃなかったです。 reports the place was not quiet yesterday. These are not interchangeable adjective endings.",
   "why": "An い-adjective such as 寒い forms a nonpast negative 寒くないです. A な-adjective such as 静か uses a noun-like predicate: 静かじゃなかったです is its attested past negative in this source. The regular nonpast negative pattern 静かじゃないです can be explained as grammar but is NOT an additional canonical source sentence. Choose adjective class and time reference before choosing an ending.",
@@ -1444,14 +1447,14 @@ function requireSourceUnit(unitId:string){
 export function deepTeachingAnchors(unitId:string):readonly string[]{
  const unit=requireSourceUnit(unitId);
  if(!unit)return [];
- return CASES.filter(c=>(!c.unitId||c.unitId===unit.id)&&unit.grammarIds.includes(c.anchor)).sort((a,b)=>Number(Boolean(b.unitId))-Number(Boolean(a.unitId))).map(c=>c.anchor);
+ return CASES.filter(c=>(!c.unitId||c.unitId===unit.id)&&unit.grammarIds.includes(c.anchor)).sort((a,b)=>Number(Boolean(a.afterExisting))-Number(Boolean(b.afterExisting))||Number(Boolean(b.unitId))-Number(Boolean(a.unitId))).map(c=>c.anchor);
 }
 /** The original course prompts are passed through unchanged: no duplicate canonical IDs or FSRS engine. */
 export function buildCur03CourseUnitSession(unitId:string):StudyStep[]{
  const base=courseUnitSession(unitId);
  const unit=requireSourceUnit(unitId);
  if(!unit)return base;
- const situations=CASES.filter(c=>(!c.unitId||c.unitId===unit.id)&&unit.grammarIds.includes(c.anchor)).sort((a,b)=>Number(Boolean(b.unitId))-Number(Boolean(a.unitId)));
+ const situations=CASES.filter(c=>(!c.unitId||c.unitId===unit.id)&&unit.grammarIds.includes(c.anchor)).sort((a,b)=>Number(Boolean(a.afterExisting))-Number(Boolean(b.afterExisting))||Number(Boolean(b.unitId))-Number(Boolean(a.unitId)));
  const added:StudyStep[]=[];
  for(const c of situations){
   const prefix="cur03-"+unitId+"-"+c.anchor;

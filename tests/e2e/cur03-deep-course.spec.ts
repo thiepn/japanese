@@ -119,7 +119,7 @@ test("CUR-14 item requests follow the preserved CUR-11 counter lesson in the sam
 });
 
 for(const [unitTitle,priorTitle,newTitle,sourceText] of [["Point to things","Point to things: これ versus この","Choose この or その before a noun","この本は日本語です。"],["Daily routines across time","Tell your routine and what did not happen","When versus where: に and で in a daily routine","毎日七時に起きます。"],["Describe now and before","Past and negative forms for two adjective types","Negative descriptions: くない and じゃなかった","今日は寒くないです。"]] as const){
- test("CUR-15 reaches new source-linked A1 teaching after the preserved earlier context: "+unitTitle,async({page})=>{
+ test("CUR-15 keeps previous course lessons and reaches the new source context: "+unitTitle,async({page})=>{
   await page.goto("./#course/A1");
   const catalog=page.getByRole("region",{name:"Six-level course catalog"});
   const row=catalog.locator(".cur01-lessons li").filter({has:page.getByRole("heading",{name:unitTitle,exact:true})});
@@ -127,24 +127,26 @@ for(const [unitTitle,priorTitle,newTitle,sourceText] of [["Point to things","Poi
   await row.getByRole("button",{name:/^(Open|Resume) lesson \d+:/i}).click();
   await expect(page.locator(".study-lesson h1")).toBeVisible();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
-  await expect(page.locator(".study-lesson h1")).toHaveText(priorTitle);
-  await page.getByRole("button",{name:"Continue",exact:true}).click();
-  await expect(page.locator(".study-lesson h1")).toHaveText("Why it works");
-  await page.getByRole("button",{name:"Continue",exact:true}).click();
-  for(let i=0;i<3;i++){
-   const choices=page.locator(".j5-choices");
-   await expect(choices).toBeVisible();
-   await choices.getByRole("button").first().click();
-   await expect(page.getByText("UNSCORED CONTEXT CHECK")).toBeVisible();
-   await page.getByRole("button",{name:"Continue",exact:true}).click();
+  const visited:string[]=[];
+  for(let step=0;step<36;step++){
+   const h1=page.locator(".study-lesson h1");
+   if(await h1.count()){
+    const title=await h1.innerText();
+    if(title===newTitle)break;
+    visited.push(title);
+    await page.getByRole("button",{name:"Continue",exact:true}).click();
+   }else if(await page.locator(".j5-choices button").count()){
+    await page.locator(".j5-choices button").first().click();
+    await expect(page.getByText("UNSCORED CONTEXT CHECK")).toBeVisible();
+    await page.getByRole("button",{name:"Continue",exact:true}).click();
+   }else if(await page.locator(".j5-writing textarea").count()){
+    await page.locator(".j5-writing textarea").fill("私は日本語を勉強します。");
+    await page.getByRole("button",{name:"Record unscored writing"}).click();
+    await expect(page.getByText("UNSCORED RESPONSE")).toBeVisible();
+    await page.getByRole("button",{name:"Continue",exact:true}).click();
+   }else throw new Error("CUR15_UNEXPECTED_STEP_BEFORE_NEW_CONTEXT");
   }
-  await expect(page.locator(".study-lesson h1")).toHaveText("Use it in a different situation");
-  await page.getByRole("button",{name:"Continue",exact:true}).click();
-  await expect(page.locator(".j5-writing textarea")).toBeVisible();
-  await page.locator(".j5-writing textarea").fill("今日は日本語を勉強します。");
-  await page.getByRole("button",{name:"Record unscored writing"}).click();
-  await expect(page.getByText("UNSCORED RESPONSE")).toBeVisible();
-  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  expect(visited).toContain(priorTitle);
   await expect(page.locator(".study-lesson h1")).toHaveText(newTitle);
   await expect(page.locator(".lesson-examples strong[lang='ja']").first()).toHaveText(sourceText);
  });
