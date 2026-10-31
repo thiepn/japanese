@@ -30,7 +30,7 @@ export type KanaStudioView = "home" | "learn" | "review" | "words" | "chart";
  * Cloudflare serves at '/', while GitHub Pages retains '/japanese/'.
  * This only changes navigation, never the owner lease or FSRS data. */
 export function kanaStudioUrl(view: KanaStudioView, base: string = import.meta.env.BASE_URL): string {
-  if (!/^\\/(?:[a-zA-Z0-9_-]+\\/)*$/.test(base)) throw Error("KANA_PUBLIC_BASE_INVALID");
+  if (!new RegExp("^/(?:[a-zA-Z0-9_-]+/)*$").test(base)) throw Error("KANA_PUBLIC_BASE_INVALID");
   return base + "kana/" + (view === "home" ? "" : "?view=" + encodeURIComponent(view));
 }
 export function openKanaStudio(owner: string, view: KanaStudioView = "home"): void {
