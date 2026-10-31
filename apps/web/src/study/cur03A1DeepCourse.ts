@@ -1255,6 +1255,182 @@ const CASES:readonly Case[]=[
       "野菜を食べます reports eating rather than ordering."
     ]
   ]
+},
+{
+  "anchor": "grammar-demonstrative-determiners",
+  "title": "Choose この or その before a noun",
+  "situation": "Two people identify things in a room. The learner says この本は日本語です。 about a book near the speaker. The teacher says その人は先生です。 about a person understood in the listener's context. The same area also contains これは本です。, それは水です。 and あれは学校です。 for referring to things without placing a noun immediately after the demonstrative.",
+  "why": "この, その and あの modify a following noun, whereas これ, それ and あれ can stand alone. The こ-series often relates to the speaker's vicinity, the そ-series to the listener or something already contextually established, and the あ-series to something distant from both; exact reference depends on context. First decide whether you need a noun modifier, then which referent you intend.",
+  "contrast": "この本 identifies 'this book' and その人 identifies 'that person'. これは本です identifies a thing without using a determiner before 本. A phrase such as このは本です is not a grammatical substitute for これは本です.",
+  "checks": [
+    [
+      "You mean THIS specific book near you. Complete the original phrase: ＿＿本は日本語です。",
+      "この",
+      "これ",
+      "それ",
+      "この directly modifies 本 and selects this book.",
+      "これ is a stand-alone demonstrative; これ本 is not the target phrase.",
+      "それ stands alone; it cannot directly precede 本 as a modifier."
+    ],
+    [
+      "A person is already identified in the listener's context. Complete: ＿＿人は先生です。",
+      "その",
+      "それ",
+      "あれ",
+      "その modifies 人, matching the installed expression.",
+      "それ is a stand-alone pronoun, not a determiner before 人.",
+      "あれ stands alone; an あ-series determiner would instead be あの."
+    ],
+    [
+      "Which source sentence identifies a distant school with a stand-alone pronoun?",
+      "あれは学校です。",
+      "この本は日本語です。",
+      "その人は先生です。",
+      "あれ can stand alone and refers to a distant thing.",
+      "この本 identifies a book, not a distant school.",
+      "その人 identifies a person, not a school."
+    ]
+  ],
+  "independent": "Write a three-turn classroom exchange: identify one object nearby with この + noun, another person or object in your listener's context with その + noun, and a distant object with a stand-alone demonstrative. Check which expressions require an adjacent noun.",
+  "unitId": "a1-unit-09",
+  "examples": [
+    [
+      "この本は日本語です。",
+      "この modifies 本, referring to a particular book."
+    ],
+    [
+      "その人は先生です。",
+      "その modifies 人, identifying a person from context."
+    ],
+    [
+      "これは本です。",
+      "これ stands alone as the topic."
+    ],
+    [
+      "それは水です。",
+      "それ stands alone; it does not modify 水."
+    ],
+    [
+      "あれは学校です。",
+      "あれ points to the distant school without an adjacent noun."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-time-ni",
+  "title": "When versus where: に and で in a daily routine",
+  "situation": "A learner describes a weekday: 毎日七時に起きます。 and 夜十時に寝ます。 name particular times; 学校で日本語を勉強します。 identifies where an action takes place. 朝ご飯を食べます。 reports a meal without an explicit time, while 昨日は勉強しませんでした。 reports yesterday's negative event.",
+  "why": "A specific clock time can take に as the point when an event occurs, as with 七時に or 十時に. In these original sentences, 学校で identifies the place where studying happens instead; school is not a clock time. 毎日 provides routine frequency and does not itself need the に time-point construction. One sentence can answer 'when' or 'where', but the particles serve different roles.",
+  "contrast": "毎日七時に起きます。 gives the waking time; 学校で日本語を勉強します。 locates studying. Do not exchange 七時に and 学校で merely because both supply context; 昨日は alone also does not call for an extra clock-time に.",
+  "checks": [
+    [
+      "You want to report the clock time at which you wake. Which installed sentence answers WHEN?",
+      "毎日七時に起きます。",
+      "学校で日本語を勉強します。",
+      "昨日は勉強しませんでした。",
+      "七時に specifies the waking time and 毎日 the routine.",
+      "学校で specifies where Japanese study takes place.",
+      "昨日は sets a day and reports a missed action, not a wake-up time."
+    ],
+    [
+      "Which source phrase identifies WHERE studying happens?",
+      "学校で",
+      "七時に",
+      "十時に",
+      "学校で identifies the location of the study activity.",
+      "七時に marks a clock time for waking.",
+      "十時に marks a clock time for sleeping."
+    ],
+    [
+      "Complete the exact bedtime expression: 夜十時＿＿寝ます。",
+      "に",
+      "で",
+      "を",
+      "に marks the specific clock time of going to bed.",
+      "で marks other relations such as the place of an action, not this point time.",
+      "を commonly marks an object, not this clock time."
+    ]
+  ],
+  "independent": "Describe waking and sleeping at two different clock times and doing one activity at a location. Underline に after clock times and で after the place. Say what 毎日 contributes separately.",
+  "unitId": "a1-unit-13",
+  "examples": [
+    [
+      "毎日七時に起きます。",
+      "七時に marks a specific daily waking time; 毎日 expresses recurrence."
+    ],
+    [
+      "夜十時に寝ます。",
+      "十時に gives the precise bedtime."
+    ],
+    [
+      "学校で日本語を勉強します。",
+      "学校で is the location where Japanese study happens."
+    ],
+    [
+      "朝ご飯を食べます。",
+      "Breakfast is mentioned without a stated clock time."
+    ],
+    [
+      "昨日は勉強しませんでした。",
+      "昨日は gives a day context; the verb is past negative."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-na-noun-negative",
+  "title": "Negative descriptions: くない and じゃなかった",
+  "situation": "Someone contrasts two descriptions: 今日は寒くないです。 means it is not cold today. The same source unit says ここは静かです。 about a quiet place, while 昨日は静かじゃなかったです。 reports the place was not quiet yesterday. These are not interchangeable adjective endings.",
+  "why": "An い-adjective such as 寒い forms a nonpast negative 寒くないです. A な-adjective such as 静か uses a noun-like predicate: 静かじゃなかったです is its attested past negative in this source. The regular nonpast negative pattern 静かじゃないです can be explained as grammar but is NOT an additional canonical source sentence. Choose adjective class and time reference before choosing an ending.",
+  "contrast": "寒くないです is a nonpast い-adjective negative, while 静かじゃなかったです is a past な-adjective negative. 静かくないです and 寒いじゃなかったです incorrectly mix these adjective classes. The supplied source does not contain a separate 静かじゃないです example.",
+  "checks": [
+    [
+      "Which attested source sentence says that yesterday was NOT quiet?",
+      "昨日は静かじゃなかったです。",
+      "ここは静かです。",
+      "昨日は暑かったです。",
+      "じゃなかったです forms the source's past negative な-adjective predicate.",
+      "静かです is affirmative, not past negative.",
+      "暑かったです refers to heat and is affirmative."
+    ],
+    [
+      "Which original example says it is NOT cold today?",
+      "今日は寒くないです。",
+      "昨日は暑かったです。",
+      "昨日は静かじゃなかったです。",
+      "寒くないです is a nonpast negative い-adjective form.",
+      "暑かったです is past affirmative, not today's negative.",
+      "静かじゃなかったです is a past negative of a different adjective type."
+    ],
+    [
+      "Select the correct general NONPAST negative pattern for the な-adjective 静か (this is a constructed practice form, not a source quotation).",
+      "静かじゃないです",
+      "静かくないです",
+      "静かかったです",
+      "静かじゃないです uses a noun-like negative predicate for 静か.",
+      "くない attaches to い-adjective stems, not unchanged 静か.",
+      "かった is used for the past of い-adjectives, not unchanged 静か."
+    ]
+  ],
+  "independent": "Write two independent negative observations: a nonpast い-adjective description and a past negative な-adjective description. Compare the endings with the original source lines, and label any additional constructed form as practice rather than a quotation.",
+  "unitId": "a1-unit-14",
+  "examples": [
+    [
+      "今日は寒くないです。",
+      "寒くない is the い-adjective nonpast negative."
+    ],
+    [
+      "ここは静かです。",
+      "静かです is a polite affirmative な-adjective predicate."
+    ],
+    [
+      "昨日は静かじゃなかったです。",
+      "静かじゃなかったです is past negative for the な-adjective."
+    ],
+    [
+      "昨日は暑かったです。",
+      "暑かったです is past affirmative for the い-adjective."
+    ]
+  ]
 }
 ];
 

@@ -403,3 +403,72 @@ describe("CUR-14 exact source-backed foundational A1 teaching",()=>{
   }
  });
 });
+
+describe("CUR-15 targeted original A1 source gaps",()=>{
+ const selected=[
+  ["a1-unit-09","grammar-demonstrative-determiners",5],
+  ["a1-unit-13","grammar-time-ni",5],
+  ["a1-unit-14","grammar-na-noun-negative",4]
+ ] as const;
+ it("binds all source examples and anchor IDs to their actual original unit",()=>{
+  for(const [id,anchor,count] of selected){
+   const u=coreContent.courseUnits.find(x=>x.id===id)!;
+   expect(u.level).toBe("A1");
+   expect(u.sourceIds).toEqual(["thiepn-original"]);
+   expect(u.grammarIds).toContain(anchor);
+   const session=buildCur03CourseUnitSession(id);
+   expect(new Set(session.map(s=>s.id)).size).toBe(session.length);
+   expect(deepTeachingAnchors(id)).toContain(anchor);
+   const source=session.find(s=>s.id==="cur03-"+id+"-"+anchor+"-context");
+   if(!source||!isStudyLesson(source))throw Error("CUR15_CONTEXT_MISSING");
+   expect(source.examples).toHaveLength(count);
+   const matching=new Set(coreContent.sentences.filter(s=>u.sentenceIds.includes(s.id)).map(s=>s.text));
+   for(const e of source.examples??[])expect(matching.has(e.expression)).toBe(true);
+  }
+ });
+ it("preserves established contexts, original study prompts, and excludes added tasks from grading",()=>{
+  for(const [id,anchor] of selected){
+   const session=buildCur03CourseUnitSession(id),original=courseUnitSession(id);
+   let prev=-1;
+   for(const step of original){
+    const k=session.findIndex((s,i)=>i>prev&&s.id===step.id);
+    expect(k).toBeGreaterThan(prev);
+    expect(session[k]).toEqual(step);prev=k;
+   }
+   const selectedCase=session.filter(s=>!isStudyLesson(s)&&s.eventMetadata?.cur03Anchor===anchor);
+   expect(selectedCase).toHaveLength(4);
+   expect(selectedCase.filter(s=>!isStudyLesson(s)&&s.promptType==="choice")).toHaveLength(3);
+   expect(selectedCase.filter(s=>!isStudyLesson(s)&&s.promptType==="textarea")).toHaveLength(1);
+   for(const s of selectedCase)if(!isStudyLesson(s)){
+    expect(s.primaryTarget).toEqual({kind:"can_do",id:coreContent.courseUnits.find(u=>u.id===id)!.canDoId});
+    expect(s.sourceId).toBe("thiepn-original");
+    expect(s.eventMetadata).toMatchObject({
+     cur03UnitId:id,cur03Anchor:anchor,nonAuthoritative:true,
+     schedulerExcluded:true,independentCompetenceVerified:false
+    });
+    if(s.promptType==="choice"){
+     expect(s.choices).toHaveLength(3);
+     expect(new Set(s.choices).size).toBe(3);
+     expect(s.choices).toContain(s.acceptedAnswers[0]);
+     expect(s.eventMetadata?.e06FoilFeedback).toHaveLength(2);
+    }else expect(s.acceptedAnswers).toEqual([]);
+   }
+  }
+ });
+ it("keeps earlier unit-specific lessons first and never leaks the time grammar to A1 unit 12",()=>{
+  for(const [id,previous,additional] of [
+    ["a1-unit-09","grammar-demonstrative-pronouns","grammar-demonstrative-determiners"],
+    ["a1-unit-13","grammar-masen-deshita","grammar-time-ni"],
+    ["a1-unit-14","grammar-i-adj-past","grammar-na-noun-negative"]
+  ] as const){
+   const session=buildCur03CourseUnitSession(id);
+   const a=session.findIndex(s=>s.id==="cur03-"+id+"-"+previous+"-context");
+   const b=session.findIndex(s=>s.id==="cur03-"+id+"-"+additional+"-context");
+   expect(a).toBeGreaterThan(0);
+   expect(b).toBeGreaterThan(a);
+   expect(deepTeachingAnchors(id)).toContain(additional);
+  }
+  expect(deepTeachingAnchors("a1-unit-12")).not.toContain("grammar-time-ni");
+  expect(buildCur03CourseUnitSession("a1-unit-12").some(s=>s.id==="cur03-a1-unit-12-grammar-time-ni-context")).toBe(false);
+ });
+});
