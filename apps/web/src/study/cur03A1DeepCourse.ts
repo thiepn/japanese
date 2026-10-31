@@ -4,7 +4,7 @@ import {courseUnitSession} from "./grammarCourse";
 
 /** New original teaching around canonical grammar anchors, not a fork of the independent CF-A1 PR #103. */
 type Check=readonly [question:string,answer:string,foilA:string,foilB:string,feedback:string,foilANote:string,foilBNote:string];
-type Case=Readonly<{anchor:string;title:string;situation:string;why:string;contrast:string;
+type Case=Readonly<{anchor:string;unitId?:string;afterExisting?:boolean;title:string;situation:string;why:string;contrast:string;
  examples:readonly (readonly [string,string])[];checks:readonly Check[];independent:string}>;
 const CASES:readonly Case[]=[
  {anchor:"grammar-wa-topic",title:"Introduce yourself without repeating the subject",
@@ -303,6 +303,1137 @@ const CASES:readonly Case[]=[
       "分かりません reports that something is not understood."
     ]
   ]
+},
+{
+  "anchor": "grammar-to-with",
+  "unitId": "a1-unit-05",
+  "title": "Talk with someone, or add someone too",
+  "situation": "Two classmates describe their day. 友達と話します。 describes talking with a friend; 友達も学生です。 adds a friend to a group already described as students. The noun 友達 is shared, but its grammatical relationship differs.",
+  "why": "The companion particle と identifies someone who joins an activity. In contrast, も means 'also' or 'too': it includes another participant or entity in a previously understood group or claim. Use the verb and discourse context to decide, not the English word 'friend' alone.",
+  "contrast": "友達と話します。 = talk with a friend. 友達も学生です。 = the friend is also a student. 友達と does not mean 'also' in the second sentence.",
+  "examples": [
+    [
+      "友達と話します。",
+      "と marks the person participating in the conversation."
+    ],
+    [
+      "友達も学生です。",
+      "も adds another person with the same characteristic."
+    ],
+    [
+      "駅で友達と話します。",
+      "駅で locates the talking; 友達と marks the companion."
+    ]
+  ],
+  "checks": [
+    [
+      "Say you talk WITH a friend. 友達＿＿話します。",
+      "と",
+      "も",
+      "を",
+      "と indicates the person in the activity.",
+      "も is additive, not the companion marker in this original statement.",
+      "を marks an object, not the participant here."
+    ],
+    [
+      "A classmate is already a student. You say your friend is ALSO a student. 友達＿＿学生です。",
+      "も",
+      "と",
+      "で",
+      "も adds a parallel student to the discussion.",
+      "と would indicate a companion, not inclusion in this predicate.",
+      "で would not mark the added student in the noun predicate."
+    ],
+    [
+      "Which installed sentence says you talk with a friend at the station?",
+      "駅で友達と話します。",
+      "友達も学生です。",
+      "友達と話します。",
+      "駅で is the location and 友達と the companion.",
+      "This adds a student but does not mention conversation.",
+      "This mentions a conversation but gives no location."
+    ]
+  ],
+  "independent": "Write one sentence about doing something with a friend, then one that says someone else shares a stated characteristic. Explain why you chose と or も."
+},
+{
+  "anchor": "grammar-masen",
+  "unitId": "a1-unit-08",
+  "title": "Going, not going, and what already happened",
+  "situation": "Today, a learner can say 今日は学校に行きます。 or 今日は学校に行きません。 The second statement negates today's plan. お茶を飲みました。 describes a separate completed action rather than a present or future plan.",
+  "why": "Polite ます is nonpast affirmative, ません is nonpast negative, and ました is past affirmative. The nonpast form can describe a habit, a current situation, or a planned future event depending on context. Tense and polarity are distinct choices.",
+  "contrast": "行きません is not a past tense. 飲みました does not mean 'will not drink'. A past negative requires a form such as ませんでした, which belongs to another lesson.",
+  "examples": [
+    [
+      "今日は学校に行きます。",
+      "行きます states today's affirmative plan."
+    ],
+    [
+      "今日は学校に行きません。",
+      "行きません negates that nonpast plan."
+    ],
+    [
+      "お茶を飲みました。",
+      "飲みました states a completed action."
+    ]
+  ],
+  "checks": [
+    [
+      "You are NOT going to school today. Choose the exact sentence.",
+      "今日は学校に行きません。",
+      "今日は学校に行きます。",
+      "お茶を飲みました。",
+      "行きません is nonpast negative in this context.",
+      "行きます confirms going; it does not negate the plan.",
+      "This is a different action in the past."
+    ],
+    [
+      "Choose the completed affirmative action.",
+      "お茶を飲みました。",
+      "お茶を飲みません。",
+      "お茶を飲みます。",
+      "ました expresses past affirmative here.",
+      "ません expresses nonpast negative.",
+      "ます expresses nonpast affirmative."
+    ],
+    [
+      "Which explanation is correct for 行きません?",
+      "Polite nonpast negative.",
+      "Polite past affirmative.",
+      "Always a statement about yesterday.",
+      "ません negates a nonpast action; context supplies the time.",
+      "Past affirmative uses ました, not ません.",
+      "There is no inherent 'yesterday' in this form."
+    ]
+  ],
+  "independent": "Write two lines about today's plans, one affirmative and one negative, and one line about an activity completed earlier. Verify the endings ます, ません, and ました."
+},
+{
+  "anchor": "grammar-no-attribute",
+  "unitId": "a1-unit-11",
+  "title": "Relate nouns with の, or list items with と",
+  "situation": "This book belongs to someone: これは私の本です。 The form 私の describes the book. When shopping, パンと水を買います。 lists two things to buy instead. The connecting particles do different work.",
+  "why": "Noun A + の + noun B can express possession, naming or other relationships: 私の本, 先生の名前, 家族の写真. The particle と can join two nouns in a complete list. An English apostrophe is not a reliable translation for every relationship shown by の.",
+  "contrast": "私の本 = my book; パンと水 = bread and water. の makes one noun determine another, while と coordinates listed nouns.",
+  "examples": [
+    [
+      "これは私の本です。",
+      "私の connects the book to the speaker."
+    ],
+    [
+      "先生の名前は何ですか。",
+      "先生の identifies whose name is asked about."
+    ],
+    [
+      "パンと水を買います。",
+      "パンと水 lists two purchases."
+    ],
+    [
+      "家族の写真です。",
+      "家族の relates the photograph to family."
+    ]
+  ],
+  "checks": [
+    [
+      "Complete 'This is my book': これは私＿＿本です。",
+      "の",
+      "と",
+      "を",
+      "の links the owner to the book.",
+      "と joins nouns but does not express this possessive relation.",
+      "を is an object particle, not a noun modifier."
+    ],
+    [
+      "Buy bread AND water. パン＿＿水を買います。",
+      "と",
+      "の",
+      "が",
+      "と connects two listed purchase items.",
+      "の would make a different noun relationship.",
+      "が does not enumerate the two objects here."
+    ],
+    [
+      "Which source sentence asks for a teacher's name?",
+      "先生の名前は何ですか。",
+      "家族の写真です。",
+      "これは私の本です。",
+      "先生の specifies the person whose name is sought.",
+      "This identifies a family photograph.",
+      "This states ownership of a book."
+    ]
+  ],
+  "independent": "Write a label for a personal object with の, then a separate shopping sentence joining two items with と. Do not reuse the source objects."
+},
+{
+  "anchor": "grammar-i-adj-past",
+  "unitId": "a1-unit-14",
+  "title": "Past and negative forms for two adjective types",
+  "situation": "Yesterday was hot: 昨日は暑かったです。 Today is not cold: 今日は寒くないです。 A different adjective type appears in 昨日は静かじゃなかったです。 ('It was not quiet yesterday').",
+  "why": "An い-adjective usually replaces final い with かった to form past affirmative, and with くない for nonpast negative. A な-adjective such as 静か uses a noun-like predicate; the attested past-negative form is 静かじゃなかったです. Do not add でした to an unchanged い-adjective.",
+  "contrast": "暑かったです = was hot; 寒くないです = is not cold; 静かじゃなかったです = was not quiet. Adjective class and time/polarity each matter.",
+  "examples": [
+    [
+      "昨日は暑かったです。",
+      "暑い becomes 暑かった for past affirmative."
+    ],
+    [
+      "今日は寒くないです。",
+      "寒い becomes 寒くない for nonpast negative."
+    ],
+    [
+      "ここは静かです。",
+      "静か is a な-adjective with a noun-like predicate."
+    ],
+    [
+      "昨日は静かじゃなかったです。",
+      "静かじゃなかった is past negative."
+    ]
+  ],
+  "checks": [
+    [
+      "You want to say 'It was hot yesterday'. 昨日は＿＿。",
+      "暑かったです",
+      "暑いでした",
+      "暑くないです",
+      "暑かったです is the correct い-adjective past.",
+      "Do not append でした to an unchanged い-adjective.",
+      "暑くないです is a nonpast negative."
+    ],
+    [
+      "Say 'It is not cold today'. 今日は＿＿。",
+      "寒くないです",
+      "寒かったです",
+      "寒いでした",
+      "寒くないです is the nonpast negative.",
+      "寒かったです is past affirmative.",
+      "寒いでした incorrectly adds でした."
+    ],
+    [
+      "Which source sentence says it was NOT quiet yesterday?",
+      "昨日は静かじゃなかったです。",
+      "ここは静かです。",
+      "昨日は暑かったです。",
+      "静かじゃなかったです is past negative.",
+      "This affirms that it is quiet here.",
+      "This is past hot weather, not a negative quietness statement."
+    ]
+  ],
+  "independent": "Describe yesterday and today with one past い-adjective, one negative い-adjective and one past-negative な-adjective. Check the form of each ending."
+},
+{
+  "anchor": "grammar-counter-tsu",
+  "unitId": "a1-unit-16",
+  "title": "Order quantities with 一つ and 二つ",
+  "situation": "At a small counter, パンを二つください。 orders two bread items. 水を一つください。 asks for one water item or serving. コーヒーをください。 shows that a simple item request does not always specify a number.",
+  "why": "The structure noun + を + quantity/counter + ください politely requests items and quantities. The common native counter forms are 一つ (ひとつ) and 二つ (ふたつ), not mechanical readings of the numerals. Without a quantity, noun + をください still requests the item.",
+  "contrast": "パンを二つください requests two items; 野菜を食べます describes eating rather than ordering. ください is a request expression, not the same as an action verb in a statement.",
+  "examples": [
+    [
+      "パンを二つください。",
+      "二つ gives the quantity of bread items."
+    ],
+    [
+      "水を一つください。",
+      "一つ requests one water item or serving."
+    ],
+    [
+      "コーヒーをください。",
+      "Coffee is requested without stating a count."
+    ],
+    [
+      "野菜を食べます。",
+      "食べます describes eating instead of making an order."
+    ]
+  ],
+  "checks": [
+    [
+      "Order TWO bread items. パンを＿＿ください。",
+      "二つ",
+      "一つ",
+      "二人",
+      "二つ is the correct two-item counter here.",
+      "一つ means one item.",
+      "二人 counts people, not bread items."
+    ],
+    [
+      "Which source sentence requests ONE water serving?",
+      "水を一つください。",
+      "コーヒーをください。",
+      "野菜を食べます。",
+      "水を一つ specifies one item or serving.",
+      "This requests coffee without an explicit count.",
+      "This describes eating vegetables."
+    ],
+    [
+      "What does コーヒーをください。 specify?",
+      "Coffee, without an explicit quantity.",
+      "Exactly two cups of coffee.",
+      "That the speaker drank coffee yesterday.",
+      "This is an item request without a numeral/counter.",
+      "The sentence has no 二つ or other counted quantity.",
+      "A completed drinking action would have a different verb form."
+    ]
+  ],
+  "independent": "Write an order for one item and another for two, using the correct つ forms. Add a simple third request without stating a number."
+},
+{
+  "anchor": "grammar-location-words",
+  "unitId": "a1-unit-10",
+  "title": "Ask where, what, which, or who",
+  "situation": "You are new to a school building. 学校はどこですか。 asks for a location, and トイレはあそこです。 points to a distant place. At the same reception desk, これは何ですか。 asks about an object, どの本ですか。 narrows down a book, and あの人はだれですか。 asks about a person.",
+  "why": "どこ requests a place; 何 asks what something is; だれ asks who someone is. どの directly modifies a following noun, unlike standalone どれ. Location terms ここ, そこ, あそこ point from a speaker's spatial perspective. Select the question word by the missing kind of information, not simply by a question-mark translation.",
+  "contrast": "学校はどこですか。 asks where the school is, not which school. どの本ですか。 includes a noun after どの; これは何ですか。 asks what the pointed-to object is.",
+  "examples": [
+    [
+      "学校はどこですか。",
+      "どこ requests the school's location."
+    ],
+    [
+      "トイレはあそこです。",
+      "あそこ places the restroom over there."
+    ],
+    [
+      "これは何ですか。",
+      "何 asks the identity of an object."
+    ],
+    [
+      "どの本ですか。",
+      "どの must precede 本."
+    ],
+    [
+      "あの人はだれですか。",
+      "だれ asks the identity of a person."
+    ]
+  ],
+  "checks": [
+    [
+      "You need the school location. Choose the matching source question.",
+      "学校はどこですか。",
+      "これは何ですか。",
+      "どの本ですか。",
+      "どこ asks for a place, matching a school-location request.",
+      "何 asks what an object is, not where a school is.",
+      "どの本 asks which book, not where a school is."
+    ],
+    [
+      "You see several books and ask which book someone means.",
+      "どの本ですか。",
+      "学校はどこですか。",
+      "あの人はだれですか。",
+      "どの directly modifies 本 to ask which one.",
+      "どこ asks a location, not selection among books.",
+      "だれ asks who a person is, not which book."
+    ],
+    [
+      "Which source sentence asks who the distant person is?",
+      "あの人はだれですか。",
+      "トイレはあそこです。",
+      "これは何ですか。",
+      "あの人 identifies the distant person and だれ asks who.",
+      "This points to a restroom without asking a person.",
+      "This asks what an object is, not who someone is."
+    ]
+  ],
+  "independent": "Write a short exchange at an unfamiliar school: ask for a room, identify one object, and distinguish a person from several possible people. Use different question words deliberately."
+},
+{
+  "anchor": "grammar-masen-deshita",
+  "unitId": "a1-unit-13",
+  "title": "Tell your routine and what did not happen",
+  "situation": "A learner describes a normal weekday: 毎日七時に起きます。, 朝ご飯を食べます。, and 夜十時に寝ます。 But a report about yesterday differs: 昨日は勉強しませんでした。 states that the studying did not happen.",
+  "why": "〜ます describes a polite nonpast action, often habitual with 毎日. に can mark the specific time 七時 or 十時. For a past negative, ませんでした combines negative polarity with past time. By contrast, ません alone is nonpast negative and ました is past affirmative.",
+  "contrast": "勉強しませんでした means 'did not study', not 'do not study'. 毎日七時に起きます。 tells a habitual time. The temporal marker 昨日は and the verb ending together make the past-negative meaning clear.",
+  "examples": [
+    [
+      "毎日七時に起きます。",
+      "毎日 makes getting up at seven a daily routine."
+    ],
+    [
+      "朝ご飯を食べます。",
+      "食べます expresses the habitual breakfast action."
+    ],
+    [
+      "学校で日本語を勉強します。",
+      "学校で identifies where the studying happens."
+    ],
+    [
+      "夜十時に寝ます。",
+      "十時に specifies the bedtime."
+    ],
+    [
+      "昨日は勉強しませんでした。",
+      "しませんでした is the past negative of します."
+    ]
+  ],
+  "checks": [
+    [
+      "Yesterday you did NOT study. Which original line states that?",
+      "昨日は勉強しませんでした。",
+      "学校で日本語を勉強します。",
+      "朝ご飯を食べます。",
+      "しませんでした reports a past non-event; 昨日は sets yesterday.",
+      "This describes studying at school in the nonpast.",
+      "This describes eating breakfast, not a past study omission."
+    ],
+    [
+      "Which original sentence gives a habitual wake-up time?",
+      "毎日七時に起きます。",
+      "夜十時に寝ます。",
+      "昨日は勉強しませんでした。",
+      "毎日 makes the seven-o'clock event a routine; 七時に gives the clock time.",
+      "This gives a bedtime, not a wake-up time.",
+      "This describes a past negative action, not a repeated morning routine."
+    ],
+    [
+      "Which ending marks polite PAST NEGATIVE in this unit?",
+      "ませんでした",
+      "ません",
+      "ました",
+      "ませんでした combines past tense and negative meaning.",
+      "ません is nonpast negative; it does not itself indicate past.",
+      "ました is past affirmative, not past negative."
+    ]
+  ],
+  "independent": "Write three lines about an ordinary day with specific times. Then report one thing you did not do yesterday using a past-negative verb, without copying the model."
+},
+{
+  "anchor": "grammar-question-words",
+  "unitId": "a1-unit-17",
+  "title": "Ask a price and choose what to buy",
+  "situation": "At a shop, これはいくらですか。 asks a price. The reply 三百円です。 gives a yen amount. You then consider その本は高いです。 versus このパンは安いです。, choose an item, and say りんごを三つください。 to request three apples.",
+  "why": "いくら asks how much an item costs; 円 labels the stated currency amount. どれを買いますか。 instead asks which item someone will purchase. 高い and 安い express relative expense; a quantity with をください specifies what to request, not what the price is.",
+  "contrast": "これはいくらですか。 asks the price; どれを買いますか。 asks which object. 三百円です。 answers the price question but is not itself an order. りんごを三つください。 is an order with an item count, not a price question.",
+  "examples": [
+    [
+      "これはいくらですか。",
+      "いくら requests the item's price."
+    ],
+    [
+      "三百円です。",
+      "三百円です gives a yen amount."
+    ],
+    [
+      "その本は高いです。",
+      "高い describes the book as expensive."
+    ],
+    [
+      "りんごを三つください。",
+      "三つ counts the apples being requested."
+    ],
+    [
+      "どれを買いますか。",
+      "どれ requests a choice among items."
+    ]
+  ],
+  "checks": [
+    [
+      "You want the price of the object near you. What do you ask?",
+      "これはいくらですか。",
+      "どれを買いますか。",
+      "りんごを三つください。",
+      "いくら asks how much it costs.",
+      "どれ asks which item will be purchased, not its price.",
+      "This places an order for three apples rather than asking cost."
+    ],
+    [
+      "A clerk states the price is three hundred yen. Which original reply fits?",
+      "三百円です。",
+      "その本は高いです。",
+      "りんごを三つください。",
+      "三百円です states an amount in yen.",
+      "高い evaluates a relative price, without giving a numerical amount.",
+      "This is a quantity request, not a numerical price answer."
+    ],
+    [
+      "You have chosen three apples and want to order them. Which is the request?",
+      "りんごを三つください。",
+      "これはいくらですか。",
+      "どれを買いますか。",
+      "りんごを三つください identifies the item and number to request.",
+      "This asks a price; no order is made.",
+      "This asks what will be bought; no order is made."
+    ]
+  ],
+  "independent": "Write a three-turn shopping dialogue: ask the price, receive a numerical yen response, then request a quantity of an item. Add a different question about which item to buy."
+},
+{
+  "anchor": "grammar-ne",
+  "unitId": "a1-unit-20",
+  "title": "Invite agreement or provide new information",
+  "situation": "Two people comment on the weather: 今日は寒いですね。 invites the listener's agreement. Another speaker gives useful directions: 駅はあそこですよ。 presents information to the listener. 日本語は難しいですか。 is instead a direct question, which can be answered with a relevant yes/no response.",
+  "why": "Sentence-final ね often seeks shared recognition or agreement, whereas よ signals information the speaker presents assertively to the listener. か marks a straightforward polite question. These are pragmatic tendencies, not fixed translations of English question tags; audience and context matter.",
+  "contrast": "今日は寒いですね。 shares an observation and invites agreement. 駅はあそこですよ。 offers information. 日本語は難しいですか。 asks a question. Do not treat ね, よ and か as interchangeable punctuation.",
+  "examples": [
+    [
+      "今日は寒いですね。",
+      "ね invites agreement on a weather observation."
+    ],
+    [
+      "この店はいいですね。",
+      "ね can also invite agreement about a shop."
+    ],
+    [
+      "駅はあそこですよ。",
+      "よ actively provides the station's location."
+    ],
+    [
+      "日本語は難しいですか。",
+      "か makes a direct question about Japanese."
+    ],
+    [
+      "はい、少し分かります。",
+      "はい introduces a relevant affirmative response."
+    ]
+  ],
+  "checks": [
+    [
+      "You and a friend both feel it is cold. Which source sentence invites shared agreement?",
+      "今日は寒いですね。",
+      "駅はあそこですよ。",
+      "日本語は難しいですか。",
+      "ね seeks agreement on a shared observation.",
+      "よ actively informs the listener about the station.",
+      "か asks a yes/no question about Japanese rather than sharing the weather."
+    ],
+    [
+      "A visitor needs to find the station. Which source sentence actively tells them where it is?",
+      "駅はあそこですよ。",
+      "この店はいいですね。",
+      "日本語は難しいですか。",
+      "よ conveys the location as information for the listener.",
+      "ね invites agreement about a shop, not a direction.",
+      "か asks a question unrelated to directions."
+    ],
+    [
+      "You want to ask whether Japanese is difficult. Which ending belongs in the source question?",
+      "か",
+      "ね",
+      "よ",
+      "か creates the polite question here.",
+      "ね commonly invites alignment with an observation, not this direct question.",
+      "よ signals information being presented, not the intended direct question."
+    ]
+  ],
+  "independent": "Write a short encounter: state one shared observation with ね, give one useful fact with よ, and ask a direct yes/no question with か. Review each sentence's purpose."
+},
+{
+  "anchor": "grammar-counter-nin",
+  "title": "Talk about your family: people, roles, and locations",
+  "situation": "At a class welcome event, a learner says 私の家族は四人です。 and then identifies relatives: 父は先生です。, 母は会社員です。 Later the learner describes where a younger sister and the parents are: 妹は家にいます。 and 両親は日本にいます。",
+  "why": "人 is a counter for people. In 四人 (よにん), the counter expresses the number of family members; it does not label a person's occupation. For roles such as 先生 or 会社員, the polite nominal predicate ends with です. To say someone is at a place, location に and います are used. Keep number, role and location as separate information needs.",
+  "contrast": "私の家族は四人です。 gives a count. 父は先生です。 describes a role. 妹は家にいます。 gives a person's location. Do not answer 'Where is your sister?' with a family size.",
+  "checks": [
+    [
+      "How many people are in this family? Choose the installed sentence that gives the count.",
+      "私の家族は四人です。",
+      "父は先生です。",
+      "妹は家にいます。",
+      "四人 is the family size, using the people counter 人.",
+      "This identifies the father's role but gives no count.",
+      "This identifies a person's location, not the total."
+    ],
+    [
+      "A classmate asks where the learner's younger sister is. Select the matching original sentence.",
+      "妹は家にいます。",
+      "母は会社員です。",
+      "私の家族は四人です。",
+      "家にいます states where the sister is.",
+      "This is the mother's occupation, not a location.",
+      "A people count does not answer a location question."
+    ],
+    [
+      "Which answer gives the father's job rather than the family size or where someone lives?",
+      "父は先生です。",
+      "両親は日本にいます。",
+      "私の家族は四人です。",
+      "先生です states the occupation.",
+      "日本にいます states a location.",
+      "四人 counts people in the family."
+    ]
+  ],
+  "independent": "Introduce a small imaginary family in four short Japanese lines: give its size with 人, introduce one person's role, and locate two family members. Self-check each sentence's information type.",
+  "unitId": "a1-unit-15",
+  "examples": [
+    [
+      "私の家族は四人です。",
+      "四人 (よにん) counts the people in the family."
+    ],
+    [
+      "父は先生です。",
+      "先生です describes the father's occupation."
+    ],
+    [
+      "母は会社員です。",
+      "会社員です describes the mother's occupation."
+    ],
+    [
+      "妹は家にいます。",
+      "家にいます locates the younger sister."
+    ],
+    [
+      "両親は日本にいます。",
+      "日本にいます locates the parents."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-time-counters",
+  "title": "Read the clock and set a precise meeting time",
+  "situation": "Someone checks the clock: 今は七時です。 A little later, 七時半です。 means half past seven, not seven-thirty minutes of activity. When planning a trip, 八時に学校に行きます。 identifies a specific time of travel, while 九時から五時まで働きます。 reports a work interval.",
+  "why": "時 identifies clock hours. 半 after the hour expresses half past; 七時半 is seven thirty. For an activity at a specific clock time, に can mark the time, as in 八時に学校に行きます. For an interval, から marks the start and まで the endpoint. A clock reading and a scheduled event answer different questions.",
+  "contrast": "七時半です。 reports the clock reading. 八時に学校に行きます。 names when something happens. 九時から五時まで働きます。 spans a start and end. Do not treat 半 as a counter for duration in these source examples.",
+  "checks": [
+    [
+      "A friend asks what time it is: it is half past seven. Choose the original clock reading.",
+      "七時半です。",
+      "今は七時です。",
+      "八時に学校に行きます。",
+      "半 after 七時 gives half past seven.",
+      "This is seven o'clock, not half past.",
+      "This gives the scheduled time of an action rather than the requested clock reading."
+    ],
+    [
+      "Choose the sentence that says when school travel happens.",
+      "八時に学校に行きます。",
+      "七時半です。",
+      "九時から五時まで働きます。",
+      "八時に identifies the event's clock time.",
+      "This states a clock reading, not an action time.",
+      "This describes a work interval, not a school trip."
+    ],
+    [
+      "Which sentence describes a start-to-end work schedule rather than one clock reading?",
+      "九時から五時まで働きます。",
+      "今は七時です。",
+      "七時半です。",
+      "から…まで expresses the beginning and endpoint of the work period.",
+      "This only states the current hour.",
+      "This is a single clock reading."
+    ]
+  ],
+  "independent": "Write a short schedule with a clock reading, a fixed meeting time using に, and a work or study interval using から…まで. Check that the expressions answer three different questions.",
+  "unitId": "a1-unit-12",
+  "examples": [
+    [
+      "今は七時です。",
+      "七時 identifies the current hour."
+    ],
+    [
+      "七時半です。",
+      "七時半 means half past seven."
+    ],
+    [
+      "八時に学校に行きます。",
+      "八時に marks the time of going to school."
+    ],
+    [
+      "九時から五時まで働きます。",
+      "から and まで bound the working interval."
+    ],
+    [
+      "明日は十時に来ます。",
+      "十時に states a planned arrival time tomorrow."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-i-adj-polite",
+  "title": "Describe an object instead of stating a preference",
+  "situation": "A learner says 本が好きです。 to express liking books. Later, the learner describes something physical: 家は大きいです。 and 本は小さいです。 These last two sentences describe size; they do not mean that the learner likes the house or the book.",
+  "why": "好きです expresses a preference and commonly marks what is liked with が in the beginner pattern. 大きい and 小さい are い-adjectives used as predicates; です adds politeness but the adjective keeps its final い. は identifies the topic being described. Distinguish subjective preference from an observed quality.",
+  "contrast": "本が好きです。 reports liking. 本は小さいです。 reports size. Do not replace が好き with an adjective merely because both English translations use 'is', and do not change 大きいです to 大きです.",
+  "checks": [
+    [
+      "You want to say the HOUSE is big rather than that you like it. Choose the original description.",
+      "家は大きいです。",
+      "本が好きです。",
+      "本は小さいです。",
+      "大きいです describes the house's size.",
+      "好きです expresses liking, not size.",
+      "小さいです describes a small book, not a big house."
+    ],
+    [
+      "Someone asks whether the book is small. Choose the installed size description.",
+      "本は小さいです。",
+      "日本語が好きですか。",
+      "家は大きいです。",
+      "小さいです is a size predicate referring to the book.",
+      "This asks about a preference, not size.",
+      "This describes a different object as big."
+    ],
+    [
+      "Which sentence asks about liking Japanese rather than describing size?",
+      "日本語が好きですか。",
+      "家は大きいです。",
+      "本は小さいです。",
+      "好きですか asks a polite question about preference.",
+      "大きい describes physical size.",
+      "小さい describes physical size."
+    ]
+  ],
+  "independent": "Write two independent lines describing the size of different objects, and a third line asking about someone's preference. Use い-adjectives and 好きですか for different communicative purposes.",
+  "unitId": "a1-unit-07",
+  "examples": [
+    [
+      "本が好きです。",
+      "本が好きです expresses a preference."
+    ],
+    [
+      "日本語が好きですか。",
+      "か turns the preference into a polite question."
+    ],
+    [
+      "家は大きいです。",
+      "大きいです describes the house's size."
+    ],
+    [
+      "本は小さいです。",
+      "小さいです describes a book's size."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-te-form",
+  "title": "Build polite requests from the verb て-form",
+  "situation": "At school, a learner needs different kinds of help. ここに書いてください。 requests writing at a location. もう一度言ってください。 requests repetition, and ゆっくり話してください。 requests slower speech. 分かりません。 states that the learner does not understand, but it is not itself an action request.",
+  "why": "In these source expressions, the verb's て-form comes before ください: 書く→書いて, 言う→言って, 話す→話して. The surface shape varies with the verb; simply attaching て to every dictionary form would be incorrect. ください attaches to the completed て-form when asking someone to perform the action. Learn these attested combinations before extending the rule to other verbs.",
+  "contrast": "書いてください, 言ってください and 話してください request actions. 分かりません reports a problem. Noun + をください requests an item instead and is not interchangeable with verb て-form + ください.",
+  "checks": [
+    [
+      "You want the teacher to WRITE here. Which source request fits?",
+      "ここに書いてください。",
+      "もう一度言ってください。",
+      "分かりません。",
+      "書いてください requests the writing action; ここに gives the place.",
+      "This asks someone to say something again.",
+      "This reports non-understanding, not writing."
+    ],
+    [
+      "Which source request uses the て-form 言って rather than 話して?",
+      "もう一度言ってください。",
+      "ゆっくり話してください。",
+      "ここに書いてください。",
+      "言ってください requests saying something again.",
+      "話してください asks for speech, with the slower manner given by ゆっくり.",
+      "書いてください asks someone to write."
+    ],
+    [
+      "Which analysis of the attested verb request is correct?",
+      "話す becomes 話して before ください.",
+      "All dictionary forms simply add て unchanged.",
+      "分かりません is a て-form request.",
+      "話して is the attested て-form in 話してください.",
+      "Verbs have different て-form changes; 話す does not become 話すて.",
+      "分かりません is a statement about understanding."
+    ]
+  ],
+  "independent": "In a new classroom situation, write three polite requests asking for writing, repetition, and slower speech. Then add a separate line stating you do not understand. Check the て-form before ください.",
+  "unitId": "a1-unit-19",
+  "examples": [
+    [
+      "ここに書いてください。",
+      "書いてください uses 書く→書いて to request writing."
+    ],
+    [
+      "もう一度言ってください。",
+      "言ってください uses 言う→言って to request repetition."
+    ],
+    [
+      "ゆっくり話してください。",
+      "話してください uses 話す→話して for slower speech."
+    ],
+    [
+      "分かりません。",
+      "分かりません reports non-understanding, not a request."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-desu",
+  "title": "Identify someone with a polite noun predicate",
+  "situation": "In a new classroom, someone can answer a question about their role with 学生です。 Someone else can say 先生です。 Neither answer supplies an explicit topic; the listener understands who is being identified from the conversation.",
+  "why": "Noun + です makes a simple polite identification, such as 学生です or 先生です. The omitted topic can be supplied by context. です does not make a noun into a verb action. The identities are statements, not questions; a question would additionally require the appropriate question form.",
+  "contrast": "学生です。 identifies a student; 先生です。 identifies a teacher. The difference is the noun, not a different ending. Do not treat です as the same verb ending as ます for actions.",
+  "checks": [
+    [
+      "At a school introduction, you want to identify yourself as a STUDENT. Choose the exact original answer.",
+      "学生です。",
+      "先生です。",
+      "本を読みます。",
+      "学生です identifies the student role with a polite noun predicate.",
+      "先生です identifies a teacher instead.",
+      "読みます reports an action rather than a person's role."
+    ],
+    [
+      "Your colleague identifies themself as a TEACHER. Which canonical answer matches?",
+      "先生です。",
+      "学生です。",
+      "お茶を飲みます。",
+      "先生です gives the teacher role, with です.",
+      "学生です gives the student role instead.",
+      "飲みます is an action verb, not a noun predicate."
+    ],
+    [
+      "What grammatical purpose does です serve in 学生です。?",
+      "It makes a polite identification using a noun.",
+      "It marks the object of reading a book.",
+      "It is the same verb ending as 飲みます.",
+      "Noun + です expresses a polite noun predicate.",
+      "The direct object of an action is marked differently, for example with を.",
+      "Verb + ます and noun + です have different roles."
+    ]
+  ],
+  "independent": "Write a three-turn classroom introduction: a question about someone's role, a polite role answer with a noun + です, and a different person's role. Decide from context when you need to state the topic.",
+  "unitId": "a1-unit-01",
+  "examples": [
+    [
+      "学生です。",
+      "学生 is the identifying noun and です keeps the answer polite."
+    ],
+    [
+      "先生です。",
+      "先生 is the role being identified, with the same です predicate."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-masu",
+  "title": "State an everyday action or ask what someone will do",
+  "situation": "A learner describes a routine: 本を読みます。 or お茶を飲みます。 At lunch they say ご飯を食べます。 A friend asks 何を食べますか。 to find out what the learner will eat. These sentences use a polite action verb rather than a noun identity.",
+  "why": "In these original sentences, 読みます, 飲みます and 食べます are polite nonpast action verbs. ます itself does not uniquely indicate 'right now' or 'tomorrow': habitual and future interpretations depend on time and conversation. The object particle を tells what is read, drunk or eaten; 何を makes that object the missing information in a question.",
+  "contrast": "本を読みます。 says an action involving a book; 学生です。 would instead identify a person. 何を食べますか。 asks for an object, whereas ご飯を食べます。 supplies one.",
+  "checks": [
+    [
+      "You want to say you READ a book, not drink tea. Which source sentence fits?",
+      "本を読みます。",
+      "お茶を飲みます。",
+      "ご飯を食べます。",
+      "読みます gives the action of reading, with 本を as its object.",
+      "飲みます is drinking, not reading.",
+      "食べます is eating, not reading."
+    ],
+    [
+      "Your partner asks WHAT you will eat. Which original question do they ask?",
+      "何を食べますか。",
+      "ご飯を食べます。",
+      "本を読みます。",
+      "何を asks for the missing object of 食べます.",
+      "This supplies a meal but is not a question.",
+      "This describes reading a book instead."
+    ],
+    [
+      "Which interpretation of 飲みます is accurate without further time context?",
+      "A polite nonpast action, with time determined by context.",
+      "Necessarily an action completed yesterday.",
+      "A polite noun identification ending with です.",
+      "ます is the polite nonpast action ending here; context supplies habitual or future meaning.",
+      "A completed past action uses a past ending, not bare ます.",
+      "飲みます is a verb predicate, not a noun + です statement."
+    ]
+  ],
+  "independent": "Describe three different everyday actions with polite ます verbs, then ask one what-object question using 何を. Make sure each object matches its action.",
+  "unitId": "a1-unit-03",
+  "examples": [
+    [
+      "本を読みます。",
+      "読みます expresses reading a book in the polite nonpast."
+    ],
+    [
+      "お茶を飲みます。",
+      "飲みます expresses drinking tea."
+    ],
+    [
+      "ご飯を食べます。",
+      "食べます expresses eating a meal."
+    ],
+    [
+      "何を食べますか。",
+      "何を makes the eaten object the subject of a question."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-ga-subject",
+  "title": "Say what exists in a place: に, が and existence verbs",
+  "situation": "A visitor says 学校に先生がいます。 to report a teacher at school. At home, a learner says 家に本があります。 to report a book. Both answers give a location and identify what is present, but the person and object require different existence verbs.",
+  "why": "In these existence statements, に marks the location, while が identifies the person or thing whose existence is asserted. 先生が goes with います for a person; 本が goes with あります for an inanimate object. This use of が does not by itself mean 'likes' or indicate a direct object. The broader contrast between います and あります is covered in the existing anchor; this lesson focuses on the grammatical roles of に and が.",
+  "contrast": "学校に is where; 先生が is who exists there. 家に is where; 本が is what exists there. Replacing が with を would no longer give the same simple existence pattern.",
+  "checks": [
+    [
+      "You want to say a teacher is present AT SCHOOL. Which original sentence does that?",
+      "学校に先生がいます。",
+      "家に本があります。",
+      "本を読みます。",
+      "学校に identifies the location and 先生が names the person.",
+      "This describes a book at home, not a teacher at school.",
+      "This reports a reading action, not presence at school."
+    ],
+    [
+      "Which part of 家に本があります。 tells WHAT is present?",
+      "本が",
+      "家に",
+      "あります",
+      "本が identifies the thing whose existence is asserted.",
+      "家に identifies where it exists.",
+      "あります tells that an inanimate thing exists; it is not its name."
+    ],
+    [
+      "What is the role of が in 学校に先生がいます。?",
+      "It marks the person whose existence is asserted.",
+      "It marks school as the movement destination.",
+      "It marks the person as the direct object of reading.",
+      "先生が identifies the existing person; 学校に supplies the location.",
+      "学校に marks a location, but が is attached to 先生.",
+      "A direct object of an action would usually be marked with を, not this existence が."
+    ]
+  ],
+  "independent": "Write two brief location descriptions: one person somewhere and one inanimate object elsewhere. Label the location に and the existing noun が in your own sentences.",
+  "unitId": "a1-unit-06",
+  "examples": [
+    [
+      "学校に先生がいます。",
+      "学校に indicates the place; 先生が names the person present."
+    ],
+    [
+      "家に本があります。",
+      "家に indicates the place; 本が names the object present."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-o-kudasai",
+  "title": "Request an item, or report an action",
+  "situation": "At a food counter, a customer says コーヒーをください。 The same pattern can specify a count: パンを二つください。 and 水を一つください。 In contrast, 野菜を食べます。 describes eating and is not an order. もう一度お願いします。 is a separate polite request to repeat, without naming a food item.",
+  "why": "Noun + をください politely requests an item, and a quantity such as 一つ or 二つ can make the count explicit. を identifies the requested item; ください is the requesting expression. This differs from an action report with a ます verb and from the verb て-form + ください request for another person's action. The separate counting lesson covers how to form the numerals.",
+  "contrast": "コーヒーをください。 asks for coffee. 野菜を食べます。 says someone eats vegetables. The two sentences both use を, but only the first is an item request. For an action request, use a suitable verb て-form before ください, not an item noun + を.",
+  "checks": [
+    [
+      "You are ready to order coffee without naming a quantity. Which original line fits?",
+      "コーヒーをください。",
+      "野菜を食べます。",
+      "パンを二つください。",
+      "コーヒーをください is a direct request for the item.",
+      "食べます reports eating rather than asking for coffee.",
+      "This requests bread and specifies a count, not coffee."
+    ],
+    [
+      "Which source sentence requests two bread items rather than reporting an action?",
+      "パンを二つください。",
+      "野菜を食べます。",
+      "水を一つください。",
+      "パンを二つください uses noun + を + quantity + ください.",
+      "This reports eating vegetables, not ordering items.",
+      "This orders one water item, not two bread items."
+    ],
+    [
+      "What does を mark in コーヒーをください。?",
+      "The item being requested.",
+      "A clock-time point for the order.",
+      "A polite て-form action request.",
+      "コーヒーを identifies coffee as the requested item.",
+      "Time points may use に, but no time is stated here.",
+      "There is no verb て-form in this item request."
+    ]
+  ],
+  "independent": "Write two restaurant orders with and without a quantity, and a separate statement of something you eat. Explain why only the first two are item requests.",
+  "unitId": "a1-unit-16",
+  "examples": [
+    [
+      "コーヒーをください。",
+      "コーヒーをください requests an item without stating its count."
+    ],
+    [
+      "パンを二つください。",
+      "パンを二つください requests two bread items."
+    ],
+    [
+      "水を一つください。",
+      "水を一つください requests one water item or serving."
+    ],
+    [
+      "野菜を食べます。",
+      "野菜を食べます reports eating rather than ordering."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-demonstrative-determiners",
+  "afterExisting": true,
+  "title": "Choose この or その before a noun",
+  "situation": "Two people identify things in a room. The learner says この本は日本語です。 about a book near the speaker. The teacher says その人は先生です。 about a person understood in the listener's context. The same area also contains これは本です。, それは水です。 and あれは学校です。 for referring to things without placing a noun immediately after the demonstrative.",
+  "why": "この, その and あの modify a following noun, whereas これ, それ and あれ can stand alone. The こ-series often relates to the speaker's vicinity, the そ-series to the listener or something already contextually established, and the あ-series to something distant from both; exact reference depends on context. First decide whether you need a noun modifier, then which referent you intend.",
+  "contrast": "この本 identifies 'this book' and その人 identifies 'that person'. これは本です identifies a thing without using a determiner before 本. A phrase such as このは本です is not a grammatical substitute for これは本です.",
+  "checks": [
+    [
+      "You mean THIS specific book near you. Complete the original phrase: ＿＿本は日本語です。",
+      "この",
+      "これ",
+      "それ",
+      "この directly modifies 本 and selects this book.",
+      "これ is a stand-alone demonstrative; これ本 is not the target phrase.",
+      "それ stands alone; it cannot directly precede 本 as a modifier."
+    ],
+    [
+      "A person is already identified in the listener's context. Complete: ＿＿人は先生です。",
+      "その",
+      "それ",
+      "あれ",
+      "その modifies 人, matching the installed expression.",
+      "それ is a stand-alone pronoun, not a determiner before 人.",
+      "あれ stands alone; an あ-series determiner would instead be あの."
+    ],
+    [
+      "Which source sentence identifies a distant school with a stand-alone pronoun?",
+      "あれは学校です。",
+      "この本は日本語です。",
+      "その人は先生です。",
+      "あれ can stand alone and refers to a distant thing.",
+      "この本 identifies a book, not a distant school.",
+      "その人 identifies a person, not a school."
+    ]
+  ],
+  "independent": "Write a three-turn classroom exchange: identify one object nearby with この + noun, another person or object in your listener's context with その + noun, and a distant object with a stand-alone demonstrative. Check which expressions require an adjacent noun.",
+  "unitId": "a1-unit-09",
+  "examples": [
+    [
+      "この本は日本語です。",
+      "この modifies 本, referring to a particular book."
+    ],
+    [
+      "その人は先生です。",
+      "その modifies 人, identifying a person from context."
+    ],
+    [
+      "これは本です。",
+      "これ stands alone as the topic."
+    ],
+    [
+      "それは水です。",
+      "それ stands alone; it does not modify 水."
+    ],
+    [
+      "あれは学校です。",
+      "あれ points to the distant school without an adjacent noun."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-time-ni",
+  "afterExisting": true,
+  "title": "When versus where: に and で in a daily routine",
+  "situation": "A learner describes a weekday: 毎日七時に起きます。 and 夜十時に寝ます。 name particular times; 学校で日本語を勉強します。 identifies where an action takes place. 朝ご飯を食べます。 reports a meal without an explicit time, while 昨日は勉強しませんでした。 reports yesterday's negative event.",
+  "why": "A specific clock time can take に as the point when an event occurs, as with 七時に or 十時に. In these original sentences, 学校で identifies the place where studying happens instead; school is not a clock time. 毎日 provides routine frequency and does not itself need the に time-point construction. One sentence can answer 'when' or 'where', but the particles serve different roles.",
+  "contrast": "毎日七時に起きます。 gives the waking time; 学校で日本語を勉強します。 locates studying. Do not exchange 七時に and 学校で merely because both supply context; 昨日は alone also does not call for an extra clock-time に.",
+  "checks": [
+    [
+      "You want to report the clock time at which you wake. Which installed sentence answers WHEN?",
+      "毎日七時に起きます。",
+      "学校で日本語を勉強します。",
+      "昨日は勉強しませんでした。",
+      "七時に specifies the waking time and 毎日 the routine.",
+      "学校で specifies where Japanese study takes place.",
+      "昨日は sets a day and reports a missed action, not a wake-up time."
+    ],
+    [
+      "Which source phrase identifies WHERE studying happens?",
+      "学校で",
+      "七時に",
+      "十時に",
+      "学校で identifies the location of the study activity.",
+      "七時に marks a clock time for waking.",
+      "十時に marks a clock time for sleeping."
+    ],
+    [
+      "Complete the exact bedtime expression: 夜十時＿＿寝ます。",
+      "に",
+      "で",
+      "を",
+      "に marks the specific clock time of going to bed.",
+      "で marks other relations such as the place of an action, not this point time.",
+      "を commonly marks an object, not this clock time."
+    ]
+  ],
+  "independent": "Describe waking and sleeping at two different clock times and doing one activity at a location. Underline に after clock times and で after the place. Say what 毎日 contributes separately.",
+  "unitId": "a1-unit-13",
+  "examples": [
+    [
+      "毎日七時に起きます。",
+      "七時に marks a specific daily waking time; 毎日 expresses recurrence."
+    ],
+    [
+      "夜十時に寝ます。",
+      "十時に gives the precise bedtime."
+    ],
+    [
+      "学校で日本語を勉強します。",
+      "学校で is the location where Japanese study happens."
+    ],
+    [
+      "朝ご飯を食べます。",
+      "Breakfast is mentioned without a stated clock time."
+    ],
+    [
+      "昨日は勉強しませんでした。",
+      "昨日は gives a day context; the verb is past negative."
+    ]
+  ]
+},
+{
+  "anchor": "grammar-na-noun-negative",
+  "afterExisting": true,
+  "title": "Negative descriptions: くない and じゃなかった",
+  "situation": "Someone contrasts two descriptions: 今日は寒くないです。 means it is not cold today. The same source unit says ここは静かです。 about a quiet place, while 昨日は静かじゃなかったです。 reports the place was not quiet yesterday. These are not interchangeable adjective endings.",
+  "why": "An い-adjective such as 寒い forms a nonpast negative 寒くないです. A な-adjective such as 静か uses a noun-like predicate: 静かじゃなかったです is its attested past negative in this source. The regular nonpast negative pattern 静かじゃないです can be explained as grammar but is NOT an additional canonical source sentence. Choose adjective class and time reference before choosing an ending.",
+  "contrast": "寒くないです is a nonpast い-adjective negative, while 静かじゃなかったです is a past な-adjective negative. 静かくないです and 寒いじゃなかったです incorrectly mix these adjective classes. The supplied source does not contain a separate 静かじゃないです example.",
+  "checks": [
+    [
+      "Which attested source sentence says that yesterday was NOT quiet?",
+      "昨日は静かじゃなかったです。",
+      "ここは静かです。",
+      "昨日は暑かったです。",
+      "じゃなかったです forms the source's past negative な-adjective predicate.",
+      "静かです is affirmative, not past negative.",
+      "暑かったです refers to heat and is affirmative."
+    ],
+    [
+      "Which original example says it is NOT cold today?",
+      "今日は寒くないです。",
+      "昨日は暑かったです。",
+      "昨日は静かじゃなかったです。",
+      "寒くないです is a nonpast negative い-adjective form.",
+      "暑かったです is past affirmative, not today's negative.",
+      "静かじゃなかったです is a past negative of a different adjective type."
+    ],
+    [
+      "Select the correct general NONPAST negative pattern for the な-adjective 静か (this is a constructed practice form, not a source quotation).",
+      "静かじゃないです",
+      "静かくないです",
+      "静かかったです",
+      "静かじゃないです uses a noun-like negative predicate for 静か.",
+      "くない attaches to い-adjective stems, not unchanged 静か.",
+      "かった is used for the past of い-adjectives, not unchanged 静か."
+    ]
+  ],
+  "independent": "Write two independent negative observations: a nonpast い-adjective description and a past negative な-adjective description. Compare the endings with the original source lines, and label any additional constructed form as practice rather than a quotation.",
+  "unitId": "a1-unit-14",
+  "examples": [
+    [
+      "今日は寒くないです。",
+      "寒くない is the い-adjective nonpast negative."
+    ],
+    [
+      "ここは静かです。",
+      "静かです is a polite affirmative な-adjective predicate."
+    ],
+    [
+      "昨日は静かじゃなかったです。",
+      "静かじゃなかったです is past negative for the な-adjective."
+    ],
+    [
+      "昨日は暑かったです。",
+      "暑かったです is past affirmative for the い-adjective."
+    ]
+  ]
 }
 ];
 
@@ -316,14 +1447,14 @@ function requireSourceUnit(unitId:string){
 export function deepTeachingAnchors(unitId:string):readonly string[]{
  const unit=requireSourceUnit(unitId);
  if(!unit)return [];
- return CASES.filter(c=>unit.grammarIds.includes(c.anchor)).map(c=>c.anchor);
+ return CASES.filter(c=>(!c.unitId||c.unitId===unit.id)&&unit.grammarIds.includes(c.anchor)).sort((a,b)=>Number(Boolean(a.afterExisting))-Number(Boolean(b.afterExisting))||Number(Boolean(b.unitId))-Number(Boolean(a.unitId))).map(c=>c.anchor);
 }
 /** The original course prompts are passed through unchanged: no duplicate canonical IDs or FSRS engine. */
 export function buildCur03CourseUnitSession(unitId:string):StudyStep[]{
  const base=courseUnitSession(unitId);
  const unit=requireSourceUnit(unitId);
  if(!unit)return base;
- const situations=CASES.filter(c=>unit.grammarIds.includes(c.anchor));
+ const situations=CASES.filter(c=>(!c.unitId||c.unitId===unit.id)&&unit.grammarIds.includes(c.anchor)).sort((a,b)=>Number(Boolean(a.afterExisting))-Number(Boolean(b.afterExisting))||Number(Boolean(b.unitId))-Number(Boolean(a.unitId)));
  const added:StudyStep[]=[];
  for(const c of situations){
   const prefix="cur03-"+unitId+"-"+c.anchor;
