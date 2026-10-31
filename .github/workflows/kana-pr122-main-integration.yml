@@ -1,0 +1,64 @@
+name: Kana PR 122 current-main integration
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - "apps/kana-studio/**"
+      - "apps/web/src/design/NativeKanaWorkspace.tsx"
+      - "tests/kana-*.test.ts"
+      - "tests/e2e/kana-native-integration.spec.ts"
+      - ".github/workflows/kana-pr122-main-integration.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  integrated-candidate:
+    # Draft PRs must stay draft; the full release workflow retains its own holds.
+    if: github.event.pull_request.head.ref == 'fix/kana-embedded-shortcuts-20261027' && github.event.pull_request.base.ref == 'main'
+    runs-on: ubuntu-latest
+    env:
+      VITE_PUBLIC_BASE: /japanese/
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Compose exact-base-and-head temporary integration commit (never push)
+        shell: bash
+        run: |
+          set -euo pipefail
+          # GitHub's pull_request.base.sha may be stale after main advances.
+          # Explicitly resolve the current remote main HEAD at execution time.
+          git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
+          BASE_SHA="$(git rev-parse refs/remotes/origin/main)"
+          git cat-file -e "${BASE_SHA}^{commit}"
+          git cat-file -e "${HEAD_SHA}^{commit}"
+          echo "Current remote main: $BASE_SHA"
+          echo "Exact PR head: $HEAD_SHA"
+          git checkout --detach "$BASE_SHA"
+          git -c user.name="Japanese CI" -c user.email="ci@users.noreply.github.com" \
+            merge --no-ff --no-edit "$HEAD_SHA"
+          test "$(git rev-parse HEAD^1)" = "$BASE_SHA"
+          test "$(git rev-parse HEAD^2)" = "$HEAD_SHA"
+          MERGED_SHA="$(git rev-parse HEAD)"
+          echo "Integrated candidate $MERGED_SHA (main $BASE_SHA + PR $HEAD_SHA)" >> "$GITHUB_STEP_SUMMARY"
+          echo "INTEGRATED_SHA=$MERGED_SHA" >> "$GITHUB_ENV"
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm validate:content
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Actual integration on desktop, Android emulation and compact touch
+        run: pnpm exec playwright test tests/e2e/kana-native-integration.spec.ts --project desktop-chromium --project android-mobile --project compact-mobile
+      - name: Existing navigation and mobile acceptance on integrated tree
+        run: pnpm exec playwright test tests/e2e/j22-accessibility.spec.ts tests/e2e/j20-device-recovery.spec.ts --project desktop-chromium --project android-mobile --project compact-mobile
