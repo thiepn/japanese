@@ -26,8 +26,15 @@ export function publishKanaOwnerLease(owner: string): KanaOwnerLease {
   return lease;
 }
 export type KanaStudioView = "home" | "learn" | "review" | "words" | "chart";
+/** Resolve the legacy Kana URL from the deployment's public base.
+ * Cloudflare serves at '/', while GitHub Pages retains '/japanese/'.
+ * This only changes navigation, never the owner lease or FSRS data. */
+export function kanaStudioUrl(view: KanaStudioView, base: string = import.meta.env.BASE_URL): string {
+  if (!/^\\/(?:[a-zA-Z0-9_-]+\\/)*$/.test(base)) throw Error("KANA_PUBLIC_BASE_INVALID");
+  return base + "kana/" + (view === "home" ? "" : "?view=" + encodeURIComponent(view));
+}
 export function openKanaStudio(owner: string, view: KanaStudioView = "home"): void {
   const lease = publishKanaOwnerLease(owner);
   sessionStorage.setItem(KANA_HANDOFF_KEY, JSON.stringify({...lease, at: Date.now()}));
-  window.location.assign("/japanese/kana/" + (view === "home" ? "" : "?view=" + view));
+  window.location.assign(kanaStudioUrl(view));
 }

@@ -40,7 +40,7 @@ jobs:
         run: pnpm release:p22:meta --commit "$PR_HEAD_SHA" --channel candidate
       - run: pnpm typecheck
       - name: Focused Kana progress, shortcut and canonical account regression
-        run: pnpm exec vitest run tests/kana-progress-refresh.test.ts tests/kana-shortcut-policy.test.ts tests/kana-studio-canonical.test.ts
+        run: pnpm exec vitest run tests/kana-progress-refresh.test.ts tests/kana-shortcut-policy.test.ts tests/kana-studio-canonical.test.ts tests/kana-preview-routing.test.ts
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
       - name: Real desktop, Android emulation and compact mobile Chromium
