@@ -43,6 +43,8 @@ export function optionalA1IndependentWritingJump(steps:readonly StudyStep[],curr
  const target=steps[index]!;
  if(isStudyLesson(target)||target.promptType!=="textarea"||target.eventMetadata?.cur03UnitId!==unit||
    target.eventMetadata?.nonAuthoritative!==true||target.eventMetadata?.schedulerExcluded!==true||
-   target.eventMetadata?.independentCompetenceVerified!==false)return null;
+   target.eventMetadata?.independentCompetenceVerified!==false||
+   target.eventMetadata?.cur03!==true||target.sourceId!=="thiepn-original"||
+   target.acceptedAnswers.length!==0||target.primaryTarget.kind!=="can_do")return null;
  return {index,skippedSteps:index-1};
 }
