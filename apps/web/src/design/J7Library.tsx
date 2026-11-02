@@ -4,6 +4,7 @@ import type {EntityKind} from "@thiepn/domain";
 import type {SearchResult} from "@thiepn/search";
 import {coreContent,senseForLexeme} from "../coreContent";
 import {VocabularyIllustration} from "../study/VocabularyIllustration";
+import {sharedJapaneseReferenceForLexeme} from "../study/sharedJapaneseReferenceVisuals";
 import {JCartouche,JPattern,JSeal} from "./index";
 
 type FilterKind="all"|Extract<EntityKind,"lexeme"|"kanji"|"grammar"|"sentence"|"lexical_chunk"|"text"|"production_task">;
@@ -172,6 +173,7 @@ export function J7Library({
 function ReferenceDetail({item}:{item:SearchResult}){
   const meta=kindMeta(item.entity.kind);
   const detail=resolveDetail(item);
+  const referenceConcept=item.entity.kind==="lexeme"?sharedJapaneseReferenceForLexeme(item.entity.id):null;
 
   return <article className={"j7-reference__sheet j7-reference__sheet--"+item.entity.kind}>
     <header className="j7-reference__head">
@@ -188,7 +190,7 @@ function ReferenceDetail({item}:{item:SearchResult}){
       {detail.primary?<strong>{detail.primary}</strong>:item.subtitle?<strong>{item.subtitle}</strong>:null}
     </div>
 
-    {item.entity.kind==="lexeme"?<VocabularyIllustration key={item.entity.id} lexemeId={item.entity.id} className="vocabulary-visual--reference"/>:null}
+    {referenceConcept?<VocabularyIllustration key={item.entity.id} lexemeId={item.entity.id} className="vocabulary-visual--reference" sharedConceptId={referenceConcept.conceptId}/>:null}
     {detail.badges.length?<div className="j7-reference__badges">{detail.badges.map((badge)=><span key={badge}>{badge}</span>)}</div>:null}
 
     {detail.sections.map((section)=><section className="j7-reference__section" key={section.label}>
