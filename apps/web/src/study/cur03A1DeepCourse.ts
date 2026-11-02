@@ -36,8 +36,8 @@ const CASES:readonly Case[]=[
   examples:[["お茶を飲みます。","I drink tea."],["水を飲みます。","I drink water."],["お茶をください。","Tea, please."],["本を読みます。","I read a book. The book is the object of reading."]],
   checks:[
    ["Which particle marks the thing being drunk? 水＿＿飲みます。","を","で","に","を marks 水 as the direct object of 飲みます.","で may mark an action location or means, not the drink here.","に marks destinations and various relations, not the drink here."],
-   ["A customer wants to order tea rather than describe their routine. Choose the request.","お茶をください。","お茶を飲みます。","お茶は学生です。","ください requests the specified item.","飲みます describes drinking; it is not a direct request.","A drink cannot be a student."],
-   ["Which sentence describes reading a book?","本を読みます。","本でいます。","本に食べます。","本 is the thing read, so を marks the object.","でいます is not an appropriate description of reading.","に食べます misuses the particle and verb."]
+   ["A customer wants to order tea rather than describe their routine. Choose the request.","お茶をください。","お茶を飲みます。","お茶があります。","ください requests the specified item.","飲みます describes drinking; it is not a direct request.","This says tea is available, but does not order it."],
+   ["Which sentence describes reading a book?","本を読みます。","本が好きです。","本があります。","本 is the thing read, so を marks the object.","This describes liking books, not reading them.","This reports the existence of a book, not the act of reading it."]
   ],
   independent:"Write a four-line café scene that distinguishes a request for an item from describing what you normally drink. Treat it as independent ungraded writing."},
  {anchor:"grammar-de-action-place",title:"Where an action happens: で versus に",
@@ -57,7 +57,7 @@ const CASES:readonly Case[]=[
   contrast:"駅に行きます means go to the station; 駅で待ちます means wait at the station. Do not decide between に and で based only on whether the word is a place.",
   examples:[["駅に行きます。","I will go to the station; a destination."],["駅で待ちます。","I will wait at the station; an action location."],["学校に行きます。","I go to school."],["学校で勉強します。","I study at school."]],
   checks:[
-   ["Which means that the station is your destination?","駅に行きます。","駅で待ちます。","駅を飲みます。","に with 行きます marks the destination.","で with 待ちます identifies where an activity happens, not where you are going.","を飲みます requires a drinkable object, not a station."],
+   ["Which means that the station is your destination?","駅に行きます。","駅で待ちます。","駅にいます。","に with 行きます marks the destination.","で with 待ちます identifies where an activity happens, not where you are going.","います describes being at the station, not travelling to it."],
    ["You are already at the station and will wait. Which particle fits? 駅＿＿待ちます。","で","に","を","で marks the place of the waiting action.","に could mark destination with movement, but 待ちます is an action here.","を would make the station a direct object in this sentence."],
    ["Which statement is true?","A place can take に or で depending on the event.","All place nouns must take に.","で always means travel to a destination.","The verb and the intended role determine the particle.","Places where actions happen often use で.","The destination of movement is generally marked by に here."]
   ],
@@ -80,8 +80,8 @@ const CASES:readonly Case[]=[
   examples:[["教室に先生がいます。","A teacher is in the classroom."],["かばんに本があります。","There is a book in the bag."],["庭に猫がいます。","A cat is in the garden."],["机にペンがあります。","A pen is on the desk."]],
   checks:[
    ["Your teacher is in the classroom. Complete: 教室に先生が＿＿。","います","あります","行きます","A person exists at the location, so use います.","あります is the usual existence verb for things, not people.","行きます means goes; it does not state that the teacher is present."],
-   ["A pen is on the desk. Complete: 机にペンが＿＿。","あります","います","飲みます","A pen is an inanimate thing, so use あります.","います is generally used for people and animals.","飲みます means drinks and cannot describe this existence relation."],
-   ["Which sentence says there is a cat in the garden?","庭に猫がいます。","庭に猫があります。","庭で猫を飲みます。","Cats are animals, so the basic existence verb is います.","あります is not the usual existence predicate for cats.","The action verb and object are semantically wrong."]
+   ["A pen is on the desk. Complete: 机にペンが＿＿。","あります","います","ありません","A pen is an inanimate thing, so use あります.","います is generally used for people and animals.","ありません denies that a pen is present; the question says one is there."],
+   ["Which sentence says there is a cat in the garden?","庭に猫がいます。","庭に猫があります。","庭に犬がいます。","Cats are animals, so the basic existence verb is います.","あります is not the usual existence predicate for cats.","This says a dog, rather than a cat, is in the garden."]
   ],
   independent:"Describe where one person or animal and one inanimate object are located, choosing います and あります deliberately."},
 {
