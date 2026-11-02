@@ -3,6 +3,7 @@ import {isStudyLesson} from "../../packages/study-player/src/index";
 import {coreContent} from "../../apps/web/src/coreContent";
 import {courseUnitSession} from "../../apps/web/src/study/grammarCourse";
 import {buildCur03CourseUnitSession,deepTeachingAnchors} from "../../apps/web/src/study/cur03A1DeepCourse";
+import {optionalA1ContextJump} from "../../apps/web/src/study/cur16A1Progression";
 import {coursePositionKey,readCoursePosition,saveCoursePosition,clearCoursePosition,nextSavedPosition,type PositionStore} from "../../apps/web/src/study/cur03CoursePosition";
 class MemoryStore implements PositionStore{
  data=new Map<string,string>();
@@ -470,5 +471,44 @@ describe("CUR-15 targeted original A1 source gaps",()=>{
   }
   expect(deepTeachingAnchors("a1-unit-12")).not.toContain("grammar-time-ni");
   expect(buildCur03CourseUnitSession("a1-unit-12").some(s=>s.id==="cur03-a1-unit-12-grammar-time-ni-context")).toBe(false);
+ });
+});
+
+describe("CUR-16 full A1 curriculum progression and optional navigation",()=>{
+ it("preserves every canonical original unit and offers a bounded shortcut past only the optional intro block",()=>{
+  expect(a1).toHaveLength(20);
+  for(const unit of a1){
+   const canonical=courseUnitSession(unit.id);
+   const session=buildCur03CourseUnitSession(unit.id);
+   const jump=optionalA1ContextJump(session,0);
+   expect(jump).not.toBeNull();
+   if(!jump)continue;
+   const contextCount=deepTeachingAnchors(unit.id).length;
+   expect(contextCount).toBeGreaterThanOrEqual(1);
+   expect(jump.skippedSteps).toBe(contextCount*7);
+   expect(jump.index).toBe(jump.skippedSteps+1);
+   expect(session[0]).toEqual(canonical[0]);
+   expect(session[jump.index]).toEqual(canonical[1]);
+   expect(session.slice(jump.index)).toEqual(canonical.slice(1));
+   expect(session.slice(1,jump.index).every(s=>s.id.startsWith("cur03-"+unit.id+"-"))).toBe(true);
+   expect(optionalA1ContextJump(session,1)).toEqual(jump);
+   expect(optionalA1ContextJump(session,jump.index)).toBeNull();
+   const optionalPromptIndex=session.findIndex((s,i)=>i>0&&!isStudyLesson(s));
+   expect(optionalPromptIndex).toBeGreaterThan(1);
+   expect(optionalA1ContextJump(session,optionalPromptIndex)).toBeNull();
+   expect(new Set(session.map(s=>s.id)).size).toBe(session.length);
+  }
+ });
+ it("refuses unrelated, incomplete, already-core and malformed shortcut requests",()=>{
+  const a=buildCur03CourseUnitSession("a1-unit-09");
+  const jump=optionalA1ContextJump(a,0)!;
+  expect(jump.skippedSteps).toBe(21);
+  expect(optionalA1ContextJump(a,-1)).toBeNull();
+  expect(optionalA1ContextJump(a,NaN)).toBeNull();
+  expect(optionalA1ContextJump(a,a.length)).toBeNull();
+  expect(optionalA1ContextJump(courseUnitSession("a1-unit-09"),0)).toBeNull();
+  expect(optionalA1ContextJump(a.slice(0,jump.index),0)).toBeNull();
+  const swapped=[...a];swapped[1]=a[jump.index]!;
+  expect(optionalA1ContextJump(swapped,0)).toBeNull();
  });
 });

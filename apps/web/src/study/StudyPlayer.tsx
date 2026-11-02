@@ -5,6 +5,7 @@ import "./e11Practice.css";
 import "./e08Revision.css";
 import {useEffect,useMemo,useRef,useState,type ReactNode} from "react";
 import {presentedKanaChoices} from "./kanaChoiceOrder";
+import {optionalA1ContextJump} from "./cur16A1Progression";
 import {eligibleE07Draft,e07DraftPreference,setE07DraftPreference,saveE07Draft,readE07Draft,clearE07Draft,clearAllE07Drafts,findE07RestorableStep,E07_DRAFT_LIMIT} from "./e07DraftBuffer";
 import {getDefaultAudioProvider} from "@thiepn/audio";
 import {gradeStudyPrompt,isStudyLesson,type GradeResult,type StudyPrompt,type StudyStep} from "@thiepn/study-player";
@@ -106,6 +107,7 @@ export function StudyPlayer({steps,accountScope,initialIndex=0,initialPositionUn
   if(!step)return null;
 
   const activeStep=step;
+  const originalCourseJump=optionalA1ContextJump(steps,index);
   const e08StoredDraft=steps.filter(isStudyLesson).flatMap(item=>item.examples??[])
     .find(item=>item.expression==="Your prior submitted first draft (private)")?.note??"";
   const e08DraftReference=e08FirstDraft||e08StoredDraft;
@@ -171,6 +173,27 @@ export function StudyPlayer({steps,accountScope,initialIndex=0,initialPositionUn
     setSaveError(false);
     setAudioPlayed(false);
     setDraftNotice("restored");
+    startedAt.current=performance.now();
+  }
+
+  function jumpToOriginalCourse(targetIndex:number){
+    if(savingRef.current||audioState==="playing")return;
+    // A navigation-only jump. A failed checkpoint must not silently move the learner.
+    if(onPositionSave&&!onPositionSave(targetIndex)){
+      setPositionUnavailable(true);
+      return;
+    }
+    setPositionUnavailable(false);
+    audioProvider.current.stop();
+    setIndex(targetIndex);
+    setResponse("");
+    setDraftNotice("idle");
+    setFeedback(null);
+    setSaveError(false);
+    setAudioPlayed(false);
+    setAudioState("idle");
+    setE08Checks([]);
+    setTimerTick(0);
     startedAt.current=performance.now();
   }
 
@@ -304,6 +327,10 @@ export function StudyPlayer({steps,accountScope,initialIndex=0,initialPositionUn
           ?<p role="status">Japanese device speech is unavailable. You can continue reading and return for listening later.</p>:null}
 
         {activeStep.sourceLabel?<p className="source-note">Source: {activeStep.sourceLabel}</p>:null}
+        {originalCourseJump?<div className="cur16-course-jump" role="group" aria-label="Optional A1 teaching shortcut">
+          <p>Optional contextual teaching: {originalCourseJump.skippedSteps} steps before the original course. You can study these or go directly to the original lessons. Skipping records no answers, no proficiency evidence and no FSRS progress.</p>
+          <button className="quiet-button" type="button" disabled={saving} onClick={()=>jumpToOriginalCourse(originalCourseJump.index)}>Go to original course · skip optional contexts</button>
+        </div>:null}
         <button className="primary j5-next" type="button" onClick={advance}><span>Continue</span><i aria-hidden="true">→</i></button>
       </div>
     </StudyFrame>;

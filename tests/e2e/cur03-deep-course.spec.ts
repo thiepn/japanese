@@ -151,3 +151,33 @@ for(const [unitTitle,priorTitle,newTitle,sourceText] of [["Point to things","Poi
   await expect(page.locator(".lesson-examples strong[lang='ja']").first()).toHaveText(sourceText);
  });
 }
+
+test("CUR-16 lets A1 learners navigate directly to original course without submitting optional assessments",async({page})=>{
+ await page.goto("./#course/A1");
+ const catalog=page.getByRole("region",{name:"Six-level course catalog"});
+ const row=catalog.locator(".cur01-lessons li").filter({has:page.getByRole("heading",{name:"Point to things",exact:true})});
+ await expect(row).toBeVisible();
+ await row.getByRole("button",{name:/^(Open|Resume) lesson \d+:/i}).click();
+ await expect(page.locator(".study-lesson h1")).toHaveText("Point to things");
+ const group=page.getByRole("group",{name:"Optional A1 teaching shortcut"});
+ await expect(group.getByText("21 steps before the original course", {exact:false})).toBeVisible();
+ await group.getByRole("button",{name:/Go to original course/}).click();
+ await expect(page.locator(".study-lesson h1")).toHaveText("これ / それ / あれ");
+ await expect(page.locator(".j5-choices")).toHaveCount(0);
+ await page.getByRole("button",{name:"Exit",exact:true}).click();
+ await expect(row.getByRole("button",{name:/^(Open|Resume) lesson \d+:/i})).toContainText("Resume");
+ await page.reload();
+ const resumedRow=page.getByRole("region",{name:"Six-level course catalog"}).locator(".cur01-lessons li").filter({has:page.getByRole("heading",{name:"Point to things",exact:true})});
+ await resumedRow.getByRole("button",{name:/^(Open|Resume) lesson \d+:/i}).click();
+ await expect(page.locator(".study-lesson h1")).toHaveText("これ / それ / あれ");
+ await expect(page.getByRole("group",{name:"Optional A1 teaching shortcut"})).toHaveCount(0);
+ await page.getByRole("button",{name:"Continue",exact:true}).click();
+ await expect(page.locator(".j5-choices")).toBeVisible();
+});
+test("CUR-16 optional shortcut never appears in unrelated original vocabulary practice",async({page})=>{
+ await page.goto("./#course/A1");
+ const row=page.getByRole("region",{name:"Vocabulary and level reviews"}).locator(".cur05-vocabulary li").first();
+ await row.getByRole("button",{name:/Explore original contexts/}).click();
+ await expect(page.locator(".study-lesson h1")).toBeVisible();
+ await expect(page.getByRole("group",{name:"Optional A1 teaching shortcut"})).toHaveCount(0);
+});
