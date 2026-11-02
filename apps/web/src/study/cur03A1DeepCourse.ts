@@ -760,7 +760,7 @@ const CASES:readonly Case[]=[
   "anchor": "grammar-ne",
   "unitId": "a1-unit-20",
   "title": "Invite agreement or provide new information",
-  "situation": "Two people comment on the weather: 今日は寒いですね。 invites the listener's agreement. Another speaker gives useful directions: 駅はあそこですよ。 presents information to the listener. 日本語は難しいですか。 is instead a direct question, which can be answered with a relevant yes/no response.",
+  "situation": "Two people comment on the weather: 今日は寒いですね。 invites the listener's agreement. Another speaker gives useful directions: 駅はあそこですよ。 presents information to the listener. 日本語は難しいですか。 asks whether Japanese is difficult. A statement about how much Japanese someone understands answers a different question; it is not a direct reply to this one.",
   "why": "Sentence-final ね often seeks shared recognition or agreement, whereas よ signals information the speaker presents assertively to the listener. か marks a straightforward polite question. These are pragmatic tendencies, not fixed translations of English question tags; audience and context matter.",
   "contrast": "今日は寒いですね。 shares an observation and invites agreement. 駅はあそこですよ。 offers information. 日本語は難しいですか。 asks a question. Do not treat ね, よ and か as interchangeable punctuation.",
   "examples": [
@@ -782,7 +782,7 @@ const CASES:readonly Case[]=[
     ],
     [
       "はい、少し分かります。",
-      "はい introduces a relevant affirmative response."
+      "This states limited comprehension; it does not directly answer whether Japanese is difficult."
     ]
   ],
   "checks": [
