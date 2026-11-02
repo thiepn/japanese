@@ -28,17 +28,21 @@ export function coursePositionFingerprint(steps:readonly StudyStep[]):string{
  // semantics and per-prompt provenance, not just the old display order.
  return hashSource(JSON.stringify(steps));
 }
-export function readCoursePosition(owner:string,unitId:string,steps:readonly StudyStep[],store:PositionStore|null=storage()):number{
+/** Validated, owner-scoped navigation receipt. Does not expose or modify answer events. */
+export function readCoursePositionSnapshot(owner:string,unitId:string,steps:readonly StudyStep[],store:PositionStore|null=storage()):{index:number;updatedAt:number}|null{
  const key=coursePositionKey(owner,unitId),fingerprint=coursePositionFingerprint(steps);
  try{
-  const raw=store?.getItem(key);if(!raw||raw.length>2048)return 0;
+  const raw=store?.getItem(key);if(!raw||raw.length>2048)return null;
   const p=JSON.parse(raw) as Position;
   if(p.version!==2||p.unitId!==unitId||p.fingerprint!==fingerprint||
      !Number.isSafeInteger(p.ordinal)||p.ordinal<0||p.ordinal>=steps.length||
      p.stepId!==steps[p.ordinal]?.id||!Number.isFinite(p.updatedAt))
-   return 0;
-  return p.ordinal;
- }catch{return 0}
+   return null;
+  return {index:p.ordinal,updatedAt:p.updatedAt};
+ }catch{return null}
+}
+export function readCoursePosition(owner:string,unitId:string,steps:readonly StudyStep[],store:PositionStore|null=storage()):number{
+ return readCoursePositionSnapshot(owner,unitId,steps,store)?.index??0;
 }
 export function saveCoursePosition(owner:string,unitId:string,steps:readonly StudyStep[],index:number,store:PositionStore|null=storage()):boolean{
  const key=coursePositionKey(owner,unitId),fingerprint=coursePositionFingerprint(steps);
