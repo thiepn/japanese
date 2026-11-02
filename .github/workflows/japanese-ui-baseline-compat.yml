@@ -1,0 +1,82 @@
+name: Japanese UI original-base and current-main compatibility (read-only test)
+on:
+  push:
+    branches: [fix/japanese-ui-defects-20261102]
+permissions:
+  contents: read
+concurrency:
+  group: japanese-ui-compatibility-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  original-main-probes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      VITE_PUBLIC_BASE: /japanese/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fd25c3c7b26f60eac2061918835c9cf1d315e441
+          persist-credentials: false
+      - name: Verify unchanged original main SHA
+        run: test "$(git rev-parse HEAD)" = "fd25c3c7b26f60eac2061918835c9cf1d315e441"
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Run representative original-main failing browser cases (expected failures recorded)
+        id: original_browser
+        continue-on-error: true
+        run: env -u CI pnpm exec playwright test tests/e2e/course.spec.ts tests/e2e/e12q-on-demand-requests.spec.ts tests/e2e/e13-practical-mixer.spec.ts tests/e2e/e14-listening-handoff.spec.ts --project=desktop-chromium --workers=2 --retries=0 --max-failures=4
+      - name: Record actual old-main test outcome (not approval)
+        if: always()
+        run: |
+          echo "Original-main browser outcome: ${{ steps.original_browser.outcome }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Failures here are evidence of pre-existing test/source mismatches, not a PASS." >> "$GITHUB_STEP_SUMMARY"
+  current-main-ephemeral-tree:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      VITE_PUBLIC_BASE: /japanese/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Build temporary PR + post-#122 main tree WITHOUT branch merge or commit
+        env:
+          NEW_MAIN_SHA: a40e0ff7e8e7033fdc2de4efbd1aa8f91cd7dcf1
+          EXPECTED_ANCESTOR: fd25c3c7b26f60eac2061918835c9cf1d315e441
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git fetch --no-tags origin "$NEW_MAIN_SHA"
+          test "$(git merge-base HEAD "$NEW_MAIN_SHA")" = "$EXPECTED_ANCESTOR"
+          tree="$(git merge-tree --write-tree HEAD "$NEW_MAIN_SHA")"
+          printf 'Uncommitted integration tree: %s\n' "$tree"
+          git read-tree --reset -u "$tree"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git ls-files -u)"
+          echo "No merge commit, no remote ref update, no deployment." >> "$GITHUB_STEP_SUMMARY"
+          echo "PR commit: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+          echo "New main: $NEW_MAIN_SHA" >> "$GITHUB_STEP_SUMMARY"
+          echo "Temporary integration tree: $tree" >> "$GITHUB_STEP_SUMMARY"
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm validate:content
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Browser compatibility — UI, Library, Account and native Kana
+        run: env -u CI pnpm exec playwright test tests/e2e/ui-defect-regressions.spec.ts tests/e2e/j2-living-shell.spec.ts tests/e2e/j7-library.spec.ts tests/e2e/j17-account-panel.spec.ts tests/e2e/j22-accessibility.spec.ts tests/e2e/cur01-catalog.spec.ts tests/e2e/kana-native-integration.spec.ts tests/e2e/native-kana.spec.ts tests/e2e/kana-studio-runtime.spec.ts --workers=2 --retries=0
