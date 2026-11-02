@@ -1,0 +1,58 @@
+name: Japanese post-merge Account origin qualification
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - "packages/auth/src/index.ts"
+      - "apps/web/src/App.tsx"
+      - "apps/web/src/design/J2AppShell.tsx"
+      - "tests/platform/postmerge-account-origins.test.ts"
+      - "tests/e2e/j17-account-panel.spec.ts"
+      - "scripts/postmerge-live-origin-probe.mjs"
+      - ".github/workflows/japanese-postmerge-origin-qualification.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  auth-origin:
+    if: github.event.pull_request.head.ref == 'fix/postmerge-account-origin-20261102' && github.event.pull_request.base.ref == 'main'
+    runs-on: ubuntu-latest
+    env:
+      VITE_PUBLIC_BASE: /japanese/
+      EXACT_HEAD: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Verify exact candidate checkout
+        run: test "$(git rev-parse HEAD)" = "$EXACT_HEAD"
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - run: pnpm install --no-frozen-lockfile
+      - name: Reproduce or qualify wrong-origin Account behavior
+        run: pnpm exec vitest run tests/platform/postmerge-account-origins.test.ts
+      - run: pnpm typecheck
+      - name: Account, isolation, Kana and guest persistence regression
+        run: pnpm exec vitest run tests/platform/j16d-oauth-callback.test.ts tests/platform/j18-auth-recovery.test.ts tests/platform/j39-account-intent-and-callback-integrity.test.ts tests/platform/p22-account-connect-recovery.test.ts tests/kana-progress-refresh.test.ts tests/kana-shortcut-policy.test.ts
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Browser Account and Kana without real OAuth
+        run: pnpm exec playwright test tests/e2e/j17-account-panel.spec.ts tests/e2e/kana-native-integration.spec.ts tests/e2e/kana-single-app-progress.spec.ts --project desktop-chromium --project android-mobile --project compact-mobile
+      - name: Probe public deployment identities and callback routes read-only
+        if: success()
+        run: node scripts/postmerge-live-origin-probe.mjs
+      - name: Upload redacted read-only origin evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: japanese-postmerge-origin-probe
+          path: artifacts/postmerge-live-origins.json
+          if-no-files-found: warn
+          retention-days: 14
