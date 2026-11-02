@@ -492,6 +492,13 @@ describe("CUR-16 full A1 curriculum progression and optional navigation",()=>{
    expect(session.slice(jump.index)).toEqual(canonical.slice(1));
    expect(session.slice(1,jump.index).every(s=>s.id.startsWith("cur03-"+unit.id+"-"))).toBe(true);
    expect(optionalA1ContextJump(session,1)).toEqual(jump);
+   const contextLessonIndex=2;
+   expect(optionalA1ContextJump(session,contextLessonIndex)?.index).toBe(jump.index);
+   expect(optionalA1ContextJump(session,contextLessonIndex)?.skippedSteps).toBe(jump.skippedSteps-1);
+   const lastOptionalLesson=jump.index-2;
+   if(isStudyLesson(session[lastOptionalLesson]!))
+    expect(optionalA1ContextJump(session,lastOptionalLesson)?.skippedSteps).toBe(2);
+
    expect(optionalA1ContextJump(session,jump.index)).toBeNull();
    const optionalPromptIndex=session.findIndex((s,i)=>i>0&&!isStudyLesson(s));
    expect(optionalPromptIndex).toBeGreaterThan(1);

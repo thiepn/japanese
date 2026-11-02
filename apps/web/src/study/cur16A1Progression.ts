@@ -27,5 +27,5 @@ export function optionalA1ContextJump(steps:readonly StudyStep[],currentIndex:nu
   if(currentIndex!==0&&(!isStudyLesson(active)||!active.id.startsWith(prefix)))return null;
   // Original canonical steps must remain after the optional context prelude.
   if(steps.slice(i).some(s=>s.id.startsWith(prefix)))return null;
-  return {index:i,skippedSteps:i-1};
+  return {index:i,skippedSteps:i-Math.max(1,currentIndex)};
 }

@@ -161,6 +161,11 @@ test("CUR-16 lets A1 learners navigate directly to original course without submi
  await expect(page.locator(".study-lesson h1")).toHaveText("Point to things");
  const group=page.getByRole("group",{name:"Optional A1 teaching shortcut"});
  await expect(group.getByText("21 steps before the original course", {exact:false})).toBeVisible();
+ await page.getByRole("button",{name:"Continue",exact:true}).click();
+ await expect(group.getByText("21 steps before the original course",{exact:false})).toBeVisible();
+ await page.getByRole("button",{name:"Continue",exact:true}).click();
+ await expect(group.getByText("20 steps before the original course",{exact:false})).toBeVisible();
+
  await group.getByRole("button",{name:/Go to original course/}).click();
  await expect(page.locator(".study-lesson h1")).toHaveText("これ / それ / あれ");
  await expect(page.locator(".j5-choices")).toHaveCount(0);
