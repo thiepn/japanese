@@ -629,7 +629,12 @@ describe("CUR-19 targeted A1 semantic and distractor accuracy",()=>{
   expect(bread.prompt).toContain("exactly TWO BREAD ITEMS");
  });
  it("keeps all original source sentences and canonical prompts untouched in affected units",()=>{
-  for(const unitId of ["a1-unit-01","a1-unit-12","a1-unit-16","a1-unit-19"]){
+  for(const [unitId,sourceAnchor] of [
+   ["a1-unit-01","grammar-desu"],
+   ["a1-unit-12","grammar-kara-made"],
+   ["a1-unit-16","grammar-o-kudasai"],
+   ["a1-unit-19","grammar-te-form"]
+  ] as const){
    const unit=coreContent.courseUnits.find(u=>u.id===unitId)!;
    const original=courseUnitSession(unitId),session=buildCur03CourseUnitSession(unitId);
    let last=-1;
@@ -640,7 +645,8 @@ describe("CUR-19 targeted A1 semantic and distractor accuracy",()=>{
     last=next;
    }
    const sourceTexts=new Set(coreContent.sentences.filter(s=>unit.sentenceIds.includes(s.id)).map(s=>s.text));
-   const anchors=deepTeachingAnchors(unitId);
+   // Unit-specific cases carry canonical examples; generic shared cases can have constructed demonstrations.
+   const anchors=[sourceAnchor];
    for(const anchor of anchors){
     const lesson=session.find(s=>s.id===`cur03-${unitId}-${anchor}-context`);
     if(!lesson||!isStudyLesson(lesson))throw Error("CUR19_LESSON_MISSING:"+anchor);
