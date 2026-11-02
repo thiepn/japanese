@@ -17,6 +17,13 @@ export const JAPANESE_CALLBACK_PATH = "/japanese/auth/callback/";
 export const JAPANESE_CALLBACK_URL =
   `${JAPANESE_PUBLIC_ORIGIN}${JAPANESE_CALLBACK_PATH}`;
 
+/** The only browser origin whose stored PKCE verifier can complete the
+ * currently registered Japanese OAuth callback. A new origin requires
+ * independent Account registration before it may initiate authentication. */
+export function canBeginJapaneseAccountSignIn(origin: string): boolean {
+  return origin === JAPANESE_PUBLIC_ORIGIN;
+}
+
 export const JAPANESE_ACCOUNT_STORAGE_KEY =
   "thiepn-account-japanese-auth-v1";
 export const JAPANESE_LOGIN_STORAGE_KEY =
@@ -354,8 +361,25 @@ export function createThiepnAccountAuthProvider(
     if (callbackInFlight) return callbackInFlight;
     const callbackPath = new URL(callbackUrl).pathname;
     const pathname = typeof window === "undefined" ? "" : window.location.pathname;
-    const hasReturnCode = typeof window !== "undefined"
-      && new URLSearchParams(window.location.search).has("code");
+    const query = typeof window === "undefined" ? new URLSearchParams() :
+      new URLSearchParams(window.location.search);
+    const hasReturnCode = query.has("code");
+    const wrongOrigin = typeof window !== "undefined" &&
+      typeof window.location.origin === "string" &&
+      !canBeginJapaneseAccountSignIn(window.location.origin);
+    const unexpectedOAuthResponse = ["code", "error", "access_token", "refresh_token", "id_token"]
+      .some(key => query.has(key)) ||
+      (typeof window !== "undefined" && /(?:^#|[&#])(?:access_token|refresh_token|id_token|code)=/i.test(window.location.hash));
+    // Never exchange a code from an origin that cannot own the callback's
+    // PKCE verifier, or leave a stray one-use code visible in its URL.
+    if (wrongOrigin && unexpectedOAuthResponse) {
+      window.history.replaceState(null, "", pathname);
+      clearPendingLogin();
+      clearConnectIntent();
+      recordAuthFailure("AUTH-01");
+      recordAuthStage("callback-invalid");
+      return publish(EXPIRED_CONTEXT);
+    }
     const onCallbackPath = pathname === callbackPath
       || pathname === (callbackPath.endsWith("/") ? callbackPath.slice(0, -1) : callbackPath);
     // Some hosting/proxy redirects can land on the app's canonical home path.
@@ -441,6 +465,11 @@ export function createThiepnAccountAuthProvider(
   async function beginSignIn(returnTo?: string): Promise<void> {
     if (typeof window === "undefined") {
       throw new Error("ACCOUNT_BROWSER_REQUIRED");
+    }
+    // Must happen before a connect intent or PKCE verifier is created.
+    if (typeof window.location.origin === "string" &&
+        !canBeginJapaneseAccountSignIn(window.location.origin)) {
+      throw new Error("JAPANESE_OAUTH_CALLBACK_ORIGIN_MISMATCH");
     }
     const safeReturnTo = validJapaneseReturnTo(returnTo)
       ? returnTo

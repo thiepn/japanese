@@ -1,4 +1,5 @@
 import {useEffect,useRef,useState,type ReactNode} from "react";
+import {canBeginJapaneseAccountSignIn} from "@thiepn/auth";
 import {J2KanaNavigation,type KanaTool} from "./J2KanaNavigation";
 import type {KanaView} from "../../../kana-studio/src/App";
 import {JPattern,JSeal,type JTheme} from "./index";
@@ -66,6 +67,7 @@ export function J2AppShell({
   const [sensory,setSensory]=useState(readJ9SensoryEnabled);
   const [accountOpen,setAccountOpen]=useState(false);
   const accountAreaRef=useRef<HTMLDivElement>(null);
+  const accountSignInSupported=typeof window!=="undefined" && canBeginJapaneseAccountSignIn(window.location.origin);
   const season=resolveJ10Season();
 
   useEffect(()=>{
@@ -196,9 +198,12 @@ export function J2AppShell({
                   :accountState==="loading"?"Reading your saved THIEPN Account session.":accountState==="expired"?"Your last sign-in could not be verified. Continue with local study or retry.":"You can continue studying locally without signing in."}</p>
               </div>
             </div>
+            {!accountSignInSupported&&(accountState==="anonymous"||accountState==="expired")
+              ?<p role="status" className="j2-account-panel__footnote">Account sign-in is not yet configured for this address. You can study locally as a guest. Progress is stored separately on each site; changing domains does not transfer it.</p>
+              :null}
             <div className="j2-account-panel__actions">
               {accountState==="anonymous"||accountState==="expired"
-                ?<button className="j2-account-panel__primary" disabled={accountBusy} onClick={()=>{setAccountOpen(false);onAccountAction("signIn");}} type="button">Sign in with THIEPN Account</button>
+                ?<button className="j2-account-panel__primary" disabled={accountBusy||!accountSignInSupported} onClick={()=>{setAccountOpen(false);onAccountAction("signIn");}} type="button">Sign in with THIEPN Account</button>
                 :null}
               {accountState==="authenticated"&&!accountConnected
                 ?<button className="j2-account-panel__primary" disabled={accountBusy} onClick={()=>{setAccountOpen(false);onAccountAction("connect");}} type="button">Connect Japanese to Account</button>

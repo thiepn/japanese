@@ -9,6 +9,7 @@ on:
       - "apps/web/src/design/J2AppShell.tsx"
       - "tests/platform/postmerge-account-origins.test.ts"
       - "tests/e2e/j17-account-panel.spec.ts"
+      - "tests/e2e/j20-device-recovery.spec.ts"
       - "scripts/postmerge-live-origin-probe.mjs"
       - ".github/workflows/japanese-postmerge-origin-qualification.yml"
 
@@ -44,7 +45,7 @@ jobs:
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
       - name: Browser Account and Kana without real OAuth
-        run: pnpm exec playwright test tests/e2e/j17-account-panel.spec.ts tests/e2e/kana-native-integration.spec.ts tests/e2e/kana-single-app-progress.spec.ts --project desktop-chromium --project android-mobile --project compact-mobile
+        run: pnpm exec playwright test tests/e2e/j17-account-panel.spec.ts tests/e2e/j20-device-recovery.spec.ts tests/e2e/kana-native-integration.spec.ts tests/e2e/kana-single-app-progress.spec.ts --project desktop-chromium --project android-mobile --project compact-mobile
       - name: Probe public deployment identities and callback routes read-only
         if: success()
         run: node scripts/postmerge-live-origin-probe.mjs
