@@ -55,7 +55,8 @@ export function J7Library({
       setSelectedIndex((index)=>Math.max(0,index-1));
     }else if(event.key==="Enter"){
       event.preventDefault();
-      detailRef.current?.scrollIntoView({behavior:"smooth",block:"start"});
+      detailRef.current?.scrollIntoView({behavior:"auto",block:"start"});
+      detailRef.current?.querySelector<HTMLElement>("h2")?.focus({preventScroll:true});
     }
   }
 
@@ -82,6 +83,8 @@ export function J7Library({
         <span>Search Japanese</span>
         <input
           aria-label="Search Japanese"
+          aria-controls="j7-results"
+          aria-activedescendant={selected?"j7-result-"+selectedIndex:undefined}
           autoComplete="off"
           value={query}
           onChange={(event)=>setQuery(event.target.value)}
@@ -106,6 +109,7 @@ export function J7Library({
         const count=item.kind==="all"?results.length:(counts.get(item.kind)??0);
         return <button
           className={filter===item.kind?"active":""}
+          aria-pressed={filter===item.kind}
           key={item.kind}
           onClick={()=>setFilter(item.kind)}
           type="button"
@@ -134,7 +138,7 @@ export function J7Library({
           <p>Try another Japanese form, reading, English meaning, or switch the type filter.</p>
         </div>:null}
 
-        <div className="results j7-results" role="listbox" aria-label="Japanese reference results">
+        <div className="results j7-results" id="j7-results" role="listbox" aria-label="Japanese reference results">
           {filtered.map((item,index)=><article
             className={"result-card result-"+item.entity.kind+" j7-result"+(index===selectedIndex?" is-selected":"")}
             key={item.entity.kind+":"+item.entity.id}
@@ -142,7 +146,13 @@ export function J7Library({
             <button
               aria-selected={index===selectedIndex}
               id={"j7-result-"+index}
-              onClick={()=>setSelectedIndex(index)}
+              onClick={()=>{
+                setSelectedIndex(index);
+                // The mobile reference pane follows the result list. A tapped
+                // result must move its sheet into view instead of remaining off-screen.
+                if(window.matchMedia("(max-width: 760px)").matches)
+                  window.requestAnimationFrame(()=>detailRef.current?.scrollIntoView({behavior:"auto",block:"start"}));
+              }}
               role="option"
               type="button"
             >
@@ -186,7 +196,7 @@ function ReferenceDetail({item}:{item:SearchResult}){
     </header>
 
     <div className="j7-reference__title">
-      <h2 lang="ja">{item.title}</h2>
+      <h2 lang="ja" tabIndex={-1}>{item.title}</h2>
       {detail.reading?<p lang="ja">{detail.reading}</p>:null}
       {detail.primary?<strong>{detail.primary}</strong>:item.subtitle?<strong>{item.subtitle}</strong>:null}
     </div>

@@ -1,0 +1,40 @@
+name: Japanese UI defect-only draft qualification
+on:
+  push:
+    branches: [fix/japanese-ui-defects-20261102]
+permissions:
+  contents: read
+concurrency:
+  group: japanese-ui-defects-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      VITE_PUBLIC_BASE: /japanese/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - run: pnpm install --no-frozen-lockfile
+      - name: TypeScript
+        run: pnpm typecheck
+      - name: Native regression tests
+        run: pnpm test
+      - name: Content invariants
+        run: pnpm validate:content
+      - name: Build and semantic/style budgets
+        run: pnpm build
+      - name: Chromium install
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Focused UI regression (all three Chromium profiles)
+        run: pnpm exec playwright test tests/e2e/ui-defect-regressions.spec.ts tests/e2e/j2-living-shell.spec.ts tests/e2e/j7-library.spec.ts tests/e2e/j17-account-panel.spec.ts tests/e2e/j22-accessibility.spec.ts tests/e2e/cur01-catalog.spec.ts tests/e2e/kana-native-integration.spec.ts tests/e2e/native-kana.spec.ts tests/e2e/kana-studio-runtime.spec.ts --workers=2
+      - name: Full existing browser regression (stop after eight reproducible failures)
+        run: pnpm test:e2e --max-failures=8

@@ -107,9 +107,28 @@ const StudyPlayer=lazy(()=>import("./study/StudyPlayer").then(m=>({default:m.Stu
 const J11Diagnostics=lazy(()=>import("./design/J11Diagnostics").then((module)=>({default:module.J11Diagnostics})));
 const NativeKanaWorkspace=lazy(()=>import("./design/NativeKanaWorkspace").then(m=>({default:m.NativeKanaWorkspace})));
 
+const SURFACE_IDS:readonly Surface[]=["Today","Learn","Kana","Immerse","Library","Progress"];
+function readSurfaceFromLocation():Surface{
+  if(typeof window==="undefined")return "Today";
+  // Course links retain their existing canonical fragment and precedence.
+  if(/^#course\//.test(window.location.hash))return "Learn";
+  const requested=new URL(window.location.href).searchParams.get("view");
+  // The embedded Kana workspace has historically owned the canonical root
+  // URL; retain its selection in entry state rather than altering that URL.
+  const fromEntry=window.history.state?.japaneseSurface;
+  return SURFACE_IDS.find(id=>id===requested)
+    ??SURFACE_IDS.find(id=>id===fromEntry)
+    ??"Today";
+}
+
 export function App(){
-  const [surface,setSurface]=useState<Surface>(()=>typeof window!=="undefined"&&/^#course\//.test(window.location.hash)?"Learn":"Today");
-  useEffect(()=>{const sync=()=>{if(/^#course\//.test(window.location.hash))setSurface("Learn");};window.addEventListener("popstate",sync);window.addEventListener("hashchange",sync);return()=>{window.removeEventListener("popstate",sync);window.removeEventListener("hashchange",sync);};},[]);
+  const [surface,setSurface]=useState<Surface>(readSurfaceFromLocation);
+  useEffect(()=>{
+    const sync=()=>setSurface(readSurfaceFromLocation());
+    window.addEventListener("popstate",sync);
+    window.addEventListener("hashchange",sync);
+    return()=>{window.removeEventListener("popstate",sync);window.removeEventListener("hashchange",sync);};
+  },[]);
   const [kanaEntryView,setKanaEntryView]=useState<"home"|"learn"|"review"|"words"|"chart">("home");
   const [kanaToolRequest,setKanaToolRequest]=useState<KanaToolRequest|null>(null);
   const [kanaStandardRequest,setKanaStandardRequest]=useState(0);
@@ -639,7 +658,8 @@ export function App(){
       const requestedView=url.searchParams.get("kanaView");
       url.searchParams.delete("kana");
       url.searchParams.delete("kanaView");
-      window.history.replaceState({},"",url.pathname+url.search+url.hash);
+      url.searchParams.delete("view");
+      window.history.replaceState({...window.history.state,japaneseSurface:"Kana"},"",url.pathname+url.search+url.hash);
       if(requestedView==="learn"||requestedView==="review"||requestedView==="words"||requestedView==="chart"){
         setKanaEntryView(requestedView);
       }else setKanaEntryView("home");
@@ -654,16 +674,23 @@ export function App(){
     setKanaEntryView("review");
   };
   const navigateSurface=(next:Surface)=>{
+    const url=new URL(window.location.href);
     if(diagnosticsMode){
-      const url=new URL(window.location.href);
       url.searchParams.delete("diagnostics");
       url.searchParams.delete("panel");
-      window.history.replaceState({},"",url.pathname+url.search+url.hash);
       setDiagnosticsMode(false);
     }
-    if(next!=="Learn"&&window.location.hash.startsWith("#course/")){
-      window.history.replaceState(window.history.state,"",window.location.pathname+window.location.search);
-    }
+    // Preserve historical course deep links in the back stack instead of
+    // replacing them when moving to another primary destination.
+    if(next!=="Learn"&&url.hash.startsWith("#course/"))url.hash="";
+    if(next==="Today"||next==="Kana")url.searchParams.delete("view");
+    else url.searchParams.set("view",next);
+    const destination=url.pathname+url.search+url.hash;
+    const current=window.location.pathname+window.location.search+window.location.hash;
+    // For Kana, the next history entry can intentionally have the same URL.
+    // A distinct state entry still enables browser Back/Forward and reload.
+    if(destination!==current||next!==surface)
+      window.history.pushState({...window.history.state,japaneseSurface:next},"",destination);
     if(next==="Kana")setKanaEntryView("home");
     setKanaToolRequest(null);
     setSurface(next);
@@ -711,7 +738,7 @@ export function App(){
         }}
         onAnswer={handleAnswer} onComplete={()=>finishSession("complete")} onExit={()=>finishSession("exit")}/></Suspense></main>
       :ux1Outcome
-      ?<main className="j5-study-shell" id="main-content" tabIndex={-1}><UX1Outcome scene={e02.scenes.find(scene=>scene.id==="food")} pending={ux1Outcome.pending} failed={ux1Outcome.failed} returnLabel={ux1Outcome.origin==="Today"?"Return to Today":"Return to Learn"} onReturn={()=>{setSurface(ux1Outcome.origin);setUx1Outcome(null);}}/></main>
+      ?<main className="j5-study-shell" id="main-content" tabIndex={-1}><UX1Outcome scene={e02.scenes.find(scene=>scene.id==="food")} pending={ux1Outcome.pending} failed={ux1Outcome.failed} returnLabel={ux1Outcome.origin==="Today"?"Return to Today":"Return to Learn"} onReturn={()=>{navigateSurface(ux1Outcome.origin);setUx1Outcome(null);}}/></main>
       :<J2AppShell
         surface={surface}
         onSurfaceChange={navigateSurface}
@@ -733,8 +760,8 @@ export function App(){
         {diagnosticsMode
           ?<Suspense fallback={<p className="j2-account-status" role="status">Opening technical workspace…</p>}><J11Diagnostics key={getDevelopmentAccountId()} onExit={()=>navigateSurface(surface)} accountStatus={account.status} accountConnected={accountConnected}/></Suspense>
           :<Suspense fallback={<p role="status" aria-live="polite">Opening Japanese section…</p>}>
-            {surface==="Today"&&<J3Today key={getDevelopmentAccountId()} beginner={beginner} onStartBeginner={()=>void startBeginner()} onReviewDue={()=>void reviewDue()} kanaReview={kanaReview} onStartKanaReview={(script,skill)=>void startKanaReview(script,skill)} onFlashcardsChanged={()=>{setKanaToolRequest(null);requestKanaStandardReview();setSurface("Kana");}} engagement={engagement} e07={e07} onOpenE07={openE07Action} e06={e06} onStartE06={(id)=>void startE06(id)} onStartE11Micro={(id)=>void startE11Micro(id)} onStartE06Delayed={(id)=>void startE06Delayed(id)} e05={e05} onStartE05Repair={()=>void startE05Repair()} e04={e04} onStartE04={(id)=>void startE04(id)} onStartE04Delayed={(id)=>void startE04Delayed(id)} e03={e03} onStartE03={(id)=>void startE03(id)} onStartE03Delayed={(id)=>void startE03Delayed(id)} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE02Delayed={(id)=>void startE02Delayed(id)} summary={summary} completedToday={completedToday} status={sessionStatus} e01={e01} onStartE01={()=>void startE01()} onStartE01Delayed={()=>void startE01Delayed()} onStart={()=>void startStudy()}/>}
-            {surface==="Learn"&&<J4Learn key={getDevelopmentAccountId()} beginner={beginner} onStartBeginner={()=>void startBeginner()} onReviewDue={()=>void reviewDue()} kanaReview={kanaReview} onStartKanaReview={(script,skill)=>void startKanaReview(script,skill)} onFlashcardsChanged={()=>{setKanaToolRequest(null);requestKanaStandardReview();setSurface("Kana");}} e07={e07} onOpenE07={openE07Action}
+            {surface==="Today"&&<J3Today key={getDevelopmentAccountId()} beginner={beginner} onStartBeginner={()=>void startBeginner()} onReviewDue={()=>void reviewDue()} kanaReview={kanaReview} onStartKanaReview={(script,skill)=>void startKanaReview(script,skill)} onFlashcardsChanged={()=>{navigateSurface("Kana");requestKanaStandardReview();}} engagement={engagement} e07={e07} onOpenE07={openE07Action} e06={e06} onStartE06={(id)=>void startE06(id)} onStartE11Micro={(id)=>void startE11Micro(id)} onStartE06Delayed={(id)=>void startE06Delayed(id)} e05={e05} onStartE05Repair={()=>void startE05Repair()} e04={e04} onStartE04={(id)=>void startE04(id)} onStartE04Delayed={(id)=>void startE04Delayed(id)} e03={e03} onStartE03={(id)=>void startE03(id)} onStartE03Delayed={(id)=>void startE03Delayed(id)} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE02Delayed={(id)=>void startE02Delayed(id)} summary={summary} completedToday={completedToday} status={sessionStatus} e01={e01} onStartE01={()=>void startE01()} onStartE01Delayed={()=>void startE01Delayed()} onStart={()=>void startStudy()}/>}
+            {surface==="Learn"&&<J4Learn key={getDevelopmentAccountId()} beginner={beginner} onStartBeginner={()=>void startBeginner()} onReviewDue={()=>void reviewDue()} kanaReview={kanaReview} onStartKanaReview={(script,skill)=>void startKanaReview(script,skill)} onFlashcardsChanged={()=>{navigateSurface("Kana");requestKanaStandardReview();}} e07={e07} onOpenE07={openE07Action}
               e22Selection={resolveE22OwnerSelection(currentE17Owner,e22Selection)}
               onE22Selection={value=>{if(e17WorkspaceCurrent())setE22Selection({owner:currentE17Owner,value});}} e06={e06} e16WorkspaceId={currentE17Owner} e16WorkspaceCurrent={e17WorkspaceCurrent} onStartE06={(id)=>void startE06(id)} onStartE06Full={(id)=>void startE06Full(id)} onStartE11Micro={(id)=>void startE11Micro(id)} onStartE13={(ids,mode)=>void startE13(ids,mode)} onStartE18={(keys,mode)=>void startE18(keys,mode)} e19={e19} onStartE19={key=>void startE19(key)} e14Reviews={e14Reviews} onStartE14={(id,mode)=>void startE14(id,mode)} onStartE15={(id,focus)=>void startE15(id,focus)} onStartE10Stage={(id,stage)=>void startE10Stage(id,stage)} onStartE06Delayed={(id)=>void startE06Delayed(id)} onStartE06FullDelayed={(id)=>void startE06FullDelayed(id)} onStartE10DelayedStage={(id,stage)=>void startE10DelayedStage(id,stage)} onStartE06Preview={(id)=>void startE06Preview(id)} e05={e05} onStartE05Repair={()=>void startE05Repair()} onStartE03Preview={(id)=>void startE03Preview(id)} onStartE02Preview={(id)=>void startE02Preview(id)} e04={e04} onStartE04={(id)=>void startE04(id)} onStartE04Delayed={(id)=>void startE04Delayed(id)} onStartE04Preview={(id)=>void startE04Preview(id)} e03={e03} onStartE03={(id)=>void startE03(id)} onStartE03Delayed={(id)=>void startE03Delayed(id)} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE02Delayed={(id)=>void startE02Delayed(id)} e01={e01} onStartE01={()=>void startE01()} onStartE01Delayed={()=>void startE01Delayed()} summary={summary} reviewOverview={reviewOverview} onReviewLevels={(levels)=>void startLevelReview(levels)} onResumeReview={()=>void resumeLevelReview()} onPreviewWord={(id)=>void previewCourseWord(id)} onCur06Journey={(id,mode,unitId,intent,contrastId)=>void openVocabularyJourney(id,mode,unitId,intent,contrastId)} onCur07Recover={restoreVocabularyJourney} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} onPreferredCoachChainApplied={()=>setPreferredCoachChain(null)} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id,intent)=>void startCourseUnit(id,intent)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>}
             {surface==="Kana"&&<NativeKanaWorkspace key={getDevelopmentAccountId()} owner={getDevelopmentAccountId()}
@@ -744,9 +771,9 @@ export function App(){
                 const owner=getDevelopmentAccountId();
                 setKanaInlineProgress(previous=>previous?.owner===owner&&previous.due===due?previous:{owner,due});
               }}
-              onExit={()=>{setSurface("Learn");void refreshDashboard();}}
+              onExit={()=>{navigateSurface("Learn");void refreshDashboard();}}
               onProgressChange={()=>{void refreshDashboard();}}/>}
-            {surface==="Immerse"&&<Immersion key={getDevelopmentAccountId()} e07={e07} onOpenE07={openE07Action} e06={e06} onStartE06={(id)=>void startE06(id)} onStartE11Micro={(id)=>void startE11Micro(id)} onStartE06Delayed={(id)=>void startE06Delayed(id)} onStartE06Preview={(id)=>void startE06Preview(id)} e05={e05} onStartE05Repair={()=>void startE05Repair()} onStartE03Preview={(id)=>void startE03Preview(id)} e04={e04} onStartE04={(id)=>void startE04(id)} onStartE04Preview={(id)=>void startE04Preview(id)} e03={e03} onStartE03={(id)=>void startE03(id)} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE01={()=>void startE01()} onStartProductionTask={(taskId)=>void startProductiveTask(taskId)} onStartC1Synthesis={(packId)=>void startC1Synthesis(packId)} onOpenC1Coach={(chainId)=>{setPreferredCoachChain(chainId);setSurface("Learn");}}/>}
+            {surface==="Immerse"&&<Immersion key={getDevelopmentAccountId()} e07={e07} onOpenE07={openE07Action} e06={e06} onStartE06={(id)=>void startE06(id)} onStartE11Micro={(id)=>void startE11Micro(id)} onStartE06Delayed={(id)=>void startE06Delayed(id)} onStartE06Preview={(id)=>void startE06Preview(id)} e05={e05} onStartE05Repair={()=>void startE05Repair()} onStartE03Preview={(id)=>void startE03Preview(id)} e04={e04} onStartE04={(id)=>void startE04(id)} onStartE04Preview={(id)=>void startE04Preview(id)} e03={e03} onStartE03={(id)=>void startE03(id)} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE01={()=>void startE01()} onStartProductionTask={(taskId)=>void startProductiveTask(taskId)} onStartC1Synthesis={(packId)=>void startC1Synthesis(packId)} onOpenC1Coach={(chainId)=>{setPreferredCoachChain(chainId);navigateSurface("Learn");}}/>}
             {surface==="Progress"&&<J8Progress e07={e07} onOpenE07={openE07Action} e06={e06} e05={e05} onStartE05Repair={()=>void startE05Repair()} e04={e04} e03={e03} e02={e02} e01={e01} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} immersion={immersion} summary={summary} course={courseProgress} completedToday={completedToday}/>}
             {surface==="Library"&&<J7Library query={query} setQuery={(value)=>{setLibraryStatus("loading");setResults([]);setQuery(value);}} results={results} status={libraryStatus}/>}
           </Suspense>}
