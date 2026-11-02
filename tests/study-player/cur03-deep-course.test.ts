@@ -4,7 +4,7 @@ import {coreContent} from "../../apps/web/src/coreContent";
 import {courseUnitSession} from "../../apps/web/src/study/grammarCourse";
 import {buildCur03CourseUnitSession,deepTeachingAnchors} from "../../apps/web/src/study/cur03A1DeepCourse";
 import {optionalA1ContextJump,optionalA1IndependentWritingJump} from "../../apps/web/src/study/cur16A1Progression";
-import {coursePositionKey,readCoursePosition,saveCoursePosition,clearCoursePosition,nextSavedPosition,type PositionStore} from "../../apps/web/src/study/cur03CoursePosition";
+import {coursePositionKey,readCoursePosition,readCoursePositionSnapshot,saveCoursePosition,clearCoursePosition,nextSavedPosition,type PositionStore} from "../../apps/web/src/study/cur03CoursePosition";
 class MemoryStore implements PositionStore{
  data=new Map<string,string>();
  getItem(k:string){return this.data.get(k)??null}
@@ -680,5 +680,49 @@ describe("CUR-20 source-linked independent A1 entry",()=>{
   const changed=steps.map((s,i)=>i===j.index&&!isStudyLesson(s)?{...s,eventMetadata:{...s.eventMetadata,schedulerExcluded:false}}:s);
   expect(optionalA1IndependentWritingJump(changed,0)).toBeNull();
   expect(optionalA1IndependentWritingJump(steps.slice(0,optionalA1ContextJump(steps,0)!.index),0)).toBeNull();
+ });
+});
+
+describe("CUR-21 source-scoped A1 navigation hardening",()=>{
+ it("returns only validated owner-scoped checkpoints and their actual update timestamps",()=>{
+  const u="a1-unit-09",steps=buildCur03CourseUnitSession(u),store=new MemoryStore();
+  expect(readCoursePositionSnapshot("owner-a",u,steps,store)).toBeNull();
+  expect(saveCoursePosition("owner-a",u,steps,3,store)).toBe(true);
+  const receipt=readCoursePositionSnapshot("owner-a",u,steps,store);
+  expect(receipt?.index).toBe(3);
+  expect(receipt?.updatedAt).toBeTypeOf("number");
+  expect(receipt?.updatedAt).toBeGreaterThan(0);
+  expect(readCoursePosition("owner-a",u,steps,store)).toBe(3);
+  expect(readCoursePositionSnapshot("owner-b",u,steps,store)).toBeNull();
+  expect(readCoursePositionSnapshot("owner-a","a1-unit-08",buildCur03CourseUnitSession("a1-unit-08"),store)).toBeNull();
+  const key=coursePositionKey("owner-a",u),prior=store.getItem(key);
+  const tampered=JSON.parse(prior!);
+  store.setItem(key,JSON.stringify({...tampered,updatedAt:"not-a-timestamp"}));
+  expect(readCoursePositionSnapshot("owner-a",u,steps,store)).toBeNull();
+  expect(store.getItem(key)).not.toBeNull();
+  store.setItem(key,prior!);
+  const changed=steps.map((s,i)=>i===3?{...s,id:"invalid-step-id"}:s);
+  expect(readCoursePositionSnapshot("owner-a",u,changed,store)).toBeNull();
+  expect(store.getItem(key)).toBe(prior);
+ });
+ it("rejects forged graded, noncanonical or unrelated optional writing targets without awarding credit",()=>{
+  const steps=buildCur03CourseUnitSession("a1-unit-01");
+  const j=optionalA1IndependentWritingJump(steps,0);
+  expect(j).not.toBeNull();
+  if(!j)throw Error("CUR21_MISSING_SOURCE_WRITING");
+  const original=steps[j.index];
+  if(!original||isStudyLesson(original))throw Error("CUR21_WRITING_NOT_PROMPT");
+  expect(original.sourceId).toBe("thiepn-original");
+  expect(original.acceptedAnswers).toEqual([]);
+  for(const changedStep of [
+   {...original,sourceId:"unverified-source"},
+   {...original,acceptedAnswers:["学生です。"]},
+   {...original,primaryTarget:{kind:"lexeme",id:"forged"}},
+   {...original,eventMetadata:{...original.eventMetadata,cur03:false}}
+  ]){
+   const forged=steps.map((step,i)=>i===j.index?changedStep:step) as typeof steps;
+   expect(optionalA1IndependentWritingJump(forged,0)).toBeNull();
+  }
+  expect(optionalA1IndependentWritingJump(steps,1)).toBeNull();
  });
 });
