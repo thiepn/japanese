@@ -165,7 +165,7 @@ const CASES:readonly Case[]=[
       "で marks other relations, not this endpoint."
     ],
     [
-      "Which original sentence gives a single school departure time rather than a work interval?",
+      "Which original sentence gives a specific time for going to school rather than a work interval?",
       "八時に学校に行きます。",
       "九時から五時まで働きます。",
       "七時半です。",
@@ -1020,11 +1020,11 @@ const CASES:readonly Case[]=[
     [
       "Which analysis of the attested verb request is correct?",
       "話す becomes 話して before ください.",
-      "All dictionary forms simply add て unchanged.",
-      "分かりません is a て-form request.",
+      "話す becomes 話って before ください.",
+      "言う becomes 言いて before ください.",
       "話して is the attested て-form in 話してください.",
-      "Verbs have different て-form changes; 話す does not become 話すて.",
-      "分かりません is a statement about understanding."
+      "話す changes to 話して, not 話って, before ください.",
+      "言う changes to 言って, not 言いて, before ください."
     ]
   ],
   "independent": "In a new classroom situation, write three polite requests asking for writing, repetition, and slower speech. Then add a separate line stating you do not understand. Check the て-form before ください.",
@@ -1059,19 +1059,19 @@ const CASES:readonly Case[]=[
       "At a school introduction, you want to identify yourself as a STUDENT. Choose the exact original answer.",
       "学生です。",
       "先生です。",
-      "本を読みます。",
+      "学生ですか。",
       "学生です identifies the student role with a polite noun predicate.",
       "先生です identifies a teacher instead.",
-      "読みます reports an action rather than a person's role."
+      "学生ですか asks whether someone is a student; it does not identify the speaker."
     ],
     [
       "Your colleague identifies themself as a TEACHER. Which canonical answer matches?",
       "先生です。",
       "学生です。",
-      "お茶を飲みます。",
+      "先生ですか。",
       "先生です gives the teacher role, with です.",
       "学生です gives the student role instead.",
-      "飲みます is an action verb, not a noun predicate."
+      "先生ですか asks if someone is a teacher; it does not state their role."
     ],
     [
       "What grammatical purpose does です serve in 学生です。?",
@@ -1217,7 +1217,7 @@ const CASES:readonly Case[]=[
       "This requests bread and specifies a count, not coffee."
     ],
     [
-      "Which source sentence requests two bread items rather than reporting an action?",
+      "A customer requests exactly TWO BREAD ITEMS. Which original order matches?",
       "パンを二つください。",
       "野菜を食べます。",
       "水を一つください。",
@@ -1228,11 +1228,11 @@ const CASES:readonly Case[]=[
     [
       "What does を mark in コーヒーをください。?",
       "The item being requested.",
-      "A clock-time point for the order.",
-      "A polite て-form action request.",
+      "The person receiving the order.",
+      "How many coffees to serve.",
       "コーヒーを identifies coffee as the requested item.",
-      "Time points may use に, but no time is stated here.",
-      "There is no verb て-form in this item request."
+      "を marks the requested item here, not the person who receives the order.",
+      "No counter states the number of coffees; を identifies the item, not a quantity."
     ]
   ],
   "independent": "Write two restaurant orders with and without a quantity, and a separate statement of something you eat. Explain why only the first two are item requests.",
