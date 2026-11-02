@@ -206,3 +206,25 @@ test("CUR-20 A1 entry shows next lesson and resumes real ungraded writing after 
  await page.getByRole("button",{name:"Record unscored writing"}).click();
  await expect(page.getByText("UNSCORED RESPONSE")).toBeVisible();
 });
+
+test("CUR-21 next A1 card resumes the most recent actual checkpoint, not the first unstarted unit",async({page})=>{
+ await page.goto("./#course/A1");
+ const catalog=page.getByRole("region",{name:"Six-level course catalog"});
+ const card=catalog.getByRole("region",{name:"Your next A1 lesson"});
+ await expect(card.getByRole("heading",{name:/Unit 01 · Identify people/})).toBeVisible();
+ await card.getByRole("button",{name:"Start this lesson"}).click();
+ await page.getByRole("group",{name:"Optional A1 teaching shortcut"})
+   .getByRole("button",{name:/Go to original course/}).click();
+ await page.getByRole("button",{name:"Exit",exact:true}).click();
+ await expect(card.getByRole("heading",{name:/Unit 01 · Identify people/})).toBeVisible();
+ const row=catalog.locator(".cur01-lessons li")
+   .filter({has:page.getByRole("heading",{name:"Point to things",exact:true})});
+ await row.getByRole("button",{name:/^(Open|Resume) lesson \d+:/i}).click();
+ await page.getByRole("group",{name:"Optional A1 teaching shortcut"})
+   .getByRole("button",{name:/Go to original course/}).click();
+ await page.getByRole("button",{name:"Exit",exact:true}).click();
+ await expect(card.getByRole("heading",{name:/Unit 09 · Point to things/})).toBeVisible();
+ await expect(card).toContainText("Return to section");
+ await card.getByRole("button",{name:"Resume this lesson"}).click();
+ await expect(page.locator(".study-lesson h1")).toHaveText("これ / それ / あれ");
+});
