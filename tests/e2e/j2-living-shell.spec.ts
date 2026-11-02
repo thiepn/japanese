@@ -8,7 +8,7 @@ test("J2 replaces learner chrome with the living Japanese shell",async({page})=>
   await expect(brand.getByText("日本語",{exact:true})).toBeVisible();
 
   const nav=page.getByRole("navigation",{name:"Primary"});
-  await expect(nav.getByRole("button")).toHaveCount(5);
+  await expect(nav.getByRole("button")).toHaveCount(6);
   await expect(nav.getByRole("button",{name:"Today",exact:true})).toHaveAttribute("aria-current","page");
   await expect(page.getByText("P22 stable release activation · production monitoring · maintenance",{exact:true})).toHaveCount(0);
 
@@ -49,12 +49,12 @@ test("J2 isolates operations from learner Progress behind diagnostics",async({pa
   await expect(page.getByRole("heading",{name:"Start Japanese from Zero"})).toBeVisible();
 });
 
-test("J2 keeps five primary destinations thumb-safe on mobile profiles",async({page},testInfo)=>{
+test("J2 keeps six primary destinations thumb-safe on mobile profiles",async({page},testInfo)=>{
   test.skip(testInfo.project.name==="desktop-chromium","mobile shell qualification");
 
   await page.goto("./");
   const buttons=page.getByRole("navigation",{name:"Primary"}).getByRole("button");
-  await expect(buttons).toHaveCount(5);
+  await expect(buttons).toHaveCount(6);
 
   for(const button of await buttons.all()){
     const box=await button.boundingBox();

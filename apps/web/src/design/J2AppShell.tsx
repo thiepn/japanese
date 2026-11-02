@@ -69,6 +69,10 @@ export function J2AppShell({
   const season=resolveJ10Season();
 
   useEffect(()=>{
+    if(accountOpen)accountAreaRef.current?.querySelector<HTMLButtonElement>(".j2-account-panel__close")?.focus();
+  },[accountOpen]);
+
+  useEffect(()=>{
     if(!accountOpen)return;
     const dismiss=(event:PointerEvent)=>{
       if(event.target instanceof Node&&!accountAreaRef.current?.contains(event.target))setAccountOpen(false);
@@ -185,7 +189,7 @@ export function J2AppShell({
                 <p className="j2-account-panel__eyebrow">THIEPN · IDENTITY</p>
                 <h2>Account</h2>
               </div>
-              <button aria-label="Close Account panel" className="j2-account-panel__close" onClick={()=>setAccountOpen(false)} type="button">×</button>
+              <button aria-label="Close Account panel" className="j2-account-panel__close" onClick={()=>{setAccountOpen(false);accountAreaRef.current?.querySelector<HTMLButtonElement>(".j2-account")?.focus();}} type="button">×</button>
             </header>
             <div className="j2-account-panel__session" role="status">
               <span className={"j2-account-panel__indicator"+(accountState==="authenticated"?" is-connected":"")} aria-hidden="true"/>
