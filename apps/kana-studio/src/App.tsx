@@ -5,6 +5,8 @@ import { calculateDeckStatistics } from './services/srs';
 import { initSpeech } from './services/speech';
 import { kanaMap } from './data/kanaData';
 import { currentKanaView } from './services/japaneseBridge';
+import { shouldOpenKanaShortcuts } from './services/shortcutPolicy';
+import { refreshLatestKanaProgress } from './services/progressRefresh';
 import { Navigation } from './components/Navigation';
 import { HomeView } from './components/HomeView';
 import { LearnView } from './components/LearnView';
@@ -70,22 +72,27 @@ export function KanaExperience({embedded=false,initialView,onExit,onViewChange,r
 
   const [isDark, setIsDark] = useState(false);
 
-  // Load app data
+  // Only the latest refresh may publish a Kana progress snapshot. A slower
+  // earlier IndexedDB read must not roll the Japanese dashboard backwards.
+  const refreshGeneration = React.useRef(0);
+  useEffect(() => () => { refreshGeneration.current += 1; }, []);
+
+  // Load Kana and canonical Japanese projected progress as one consistent
+  // read-only snapshot; outdated or unmounted refreshes never notify Japanese.
   const refreshData = useCallback(async () => {
-    try {
-      const userSettings = await getSettings();
-      setSettings(userSettings);
-
-      const cards = await getAllStoredCards();
-      setStoredCards(cards);
-
-      const computedStats = await calculateDeckStatistics(userSettings);
-      setStats(computedStats);
-      dueCountCallback.current?.(computedStats.dueNowCount);
-      progressCallback.current?.();
-    } catch (err) {
-      console.error('Error refreshing app data:', err);
-    }
+    await refreshLatestKanaProgress(refreshGeneration, {
+      readSettings: getSettings,
+      readCards: getAllStoredCards,
+      calculateStats: (userSettings, cards) => calculateDeckStatistics(userSettings, cards),
+      publish: ({ settings: nextSettings, cards, stats: computedStats }) => {
+        setSettings(nextSettings);
+        setStoredCards(cards);
+        setStats(computedStats);
+        dueCountCallback.current?.(computedStats.dueNowCount);
+        progressCallback.current?.();
+      },
+      onError: (err) => console.error('Error refreshing app data:', err),
+    });
   }, []);
 
   // Initial load & speech synthesis
@@ -208,11 +215,8 @@ export function KanaExperience({embedded=false,initialView,onExit,onViewChange,r
         return;
       }
 
-      // Don't trigger '?' if typing in an input
-      const target = e.target as HTMLElement;
-      const isInput = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA');
-
-      if (e.key === '?' && !isInput) {
+      // Japanese owns global shortcuts when Kana is embedded.
+      if (shouldOpenKanaShortcuts(e, embedded)) {
         e.preventDefault();
         setIsShortcutsOpen(prev => !prev);
       }
@@ -220,7 +224,7 @@ export function KanaExperience({embedded=false,initialView,onExit,onViewChange,r
 
     window.addEventListener('keydown', handleGlobalKeyDown);
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
-  }, []);
+  }, [embedded]);
 
   const activeKanaItem = activeModalKanaId ? kanaMap.get(activeModalKanaId) || null : null;
 
