@@ -3,7 +3,7 @@ import {isStudyLesson} from "../../packages/study-player/src/index";
 import {coreContent} from "../../apps/web/src/coreContent";
 import {courseUnitSession} from "../../apps/web/src/study/grammarCourse";
 import {buildCur03CourseUnitSession,deepTeachingAnchors} from "../../apps/web/src/study/cur03A1DeepCourse";
-import {optionalA1ContextJump} from "../../apps/web/src/study/cur16A1Progression";
+import {optionalA1ContextJump,optionalA1IndependentWritingJump} from "../../apps/web/src/study/cur16A1Progression";
 import {coursePositionKey,readCoursePosition,saveCoursePosition,clearCoursePosition,nextSavedPosition,type PositionStore} from "../../apps/web/src/study/cur03CoursePosition";
 class MemoryStore implements PositionStore{
  data=new Map<string,string>();
