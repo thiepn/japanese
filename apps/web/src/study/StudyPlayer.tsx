@@ -559,13 +559,13 @@ export function StudyPlayer({steps,accountScope,initialIndex=0,initialPositionUn
         </div>:null}
         {currentPrompt.explanation?<p>{currentPrompt.explanation}</p>:null}
         {a1SourceWritingReview?<details className="cur21-writing-self-review">
-          <summary>Self-review using this unit's original Japanese examples</summary>
+          <summary>Self-review using THIEPN-authored A1 teaching examples</summary>
           <p>Compare the writing task with your own response. Check the situation, the grammar contrast and polite form. This does not determine correctness.</p>
           <p><strong>Grammar explanation:</strong> {a1SourceWritingReview.explanation}</p>
           <ul>{a1SourceWritingReview.examples.map(example=><li key={example.expression}>
             <strong lang="ja">{example.expression}</strong> — {example.note}
           </li>)}</ul>
-          <p>These original source examples are references, not a model answer to your independent writing. No automatic language grade or FSRS progress is awarded.</p>
+          <p>These THIEPN-authored teaching examples are references, not necessarily quotations from the canonical unit sentence list or a model answer. No automatic language grade or FSRS progress is awarded.</p>
         </details>:null}
         {misconceptionNote?<p className="e06-correction"><strong>Why that option does not fit:</strong> {misconceptionNote}</p>:null}
         {currentPrompt.eventMetadata?.e11===true&&currentPrompt.eventMetadata?.nonAuthoritative===true?<p className="e11-practice-disclaimer">E11 practice is independent of the eight required source-linked prompts. A recorded attempt, even with a correct bounded answer, is not Japanese proficiency or FSRS mastery.</p>:null}

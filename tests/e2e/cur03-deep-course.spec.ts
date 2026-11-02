@@ -252,7 +252,7 @@ test("CUR-22 ungraded writing feedback exposes real source comparisons, not an a
  await page.getByRole("button",{name:"Record unscored writing"}).click();
  await expect(page.getByText("UNSCORED RESPONSE")).toBeVisible();
  const review=page.locator("details.cur21-writing-self-review");
- await expect(review.getByText("Self-review using this unit's original Japanese examples")).toBeVisible();
+ await expect(review.getByText("Self-review using THIEPN-authored A1 teaching examples")).toBeVisible();
  await review.locator("summary").click();
  await expect(review.getByText("Grammar explanation:")).toBeVisible();
  await expect(review.locator("strong[lang=ja]").first()).toBeVisible();
