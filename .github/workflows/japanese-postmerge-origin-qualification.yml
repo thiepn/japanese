@@ -48,8 +48,6 @@ jobs:
       - name: Browser Account and Kana without real OAuth
         run: pnpm exec playwright test tests/e2e/j17-account-panel.spec.ts tests/e2e/j20-device-recovery.spec.ts tests/e2e/kana-native-integration.spec.ts tests/e2e/kana-single-app-progress.spec.ts --project desktop-chromium --project android-mobile --project compact-mobile
       - name: Real public Chromium guest-only Kana navigation and persistence
-        env:
-          EXPECTED_MAIN_SHA: a40e0ff7e8e7033fdc2de4efbd1aa8f91cd7dcf1
         run: pnpm exec playwright test tests/e2e/postmerge-live-guest.spec.ts --project desktop-chromium --project android-mobile
       - name: Probe public deployment identities and callback routes read-only
         if: success()
