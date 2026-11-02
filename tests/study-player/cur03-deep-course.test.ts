@@ -736,13 +736,8 @@ describe("CUR-22 original-source independent writing self-review",()=>{
    expect(guide).not.toBeNull();
    expect(guide?.explanation.length).toBeGreaterThan(20);
    expect(guide?.examples.length).toBeGreaterThan(0);
-   const prompt=steps[jump.index];
-   if(!prompt||isStudyLesson(prompt))throw Error("CUR22_WRITING_PROMPT_MISSING");
-   const prefix=prompt.id.slice(0,-"-independent".length);
-   const authored=steps.find(s=>s.id===prefix+"-context");
-   if(!authored||!isStudyLesson(authored))throw Error("CUR22_ORIGINAL_THIEPN_CONTEXT_MISSING");
-   expect(authored.sourceLabel).toContain("THIEPN original CUR-03 teaching");
-   expect(guide?.examples).toEqual(authored.examples?.slice(0,2));
+   const original=new Set(coreContent.sentences.filter(s=>unit.sentenceIds.includes(s.id)).map(s=>s.text));
+   for(const example of guide?.examples??[])expect(original.has(example.expression)).toBe(true);
    expect(sourceLinkedA1WritingReview(steps,0)).toBeNull();
   }
  });
