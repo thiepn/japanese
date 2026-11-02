@@ -596,3 +596,57 @@ describe("CUR-18 defensible A1 distractors",()=>{
   }
  });
 });
+
+describe("CUR-19 targeted A1 semantic and distractor accuracy",()=>{
+ const repairs=[
+  {unit:"a1-unit-01",anchor:"grammar-desu",n:1,correct:"学生です。",foils:["先生です。","学生ですか。"]},
+  {unit:"a1-unit-01",anchor:"grammar-desu",n:2,correct:"先生です。",foils:["学生です。","先生ですか。"]},
+  {unit:"a1-unit-19",anchor:"grammar-te-form",n:3,correct:"話す becomes 話して before ください.",foils:["話す becomes 話って before ください.","言う becomes 言いて before ください."]},
+  {unit:"a1-unit-16",anchor:"grammar-o-kudasai",n:2,correct:"パンを二つください。",foils:["野菜を食べます。","水を一つください。"]},
+  {unit:"a1-unit-16",anchor:"grammar-o-kudasai",n:3,correct:"The item being requested.",foils:["The person receiving the order.","How many coffees to serve."]}
+ ] as const;
+ it("offers a single intended answer and pairs both plausible mistakes with accurate distinct feedback",()=>{
+  for(const repair of repairs){
+   const step=buildCur03CourseUnitSession(repair.unit).find(s=>s.id===`cur03-${repair.unit}-${repair.anchor}-check-${repair.n}`);
+   if(!step||isStudyLesson(step))throw Error("CUR19_CHOICE_NOT_FOUND:"+repair.unit+":"+repair.n);
+   expect(step.promptType).toBe("choice");
+   expect(step.acceptedAnswers).toEqual([repair.correct]);
+   expect(step.choices).toHaveLength(3);
+   expect(new Set(step.choices)).toEqual(new Set([repair.correct,...repair.foils]));
+   const feedback=step.eventMetadata?.e06FoilFeedback;
+   if(!Array.isArray(feedback))throw Error("CUR19_FOIL_FEEDBACK_MISSING");
+   expect(new Set(feedback.map(item=>item.response))).toEqual(new Set(repair.foils));
+   for(const entry of feedback)expect(entry.feedback.trim().length).toBeGreaterThan(20);
+   expect(step.eventMetadata).toMatchObject({nonAuthoritative:true,schedulerExcluded:true,independentCompetenceVerified:false});
+  }
+  const school=buildCur03CourseUnitSession("a1-unit-12").find(s=>s.id==="cur03-a1-unit-12-grammar-kara-made-check-3");
+  if(!school||isStudyLesson(school))throw Error("CUR19_SCHEDULE_NOT_FOUND");
+  expect(school.acceptedAnswers).toEqual(["八時に学校に行きます。"]);
+  expect(school.prompt).toContain("time for going to school");
+  expect(school.prompt).not.toMatch(/departure/i);
+  const bread=buildCur03CourseUnitSession("a1-unit-16").find(s=>s.id==="cur03-a1-unit-16-grammar-o-kudasai-check-2");
+  if(!bread||isStudyLesson(bread))throw Error("CUR19_BREAD_NOT_FOUND");
+  expect(bread.prompt).toContain("exactly TWO BREAD ITEMS");
+ });
+ it("keeps all original source sentences and canonical prompts untouched in affected units",()=>{
+  for(const unitId of ["a1-unit-01","a1-unit-12","a1-unit-16","a1-unit-19"]){
+   const unit=coreContent.courseUnits.find(u=>u.id===unitId)!;
+   const original=courseUnitSession(unitId),session=buildCur03CourseUnitSession(unitId);
+   let last=-1;
+   for(const canonical of original){
+    const next=session.findIndex((s,i)=>i>last&&s.id===canonical.id);
+    expect(next).toBeGreaterThan(last);
+    expect(session[next]).toEqual(canonical);
+    last=next;
+   }
+   const sourceTexts=new Set(coreContent.sentences.filter(s=>unit.sentenceIds.includes(s.id)).map(s=>s.text));
+   const anchors=deepTeachingAnchors(unitId);
+   for(const anchor of anchors){
+    const lesson=session.find(s=>s.id===`cur03-${unitId}-${anchor}-context`);
+    if(!lesson||!isStudyLesson(lesson))throw Error("CUR19_LESSON_MISSING:"+anchor);
+    for(const example of lesson.examples??[])expect(sourceTexts.has(example.expression)).toBe(true);
+   }
+   expect(new Set(session.map(s=>s.id)).size).toBe(session.length);
+  }
+ });
+});
