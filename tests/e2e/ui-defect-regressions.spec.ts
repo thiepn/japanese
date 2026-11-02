@@ -7,7 +7,7 @@ test("UI-02 Library publishes active search result and filter selection",async({
   await page.getByRole("button",{name:"Library",exact:true}).click();
   const search=page.getByRole("textbox",{name:"Search Japanese"});
   await search.fill("person");
-  await expect(page.locator(".j7-search__status")).toHaveText(/\\d+ matches/);
+  await expect(page.locator(".j7-search__status")).toHaveText(/\d+ matches/);
   const options=page.locator(".j7-results [role=option]");
   await expect(options.first()).toBeVisible();
   await expect(search).toHaveAttribute("aria-controls","j7-results");
@@ -28,7 +28,7 @@ test("UI-03 selected mobile Library reference comes into view",async({page},test
   await page.getByRole("button",{name:"Library",exact:true}).click();
   const search=page.getByRole("textbox",{name:"Search Japanese"});
   await search.fill("person");
-  await expect(page.locator(".j7-search__status")).toHaveText(/\\d+ matches/);
+  await expect(page.locator(".j7-search__status")).toHaveText(/\d+ matches/);
   const first=page.locator(".j7-results [role=option]").first();
   await expect(first).toBeVisible();
   await first.click();
