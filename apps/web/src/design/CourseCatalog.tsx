@@ -3,7 +3,7 @@ import {isStudyLesson} from "@thiepn/study-player";
 import type {CourseUnitProgress} from "../study/runtime";
 import {buildJapaneseLevelCatalog,COURSE_LEVELS,courseLocation,parseCourseLocation,type CourseLevel} from "../study/cefrCourseCatalog";
 import {deepTeachingAnchors,buildCur03CourseUnitSession} from "../study/cur03A1DeepCourse";
-import {readCoursePosition} from "../study/cur03CoursePosition";
+import {readCoursePositionSnapshot} from "../study/cur03CoursePosition";
 import {Cur05LevelReview} from "./Cur05LevelReview";
 import type {Cur06Mode} from "../study/cur06VocabularyJourney";
 import type {Cur07Recover} from "./Cur07UnitComparison";
@@ -44,12 +44,16 @@ export function CourseCatalog({course,status,ownerId,reviewOverview,onReviewDue,
   const selected=current.lessons.find(item=>item.id===location.unitId)??null;
   // Report Resume only when the account has a source-validated exact-section pointer.
   const savedPositions=useMemo(()=>new Map(current.lessons.map(lesson=>{
-    try{return [lesson.id,readCoursePosition(ownerId,lesson.legacyUnitId,buildCur03CourseUnitSession(lesson.legacyUnitId))] as const;}
-    catch{return [lesson.id,0] as const;}
+    try{return [lesson.id,readCoursePositionSnapshot(ownerId,lesson.legacyUnitId,buildCur03CourseUnitSession(lesson.legacyUnitId))] as const;}
+    catch{return [lesson.id,null] as const;}
   })),[ownerId,current]);
-  const resume=current.lessons.find(item=>item.progress?.status==="learning")??current.lessons.find(item=>item.progress?.status!=="mastered")??current.lessons[0]??null;
+  // A real validated checkpoint takes precedence over the first unstarted unit.
+  // Among multiple checkpoints, return to the most recently saved one.
+  const recentResume=[...current.lessons].filter(item=>(savedPositions.get(item.id)?.index??0)>0)
+    .sort((a,b)=>(savedPositions.get(b.id)?.updatedAt??0)-(savedPositions.get(a.id)?.updatedAt??0))[0]??null;
+  const resume=recentResume??current.lessons.find(item=>item.progress?.status==="learning")??current.lessons.find(item=>item.progress?.status!=="mastered")??current.lessons[0]??null;
   const busy=status==="loading";
-  const resumeIndex=resume?(savedPositions.get(resume.id)??0):0;
+  const resumeIndex=resume?(savedPositions.get(resume.id)?.index??0):0;
   const resumeStep=useMemo(()=>{
     if(!resume||resumeIndex<=0)return null;
     try{
@@ -113,7 +117,7 @@ export function CourseCatalog({course,status,ownerId,reviewOverview,onReviewDue,
         <div><h2>{current.level} lessons</h2><p>{current.lessons.length?current.lessons.length+" existing course units":"No lessons published yet"}</p></div>
         {resume?<button type="button" className="cur01-continue" disabled={busy}
           onClick={()=>{select(current.level,resume.id);onStartUnit(resume.legacyUnitId,"resume");}}>
-          {(savedPositions.get(resume.id)??0)>0?"Resume":"Open"} {String(resume.number).padStart(2,"0")}
+          {(savedPositions.get(resume.id)?.index??0)>0?"Resume":"Open"} {String(resume.number).padStart(2,"0")}
         </button>:null}
       </div>
       {location.unitId&&!selected?<p role="status">This lesson is not available in {current.level}. Choose an available lesson.</p>:null}
@@ -122,7 +126,7 @@ export function CourseCatalog({course,status,ownerId,reviewOverview,onReviewDue,
           {current.lessons.map(lesson=>{
             const progress=lesson.progress;
             const active=selected?.id===lesson.id;
-            const action=(savedPositions.get(lesson.id)??0)>0?"Resume":"Open";
+            const action=(savedPositions.get(lesson.id)?.index??0)>0?"Resume":"Open";
             return <li className={active?"cur01-active":""} data-cur03-deep={deepTeachingAnchors(lesson.legacyUnitId).length>0?"true":undefined} key={lesson.id}>
               <span className="cur01-number">{String(lesson.number).padStart(2,"0")}</span>
               <div className="cur01-lesson-main"><h3>{lesson.title}</h3><p>{lesson.canDo}</p>
