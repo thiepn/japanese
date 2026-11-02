@@ -1,4 +1,5 @@
 import {useEffect,useMemo,useState} from "react";
+import {isStudyLesson} from "@thiepn/study-player";
 import type {CourseUnitProgress} from "../study/runtime";
 import {buildJapaneseLevelCatalog,COURSE_LEVELS,courseLocation,parseCourseLocation,type CourseLevel} from "../study/cefrCourseCatalog";
 import {deepTeachingAnchors,buildCur03CourseUnitSession} from "../study/cur03A1DeepCourse";
@@ -53,7 +54,7 @@ export function CourseCatalog({course,status,ownerId,reviewOverview,onReviewDue,
     if(!resume||resumeIndex<=0)return null;
     try{
       const step=buildCur03CourseUnitSession(resume.legacyUnitId)[resumeIndex];
-      return step?{section:resumeIndex+1,label:step.kind==="lesson"?step.title:step.instruction}:null;
+      return step?{section:resumeIndex+1,label:isStudyLesson(step)?step.title:step.instruction}:null;
     }catch{return null;}
   },[resume,resumeIndex]);
   const allMastered=current.lessons.length>0&&current.lessons.every(item=>item.progress?.status==="mastered");
