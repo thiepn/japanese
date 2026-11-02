@@ -48,11 +48,33 @@ export function CourseCatalog({course,status,ownerId,reviewOverview,onReviewDue,
   })),[ownerId,current]);
   const resume=current.lessons.find(item=>item.progress?.status==="learning")??current.lessons.find(item=>item.progress?.status!=="mastered")??current.lessons[0]??null;
   const busy=status==="loading";
+  const resumeIndex=resume?(savedPositions.get(resume.id)??0):0;
+  const resumeStep=useMemo(()=>{
+    if(!resume||resumeIndex<=0)return null;
+    try{
+      const step=buildCur03CourseUnitSession(resume.legacyUnitId)[resumeIndex];
+      return step?{section:resumeIndex+1,label:step.kind==="lesson"?step.title:step.instruction}:null;
+    }catch{return null;}
+  },[resume,resumeIndex]);
+  const allMastered=current.lessons.length>0&&current.lessons.every(item=>item.progress?.status==="mastered");
   return <section className="cur01-catalog" aria-label="Six-level course catalog">
     <header className="cur01-heading">
       <div><h1>Course</h1></div>
       <span lang="ja">日本語</span>
     </header>
+    {current.level==="A1"&&resume?<section className="cur01-next-lesson" aria-label="Your next A1 lesson">
+      <div>
+        <span className="cur01-next-kicker">{allMastered?"REVISIT A1":"YOUR NEXT A1 LESSON"}</span>
+        <h2>Unit {String(resume.number).padStart(2,"0")} · {resume.title}</h2>
+        <p>{resume.canDo}</p>
+        <small>{resumeStep?"Return to section "+resumeStep.section+": "+resumeStep.label:
+          allMastered?"Review this original source-linked unit.":"Start with its original source-linked introduction."}</small>
+      </div>
+      <button type="button" disabled={busy} onClick={()=>{select("A1",resume.id);onStartUnit(resume.legacyUnitId,"resume");}}>
+        {resumeIndex>0?"Resume this lesson":allMastered?"Review this lesson":"Start this lesson"}
+      </button>
+      <p className="cur01-next-note">Skip optional context without credit, or open an existing ungraded independent writing task. Canonical study results and spaced review remain separate.</p>
+    </section>:null}
     <details className="cur04-placement">
       <summary>Find a starting lesson (optional)</summary>
       <fieldset>

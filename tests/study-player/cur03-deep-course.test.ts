@@ -656,3 +656,29 @@ describe("CUR-19 targeted A1 semantic and distractor accuracy",()=>{
   }
  });
 });
+
+describe("CUR-20 source-linked independent A1 entry",()=>{
+ it("finds an authentic non-authoritative writing task without changing canonical lessons",()=>{
+  for(const u of a1){
+   const steps=buildCur03CourseUnitSession(u.id);
+   const j=optionalA1IndependentWritingJump(steps,0);
+   expect(j).not.toBeNull();
+   if(!j)continue;
+   const s=steps[j.index];
+   if(!s||isStudyLesson(s))throw Error("CUR20_MISSING_WRITING:"+u.id);
+   expect(s.promptType).toBe("textarea");
+   expect(s.acceptedAnswers).toEqual([]);
+   expect(s.eventMetadata).toMatchObject({cur03UnitId:u.id,nonAuthoritative:true,schedulerExcluded:true,independentCompetenceVerified:false});
+   expect(optionalA1IndependentWritingJump(steps,1)).toBeNull();
+   expect(optionalA1IndependentWritingJump(courseUnitSession(u.id),0)).toBeNull();
+   expect(j.index).toBeLessThan(optionalA1ContextJump(steps,0)!.index);
+  }
+ });
+ it("refuses forged graded or partial sessions",()=>{
+  const steps=buildCur03CourseUnitSession("a1-unit-01");
+  const j=optionalA1IndependentWritingJump(steps,0)!;
+  const changed=steps.map((s,i)=>i===j.index&&!isStudyLesson(s)?{...s,eventMetadata:{...s.eventMetadata,schedulerExcluded:false}}:s);
+  expect(optionalA1IndependentWritingJump(changed,0)).toBeNull();
+  expect(optionalA1IndependentWritingJump(steps.slice(0,optionalA1ContextJump(steps,0)!.index),0)).toBeNull();
+ });
+});

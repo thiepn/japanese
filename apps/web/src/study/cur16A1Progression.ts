@@ -29,3 +29,18 @@ export function optionalA1ContextJump(steps:readonly StudyStep[],currentIndex:nu
   if(steps.slice(i).some(s=>s.id.startsWith(prefix)))return null;
   return {index:i,skippedSteps:i-Math.max(1,currentIndex)};
 }
+
+/** Open an existing source-owned, ungraded A1 writing prompt from the intro.
+ * Never credit bypassed guided prompts or duplicate the grading/scheduling path. */
+export function optionalA1IndependentWritingJump(steps:readonly StudyStep[],currentIndex:number):OriginalCourseJump|null{
+ if(currentIndex!==0)return null;
+ const core=optionalA1ContextJump(steps,0);
+ const unit=/^lesson-(a1-unit-(?:0[1-9]|1[0-9]|20))-intro$/.exec(steps[0]?.id??"")?.[1];
+ if(!core||!unit)return null;
+ const index=steps.findIndex((step,i)=>i>0&&i<core.index&&!isStudyLesson(step)&&
+   step.id.startsWith("cur03-"+unit+"-")&&step.id.endsWith("-independent")&&
+   step.promptType==="textarea"&&step.eventMetadata?.cur03UnitId===unit&&
+   step.eventMetadata?.nonAuthoritative===true&&step.eventMetadata?.schedulerExcluded===true&&
+   step.eventMetadata?.independentCompetenceVerified===false);
+ return index<0?null:{index,skippedSteps:index-1};
+}

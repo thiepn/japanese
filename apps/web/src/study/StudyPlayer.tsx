@@ -5,7 +5,7 @@ import "./e11Practice.css";
 import "./e08Revision.css";
 import {useEffect,useMemo,useRef,useState,type ReactNode} from "react";
 import {presentedKanaChoices} from "./kanaChoiceOrder";
-import {optionalA1ContextJump} from "./cur16A1Progression";
+import {optionalA1ContextJump,optionalA1IndependentWritingJump} from "./cur16A1Progression";
 import {eligibleE07Draft,e07DraftPreference,setE07DraftPreference,saveE07Draft,readE07Draft,clearE07Draft,clearAllE07Drafts,findE07RestorableStep,E07_DRAFT_LIMIT} from "./e07DraftBuffer";
 import {getDefaultAudioProvider} from "@thiepn/audio";
 import {gradeStudyPrompt,isStudyLesson,type GradeResult,type StudyPrompt,type StudyStep} from "@thiepn/study-player";
@@ -108,6 +108,7 @@ export function StudyPlayer({steps,accountScope,initialIndex=0,initialPositionUn
 
   const activeStep=step;
   const originalCourseJump=optionalA1ContextJump(steps,index);
+  const independentWritingJump=optionalA1IndependentWritingJump(steps,index);
   const e08StoredDraft=steps.filter(isStudyLesson).flatMap(item=>item.examples??[])
     .find(item=>item.expression==="Your prior submitted first draft (private)")?.note??"";
   const e08DraftReference=e08FirstDraft||e08StoredDraft;
@@ -176,7 +177,7 @@ export function StudyPlayer({steps,accountScope,initialIndex=0,initialPositionUn
     startedAt.current=performance.now();
   }
 
-  function jumpToOriginalCourse(targetIndex:number){
+  function jumpToA1Step(targetIndex:number){
     if(savingRef.current||audioState==="playing")return;
     // A navigation-only jump. A failed checkpoint must not silently move the learner.
     if(onPositionSave&&!onPositionSave(targetIndex)){
@@ -329,7 +330,10 @@ export function StudyPlayer({steps,accountScope,initialIndex=0,initialPositionUn
         {activeStep.sourceLabel?<p className="source-note">Source: {activeStep.sourceLabel}</p>:null}
         {originalCourseJump?<div className="cur16-course-jump" role="group" aria-label="Optional A1 teaching shortcut">
           <p>Optional contextual teaching: {originalCourseJump.skippedSteps} steps before the original course. You can study these or go directly to the original lessons. Skipping records no answers, no proficiency evidence and no FSRS progress.</p>
-          <button className="quiet-button" type="button" disabled={saving} onClick={()=>jumpToOriginalCourse(originalCourseJump.index)}>Go to original course · skip optional contexts</button>
+          <button className="quiet-button" type="button" disabled={saving} onClick={()=>jumpToA1Step(originalCourseJump.index)}>Go to original course · skip optional contexts</button>
+          {independentWritingJump?<button type="button" className="quiet-button" disabled={saving}
+            onClick={()=>jumpToA1Step(independentWritingJump.index)}>Try independent A1 writing · ungraded</button>:null}
+          {independentWritingJump?<small>Skip optional explanation/checks without credit to practise original ungraded source writing. Restart to study the guided material.</small>:null}
         </div>:null}
         <button className="primary j5-next" type="button" onClick={advance}><span>Continue</span><i aria-hidden="true">→</i></button>
       </div>

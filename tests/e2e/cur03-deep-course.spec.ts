@@ -186,3 +186,23 @@ test("CUR-16 optional shortcut never appears in unrelated original vocabulary pr
  await expect(page.locator(".study-lesson h1")).toBeVisible();
  await expect(page.getByRole("group",{name:"Optional A1 teaching shortcut"})).toHaveCount(0);
 });
+
+test("CUR-20 A1 entry shows next lesson and resumes real ungraded writing after reload",async({page})=>{
+ await page.goto("./#course/A1");
+ const catalog=page.getByRole("region",{name:"Six-level course catalog"});
+ const card=catalog.getByRole("region",{name:"Your next A1 lesson"});
+ await expect(card.getByRole("heading",{name:/Unit 01 · Identify people/})).toBeVisible();
+ await card.getByRole("button",{name:"Start this lesson"}).click();
+ await expect(page.locator(".study-lesson h1")).toHaveText("Identify people");
+ await page.getByRole("group",{name:"Optional A1 teaching shortcut"})
+   .getByRole("button",{name:"Try independent A1 writing · ungraded"}).click();
+ await expect(page.locator(".j5-writing textarea")).toBeVisible();
+ await page.getByRole("button",{name:"Exit",exact:true}).click();
+ await expect(card).toContainText("Return to section");
+ await page.reload();
+ await catalog.getByRole("region",{name:"Your next A1 lesson"}).getByRole("button",{name:"Resume this lesson"}).click();
+ await expect(page.locator(".j5-writing textarea")).toBeVisible();
+ await page.locator(".j5-writing textarea").fill("私は学生です。");
+ await page.getByRole("button",{name:"Record unscored writing"}).click();
+ await expect(page.getByText("UNSCORED RESPONSE")).toBeVisible();
+});
