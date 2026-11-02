@@ -38,9 +38,11 @@ export function optionalA1IndependentWritingJump(steps:readonly StudyStep[],curr
  const unit=/^lesson-(a1-unit-(?:0[1-9]|1[0-9]|20))-intro$/.exec(steps[0]?.id??"")?.[1];
  if(!core||!unit)return null;
  const index=steps.findIndex((step,i)=>i>0&&i<core.index&&!isStudyLesson(step)&&
-   step.id.startsWith("cur03-"+unit+"-")&&step.id.endsWith("-independent")&&
-   step.promptType==="textarea"&&step.eventMetadata?.cur03UnitId===unit&&
-   step.eventMetadata?.nonAuthoritative===true&&step.eventMetadata?.schedulerExcluded===true&&
-   step.eventMetadata?.independentCompetenceVerified===false);
- return index<0?null:{index,skippedSteps:index-1};
+   step.id.startsWith("cur03-"+unit+"-")&&step.id.endsWith("-independent"));
+ if(index<0)return null;
+ const target=steps[index]!;
+ if(isStudyLesson(target)||target.promptType!=="textarea"||target.eventMetadata?.cur03UnitId!==unit||
+   target.eventMetadata?.nonAuthoritative!==true||target.eventMetadata?.schedulerExcluded!==true||
+   target.eventMetadata?.independentCompetenceVerified!==false)return null;
+ return {index,skippedSteps:index-1};
 }
