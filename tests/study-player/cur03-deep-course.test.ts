@@ -519,3 +519,33 @@ describe("CUR-16 full A1 curriculum progression and optional navigation",()=>{
   expect(optionalA1ContextJump(swapped,0)).toBeNull();
  });
 });
+
+describe("CUR-17 independent A1 teaching clarity regression",()=>{
+ it("does not teach a comprehension reply as the answer to an unrelated difficulty question",()=>{
+  const unitId="a1-unit-20",anchor="grammar-ne";
+  const unit=coreContent.courseUnits.find(u=>u.id===unitId)!;
+  const steps=buildCur03CourseUnitSession(unitId);
+  const lesson=steps.find(s=>s.id==="cur03-"+unitId+"-"+anchor+"-context");
+  if(!lesson||!isStudyLesson(lesson))throw Error("CUR17_A1_20_CONTEXT_MISSING");
+  const sourceTexts=new Set(coreContent.sentences.filter(s=>unit.sentenceIds.includes(s.id)).map(s=>s.text));
+  for(const e of lesson.examples??[])expect(sourceTexts.has(e.expression)).toBe(true);
+  const comprehension=lesson.examples?.find(e=>e.expression==="はい、少し分かります。");
+  expect(comprehension?.note).toMatch(/does not directly answer whether Japanese is difficult/i);
+  expect(lesson.body).toMatch(/answers a different question; it is not a direct reply/i);
+  const choiceSteps=steps.filter(s=>!isStudyLesson(s)&&s.eventMetadata?.cur03Anchor===anchor);
+  expect(choiceSteps).toHaveLength(4);
+  for(const prompt of choiceSteps)if(!isStudyLesson(prompt)){
+   expect(prompt.eventMetadata).toMatchObject({
+    nonAuthoritative:true,schedulerExcluded:true,independentCompetenceVerified:false
+   });
+  }
+  const original=courseUnitSession(unitId);
+  let position=-1;
+  for(const step of original){
+   const next=steps.findIndex((s,i)=>i>position&&s.id===step.id);
+   expect(next).toBeGreaterThan(position);
+   expect(steps[next]).toEqual(step);
+   position=next;
+  }
+ });
+});
