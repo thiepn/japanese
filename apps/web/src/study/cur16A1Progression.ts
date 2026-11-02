@@ -1,4 +1,5 @@
 import {isStudyLesson,type StudyStep} from "@thiepn/study-player";
+import {coreContent} from "../coreContent";
 
 export interface OriginalCourseJump {
   /** Index of the original canonical lesson, not a graded completion event. */
@@ -71,5 +72,15 @@ export function sourceLinkedA1WritingReview(steps:readonly StudyStep[],currentIn
    !context.sourceLabel?.includes("THIEPN original CUR-03 teaching · "+unit)||
    !why.sourceLabel?.includes("THIEPN original CUR-03 teaching · "+unit)||
    !context.examples?.length||!why.body.trim())return null;
- return {explanation:why.body,examples:context.examples.slice(0,2)};
+ const sourceUnit=coreContent.courseUnits.find(u=>u.id===unit&&u.level==="A1"&&u.sourceIds.includes("thiepn-original"));
+ if(!sourceUnit)return null;
+ const sourceSentences=coreContent.sentences.filter(s=>sourceUnit.sentenceIds.includes(s.id));
+ const originalTexts=new Set(sourceSentences.map(s=>s.text));
+ // Shared grammar examples may be constructed; never label them as this unit's original source.
+ const matched=context.examples.filter(e=>originalTexts.has(e.expression)).slice(0,2);
+ const examples=matched.length?matched:sourceSentences.slice(0,2).map(s=>({
+   expression:s.text,note:"Original sentence from this unit; compare its form with your own response."
+ }));
+ if(!examples.length)return null;
+ return {explanation:why.body,examples};
 }
