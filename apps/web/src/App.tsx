@@ -113,7 +113,12 @@ function readSurfaceFromLocation():Surface{
   // Course links retain their existing canonical fragment and precedence.
   if(/^#course\//.test(window.location.hash))return "Learn";
   const requested=new URL(window.location.href).searchParams.get("view");
-  return SURFACE_IDS.find(id=>id===requested)??"Today";
+  // The embedded Kana workspace has historically owned the canonical root
+  // URL; retain its selection in entry state rather than altering that URL.
+  const fromEntry=window.history.state?.japaneseSurface;
+  return SURFACE_IDS.find(id=>id===requested)
+    ??SURFACE_IDS.find(id=>id===fromEntry)
+    ??"Today";
 }
 
 export function App(){
@@ -653,8 +658,8 @@ export function App(){
       const requestedView=url.searchParams.get("kanaView");
       url.searchParams.delete("kana");
       url.searchParams.delete("kanaView");
-      url.searchParams.set("view","Kana");
-      window.history.replaceState(window.history.state,"",url.pathname+url.search+url.hash);
+      url.searchParams.delete("view");
+      window.history.replaceState({...window.history.state,japaneseSurface:"Kana"},"",url.pathname+url.search+url.hash);
       if(requestedView==="learn"||requestedView==="review"||requestedView==="words"||requestedView==="chart"){
         setKanaEntryView(requestedView);
       }else setKanaEntryView("home");
@@ -678,11 +683,14 @@ export function App(){
     // Preserve historical course deep links in the back stack instead of
     // replacing them when moving to another primary destination.
     if(next!=="Learn"&&url.hash.startsWith("#course/"))url.hash="";
-    if(next==="Today")url.searchParams.delete("view");
+    if(next==="Today"||next==="Kana")url.searchParams.delete("view");
     else url.searchParams.set("view",next);
     const destination=url.pathname+url.search+url.hash;
     const current=window.location.pathname+window.location.search+window.location.hash;
-    if(destination!==current)window.history.pushState(window.history.state,"",destination);
+    // For Kana, the next history entry can intentionally have the same URL.
+    // A distinct state entry still enables browser Back/Forward and reload.
+    if(destination!==current||next!==surface)
+      window.history.pushState({...window.history.state,japaneseSurface:next},"",destination);
     if(next==="Kana")setKanaEntryView("home");
     setKanaToolRequest(null);
     setSurface(next);

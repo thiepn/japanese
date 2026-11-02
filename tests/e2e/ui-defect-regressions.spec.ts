@@ -59,3 +59,17 @@ test("UI-05 Account entry and close restore focus",async({page})=>{
   await close.click();
   await expect(trigger).toBeFocused();
 });
+
+test("UI-04 Kana navigation keeps the canonical Japanese URL and browser history",async({page})=>{
+  await page.goto("./");
+  const primary=page.getByRole("navigation",{name:"Primary"});
+  await primary.getByRole("button",{name:"Kana",exact:true}).click();
+  await expect(page).toHaveURL(/\/japanese\/?$/);
+  await expect(primary.getByRole("button",{name:"Kana",exact:true})).toHaveAttribute("aria-current","page");
+  await page.reload();
+  await expect(primary.getByRole("button",{name:"Kana",exact:true})).toHaveAttribute("aria-current","page");
+  await page.goBack();
+  await expect(primary.getByRole("button",{name:"Today",exact:true})).toHaveAttribute("aria-current","page");
+  await page.goForward();
+  await expect(primary.getByRole("button",{name:"Kana",exact:true})).toHaveAttribute("aria-current","page");
+});
