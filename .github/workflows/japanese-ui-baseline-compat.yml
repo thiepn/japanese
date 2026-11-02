@@ -27,6 +27,8 @@ jobs:
         with:
           node-version: 24.15.0
       - run: pnpm install --no-frozen-lockfile
+      # Match the original main CI prerequisite: Vitest creates the E13 browser seed.
+      - run: pnpm test
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
       - name: Run representative original-main failing browser cases (expected failures recorded)
