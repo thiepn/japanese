@@ -3,7 +3,7 @@ import {isStudyLesson} from "../../packages/study-player/src/index";
 import {coreContent} from "../../apps/web/src/coreContent";
 import {courseUnitSession} from "../../apps/web/src/study/grammarCourse";
 import {buildCur03CourseUnitSession,deepTeachingAnchors} from "../../apps/web/src/study/cur03A1DeepCourse";
-import {optionalA1ContextJump,optionalA1IndependentWritingJump} from "../../apps/web/src/study/cur16A1Progression";
+import {optionalA1ContextJump,optionalA1IndependentWritingJump,sourceLinkedA1WritingReview} from "../../apps/web/src/study/cur16A1Progression";
 import {coursePositionKey,readCoursePosition,readCoursePositionSnapshot,saveCoursePosition,clearCoursePosition,nextSavedPosition,type PositionStore} from "../../apps/web/src/study/cur03CoursePosition";
 class MemoryStore implements PositionStore{
  data=new Map<string,string>();
@@ -724,5 +724,30 @@ describe("CUR-21 source-scoped A1 navigation hardening",()=>{
    expect(optionalA1IndependentWritingJump(forged,0)).toBeNull();
   }
   expect(optionalA1IndependentWritingJump(steps,1)).toBeNull();
+ });
+});
+
+describe("CUR-22 original-source independent writing self-review",()=>{
+ it("references only matching unit-owned teaching, never a computed proficiency grade",()=>{
+  for(const unit of a1){
+   const steps=buildCur03CourseUnitSession(unit.id);
+   const jump=optionalA1IndependentWritingJump(steps,0)!;
+   const guide=sourceLinkedA1WritingReview(steps,jump.index);
+   expect(guide).not.toBeNull();
+   expect(guide?.explanation.length).toBeGreaterThan(20);
+   expect(guide?.examples.length).toBeGreaterThan(0);
+   const original=new Set(coreContent.sentences.filter(s=>unit.sentenceIds.includes(s.id)).map(s=>s.text));
+   for(const x of guide?.examples??[])expect(original.has(x.expression)).toBe(true);
+   expect(sourceLinkedA1WritingReview(steps,0)).toBeNull();
+  }
+ });
+ it("refuses a graded or cross-unit writing candidate",()=>{
+  const steps=buildCur03CourseUnitSession("a1-unit-01");
+  const index=optionalA1IndependentWritingJump(steps,0)!.index;
+  const changed=steps.map((s,i)=>i===index&&!isStudyLesson(s)?{...s,sourceId:"other-source"}:s);
+  expect(sourceLinkedA1WritingReview(changed,index)).toBeNull();
+  expect(sourceLinkedA1WritingReview(steps,index+1)).toBeNull();
+  const forged=steps.map((s,i)=>i===index&&!isStudyLesson(s)?{...s,eventMetadata:{...s.eventMetadata,schedulerExcluded:false}}:s);
+  expect(sourceLinkedA1WritingReview(forged,index)).toBeNull();
  });
 });

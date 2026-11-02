@@ -462,8 +462,14 @@ export function App(){
     const owner=sessionOwner.current;
     coursePositionRef.current=owner&&courseUnitId?{unitId:courseUnitId,ownerId:owner,steps:queue}:null;
     const restarting=Boolean(owner&&courseUnitId&&intent==="restart"&&queue.length);
-    setSessionInitialIndex(owner&&courseUnitId&&!restarting?readCoursePosition(owner,courseUnitId,queue):0);
-    setSessionPositionUnavailable(restarting&&!saveCoursePosition(owner!,courseUnitId!,queue,0));
+    const initialIndex=owner&&courseUnitId&&!restarting?readCoursePosition(owner,courseUnitId,queue):0;
+    setSessionInitialIndex(initialIndex);
+    // A1 starting the intro is a real visit. Refresh only its existing, source-fenced
+    // owner-scoped navigation receipt; do not grant an answer, grade or FSRS credit.
+    // All non-A1 launch behavior, including explicit review restarts, stays unchanged.
+    const enteringA1=Boolean(owner&&courseUnitId&&queue.length&&/^a1-unit-(?:0[1-9]|1[0-9]|20)$/.test(courseUnitId));
+    setSessionPositionUnavailable(Boolean((restarting||enteringA1)&&
+      !saveCoursePosition(owner!,courseUnitId!,queue,initialIndex)));
     setSession(queue.length?queue:null);
   }
 

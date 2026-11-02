@@ -49,11 +49,12 @@ export function CourseCatalog({course,status,ownerId,reviewOverview,onReviewDue,
   })),[ownerId,current]);
   // A real validated checkpoint takes precedence over the first unstarted unit.
   // Among multiple checkpoints, return to the most recently saved one.
-  const recentResume=[...current.lessons].filter(item=>(savedPositions.get(item.id)?.index??0)>0)
+  const recentResume=[...current.lessons].filter(item=>savedPositions.get(item.id)!==null)
     .sort((a,b)=>(savedPositions.get(b.id)?.updatedAt??0)-(savedPositions.get(a.id)?.updatedAt??0))[0]??null;
   const resume=recentResume??current.lessons.find(item=>item.progress?.status==="learning")??current.lessons.find(item=>item.progress?.status!=="mastered")??current.lessons[0]??null;
   const busy=status==="loading";
-  const resumeIndex=resume?(savedPositions.get(resume.id)?.index??0):0;
+  const resumeReceipt=resume?savedPositions.get(resume.id)??null:null;
+  const resumeIndex=resumeReceipt?.index??0;
   const resumeStep=useMemo(()=>{
     if(!resume||resumeIndex<=0)return null;
     try{
@@ -73,10 +74,11 @@ export function CourseCatalog({course,status,ownerId,reviewOverview,onReviewDue,
         <h2>Unit {String(resume.number).padStart(2,"0")} · {resume.title}</h2>
         <p>{resume.canDo}</p>
         <small>{resumeStep?"Return to section "+resumeStep.section+": "+resumeStep.label:
+          resumeReceipt?"Return to the original unit introduction (no answers credited).":
           allMastered?"Review this original source-linked unit.":"Start with its original source-linked introduction."}</small>
       </div>
       <button type="button" disabled={busy} onClick={()=>{select("A1",resume.id);onStartUnit(resume.legacyUnitId,"resume");}}>
-        {resumeIndex>0?"Resume this lesson":allMastered?"Review this lesson":"Start this lesson"}
+        {resumeReceipt?"Resume this lesson":allMastered?"Review this lesson":"Start this lesson"}
       </button>
       <p className="cur01-next-note">Skip optional context without credit, or open an existing ungraded independent writing task. Canonical study results and spaced review remain separate.</p>
     </section>:null}
@@ -117,7 +119,7 @@ export function CourseCatalog({course,status,ownerId,reviewOverview,onReviewDue,
         <div><h2>{current.level} lessons</h2><p>{current.lessons.length?current.lessons.length+" existing course units":"No lessons published yet"}</p></div>
         {resume?<button type="button" className="cur01-continue" disabled={busy}
           onClick={()=>{select(current.level,resume.id);onStartUnit(resume.legacyUnitId,"resume");}}>
-          {(savedPositions.get(resume.id)?.index??0)>0?"Resume":"Open"} {String(resume.number).padStart(2,"0")}
+          {savedPositions.get(resume.id)?"Resume":"Open"} {String(resume.number).padStart(2,"0")}
         </button>:null}
       </div>
       {location.unitId&&!selected?<p role="status">This lesson is not available in {current.level}. Choose an available lesson.</p>:null}
@@ -126,7 +128,7 @@ export function CourseCatalog({course,status,ownerId,reviewOverview,onReviewDue,
           {current.lessons.map(lesson=>{
             const progress=lesson.progress;
             const active=selected?.id===lesson.id;
-            const action=(savedPositions.get(lesson.id)?.index??0)>0?"Resume":"Open";
+            const action=savedPositions.get(lesson.id)?"Resume":"Open";
             return <li className={active?"cur01-active":""} data-cur03-deep={deepTeachingAnchors(lesson.legacyUnitId).length>0?"true":undefined} key={lesson.id}>
               <span className="cur01-number">{String(lesson.number).padStart(2,"0")}</span>
               <div className="cur01-lesson-main"><h3>{lesson.title}</h3><p>{lesson.canDo}</p>

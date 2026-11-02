@@ -48,3 +48,28 @@ export function optionalA1IndependentWritingJump(steps:readonly StudyStep[],curr
    target.acceptedAnswers.length!==0||target.primaryTarget.kind!=="can_do")return null;
  return {index,skippedSteps:index-1};
 }
+
+/** Display-only source-based self-review. Does not judge learner text or mutate any study event. */
+export function sourceLinkedA1WritingReview(steps:readonly StudyStep[],currentIndex:number):{
+  explanation:string;
+  examples:readonly {expression:string;note:string}[];
+}|null{
+ const step=steps[currentIndex];
+ if(!step||isStudyLesson(step)||step.promptType!=="textarea"||step.sourceId!=="thiepn-original"||
+   step.eventMetadata?.cur03!==true||step.eventMetadata?.nonAuthoritative!==true||
+   step.eventMetadata?.schedulerExcluded!==true||step.eventMetadata?.independentCompetenceVerified!==false||
+   step.acceptedAnswers.length!==0)return null;
+ const unit=step.eventMetadata?.cur03UnitId,anchor=step.eventMetadata?.cur03Anchor;
+ if(typeof unit!=="string"||!/^a1-unit-(?:0[1-9]|1[0-9]|20)$/.test(unit)||
+    typeof anchor!=="string"||!/^grammar-[a-z0-9-]+$/.test(anchor))return null;
+ const prefix="cur03-"+unit+"-"+anchor;
+ if(step.id!==prefix+"-independent"||step.contextId!==prefix)return null;
+ const context=steps.find(s=>s.id===prefix+"-context");
+ const why=steps.find(s=>s.id===prefix+"-explanation");
+ if(!context||!why||!isStudyLesson(context)||!isStudyLesson(why)||
+   context.contextId!==prefix||why.contextId!==prefix||
+   !context.sourceLabel?.includes("THIEPN original CUR-03 teaching · "+unit)||
+   !why.sourceLabel?.includes("THIEPN original CUR-03 teaching · "+unit)||
+   !context.examples?.length||!why.body.trim())return null;
+ return {explanation:why.body,examples:context.examples.slice(0,2)};
+}

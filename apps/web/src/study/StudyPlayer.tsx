@@ -5,7 +5,7 @@ import "./e11Practice.css";
 import "./e08Revision.css";
 import {useEffect,useMemo,useRef,useState,type ReactNode} from "react";
 import {presentedKanaChoices} from "./kanaChoiceOrder";
-import {optionalA1ContextJump,optionalA1IndependentWritingJump} from "./cur16A1Progression";
+import {optionalA1ContextJump,optionalA1IndependentWritingJump,sourceLinkedA1WritingReview} from "./cur16A1Progression";
 import {eligibleE07Draft,e07DraftPreference,setE07DraftPreference,saveE07Draft,readE07Draft,clearE07Draft,clearAllE07Drafts,findE07RestorableStep,E07_DRAFT_LIMIT} from "./e07DraftBuffer";
 import {getDefaultAudioProvider} from "@thiepn/audio";
 import {gradeStudyPrompt,isStudyLesson,type GradeResult,type StudyPrompt,type StudyStep} from "@thiepn/study-player";
@@ -109,6 +109,7 @@ export function StudyPlayer({steps,accountScope,initialIndex=0,initialPositionUn
   const activeStep=step;
   const originalCourseJump=optionalA1ContextJump(steps,index);
   const independentWritingJump=optionalA1IndependentWritingJump(steps,index);
+  const a1SourceWritingReview=sourceLinkedA1WritingReview(steps,index);
   const e08StoredDraft=steps.filter(isStudyLesson).flatMap(item=>item.examples??[])
     .find(item=>item.expression==="Your prior submitted first draft (private)")?.note??"";
   const e08DraftReference=e08FirstDraft||e08StoredDraft;
@@ -557,6 +558,15 @@ export function StudyPlayer({steps,accountScope,initialIndex=0,initialPositionUn
           {currentPrompt.audio.reading?<small lang="ja">{currentPrompt.audio.reading}</small>:null}
         </div>:null}
         {currentPrompt.explanation?<p>{currentPrompt.explanation}</p>:null}
+        {a1SourceWritingReview?<details className="cur21-writing-self-review">
+          <summary>Self-review using this unit's original Japanese examples</summary>
+          <p>Compare the writing task with your own response. Check the situation, the grammar contrast and polite form. This does not determine correctness.</p>
+          <p><strong>Grammar explanation:</strong> {a1SourceWritingReview.explanation}</p>
+          <ul>{a1SourceWritingReview.examples.map(example=><li key={example.expression}>
+            <strong lang="ja">{example.expression}</strong> — {example.note}
+          </li>)}</ul>
+          <p>These original source examples are references, not a model answer to your independent writing. No automatic language grade or FSRS progress is awarded.</p>
+        </details>:null}
         {misconceptionNote?<p className="e06-correction"><strong>Why that option does not fit:</strong> {misconceptionNote}</p>:null}
         {currentPrompt.eventMetadata?.e11===true&&currentPrompt.eventMetadata?.nonAuthoritative===true?<p className="e11-practice-disclaimer">E11 practice is independent of the eight required source-linked prompts. A recorded attempt, even with a correct bounded answer, is not Japanese proficiency or FSRS mastery.</p>:null}
         {currentPrompt.eventMetadata?.e06===true?<p className="e06-boundary">{currentPrompt.eventMetadata.e06Stage==="delayed"?"Changed-context bounded retrieval—not formal proficiency.":currentPrompt.eventMetadata.nonAuthoritative===true?(currentPrompt.promptType==="choice"?"Optional comprehension evidence only: no original FSRS or CEFR award.":"Unscored response: device recognition and structural checks cannot grade meaning or pronunciation."):"Controlled response: independent communication is practised separately."}</p>:null}

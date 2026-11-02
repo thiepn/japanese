@@ -228,3 +228,33 @@ test("CUR-21 next A1 card resumes the most recent actual checkpoint, not the fir
  await card.getByRole("button",{name:"Resume this lesson"}).click();
  await expect(page.locator(".study-lesson h1")).toHaveText("これ / それ / あれ");
 });
+
+test("CUR-22 a first visit to A1 unit 09 is resumable even without advancing a section",async({page})=>{
+ await page.goto("./#course/A1");
+ const catalog=page.getByRole("region",{name:"Six-level course catalog"});
+ const card=catalog.getByRole("region",{name:"Your next A1 lesson"});
+ const row=catalog.locator(".cur01-lessons li").filter({has:page.getByRole("heading",{name:"Point to things",exact:true})});
+ await row.getByRole("button",{name:/^(Open|Resume) lesson \d+:/i}).click();
+ await expect(page.locator(".study-lesson h1")).toHaveText("Point to things");
+ await page.getByRole("button",{name:"Exit",exact:true}).click();
+ await expect(card.getByRole("heading",{name:/Unit 09 · Point to things/})).toBeVisible();
+ await expect(card.getByRole("button",{name:"Resume this lesson"})).toBeVisible();
+ await page.reload();
+ await catalog.getByRole("region",{name:"Your next A1 lesson"}).getByRole("button",{name:"Resume this lesson"}).click();
+ await expect(page.locator(".study-lesson h1")).toHaveText("Point to things");
+});
+test("CUR-22 ungraded writing feedback exposes real source comparisons, not an automatic language grade",async({page})=>{
+ await page.goto("./#course/A1");
+ const catalog=page.getByRole("region",{name:"Six-level course catalog"});
+ await catalog.getByRole("region",{name:"Your next A1 lesson"}).getByRole("button",{name:"Start this lesson"}).click();
+ await page.getByRole("group",{name:"Optional A1 teaching shortcut"}).getByRole("button",{name:"Try independent A1 writing · ungraded"}).click();
+ await page.locator(".j5-writing textarea").fill("私は学生です。");
+ await page.getByRole("button",{name:"Record unscored writing"}).click();
+ await expect(page.getByText("UNSCORED RESPONSE")).toBeVisible();
+ const review=page.locator("details.cur21-writing-self-review");
+ await expect(review.getByText("Self-review using this unit's original Japanese examples")).toBeVisible();
+ await review.locator("summary").click();
+ await expect(review.getByText("Grammar explanation:")).toBeVisible();
+ await expect(review.locator("strong[lang=ja]").first()).toBeVisible();
+ await expect(review.getByText("No automatic language grade or FSRS progress is awarded.",{exact:false})).toBeVisible();
+});
