@@ -549,3 +549,50 @@ describe("CUR-17 independent A1 teaching clarity regression",()=>{
   }
  });
 });
+
+describe("CUR-18 defensible A1 distractors",()=>{
+ const repairs=[
+  {anchor:"grammar-o-object",n:2,answer:"お茶をください。",foils:["お茶を飲みます。","お茶があります。"]},
+  {anchor:"grammar-o-object",n:3,answer:"本を読みます。",foils:["本が好きです。","本があります。"]},
+  {anchor:"grammar-ni-destination",n:1,answer:"駅に行きます。",foils:["駅で待ちます。","駅にいます。"]},
+  {anchor:"grammar-aru-iru",n:2,answer:"あります",foils:["います","ありません"]},
+  {anchor:"grammar-aru-iru",n:3,answer:"庭に猫がいます。",foils:["庭に猫があります。","庭に犬がいます。"]}
+ ] as const;
+ it("uses grammatical near-miss choices and keeps feedback mapped to each wrong response",()=>{
+  for(const repair of repairs){
+   const applicable=a1.filter(u=>deepTeachingAnchors(u.id).includes(repair.anchor));
+   expect(applicable.length).toBeGreaterThan(0);
+   for(const unit of applicable){
+    const session=buildCur03CourseUnitSession(unit.id);
+    const step=session.find(s=>s.id==="cur03-"+unit.id+"-"+repair.anchor+"-check-"+repair.n);
+    if(!step||isStudyLesson(step))throw Error("CUR18_CHOICE_MISSING:"+unit.id+":"+repair.anchor);
+    expect(step.promptType).toBe("choice");
+    expect(step.acceptedAnswers).toEqual([repair.answer]);
+    const expected=new Set([repair.answer,...repair.foils]);
+    expect(new Set(step.choices)).toEqual(expected);
+    expect(step.choices).toHaveLength(3);
+    const notes=step.eventMetadata?.e06FoilFeedback;
+    expect(Array.isArray(notes)).toBe(true);
+    if(!Array.isArray(notes))throw Error("CUR18_FEEDBACK_MISSING");
+    expect(new Set(notes.map(item=>item.response))).toEqual(new Set(repair.foils));
+    for(const item of notes)expect(typeof item.feedback==="string"&&item.feedback.trim().length>12).toBe(true);
+    expect(step.eventMetadata).toMatchObject({
+     nonAuthoritative:true,schedulerExcluded:true,independentCompetenceVerified:false
+    });
+   }
+  }
+ });
+ it("preserves the original canonical course order and all canonical prompt objects in affected units",()=>{
+  for(const unit of a1.filter(u=>repairs.some(r=>deepTeachingAnchors(u.id).includes(r.anchor)))){
+   const original=courseUnitSession(unit.id),actual=buildCur03CourseUnitSession(unit.id);
+   let last=-1;
+   for(const step of original){
+    const index=actual.findIndex((candidate,i)=>i>last&&candidate.id===step.id);
+    expect(index).toBeGreaterThan(last);
+    expect(actual[index]).toEqual(step);
+    last=index;
+   }
+   expect(new Set(actual.map(s=>s.id)).size).toBe(actual.length);
+  }
+ });
+});
