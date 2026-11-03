@@ -3,7 +3,8 @@ import {isStudyLesson} from "../../packages/study-player/src/index";
 import {coreContent} from "../../apps/web/src/coreContent";
 import {courseUnitSession} from "../../apps/web/src/study/grammarCourse";
 import {buildCur03CourseUnitSession,deepTeachingAnchors} from "../../apps/web/src/study/cur03A1DeepCourse";
-import {coursePositionKey,readCoursePosition,saveCoursePosition,clearCoursePosition,nextSavedPosition,type PositionStore} from "../../apps/web/src/study/cur03CoursePosition";
+import {optionalA1ContextJump,optionalA1IndependentWritingJump,sourceLinkedA1WritingReview} from "../../apps/web/src/study/cur16A1Progression";
+import {coursePositionKey,readCoursePosition,readCoursePositionSnapshot,saveCoursePosition,clearCoursePosition,nextSavedPosition,type PositionStore} from "../../apps/web/src/study/cur03CoursePosition";
 class MemoryStore implements PositionStore{
  data=new Map<string,string>();
  getItem(k:string){return this.data.get(k)??null}
@@ -121,5 +122,665 @@ describe("CUR-10 four original source-grounded A1 teaching contexts",()=>{
     }
    }
   }
+ });
+});
+
+describe("CUR-11 canonical-source A1 grammar transfer",()=>{
+ const added=[
+  ["a1-unit-05","grammar-to-with",3],
+  ["a1-unit-08","grammar-masen",3],
+  ["a1-unit-11","grammar-no-attribute",4],
+  ["a1-unit-14","grammar-i-adj-past",4],
+  ["a1-unit-16","grammar-counter-tsu",4]
+ ] as const;
+ it("does not show source-specific examples in other A1 units sharing an anchor",()=>{
+  for(const [unitId,anchor] of [
+   ["a1-unit-08","grammar-masen"],
+   ["a1-unit-11","grammar-no-attribute"],
+   ["a1-unit-16","grammar-counter-tsu"]
+  ] as const){
+   const otherUnits=coreContent.courseUnits.filter(u=>u.level==="A1"&&u.id!==unitId&&u.grammarIds.includes(anchor));
+   expect(otherUnits.length).toBeGreaterThan(0);
+   for(const other of otherUnits){
+    expect(deepTeachingAnchors(other.id)).not.toContain(anchor);
+    expect(buildCur03CourseUnitSession(other.id).some(step=>
+      step.id==="cur03-"+other.id+"-"+anchor+"-context")).toBe(false);
+   }
+  }
+ });
+ it("links all example sentences to the correct canonical A1 source unit",()=>{
+  for(const [unitId,anchor,expected] of added){
+   const u=coreContent.courseUnits.find(unit=>unit.id===unitId)!;
+   expect(u.level).toBe("A1");
+   expect(u.sourceIds).toEqual(["thiepn-original"]);
+   expect(u.grammarIds).toContain(anchor);
+   expect(deepTeachingAnchors(unitId)).toContain(anchor);
+   const steps=buildCur03CourseUnitSession(unitId);
+   expect(new Set(steps.map(step=>step.id)).size).toBe(steps.length);
+   const context=steps.find(step=>step.id==="cur03-"+unitId+"-"+anchor+"-context");
+   if(!context||!isStudyLesson(context))throw Error("CUR11_MISSING_CONTEXT");
+   expect(context.examples).toHaveLength(expected);
+   const source=new Set(coreContent.sentences.filter(s=>u.sentenceIds.includes(s.id)).map(s=>s.text));
+   for(const example of context.examples??[])expect(source.has(example.expression)).toBe(true);
+  }
+ });
+ it("preserves all original steps and fences new prompts from authoritative FSRS",()=>{
+  for(const [unitId,anchor] of added){
+   const u=coreContent.courseUnits.find(unit=>unit.id===unitId)!;
+   const original=courseUnitSession(unitId),steps=buildCur03CourseUnitSession(unitId);
+   let previous=-1;
+   for(const step of original){
+    const i=steps.findIndex((v,j)=>j>previous&&v.id===step.id);
+    expect(i).toBeGreaterThan(previous);
+    expect(steps[i]).toEqual(step);
+    previous=i;
+   }
+   const extra=steps.filter(step=>!isStudyLesson(step)&&step.eventMetadata?.cur03Anchor===anchor);
+   expect(extra).toHaveLength(4);
+   expect(extra.filter(step=>!isStudyLesson(step)&&step.promptType==="choice")).toHaveLength(3);
+   expect(extra.filter(step=>!isStudyLesson(step)&&step.promptType==="textarea")).toHaveLength(1);
+   for(const step of extra)if(!isStudyLesson(step)){
+    expect(step.primaryTarget).toEqual({kind:"can_do",id:u.canDoId});
+    expect(step.sourceId).toBe("thiepn-original");
+    expect(step.eventMetadata).toMatchObject({cur03UnitId:unitId,cur03Anchor:anchor,
+     nonAuthoritative:true,schedulerExcluded:true,independentCompetenceVerified:false});
+    if(step.promptType==="choice"){
+     expect(step.choices).toHaveLength(3);
+     expect(new Set(step.choices).size).toBe(3);
+     expect(step.choices).toContain(step.acceptedAnswers[0]);
+     expect(step.eventMetadata?.e06FoilFeedback).toHaveLength(2);
+    }else{
+     expect(step.promptType).toBe("textarea");
+     expect(step.acceptedAnswers).toEqual([]);
+    }
+   }
+  }
+ });
+});
+
+
+describe("CUR-12 four complete source-owned A1 communication journeys",()=>{
+ const additions=[
+  ["a1-unit-10","grammar-location-words",5],
+  ["a1-unit-13","grammar-masen-deshita",5],
+  ["a1-unit-17","grammar-question-words",5],
+  ["a1-unit-20","grammar-ne",5]
+ ] as const;
+ it("places the selected unit's authored context before generic shared-question instruction",()=>{
+  for(const [unitId,anchor] of [
+   ["a1-unit-10","grammar-location-words"],
+   ["a1-unit-20","grammar-ne"]
+  ] as const){
+   const steps=buildCur03CourseUnitSession(unitId);
+   expect(steps[1]?.id).toBe("cur03-"+unitId+"-"+anchor+"-context");
+   expect(deepTeachingAnchors(unitId)[0]).toBe(anchor);
+   expect(steps.some(x=>x.id==="cur03-"+unitId+"-grammar-ka-question-context")).toBe(true);
+  }
+ });
+ it("uses only sentences linked to each original canonical A1 unit",()=>{
+  for(const [unitId,anchor,expectedCount] of additions){
+   const unit=coreContent.courseUnits.find(x=>x.id===unitId)!;
+   expect(unit.level).toBe("A1"); expect(unit.grammarIds).toContain(anchor);
+   expect(unit.sourceIds).toEqual(["thiepn-original"]);
+   expect(deepTeachingAnchors(unitId)).toContain(anchor);
+   const steps=buildCur03CourseUnitSession(unitId);
+   expect(new Set(steps.map(x=>x.id)).size).toBe(steps.length);
+   const first=steps.find(s=>s.id==="cur03-"+unitId+"-"+anchor+"-context");
+   if(!first||!isStudyLesson(first))throw Error("CUR12_CONTEXT_MISSING");
+   expect(first.examples).toHaveLength(expectedCount);
+   const approved=new Set(coreContent.sentences.filter(s=>unit.sentenceIds.includes(s.id)).map(s=>s.text));
+   for(const example of first.examples??[])expect(approved.has(example.expression)).toBe(true);
+  }
+ });
+ it("keeps canonical prompt identity/order and protects every new check from FSRS",()=>{
+  for(const [unitId,anchor] of additions){
+   const before=courseUnitSession(unitId),after=buildCur03CourseUnitSession(unitId);
+   let pos=-1;
+   for(const canonical of before){
+    const next=after.findIndex((s,i)=>i>pos&&s.id===canonical.id);
+    expect(next).toBeGreaterThan(pos); expect(after[next]).toEqual(canonical);pos=next;
+   }
+   const extras=after.filter(s=>!isStudyLesson(s)&&s.eventMetadata?.cur03Anchor===anchor);
+   expect(extras).toHaveLength(4);
+   expect(extras.filter(s=>!isStudyLesson(s)&&s.promptType==="choice")).toHaveLength(3);
+   expect(extras.filter(s=>!isStudyLesson(s)&&s.promptType==="textarea")).toHaveLength(1);
+   for(const step of extras)if(!isStudyLesson(step)){
+    expect(step.primaryTarget).toEqual({kind:"can_do",id:coreContent.courseUnits.find(u=>u.id===unitId)!.canDoId});
+    expect(step.sourceId).toBe("thiepn-original");
+    expect(step.eventMetadata).toMatchObject({cur03UnitId:unitId,cur03Anchor:anchor,nonAuthoritative:true,
+     schedulerExcluded:true,independentCompetenceVerified:false});
+    if(step.promptType==="choice"){
+     expect(step.choices).toHaveLength(3);
+     expect(new Set(step.choices).size).toBe(3);
+     expect(step.choices).toContain(step.acceptedAnswers[0]);
+     expect(step.eventMetadata?.e06FoilFeedback).toHaveLength(2);
+    }else expect(step.acceptedAnswers).toEqual([]);
+   }
+  }
+ });
+ it("keeps reused grammar isolated from non-owning source units",()=>{
+  for(const [unitId,anchor] of additions){
+   const other=coreContent.courseUnits.filter(x=>x.level==="A1"&&x.id!==unitId&&x.grammarIds.includes(anchor));
+   for(const unit of other){
+    expect(deepTeachingAnchors(unit.id)).not.toContain(anchor);
+    expect(buildCur03CourseUnitSession(unit.id).some(step=>
+      step.id==="cur03-"+unit.id+"-"+anchor+"-context")).toBe(false);
+   }
+  }
+ });
+});
+
+describe("CUR-13 source-owned A1 functional transfers",()=>{
+ const cases=[
+  ["a1-unit-15","grammar-counter-nin",5],
+  ["a1-unit-12","grammar-time-counters",5],
+  ["a1-unit-07","grammar-i-adj-polite",4],
+  ["a1-unit-19","grammar-te-form",4]
+ ] as const;
+ it("renders only exact linked original sentences for the selected unit",()=>{
+  for(const [unitId,anchor,count] of cases){
+   const unit=coreContent.courseUnits.find(u=>u.id===unitId)!;
+   expect(unit.level).toBe("A1");
+   expect(unit.sourceIds).toEqual(["thiepn-original"]);
+   expect(unit.grammarIds).toContain(anchor);
+   expect(deepTeachingAnchors(unitId)[0]).toBe(anchor);
+   const steps=buildCur03CourseUnitSession(unitId);
+   const teaching=steps[1];
+   if(!teaching||!isStudyLesson(teaching))throw Error("CUR13_TEACHING_MISSING");
+   expect(teaching.id).toBe("cur03-"+unitId+"-"+anchor+"-context");
+   expect(teaching.examples).toHaveLength(count);
+   const authentic=new Set(coreContent.sentences.filter(s=>unit.sentenceIds.includes(s.id)).map(s=>s.text));
+   for(const e of teaching.examples??[])expect(authentic.has(e.expression)).toBe(true);
+   expect(new Set(steps.map(s=>s.id)).size).toBe(steps.length);
+  }
+ });
+ it("keeps the ordered canonical player steps unchanged and new tasks ungraded",()=>{
+  for(const [unitId,anchor] of cases){
+   const before=courseUnitSession(unitId),after=buildCur03CourseUnitSession(unitId);
+   let last=-1;
+   for(const step of before){
+    const index=after.findIndex((s,i)=>i>last&&s.id===step.id);
+    expect(index).toBeGreaterThan(last);
+    expect(after[index]).toEqual(step);
+    last=index;
+   }
+   const added=after.filter(s=>!isStudyLesson(s)&&s.eventMetadata?.cur03Anchor===anchor);
+   expect(added).toHaveLength(4);
+   expect(added.filter(s=>!isStudyLesson(s)&&s.promptType==="choice")).toHaveLength(3);
+   expect(added.filter(s=>!isStudyLesson(s)&&s.promptType==="textarea")).toHaveLength(1);
+   const unit=coreContent.courseUnits.find(u=>u.id===unitId)!;
+   for(const step of added)if(!isStudyLesson(step)){
+    expect(step.primaryTarget).toEqual({kind:"can_do",id:unit.canDoId});
+    expect(step.sourceId).toBe("thiepn-original");
+    expect(step.eventMetadata).toMatchObject({cur03UnitId:unitId,cur03Anchor:anchor,nonAuthoritative:true,
+      schedulerExcluded:true,independentCompetenceVerified:false});
+    if(step.promptType==="choice"){
+     expect(step.choices).toHaveLength(3);
+     expect(new Set(step.choices).size).toBe(3);
+     expect(step.choices).toContain(step.acceptedAnswers[0]);
+     expect(step.eventMetadata?.e06FoilFeedback).toHaveLength(2);
+    }else expect(step.acceptedAnswers).toEqual([]);
+   }
+  }
+ });
+ it("does not leak context to other units sharing grammar",()=>{
+  for(const [unitId,anchor] of cases){
+   const others=coreContent.courseUnits.filter(u=>u.level==="A1"&&u.id!==unitId&&u.grammarIds.includes(anchor));
+   for(const u of others){
+    expect(deepTeachingAnchors(u.id)).not.toContain(anchor);
+    expect(buildCur03CourseUnitSession(u.id).some(s=>s.id==="cur03-"+u.id+"-"+anchor+"-context")).toBe(false);
+   }
+  }
+ });
+});
+
+describe("CUR-14 exact source-backed foundational A1 teaching",()=>{
+ const additions=[
+  ["a1-unit-01","grammar-desu",2],
+  ["a1-unit-03","grammar-masu",4],
+  ["a1-unit-06","grammar-ga-subject",2],
+  ["a1-unit-16","grammar-o-kudasai",4]
+ ] as const;
+ it("starts with each unit's own lesson and renders only its canonical original Japanese sentences",()=>{
+  for(const [id,anchor,count] of additions){
+   const u=coreContent.courseUnits.find(x=>x.id===id)!;
+   expect(u.level).toBe("A1");
+   expect(u.sourceIds).toEqual(["thiepn-original"]);
+   expect(u.grammarIds).toContain(anchor);
+   expect(deepTeachingAnchors(id)).toContain(anchor);
+   const session=buildCur03CourseUnitSession(id);
+   const intro=session.find(s=>s.id==="cur03-"+id+"-"+anchor+"-context");
+   if(!intro||!isStudyLesson(intro))throw Error("CUR14_CONTEXT_NOT_FOUND");
+   // Unit 16 already starts with the established CUR-11 quantity case; never invalidate that order.
+   if(id==="a1-unit-16"){
+    expect(deepTeachingAnchors(id)[0]).toBe("grammar-counter-tsu");
+    expect(session[1]?.id).toBe("cur03-"+id+"-grammar-counter-tsu-context");
+   }else{
+    expect(deepTeachingAnchors(id)[0]).toBe(anchor);
+    expect(session[1]?.id).toBe(intro.id);
+   }
+   expect(intro.examples).toHaveLength(count);
+   const sourceTexts=new Set(coreContent.sentences.filter(s=>u.sentenceIds.includes(s.id)).map(s=>s.text));
+   for(const e of intro.examples??[])expect(sourceTexts.has(e.expression)).toBe(true);
+   expect(new Set(session.map(s=>s.id)).size).toBe(session.length);
+  }
+ });
+ it("preserves original session steps and keeps all teaching responses excluded from FSRS",()=>{
+  for(const [id,anchor] of additions){
+   const original=courseUnitSession(id),actual=buildCur03CourseUnitSession(id);
+   let last=-1;
+   for(const step of original){
+    const i=actual.findIndex((s,k)=>k>last&&s.id===step.id);
+    expect(i).toBeGreaterThan(last);
+    expect(actual[i]).toEqual(step);
+    last=i;
+   }
+   const u=coreContent.courseUnits.find(x=>x.id===id)!;
+   const prompts=actual.filter(s=>!isStudyLesson(s)&&s.eventMetadata?.cur03Anchor===anchor);
+   expect(prompts).toHaveLength(4);
+   expect(prompts.filter(s=>!isStudyLesson(s)&&s.promptType==="choice")).toHaveLength(3);
+   expect(prompts.filter(s=>!isStudyLesson(s)&&s.promptType==="textarea")).toHaveLength(1);
+   for(const step of prompts)if(!isStudyLesson(step)){
+    expect(step.primaryTarget).toEqual({kind:"can_do",id:u.canDoId});
+    expect(step.sourceId).toBe("thiepn-original");
+    expect(step.eventMetadata).toMatchObject({cur03UnitId:id,cur03Anchor:anchor,
+      nonAuthoritative:true,schedulerExcluded:true,independentCompetenceVerified:false});
+    if(step.promptType==="choice"){
+     expect(step.choices).toHaveLength(3);
+     expect(new Set(step.choices).size).toBe(3);
+     expect(step.choices).toContain(step.acceptedAnswers[0]);
+     expect(step.eventMetadata?.e06FoilFeedback).toHaveLength(2);
+    }else expect(step.acceptedAnswers).toEqual([]);
+   }
+  }
+ });
+ it("does not leak unit-specific examples to other units with the same grammar",()=>{
+  for(const [id,anchor] of additions){
+   const others=coreContent.courseUnits.filter(u=>u.level==="A1"&&u.id!==id&&u.grammarIds.includes(anchor));
+   for(const u of others){
+    expect(deepTeachingAnchors(u.id)).not.toContain(anchor);
+    expect(buildCur03CourseUnitSession(u.id).some(s=>s.id==="cur03-"+u.id+"-"+anchor+"-context")).toBe(false);
+   }
+  }
+ });
+});
+
+describe("CUR-15 targeted original A1 source gaps",()=>{
+ const selected=[
+  ["a1-unit-09","grammar-demonstrative-determiners",5],
+  ["a1-unit-13","grammar-time-ni",5],
+  ["a1-unit-14","grammar-na-noun-negative",4]
+ ] as const;
+ it("binds all source examples and anchor IDs to their actual original unit",()=>{
+  for(const [id,anchor,count] of selected){
+   const u=coreContent.courseUnits.find(x=>x.id===id)!;
+   expect(u.level).toBe("A1");
+   expect(u.sourceIds).toEqual(["thiepn-original"]);
+   expect(u.grammarIds).toContain(anchor);
+   const session=buildCur03CourseUnitSession(id);
+   expect(new Set(session.map(s=>s.id)).size).toBe(session.length);
+   expect(deepTeachingAnchors(id)).toContain(anchor);
+   const source=session.find(s=>s.id==="cur03-"+id+"-"+anchor+"-context");
+   if(!source||!isStudyLesson(source))throw Error("CUR15_CONTEXT_MISSING");
+   expect(source.examples).toHaveLength(count);
+   const matching=new Set(coreContent.sentences.filter(s=>u.sentenceIds.includes(s.id)).map(s=>s.text));
+   for(const e of source.examples??[])expect(matching.has(e.expression)).toBe(true);
+  }
+ });
+ it("preserves established contexts, original study prompts, and excludes added tasks from grading",()=>{
+  for(const [id,anchor] of selected){
+   const session=buildCur03CourseUnitSession(id),original=courseUnitSession(id);
+   let prev=-1;
+   for(const step of original){
+    const k=session.findIndex((s,i)=>i>prev&&s.id===step.id);
+    expect(k).toBeGreaterThan(prev);
+    expect(session[k]).toEqual(step);prev=k;
+   }
+   const selectedCase=session.filter(s=>!isStudyLesson(s)&&s.eventMetadata?.cur03Anchor===anchor);
+   expect(selectedCase).toHaveLength(4);
+   expect(selectedCase.filter(s=>!isStudyLesson(s)&&s.promptType==="choice")).toHaveLength(3);
+   expect(selectedCase.filter(s=>!isStudyLesson(s)&&s.promptType==="textarea")).toHaveLength(1);
+   for(const s of selectedCase)if(!isStudyLesson(s)){
+    expect(s.primaryTarget).toEqual({kind:"can_do",id:coreContent.courseUnits.find(u=>u.id===id)!.canDoId});
+    expect(s.sourceId).toBe("thiepn-original");
+    expect(s.eventMetadata).toMatchObject({
+     cur03UnitId:id,cur03Anchor:anchor,nonAuthoritative:true,
+     schedulerExcluded:true,independentCompetenceVerified:false
+    });
+    if(s.promptType==="choice"){
+     expect(s.choices).toHaveLength(3);
+     expect(new Set(s.choices).size).toBe(3);
+     expect(s.choices).toContain(s.acceptedAnswers[0]);
+     expect(s.eventMetadata?.e06FoilFeedback).toHaveLength(2);
+    }else expect(s.acceptedAnswers).toEqual([]);
+   }
+  }
+ });
+ it("keeps earlier unit-specific lessons first and never leaks the time grammar to A1 unit 12",()=>{
+  for(const [id,previous,additional] of [
+    ["a1-unit-09","grammar-demonstrative-pronouns","grammar-demonstrative-determiners"],
+    ["a1-unit-13","grammar-masen-deshita","grammar-time-ni"],
+    ["a1-unit-14","grammar-i-adj-past","grammar-na-noun-negative"]
+  ] as const){
+   const session=buildCur03CourseUnitSession(id);
+   const a=session.findIndex(s=>s.id==="cur03-"+id+"-"+previous+"-context");
+   const b=session.findIndex(s=>s.id==="cur03-"+id+"-"+additional+"-context");
+   expect(a).toBeGreaterThan(0);
+   expect(b).toBeGreaterThan(a);
+   expect(deepTeachingAnchors(id)).toContain(additional);
+  }
+  expect(deepTeachingAnchors("a1-unit-12")).not.toContain("grammar-time-ni");
+  expect(buildCur03CourseUnitSession("a1-unit-12").some(s=>s.id==="cur03-a1-unit-12-grammar-time-ni-context")).toBe(false);
+ });
+});
+
+describe("CUR-16 full A1 curriculum progression and optional navigation",()=>{
+ it("preserves every canonical original unit and offers a bounded shortcut past only the optional intro block",()=>{
+  expect(a1).toHaveLength(20);
+  for(const unit of a1){
+   const canonical=courseUnitSession(unit.id);
+   const session=buildCur03CourseUnitSession(unit.id);
+   const jump=optionalA1ContextJump(session,0);
+   expect(jump).not.toBeNull();
+   if(!jump)continue;
+   const contextCount=deepTeachingAnchors(unit.id).length;
+   expect(contextCount).toBeGreaterThanOrEqual(1);
+   expect(jump.skippedSteps).toBe(contextCount*7);
+   expect(jump.index).toBe(jump.skippedSteps+1);
+   expect(session[0]).toEqual(canonical[0]);
+   expect(session[jump.index]).toEqual(canonical[1]);
+   expect(session.slice(jump.index)).toEqual(canonical.slice(1));
+   expect(session.slice(1,jump.index).every(s=>s.id.startsWith("cur03-"+unit.id+"-"))).toBe(true);
+   expect(optionalA1ContextJump(session,1)).toEqual(jump);
+   const contextLessonIndex=2;
+   expect(optionalA1ContextJump(session,contextLessonIndex)?.index).toBe(jump.index);
+   expect(optionalA1ContextJump(session,contextLessonIndex)?.skippedSteps).toBe(jump.skippedSteps-1);
+   const lastOptionalLesson=jump.index-2;
+   if(isStudyLesson(session[lastOptionalLesson]!))
+    expect(optionalA1ContextJump(session,lastOptionalLesson)?.skippedSteps).toBe(2);
+
+   expect(optionalA1ContextJump(session,jump.index)).toBeNull();
+   const optionalPromptIndex=session.findIndex((s,i)=>i>0&&!isStudyLesson(s));
+   expect(optionalPromptIndex).toBeGreaterThan(1);
+   expect(optionalA1ContextJump(session,optionalPromptIndex)?.index).toBe(jump.index);
+   expect(optionalA1ContextJump(session,optionalPromptIndex)?.skippedSteps).toBe(jump.index-optionalPromptIndex);
+   expect(new Set(session.map(s=>s.id)).size).toBe(session.length);
+  }
+ });
+ it("refuses unrelated, incomplete, already-core and malformed shortcut requests",()=>{
+  const a=buildCur03CourseUnitSession("a1-unit-09");
+  const jump=optionalA1ContextJump(a,0)!;
+  expect(jump.skippedSteps).toBe(21);
+  expect(optionalA1ContextJump(a,-1)).toBeNull();
+  expect(optionalA1ContextJump(a,NaN)).toBeNull();
+  expect(optionalA1ContextJump(a,a.length)).toBeNull();
+  expect(optionalA1ContextJump(courseUnitSession("a1-unit-09"),0)).toBeNull();
+  expect(optionalA1ContextJump(a.slice(0,jump.index),0)).toBeNull();
+  const swapped=[...a];swapped[1]=a[jump.index]!;
+  expect(optionalA1ContextJump(swapped,0)).toBeNull();
+ });
+});
+
+describe("CUR-17 independent A1 teaching clarity regression",()=>{
+ it("does not teach a comprehension reply as the answer to an unrelated difficulty question",()=>{
+  const unitId="a1-unit-20",anchor="grammar-ne";
+  const unit=coreContent.courseUnits.find(u=>u.id===unitId)!;
+  const steps=buildCur03CourseUnitSession(unitId);
+  const lesson=steps.find(s=>s.id==="cur03-"+unitId+"-"+anchor+"-context");
+  if(!lesson||!isStudyLesson(lesson))throw Error("CUR17_A1_20_CONTEXT_MISSING");
+  const sourceTexts=new Set(coreContent.sentences.filter(s=>unit.sentenceIds.includes(s.id)).map(s=>s.text));
+  for(const e of lesson.examples??[])expect(sourceTexts.has(e.expression)).toBe(true);
+  const comprehension=lesson.examples?.find(e=>e.expression==="はい、少し分かります。");
+  expect(comprehension?.note).toMatch(/does not directly answer whether Japanese is difficult/i);
+  expect(lesson.body).toMatch(/answers a different question; it is not a direct reply/i);
+  const choiceSteps=steps.filter(s=>!isStudyLesson(s)&&s.eventMetadata?.cur03Anchor===anchor);
+  expect(choiceSteps).toHaveLength(4);
+  for(const prompt of choiceSteps)if(!isStudyLesson(prompt)){
+   expect(prompt.eventMetadata).toMatchObject({
+    nonAuthoritative:true,schedulerExcluded:true,independentCompetenceVerified:false
+   });
+  }
+  const original=courseUnitSession(unitId);
+  let position=-1;
+  for(const step of original){
+   const next=steps.findIndex((s,i)=>i>position&&s.id===step.id);
+   expect(next).toBeGreaterThan(position);
+   expect(steps[next]).toEqual(step);
+   position=next;
+  }
+ });
+});
+
+describe("CUR-18 defensible A1 distractors",()=>{
+ const repairs=[
+  {anchor:"grammar-o-object",n:2,answer:"お茶をください。",foils:["お茶を飲みます。","お茶があります。"]},
+  {anchor:"grammar-o-object",n:3,answer:"本を読みます。",foils:["本が好きです。","本があります。"]},
+  {anchor:"grammar-ni-destination",n:1,answer:"駅に行きます。",foils:["駅で待ちます。","駅にいます。"]},
+  {anchor:"grammar-aru-iru",n:2,answer:"あります",foils:["います","ありません"]},
+  {anchor:"grammar-aru-iru",n:3,answer:"庭に猫がいます。",foils:["庭に猫があります。","庭に犬がいます。"]}
+ ] as const;
+ it("uses grammatical near-miss choices and keeps feedback mapped to each wrong response",()=>{
+  for(const repair of repairs){
+   const applicable=a1.filter(u=>deepTeachingAnchors(u.id).includes(repair.anchor));
+   expect(applicable.length).toBeGreaterThan(0);
+   for(const unit of applicable){
+    const session=buildCur03CourseUnitSession(unit.id);
+    const step=session.find(s=>s.id==="cur03-"+unit.id+"-"+repair.anchor+"-check-"+repair.n);
+    if(!step||isStudyLesson(step))throw Error("CUR18_CHOICE_MISSING:"+unit.id+":"+repair.anchor);
+    expect(step.promptType).toBe("choice");
+    expect(step.acceptedAnswers).toEqual([repair.answer]);
+    const expected=new Set([repair.answer,...repair.foils]);
+    expect(new Set(step.choices)).toEqual(expected);
+    expect(step.choices).toHaveLength(3);
+    const notes=step.eventMetadata?.e06FoilFeedback;
+    expect(Array.isArray(notes)).toBe(true);
+    if(!Array.isArray(notes))throw Error("CUR18_FEEDBACK_MISSING");
+    expect(new Set(notes.map(item=>item.response))).toEqual(new Set(repair.foils));
+    for(const item of notes)expect(typeof item.feedback==="string"&&item.feedback.trim().length>12).toBe(true);
+    expect(step.eventMetadata).toMatchObject({
+     nonAuthoritative:true,schedulerExcluded:true,independentCompetenceVerified:false
+    });
+   }
+  }
+ });
+ it("preserves the original canonical course order and all canonical prompt objects in affected units",()=>{
+  for(const unit of a1.filter(u=>repairs.some(r=>deepTeachingAnchors(u.id).includes(r.anchor)))){
+   const original=courseUnitSession(unit.id),actual=buildCur03CourseUnitSession(unit.id);
+   let last=-1;
+   for(const step of original){
+    const index=actual.findIndex((candidate,i)=>i>last&&candidate.id===step.id);
+    expect(index).toBeGreaterThan(last);
+    expect(actual[index]).toEqual(step);
+    last=index;
+   }
+   expect(new Set(actual.map(s=>s.id)).size).toBe(actual.length);
+  }
+ });
+});
+
+describe("CUR-19 targeted A1 semantic and distractor accuracy",()=>{
+ const repairs=[
+  {unit:"a1-unit-01",anchor:"grammar-desu",n:1,correct:"学生です。",foils:["先生です。","学生ですか。"]},
+  {unit:"a1-unit-01",anchor:"grammar-desu",n:2,correct:"先生です。",foils:["学生です。","先生ですか。"]},
+  {unit:"a1-unit-19",anchor:"grammar-te-form",n:3,correct:"話す becomes 話して before ください.",foils:["話す becomes 話って before ください.","言う becomes 言いて before ください."]},
+  {unit:"a1-unit-16",anchor:"grammar-o-kudasai",n:2,correct:"パンを二つください。",foils:["野菜を食べます。","水を一つください。"]},
+  {unit:"a1-unit-16",anchor:"grammar-o-kudasai",n:3,correct:"The item being requested.",foils:["The person receiving the order.","How many coffees to serve."]}
+ ] as const;
+ it("offers a single intended answer and pairs both plausible mistakes with accurate distinct feedback",()=>{
+  for(const repair of repairs){
+   const step=buildCur03CourseUnitSession(repair.unit).find(s=>s.id===`cur03-${repair.unit}-${repair.anchor}-check-${repair.n}`);
+   if(!step||isStudyLesson(step))throw Error("CUR19_CHOICE_NOT_FOUND:"+repair.unit+":"+repair.n);
+   expect(step.promptType).toBe("choice");
+   expect(step.acceptedAnswers).toEqual([repair.correct]);
+   expect(step.choices).toHaveLength(3);
+   expect(new Set(step.choices)).toEqual(new Set([repair.correct,...repair.foils]));
+   const feedback=step.eventMetadata?.e06FoilFeedback;
+   if(!Array.isArray(feedback))throw Error("CUR19_FOIL_FEEDBACK_MISSING");
+   expect(new Set(feedback.map(item=>item.response))).toEqual(new Set(repair.foils));
+   for(const entry of feedback)expect(entry.feedback.trim().length).toBeGreaterThan(20);
+   expect(step.eventMetadata).toMatchObject({nonAuthoritative:true,schedulerExcluded:true,independentCompetenceVerified:false});
+  }
+  const school=buildCur03CourseUnitSession("a1-unit-12").find(s=>s.id==="cur03-a1-unit-12-grammar-kara-made-check-3");
+  if(!school||isStudyLesson(school))throw Error("CUR19_SCHEDULE_NOT_FOUND");
+  expect(school.acceptedAnswers).toEqual(["八時に学校に行きます。"]);
+  expect(school.prompt).toContain("time for going to school");
+  expect(school.prompt).not.toMatch(/departure/i);
+  const bread=buildCur03CourseUnitSession("a1-unit-16").find(s=>s.id==="cur03-a1-unit-16-grammar-o-kudasai-check-2");
+  if(!bread||isStudyLesson(bread))throw Error("CUR19_BREAD_NOT_FOUND");
+  expect(bread.prompt).toContain("exactly TWO BREAD ITEMS");
+ });
+ it("keeps all original source sentences and canonical prompts untouched in affected units",()=>{
+  for(const [unitId,sourceAnchor] of [
+   ["a1-unit-01","grammar-desu"],
+   ["a1-unit-12","grammar-kara-made"],
+   ["a1-unit-16","grammar-o-kudasai"],
+   ["a1-unit-19","grammar-te-form"]
+  ] as const){
+   const unit=coreContent.courseUnits.find(u=>u.id===unitId)!;
+   const original=courseUnitSession(unitId),session=buildCur03CourseUnitSession(unitId);
+   let last=-1;
+   for(const canonical of original){
+    const next=session.findIndex((s,i)=>i>last&&s.id===canonical.id);
+    expect(next).toBeGreaterThan(last);
+    expect(session[next]).toEqual(canonical);
+    last=next;
+   }
+   const sourceTexts=new Set(coreContent.sentences.filter(s=>unit.sentenceIds.includes(s.id)).map(s=>s.text));
+   // Unit-specific cases carry canonical examples; generic shared cases can have constructed demonstrations.
+   const anchors=[sourceAnchor];
+   for(const anchor of anchors){
+    const lesson=session.find(s=>s.id===`cur03-${unitId}-${anchor}-context`);
+    if(!lesson||!isStudyLesson(lesson))throw Error("CUR19_LESSON_MISSING:"+anchor);
+    for(const example of lesson.examples??[])expect(sourceTexts.has(example.expression)).toBe(true);
+   }
+   expect(new Set(session.map(s=>s.id)).size).toBe(session.length);
+  }
+ });
+});
+
+describe("CUR-20 source-linked independent A1 entry",()=>{
+ it("finds an authentic non-authoritative writing task without changing canonical lessons",()=>{
+  for(const u of a1){
+   const steps=buildCur03CourseUnitSession(u.id);
+   const j=optionalA1IndependentWritingJump(steps,0);
+   expect(j).not.toBeNull();
+   if(!j)continue;
+   const s=steps[j.index];
+   if(!s||isStudyLesson(s))throw Error("CUR20_MISSING_WRITING:"+u.id);
+   expect(s.promptType).toBe("textarea");
+   expect(s.acceptedAnswers).toEqual([]);
+   expect(s.eventMetadata).toMatchObject({cur03UnitId:u.id,nonAuthoritative:true,schedulerExcluded:true,independentCompetenceVerified:false});
+   expect(optionalA1IndependentWritingJump(steps,1)).toBeNull();
+   expect(optionalA1IndependentWritingJump(courseUnitSession(u.id),0)).toBeNull();
+   expect(j.index).toBeLessThan(optionalA1ContextJump(steps,0)!.index);
+  }
+ });
+ it("refuses forged graded or partial sessions",()=>{
+  const steps=buildCur03CourseUnitSession("a1-unit-01");
+  const j=optionalA1IndependentWritingJump(steps,0)!;
+  const changed=steps.map((s,i)=>i===j.index&&!isStudyLesson(s)?{...s,eventMetadata:{...s.eventMetadata,schedulerExcluded:false}}:s);
+  expect(optionalA1IndependentWritingJump(changed,0)).toBeNull();
+  expect(optionalA1IndependentWritingJump(steps.slice(0,optionalA1ContextJump(steps,0)!.index),0)).toBeNull();
+ });
+});
+
+describe("CUR-21 source-scoped A1 navigation hardening",()=>{
+ it("returns only validated owner-scoped checkpoints and their actual update timestamps",()=>{
+  const u="a1-unit-09",steps=buildCur03CourseUnitSession(u),store=new MemoryStore();
+  expect(readCoursePositionSnapshot("owner-a",u,steps,store)).toBeNull();
+  expect(saveCoursePosition("owner-a",u,steps,3,store)).toBe(true);
+  const receipt=readCoursePositionSnapshot("owner-a",u,steps,store);
+  expect(receipt?.index).toBe(3);
+  expect(receipt?.updatedAt).toBeTypeOf("number");
+  expect(receipt?.updatedAt).toBeGreaterThan(0);
+  expect(readCoursePosition("owner-a",u,steps,store)).toBe(3);
+  expect(readCoursePositionSnapshot("owner-b",u,steps,store)).toBeNull();
+  expect(readCoursePositionSnapshot("owner-a","a1-unit-08",buildCur03CourseUnitSession("a1-unit-08"),store)).toBeNull();
+  const key=coursePositionKey("owner-a",u),prior=store.getItem(key);
+  const tampered=JSON.parse(prior!);
+  store.setItem(key,JSON.stringify({...tampered,updatedAt:"not-a-timestamp"}));
+  expect(readCoursePositionSnapshot("owner-a",u,steps,store)).toBeNull();
+  expect(store.getItem(key)).not.toBeNull();
+  store.setItem(key,prior!);
+  const changed=steps.map((s,i)=>i===3?{...s,id:"invalid-step-id"}:s);
+  expect(readCoursePositionSnapshot("owner-a",u,changed,store)).toBeNull();
+  expect(store.getItem(key)).toBe(prior);
+ });
+ it("rejects forged graded, noncanonical or unrelated optional writing targets without awarding credit",()=>{
+  const steps=buildCur03CourseUnitSession("a1-unit-01");
+  const j=optionalA1IndependentWritingJump(steps,0);
+  expect(j).not.toBeNull();
+  if(!j)throw Error("CUR21_MISSING_SOURCE_WRITING");
+  const original=steps[j.index];
+  if(!original||isStudyLesson(original))throw Error("CUR21_WRITING_NOT_PROMPT");
+  expect(original.sourceId).toBe("thiepn-original");
+  expect(original.acceptedAnswers).toEqual([]);
+  for(const changedStep of [
+   {...original,sourceId:"unverified-source"},
+   {...original,acceptedAnswers:["学生です。"]},
+   {...original,primaryTarget:{kind:"lexeme",id:"forged"}},
+   {...original,eventMetadata:{...original.eventMetadata,cur03:false}}
+  ]){
+   const forged=steps.map((step,i)=>i===j.index?changedStep:step) as typeof steps;
+   expect(optionalA1IndependentWritingJump(forged,0)).toBeNull();
+  }
+  expect(optionalA1IndependentWritingJump(steps,1)).toBeNull();
+ });
+});
+
+describe("CUR-22 original-source independent writing self-review",()=>{
+ it("references only matching unit-owned teaching, never a computed proficiency grade",()=>{
+  for(const unit of a1){
+   const steps=buildCur03CourseUnitSession(unit.id);
+   const jump=optionalA1IndependentWritingJump(steps,0)!;
+   const guide=sourceLinkedA1WritingReview(steps,jump.index);
+   expect(guide).not.toBeNull();
+   expect(guide?.explanation.length).toBeGreaterThan(20);
+   expect(guide?.examples.length).toBeGreaterThan(0);
+   const original=new Set(coreContent.sentences.filter(s=>unit.sentenceIds.includes(s.id)).map(s=>s.text));
+   for(const example of guide?.examples??[])expect(original.has(example.expression)).toBe(true);
+   expect(sourceLinkedA1WritingReview(steps,0)).toBeNull();
+  }
+ });
+ it("refuses a graded or cross-unit writing candidate",()=>{
+  const steps=buildCur03CourseUnitSession("a1-unit-01");
+  const index=optionalA1IndependentWritingJump(steps,0)!.index;
+  const changed=steps.map((s,i)=>i===index&&!isStudyLesson(s)?{...s,sourceId:"other-source"}:s);
+  expect(sourceLinkedA1WritingReview(changed,index)).toBeNull();
+  expect(sourceLinkedA1WritingReview(steps,index+1)).toBeNull();
+  const forged=steps.map((s,i)=>i===index&&!isStudyLesson(s)?{...s,eventMetadata:{...s.eventMetadata,schedulerExcluded:false}}:s);
+  expect(sourceLinkedA1WritingReview(forged,index)).toBeNull();
+ });
+});
+
+describe("CUR-23 bounded optional A1 continuation",()=>{
+ it("allows a source-fenced jump only within original optional A1 steps",()=>{
+  for(const unit of a1){
+   const base=courseUnitSession(unit.id),steps=buildCur03CourseUnitSession(unit.id);
+   const jump=optionalA1ContextJump(steps,0)!;
+   expect(jump).not.toBeNull();
+   for(let i=1;i<jump.index;i++){
+    const target=optionalA1ContextJump(steps,i);
+    expect(target?.index).toBe(jump.index);
+    expect(target?.skippedSteps).toBe(jump.index-i);
+    if(!isStudyLesson(steps[i]!))expect(steps[i]!.eventMetadata).toMatchObject({
+      cur03:true,cur03UnitId:unit.id,nonAuthoritative:true,schedulerExcluded:true,independentCompetenceVerified:false
+    });
+   }
+   expect(steps.slice(jump.index)).toEqual(base.slice(1));
+   expect(optionalA1ContextJump(steps,jump.index)).toBeNull();
+  }
+ });
+ it("refuses forged graded, wrong-owner-of-unit, non-source and malformed optional prompts",()=>{
+  const unit="a1-unit-09",steps=buildCur03CourseUnitSession(unit);
+  const index=steps.findIndex(s=>!isStudyLesson(s)&&s.id.startsWith("cur03-"+unit+"-"));
+  expect(optionalA1ContextJump(steps,index)).not.toBeNull();
+  const altered=(changes:Record<string,unknown>,meta:Record<string,unknown>={})=>
+    steps.map((s,i)=>i===index&&!isStudyLesson(s)?{...s,...changes,eventMetadata:{...s.eventMetadata,...meta}}:s);
+  expect(optionalA1ContextJump(altered({}, {schedulerExcluded:false}),index)).toBeNull();
+  expect(optionalA1ContextJump(altered({}, {nonAuthoritative:false}),index)).toBeNull();
+  expect(optionalA1ContextJump(altered({}, {cur03UnitId:"a1-unit-01"}),index)).toBeNull();
+  expect(optionalA1ContextJump(altered({sourceId:"unverified"}),index)).toBeNull();
+  expect(optionalA1ContextJump(altered({id:"cur03-a1-unit-09-grammar-fake-check-9"}),index)).toBeNull();
  });
 });
