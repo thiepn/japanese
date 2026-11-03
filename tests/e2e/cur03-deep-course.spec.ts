@@ -258,3 +258,42 @@ test("CUR-22 ungraded writing feedback exposes real source comparisons, not an a
  await expect(review.locator("strong[lang=ja]").first()).toBeVisible();
  await expect(review.getByText("No automatic language grade or FSRS progress is awarded.",{exact:false})).toBeVisible();
 });
+
+test("CUR-23 optional exit appears only after a successfully saved contextual answer",async({page})=>{
+ await page.goto("./#course/A1");
+ const catalog=page.getByRole("region",{name:"Six-level course catalog"});
+ const row=catalog.locator(".cur01-lessons li")
+  .filter({has:page.getByRole("heading",{name:"Point to things",exact:true})});
+ await row.getByRole("button",{name:/^(Open|Resume) lesson \d+:/i}).click();
+ for(let i=0;i<3;i++)await page.getByRole("button",{name:"Continue",exact:true}).click();
+ const shortcut=page.getByRole("group",{name:"Finish optional A1 contexts"});
+ await expect(page.locator(".j5-choices")).toBeVisible();
+ await expect(shortcut).toHaveCount(0);
+ await page.locator(".j5-choices button").first().click();
+ await expect(page.getByText("UNSCORED CONTEXT CHECK")).toBeVisible();
+ await expect(shortcut).toContainText("skipped steps receive no answers");
+ await shortcut.getByRole("button",{name:/Continue to original course/}).click();
+ await expect(page.locator(".study-lesson h1")).toHaveText("これ / それ / あれ");
+ await expect(shortcut).toHaveCount(0);
+ await page.getByRole("button",{name:"Exit",exact:true}).click();
+ await page.reload();
+ await page.getByRole("region",{name:"Six-level course catalog"})
+  .locator(".cur01-lessons li").filter({has:page.getByRole("heading",{name:"Point to things",exact:true})})
+  .getByRole("button",{name:/^Resume lesson \d+:/i}).click();
+ await expect(page.locator(".study-lesson h1")).toHaveText("これ / それ / あれ");
+});
+test("CUR-23 independent A1 writing can finish optional contexts after its unscored feedback",async({page})=>{
+ await page.goto("./#course/A1");
+ await page.getByRole("region",{name:"Your next A1 lesson"}).getByRole("button",{name:"Start this lesson"}).click();
+ await page.getByRole("group",{name:"Optional A1 teaching shortcut"})
+  .getByRole("button",{name:"Try independent A1 writing · ungraded"}).click();
+ const shortcut=page.getByRole("group",{name:"Finish optional A1 contexts"});
+ await expect(shortcut).toHaveCount(0);
+ await page.locator(".j5-writing textarea").fill("私は学生です。");
+ await page.getByRole("button",{name:"Record unscored writing"}).click();
+ await expect(page.getByText("UNSCORED RESPONSE")).toBeVisible();
+ await expect(page.locator("details.cur21-writing-self-review")).toBeVisible();
+ await shortcut.getByRole("button",{name:/Continue to original course/}).click();
+ await expect(page.locator(".study-lesson h1")).toBeVisible();
+ await expect(shortcut).toHaveCount(0);
+});

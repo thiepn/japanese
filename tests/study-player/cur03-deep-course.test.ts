@@ -502,7 +502,8 @@ describe("CUR-16 full A1 curriculum progression and optional navigation",()=>{
    expect(optionalA1ContextJump(session,jump.index)).toBeNull();
    const optionalPromptIndex=session.findIndex((s,i)=>i>0&&!isStudyLesson(s));
    expect(optionalPromptIndex).toBeGreaterThan(1);
-   expect(optionalA1ContextJump(session,optionalPromptIndex)).toBeNull();
+   expect(optionalA1ContextJump(session,optionalPromptIndex)?.index).toBe(jump.index);
+   expect(optionalA1ContextJump(session,optionalPromptIndex)?.skippedSteps).toBe(jump.index-optionalPromptIndex);
    expect(new Set(session.map(s=>s.id)).size).toBe(session.length);
   }
  });
@@ -749,5 +750,37 @@ describe("CUR-22 original-source independent writing self-review",()=>{
   expect(sourceLinkedA1WritingReview(steps,index+1)).toBeNull();
   const forged=steps.map((s,i)=>i===index&&!isStudyLesson(s)?{...s,eventMetadata:{...s.eventMetadata,schedulerExcluded:false}}:s);
   expect(sourceLinkedA1WritingReview(forged,index)).toBeNull();
+ });
+});
+
+describe("CUR-23 bounded optional A1 continuation",()=>{
+ it("allows a source-fenced jump only within original optional A1 steps",()=>{
+  for(const unit of a1){
+   const base=courseUnitSession(unit.id),steps=buildCur03CourseUnitSession(unit.id);
+   const jump=optionalA1ContextJump(steps,0)!;
+   expect(jump).not.toBeNull();
+   for(let i=1;i<jump.index;i++){
+    const target=optionalA1ContextJump(steps,i);
+    expect(target?.index).toBe(jump.index);
+    expect(target?.skippedSteps).toBe(jump.index-i);
+    if(!isStudyLesson(steps[i]!))expect(steps[i]!.eventMetadata).toMatchObject({
+      cur03:true,cur03UnitId:unit.id,nonAuthoritative:true,schedulerExcluded:true,independentCompetenceVerified:false
+    });
+   }
+   expect(steps.slice(jump.index)).toEqual(base.slice(1));
+   expect(optionalA1ContextJump(steps,jump.index)).toBeNull();
+  }
+ });
+ it("refuses forged graded, wrong-owner-of-unit, non-source and malformed optional prompts",()=>{
+  const unit="a1-unit-09",steps=buildCur03CourseUnitSession(unit);
+  const index=steps.findIndex(s=>!isStudyLesson(s)&&s.id.startsWith("cur03-"+unit+"-"));
+  expect(optionalA1ContextJump(steps,index)).not.toBeNull();
+  const altered=(changes:Record<string,unknown>,meta:Record<string,unknown>={})=>
+    steps.map((s,i)=>i===index&&!isStudyLesson(s)?{...s,...changes,eventMetadata:{...s.eventMetadata,...meta}}:s);
+  expect(optionalA1ContextJump(altered({}, {schedulerExcluded:false}),index)).toBeNull();
+  expect(optionalA1ContextJump(altered({}, {nonAuthoritative:false}),index)).toBeNull();
+  expect(optionalA1ContextJump(altered({}, {cur03UnitId:"a1-unit-01"}),index)).toBeNull();
+  expect(optionalA1ContextJump(altered({sourceId:"unverified"}),index)).toBeNull();
+  expect(optionalA1ContextJump(altered({id:"cur03-a1-unit-09-grammar-fake-check-9"}),index)).toBeNull();
  });
 });

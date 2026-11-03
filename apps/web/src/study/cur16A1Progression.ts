@@ -24,8 +24,24 @@ export function optionalA1ContextJump(steps:readonly StudyStep[],currentIndex:nu
   while(i<steps.length&&steps[i]!.id.startsWith(prefix))i++;
   if(i<=1||i>=steps.length||!isStudyLesson(steps[i]!))return null;
   const active=steps[currentIndex]!;
-  // Never jump from graded content or from a partly written response.
-  if(currentIndex!==0&&(!isStudyLesson(active)||!active.id.startsWith(prefix)))return null;
+  // Only the original optional CUR-03 context is bypassable; no graded
+  // canonical step is ever eligible. The player shows this action for prompts
+  // only after the response was successfully recorded, never during a draft.
+  if(currentIndex!==0){
+    if(!active.id.startsWith(prefix)||currentIndex>=i)return null;
+    if(!isStudyLesson(active)){
+      const anchor=active.eventMetadata?.cur03Anchor;
+      if(typeof anchor!=="string"||!/^grammar-[a-z0-9-]+$/.test(anchor)||
+        !new RegExp("^cur03-"+unit+"-"+anchor+"-(?:check-[1-3]|independent)$").test(active.id)||
+        active.eventMetadata?.cur03!==true||active.eventMetadata?.cur03UnitId!==unit||
+        active.eventMetadata?.nonAuthoritative!==true||active.eventMetadata?.schedulerExcluded!==true||
+        active.eventMetadata?.independentCompetenceVerified!==false||active.sourceId!=="thiepn-original"||
+        (active.promptType!=="choice"&&active.promptType!=="textarea")||
+        (active.promptType==="choice"&&active.acceptedAnswers.length!==1)||
+        (active.promptType==="textarea"&&active.acceptedAnswers.length!==0))
+        return null;
+    }
+  }
   // Original canonical steps must remain after the optional context prelude.
   if(steps.slice(i).some(s=>s.id.startsWith(prefix)))return null;
   return {index:i,skippedSteps:i-Math.max(1,currentIndex)};
