@@ -576,7 +576,7 @@ export function StudyPlayer({steps,accountScope,initialIndex=0,initialPositionUn
           Structural check: include at least 60% of these targets: {currentPrompt.requiredTerms.join(" · ")}. This is not a full semantic or pronunciation score.
         </p>:null}
         {originalCourseJump?<div className="cur23-optional-exit" role="group" aria-label="Finish optional A1 contexts">
-          <p>{originalCourseJump.skippedSteps} optional context steps remain. Your response was recorded; skipped steps receive no answers, proficiency evidence or FSRS credit.</p>
+          <p>Your response was recorded. You can skip the remaining optional contexts; skipped steps receive no answers, proficiency evidence or FSRS credit.</p>
           <button className="quiet-button" type="button" disabled={saving} onClick={()=>jumpToA1Step(originalCourseJump.index)}>
             Continue to original course · skip remaining optional contexts
           </button>
