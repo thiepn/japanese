@@ -29,7 +29,7 @@ jobs:
         run: |
           node --check prototypes/kana-foundations/app.mjs
           node --check prototypes/kana-foundations/engine.mjs
-          node --test prototypes/kana-foundations/tests/core.test.mjs
+          node --test prototypes/kana-foundations/tests/*.test.mjs
       - name: Install Chromium
         run: pnpm exec playwright install --with-deps chromium
       - name: Desktop, Android emulation and 320px browser tests
