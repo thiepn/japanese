@@ -213,18 +213,26 @@ function results(){
   wrap(body,primary('practice-again','Practice again (no mastery credit)')
       +secondary('export','Export prototype progress'));
 }
+let lastScreenKey=null;
 function render(){
   audioStatus=audioStatus||'';
-  if(state.paused)return welcome();
   const mode=currentStage(state).mode;
-  if(mode==='teach')teach();
+  const screenKey=state.paused?'paused':currentStage(state).id+':'+currentItem(state)+':'+state.retryMode;
+  const moved=lastScreenKey!==screenKey;
+  if(state.paused)welcome();
+  else if(mode==='teach')teach();
   else if(mode==='recognition')recognition();
   else if(mode==='recall'||mode==='reading')typed(mode);
   else if(mode==='listening')listening();
   else results();
-  if(mode==='recall'||mode==='reading'){
-    if(!state.feedback)document.getElementById('answer')?.focus({preventScroll:true});
+  // Announce genuinely new screens to keyboard/screen-reader users. Avoid
+  // stealing focus when feedback, hints or audio availability merely updates.
+  if(moved){
+    if((mode==='recall'||mode==='reading')&&!state.paused)
+      document.getElementById('answer')?.focus({preventScroll:true});
+    else document.getElementById('main')?.focus({preventScroll:true});
   }
+  lastScreenKey=screenKey;
 }
 function download(){
   const blob=new Blob([JSON.stringify({prototype:true,exportedAt:new Date().toISOString(),state},null,2)],{type:'application/json'});
