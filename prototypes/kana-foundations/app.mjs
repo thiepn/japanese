@@ -78,12 +78,18 @@ function speech(text,listening){
     speechSynthesis.cancel();
     const utterance=new SpeechSynthesisUtterance(text);
     utterance.lang='ja-JP';utterance.voice=voice;utterance.rate=.78;
+    const requestKey=currentStage(state).id+':'+currentItem(state);
     utterance.onstart=()=>{
-      audioStatus='Playing the device-generated Japanese voice (not a native recording).';
-      if(listening)commit(markAudioPlayed(state));else render();
+      audioStatus='Playing synthetic audio; this is not verified pronunciation evidence.';
+      render();
+    };
+    utterance.onend=()=>{
+      if(listening&&!state.paused&&!state.feedback
+        &&currentStage(state).id+':'+currentItem(state)===requestKey)
+        commit(markAudioPlayed(state));
     };
     utterance.onerror=()=>{
-      audioStatus='Audio playback failed. Skip listening without a score or try again.';
+      audioStatus='Audio playback failed. Try again or continue without listening.';
       render();
     };
     speechSynthesis.speak(utterance);
@@ -241,24 +247,32 @@ function results(){
 }
 let lastScreenKey=null;
 function render(){
-  audioStatus=audioStatus||'';
-  const mode=currentStage(state).mode;
-  const screenKey=state.paused?'paused':currentStage(state).id+':'+currentItem(state)+':'+state.retryMode;
-  const moved=lastScreenKey!==screenKey;
-  if(state.paused)welcome();
-  else if(mode==='teach')teach();
-  else if(mode==='recognition')recognition();
-  else if(mode==='recall'||mode==='reading')typed(mode);
-  else if(mode==='listening')listening();
-  else results();
-  // Announce genuinely new screens to keyboard/screen-reader users. Avoid
-  // stealing focus when feedback, hints or audio availability merely updates.
-  if(moved){
-    if((mode==='recall'||mode==='reading')&&!state.paused)
-      document.getElementById('answer')?.focus({preventScroll:true});
-    else document.getElementById('main')?.focus({preventScroll:true});
+ const mode=currentStage(state).mode;
+ const screenKey=state.paused?'paused':currentStage(state).id+':'+currentItem(state)
+  +':'+state.retryMode+':'+(state.introStep||'explain');
+ const moved=lastScreenKey!==screenKey;
+ const previous=document.getElementById('answer');
+ const retained=!moved&&previous?{value:previous.value,start:previous.selectionStart,
+  end:previous.selectionEnd,focused:document.activeElement===previous}:null;
+ if(state.paused)welcome();
+ else if(mode==='teach')teach();
+ else if(mode==='recognition')recognition();
+ else if(mode==='recall'||mode==='reading')typed(mode);
+ else if(mode==='listening')listening();
+ else results();
+ const input=document.getElementById('answer');
+ if(retained&&input&&!state.feedback){
+  input.value=retained.value;
+  if(retained.focused){
+   input.focus({preventScroll:true});
+   try{input.setSelectionRange(retained.start,retained.end);}catch{}
   }
-  lastScreenKey=screenKey;
+ }
+ if(moved){
+  if(input&&!state.paused)input.focus({preventScroll:true});
+  else document.getElementById('main')?.focus({preventScroll:true});
+ }
+ lastScreenKey=screenKey;
 }
 function download(){
   const blob=new Blob([JSON.stringify({prototype:true,exportedAt:new Date().toISOString(),state},null,2)],{type:'application/json'});
@@ -274,8 +288,11 @@ root.addEventListener('click',event=>{
   if(action==='pause')commit(pause(state));
   if(action==='advance')commit(advance(state));
   if(action==='hint')commit(setHint(state));
+  if(action==='intro-check')commit(beginIntroCheck(state));
+  if(action==='reveal')commit(revealAnswer(state));
   if(action==='choice')commit(submit(state,button.dataset.value));
   if(action==='skip-audio')commit(skipListening(state));
+  if(action==='skip-audio-stage')commit(skipListeningStage(state));
   if(action==='audio'){
     const mode=currentStage(state).mode;
     const item=currentItem(state);
@@ -284,6 +301,7 @@ root.addEventListener('click',event=>{
   }
   if(action==='export')download();
   if(action==='practice-again')commit(practiceAgain(state));
+  if(action==='practice-weak')commit(practiceWeakItems(state));
 });
 root.addEventListener('submit',event=>{
   if(event.target.id!=='answer-form')return;
