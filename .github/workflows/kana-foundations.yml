@@ -40,7 +40,8 @@ jobs:
         with:
           name: kana-foundations-browser-evidence
           path: prototypes/kana-foundations/.visual-evidence/
-          if-no-files-found: ignore
+          include-hidden-files: true
+          if-no-files-found: error
           retention-days: 7
       - name: Preserve only failure evidence
         if: failure()
