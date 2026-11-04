@@ -147,11 +147,20 @@ export function readingChoices(id,all=VOWELS){
     .sort((a,b)=>a.id.localeCompare(b.id)):[]; // deterministic, no hidden randomness
 }
 export function allowedChoices(s){
-  const item=currentItem(s),mode=currentStage(s).mode;
-  if(mode==='recognition'){
-    const vowels=(s.phase===1?VOWELS.slice(0,2):VOWELS);
-    return vowels.map(v=>v.reading).sort((a,b)=>a.localeCompare(b));
+  const item=currentItem(s),stage=currentStage(s);
+  let choices=[];
+  if(stage.mode==='recognition')choices=(s.phase===1?VOWELS.slice(0,2):VOWELS).map(v=>v.reading);
+  else if(stage.mode==='listening')choices=VOWELS.map(v=>v.id);
+  if(!choices.length)return [];
+  // Stable per-question shuffle to avoid memorizing answer positions. The same
+  // session state produces the same options after rerender or browser refresh.
+  const key=stage.id+'|'+item+'|'+(s.retryMode?'correction':'first');
+  let seed=2166136261;
+  for(let i=0;i<key.length;i++)seed=Math.imul(seed^key.charCodeAt(i),16777619)>>>0;
+  for(let i=choices.length-1;i>0;i--){
+    seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;
+    const j=(seed>>>0)%(i+1);
+    [choices[i],choices[j]]=[choices[j],choices[i]];
   }
-  if(mode==='listening')return VOWELS.map(v=>v.id);
-  return [];
+  return choices;
 }
