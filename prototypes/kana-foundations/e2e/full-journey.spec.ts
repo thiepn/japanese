@@ -1,5 +1,12 @@
 import {test,expect} from '@playwright/test';
 import {mkdirSync} from 'node:fs';
+async function learn(page,kana,reading){
+ await expect(page.getByRole('heading',{name:'Meet '+kana})).toBeVisible();
+ await page.getByRole('button',{name:'Try recalling '+kana}).click();
+ await page.getByRole('textbox',{name:'Type the romaji reading'}).fill(reading);
+ await page.getByRole('button',{name:'Check answer'}).click();
+ await page.getByRole('button',{name:'Continue'}).click();
+}
 
 // Real click-through regression: a complete beginner journey, not a fabricated
 // engine state jump. Listening is skipped without credit because CI has no
@@ -13,19 +20,13 @@ test('complete five-vowel lesson reports correct first-attempt evidence and surv
    await page.screenshot({path:evidenceDir+'/'+testInfo.project.name+'-introduction.png'});
  }
  await testInfo.attach('first-introduction',{body:await page.screenshot(),contentType:'image/png'});
- for(const glyph of ['あ','い']){
-   await expect(page.getByRole('heading',{name:'Meet '+glyph})).toBeVisible();
-   await page.getByRole('button',{name:'Continue'}).click();
- }
+ for(const [kana,reading] of [['あ','a'],['い','i']])await learn(page,kana,reading);
  for(const answer of ['a','i']){
    await page.getByRole('button',{name:'Reading '+answer}).click();
    await expect(page.getByText(/Independent answer recorded/)).toBeVisible();
    await page.getByRole('button',{name:'Continue'}).click();
  }
- for(const glyph of ['う','え','お']){
-   await expect(page.getByRole('heading',{name:'Meet '+glyph})).toBeVisible();
-   await page.getByRole('button',{name:'Continue'}).click();
- }
+ for(const [kana,reading] of [['う','u'],['え','e'],['お','o']])await learn(page,kana,reading);
  for(const answer of ['a','i','u','e','o']){
    await page.getByRole('button',{name:'Reading '+answer}).click();
    await page.getByRole('button',{name:'Continue'}).click();
@@ -38,12 +39,9 @@ test('complete five-vowel lesson reports correct first-attempt evidence and surv
    await expect(page.getByText(/Independent answer recorded/)).toBeVisible();
    await page.getByRole('button',{name:'Continue'}).click();
  }
- for(let i=0;i<5;i++){
-   await expect(page.getByRole('heading',{name:'Which character do you hear?'})).toBeVisible();
-   await page.getByRole('button',{name:'Skip listening — no credit'}).click();
-   await expect(page.getByText('No listening evidence has been recorded for this question.')).toBeVisible();
-   await page.getByRole('button',{name:'Continue'}).click();
- }
+ await expect(page.getByRole('heading',{name:'Which character do you hear?'})).toBeVisible();
+ await page.getByRole('button',{name:'Continue without listening (not assessed)'}).click();
+ await expect(page.getByRole('heading',{name:'Read the word'})).toBeVisible();
  for(const reading of ['ie','ao','ue']){
    await expect(page.getByRole('heading',{name:'Read the word'})).toBeVisible();
    await page.getByRole('textbox',{name:'Type the romaji reading'}).fill(reading);
@@ -58,6 +56,7 @@ test('complete five-vowel lesson reports correct first-attempt evidence and surv
    return m.firstAttemptSummary(JSON.parse(localStorage.getItem(m.PROTOTYPE_STORAGE_KEY)));
  });
  expect(summary.introduced).toBe(5);
+ expect(summary.introChecks).toEqual({correct:5,total:5});
  expect(summary.recognition).toEqual({correct:5,total:5});
  expect(summary.recall).toEqual({correct:5,total:5,skipped:0,assisted:0});
  expect(summary.listening).toEqual({correct:0,total:5,skipped:5,assisted:0});
@@ -81,7 +80,7 @@ test('complete five-vowel lesson reports correct first-attempt evidence and surv
 test('pause/resume during exercise preserves question and feedback',async({page})=>{
  await page.goto('/index.html');
  await page.getByRole('button',{name:'Start learning'}).click();
- await page.getByRole('button',{name:'Continue'}).click();
+ await learn(page,'あ','a');
  await page.getByRole('button',{name:'Exit lesson; progress is saved'}).click();
  await expect(page.getByRole('button',{name:'Resume learning'})).toBeVisible();
  await page.reload();
