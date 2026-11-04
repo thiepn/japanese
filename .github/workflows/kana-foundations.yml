@@ -34,6 +34,14 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
       - name: Desktop, Android emulation and 320px browser tests
         run: pnpm exec playwright test --config playwright.kana-foundations.config.ts
+      - name: Preserve representative browser captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kana-foundations-browser-evidence
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Preserve only failure evidence
         if: failure()
         uses: actions/upload-artifact@v4
