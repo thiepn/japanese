@@ -46,8 +46,8 @@ test('wrong answer is recorded once and rechecked as correction without erasing 
  s=submit(s,'i');
  assert.equal(s.feedback.correct,false);
  assert.deepEqual(s.retryItems,['h-a']);
- assert.equal(s.records[2].correct,false);
- assert.equal(s.records[2].correction,false);
+ assert.equal(s.records.find(r=>r.stage==='recognize-first'&&r.item==='h-a'&&!r.correction).correct,false);
+ assert.equal(s.records.find(r=>r.stage==='recognize-first'&&r.item==='h-a'&&!r.correction).correction,false);
  const duplicate=submit(s,'a');
  assert.deepEqual(duplicate,s,'duplicate submission blocked before advance');
  s=advance(s);s=submit(s,'i');s=advance(s);
@@ -57,7 +57,7 @@ test('wrong answer is recorded once and rechecked as correction without erasing 
  assert.equal(s.records.at(-1).correction,true);
  s=advance(s);
  assert.equal(currentStage(s).id,'introduce-rest');
- assert.equal(s.records[2].correct,false,'wrong first attempt unchanged');
+ assert.equal(s.records.find(r=>r.stage==='recognize-first'&&r.item==='h-a'&&!r.correction).correct,false,'wrong first attempt unchanged');
 });
 test('hint marks an answer as assisted',()=>{
  let s=start(initialState());s=answerCorrect(answerCorrect(s));
