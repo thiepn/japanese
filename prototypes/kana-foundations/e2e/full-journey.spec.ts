@@ -50,7 +50,7 @@ test('complete five-vowel lesson reports correct first-attempt evidence and surv
    await page.getByRole('button',{name:'Continue'}).click();
  }
  await expect(page.getByRole('heading',{name:'Your five-vowel results'})).toBeVisible();
- await expect(page.getByText(/These are first-attempt results/)).toBeVisible();
+ await expect(page.getByText(/First-attempt results are not/)).toBeVisible();
  const summary=await page.evaluate(async()=>{
    const m=await import('./engine.mjs');
    return m.firstAttemptSummary(JSON.parse(localStorage.getItem(m.PROTOTYPE_STORAGE_KEY)));
