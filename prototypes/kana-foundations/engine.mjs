@@ -236,8 +236,10 @@ export function allowedChoices(s){
  if(stage.mode==='recognition')choices=(s.phase===1?VOWELS.slice(0,2):VOWELS).map(v=>v.reading);
  else if(stage.mode==='listening')choices=VOWELS.map(v=>v.id);
  else if(['teach','recall','reading'].includes(stage.mode)&&s.hintLevel>=2){
-  if(stage.mode==='reading'){
-   choices=WORDS.map(w=>w.reading);
+  if(stage.mode==='reading')choices=WORDS.map(w=>w.reading);
+  else if(stage.mode==='teach'){
+   const introducedCount=stage.id==='introduce-first'?s.cursor+1:3+s.cursor;
+   choices=VOWELS.slice(0,introducedCount).map(v=>v.reading);
   }else choices=VOWELS.map(v=>v.reading);
  }
  if(!choices.length)return [];
