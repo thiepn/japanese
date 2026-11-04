@@ -122,8 +122,10 @@ function hintControls(){
  const cue=level>=1?'<div class="hint" role="status"><strong>Recall cue:</strong> '
   +esc(stage.mode==='reading'?'Read each kana in order, without trying to guess the meaning.'
    :v?.cue||'Try recalling the character from your introduction.')+'</div>':'';
+ const canOfferChoices=stage.mode!=='recognition'&&!(stage.mode==='teach'&&state.phase===0&&state.cursor===0);
+ const nextHint=level===0?'Need a hint?':(level===1&&canOfferChoices?'Try guided choices':null);
  return cue+'<div class="hint-actions">'
-  +(level<2?'<button class="text-button" data-action="hint">'+(level===0?'Need a hint?':'Try guided choices')+'</button>':'')
+  +(nextHint?'<button class="text-button" data-action="hint">'+nextHint+'</button>':'')
   +'<button class="text-button" data-action="reveal">Show answer (no credit)</button></div>';
 }
 function answerForm(){
