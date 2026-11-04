@@ -1,15 +1,22 @@
 import {test,expect} from '@playwright/test';
+async function learn(page,kana,reading){
+ await expect(page.getByRole('heading',{name:'Meet '+kana})).toBeVisible();
+ await page.getByRole('button',{name:'Try recalling '+kana}).click();
+ await page.getByRole('textbox',{name:'Type the romaji reading'}).fill(reading);
+ await page.getByRole('button',{name:'Check answer'}).click();
+ await expect(page.getByText(/Independent answer recorded/)).toBeVisible();
+ await page.getByRole('button',{name:'Continue'}).click();
+}
+
 
 test('guided first two vowels and correct practice with durable prototype-only state',async({page})=>{
  await page.goto('/index.html');
  await expect(page.getByRole('heading',{name:/Read your first Japanese characters/})).toBeVisible();
  await page.getByRole('button',{name:'Start learning'}).click();
- await expect(page.getByRole('heading',{name:'Meet あ'})).toBeVisible();
- await page.getByRole('button',{name:'Continue'}).click();
+ await learn(page,'あ','a');
  await expect(page.getByRole('heading',{name:'Meet い'})).toBeVisible();
  await page.reload();
- await expect(page.getByRole('heading',{name:'Meet い'})).toBeVisible();
- await page.getByRole('button',{name:'Continue'}).click();
+ await learn(page,'い','i');
  await expect(page.getByRole('heading',{name:'How do you read this?'})).toBeVisible();
  await page.getByRole('button',{name:'Reading a'}).click();
  await expect(page.getByText('Independent answer recorded.')).toBeVisible();
@@ -24,8 +31,8 @@ test('guided first two vowels and correct practice with durable prototype-only s
 test('wrong first answer is recorded then correction offered later',async({page})=>{
  await page.goto('/index.html');
  await page.getByRole('button',{name:'Start learning'}).click();
- await page.getByRole('button',{name:'Continue'}).click();
- await page.getByRole('button',{name:'Continue'}).click();
+ await learn(page,'あ','a');
+ await learn(page,'い','i');
  await page.getByRole('button',{name:'Reading i'}).click(); // Wrong for あ
  await expect(page.getByText(/The correct answer is/)).toContainText('a');
  await page.getByRole('button',{name:'Continue'}).click();
@@ -48,9 +55,8 @@ test('listening can be skipped without credit if audio unavailable',async({page}
  });
  await page.reload();
  await expect(page.getByRole('heading',{name:'Which character do you hear?'})).toBeVisible();
- await page.getByRole('button',{name:'Skip listening — no credit'}).click();
- await expect(page.getByText('No listening evidence has been recorded for this question.')).toBeVisible();
- await page.getByRole('button',{name:'Continue'}).click();
+ await page.getByRole('button',{name:'Continue without listening (not assessed)'}).click();
+ await expect(page.getByRole('heading',{name:'Read the word'})).toBeVisible();
  const records=await page.evaluate(()=>JSON.parse(localStorage.getItem('thiepn:kana-foundations:prototype-only:v1')).records);
  expect(records[0].mode).toBe('listening');expect(records[0].correct).toBeNull();
 });
@@ -78,7 +84,7 @@ test('typed recall is keyboard-submittable and assisted attempts stay marked',as
  });
  await page.reload();
  await expect(page.getByRole('heading',{name:'Type the reading'})).toBeVisible();
- await page.getByRole('button',{name:/Reveal a hint/}).click();
+ await page.getByRole('button',{name:'Need a hint?'}).click();
  await page.getByRole('textbox',{name:'Type the romaji reading'}).fill('u');
  await page.getByRole('textbox',{name:'Type the romaji reading'}).press('Enter');
  await expect(page.getByText(/You used a hint/)).toBeVisible();
