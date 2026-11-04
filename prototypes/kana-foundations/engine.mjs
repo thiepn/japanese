@@ -182,8 +182,8 @@ export function needsPractice(s){
  const unresolved=new Map();
  for(const r of s.records){
   const item=LOOKUP[r.item]?r.item:null;
-  if(!item||r.mode==='introduction'||r.mode==='listening'||r.correct===null)continue;
-  if(r.correct===false||r.assisted){
+  if(!item||r.mode==='introduction'||r.mode==='listening'||(r.correct===null&&!r.revealed))continue;
+  if(r.correct===false||r.assisted||r.revealed){
    unresolved.set(item,true);
   }else if(r.correct===true&&!r.assisted&&!r.correction&&!r.practiceOnly){
    unresolved.delete(item);
@@ -195,7 +195,7 @@ export function needsWordPractice(s){
  const weak=new Set();
  for(const r of s.records){
   if(!WORD_LOOKUP[r.item]||r.mode!=='reading')continue;
-  if(r.correct===false||r.assisted)weak.add(r.item);
+  if(r.correct===false||r.assisted||r.revealed)weak.add(r.item);
   if(r.correct===true&&!r.assisted&&!r.correction&&!r.practiceOnly)weak.delete(r.item);
  }
  return WORDS.filter(w=>weak.has(w.id)).map(w=>w.id);
