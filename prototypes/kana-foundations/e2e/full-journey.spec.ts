@@ -1,4 +1,5 @@
 import {test,expect} from '@playwright/test';
+import {mkdirSync} from 'node:fs';
 
 // Real click-through regression: a complete beginner journey, not a fabricated
 // engine state jump. Listening is skipped without credit because CI has no
@@ -6,6 +7,11 @@ import {test,expect} from '@playwright/test';
 test('complete five-vowel lesson reports correct first-attempt evidence and survives reload',async({page},testInfo)=>{
  await page.goto('/index.html');
  await page.getByRole('button',{name:'Start learning'}).click();
+ const evidenceDir='prototypes/kana-foundations/.visual-evidence';
+ if(process.env.CI){
+   mkdirSync(evidenceDir,{recursive:true});
+   await page.screenshot({path:evidenceDir+'/'+testInfo.project.name+'-introduction.png'});
+ }
  await testInfo.attach('first-introduction',{body:await page.screenshot(),contentType:'image/png'});
  for(const glyph of ['あ','い']){
    await expect(page.getByRole('heading',{name:'Meet '+glyph})).toBeVisible();
@@ -56,6 +62,10 @@ test('complete five-vowel lesson reports correct first-attempt evidence and surv
  expect(summary.recall).toEqual({correct:5,total:5,skipped:0,assisted:0});
  expect(summary.listening).toEqual({correct:0,total:5,skipped:5,assisted:0});
  expect(summary.reading).toEqual({correct:3,total:3,skipped:0,assisted:0});
+ if(process.env.CI){
+   mkdirSync(evidenceDir,{recursive:true});
+   await page.screenshot({path:evidenceDir+'/'+testInfo.project.name+'-results.png'});
+ }
  await testInfo.attach('lesson-results',{body:await page.screenshot(),contentType:'image/png'});
  await page.reload();
  await expect(page.getByRole('heading',{name:'Your five-vowel results'})).toBeVisible();
