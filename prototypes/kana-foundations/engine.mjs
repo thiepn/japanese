@@ -162,5 +162,14 @@ export function allowedChoices(s){
     const j=(seed>>>0)%(i+1);
     [choices[i],choices[j]]=[choices[j],choices[i]];
   }
+  // Balance correct-button positions across the five first-pass questions;
+  // a learner must read the glyph rather than exploit a fixed response slot.
+  const target=stage.mode==='recognition'?vowel(item)?.reading:item;
+  const from=choices.indexOf(target);
+  if(from>=0){
+    const slot=(s.cursor*3+s.phase+(s.retryMode?1:0))%choices.length;
+    choices.splice(from,1);
+    choices.splice(slot,0,target);
+  }
   return choices;
 }
