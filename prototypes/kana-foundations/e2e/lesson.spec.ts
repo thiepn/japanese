@@ -34,7 +34,7 @@ test('wrong first answer is recorded then correction offered later',async({page}
  await learn(page,'あ','a');
  await learn(page,'い','i');
  await page.getByRole('button',{name:'Reading i'}).click(); // Wrong for あ
- await expect(page.getByText(/The correct answer is/)).toContainText('a');
+ await expect(page.getByText(/Not quite. Correct:/)).toContainText('a');
  await page.getByRole('button',{name:'Continue'}).click();
  await page.getByRole('button',{name:'Reading i'}).click();
  await page.getByRole('button',{name:'Continue'}).click();
@@ -65,7 +65,7 @@ test('mobile lesson has no document horizontal overflow and accessible control s
  await page.goto('/index.html');
  await page.getByRole('button',{name:'Start learning'}).click();
  const bounds=await page.evaluate(()=>{
-  const button=document.querySelector('button[data-action="advance"]').getBoundingClientRect();
+  const button=document.querySelector('button[data-action="intro-check"]').getBoundingClientRect();
   return {documentWidth:document.documentElement.scrollWidth,viewportWidth:window.innerWidth,
    buttonHeight:button.height,buttonWidth:button.width};
  });
@@ -87,7 +87,7 @@ test('typed recall is keyboard-submittable and assisted attempts stay marked',as
  await page.getByRole('button',{name:'Need a hint?'}).click();
  await page.getByRole('textbox',{name:'Type the romaji reading'}).fill('u');
  await page.getByRole('textbox',{name:'Type the romaji reading'}).press('Enter');
- await expect(page.getByText(/You used a hint/)).toBeVisible();
+ await expect(page.getByText(/recorded as assisted/)).toBeVisible();
  const event=await page.evaluate(()=>JSON.parse(localStorage.getItem('thiepn:kana-foundations:prototype-only:v1')).records.at(-1));
  expect(event.assisted).toBe(true);expect(event.correct).toBe(true);
 });
