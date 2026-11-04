@@ -18,7 +18,9 @@ test('first hint offers a non-answer cue rather than immediately revealing the r
  assert.equal(hinted.feedback,null);
 });
 test('failed correction remains visible as a weak character with actionable review',()=>{
- let s=engine.start(engine.initialState());s=engine.advance(engine.advance(s));
+ let s=engine.start(engine.initialState());
+ s=engine.advance(engine.submit(engine.beginIntroCheck(s),'a'));
+ s=engine.advance(engine.submit(engine.beginIntroCheck(s),'i'));
  s=engine.submit(s,'i');s=engine.advance(s);
  s=engine.submit(s,'i');s=engine.advance(s);
  s=engine.submit(s,'i');s=engine.advance(s); // retry failed again
