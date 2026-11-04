@@ -1,0 +1,67 @@
+name: Kana Foundations - Isolated Prototype
+on:
+  push:
+    branches: ["feature/kana-foundations-v1-*"]
+  pull_request:
+    paths:
+      - "prototypes/kana-foundations/**"
+      - "playwright.kana-foundations.config.ts"
+      - "scripts/kana-foundations-original-baseline.sh"
+      - ".github/workflows/kana-foundations.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prototype:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: {version: "11.19.0"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "24.15.0"}
+      - name: Install workspace dependencies
+        run: pnpm install --no-frozen-lockfile
+      - name: Validate JS syntax and lesson evidence
+        run: |
+          node --check prototypes/kana-foundations/app.mjs
+          node --check prototypes/kana-foundations/engine.mjs
+          node --test prototypes/kana-foundations/tests/core.test.mjs
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Desktop, Android emulation and 320px browser tests
+        run: pnpm exec playwright test --config playwright.kana-foundations.config.ts
+      - name: Preserve only failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kana-foundations-test-failures
+          path: |
+            test-results/
+            playwright-report/
+          if-no-files-found: ignore
+  historical-original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: pnpm/action-setup@v4
+        with: {version: "11.19.0"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "24.15.0"}
+      - name: Rebuild original Studio from exact October 26 source
+        run: bash scripts/kana-foundations-original-baseline.sh "/tmp/kana-original-build"
+      - name: Verify historical artifact and pin
+        run: |
+          test -s "/tmp/kana-original-build/index.html"
+          test "$(cat /tmp/kana-original-build/ORIGINAL_COMMIT.txt)" = "5974a2353d9d001aae47a1dde846f6839e95b3c7"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: kana-original-oct26-build
+          path: /tmp/kana-original-build/
+          retention-days: 7
