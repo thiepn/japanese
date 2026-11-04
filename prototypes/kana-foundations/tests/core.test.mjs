@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
  VOWELS,STAGES,initialState,validState,currentStage,currentItem,vowel,word,start,
  advance,submit,skipListening,markAudioPlayed,setHint,pause,
- firstAttemptSummary,progress,practiceAgain,normalizeReading,PROTOTYPE_STORAGE_KEY
+ firstAttemptSummary,progress,practiceAgain,normalizeReading,allowedChoices,PROTOTYPE_STORAGE_KEY
 } from '../engine.mjs';
 
 function answerCorrect(s){
@@ -106,4 +106,18 @@ test('normalization accepts harmless formatting but not wrong vowels',()=>{
  assert.equal(normalizeReading('  I E  '),'ie');
  assert.equal(normalizeReading('h-a'),'ha');
  assert.notEqual(normalizeReading('i'),normalizeReading('e'));
+});
+
+test('choices preserve valid targets and diversify correct positions without rerender drift',()=>{
+ const slots=[];
+ VOWELS.forEach((v,cursor)=>{
+   const s={...initialState(),phase:3,cursor,paused:false};
+   const options=allowedChoices(s);
+   assert.deepEqual(new Set(options),new Set(VOWELS.map(v=>v.reading)));
+   assert.deepEqual(allowedChoices(JSON.parse(JSON.stringify(s))),options);
+   slots.push(options.indexOf(v.reading));
+ });
+ assert.deepEqual(slots,[3,1,4,2,0]);
+ const intro={...initialState(),phase:1,paused:false};
+ assert.deepEqual(new Set(allowedChoices(intro)),new Set(['a','i']));
 });
