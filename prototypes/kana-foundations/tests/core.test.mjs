@@ -2,13 +2,16 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
  VOWELS,STAGES,initialState,validState,currentStage,currentItem,vowel,word,start,
- advance,submit,skipListening,markAudioPlayed,setHint,pause,
+ advance,beginIntroCheck,submit,skipListening,markAudioPlayed,setHint,pause,
  firstAttemptSummary,progress,practiceAgain,normalizeReading,allowedChoices,PROTOTYPE_STORAGE_KEY
 } from '../engine.mjs';
 
 function answerCorrect(s){
  const mode=currentStage(s).mode,item=currentItem(s);
- if(mode==='teach')return advance(s);
+ if(mode==='teach'){
+   s=beginIntroCheck(s);
+   return advance(submit(s,vowel(item).reading));
+ }
  if(mode==='listening')s=markAudioPlayed(s);
  const input=mode==='reading'?word(item).reading:
   mode==='listening'?item:vowel(item).reading;
@@ -32,14 +35,14 @@ test('independent two-vowel introduction precedes recognition',()=>{
  let s=start(initialState());
  assert.equal(currentStage(s).mode,'teach');
  assert.equal(currentItem(s),'h-a');
- s=advance(s);assert.deepEqual(s.introduced,['h-a']);
- s=advance(s);assert.deepEqual(s.introduced,['h-a','h-i']);
+ s=answerCorrect(s);assert.deepEqual(s.introduced,['h-a']);
+ s=answerCorrect(s);assert.deepEqual(s.introduced,['h-a','h-i']);
  assert.equal(currentStage(s).mode,'recognition');
  assert.equal(currentItem(s),'h-a');
  assert.equal(s.records.filter(x=>x.mode==='introduction').length,2);
 });
 test('wrong answer is recorded once and rechecked as correction without erasing first failure',()=>{
- let s=start(initialState());s=advance(advance(s));
+ let s=start(initialState());s=answerCorrect(answerCorrect(s));
  s=submit(s,'i');
  assert.equal(s.feedback.correct,false);
  assert.deepEqual(s.retryItems,['h-a']);
@@ -57,7 +60,7 @@ test('wrong answer is recorded once and rechecked as correction without erasing 
  assert.equal(s.records[2].correct,false,'wrong first attempt unchanged');
 });
 test('hint marks an answer as assisted',()=>{
- let s=start(initialState());s=advance(advance(s));
+ let s=start(initialState());s=answerCorrect(answerCorrect(s));
  s=setHint(s);
  s=submit(s,'a');
  assert.equal(s.records.at(-1).assisted,true);
@@ -96,7 +99,7 @@ test('practice-only repetition preserves prior first-attempt evidence',()=>{
  assert(s.records.some(x=>x.practiceOnly));
 });
 test('pausing preserves index, preventing accidental progress loss',()=>{
- let s=start(initialState());s=advance(s);const saved=JSON.parse(JSON.stringify(pause(s)));
+ let s=start(initialState());s=answerCorrect(s);const saved=JSON.parse(JSON.stringify(pause(s)));
  assert.equal(saved.paused,true);
  assert.equal(saved.cursor,1);
  assert.equal(validState(saved),true);
