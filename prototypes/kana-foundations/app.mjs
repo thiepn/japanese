@@ -180,70 +180,64 @@ function optionButton(label,value,isKana){
     +' aria-label="'+esc(isKana?'Character '+label:'Reading '+label)+'">'+esc(label)+'</button>';
 }
 function recognition(){
-  const v=vowel(currentItem(state));
-  const choices=allowedChoices(state);
-  const body='<p class="kicker">Recognition · '+(state.retryMode?'Correction practice':'First attempt')+'</p>'
-    +'<h1>How do you read this?</h1><p class="lead">Choose the sound represented by the character.</p>'
-    +'<div class="glyph-panel"><span class="hero-glyph" lang="ja">'+v.kana+'</span></div>'
-    +'<div class="choices">'+choices.map(c=>optionButton(c,c,false)).join('')+'</div>'
-    +(state.hint?'<p class="hint">Hint: The reading is '+v.reading+'. Your answer will be marked assisted.</p>':'')
-    +feedbackHtml();
-  wrap(body,state.feedback?primary('advance','Continue'):
-    '<button class="text-button" data-action="hint">Need a hint?</button>');
+ const v=vowel(currentItem(state));
+ const body='<p class="kicker">Recognition · '+(state.retryMode?'Correction practice':'Independent attempt')+'</p>'
+  +'<h1>How do you read this?</h1><p class="lead">Choose the sound of this character.</p>'
+  +'<div class="glyph-panel"><span class="hero-glyph" lang="ja">'+v.kana+'</span></div>'
+  +'<div class="choices">'+allowedChoices(state).map(c=>optionButton(c,c,false)).join('')+'</div>'
+  +hintControls()+feedbackHtml();
+ wrap(body,state.feedback?primary('advance','Continue'):secondary('pause','Exit and save'));
 }
 function typed(mode){
-  const isWord=mode==='reading',v=isWord?word(currentItem(state)):vowel(currentItem(state));
-  const glyph=isWord?v.kana:v.kana;
-  const heading=isWord?'Read the word':'Type the reading';
-  const body='<p class="kicker">'+(isWord?'Word reading':'Active recall')
-    +(state.retryMode?' · Correction practice':'')+'</p>'
-    +'<h1>'+heading+'</h1><p class="lead">'+(isWord
-      ?'Read the kana and type the sounds together. The meaning appears after you answer.'
-      :'No answer choices. Recall the vowel sound from memory.')+'</p>'
-    +'<div class="glyph-panel"><span class="'+(isWord?'japanese-word':'hero-glyph')+'" lang="ja">'+glyph+'</span></div>'
-    +(state.feedback?'': '<form id="answer-form"><label class="form-label" for="answer">Type the romaji reading</label>'
-      +'<input id="answer" class="answer-input" name="answer" type="text" inputmode="latin" autocomplete="off" autocapitalize="off" spellcheck="false" required maxlength="24" aria-describedby="input-help">'
-      +'<p id="input-help" class="status">Use letters such as a, i, u, e, o.</p>'
-      +'<button class="primary" type="submit">Check answer</button></form>')
-    +(state.hint?'<p class="hint">Hint: '+(isWord?v.reading:v.reading)+'. This is assisted practice.</p>':'')
-    +feedbackHtml();
-  wrap(body,state.feedback?primary('advance','Continue'):
-    '<button class="text-button" data-action="hint">Reveal a hint (assisted)</button>');
+ const isWord=mode==='reading',v=isWord?word(currentItem(state)):vowel(currentItem(state));
+ const body='<p class="kicker">'+(isWord?'Word reading':'Active recall')
+  +(state.retryMode?' · Correction practice':'')+'</p>'
+  +'<h1>'+(isWord?'Read the word':'Type the reading')+'</h1>'
+  +'<p class="lead">'+(isWord?'Read the kana in order. The meaning appears after you answer.'
+    :'Remember the sound without the written reading.')+'</p>'
+  +'<div class="glyph-panel"><span class="'+(isWord?'japanese-word':'hero-glyph')+'" lang="ja">'+v.kana+'</span></div>'
+  +(state.feedback?'':state.hintLevel>=2?guidedChoices():answerForm())
+  +hintControls()+feedbackHtml();
+ wrap(body,state.feedback?primary('advance','Continue'):secondary('pause','Exit and save'));
 }
 function listening(){
-  const v=vowel(currentItem(state));
-  const voice=availableVoice();
-  const body='<p class="kicker">Listening · '+(state.retryMode?'Correction practice':'Identify by sound')+'</p>'
-    +'<h1>Which character do you hear?</h1>'
-    +'<p class="lead">Listen, then choose the matching kana. You can replay the audio freely.</p>'
-    +'<div class="glyph-panel"><button class="audio-button" data-action="audio"'
-    +(voice?'':' disabled')+' aria-label="Play Japanese vowel using device speech synthesis">▶ Play sound</button>'
-    +'<p class="audio-note">'+(voice?'Device-generated speech, not a native recording.'
-      :'No Japanese device voice is available. You can skip this question.')+'</p></div>'
-    +(state.audioPlayed||state.feedback?'<div class="choices kana-grid">'
-      +allowedChoices(state).map(id=>optionButton(vowel(id).kana,id,true)).join('')+'</div>'
-      :'<p class="status">The choices will become available after audio begins playing.</p>')
-    +feedbackHtml();
-  wrap(body,state.feedback?primary('advance','Continue'):
-    secondary('skip-audio','Skip listening — no credit'));
+ const voice=availableVoice();
+ const body='<p class="kicker">Listening · '+(state.retryMode?'Correction practice':'Identify by sound')+'</p>'
+  +'<h1>Which character do you hear?</h1>'
+  +'<p class="lead">Listen, then select the matching kana. Audio is synthesized and optional in this prototype.</p>'
+  +'<div class="glyph-panel"><button class="audio-button" data-action="audio"'
+  +(voice?'':' disabled')+' aria-label="Play Japanese vowel using device speech synthesis">▶ Play sound</button>'
+  +'<p class="audio-note">'+(voice?'Device-generated Japanese voice. Replays are allowed.'
+   :'No Japanese device voice is available. Continue to reading without listening assessment.')+'</p></div>'
+  +(state.audioPlayed||state.feedback?'<div class="choices kana-grid">'
+   +allowedChoices(state).map(id=>optionButton(vowel(id).kana,id,true)).join('')+'</div>'
+   :'<p class="status">The choices appear after playback finishes.</p>')
+  +feedbackHtml();
+ wrap(body,state.feedback?primary('advance','Continue')
+  :(voice?'<button class="text-button" data-action="skip-audio">Skip this sound (no credit)</button>':'')
+  +secondary('skip-audio-stage','Continue without listening (not assessed)'));
 }
 function results(){
-  const data=firstAttemptSummary(state);
-  const fmt=m=>m.correct+' / '+m.total+(m.skipped?' ('+m.skipped+' skipped)':'');
-  const body='<p class="kicker">Unit 01 · Session summary</p><h1>Your five-vowel results</h1>'
-    +'<p class="lead">These are first-attempt results, not a proficiency score or a claim of long-term mastery.</p>'
-    +'<div class="vowel-strip" lang="ja">'+VOWELS.map(v=>'<span>'+v.kana+'</span>').join('')+'</div>'
-    +'<div class="metrics"><div class="metric"><strong>'+data.introduced+' / 5</strong><span>Characters introduced</span></div>'
-    +'<div class="metric"><strong>'+data.recognition.correct+' / '+data.recognition.total+'</strong><span>Final recognition, independent</span></div>'
-    +'<div class="metric"><strong>'+fmt(data.recall)+'</strong><span>Typed recall, independent</span></div>'
-    +'<div class="metric"><strong>'+fmt(data.listening)+'</strong><span>Listening, independent</span></div>'
-    +'<div class="metric"><strong>'+fmt(data.reading)+'</strong><span>Word reading, independent</span></div>'
-    +'<div class="metric"><strong>'+data.recall.assisted+'</strong><span>Assisted recall attempts</span></div></div>'
-    +'<div class="teaching-note"><span class="mini-label">Next step</span>'
-    +'Return after a delay to check retention. This prototype does not change the real Japanese FSRS schedule, so there is no claimed due date.</div>'
-    +'<p class="status">Additional practice keeps first-attempt results intact. It never promotes prototype practice to Account mastery.</p>';
-  wrap(body,primary('practice-again','Practice again (no mastery credit)')
-      +secondary('export','Export prototype progress'));
+ const data=firstAttemptSummary(state),weak=data.needsPractice.map(vowel).filter(Boolean);
+ const wordWeak=data.needsWordPractice.map(word).filter(Boolean);
+ const fmt=m=>m.correct+' / '+m.total+(m.skipped?' ('+m.skipped+' not assessed)':'');
+ const weakLabel=weak.length?weak.map(v=>v.kana+' ('+v.reading+')').join(' · '):'No unresolved individual kana errors today';
+ const body='<p class="kicker">Unit 01 · Learning evidence</p><h1>Your five-vowel results</h1>'
+  +'<p class="lead">First-attempt results are not a long-term mastery or retention score.</p>'
+  +'<div class="vowel-strip" lang="ja">'+VOWELS.map(v=>'<span>'+v.kana+'</span>').join('')+'</div>'
+  +'<div class="metrics"><div class="metric"><strong>'+data.introduced+' / 5</strong><span>Introduced</span></div>'
+  +'<div class="metric"><strong>'+data.introChecks.correct+' / '+data.introChecks.total+'</strong><span>Independent intro recall</span></div>'
+  +'<div class="metric"><strong>'+data.recognition.correct+' / '+data.recognition.total+'</strong><span>Final recognition</span></div>'
+  +'<div class="metric"><strong>'+fmt(data.recall)+'</strong><span>Typed recall</span></div>'
+  +'<div class="metric"><strong>'+fmt(data.listening)+'</strong><span>Listening</span></div>'
+  +'<div class="metric"><strong>'+fmt(data.reading)+'</strong><span>Word decoding</span></div></div>'
+  +'<div class="teaching-note"><span class="mini-label">What to practice next</span>'
+  +esc(weakLabel)
+  +(wordWeak.length?'<p class="status">Also practice: '+esc(wordWeak.map(w=>w.kana).join(' · '))+'</p>':'')
+  +'<p class="status">Return after a delay to check retention. No real Account or FSRS dates are changed.</p></div>';
+ wrap(body,(weak.length?primary('practice-weak','Practice '+weak.length+' weak character'+(weak.length===1?'':'s')):'')
+  +secondary('practice-again','Repeat mixed practice (no mastery credit)')
+  +secondary('export','Export prototype progress'));
 }
 let lastScreenKey=null;
 function render(){
