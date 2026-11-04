@@ -72,7 +72,7 @@ test('pause/resume during exercise preserves question and feedback',async({page}
  await page.goto('/index.html');
  await page.getByRole('button',{name:'Start learning'}).click();
  await page.getByRole('button',{name:'Continue'}).click();
- await page.getByRole('button',{name:'Exit',exact:true}).click();
+ await page.getByRole('button',{name:'Exit lesson; progress is saved'}).click();
  await expect(page.getByRole('button',{name:'Resume learning'})).toBeVisible();
  await page.reload();
  await page.getByRole('button',{name:'Resume learning'}).click();
