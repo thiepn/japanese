@@ -103,7 +103,7 @@ function feedbackHtml(){
  const correctText=mode==='listening'?item?.kana+' ('+item?.reading+')':item?.reading;
  if(f.revealed)return '<div role="status" aria-live="polite" class="feedback neutral"><strong>Answer revealed: '+esc(correctText)+'</strong>This is recorded as help, not independent recall. You will revisit the item.</div>';
  if(f.correct)return '<div role="status" aria-live="polite" class="feedback good"><strong>Correct.</strong>'
-  +(state.hintLevel>0||state.hint?'Guided practice, recorded as assisted.':'Independent answer recorded.')
+  +(state.practiceOnly?'Practice-only correct answer. Your original first attempt remains unchanged.':state.hintLevel>0||state.hint?'Guided practice, recorded as assisted.':'Independent answer recorded.')
   +(mode==='reading'?'<small>Meaning: '+esc(item.meaning)+' · Common kanji: '+esc(item.common)+'</small>':'')+'</div>';
  const confused=['recognition','teach','recall'].includes(mode)?VOWELS.find(v=>v.reading===f.submitted)
   :mode==='listening'?vowel(f.submitted):null;
