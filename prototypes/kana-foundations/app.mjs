@@ -1,8 +1,8 @@
 import {
  VOWELS,WORDS,STAGES,PROTOTYPE_SCHEMA,PROTOTYPE_STORAGE_KEY,
  initialState,validState,currentStage,currentItem,vowel,word,
- start,pause,setHint,markAudioPlayed,submit,skipListening,advance,
- practiceAgain,progress,firstAttemptSummary,allowedChoices
+ start,pause,beginIntroCheck,setHint,revealAnswer,markAudioPlayed,submit,skipListening,skipListeningStage,advance,
+ practiceAgain,practiceWeakItems,progress,firstAttemptSummary,allowedChoices
 } from './engine.mjs';
 
 const root=document.getElementById('app');
@@ -90,22 +90,45 @@ function speech(text,listening){
   }catch(error){audioStatus='Audio playback failed. You can skip the listening prompt.';render();}
 }
 function feedbackHtml(){
-  if(!state.feedback)return '';
-  const f=state.feedback,mode=currentStage(state).mode;
-  if(f.correct===null)return '<div role="status" aria-live="polite" class="feedback neutral"><strong>Listening skipped</strong>'
-    +'No listening evidence has been recorded for this question.</div>';
-  const item=mode==='reading'?word(currentItem(state)):vowel(currentItem(state));
-  const expected=mode==='listening'?item?.kana+' ('+item?.reading+')':item?.reading;
-  if(f.correct)return '<div role="status" aria-live="polite" class="feedback good">'
-    +'<strong>Correct.</strong>'+(state.hint?'You used a hint; this attempt is marked assisted.':'Independent answer recorded.')
-    +(mode==='reading'?'<small>Meaning: '+esc(item.meaning)+' · Common kanji: '+esc(item.common)+'</small>':'')
-    +'</div>';
-  return '<div role="status" aria-live="polite" class="feedback bad">'
-    +'<strong>Not quite.</strong>The correct answer is <b>'+esc(expected)+'</b>.'
-    +'<small>Your answer: '+esc(f.submitted)+'. '+(mode==='listening'?'Listen and compare the vowel sounds.':
-       mode==='reading'?'Read each character separately, then join the sounds.':'Review the character and try again later in this session.')+'</small>'
-    +(mode==='reading'?'<small>Meaning: '+esc(item.meaning)+' · Common kanji: '+esc(item.common)+'</small>':'')
-    +'</div>';
+ if(!state.feedback)return '';
+ const f=state.feedback,mode=currentStage(state).mode;
+ if(f.correct===null&&!f.revealed)return '<div role="status" aria-live="polite" class="feedback neutral"><strong>Listening not assessed</strong>No listening evidence was recorded.</div>';
+ const item=mode==='reading'?word(currentItem(state)):vowel(currentItem(state));
+ const correctText=mode==='listening'?item?.kana+' ('+item?.reading+')':item?.reading;
+ if(f.revealed)return '<div role="status" aria-live="polite" class="feedback neutral"><strong>Answer revealed: '+esc(correctText)+'</strong>This is recorded as help, not independent recall. You will revisit the item.</div>';
+ if(f.correct)return '<div role="status" aria-live="polite" class="feedback good"><strong>Correct.</strong>'
+  +(state.hintLevel>0||state.hint?'Guided practice, recorded as assisted.':'Independent answer recorded.')
+  +(mode==='reading'?'<small>Meaning: '+esc(item.meaning)+' · Common kanji: '+esc(item.common)+'</small>':'')+'</div>';
+ const confused=['recognition','teach','recall'].includes(mode)?VOWELS.find(v=>v.reading===f.submitted)
+  :mode==='listening'?vowel(f.submitted):null;
+ const contrast=confused&&item&&confused.id!==item.id
+  ?' You chose the reading of '+confused.kana+' ('+confused.reading+'). Compare it with '+item.kana+' ('+item.reading+').'
+  :' Review the character shape and try to recall its sound.';
+ return '<div role="status" aria-live="polite" class="feedback bad"><strong>Not quite. Correct: '+esc(correctText)+'</strong>'
+  +'<small>Your answer: '+esc(f.submitted)+'.'+esc(contrast)+'</small>'
+  +(mode==='reading'?'<small>Meaning: '+esc(item.meaning)+' · Common kanji: '+esc(item.common)+'</small>':'')
+  +'<small>'+(state.retryMode?'Still unresolved. It remains on your practice list.':'We will revisit this after other questions.')+'</small></div>';
+}
+function hintControls(){
+ if(state.feedback)return '';
+ const level=state.hintLevel||0,stage=currentStage(state),item=currentItem(state);
+ const v=stage.mode==='reading'?null:vowel(item);
+ const cue=level>=1?'<div class="hint" role="status"><strong>Recall cue:</strong> '
+  +esc(stage.mode==='reading'?'Read each kana in order, without trying to guess the meaning.'
+   :v?.cue||'Try recalling the character from your introduction.')+'</div>':'';
+ return cue+'<div class="hint-actions">'
+  +(level<2?'<button class="text-button" data-action="hint">'+(level===0?'Need a hint?':'Try guided choices')+'</button>':'')
+  +'<button class="text-button" data-action="reveal">Show answer (no credit)</button></div>';
+}
+function answerForm(){
+ return '<form id="answer-form"><label class="form-label" for="answer">Type the romaji reading</label>'
+  +'<input id="answer" class="answer-input" name="answer" type="text" inputmode="latin" autocomplete="off" autocapitalize="off" spellcheck="false" required maxlength="24" aria-describedby="input-help">'
+  +'<p id="input-help" class="status">Use romaji letters such as a, i, u, e or o.</p>'
+  +'<button class="primary" type="submit">Check answer</button></form>';
+}
+function guidedChoices(){
+ return '<p class="status">Guided choices — this attempt counts as assisted.</p>'
+  +'<div class="choices">'+allowedChoices(state).map(c=>optionButton(c,c,false)).join('')+'</div>';
 }
 function welcome(){
   const done=state.phase>0||state.introduced.length>0||state.records.length>0;
@@ -124,18 +147,27 @@ function welcome(){
   wrap(body,actions);
 }
 function teach(){
-  const v=vowel(currentItem(state));
+ const v=vowel(currentItem(state)),checking=state.introStep==='check';
+ if(!checking){
+  const discovery=v.id==='h-i'?'<div class="teaching-note"><span class="mini-label">Your first real word</span><span lang="ja">あい</span> (ai) means love, usually written <span lang="ja">愛</span>. You can already read its two hiragana.</div>':'';
   const body='<p class="kicker">'+esc(currentStage(state).title)+'</p>'
-    +'<h1>Meet <span lang="ja">'+v.kana+'</span></h1>'
-    +'<p class="lead">Look at the character, then listen to its sound. Its shape and reading will appear without hints in practice.</p>'
-    +'<div class="glyph-panel"><span class="hero-glyph" lang="ja">'+v.kana+'</span>'
-    +'<span class="roman">'+v.reading+'</span></div>'
-    +'<div class="inline-actions"><button class="audio-button" data-action="audio">▶ Play device voice</button></div>'
-    +'<p class="audio-note">Synthetic voice only. A verified native recording will be needed for release.</p>'
-    +'<div class="teaching-note"><span class="mini-label">Pronunciation</span>'+esc(v.tip)+'</div>'
-    +'<div class="teaching-note"><span class="mini-label">Writing</span>'+v.strokes
-    +' strokes. No unverified AI-generated stroke diagram is used in this prototype.</div>';
-  wrap(body,primary('advance','Continue')+secondary('pause','Exit and save'));
+   +'<h1>Meet <span lang="ja">'+v.kana+'</span></h1>'
+   +'<p class="lead">Observe the character and its reading. Then try recalling the sound with the answer hidden.</p>'
+   +'<div class="glyph-panel"><span class="hero-glyph" lang="ja">'+v.kana+'</span><span class="roman">'+v.reading+'</span></div>'
+   +'<div class="inline-actions"><button class="audio-button" data-action="audio">▶ Play device voice</button></div>'
+   +'<p class="audio-note">Synthetic voice only; native recordings require verification.</p>'
+   +'<div class="teaching-note"><span class="mini-label">Pronunciation</span>'+esc(v.tip)+'</div>'
+   +'<div class="teaching-note"><span class="mini-label">Writing</span>'+v.strokes+' strokes. No unverified stroke-order diagrams.</div>'
+   +discovery;
+  wrap(body,primary('intro-check','Try recalling '+v.kana)+secondary('pause','Exit and save'));
+  return;
+ }
+ const body='<p class="kicker">Quick recall · '+esc(currentStage(state).title)+'</p>'
+  +'<h1>Recall this sound</h1><p class="lead">What is this character, without the reading visible?</p>'
+  +'<div class="glyph-panel"><span class="hero-glyph" lang="ja">'+v.kana+'</span></div>'
+  +(state.feedback?'':state.hintLevel>=2?guidedChoices():answerForm())
+  +hintControls()+feedbackHtml();
+ wrap(body,state.feedback?primary('advance','Continue'):secondary('pause','Exit and save'));
 }
 function optionButton(label,value,isKana){
   const submitted=state.feedback?.submitted;
