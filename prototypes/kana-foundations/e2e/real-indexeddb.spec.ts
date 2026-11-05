@@ -145,3 +145,25 @@ test('different synthetic account namespaces never see each other data',async({p
   logReviewEvidence(testInfo,'account-isolation',{firstEvents:1,secondEvents:0});
  }finally{await erase(page,first);await erase(page,second);}
 });
+
+test('two tabs transition synthetic lease epoch; raw production DB writer remains unfenced: GAP',async({context},testInfo)=>{
+ const id=syntheticId(),a=await context.newPage(),b=await context.newPage();
+ await Promise.all([ready(a),ready(b)]);
+ const key='synthetic-kana-only-cross-tab-lease';
+ try{
+  await a.evaluate(([key,id])=>localStorage.setItem(key,JSON.stringify({owner:id,epoch:'synthetic-epoch-0001'})),[key,id]);
+  const first=await a.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);
+  expect(first.epoch).toBe('synthetic-epoch-0001');
+  await b.evaluate(([key,id])=>localStorage.setItem(key,JSON.stringify({owner:id,epoch:'synthetic-epoch-0002'})),[key,id]);
+  const changed=await a.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);
+  expect(changed.epoch).toBe('synthetic-epoch-0002');
+  const rawWriter=await directWrite(a,id,{id:'synthetic-event-after-epoch',revision:1,baseRevision:0});
+  expect(rawWriter.ok).toBe(true); // source-layer gap, NOT a user-facing account exploit
+  const state=await snapshot(b,id);
+  expect(state.counts).toEqual({events:1,outbox:1,traces:1});
+  logReviewEvidence(testInfo,'two-tabs-lease-epoch-gap',{changed,rawWriter,state});
+ }finally{
+  await a.evaluate(key=>localStorage.removeItem(key),key).catch(()=>{});
+  await a.close();await erase(b,id);await b.close();
+ }
+});
