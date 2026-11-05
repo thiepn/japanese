@@ -112,6 +112,8 @@ jobs:
           assert d["independent_rights_approval"]=="PENDING"
           assert sum(len(x["activity_intervals_at_minus45"]) for x in d["items"])==15
           assert all(not x["same_phoneme_or_repetition_identity_verified"] for x in d["items"])
+          assert all(w["periodicity_proxy"]["speech_identity"]=="UNVERIFIED" for x in d["items"] for w in x["activity_intervals_at_minus45"])
+          assert all(w["periodicity_proxy"]["status"] in ("PERIODICITY_PROXY_AVAILABLE","NO_MEASURABLE_PERIODICITY","INSUFFICIENT_WINDOW") for x in d["items"] for w in x["activity_intervals_at_minus45"])
           assert all(len(x["silence_sensitivity"])==4 for x in d["items"])
           assert len(list(Path("audition-segments").glob("*.wav")))==15
           assert len(list(Path("peak-comparison").glob("*.wav")))==5
