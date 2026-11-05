@@ -35,3 +35,34 @@ Source inspected at main `b6acd3fbe99ab5a6b638758145814cd0d13e2be4`:
 No existing Japanese production file, owner lease, FSRS card, due date, study event or user backup is written by this qualification. Keep PR draft/unmerged/undeployed. Do not call synthetically generated score eligibility an approved review, prove Kana Pro learning-effect parity, or ship unapproved vowel recordings. Future integration is a separate authorization.
 
 **Audit is technical qualification only. No human listening, usability, screen-reader or learner retention results are asserted.**
+
+
+## Transaction, failure injection and accessibility follow-up (2026-11-05)
+
+### Verified existing source properties (main \`b6acd3fbe99ab5a6b638758145814cd0d13e2be4\`)
+
+The actual \`packages/local-db/src/index.ts\` opens an account-specific IndexedDB named \`thiepn-japanese:<accountId>\`. \`saveStudyReview()\` uses a *single* \`readwrite\` transaction on \`study_events\`, \`sync_outbox\`, and \`memory_traces\`. \`study_events.add(event)\` rejects duplicate **event IDs**; \`studyEventToMutation()\` uses \`mutation_id=event.id\`; and the flashcard branch checks \`baseRevision\` against the existing MemoryTrace revision before \`put(trace)\`. Completion is reported from \`transaction.oncomplete\`, not from individual request success. This supports single-transaction atomicity and revision-CAS assumptions **for precisely those source paths**, not general exactly-once semantics.
+
+**P0 unresolved for live adapter:** \`gradeJapaneseKanaCard()\` currently constructs \`id:crypto.randomUUID()\` for each new StudyEvent. A retry that constructs a different UUID for the *same underlying learner attempt* is not covered by the \`study_events\` primary-key uniqueness constraint. There is no independently verified durable \`attemptId\` unique index. Do not silently equate event-ID uniqueness with attempt-level idempotency.
+
+**P0 unresolved for live adapter:** \`japaneseBridge.assertKanaWorkspace()\` validates account and lease \`epoch\` before/after the canonical work, and \`NativeKanaWorkspace\` listens for account changes. However \`saveStudyReview()\` does not atomically validate the owner lease epoch within the database transaction. A lease change during an awaited operation can occur after a preflight check, and a failure reported after a successful commit may be mistaken for an uncommitted grade. Account-scoped database naming provides namespace isolation, **not** a guarantee of no stale-epoch actions. Production changes are **not authorized** as part of this work.
+
+### Isolated synthetic test model
+
+\`qualification/transaction-failure-model.mjs\` and \`tests/transaction-failure-model.test.mjs\` simulate event/outbox/trace commits entirely in a freshly constructed in-memory object. Faults are injected after staging event, outbox, trace, before commit, and after commit before acknowledgment. Tests require all-or-nothing precommit behavior, stable same-event replay, denial of same-attempt/different-event retry, revision conflicts, lease changes and zero external writes. The synthetic *extra* attempt-ID uniqueness and commit-time lease check represent **requirements for a future adapter**, not guarantees provided by the existing production code.
+
+\`tests/source-transaction-contract.test.mjs\` inspects the real version-pinned production source to make both the existing guarantees and missing guards explicit. These are static source checks, not injected browser IndexedDB failures, real network synchronization retries, power failures or authorization to integrate.
+
+### Required future gate before any canonical write
+
+1. Obtain an owner-qualified, durable attempt-to-event identity stable under retry; do not create a new random canonical event for the same attempt after uncertain completion.
+2. Make event, trace revision and outbox persistence one atomic transaction; verify unique attempt representation/consumption **inside** that transaction.
+3. Revalidate owner lease/epoch across the asynchronous boundary with a transactionally enforceable policy or an equivalent proven fencing mechanism; make stale-epoch behavior fail closed.
+4. Test unknown commit outcomes and crash-replay after event insertion, outbox insertion, scheduler update and transaction completion using **real disposable IndexedDB** with independent tab contexts. Demonstrate exact once for an attempt even if the client receives no acknowledgment, and no cross-owner writes.
+5. Preserve legacy review identities, historical Google-only cards, canonical due dates, backups and guest account transitions. Run exact-head full Japanese production security/browser suites separately.
+
+### Accessibility qualification boundaries
+
+Automated Playwright checks can measure keyboard reachability, focus movement, landmark/role/label semantics, \`aria-live\` feedback, and CSS reflow at a 320-CSS-pixel effective viewport with enlarged text. This approximates the layout pressure of a 640px viewport at 200% zoom; it is **not a real browser zoom or OS text scaling test**, nor is it a real NVDA, VoiceOver, TalkBack, keyboard-only human or physical-device acceptance. Do not interpret green DOM assertions as human assistive-technology approval.
+
+**All S1 practice events remain \`practiceOnly=true\`, \`canonicalEligible=false\`, with null \`canonicalGradeId\`. There is no live FSRS, Account, event/outbox, schema, production or media write path here.**
