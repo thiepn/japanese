@@ -67,6 +67,30 @@ These percentages do **not** mean a file contains that percentage of literal dig
 | え | +0.128 | \`afe7abafe04d79edf7c73612f49cf3f8a574c7881da60c177dab6cd52e3eff09\` |
 | お | +3.556 | \`b85a804bbf58f2598a16d1134ad07c41e1354f3da9085896b9e44134551192b5\` |
 
+### Fifteen guarded activity-window candidate hashes
+
+These identifiers are the raw output WAV SHA-256 values from the first successful acoustic CI runner, included here because the review-only artifact expires after seven days. All are **unapproved audition snippets**, never assumed to be correctly pronounced vowels.
+
+| Kana | Window | Review-only PCM16 WAV SHA-256 |
+|---|---:|---|
+| あ | 1 | \`9dc3d40bfaec201f7beb158d2e943ef3eed1526f36a33234e1b15a8615f90118\` |
+| あ | 2 | \`20ae6f05b91d5295785a1f36484509b2cf8cfb0c8c2a24709dd86708d483205e\` |
+| あ | 3 | \`26e15c31e0c141aac0737afc1880bc43d4a6d800877dcf3b6fad3d22d6493bbf\` |
+| い | 1 | \`3646af02f13b0926bec380dcfec61098e913dd9614c606f169a7196d01e42e4d\` |
+| い | 2 | \`05c0e0591178b1313c91a0598b43f0838bc9ef61208724690519865d7ece3f84\` |
+| い | 3 | \`e6d311aad7e687af8365ce126ada1cba2ee138f3cba25c92d41162c3bca39869\` |
+| う | 1 | \`86b85217abe65e29966e79ac88f1712c0df82f8d5b0d7dcafdd627921af90ab2\` |
+| う | 2 | \`49b601cac318db44756c3e623c529d0e3a17f83d61056d1ccd0a086156a97f42\` |
+| う | 3 | \`e167888edb82efe9bee8b77219157e9ba19dad50c402da0052d739594ca6a25b\` |
+| え | 1 | \`4b5c2dea09617a164d138250677dccaa603fbc80e717502b85af46bb2134f474\` |
+| え | 2 | \`d6a9c7ef25d79fae40e29067789095e187e279192c4e9ea402f7a6e8560ff3e9\` |
+| え | 3 | \`f94c9e0ab53ffe2bebcd931a7bee40f1ca17911a4018a369d401694fac9a12b5\` |
+| お | 1 | \`ac83ebab32104630ae1533db22c599dd2e86f2729145ecc374199b2a92a84911\` |
+| お | 2 | \`228e161d691dda8f84602cadf72fcceb05d4d30a60ab93a65c78415c33d964f6\` |
+| お | 3 | \`f575755223e77f5e204559ad432e11bea537dcfda006f01c7497cee6aee63d72\` |
+
+The acoustic script also computes an **energy-selected 30ms autocorrelation periodicity proxy** for each activity window. If its peak indicates pitch-like periodicity, that is still not proof of human voicing, speech repetition, or the intended Japanese vowel; those assertions remain expressly *unverified*.
+
 These hashes identify the generated derivative bytes **in the documented runner environment**; a different FFmpeg decode implementation or PCM rounding environment may produce differing hashes. They are not hashes of original Commons files (see [original evidence](ORIGINAL_AUDIO_EVIDENCE.md)). All fifteen window-specific hashes remain in the machine-readable review artifact to avoid risk of manual transcription errors.
 
 ## Reproduce and validate (review-only)
