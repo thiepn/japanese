@@ -84,8 +84,10 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - name: Confirm audio decoding utilities
+      - name: Install and verify original-audio analysis tools
         run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
           ffmpeg -version | head -n 1
           ffprobe -version | head -n 1
       - name: Download current original Commons media and verify source and audio metadata
