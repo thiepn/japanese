@@ -1,4 +1,5 @@
 import {test,expect} from '@playwright/test';
+import {mkdirSync} from 'node:fs';
 
 async function begin(page){
  await page.goto('/index.html');
@@ -57,6 +58,11 @@ test('200%-equivalent CSS viewport and text enlargement preserve reflow and keyb
  const answer=page.locator('.practice-screen button[data-practice-value]').first();
  await answer.focus();await page.keyboard.press('Space');
  await expect(page.locator('.practice-screen [role="status"].feedback')).toBeVisible();
+ await expect.poll(()=>page.evaluate(()=>document.activeElement?.getAttribute('role'))).toBe('status');
+ if(process.env.CI){
+  mkdirSync('prototypes/kana-foundations/.visual-evidence',{recursive:true});
+  await page.screenshot({path:'prototypes/kana-foundations/.visual-evidence/'+test.info().project.name+'-synthetic-200pct-reflow.png',fullPage:true});
+ }
 });
 test('screen-reader-facing semantics expose prompt, group, language and assisted status',async({page})=>{
  await begin(page);
