@@ -7,7 +7,7 @@ import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {resolve,dirname,relative} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
-import ts from 'typescript';
+import {stripTypeScriptTypes} from 'node:module';
 
 const here=dirname(fileURLToPath(import.meta.url));
 const root=resolve(here,'../../..');
@@ -21,13 +21,12 @@ const manifest={reviewOnly:true,productionCodeModified:false,bundledDate:null,mo
 for(const [source,target] of modules){
  const text=readFileSync(resolve(root,source),'utf8');
  const sha256=createHash('sha256').update(text).digest('hex');
- const output=ts.transpileModule(text,{fileName:source,reportDiagnostics:true,
-  compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022,
-   verbatimModuleSyntax:true,importsNotUsedAsValues:ts.ImportsNotUsedAsValues?.Remove}
- });
- const errors=(output.diagnostics||[]).filter(x=>x.category===ts.DiagnosticCategory.Error);
- if(errors.length)throw Error(source+' transpile errors: '+errors.map(x=>ts.flattenDiagnosticMessageText(x.messageText,' ')).join(' | '));
- let js=output.outputText;
+ // Node 24's type erasure is compatible with this repo's TypeScript 7.
+ // mode:'strip' refuses TypeScript syntax that would require code generation.
+ // No TypeScript 6 Compiler API and no new dependency or modified source.
+ let js;
+ try {js=stripTypeScriptTypes(text,{mode:'strip',sourceUrl:source});}
+ catch(error){throw Error('Unable to type-strip exact production source '+source+': '+String(error));}
  if(target==='local-db.mjs'){
   if(!js.includes('from "@thiepn/sync-protocol"')&&!js.includes("from '@thiepn/sync-protocol'"))
    throw Error('Production sync-protocol import shape changed: fail closed');
