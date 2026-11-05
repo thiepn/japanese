@@ -87,3 +87,30 @@ p{line-height:1.55}
 .hint-actions{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px;margin-top:7px}
 .hint-actions .text-button{flex:1;min-width:130px}
 @media(max-width:359px){.hint-actions{flex-direction:column}}
+
+
+/* Screenshot-qualified teaching priority: introductory explanation must remain
+   visible above the primary action on the 320 × 700 reference viewport. */
+.intro-screen .lead{margin-bottom:10px;line-height:1.4}
+.intro-screen .glyph-panel{min-height:168px;margin:10px 0 9px;padding:8px;gap:0}
+.intro-screen .hero-glyph{font-size:clamp(88px,28vw,118px);line-height:1.12}
+.intro-screen .glyph-panel .roman{font-size:21px}
+.intro-screen .audio-note{margin:1px 0;text-align:left;line-height:1.35}
+.intro-screen .teaching-note{margin:8px 0 10px;padding:12px 13px;font-size:13px;line-height:1.4}
+.intro-screen .mini-label{margin-bottom:4px}
+.intro-screen .essential-teaching{display:grid;gap:3px}
+.intro-screen .essential-teaching .audio-button{min-height:44px;padding:9px 15px;justify-self:start}
+.intro-screen .stroke-count{color:var(--muted);white-space:normal}
+.results-actions{display:grid;gap:10px;margin:16px 0 24px}
+@media(max-width:540px){
+ main:has(.intro-screen){padding-top:14px}
+ .intro-screen h1{margin:3px 0 7px}
+}
+@media(max-width:359px){
+ .intro-screen .hero-glyph{font-size:88px}
+ .intro-screen .glyph-panel{min-height:145px;margin:9px 0 8px}
+ .intro-screen .lead{font-size:14px;margin-bottom:7px}
+ .intro-screen .teaching-note{margin:6px 0 8px;padding:10px 12px}
+ .intro-screen .audio-note{font-size:11px}
+ .action-area{padding:10px 15px calc(11px + env(safe-area-inset-bottom))}
+}
