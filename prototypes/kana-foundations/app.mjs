@@ -155,7 +155,7 @@ function welcome(){
   wrap(body,actions);
 }
 function teach(){
- const v=vowel(currentItem(state)),checking=state.introStep==='check';
+ const v=vowel(currentItem(state)),checking=state.introStep==='check',voice=availableVoice();
  if(!checking){
   const discovery=v.id==='h-i'?'<div class="teaching-note discovery-note"><span class="mini-label">First word discovery</span>'
    +'<span lang="ja">あい</span> (ai) means love, commonly written <span lang="ja">愛</span>. '
@@ -166,8 +166,10 @@ function teach(){
    +'<div class="glyph-panel"><span class="hero-glyph" lang="ja">'+v.kana+'</span>'
    +'<span class="roman">'+v.reading+'</span></div>'
    +'<div class="essential-teaching"><button class="audio-button" data-action="audio" '
-   +'aria-label="Play synthesized Japanese sound '+v.reading+'">▶ Listen</button>'
-   +'<p class="audio-note">Device-generated voice; pronunciation not independently verified.</p>'
+   +(voice?'':' disabled')+' aria-label="'+(voice?'Play synthesized Japanese sound '+v.reading:'Japanese audio unavailable')
+   +'">'+(voice?'▶ Listen':'Audio unavailable')+'</button>'
+   +'<p class="audio-note">'+(voice?'Device-generated voice; pronunciation not independently verified.'
+     :'No Japanese device voice is installed. Continue with the written reading.')+'</p>'
    +'<div class="teaching-note essential-note"><span class="mini-label">Sound &amp; shape</span>'
    +esc(v.tip)+' <span class="stroke-count">Written in '+v.strokes+' strokes.</span></div></div>'
    +discovery+'</section>';
