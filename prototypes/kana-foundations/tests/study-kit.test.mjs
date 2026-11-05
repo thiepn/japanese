@@ -66,3 +66,26 @@ test('prototype repository does not bundle reviewed-but-unapproved media binarie
  };
  visit(root);
 });
+
+
+test('crop/gain decision matrix is review-only, source-hash-pinned and explicitly non-phonetic',()=>{
+ const decisions=proto('audio-review/ACOUSTIC_CROP_GAIN_DECISIONS.md');
+ assert(decisions.includes('UNAPPROVED'));
+ assert(decisions.includes('NOT')&&decisions.includes('speech'));
+ for(const kana of ['あ','い','う','え','お'])assert(decisions.includes(kana));
+ assert(decisions.includes('twenty unapproved')||decisions.includes('twenty unapproved test derivatives'));
+ assert(decisions.includes('No deployment')||decisions.includes('no Account'));
+ const script=readFileSync(new URL('../../../scripts/kana-foundations-acoustic-review.py',import.meta.url),'utf8');
+ assert(script.includes('same_phoneme_or_repetition_identity_verified'));
+ assert(script.includes('REVIEW_ONLY'));
+ const upstream=readFileSync(new URL('../../../scripts/kana-foundations-audio-evidence.py',import.meta.url),'utf8');
+ assert(upstream.includes('PINNED_ORIGINALS'));
+ assert(upstream.includes('Unapproved original upload-version change'));
+ for(const hash of [
+  '37d8b51acbdec5f1a4768520c4ad94a14f21f1230f33a2d7f50406ca9b32aff6',
+  '39a55eee1bd2dbacbee318c7c7a4f499d905b909dcf0b3400961b1142801e9f2',
+  '45abe18943e57e1d0bbe68e57a2a617f2ce917b5af44baf1e057390d292b231d',
+  'd529d33b371fd63b3edeb2e3be5e785d90d4fba66281be9b55076a477a3ee297',
+  'daafc582b17287df5707038bdd08e43754e44c03b08b723e2afa81015155c198'
+ ])assert(upstream.includes(hash));
+});
