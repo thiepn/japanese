@@ -24,6 +24,15 @@ SOURCES = [
     ("え", "e", "Ja-E.oga"),
     ("お", "o", "Japanese_O.ogg"),
 ]
+# Verified 2026-11-05 original upload identities. Fail closed if Commons replaces
+# any original byte stream or points a title to a different upload version.
+PINNED_ORIGINALS = {
+    "Ja-A.oga": ("2009-10-04T09:57:13Z", "37d8b51acbdec5f1a4768520c4ad94a14f21f1230f33a2d7f50406ca9b32aff6"),
+    "Japanese_I.ogg": ("2009-10-04T10:13:03Z", "39a55eee1bd2dbacbee318c7c7a4f499d905b909dcf0b3400961b1142801e9f2"),
+    "Japanese_U.ogg": ("2009-10-04T10:14:37Z", "45abe18943e57e1d0bbe68e57a2a617f2ce917b5af44baf1e057390d292b231d"),
+    "Ja-E.oga": ("2009-10-04T10:19:48Z", "d529d33b371fd63b3edeb2e3be5e785d90d4fba66281be9b55076a477a3ee297"),
+    "Japanese_O.ogg": ("2009-10-04T10:22:53Z", "daafc582b17287df5707038bdd08e43754e44c03b08b723e2afa81015155c198"),
+}
 BASE = "https://commons.wikimedia.org/w/api.php"
 HEADERS = {
     "User-Agent": "KanaFoundationsEvidence/1.0 (https://github.com/thiepn/japanese; original audio attribution audit)",
@@ -176,6 +185,12 @@ def main() -> None:
         if not (commons_sha == digest or
                 (re.fullmatch("[0-9a-z]+", commons_sha) and int(commons_sha, 36) == int(digest, 16))):
             raise RuntimeError("Original SHA-1 mismatches imageinfo: " + filename)
+        expected_timestamp, expected_sha256 = PINNED_ORIGINALS[filename]
+        if image.get("timestamp") != expected_timestamp:
+            raise RuntimeError("Unapproved original upload-version change: " + filename)
+        actual_sha256 = hashlib.sha256(binary).hexdigest()
+        if actual_sha256 != expected_sha256:
+            raise RuntimeError("Original content no longer matches the approved-for-review SHA-256 pin: " + filename)
         analysis = audio_metrics(local)
         records.append({
             "kana": kana, "romaji": romaji, "filename": filename,
