@@ -92,7 +92,25 @@ def audio_metrics(path: Path) -> dict:
          "-af", "silencedetect=n=-45dB:d=0.15", "-f", "null", "-"],
         capture_output=True, text=True, timeout=30,
     )
+    if silence.returncode != 0:
+        raise RuntimeError("Silence analysis failed")
+    starts = [float(x) for x in re.findall(r"silence_start:\\s*([0-9.]+)", silence.stderr)]
+    matches = re.findall(
+        r"silence_end:\\s*([0-9.]+)\\s*\\|\\s*silence_duration:\\s*([0-9.]+)",
+        silence.stderr,
+    )
+    intervals = [
+        {"start_seconds": round(start, 6), "end_seconds": round(float(end), 6),
+         "duration_seconds": round(float(duration_s), 6)}
+        for start, (end, duration_s) in zip(starts, matches)
+    ]
+    quiet_seconds = sum(row["duration_seconds"] for row in intervals)
     return {
+        "silence_detection_threshold_dbfs": -45,
+        "silence_min_interval_seconds": 0.15,
+        "detected_silence_intervals": intervals,
+        "silence_coverage_fraction": round(quiet_seconds / duration, 4),
+        "silence_coverage_note": "threshold-based observation only; not human segmentation",
         "codec": stream.get("codec_name"),
         "channels": stream.get("channels"),
         "sample_rate_hz": sample_rate,
