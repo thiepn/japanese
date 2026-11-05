@@ -66,3 +66,32 @@ The actual \`packages/local-db/src/index.ts\` opens an account-specific IndexedD
 Automated Playwright checks can measure keyboard reachability, focus movement, landmark/role/label semantics, \`aria-live\` feedback, and CSS reflow at a 320-CSS-pixel effective viewport with enlarged text. This approximates the layout pressure of a 640px viewport at 200% zoom; it is **not a real browser zoom or OS text scaling test**, nor is it a real NVDA, VoiceOver, TalkBack, keyboard-only human or physical-device acceptance. Do not interpret green DOM assertions as human assistive-technology approval.
 
 **All S1 practice events remain \`practiceOnly=true\`, \`canonicalEligible=false\`, with null \`canonicalGradeId\`. There is no live FSRS, Account, event/outbox, schema, production or media write path here.**
+
+
+## Genuine browser IndexedDB source harness (KP-PARITY-S2, 2026-11-05)
+
+**No production source changes. No connection to real learners, auth or sync servers.** The new \`prepare-real-idb.mjs\` reads the exact checked-out production \`packages/local-db/src/index.ts\` and \`packages/sync-protocol/src/index.ts\`. It uses the existing workspace TypeScript compiler to transpile **their unchanged contents**, rewrites only the local module import for browser ESM resolution, and generates disposable localhost files under \`prototypes/kana-foundations/.real-idb-harness/\`. Each generated module carries its source SHA-256 and an independent provenance manifest; Playwright verifies those hashes against current source bytes. No browser mock of \`saveStudyReview\` or fake IndexedDB library is used.
+
+The browser fixture \`real-idb-scenarios.mjs\` imports that generated implementation, and permits writes **only** to synthetic disposable account names matching \`synthetic-kana-idb-…\`. This creates ordinary native browser IndexedDB databases at \`thiepn-japanese:synthetic-kana-idb-…\` on the Playwright ephemeral localhost origin. Every scenario deletes its synthetic database. The generated modules are not committed, loaded by production or deployed.
+
+**Exact commands (after workspace dependency installation):**
+
+    node prototypes/kana-foundations/qualification/prepare-real-idb.mjs
+    pnpm exec playwright test --config playwright.kana-foundations.config.ts
+
+The Playwright localhost server command also runs the preparation script automatically on a fresh server. CI exercises desktop Chromium, Android-emulated Chromium, compact 320px Chromium, desktop Firefox, desktop WebKit and iOS-emulated WebKit. Browser emulation does not constitute physical device acceptance.
+
+### Real-system positive and negative cases
+
+- **Existing source-backed guarantees:** three-store atomic transaction, immutable event-ID uniqueness, StudyEvent→outbox mutation identity, expected MemoryTrace revision/CAS, flashcard owner/trace match, snapshot-import idempotency and per-account IndexedDB namespace isolation.
+- **Injected genuine IDB aborts:** after queuing event insertion, outbox insertion and trace insertion, explicitly abort the native transaction; inspect all three native stores to ensure none retained a partial write. This is an instrumented native transaction, not a browser power failure.
+- **Unknown acknowledgment:** allow the actual DB transaction to commit, simulate a lost caller acknowledgment, and retry with the same event ID (rejected) versus a new ID for the same underlying learner attempt (current production gap). This is **not** an actual mid-transaction process termination.
+- **Two-tab competition:** independent browser pages racing the same trace revision; only one should commit. Separately, sequentially retrying the same learner attempt with distinct IDs/valid revisions can still write twice; the test is designed to document this **open gap**, not celebrate its acceptance.
+- **Lease epoch:** the current database writer has no active-lease epoch input. The test simulates a synthetic epoch transition before invoking the *real* writer and records that it still accepts the review. This demonstrates that the **database layer alone** does not fence stale epochs; it does not prove a current end-to-end account exploit, because the application has independent workspace guards.
+- **Accessibility unchanged:** all existing keyboard focus, role/label, no-overflow and approximate enlarged-text reflow suites continue to run.
+
+A pass for a "GAP" scenario means **the unsafe possibility was reproduced**; it is not a passed safety requirement. Both attempt-level uniqueness and transactional lease fencing remain hard blockers for any canonical Kana Foundations grade integration.
+
+### Qualification limitations
+
+Native IndexedDB API tests on synthetic localhost browser storage can establish transaction behavior in the exercised engines. They do not simulate OS power loss, server synchronization, network reordering, production authentication, exact-HEAD deployed browser behavior, real device behavior, actual 200% browser zoom or human screen-reader understanding. Event+outbox+trace atomicity does not imply end-to-end exactly-once FSRS grading across retries, owner changes or multiple devices. Any future canonical adapter requires its own approved production write contract and full Japanese regression suite.
