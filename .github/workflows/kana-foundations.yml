@@ -8,6 +8,7 @@ on:
       - "playwright.kana-foundations.config.ts"
       - "playwright.kana-audio-evidence.config.ts"
       - "scripts/kana-foundations-audio-evidence.py"
+      - "scripts/kana-foundations-acoustic-review.py"
       - "scripts/kana-foundations-original-baseline.sh"
       - ".github/workflows/kana-foundations.yml"
   workflow_dispatch:
@@ -92,6 +93,30 @@ jobs:
           ffprobe -version | head -n 1
       - name: Download current original Commons media and verify source and audio metadata
         run: python3 scripts/kana-foundations-audio-evidence.py --output "$RUNNER_TEMP/kana-vowels-review"
+      - name: Quantify original acoustic activity and generate UNAPPROVED temporary reviewer comparisons
+        run: python3 scripts/kana-foundations-acoustic-review.py --review-root "$RUNNER_TEMP/kana-vowels-review"
+      - name: Assert original integrity, bounded artifact outputs and withheld approvals
+        run: |
+          cd "$RUNNER_TEMP/kana-vowels-review"
+          sha256sum --check sha256sums.txt
+          cd acoustic-forensics-review-only
+          sha256sum --check review-derivative-sha256sums.txt
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path("acoustic-measurements.json")
+          d=json.loads(root.read_text())
+          assert len(d["items"])==5
+          assert d["release_approved"] is False
+          assert d["qualified_japanese_approval"]=="PENDING"
+          assert d["independent_rights_approval"]=="PENDING"
+          assert sum(len(x["activity_intervals_at_minus45"]) for x in d["items"])==15
+          assert all(not x["same_phoneme_or_repetition_identity_verified"] for x in d["items"])
+          assert all(len(x["silence_sensitivity"])==4 for x in d["items"])
+          assert len(list(Path("audition-segments").glob("*.wav")))==15
+          assert len(list(Path("peak-comparison").glob("*.wav")))==5
+          print("ACOUSTIC_REVIEW_CANDIDATES=20 UNAPPROVED ALL_HASHES_VALID")
+          PY
       - uses: pnpm/action-setup@v4
         with: {version: "11.19.0"}
       - uses: actions/setup-node@v4
