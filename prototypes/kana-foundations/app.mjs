@@ -322,12 +322,12 @@ function practiceScreen(){
      return '<button type="button" class="choice'+(kana?' kana-choice':'')+'" data-action="practice-choice" data-practice-value="'+esc(value)+'" aria-label="'+esc(kana?'Character '+label:'Reading '+label)+'">'+esc(label)+'</button>';
     }).join('')+'</div>';
   }
-  if(p.assistanceLevel==='cue')responses+='<div class="hint" role="status"><strong>Recall cue: </strong>'+esc(practiceHelp(item))+'</div>';
+  if(p.assistanceLevel==='cue')responses+='<div class="hint" role="status" tabindex="-1"><strong>Recall cue: </strong>'+esc(practiceHelp(item))+'</div>';
   responses+='<div class="hint-actions">'
    +(p.assistanceLevel==='none'?'<button class="text-button" data-action="practice-hint">Need a hint?</button>':'')
    +'<button class="text-button" data-action="practice-reveal">Show answer (no credit)</button></div>';
  }
- const result=feedback?'<div role="status" aria-live="polite" class="feedback '
+ const result=feedback?'<div role="status" aria-live="polite" tabindex="-1" class="feedback '
   +(feedback.correct===true?'good':feedback.correct===false?'bad':'neutral')+'">'
   +'<strong>'+(feedback.revealed?'Practice-only: answer revealed (no credit).':
     feedback.correct===true?'Practice-only: correct.':'Practice-only: incorrect.')+'</strong>'
@@ -378,6 +378,14 @@ function render(){
   }else practiceClock=null;
   if(input&&!state.paused)input.focus({preventScroll:true});
   else document.getElementById('main')?.focus({preventScroll:true});
+ }else if(activePractice&&!retained?.focused){
+  // The original focused button was replaced by a full practice DOM render.
+  // Restore a meaningful keyboard and AT focus target after hint/response.
+  const target=state.practiceSession?.feedback?
+   root.querySelector('.practice-screen .feedback[role="status"]'):
+   state.practiceSession?.assistanceLevel==='cue'?
+   root.querySelector('.practice-screen .hint[role="status"]'):null;
+  if(target)target.focus({preventScroll:true});
  }
  lastScreenKey=screenKey;
 }
