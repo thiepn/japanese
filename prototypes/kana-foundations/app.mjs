@@ -260,7 +260,7 @@ function listening(){
 function results(){
  const data=firstAttemptSummary(state),weak=data.needsPractice.map(vowel).filter(Boolean);
  const wordWeak=data.needsWordPractice.map(word).filter(Boolean);
- const fmt=m=>m.total===0||m.skipped===m.total?'<strong class="metric-status">Not assessed</strong>':m.correct+' / '+(m.total-m.skipped);
+ const fmt=m=>m.total===0||m.skipped===m.total?'<span class="metric-status">Not assessed</span>':m.correct+' / '+(m.total-m.skipped);
  const label=(name,m)=>name+(m.skipped?' · '+m.skipped+' skipped':'');
  const weakLabel=weak.length?weak.map(v=>v.kana+' ('+v.reading+')').join(' · '):'No unresolved individual kana errors today';
  const body='<p class="kicker">Unit 01 · Learning evidence</p><h1>Your five-vowel results</h1>'
