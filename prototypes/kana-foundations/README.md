@@ -104,3 +104,14 @@ Reproduce the isolated review with FFmpeg/FFprobe available:
     KANA_AUDIO_REVIEW_DIR=/tmp/kana-vowels-review pnpm exec playwright test --config playwright.kana-audio-evidence.config.ts
 
 The review manifest and source-byte hashes are generated at runtime; no media is shipped. No human pronunciation or independent rights clearance has been obtained.
+
+
+### Acoustic repetition/silence investigation (unapproved review copies only)
+
+The [measured activity-window and gain decision matrix](./audio-review/ACOUSTIC_CROP_GAIN_DECISIONS.md) documents three short signal-active windows in each genuine file, about one second apart. Whether these are Japanese vowel repetitions is unverified; recordings remain unapproved. The automated audit generates 15 guarded audition windows and five full-length peak-aligned A/B WAVs **only inside a temporary review-only CI artifact**, with reproducible transforms and hashes. It does not create app assets, approve crop boundaries, integrate pronunciation recordings, or touch learner data.
+
+To regenerate the same *review-only* analysis after original source verification:
+
+    python3 scripts/kana-foundations-acoustic-review.py --review-root /tmp/kana-vowels-review
+
+Do not use these short signal windows as teaching audio without qualified Japanese speaker and rights signoffs.
