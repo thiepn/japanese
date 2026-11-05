@@ -140,6 +140,57 @@ def write_wav(path: Path, floats: array.array, rate: int,
             "clipped_input_float_samples": clipped,
             "wav_codec": "pcm_s16le", "channels": channels, "sample_rate_hz": rate}
 
+def periodicity_proxy(values: array.array, channels: int, rate: int,
+                      start: float, end: float) -> dict:
+    """Energy-selected 30ms autocorrelation; proxy ONLY, not voice detection.
+
+    Time-domain autocorrelation of downmixed, 4:1 box-filtered PCM at 11025 Hz.
+    The reported periodicity can come from sources other than human phonation.
+    It cannot identify the Japanese vowel or prove multiple utterances match.
+    """
+    downrate = rate // 4
+    first = max(0, round(start * rate))
+    final = min(len(values) // channels, round(end * rate))
+    downmixed = []
+    for frame in range(first, final - 3, 4):
+        total = 0.0
+        for k in range(4):
+            for ch in range(channels):
+                total += values[(frame + k) * channels + ch]
+        downmixed.append(total / (4 * channels))
+    window = round(0.030 * downrate)
+    stride = max(1, round(0.005 * downrate))
+    if len(downmixed) < window:
+        return {"status": "INSUFFICIENT_WINDOW", "speech_identity": "UNVERIFIED"}
+    best_energy, chosen = -1.0, None
+    for pos in range(0, len(downmixed) - window + 1, stride):
+        candidate = downmixed[pos:pos + window]
+        energy = sum(v*v for v in candidate)
+        if energy > best_energy:
+            best_energy, chosen = energy, candidate
+    if chosen is None or best_energy < 1e-12:
+        return {"status": "NO_MEASURABLE_PERIODICITY", "speech_identity": "UNVERIFIED"}
+    center = sum(chosen) / len(chosen)
+    centered = [v - center for v in chosen]
+    periodicity, frequency = -1.0, None
+    for lag in range(round(downrate / 330), round(downrate / 70) + 1):
+        left, right = centered[:-lag], centered[lag:]
+        denom = math.sqrt(sum(v*v for v in left) * sum(v*v for v in right))
+        if denom <= 1e-14:
+            continue
+        score = sum(v*w for v,w in zip(left,right)) / denom
+        if score > periodicity:
+            periodicity, frequency = score, downrate / lag
+    return {
+        "status": "PERIODICITY_PROXY_AVAILABLE" if frequency is not None else "NO_MEASURABLE_PERIODICITY",
+        "normalized_autocorrelation_peak": round(periodicity, 3),
+        "periodic_frequency_hz_approx": round(frequency, 1) if frequency else None,
+        "analysis_window_seconds": 0.030,
+        "search_frequency_range_hz": [70,330],
+        "speech_identity": "UNVERIFIED",
+        "caveat": "Periodicity != verified voiced human speech, phoneme or repeated same utterance",
+    }
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--review-root", required=True, type=Path,
@@ -205,6 +256,7 @@ def main() -> None:
                       "guarded_crop_start_seconds": round(lo / rate, 6),
                       "guarded_crop_end_seconds": round(hi / rate, 6),
                       "signal_metrics": stats(floats, channels, rate, start, end),
+                      "periodicity_proxy": periodicity_proxy(floats, channels, rate, start, end),
                       "derivative_path": "audition-segments/" + name,
                       **result, "review_only": True, "approval": REVIEW_ONLY}
             burst_records.append(record)
