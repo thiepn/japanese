@@ -51,12 +51,12 @@ Node core tests:
 
     node --check prototypes/kana-foundations/engine.mjs
     node --check prototypes/kana-foundations/app.mjs
-    node --test prototypes/kana-foundations/tests/core.test.mjs
+    node --test prototypes/kana-foundations/tests/*.test.mjs
 
-Chromium desktop, emulated Android and compact mobile:
+Full cross-browser suite — Chromium desktop, Android emulation, 320px mobile, genuine desktop Firefox/WebKit and emulated iOS WebKit:
 
     pnpm install --no-frozen-lockfile
-    pnpm exec playwright install chromium
+    pnpm exec playwright install chromium firefox webkit
     pnpm exec playwright test --config playwright.kana-foundations.config.ts
 
 GitHub Actions repeats these tests. CI emulation is not physical-device acceptance or a human learning study.
@@ -71,3 +71,14 @@ GitHub Actions repeats these tests. CI emulation is not physical-device acceptan
 - Before integration: human-reviewed Japanese content, real-device/a11y/performance tests, offline/owner boundaries and an explicit, validated bridge into canonical events and FSRS.
 
 Visual targets: mobile-first 20 px gutters, 54 px primary controls, 57 px answers, reduced motion, legible Japanese glyphs and no secondary bottom nav during active lessons. At 320 px, test every interactive screen for clipping and scroll behavior.
+
+
+## November 5 visual and multi-engine qualification
+
+PR #127 now contains an additional [beginner study protocol](./BEGINNER_STUDY_PROTOCOL.md) with a genuine 24–48h delayed-recall session; **no participants have been tested**. This is not a validated usability result.
+
+The retained screenshot comparison identified a cramped introductory layout on 320×700 phones that placed the sound explanation below the initial viewport, redundant Exit controls, sticky results actions competing with the learning guidance, an accidental blue outline on programmatic result focus, and a misleading "Listen" button when a Japanese device voice is unavailable.
+
+The isolated prototype was adjusted without modifying production or canonical learner data. The CI browser suite now exercises actual installed Chromium, Firefox and WebKit engines, as well as Android- and iOS-emulated viewports. It includes DOM-visible teaching-region assertions, UI captures, keyboard/reduced-motion smoke checks, and synthetic device-audio fallbacks.
+
+Performance measurements are ten synchronous, local in-browser DOM-interaction samples per project on a GitHub runner. They are **not** input-to-photon latencies, full user-perceived timings, physical-device benchmarks or accessibility certification. Check exact-head artifacts before quoting values. The intended next evidence gate is genuine human usability and delayed-recall observation, not additional unvalidated features.
