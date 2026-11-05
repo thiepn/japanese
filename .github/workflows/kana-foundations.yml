@@ -6,6 +6,8 @@ on:
     paths:
       - "prototypes/kana-foundations/**"
       - "playwright.kana-foundations.config.ts"
+      - "playwright.kana-audio-evidence.config.ts"
+      - "scripts/kana-foundations-audio-evidence.py"
       - "scripts/kana-foundations-original-baseline.sh"
       - ".github/workflows/kana-foundations.yml"
   workflow_dispatch:
@@ -73,4 +75,49 @@ jobs:
         with:
           name: kana-original-oct26-build
           path: /tmp/kana-original-build/
+          retention-days: 7
+
+  audio-source-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm audio decoding utilities
+        run: |
+          ffmpeg -version | head -n 1
+          ffprobe -version | head -n 1
+      - name: Download current original Commons media and verify source and audio metadata
+        run: python3 scripts/kana-foundations-audio-evidence.py --output "$RUNNER_TEMP/kana-vowels-review"
+      - uses: pnpm/action-setup@v4
+        with: {version: "11.19.0"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "24.15.0"}
+      - name: Install workspace dependencies
+        run: pnpm install --no-frozen-lockfile
+      - name: Install genuine Chromium Firefox WebKit
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - name: Test original hash-pinned bytes in real browser audio decoders
+        env:
+          KANA_AUDIO_REVIEW_DIR: ${{ runner.temp }}/kana-vowels-review
+        run: pnpm exec playwright test --config playwright.kana-audio-evidence.config.ts
+      - name: Preserve review-only originals and evidence, never app assets
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kana-foundations-original-audio-review-only
+          path: ${{ runner.temp }}/kana-vowels-review/
+          retention-days: 7
+          if-no-files-found: error
+      - name: Preserve diagnostics if evidence job fails
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kana-foundations-audio-review-diagnostics
+          path: |
+            test-results/
+            playwright-report/
+            ${{ runner.temp }}/kana-vowels-review/
+          if-no-files-found: ignore
           retention-days: 7
