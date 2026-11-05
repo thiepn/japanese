@@ -114,3 +114,8 @@ p{line-height:1.55}
  .intro-screen .audio-note{font-size:11px}
  .action-area{padding:10px 15px calc(11px + env(safe-area-inset-bottom))}
 }
+
+/* Programmatically focused main announces navigation, but should not draw an
+   accidental horizontal focus bar. Interactive focus indicators stay visible. */
+.shell main:focus{outline:none}
+.intro-screen .audio-button:disabled{opacity:1;color:#566a71;border-color:#dce6e5;background:#f1f5f4}
