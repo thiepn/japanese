@@ -130,7 +130,7 @@ def main() -> None:
             raise RuntimeError("Missing exact original file imageinfo: " + title)
         page = pages[0]
         image = page["imageinfo"][0]
-        if page.get("title") != title:
+        if str(page.get("title", "")).replace("_", " ") != title.replace("_", " "):
             raise RuntimeError("Unexpected filename redirect: " + str(page.get("title")))
         user = image.get("user")
         if user != "Hakatanoshio117117":
