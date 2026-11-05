@@ -378,7 +378,7 @@ function render(){
   }else practiceClock=null;
   if(input&&!state.paused)input.focus({preventScroll:true});
   else document.getElementById('main')?.focus({preventScroll:true});
- }else if(activePractice&&!retained?.focused){
+ }else if(activePractice&&(!retained?.focused||!input)){
   // The original focused button was replaced by a full practice DOM render.
   // Restore a meaningful keyboard and AT focus target after hint/response.
   const target=state.practiceSession?.feedback?
