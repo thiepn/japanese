@@ -20,6 +20,14 @@ test('compact intro exposes teaching before the primary action without scrolling
  expect(details.scrollWidth).toBeLessThanOrEqual(details.viewportWidth+1);
  expect(details.duplicateExit).toBe(0);
  expect(details.primary.height).toBeGreaterThanOrEqual(48);
+ const japaneseVoice=await page.evaluate(()=>typeof speechSynthesis!=='undefined'
+  &&speechSynthesis.getVoices().some(v=>/^ja(?:-|$)/i.test(v.lang)));
+ if(!japaneseVoice){
+  await expect(page.getByRole('button',{name:'Japanese audio unavailable'})).toBeDisabled();
+  await expect(page.getByText(/No Japanese device voice is installed/)).toBeVisible();
+ }else{
+  await expect(page.getByRole('button',{name:/Play synthesized Japanese sound/})).toBeEnabled();
+ }
  if(process.env.CI){
   const dir='prototypes/kana-foundations/.visual-evidence';
   mkdirSync(dir,{recursive:true});
@@ -48,6 +56,10 @@ test('mobile results explain unresolved skill before normal-flow actions',async(
  expect(box.noteBottom).toBeLessThan(box.actionsTop);
  expect(box.footerHeight).toBe(0);
  expect(box.scrollWidth).toBeLessThanOrEqual(box.viewportWidth+1);
+ const mainOutline=await page.locator('main').evaluate(el=>{
+  el.focus();return getComputedStyle(el).outlineStyle;
+ });
+ expect(mainOutline,'The noninteractive main region must not show an accidental blue focus bar').toBe('none');
  if(process.env.CI){
   const dir='prototypes/kana-foundations/.visual-evidence';
   mkdirSync(dir,{recursive:true});
