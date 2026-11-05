@@ -1169,3 +1169,23 @@
     transform:none;
   }
 }
+
+/* F1: A1 lesson/meaning furigana, using the same native ruby hierarchy as Immerse. */
+.j5-furigana-toggle{
+  display:inline-flex;
+  min-height:44px;
+  align-items:center;
+  align-self:flex-start;
+  padding:8px 12px;
+  margin:0 0 16px;
+  border:1px solid var(--j-line);
+  border-radius:5px;
+  background:var(--j-bg-elevated);
+  color:var(--j-fg);
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+}
+.j5-furigana-toggle:focus-visible{outline:2px solid var(--j5-accent);outline-offset:3px}
+.j5-sheet ruby{ruby-position:over;ruby-align:center;white-space:nowrap}
+.j5-sheet ruby rt{font-size:clamp(11px,.34em,20px);line-height:1.3;color:var(--j-fg-muted);font-weight:600;letter-spacing:0}
