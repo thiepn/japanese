@@ -94,9 +94,9 @@ def audio_metrics(path: Path) -> dict:
     )
     if silence.returncode != 0:
         raise RuntimeError("Silence analysis failed")
-    starts = [float(x) for x in re.findall(r"silence_start:\\s*([0-9.]+)", silence.stderr)]
+    starts = [float(x) for x in re.findall(r"silence_start:\s*([0-9.]+)", silence.stderr)]
     matches = re.findall(
-        r"silence_end:\\s*([0-9.]+)\\s*\\|\\s*silence_duration:\\s*([0-9.]+)",
+        r"silence_end:\s*([0-9.]+)\s*\|\s*silence_duration:\s*([0-9.]+)",
         silence.stderr,
     )
     intervals = [
