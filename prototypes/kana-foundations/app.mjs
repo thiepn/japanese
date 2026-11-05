@@ -344,19 +344,22 @@ function practiceScreen(){
 let lastScreenKey=null;
 function render(){
  const mode=currentStage(state).mode;
- const screenKey=state.paused?'paused':currentStage(state).id+':'+currentItem(state)
-  +':'+state.retryMode+':'+(state.introStep||'explain');
+ const activePractice=!state.paused&&state.practiceSession?.status==='active';
+ const screenKey=state.paused?'paused':activePractice?
+  'practice:'+state.practiceSession.sessionId+':'+currentPracticePrompt(state)?.id:
+  currentStage(state).id+':'+currentItem(state)+':'+state.retryMode+':'+(state.introStep||'explain');
  const moved=lastScreenKey!==screenKey;
- const previous=document.getElementById('answer');
+ const previous=document.getElementById('answer')||document.getElementById('practice-answer');
  const retained=!moved&&previous?{value:previous.value,start:previous.selectionStart,
   end:previous.selectionEnd,focused:document.activeElement===previous}:null;
  if(state.paused)welcome();
+ else if(activePractice)practiceScreen();
  else if(mode==='teach')teach();
  else if(mode==='recognition')recognition();
  else if(mode==='recall'||mode==='reading')typed(mode);
  else if(mode==='listening')listening();
  else results();
- const input=document.getElementById('answer');
+ const input=document.getElementById('answer')||document.getElementById('practice-answer');
  if(retained&&input&&!state.feedback){
   input.value=retained.value;
   if(retained.focused){
@@ -365,6 +368,11 @@ function render(){
   }
  }
  if(moved){
+  if(activePractice){
+   practiceClock={id:currentPracticePrompt(state)?.id,startedAt:performance.now(),invalid:Boolean(initialPracticeReload)};
+   initialPracticeReload=false;
+   practiceInputWarning='';
+  }else practiceClock=null;
   if(input&&!state.paused)input.focus({preventScroll:true});
   else document.getElementById('main')?.focus({preventScroll:true});
  }
@@ -375,6 +383,17 @@ function download(){
   const url=URL.createObjectURL(blob),anchor=document.createElement('a');
   anchor.href=url;anchor.download='kana-foundations-prototype-progress.json';
   document.body.append(anchor);anchor.click();anchor.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function elapsedPracticeTime(){
+ if(!practiceClock||practiceClock.invalid||document.visibilityState!=='visible'
+  ||practiceClock.id!==currentPracticePrompt(state)?.id)return null;
+ return Math.max(0,performance.now()-practiceClock.startedAt);
+}
+function createPracticeFromResults(){
+ const buf=new Uint32Array(1);
+ crypto.getRandomValues(buf);
+ const seed=buf[0];
+ commit(startPractice(state,seed,'prototype-'+Date.now().toString(36)+'-'+seed.toString(36)));
 }
 root.addEventListener('click',event=>{
   const button=event.target.closest('button[data-action]');
@@ -396,10 +415,23 @@ root.addEventListener('click',event=>{
     if(text)speech(text,mode==='listening');
   }
   if(action==='export')download();
+  if(action==='start-practice')createPracticeFromResults();
+  if(action==='practice-hint')commit(hintPractice(state));
+  if(action==='practice-reveal')commit(revealPractice(state));
+  if(action==='practice-choice')commit(answerPractice(state,button.dataset.practiceValue,{elapsedMs:elapsedPracticeTime()}));
+  if(action==='practice-advance')commit(advancePractice(state));
   if(action==='practice-again')commit(practiceAgain(state));
   if(action==='practice-weak')commit(practiceWeakItems(state));
 });
 root.addEventListener('submit',event=>{
+  if(event.target.id==='practice-answer-form'){
+    event.preventDefault();
+    const value=event.target.elements.namedItem('practice-answer')?.value;
+    const next=answerPractice(state,value,{elapsedMs:elapsedPracticeTime()});
+    if(next===state){practiceInputWarning='Enter exactly three vowels (a, i, u, e, o), with optional spaces or hyphens.';render();}
+    else commit(next);
+    return;
+  }
   if(event.target.id!=='answer-form')return;
   event.preventDefault();
   const value=event.target.elements.namedItem('answer')?.value;
