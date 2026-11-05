@@ -2,6 +2,8 @@
 
 **Status: proposed protocol only. Not executed. No learner results or human review are claimed.**
 
+For immediately usable participant materials, counterbalanced item orders and empty scoring CSVs, use the [facilitator kit](./usability-kit/README.md). This document describes the broader assessment rationale; the kit is the operational version. All completed records must remain outside GitHub.
+
 ## Purpose and boundary
 
 Evaluate whether a real beginner can use the *five-hiragana-vowel* learning prototype comfortably and independently, whether immediate improvement reflects learning rather than guessing or answer copying, and what they retain after a delay. This is not CEFR validation, speech assessment, a comparative efficacy trial or proof that the complete Japanese app is ready.
@@ -22,8 +24,8 @@ The test application remains the isolated prototype on draft PR #127. Do not ena
 3. Observe first interaction, character introduction, optional listening, hints, wrong-answer feedback, typed recall, word decoding and results. Record number of prompts requested, wrong presses, time spent looking for next controls, audio failures and situations in which the visible content is hidden by the footer or keyboard.
 4. Allow normal help and corrections provided *by the prototype*, not by the facilitator. If the participant gets stuck for 30 seconds, ask what they expect to happen before offering neutral help; record the intervention.
 5. Immediately after the session, present the five kana in a *new randomized order with no romaji or answer choices*. Ask the participant to type or speak readings without assistance. Separately record recognition versus typed recall already logged by the app.
-6. Ask a small held-out decoding task using **いい** and **あう** after independent Japanese-language verification. Score pronunciation/reading only; do **not** claim knowledge of vocabulary meaning. If these examples are not approved, substitute explicitly labeled artificial vowel strings and do not present them as words.
-7. Obtain short subjective ratings: ease of starting, clarity of feedback, confidence, enjoyment and willingness to return (each 1–5), followed by "What was the most frustrating moment?" and "What did you think would happen next?"
+6. Ask a small held-out decoding task using **えう** and **いお** as explicitly labeled kana sound *sequences*, not vocabulary. Score the reading only (eu, io); no meaning is expected or claimed. Use the same two items in reversed order after 24–48 hours.
+7. Obtain short subjective ratings: starting clarity, feedback clarity, general ease, enjoyment and willingness to return (each 1–5), followed by "What was the most frustrating moment?" and "What did you think would happen next?"
 
 Optional: run the *historical* October 26 Studio with separate disposable storage to compare first-interaction friction. If doing so, counterbalance the order of prototypes; acknowledge strong practice effects. Do not connect original Studio to real accounts. This qualitative round is not a randomized learning-efficacy comparison.
 
