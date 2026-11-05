@@ -23,9 +23,9 @@ test('kit protocol aligns with primary protocol and separates genuine delayed re
  for(const s of [guide,base]){
   assert(s.includes('24–48'), 'a genuinely delayed session is required');
   assert(s.includes('えう')&&s.includes('いお'),'the held-out kana decoding items must be consistent');
-  assert(/not (?:claimed|a|been|conducted)|not yet/i.test(s));
+  assert(/not (?:claimed|a|been|conducted|executed)|not yet|no learner results/i.test(s));
  }
- assert(guide.includes('consent')&&guide.includes('without feedback'));
+ assert(guide.includes('consent')&&/do not reveal|without feedback/i.test(guide));
  assert(kit('PARTICIPANT_CARDS.md').includes('あ')&&kit('PARTICIPANT_CARDS.md').includes('お'));
 });
 test('rights review has five unique file-page candidates but no premature approval',()=>{
