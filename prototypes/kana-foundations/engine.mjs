@@ -46,7 +46,10 @@ export function validState(s){
   &&Array.isArray(s.introduced)&&s.introduced.every(id=>Boolean(LOOKUP[id]))
   &&Array.isArray(s.retryItems)&&s.retryItems.every(id=>typeof id==='string')
   &&(!('nextRetryItems' in s)||Array.isArray(s.nextRetryItems))
-  &&Array.isArray(s.records)&&s.records.length<=1000);
+  &&Array.isArray(s.records)&&s.records.length<=1000
+  &&(!('practiceSession' in s)||validPracticeSession(s.practiceSession))
+  &&(!('practiceRuns' in s)||(Array.isArray(s.practiceRuns)&&s.practiceRuns.length<=20
+   &&s.practiceRuns.every(v=>validPracticeSession(v)&&v.status==='completed'))));
 }
 const hydrate=s=>({...initialState(),...s,records:s.records,introduced:s.introduced,retryItems:s.retryItems});
 export const currentStage=s=>STAGES[s.phase];
@@ -59,9 +62,9 @@ export function normalizeReading(value){
 }
 export function start(s){
  if(!validState(s))throw Error('INVALID_PROTOTYPE_STATE');
- return {...hydrate(s),paused:false};
+ return {...hydrate(s),paused:false, ...(s.practiceSession?.status==='paused'?{practiceSession:{...s.practiceSession,status:'active'}}:{})};
 }
-export function pause(s){return {...hydrate(s),paused:true};}
+export function pause(s){return {...hydrate(s),paused:true,...(s.practiceSession?.status==='active'?{practiceSession:{...s.practiceSession,status:'paused'}}:{})};}
 export function beginIntroCheck(s){
  if(!validState(s)||s.paused||currentStage(s).mode!=='teach'||s.feedback)return s;
  return {...hydrate(s),introStep:'check',hint:false,hintLevel:0};
@@ -257,4 +260,186 @@ export function allowedChoices(s){
   choices.splice(from,1);choices.splice(slot,0,target);
  }
  return choices;
+}
+
+
+// KP-PARITY-S1 (separate practice-only session, no canonical grading path).
+// Legacy STAGES indices, legacy records and original lesson summaries are untouched.
+const PRACTICE_MODES=['recognition','reverse','sequence'];
+const PRACTICE_ASSISTANCE=['none','cue','guided-choices','revealed'];
+const PRACTICE_VOWEL_IDS=VOWELS.map(v=>v.id);
+const PRACTICE_READINGS=VOWELS.map(v=>v.reading);
+const practiceIsValidPrompt=p=>Boolean(p&&typeof p.id==='string'&&p.id.length>0
+ &&PRACTICE_MODES.includes(p.mode)&&Array.isArray(p.kanaIds)
+ &&p.kanaIds.length===(p.mode==='sequence'?3:1)
+ &&p.kanaIds.every(id=>PRACTICE_VOWEL_IDS.includes(id))
+ &&typeof p.answer==='string'&&Array.isArray(p.choices)
+ &&(p.mode==='sequence'?p.choices.length===0:p.choices.length===5)
+ &&(p.correctionOf===null||typeof p.correctionOf==='string'));
+export function validPracticeSession(p){
+ if(!p||typeof p!=='object'||p.version!==1||typeof p.sessionId!=='string'
+  ||!p.sessionId||!Number.isInteger(p.seed)||p.seed<0||p.seed>0xffffffff
+  ||!['active','paused','completed'].includes(p.status)
+  ||!Number.isInteger(p.promptIndex)||p.promptIndex<0
+  ||!Array.isArray(p.prompts)||p.prompts.length<15||p.prompts.length>30
+  ||p.promptIndex>=p.prompts.length||!p.prompts.every(practiceIsValidPrompt)
+  ||new Set(p.prompts.map(x=>x.id)).size!==p.prompts.length
+  ||!Array.isArray(p.attempts)||p.attempts.length>p.prompts.length
+  ||!PRACTICE_ASSISTANCE.includes(p.assistanceLevel)
+  ||!(p.feedback===null||(typeof p.feedback==='object'&&p.feedback!==null))
+  ||!Number.isInteger(p.revision)||p.revision<0)return false;
+ const ids=new Set(p.prompts.map(x=>x.id));
+ return p.attempts.every(a=>a&&typeof a.attemptId==='string'
+  &&ids.has(a.promptId)&&a.sessionId===p.sessionId
+  &&a.practiceOnly===true&&a.canonicalEligible===false
+  &&a.canonicalGradeId===null&&[true,false,null].includes(a.correct)
+  &&PRACTICE_ASSISTANCE.includes(a.assistanceLevel)
+  &&typeof a.independent==='boolean'&&typeof a.unaided==='boolean'
+  &&typeof a.correction==='boolean');
+}
+function seededRandom(seed){
+ let state=(seed>>>0)||0x9e3779b9;
+ return ()=>{
+  state^=state<<13;state^=state>>>17;state^=state<<5;
+  return (state>>>0)/4294967296;
+ };
+}
+function seededShuffle(items,random){
+ const arr=[...items];
+ for(let i=arr.length-1;i>0;i--){
+  const j=Math.floor(random()*(i+1));
+  [arr[i],arr[j]]=[arr[j],arr[i]];
+ }
+ return arr;
+}
+export function makePracticePrompts(seed){
+ if(!Number.isInteger(seed)||seed<0||seed>0xffffffff)throw Error('INVALID_PRACTICE_SEED');
+ const random=seededRandom(seed),items=[];
+ for(const mode of ['recognition','reverse']){
+  const order=seededShuffle(PRACTICE_VOWEL_IDS,random);
+  const slots=seededShuffle([0,1,2,3,4],random);
+  order.forEach((id,i)=>{
+   const answer=mode==='recognition'?vowel(id).reading:id;
+   const pool=mode==='recognition'?PRACTICE_READINGS:PRACTICE_VOWEL_IDS;
+   const choices=seededShuffle(pool.filter(v=>v!==answer),random);
+   choices.splice(slots[i],0,answer);
+   items.push({id:mode+'-'+(i+1),mode,kanaIds:[id],answer,choices,correctionOf:null});
+  });
+ }
+ // First slot covers each vowel exactly once, guaranteeing full set coverage.
+ const first=seededShuffle(PRACTICE_VOWEL_IDS,random);
+ for(let i=0;i<5;i++){
+  const ids=[first[i],...Array.from({length:2},()=>PRACTICE_VOWEL_IDS[Math.floor(random()*5)])];
+  items.push({id:'sequence-'+(i+1),mode:'sequence',kanaIds:ids,
+   answer:ids.map(id=>vowel(id).reading).join(''),choices:[],correctionOf:null});
+ }
+ return items;
+}
+export function normalizePracticeAnswer(value,length=1){
+ if(![1,3].includes(length)||typeof value!=='string')return null;
+ const trimmed=value.normalize('NFKC').toLowerCase().trim();
+ const pattern=length===1?/^[aiueo]$/:/^[aiueo](?:[\s-]*[aiueo]){2}$/;
+ if(!pattern.test(trimmed))return null;
+ return trimmed.replace(/[\s-]/g,'');
+}
+export function currentPracticePrompt(s){
+ const p=s?.practiceSession;
+ return p?.status==='active'||p?.status==='paused'?
+  p.prompts[p.promptIndex]||null:null;
+}
+export function startPractice(s,seed,sessionId,now=Date.now()){
+ if(!validState(s)||s.paused||currentStage(s).mode!=='results'
+  ||s.introduced.length!==5||!PRACTICE_VOWEL_IDS.every(id=>s.introduced.includes(id))
+  ||!Number.isInteger(seed)||seed<0||seed>0xffffffff
+  ||typeof sessionId!=='string'||!sessionId||sessionId.length>128
+  ||s.practiceSession?.status==='active'||s.practiceSession?.status==='paused')return s;
+ const previous=s.practiceSession;
+ const history=s.practiceRuns||[];
+ if(history.length+(previous?1:0)>20)return s; // never discard learner evidence to make room.
+ const practiceSession={version:1,sessionId,seed,status:'active',
+  promptIndex:0,prompts:makePracticePrompts(seed),attempts:[],
+  assistanceLevel:'none',feedback:null,revision:0,startedAt:new Date(now).toISOString()};
+ return {...hydrate(s),practiceSession,
+  practiceRuns:previous?[...history,previous]:history};
+}
+export function hintPractice(s){
+ const p=s.practiceSession;
+ if(!validState(s)||s.paused||p?.status!=='active'||p.feedback
+  ||p.assistanceLevel!=='none')return s;
+ return {...hydrate(s),practiceSession:{...p,assistanceLevel:'cue',revision:p.revision+1}};
+}
+function recordPractice(s,raw,normalized,correct,now,elapsedMs,revealed){
+ const p=s.practiceSession,prompt=currentPracticePrompt(s);
+ const assisted=revealed?'revealed':p.assistanceLevel;
+ const correction=Boolean(prompt.correctionOf);
+ const unaided=assisted==='none';
+ const entry={attemptId:p.sessionId+':'+prompt.id+':1',
+  sessionId:p.sessionId,promptId:prompt.id,mode:prompt.mode,
+  promptVersion:1,kanaIds:[...prompt.kanaIds],responseRaw:raw,
+  responseNormalized:normalized,correct,assistanceLevel:assisted,
+  unaided,independent:correct===true&&unaided&&!correction,
+  correction,attemptNumber:1,
+  elapsedMs:Number.isFinite(elapsedMs)&&elapsedMs>=0&&elapsedMs<=600000?Math.round(elapsedMs):null,
+  occurredAt:new Date(now).toISOString(),practiceOnly:true,canonicalEligible:false,
+  canonicalGradeId:null,revealed:Boolean(revealed)};
+ return {...hydrate(s),practiceSession:{...p,attempts:[...p.attempts,entry],
+  assistanceLevel:assisted,feedback:{correct,expected:prompt.answer,submitted:normalized,
+   revealed:Boolean(revealed),correction},revision:p.revision+1}};
+}
+export function answerPractice(s,raw,{elapsedMs=null,now=Date.now()}={}){
+ const p=s.practiceSession;
+ if(!validState(s)||s.paused||p?.status!=='active'||p.feedback)return s;
+ const prompt=currentPracticePrompt(s);
+ let normalized=null;
+ if(prompt.mode==='reverse'){
+  if(typeof raw!=='string'||!PRACTICE_VOWEL_IDS.includes(raw))return s;
+  normalized=raw;
+ }else{
+  normalized=normalizePracticeAnswer(raw,prompt.mode==='sequence'?3:1);
+  if(normalized===null)return s;
+ }
+ return recordPractice(s,String(raw),normalized,normalized===prompt.answer,now,elapsedMs,false);
+}
+export function revealPractice(s,now=Date.now()){
+ const p=s.practiceSession;
+ if(!validState(s)||s.paused||p?.status!=='active'||p.feedback)return s;
+ return recordPractice(s,null,null,null,now,null,true);
+}
+export function advancePractice(s){
+ const p=s.practiceSession;
+ if(!validState(s)||s.paused||p?.status!=='active'||!p.feedback)return s;
+ if(p.promptIndex+1<p.prompts.length){
+  return {...hydrate(s),practiceSession:{...p,promptIndex:p.promptIndex+1,
+   feedback:null,assistanceLevel:'none',revision:p.revision+1}};
+ }
+ // After 15 independent-first prompts, revisit only those not correctly
+ // answered without help. One correction round; never rewrite original evidence.
+ if(p.prompts.length===15){
+  const unresolved=p.attempts.filter(a=>!a.correction&&(!a.independent||a.correct!==true));
+  if(unresolved.length){
+   const corrections=unresolved.map((a,i)=>{
+    const from=p.prompts.find(q=>q.id===a.promptId);
+    const choices=[...from.choices];
+    if(choices.length)choices.push(choices.shift());
+    return {...from,id:'correction-'+(i+1),correctionOf:from.id,choices};
+   });
+   return {...hydrate(s),practiceSession:{...p,prompts:[...p.prompts,...corrections],
+    promptIndex:15,feedback:null,assistanceLevel:'none',revision:p.revision+1}};
+  }
+ }
+ return {...hydrate(s),practiceSession:{...p,status:'completed',
+  feedback:null,assistanceLevel:'none',revision:p.revision+1}};
+}
+export function practiceSummary(s){
+ const p=s.practiceSession;
+ if(!p)return null;
+ const first=p.attempts.filter(a=>!a.correction);
+ const corrections=p.attempts.filter(a=>a.correction);
+ return {status:p.status,firstTotal:15,firstCompleted:first.length,
+  firstIndependentCorrect:first.filter(a=>a.independent).length,
+  assisted:first.filter(a=>a.assistanceLevel!=='none').length,
+  wrong:first.filter(a=>a.correct===false).length,
+  revealed:first.filter(a=>a.revealed).length,corrections:corrections.length,
+  correctionsCorrect:corrections.filter(a=>a.correct===true).length,
+  masteryClaimed:false};
 }
