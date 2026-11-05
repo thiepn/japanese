@@ -14,7 +14,7 @@ export default defineConfig({
   {name:'ios-webkit',use:{...devices['iPhone 13']}}
  ],
  webServer:{
-  command:'python3 -m http.server 4177 --bind 127.0.0.1 --directory prototypes/kana-foundations',
+  command:'node prototypes/kana-foundations/qualification/prepare-real-idb.mjs && python3 -m http.server 4177 --bind 127.0.0.1 --directory prototypes/kana-foundations',
   url:origin+'/index.html',reuseExistingServer:!process.env.CI,timeout:20_000
  }
 });
