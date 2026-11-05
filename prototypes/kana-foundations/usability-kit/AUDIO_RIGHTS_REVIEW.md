@@ -1,18 +1,20 @@
 # Five-vowel audio candidate review — license verified, pronunciation NOT approved
 
-**Research date:** November 5, 2026. **Scope:** only あ, い, う, え, お. **Status:** audio-source research complete; no recordings acquired or shipped; no native-speaker auditory review or approval.
+**Research date:** November 5, 2026. **Scope:** only あ, い, う, え, お. **Status:** five original files downloaded into a temporary review-only CI artifact and SHA-1/SHA-256 verified, but nothing bundled, shipped, approved or integrated; no native-speaker auditory review or approval. See [original-byte forensic report](../audio-review/ORIGINAL_AUDIO_EVIDENCE.md) and [blank human signoff](../audio-review/HUMAN_AUDIO_SIGNOFF.md).
 
 ## Five individually checked Commons file pages
 
 All five pages describe one intended hiragana vowel and identify an original recording by **Hakatanoshio117117**, dated October 4, 2009. Each page contains the creator's declaration releasing that recording into the **public domain** (with an unconditional worldwide use grant where public-domain dedication cannot operate). This is a primary-source *published rights declaration*, not a substitute for final legal review or proof of pronunciation quality.
 
-| Kana / target | Exact Commons source page | Stated audio duration | Rights on file page | Human review |
+| Kana / target | Exact Commons source page | Original stream duration (verified with ffprobe) | Rights on file page | Human review |
 |---|---|---:|---|---|
-| あ / a | https://commons.wikimedia.org/wiki/File:Ja-A.oga | 2.5 s | Author-declared public domain | PENDING |
-| い / i | https://commons.wikimedia.org/wiki/File:Japanese_I.ogg | 2.7 s | Author-declared public domain | PENDING |
-| う / u | https://commons.wikimedia.org/wiki/File:Japanese_U.ogg | 1.6 s | Author-declared public domain | PENDING |
-| え / e | https://commons.wikimedia.org/wiki/File:Ja-E.oga | 2.7 s | Author-declared public domain | PENDING |
-| お / o | https://commons.wikimedia.org/wiki/File:Japanese_O.ogg | 1.5 s | Author-declared public domain | PENDING |
+| あ / a | https://commons.wikimedia.org/wiki/File:Ja-A.oga | 2.485 s | Author-declared public domain | PENDING |
+| い / i | https://commons.wikimedia.org/wiki/File:Japanese_I.ogg | 2.729 s | Author-declared public domain | PENDING |
+| う / u | https://commons.wikimedia.org/wiki/File:Japanese_U.ogg | 2.659 s | Author-declared public domain | PENDING |
+| え / e | https://commons.wikimedia.org/wiki/File:Ja-E.oga | 2.694 s | Author-declared public domain | PENDING |
+| お / o | https://commons.wikimedia.org/wiki/File:Japanese_O.ogg | 2.519 s | Author-declared public domain | PENDING |
+
+**Duration caveat:** The Commons page display on some files uses shorter or rounded durations; the table now uses verified original Vorbis decoded durations, not the page's presentation metadata. Each original has three long detected silent intervals, so pedagogical suitability remains a hard hold.
 
 **Provenance caveat:** \`File:Japanese_A.ogg\` redirects to \`File:Ja-A.oga\`; \`File:Japanese_E.ogg\` is also a redirect rather than an independent asset. Preserve the *actual source file names* above when retrieving content. Do not silently use similarly named alternative \`Ja-U.oga\`, \`Ja-O.oga\`, etc., which may be different authors, recordings and dates.
 
@@ -47,4 +49,4 @@ No browser speech-synthesis output, automated media-duration check, public-domai
 | Device-native Japanese speech synthesis | Already in prototype | Not as verified pronunciation/audio assessment | Voice and output differ across browsers/devices |
 | Newly commissioned Japanese-speaker vowel recordings | YES | After explicit reuse grant and quality review | Would give clearer chain of rights and consistent quality |
 
-**No audio files, links to unreviewed binary assets, or production configuration were modified as part of this review.**
+**No audio files were committed, bundled in application assets, configured for lesson playback, or deployed. Original bytes exist only in short-lived, explicitly review-only CI artifacts and are not an approval of teaching suitability.**
