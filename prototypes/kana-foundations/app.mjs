@@ -157,17 +157,21 @@ function welcome(){
 function teach(){
  const v=vowel(currentItem(state)),checking=state.introStep==='check';
  if(!checking){
-  const discovery=v.id==='h-i'?'<div class="teaching-note"><span class="mini-label">Your first real word</span><span lang="ja">あい</span> (ai) means love, usually written <span lang="ja">愛</span>. You can already read its two hiragana.</div>':'';
-  const body='<p class="kicker">'+esc(currentStage(state).title)+'</p>'
+  const discovery=v.id==='h-i'?'<div class="teaching-note discovery-note"><span class="mini-label">First word discovery</span>'
+   +'<span lang="ja">あい</span> (ai) means love, commonly written <span lang="ja">愛</span>. '
+   +'You can recognize its two hiragana.</div>':'';
+  const body='<section class="intro-screen"><p class="kicker">'+esc(currentStage(state).title)+'</p>'
    +'<h1>Meet <span lang="ja">'+v.kana+'</span></h1>'
-   +'<p class="lead">Observe the character and its reading. Then try recalling the sound with the answer hidden.</p>'
-   +'<div class="glyph-panel"><span class="hero-glyph" lang="ja">'+v.kana+'</span><span class="roman">'+v.reading+'</span></div>'
-   +'<div class="inline-actions"><button class="audio-button" data-action="audio">▶ Play device voice</button></div>'
-   +'<p class="audio-note">Synthetic voice only; native recordings require verification.</p>'
-   +'<div class="teaching-note"><span class="mini-label">Pronunciation</span>'+esc(v.tip)+'</div>'
-   +'<div class="teaching-note"><span class="mini-label">Writing</span>'+v.strokes+' strokes. No unverified stroke-order diagrams.</div>'
-   +discovery;
-  wrap(body,primary('intro-check','Try recalling '+v.kana)+secondary('pause','Exit and save'));
+   +'<p class="lead">Meet its shape and sound. Then recall it without the reading.</p>'
+   +'<div class="glyph-panel"><span class="hero-glyph" lang="ja">'+v.kana+'</span>'
+   +'<span class="roman">'+v.reading+'</span></div>'
+   +'<div class="essential-teaching"><button class="audio-button" data-action="audio" '
+   +'aria-label="Play synthesized Japanese sound '+v.reading+'">▶ Listen</button>'
+   +'<p class="audio-note">Device-generated voice; pronunciation not independently verified.</p>'
+   +'<div class="teaching-note essential-note"><span class="mini-label">Sound &amp; shape</span>'
+   +esc(v.tip)+' <span class="stroke-count">Written in '+v.strokes+' strokes.</span></div></div>'
+   +discovery+'</section>';
+  wrap(body,primary('intro-check','Try recalling '+v.kana));
   return;
  }
  const body='<p class="kicker">Quick recall · '+esc(currentStage(state).title)+'</p>'
@@ -175,7 +179,7 @@ function teach(){
   +'<div class="glyph-panel"><span class="hero-glyph" lang="ja">'+v.kana+'</span></div>'
   +(state.feedback?'':state.hintLevel>=2?guidedChoices():answerForm())
   +hintControls()+feedbackHtml();
- wrap(body,state.feedback?primary('advance','Continue'):secondary('pause','Exit and save'));
+ wrap(body,state.feedback?primary('advance','Continue'):'');
 }
 function optionButton(label,value,isKana){
   const submitted=state.feedback?.submitted;
@@ -194,7 +198,7 @@ function recognition(){
   +'<div class="glyph-panel"><span class="hero-glyph" lang="ja">'+v.kana+'</span></div>'
   +'<div class="choices">'+allowedChoices(state).map(c=>optionButton(c,c,false)).join('')+'</div>'
   +hintControls()+feedbackHtml();
- wrap(body,state.feedback?primary('advance','Continue'):secondary('pause','Exit and save'));
+ wrap(body,state.feedback?primary('advance','Continue'):'');
 }
 function typed(mode){
  const isWord=mode==='reading',v=isWord?word(currentItem(state)):vowel(currentItem(state));
@@ -206,7 +210,7 @@ function typed(mode){
   +'<div class="glyph-panel"><span class="'+(isWord?'japanese-word':'hero-glyph')+'" lang="ja">'+v.kana+'</span></div>'
   +(state.feedback?'':state.hintLevel>=2?guidedChoices():answerForm())
   +hintControls()+feedbackHtml();
- wrap(body,state.feedback?primary('advance','Continue'):secondary('pause','Exit and save'));
+ wrap(body,state.feedback?primary('advance','Continue'):'');
 }
 function listening(){
  const voice=availableVoice();
@@ -243,9 +247,10 @@ function results(){
   +esc(weakLabel)
   +(wordWeak.length?'<p class="status">Also practice: '+esc(wordWeak.map(w=>w.kana).join(' · '))+'</p>':'')
   +'<p class="status">Return after a delay to check retention. No real Account or FSRS dates are changed.</p></div>';
- wrap(body,(weak.length?primary('practice-weak','Practice '+weak.length+' weak character'+(weak.length===1?'':'s')):'')
+ const actions='<div class="results-actions">'+(weak.length?primary('practice-weak','Practice '+weak.length+' weak character'+(weak.length===1?'':'s')):'')
   +secondary('practice-again','Repeat mixed practice (no mastery credit)')
-  +secondary('export','Export prototype progress'));
+  +secondary('export','Export prototype progress')+'</div>';
+ wrap(body+actions,'');
 }
 let lastScreenKey=null;
 function render(){
