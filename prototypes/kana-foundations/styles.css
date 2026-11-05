@@ -119,3 +119,23 @@ p{line-height:1.55}
    accidental horizontal focus bar. Interactive focus indicators stay visible. */
 .shell main:focus{outline:none}
 .intro-screen .audio-button:disabled{opacity:1;color:#566a71;border-color:#dce6e5;background:#f1f5f4}
+
+
+/* KP-PARITY-S1: isolated exercise-only UI. Preserve original lesson geometry. */
+.practice-screen .glyph-panel{min-height:150px;margin:12px 0 14px;gap:3px;padding:8px}
+.practice-screen .hero-glyph{font-size:clamp(82px,26vw,112px);line-height:1.1}
+.practice-screen .japanese-word{font-size:clamp(48px,15vw,80px);letter-spacing:.055em}
+.practice-screen .choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:15px 0}
+.practice-screen .choices .choice{min-height:54px;padding:10px 9px}
+.practice-screen .choices.kana-grid .choice{font-size:32px;min-height:62px}
+.practice-screen .hint-actions{gap:8px}
+.practice-screen h1{margin-bottom:8px}
+.practice-screen .lead{font-size:15px;line-height:1.45;margin:8px 0 12px}
+.practice-summary strong{display:block;margin:6px 0;font-size:19px}
+.practice-screen .feedback{margin-top:12px}
+@media(max-width:359px){
+ .practice-screen .glyph-panel{min-height:122px}
+ .practice-screen .hero-glyph{font-size:76px}
+ .practice-screen .choices{gap:8px;margin:10px 0}
+ .practice-screen .choices .choice{min-height:54px}
+}
