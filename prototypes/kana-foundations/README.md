@@ -82,3 +82,11 @@ The retained screenshot comparison identified a cramped introductory layout on 3
 The isolated prototype was adjusted without modifying production or canonical learner data. The CI browser suite now exercises actual installed Chromium, Firefox and WebKit engines, as well as Android- and iOS-emulated viewports. It includes DOM-visible teaching-region assertions, UI captures, keyboard/reduced-motion smoke checks, and synthetic device-audio fallbacks.
 
 Performance measurements are ten synchronous, local in-browser DOM-interaction samples per project on a GitHub runner. They are **not** input-to-photon latencies, full user-perceived timings, physical-device benchmarks or accessibility certification. Check exact-head artifacts before quoting values. The intended next evidence gate is genuine human usability and delayed-recall observation, not additional unvalidated features.
+
+
+## Nov 5 runnable qualitative testing kit and audio-source licensing
+
+- [Beginner facilitator kit](./usability-kit/README.md): consent-based observer script, private score sheets, participant-visible character cards, blinded five-vowel pretest/immediate test, 24–48-hour retention checks, and error logging. **No participant has been recruited or studied.**
+- [Audio candidate provenance and rights](./usability-kit/AUDIO_RIGHTS_REVIEW.md): five individually confirmed Wikimedia Commons file description/license pages, each author-declared public domain. **No WAV/Ogg/MP3 is added to the application, and no qualified Japanese auditory approval is claimed.**
+- The official Japan Foundation Marugoto recordings remain restricted from redistribution; they must not be bundled or copied.
+- Keep all completed score sheets, raw participant feedback and audio/media review identities *outside* the repository and away from account-linked learner data.
