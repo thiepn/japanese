@@ -115,3 +115,22 @@ To regenerate the same *review-only* analysis after original source verification
     python3 scripts/kana-foundations-acoustic-review.py --review-root /tmp/kana-vowels-review
 
 Do not use these short signal windows as teaching audio without qualified Japanese speaker and rights signoffs.
+
+
+## KP-PARITY-S1 — isolated five-vowel optional practice
+
+The first parity slice preserves all eight original lesson stages and numeric indices, the schema-one prototype storage key, historical records and first-attempt summaries. It unlocks an optional session after introduction of all five hiragana vowels.
+
+The session presents 15 randomized-but-seeded original questions: five kana-to-romaji recognition choices, five romaji-to-kana choices, and five unique three-character kana sequence readings. Both five-choice blocks cover every vowel once and place the correct response in each of the five positions once per block. The three-character strings are decoding exercises, not vocabulary.
+
+First-pass wrong, revealed or assisted prompts receive one later practice-only correction each. Those corrections do not rewrite first attempts. All new events explicitly have practiceOnly=true, canonicalEligible=false and canonicalGradeId=null; even correct guided or corrected responses cannot earn independent-first credit. The original Account, Japanese IndexedDB, FSRS scheduler, study events and production app are not accessed.
+
+Old saved schema-one states without any practice session remain readable. Practice uses the same isolated prototype key, an optional practiceSession object and practiceRuns history. Completed sessions are archived before a new one; at 20 archived sessions, the app refuses to evict old evidence silently.
+
+Input uses only the five readings a/i/u/e/o (Hepburn and Kunrei agree for these five), allowing case/width normalization and spaces or hyphens in exactly three-character sequences; arbitrary aliases and kana typed into a romaji response are rejected. Session seeds preserve question order after reload. Elapsed-response measurements are marked unknown after a mid-question reload or hidden tab.
+
+Concurrent-tab limitation: the app detects sequential stale localStorage changes before a practice write and fails closed. This is NOT an atomic cross-tab transaction, a distributed lock, or evidence of canonical write integrity. Proper Account/FSRS integration requires a separate idempotent transaction gate and explicit authorization.
+
+Reproduce using the existing Node test suite and six-profile Chromium/Firefox/WebKit Playwright matrix. Do not interpret automated test success or exercise coverage as proof of Kana Pro Premium educational equivalence.
+
+No merge, deployment, audio release or canonical learner data write is part of this slice.
