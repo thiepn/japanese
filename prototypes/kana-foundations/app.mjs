@@ -275,11 +275,72 @@ function results(){
   +esc(weakLabel)
   +(wordWeak.length?'<p class="status">Also practice: '+esc(wordWeak.map(w=>w.kana).join(' · '))+'</p>':'')
   +'<p class="status">Return after a delay to check retention. No real Account or FSRS dates are changed.</p></div>';
- const actions='<div class="results-actions">'+(weak.length?primary('practice-weak','Practice '+weak.length+' weak character'+(weak.length===1?'':'s')):'')
+ const pr=practiceSummary(state);
+ const practiceResult=pr?'<div class="teaching-note practice-summary"><span class="mini-label">Optional mixed practice · No mastery credit</span><strong>'+pr.firstIndependentCorrect+' independent answers out of 15</strong><p class="status">'+pr.firstCompleted+' first prompts completed; '+pr.corrections+' correction responses. No Account or FSRS progress was changed.</p></div>':'';
+ const actions='<div class="results-actions">'+(state.introduced.length===5?primary('start-practice',pr?'Start new 15-question practice':'Start 15-question mixed practice'):'')
+  +(weak.length?primary('practice-weak','Practice '+weak.length+' weak character'+(weak.length===1?'':'s')):'')
   +secondary('practice-again','Repeat mixed practice (no mastery credit)')
   +secondary('export','Export prototype progress')+'</div>';
- wrap(body+actions,'');
+ wrap(body+practiceResult+actions,'');
 }
+
+function readablePracticeAnswer(p,value){
+ return p.mode==='reverse'?vowel(value)?.kana||'':value;
+}
+function practiceHelp(p){
+ if(p.mode==='sequence')return 'Read each of the three characters from left to right, one vowel per character.';
+ if(p.mode==='reverse')return 'Remember the kana shape matching the shown vowel sound.';
+ return 'Recall the short vowel sound you learned for the displayed character.';
+}
+function practiceScreen(){
+ const p=state.practiceSession,item=currentPracticePrompt(state);
+ if(!item){wrap('<h1>Practice session unavailable</h1><p>Export your progress and reload without resetting the original lesson.</p>','');return;}
+ const mode=item.mode,title=mode==='recognition'?'Mixed recognition':mode==='reverse'?'Reverse matching':'Three-character reading';
+ const correction=Boolean(item.correctionOf),feedback=p.feedback;
+ const shown=mode==='recognition'?vowel(item.kanaIds[0]).kana:
+  mode==='reverse'?vowel(item.kanaIds[0]).reading:item.kanaIds.map(id=>vowel(id).kana).join('');
+ const instruction=mode==='recognition'?'Choose the correct reading.':
+  mode==='reverse'?'Choose the Japanese character for this reading.':
+  'Read all three kana and type their vowel sounds in order. This is not a vocabulary question.';
+ const context=correction?'Correction practice · original first attempt preserved':
+  'Independent first attempt · '+(p.promptIndex+1)+' of 15';
+ let responses='';
+ if(!feedback){
+  if(mode==='sequence'){
+   responses='<form id="practice-answer-form"><label class="form-label" for="practice-answer">Type the three-vowel reading</label>'
+    +'<input id="practice-answer" name="practice-answer" class="answer-input" autocomplete="off" autocapitalize="off" spellcheck="false" type="text" inputmode="latin" maxlength="20" aria-describedby="practice-input-help" required>'
+    +'<p class="status" id="practice-input-help">Type three romaji vowels, with optional spaces or hyphens.</p>'
+    +(practiceInputWarning?'<p role="alert" class="status">'+esc(practiceInputWarning)+'</p>':'')
+    +'<button class="primary" type="submit">Check practice answer</button></form>';
+  }else{
+   responses='<div class="choices '+(mode==='reverse'?'kana-grid':'')+'">'
+    +item.choices.map(value=>{
+     const kana=mode==='reverse',label=kana?vowel(value).kana:value;
+     return '<button type="button" class="choice'+(kana?' kana-choice':'')+'" data-action="practice-choice" data-practice-value="'+esc(value)+'" aria-label="'+esc(kana?'Character '+label:'Reading '+label)+'">'+esc(label)+'</button>';
+    }).join('')+'</div>';
+  }
+  if(p.assistanceLevel==='cue')responses+='<div class="hint" role="status"><strong>Recall cue: </strong>'+esc(practiceHelp(item))+'</div>';
+  responses+='<div class="hint-actions">'
+   +(p.assistanceLevel==='none'?'<button class="text-button" data-action="practice-hint">Need a hint?</button>':'')
+   +'<button class="text-button" data-action="practice-reveal">Show answer (no credit)</button></div>';
+ }
+ const result=feedback?'<div role="status" aria-live="polite" class="feedback '
+  +(feedback.correct===true?'good':feedback.correct===false?'bad':'neutral')+'">'
+  +'<strong>'+(feedback.revealed?'Practice-only: answer revealed (no credit).':
+    feedback.correct===true?'Practice-only: correct.':'Practice-only: incorrect.')+'</strong>'
+  +'<p>'+esc(feedback.revealed?'This counts as assistance. Correct: '+readablePracticeAnswer(item,item.answer)
+    :'Correct answer: '+readablePracticeAnswer(item,item.answer))+'</p>'
+  +(p.assistanceLevel!=='none'&&!feedback.revealed?'<small>Assisted practice — no independent credit.</small>':'')
+  +(correction?'<small>Your first attempt remains unchanged.</small>':'')
+  +'</div>':'';
+ const body='<section class="practice-screen"><p class="kicker">'+esc(context)+'</p>'
+  +'<h1>'+esc(title)+'</h1><p class="lead">'+esc(instruction)+'</p>'
+  +'<div class="glyph-panel"><span class="'+(mode==='sequence'?'japanese-word':'hero-glyph')+'"'
+  +(mode!=='reverse'?' lang="ja"':'')+'>'+esc(shown)+'</span></div>'
+  +responses+result+'<p class="status">Practice only · No Account or FSRS grades</p></section>';
+ wrap(body,feedback?primary('practice-advance','Next practice question'):'');
+}
+
 let lastScreenKey=null;
 function render(){
  const mode=currentStage(state).mode;
