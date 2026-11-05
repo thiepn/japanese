@@ -167,3 +167,29 @@ test('two tabs transition synthetic lease epoch; raw production DB writer remain
   await a.close();await erase(b,id);await b.close();
  }
 });
+
+test('real page termination around attempted commit leaves no partial three-store state, then same-ID retry converges',async({context},testInfo)=>{
+ const id=syntheticId(),writer=await context.newPage();await ready(writer);
+ const pending=writer.evaluate(async id=>{
+  const m=await import('./qualification/real-idb-scenarios.mjs');
+  return m.writeSynthetic(id,{id:'synthetic-interrupted-event',baseRevision:0,revision:1,attemptId:'interrupted-attempt'});
+ },id).catch(e=>({interrupted:String(e)}));
+ // Real browser-page lifecycle termination; timing relative to actual native
+ // commit is intentionally not claimed to be a deterministic power failure.
+ await writer.close();
+ await pending;
+ const inspector=await context.newPage();await ready(inspector);
+ try{
+  const afterClose=await snapshot(inspector,id);
+  expect(afterClose.counts.events).toBe(afterClose.counts.traces);
+  expect(afterClose.counts.events).toBe(afterClose.counts.outbox);
+  expect([0,1]).toContain(afterClose.counts.events);
+  const retry=await directWrite(inspector,id,{id:'synthetic-interrupted-event',baseRevision:0,revision:1,attemptId:'interrupted-attempt'});
+  expect(retry.ok).toBe(afterClose.counts.events===0);
+  const afterRetry=await snapshot(inspector,id);
+  expect(afterRetry.counts).toEqual({events:1,traces:1,outbox:1});
+  expect(afterRetry.eventIds).toEqual(['synthetic-interrupted-event']);
+  logReviewEvidence(testInfo,'page-termination-unknown-outcome',{afterClose,retry,afterRetry,
+   caveat:'actual page close but commit timing not deterministic; not simulated power loss'});
+ }finally{await erase(inspector,id);await inspector.close();}
+});
