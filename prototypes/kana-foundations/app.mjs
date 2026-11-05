@@ -260,7 +260,8 @@ function listening(){
 function results(){
  const data=firstAttemptSummary(state),weak=data.needsPractice.map(vowel).filter(Boolean);
  const wordWeak=data.needsWordPractice.map(word).filter(Boolean);
- const fmt=m=>m.correct+' / '+m.total+(m.skipped?' ('+m.skipped+' not assessed)':'');
+ const fmt=m=>m.total===0||m.skipped===m.total?'<strong class="metric-status">Not assessed</strong>':m.correct+' / '+(m.total-m.skipped);
+ const label=(name,m)=>name+(m.skipped?' · '+m.skipped+' skipped':'');
  const weakLabel=weak.length?weak.map(v=>v.kana+' ('+v.reading+')').join(' · '):'No unresolved individual kana errors today';
  const body='<p class="kicker">Unit 01 · Learning evidence</p><h1>Your five-vowel results</h1>'
   +'<p class="lead">First-attempt results are not a long-term mastery or retention score.</p>'
@@ -268,9 +269,9 @@ function results(){
   +'<div class="metrics"><div class="metric"><strong>'+data.introduced+' / 5</strong><span>Introduced</span></div>'
   +'<div class="metric"><strong>'+data.introChecks.correct+' / '+data.introChecks.total+'</strong><span>Independent intro recall</span></div>'
   +'<div class="metric"><strong>'+data.recognition.correct+' / '+data.recognition.total+'</strong><span>Final recognition</span></div>'
-  +'<div class="metric"><strong>'+fmt(data.recall)+'</strong><span>Typed recall</span></div>'
-  +'<div class="metric"><strong>'+fmt(data.listening)+'</strong><span>Listening</span></div>'
-  +'<div class="metric"><strong>'+fmt(data.reading)+'</strong><span>Word decoding</span></div></div>'
+  +'<div class="metric"><strong>'+fmt(data.recall)+'</strong><span>'+esc(label('Typed recall',data.recall))+'</span></div>'
+  +'<div class="metric"><strong>'+fmt(data.listening)+'</strong><span>'+esc(label('Listening',data.listening))+'</span></div>'
+  +'<div class="metric"><strong>'+fmt(data.reading)+'</strong><span>'+esc(label('Word decoding',data.reading))+'</span></div></div>'
   +'<div class="teaching-note"><span class="mini-label">What to practice next</span>'
   +esc(weakLabel)
   +(wordWeak.length?'<p class="status">Also practice: '+esc(wordWeak.map(w=>w.kana).join(' · '))+'</p>':'')
@@ -288,9 +289,11 @@ function readablePracticeAnswer(p,value){
  return p.mode==='reverse'?vowel(value)?.kana||'':value;
 }
 function practiceHelp(p){
- if(p.mode==='sequence')return 'Read each of the three characters from left to right, one vowel per character.';
- if(p.mode==='reverse')return 'Remember the kana shape matching the shown vowel sound.';
- return 'Recall the short vowel sound you learned for the displayed character.';
+ const target=vowel(p.kanaIds[0]);
+ if(!target)return 'Read the five vowels carefully, and choose from what you learned.';
+ if(p.mode==='sequence')return 'Decode left to right. The first character has '+target.strokes+' strokes. Sound cue: '+target.cue;
+ if(p.mode==='reverse')return 'Compare the shapes. The correct character has '+target.strokes+' strokes; check its shape before choosing.';
+ return 'This character has '+target.strokes+' strokes. Sound cue: '+target.cue;
 }
 function practiceScreen(){
  const p=state.practiceSession,item=currentPracticePrompt(state);
