@@ -90,3 +90,17 @@ Performance measurements are ten synchronous, local in-browser DOM-interaction s
 - [Audio candidate provenance and rights](./usability-kit/AUDIO_RIGHTS_REVIEW.md): five individually confirmed Wikimedia Commons file description/license pages, each author-declared public domain. **No WAV/Ogg/MP3 is added to the application, and no qualified Japanese auditory approval is claimed.**
 - The official Japan Foundation Marugoto recordings remain restricted from redistribution; they must not be bundled or copied.
 - Keep all completed score sheets, raw participant feedback and audio/media review identities *outside* the repository and away from account-linked learner data.
+
+
+## Original Commons audio forensic evidence — still NOT approved for teaching
+
+The isolated [original audio verification report](./audio-review/ORIGINAL_AUDIO_EVIDENCE.md) pins SHA-256 hashes and Commons upload version identity for the five genuine historical files, plus FFprobe/FFmpeg metrics, acoustic red flags and real Chromium/Firefox/WebKit decoder tests. The [Japanese-speaker and rights reviewer form](./audio-review/HUMAN_AUDIO_SIGNOFF.md) remains explicitly unfilled.
+
+Original media bytes are downloaded **only to a short-lived review-only Actions artifact**, never to this app's source, assets, lessons, runtime endpoints, deployment or learner data. Recording duration/silence and uneven levels are unresolved. Do not treat codec compatibility or self-declared public domain as sufficient instructional approval.
+
+Reproduce the isolated review with FFmpeg/FFprobe available:
+
+    python3 scripts/kana-foundations-audio-evidence.py --output /tmp/kana-vowels-review
+    KANA_AUDIO_REVIEW_DIR=/tmp/kana-vowels-review pnpm exec playwright test --config playwright.kana-audio-evidence.config.ts
+
+The review manifest and source-byte hashes are generated at runtime; no media is shipped. No human pronunciation or independent rights clearance has been obtained.
