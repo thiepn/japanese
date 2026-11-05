@@ -2,16 +2,19 @@ import {
  VOWELS,WORDS,STAGES,PROTOTYPE_SCHEMA,PROTOTYPE_STORAGE_KEY,
  initialState,validState,currentStage,currentItem,vowel,word,
  start,pause,beginIntroCheck,setHint,revealAnswer,markAudioPlayed,submit,skipListening,skipListeningStage,advance,
- practiceAgain,practiceWeakItems,progress,firstAttemptSummary,allowedChoices
+ practiceAgain,practiceWeakItems,progress,firstAttemptSummary,allowedChoices,
+ startPractice,currentPracticePrompt,hintPractice,revealPractice,answerPractice,advancePractice,practiceSummary
 } from './engine.mjs';
 
 const root=document.getElementById('app');
 const STORAGE=PROTOTYPE_STORAGE_KEY;
 let storageWarning='';
 let writeAllowed=true;
+let lastPersistedRaw=null;
 let sourceState;
 try{
   const raw=localStorage.getItem(STORAGE);
+  lastPersistedRaw=raw;
   if(raw){
     const parsed=JSON.parse(raw);
     if(!validState(parsed))throw Error('The saved prototype has an unsupported or invalid schema.');
@@ -23,6 +26,10 @@ try{
 }
 let state=sourceState||initialState();
 let audioStatus='';
+let initialPracticeReload=state.practiceSession?.status==='active'&&!state.practiceSession?.feedback;
+let practiceClock=null;
+let practiceInputWarning='';
+document.addEventListener('visibilitychange',()=>{if(practiceClock)practiceClock.invalid=true;});
 
 function esc(s){
   return String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;')
@@ -31,25 +38,44 @@ function esc(s){
 function persist(){
   state={...state,savedAt:new Date().toISOString()};
   if(!writeAllowed)return;
-  try{localStorage.setItem(STORAGE,JSON.stringify(state));}
-  catch(error){
+  try{
+    const encoded=JSON.stringify(state);
+    localStorage.setItem(STORAGE,encoded);
+    lastPersistedRaw=encoded;
+  }catch(error){
     writeAllowed=false;
     storageWarning='Browser storage is unavailable. This session will work, but progress may not survive a refresh. Export your progress for safekeeping.';
   }
 }
 function commit(next){
   if(next===state)return;
+  // Fail closed on sequential stale-tab updates to optional practice evidence.
+  // This browser check is not an atomic compare-and-swap across processes.
+  if(writeAllowed&&(state.practiceSession||next.practiceSession)){
+    try{
+      if(localStorage.getItem(STORAGE)!==lastPersistedRaw){
+        writeAllowed=false;
+        storageWarning='Saved progress changed in another tab since this tab loaded. This tab will not overwrite newer evidence. Reload or export before continuing.';
+        render();return;
+      }
+    }catch{
+      writeAllowed=false;
+      storageWarning='Saved progress could not be checked safely. Export this session; no further writes will be made.';
+      render();return;
+    }
+  }
   state=next;persist();render();
 }
 function unitHeader(){
   const p=progress(state);
-  const active=!(state.paused||currentStage(state).mode==='results');
+  const practicing=!state.paused&&state.practiceSession?.status==='active';
+  const active=!(state.paused||(currentStage(state).mode==='results'&&!practicing));
   return '<header class="topbar"><div class="brand"><div class="brand-mark" aria-hidden="true">あ</div>'
     +'<div><h2>Kana Foundations</h2><p class="eyebrow">HIRAGANA · FIVE VOWELS</p></div></div>'
     +(active?'<button class="top-exit" data-action="pause" aria-label="Exit lesson; progress is saved">Exit</button>':'')
     +'</header>'
-    +(!active?'':'<div class="progress-track" aria-hidden="true"><div class="progress-bar" style="width:'+p.percent+'%"></div></div>'
-      +'<div class="progress-caption"><span>'+esc(p.label)+'</span><span>'+p.done+' / '+p.total+' activities</span></div>');
+    +(!active?'':'<div class="progress-track" aria-hidden="true"><div class="progress-bar" style="width:'+(practicing?Math.round(100*Math.min(15,state.practiceSession.promptIndex)/15):p.percent)+'%"></div></div>'
+      +'<div class="progress-caption"><span>'+esc(practicing?'Mixed practice · No mastery credit':p.label)+'</span><span>'+(practicing?Math.min(15,state.practiceSession.promptIndex)+' / 15 first prompts':p.done+' / '+p.total+' activities')+'</span></div>');
 }
 function wrap(body,actions){
   root.innerHTML='<div class="shell">'+unitHeader()
