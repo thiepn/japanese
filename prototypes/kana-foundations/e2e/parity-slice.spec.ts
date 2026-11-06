@@ -97,6 +97,53 @@ test('S1 hints, wrong answers, reload and correction retain first evidence',asyn
   expect.objectContaining({correct:true,independent:false,assistanceLevel:'cue',practiceOnly:true})
  ]));
 });
+test('S1 wrong mixed-practice responses identify the actual vowel confusion without rewriting evidence',async({page})=>{
+ await fixture(page);
+ await page.getByRole('button',{name:'Start 15-question mixed practice'}).click();
+ const scenarios=[0,5,10],checked=[];
+ for(let i=0;i<=10;i++){
+  const prompt=await page.evaluate(async()=>{
+   const m=await import('./engine.mjs');
+   return m.currentPracticePrompt(JSON.parse(localStorage.getItem(m.PROTOTYPE_STORAGE_KEY)));
+  });
+  if(!scenarios.includes(i)){await answerCurrent(page);continue;}
+  const target=prompt.answer;
+  const wrong=prompt.mode==='sequence'
+   ?(target[0]==='a'?'i':'a')+target.slice(1)
+   :prompt.choices.find(value=>value!==target);
+  if(prompt.mode==='sequence'){
+   await page.getByRole('textbox',{name:'Type the three-vowel reading'}).fill(wrong);
+   await page.getByRole('button',{name:'Check practice answer'}).click();
+  }else await page.locator('button[data-practice-value="'+wrong+'"]').click();
+  await expect(page.getByText(/Practice-only: incorrect/)).toBeVisible();
+  const actual=await page.locator('.practice-screen .practice-contrast').innerText();
+  const source=await page.evaluate(async({kanaIds,wrong,mode})=>{
+   const m=await import('./engine.mjs');
+   const target=m.vowel(kanaIds[0]);
+   return {target,chosen:mode==='reverse'?m.vowel(wrong):m.VOWELS.find(v=>v.reading===wrong)};
+  },{kanaIds:prompt.kanaIds,wrong,mode:prompt.mode});
+  if(prompt.mode==='recognition'){
+   expect(actual).toContain('You chose '+wrong+', the reading of '+source.chosen.kana);
+   expect(actual).toContain('This character is '+source.target.kana+' ('+source.target.reading+')');
+  }else if(prompt.mode==='reverse'){
+   expect(actual).toContain('You chose '+source.chosen.kana+' ('+source.chosen.reading+')');
+   expect(actual).toContain('The requested reading '+source.target.reading+' belongs to '+source.target.kana);
+  }else{
+   expect(actual).toContain('At character 1, '+source.target.kana+' is '+source.target.reading+', not '+wrong[0]);
+   expect(actual).toContain('Read left to right.');
+  }
+  checked.push(prompt.mode);
+  const recorded=await page.evaluate(()=>{
+   const s=JSON.parse(localStorage.getItem('thiepn:kana-foundations:prototype-only:v1'));
+   return {attempt:s.practiceSession.attempts.at(-1),records:s.records};
+  });
+  expect(recorded.attempt).toMatchObject({correct:false,independent:false,
+   practiceOnly:true,canonicalEligible:false,canonicalGradeId:null,responseNormalized:wrong});
+  expect(recorded.records).toHaveLength(1);
+  if(i<10)await page.getByRole('button',{name:'Next practice question'}).click();
+ }
+ expect(checked).toEqual(['recognition','reverse','sequence']);
+});
 test('S1 pause/resume, 320px overflow, keyboard and reduced motion',async({page},testInfo)=>{
  await fixture(page);
  await page.emulateMedia({reducedMotion:'reduce'});
