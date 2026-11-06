@@ -295,6 +295,27 @@ function practiceHelp(p){
  if(p.mode==='reverse')return 'Compare the shapes. The correct character has '+target.strokes+' strokes; check its shape before choosing.';
  return 'This character has '+target.strokes+' strokes. Sound cue: '+target.cue;
 }
+// Explain a learner's specific confusion without changing the stored attempt.
+function practiceCorrectionText(item, submitted){
+ const target=vowel(item.kanaIds[0]);
+ if(!target)return '';
+ if(item.mode==='recognition'){
+  const chosen=VOWELS.find(v=>v.reading===submitted);
+  return chosen?'You chose '+chosen.reading+', the reading of '+chosen.kana+'. This character is '+target.kana+' ('+target.reading+').':'';
+ }
+ if(item.mode==='reverse'){
+  const chosen=vowel(submitted);
+  return chosen?'You chose '+chosen.kana+' ('+chosen.reading+'). The requested reading '+target.reading+' belongs to '+target.kana+'.':'';
+ }
+ if(item.mode==='sequence'&&typeof submitted==='string'&&submitted.length===3){
+  const index=[...submitted].findIndex((letter,i)=>letter!==vowel(item.kanaIds[i])?.reading);
+  if(index>=0){
+   const needed=vowel(item.kanaIds[index]);
+   return 'At character '+(index+1)+', '+needed.kana+' is '+needed.reading+', not '+submitted[index]+'. Read left to right.';
+  }
+ }
+ return '';
+}
 function practiceScreen(){
  const p=state.practiceSession,item=currentPracticePrompt(state);
  if(!item){wrap('<h1>Practice session unavailable</h1><p>Export your progress and reload without resetting the original lesson.</p>','');return;}
@@ -333,6 +354,7 @@ function practiceScreen(){
     feedback.correct===true?'Practice-only: correct.':'Practice-only: incorrect.')+'</strong>'
   +'<p>'+esc(feedback.revealed?'This counts as assistance. Correct: '+readablePracticeAnswer(item,item.answer)
     :'Correct answer: '+readablePracticeAnswer(item,item.answer))+'</p>'
+   +(feedback.correct===false?'<p class="practice-contrast">'+esc(practiceCorrectionText(item,feedback.submitted))+'</p>':'')
   +(p.assistanceLevel!=='none'&&!feedback.revealed?'<small>Assisted practice — no independent credit.</small>':'')
   +(correction?'<small>Your first attempt remains unchanged.</small>':'')
   +'</div>':'';
