@@ -29,7 +29,9 @@ function trace(account,revision){
    elapsedDays:1,scheduledDays:1,learningSteps:0,reps:revision,
    lapses:0,state:1,lastReviewAt:time}};
 }
-const errorCode=e=>String(e?.name||e?.message||e);
+// Native Error instances have name="Error" but the domain invariant is in message.
+// Preserve the actionable code for browser assertions instead of masking it.
+const errorCode=e=>String(e?.message||e?.name||e);
 async function snapshot(account){
  assertSynthetic(account);
  const db=await source();
