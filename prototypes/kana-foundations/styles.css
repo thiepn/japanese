@@ -142,3 +142,7 @@ p{line-height:1.55}
 
 /* Reviewed at real compact 320px screenshot size: do not visually score skipped listening as 0/5. */
 .metric .metric-status{font-size:17px;letter-spacing:-.015em;line-height:1.35;overflow-wrap:normal}
+
+/* Unit progression links reuse the established secondary-control hit target. */
+.unit-link{display:grid;place-items:center;text-align:center;text-decoration:none}
+.unit-link:hover{background:#f1f7f6}
