@@ -107,7 +107,8 @@ test('Unit 10 accepts wo spelling but teaches o sound, and separately corrects n
  await page.getByRole('textbox',{name:'Type the romaji reading'}).fill('honoyomi');
  await page.getByRole('button',{name:'Check answer'}).click();
  await expect(page.getByText('Not quite.')).toBeVisible();
- await page.getByRole('button',{name:'Continue'}).click();
+ // The last first-attempt task uses "See next step" even when corrections remain.
+ await page.getByRole('button',{name:/^(Continue|See next step)$/}).click();
  await expect(page.getByText(/Correction practice · first attempt retained/)).toBeVisible();
  await page.reload();
  await expect(page.getByText(/Correction practice · first attempt retained/)).toBeVisible();
