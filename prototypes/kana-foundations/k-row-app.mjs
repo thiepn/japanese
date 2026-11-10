@@ -1,8 +1,10 @@
-// Shared Units 02–06 presentation; each unit uses isolated storage and its own engine.
+// Shared Units 02–07 presentation; each unit uses isolated storage and its own engine.
 const rowCode=document.documentElement.dataset.kanaRow;
-const isSRow=rowCode==='s',isTRow=rowCode==='t',isNRow=rowCode==='n',isHRow=rowCode==='h';
-const unit=isHRow
- ?{number:'06',previous:'05',previousPage:'./n-row.html',nextPage:null,nextLabel:null,row:'H',slug:'h-row'}
+const isSRow=rowCode==='s',isTRow=rowCode==='t',isNRow=rowCode==='n',isHRow=rowCode==='h',isMRow=rowCode==='m';
+const unit=isMRow
+ ?{number:'07',previous:'06',previousPage:'./h-row.html',nextPage:null,nextLabel:null,row:'M',slug:'m-row'}
+ :isHRow
+ ?{number:'06',previous:'05',previousPage:'./n-row.html',nextPage:'./m-row.html',nextLabel:'Continue to Unit 07 · まみむめも',row:'H',slug:'h-row'}
  :isNRow
  ?{number:'05',previous:'04',previousPage:'./t-row.html',nextPage:'./h-row.html',nextLabel:'Continue to Unit 06 · はひふへほ',row:'N',slug:'n-row'}
  :isTRow
@@ -11,7 +13,7 @@ const unit=isHRow
  ?{number:'03',previous:'02',previousPage:'./k-row.html',nextPage:'./t-row.html',nextLabel:'Continue to Unit 04 · たちつてと',row:'S',slug:'s-row'}
  :{number:'02',previous:'01',previousPage:'./index.html',nextPage:'./s-row.html',nextLabel:'Continue to Unit 03 · さしすせそ',row:'K',slug:'k-row'};
 const {STORAGE_KEY,KANA,TASKS,WORDS,initialState,validState,taskAt,resume,pause,beginRecall,answer,reveal,advance,summary}
- =await import(isHRow?'./h-row-engine.mjs':isNRow?'./n-row-engine.mjs':isTRow?'./t-row-engine.mjs':isSRow?'./s-row-engine.mjs':'./k-row-engine.mjs');
+ =await import(isMRow?'./m-row-engine.mjs':isHRow?'./h-row-engine.mjs':isNRow?'./n-row-engine.mjs':isTRow?'./t-row-engine.mjs':isSRow?'./s-row-engine.mjs':'./k-row-engine.mjs');
 const root=document.getElementById('app');
 let state=initialState(),lastRaw=null,writeAllowed=true,warning='',inputWarning='';
 try{
@@ -55,7 +57,9 @@ function wrap(body,actions=''){
 function welcome(){
  const kanaList=KANA.map(k=>k.kana).join('・');
  const wordList=WORDS.map(w=>w.kana).join('、');
- const description=isHRow
+ const description=isMRow
+  ?'Learn ま・み・む・め・も with clear m + vowel sounds, distinguish the curved shapes of む and め, and decode five genuine Japanese words. The meal word めし is informal.'
+  :isHRow
   ?'Add five H-row characters: は・ひ・ふ・へ・ほ. Learn why ふ is written fu (also hu), compare は and ほ, then read five everyday Japanese words.'
   :isNRow
   ?'Learn the five N-row kana な・に・ぬ・ね・の. Listen to the sounds in your mind, distinguish the looped ぬ from the simpler の, then read five familiar Japanese words.'
