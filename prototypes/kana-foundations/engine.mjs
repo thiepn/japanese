@@ -269,13 +269,24 @@ const PRACTICE_MODES=['recognition','reverse','sequence'];
 const PRACTICE_ASSISTANCE=['none','cue','guided-choices','revealed'];
 const PRACTICE_VOWEL_IDS=VOWELS.map(v=>v.id);
 const PRACTICE_READINGS=VOWELS.map(v=>v.reading);
-const practiceIsValidPrompt=p=>Boolean(p&&typeof p.id==='string'&&p.id.length>0
- &&PRACTICE_MODES.includes(p.mode)&&Array.isArray(p.kanaIds)
- &&p.kanaIds.length===(p.mode==='sequence'?3:1)
- &&p.kanaIds.every(id=>PRACTICE_VOWEL_IDS.includes(id))
- &&typeof p.answer==='string'&&Array.isArray(p.choices)
- &&(p.mode==='sequence'?p.choices.length===0:p.choices.length===5)
- &&(p.correctionOf===null||typeof p.correctionOf==='string'));
+const practiceIsValidPrompt=p=>{
+ if(!p||typeof p.id!=='string'||p.id.length===0
+  ||!PRACTICE_MODES.includes(p.mode)||!Array.isArray(p.kanaIds)
+  ||p.kanaIds.length!==(p.mode==='sequence'?3:1)
+  ||!p.kanaIds.every(id=>PRACTICE_VOWEL_IDS.includes(id))
+  ||typeof p.answer!=='string'||!Array.isArray(p.choices)
+  ||!(p.correctionOf===null||typeof p.correctionOf==='string'))return false;
+ // A stored question must not redefine the correct answer for the kana shown.
+ // Also reject missing, repeated or foreign alternatives, rather than scoring
+ // a malformed saved practice session as if it were genuine learning evidence.
+ const expected=p.mode==='reverse'?p.kanaIds[0]
+  :p.kanaIds.map(id=>vowel(id).reading).join('');
+ if(p.answer!==expected)return false;
+ if(p.mode==='sequence')return p.choices.length===0;
+ const required=p.mode==='reverse'?PRACTICE_VOWEL_IDS:PRACTICE_READINGS;
+ return p.choices.length===5&&new Set(p.choices).size===required.length
+  &&required.every(value=>p.choices.includes(value));
+};
 export function validPracticeSession(p){
  if(!p||typeof p!=='object'||p.version!==1||typeof p.sessionId!=='string'
   ||!p.sessionId||!Number.isInteger(p.seed)||p.seed<0||p.seed>0xffffffff
