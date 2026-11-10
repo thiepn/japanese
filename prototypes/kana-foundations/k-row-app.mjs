@@ -1,10 +1,13 @@
-// Shared Unit 02/03 presentation. Each unit keeps its own persisted state and engine.
-const isSRow=document.documentElement.dataset.kanaRow==='s';
-const unit=isSRow
- ?{number:'03',previous:'02',previousPage:'./k-row.html',nextPage:null,row:'S',slug:'s-row'}
- :{number:'02',previous:'01',previousPage:'./index.html',nextPage:'./s-row.html',row:'K',slug:'k-row'};
+// Shared Units 02–04 interface. Each unit owns its own engine and storage key.
+const rowCode=document.documentElement.dataset.kanaRow;
+const isSRow=rowCode==='s',isTRow=rowCode==='t';
+const unit=isTRow
+ ?{number:'04',previous:'03',previousPage:'./s-row.html',nextPage:null,nextLabel:null,row:'T',slug:'t-row'}
+ :isSRow
+ ?{number:'03',previous:'02',previousPage:'./k-row.html',nextPage:'./t-row.html',nextLabel:'Continue to Unit 04 · たちつてと',row:'S',slug:'s-row'}
+ :{number:'02',previous:'01',previousPage:'./index.html',nextPage:'./s-row.html',nextLabel:'Continue to Unit 03 · さしすせそ',row:'K',slug:'k-row'};
 const {STORAGE_KEY,KANA,TASKS,WORDS,initialState,validState,taskAt,resume,pause,beginRecall,answer,reveal,advance,summary}
- =await import(isSRow?'./s-row-engine.mjs':'./k-row-engine.mjs');
+ =await import(isTRow?'./t-row-engine.mjs':isSRow?'./s-row-engine.mjs':'./k-row-engine.mjs');
 const root=document.getElementById('app');
 let state=initialState(),lastRaw=null,writeAllowed=true,warning='',inputWarning='';
 try{
@@ -48,7 +51,9 @@ function wrap(body,actions=''){
 function welcome(){
  const kanaList=KANA.map(k=>k.kana).join('・');
  const wordList=WORDS.map(w=>w.kana).join('、');
- const description=isSRow
+ const description=isTRow
+  ?'Use the vowels, K-row, and S-row you know to learn た・ち・つ・て・と. Watch for ち = chi and つ = tsu. Build confidence by decoding five everyday words.'
+  :isSRow
   ?'Build on the vowels and K-row from Units 01–02. Learn five S-row characters and the special reading し = shi, then read real words.'
   :'Build on the five vowels from Unit 01. Learn five new characters, recall their readings, and decode five real Japanese words.';
  wrap('<p class="kicker">Unit '+unit.number+' · Hiragana</p><h1>Learn '+esc(kanaList)+'</h1>'
@@ -71,7 +76,7 @@ function results(){
  +'<div class="teaching-note"><span class="mini-label">Correction round</span>'
  +s.corrected+' of '+s.correctionCount+' correction responses were correct. Original first answers are unchanged.'
  +'<p class="status">Try reading again after a delay to check what you still remember.</p></div>',
- (unit.nextPage?link(unit.nextPage,'Continue to Unit 03 · さしすせそ'):'')
+ (unit.nextPage?link(unit.nextPage,unit.nextLabel):'')
  +link(unit.previousPage,'Return to Unit '+unit.previous)
  +button('export','Export Unit '+unit.number+' progress',true));
 }
