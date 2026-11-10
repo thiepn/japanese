@@ -1,8 +1,10 @@
-// Shared Units 02–09 presentation; lessons keep independent saved evidence.
+// Shared Units 02–10 presentation; lessons keep independent saved evidence.
 const rowCode=document.documentElement.dataset.kanaRow;
-const isSRow=rowCode==='s',isTRow=rowCode==='t',isNRow=rowCode==='n',isHRow=rowCode==='h',isMRow=rowCode==='m',isYRow=rowCode==='y',isRRow=rowCode==='r';
-const unit=isRRow
- ?{number:'09',previous:'08',previousPage:'./y-row.html',nextPage:null,nextLabel:null,row:'R',slug:'r-row'}
+const isSRow=rowCode==='s',isTRow=rowCode==='t',isNRow=rowCode==='n',isHRow=rowCode==='h',isMRow=rowCode==='m',isYRow=rowCode==='y',isRRow=rowCode==='r',isWRow=rowCode==='w';
+const unit=isWRow
+ ?{number:'10',previous:'09',previousPage:'./r-row.html',nextPage:null,nextLabel:null,row:'W/N',slug:'w-row'}
+ :isRRow
+ ?{number:'09',previous:'08',previousPage:'./y-row.html',nextPage:'./w-row.html',nextLabel:'Continue to Unit 10 · わをん',row:'R',slug:'r-row'}
  :isYRow
  ?{number:'08',previous:'07',previousPage:'./m-row.html',nextPage:'./r-row.html',nextLabel:'Continue to Unit 09 · らりるれろ',row:'Y',slug:'y-row'}
  :isMRow
@@ -17,8 +19,9 @@ const unit=isRRow
  ?{number:'03',previous:'02',previousPage:'./k-row.html',nextPage:'./t-row.html',nextLabel:'Continue to Unit 04 · たちつてと',row:'S',slug:'s-row'}
  :{number:'02',previous:'01',previousPage:'./index.html',nextPage:'./s-row.html',nextLabel:'Continue to Unit 03 · さしすせそ',row:'K',slug:'k-row'};
 const {STORAGE_KEY,KANA,TASKS,WORDS,initialState,validState,taskAt,resume,pause,beginRecall,answer,reveal,advance,summary}
- =await import(isRRow?'./r-row-engine.mjs':isYRow?'./y-row-engine.mjs':isMRow?'./m-row-engine.mjs':isHRow?'./h-row-engine.mjs':isNRow?'./n-row-engine.mjs':isTRow?'./t-row-engine.mjs':isSRow?'./s-row-engine.mjs':'./k-row-engine.mjs');
+ =await import(isWRow?'./w-row-engine.mjs':isRRow?'./r-row-engine.mjs':isYRow?'./y-row-engine.mjs':isMRow?'./m-row-engine.mjs':isHRow?'./h-row-engine.mjs':isNRow?'./n-row-engine.mjs':isTRow?'./t-row-engine.mjs':isSRow?'./s-row-engine.mjs':'./k-row-engine.mjs');
 const root=document.getElementById('app');
+const phraseCount=TASKS.filter(t=>t.kind==='phrase').length;
 let state=initialState(),lastRaw=null,writeAllowed=true,warning='',inputWarning='';
 try{
  lastRaw=localStorage.getItem(STORAGE_KEY);
@@ -61,7 +64,9 @@ function wrap(body,actions=''){
 function welcome(){
  const kanaList=KANA.map(k=>k.kana).join('・');
  const wordList=WORDS.map(w=>w.kana).join('、');
- const description=isRRow
+ const description=isWRow
+  ?'Finish the basic hiragana set with わ (wa), を (the object particle, pronounced o), and ん (one nasal timing beat, n). Learn five real words and read ほんをよむ: read a book.'
+  :isRRow
   ?'Learn ら・り・る・れ・ろ, including the brief Japanese r tongue tap rather than a prolonged English r or l. Compare る with ろ and decode five genuine Japanese words.'
   :isYRow
   ?'The modern basic Y-row has only three kana: や (ya), ゆ (yu), and よ (yo). There are no regular yi or ye characters to learn. Read five real words using kana from the preceding units.'
@@ -81,7 +86,7 @@ function welcome(){
    +'<div class="vowel-strip" lang="ja">'+KANA.map(k=>'<span>'+k.kana+'</span>').join('')+'</div>'
    +'<div class="teaching-note"><span class="mini-label">What you will do</span>'
    +'See each character with its reading, recall it without the answer, recognize all '+KANA.length+' new characters, then read '
-   +esc(wordList)+'. Incorrect or revealed first answers return once as correction practice.</div>'
+   +esc(wordList)+(phraseCount?', then one meaningful phrase using を to mark the object':'')+'. Incorrect or revealed first answers return once as correction practice.</div>'
    +'<p class="status">Earlier unit progress is preserved separately. This page never writes canonical study events or grades.</p>',
    button('start',state.index>0?'Resume Unit '+unit.number:'Start Unit '+unit.number)
     +link(unit.previousPage,'Back to Unit '+unit.previous));
@@ -92,7 +97,7 @@ function results(){
  wrap('<p class="kicker">Unit '+unit.number+' · First-attempt evidence</p><h1>'+(KANA.length===5?'Five':String(KANA.length))+' more hiragana learned</h1>'
  +'<p class="lead">Completion shows today’s practice, not long-term retention or certified mastery.</p>'
  +'<div class="vowel-strip" lang="ja">'+KANA.map(k=>'<span>'+k.kana+'</span>').join('')+'</div>'
- +'<div class="metrics">'+metric('Character recall',s.introduction)+metric('Recognition',s.recognition)+metric('Word decoding',s.decoding)+'</div>'
+ +'<div class="metrics">'+metric('Character recall',s.introduction)+metric('Recognition',s.recognition)+metric(phraseCount?'Words and phrase':'Word decoding',s.decoding)+'</div>'
  +'<div class="teaching-note"><span class="mini-label">Correction round</span>'
  +s.corrected+' of '+s.correctionCount+' correction responses were correct. Original first answers are unchanged.'
  +'<p class="status">Try reading again after a delay to check what you still remember.</p></div>',
@@ -103,15 +108,16 @@ function results(){
 function taskView(){
  const t=taskAt(state);if(!t){wrap('<h1>Session unavailable</h1><p>Export your saved data for recovery.</p>',button('export','Export Unit '+unit.number+' progress'));return;}
  const teaching=t.mode==='introduction'&&!state.checking&&!t.correction;
- const heading=t.mode==='introduction'?'Meet '+t.kana:t.mode==='recognition'?'Choose the reading':'Read the word';
+ const heading=t.mode==='introduction'?'Meet '+t.kana:t.mode==='recognition'?'Choose the reading':t.kind==='phrase'?'Read the phrase':'Read the word';
  const caption=t.correction?'Correction practice · first attempt retained':
   t.mode==='introduction'?'Character '+(state.index+1)+' of '+KANA.length:
   t.mode==='recognition'?'Recognition '+(state.index-KANA.length+1)+' of '+KANA.length:
-  'Word decoding '+(state.index-2*KANA.length+1)+' of '+WORDS.length;
+  t.kind==='phrase'?'Phrase decoding 1 of '+phraseCount:'Word decoding '+(state.index-2*KANA.length+1)+' of '+WORDS.length;
  const glyph='<div class="glyph-panel"><span class="'+(t.mode==='decoding'?'japanese-word':'hero-glyph')+'" lang="ja">'+esc(t.kana)+'</span>'
   +(teaching?'<span class="roman">'+esc(t.answer)+'</span>':'')+'</div>';
  const lead=teaching?'Look at the shape and sound. When ready, hide the reading and recall it.':
   t.mode==='recognition'?'Choose the reading without using a hint.':
+  t.kind==='phrase'?'Read the whole phrase. を marks the object and sounds o. Type the spoken reading; spaces are optional.':
   t.mode==='decoding'?'Read the kana left to right. The meaning appears after you answer.':
   'Type the romaji reading without seeing the answer.';
  let interaction='';
@@ -134,6 +140,7 @@ function taskView(){
    +'Correct reading: '+esc(f.answer)
    +(f.correct===false?'<small>Your reading: '+esc(f.submitted)+'. Compare the characters and try again later.</small>':'')
    +(t.mode==='decoding'?'<small>Meaning: '+esc(t.meaning)+' · Common writing: '+esc(t.kanji)+'</small>':'')
+   +(t.kind==='phrase'?'<small>'+esc(t.note)+'</small>':'')
    +(t.correction?'<small>This correction does not replace your first attempt.</small>':'')+'</div>';
  }
  const actions=teaching?button('check','Try recalling '+t.kana):
