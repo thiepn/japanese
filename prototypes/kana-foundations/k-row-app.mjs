@@ -1,8 +1,10 @@
-// Shared Units 02–08 presentation; lessons keep independent saved evidence.
+// Shared Units 02–09 presentation; lessons keep independent saved evidence.
 const rowCode=document.documentElement.dataset.kanaRow;
-const isSRow=rowCode==='s',isTRow=rowCode==='t',isNRow=rowCode==='n',isHRow=rowCode==='h',isMRow=rowCode==='m',isYRow=rowCode==='y';
-const unit=isYRow
- ?{number:'08',previous:'07',previousPage:'./m-row.html',nextPage:null,nextLabel:null,row:'Y',slug:'y-row'}
+const isSRow=rowCode==='s',isTRow=rowCode==='t',isNRow=rowCode==='n',isHRow=rowCode==='h',isMRow=rowCode==='m',isYRow=rowCode==='y',isRRow=rowCode==='r';
+const unit=isRRow
+ ?{number:'09',previous:'08',previousPage:'./y-row.html',nextPage:null,nextLabel:null,row:'R',slug:'r-row'}
+ :isYRow
+ ?{number:'08',previous:'07',previousPage:'./m-row.html',nextPage:'./r-row.html',nextLabel:'Continue to Unit 09 · らりるれろ',row:'Y',slug:'y-row'}
  :isMRow
  ?{number:'07',previous:'06',previousPage:'./h-row.html',nextPage:'./y-row.html',nextLabel:'Continue to Unit 08 · やゆよ',row:'M',slug:'m-row'}
  :isHRow
@@ -15,7 +17,7 @@ const unit=isYRow
  ?{number:'03',previous:'02',previousPage:'./k-row.html',nextPage:'./t-row.html',nextLabel:'Continue to Unit 04 · たちつてと',row:'S',slug:'s-row'}
  :{number:'02',previous:'01',previousPage:'./index.html',nextPage:'./s-row.html',nextLabel:'Continue to Unit 03 · さしすせそ',row:'K',slug:'k-row'};
 const {STORAGE_KEY,KANA,TASKS,WORDS,initialState,validState,taskAt,resume,pause,beginRecall,answer,reveal,advance,summary}
- =await import(isYRow?'./y-row-engine.mjs':isMRow?'./m-row-engine.mjs':isHRow?'./h-row-engine.mjs':isNRow?'./n-row-engine.mjs':isTRow?'./t-row-engine.mjs':isSRow?'./s-row-engine.mjs':'./k-row-engine.mjs');
+ =await import(isRRow?'./r-row-engine.mjs':isYRow?'./y-row-engine.mjs':isMRow?'./m-row-engine.mjs':isHRow?'./h-row-engine.mjs':isNRow?'./n-row-engine.mjs':isTRow?'./t-row-engine.mjs':isSRow?'./s-row-engine.mjs':'./k-row-engine.mjs');
 const root=document.getElementById('app');
 let state=initialState(),lastRaw=null,writeAllowed=true,warning='',inputWarning='';
 try{
@@ -59,7 +61,9 @@ function wrap(body,actions=''){
 function welcome(){
  const kanaList=KANA.map(k=>k.kana).join('・');
  const wordList=WORDS.map(w=>w.kana).join('、');
- const description=isYRow
+ const description=isRRow
+  ?'Learn ら・り・る・れ・ろ, including the brief Japanese r tongue tap rather than a prolonged English r or l. Compare る with ろ and decode five genuine Japanese words.'
+  :isYRow
   ?'The modern basic Y-row has only three kana: や (ya), ゆ (yu), and よ (yo). There are no regular yi or ye characters to learn. Read five real words using kana from the preceding units.'
   :isMRow
   ?'Learn ま・み・む・め・も with clear m + vowel sounds, distinguish the curved shapes of む and め, and decode five genuine Japanese words. The meal word めし is informal.'
