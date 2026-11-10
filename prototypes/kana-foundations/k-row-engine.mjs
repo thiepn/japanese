@@ -69,7 +69,7 @@ function record(s,raw,correct,assisted,now){
 export function answer(s,raw,now=Date.now()){
  if(!validState(s)||s.paused||s.feedback)return s;
  const t=taskAt(s);
- if(!t||(t.mode==='introduction'&&!s.checking))return s;
+ if(!t||(t.mode==='introduction'&&!t.correction&&!s.checking))return s;
  const response=normalize(raw);
  if(!response||!/^[a-z]+$/.test(response)||response.length>16)return s;
  if(t.mode==='recognition'&&!t.options.includes(response))return s;
@@ -78,7 +78,7 @@ export function answer(s,raw,now=Date.now()){
 export function reveal(s,now=Date.now()){
  if(!validState(s)||s.paused||s.feedback)return s;
  const t=taskAt(s);
- if(!t||(t.mode==='introduction'&&!s.checking))return s;
+ if(!t||(t.mode==='introduction'&&!t.correction&&!s.checking))return s;
  return record(s,'',null,true,now);
 }
 export function advance(s){
