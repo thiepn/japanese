@@ -1,8 +1,10 @@
-// Shared Units 02–07 presentation; each unit uses isolated storage and its own engine.
+// Shared Units 02–08 presentation; lessons keep independent saved evidence.
 const rowCode=document.documentElement.dataset.kanaRow;
-const isSRow=rowCode==='s',isTRow=rowCode==='t',isNRow=rowCode==='n',isHRow=rowCode==='h',isMRow=rowCode==='m';
-const unit=isMRow
- ?{number:'07',previous:'06',previousPage:'./h-row.html',nextPage:null,nextLabel:null,row:'M',slug:'m-row'}
+const isSRow=rowCode==='s',isTRow=rowCode==='t',isNRow=rowCode==='n',isHRow=rowCode==='h',isMRow=rowCode==='m',isYRow=rowCode==='y';
+const unit=isYRow
+ ?{number:'08',previous:'07',previousPage:'./m-row.html',nextPage:null,nextLabel:null,row:'Y',slug:'y-row'}
+ :isMRow
+ ?{number:'07',previous:'06',previousPage:'./h-row.html',nextPage:'./y-row.html',nextLabel:'Continue to Unit 08 · やゆよ',row:'M',slug:'m-row'}
  :isHRow
  ?{number:'06',previous:'05',previousPage:'./n-row.html',nextPage:'./m-row.html',nextLabel:'Continue to Unit 07 · まみむめも',row:'H',slug:'h-row'}
  :isNRow
@@ -13,7 +15,7 @@ const unit=isMRow
  ?{number:'03',previous:'02',previousPage:'./k-row.html',nextPage:'./t-row.html',nextLabel:'Continue to Unit 04 · たちつてと',row:'S',slug:'s-row'}
  :{number:'02',previous:'01',previousPage:'./index.html',nextPage:'./s-row.html',nextLabel:'Continue to Unit 03 · さしすせそ',row:'K',slug:'k-row'};
 const {STORAGE_KEY,KANA,TASKS,WORDS,initialState,validState,taskAt,resume,pause,beginRecall,answer,reveal,advance,summary}
- =await import(isMRow?'./m-row-engine.mjs':isHRow?'./h-row-engine.mjs':isNRow?'./n-row-engine.mjs':isTRow?'./t-row-engine.mjs':isSRow?'./s-row-engine.mjs':'./k-row-engine.mjs');
+ =await import(isYRow?'./y-row-engine.mjs':isMRow?'./m-row-engine.mjs':isHRow?'./h-row-engine.mjs':isNRow?'./n-row-engine.mjs':isTRow?'./t-row-engine.mjs':isSRow?'./s-row-engine.mjs':'./k-row-engine.mjs');
 const root=document.getElementById('app');
 let state=initialState(),lastRaw=null,writeAllowed=true,warning='',inputWarning='';
 try{
@@ -40,13 +42,13 @@ function button(action,label,secondary=false){return '<button type="button" data
 function link(url,label){return '<a class="secondary unit-link" href="'+url+'">'+esc(label)+'</a>';}
 function wrap(body,actions=''){
  const done=state.finished;
- const progress=Math.min(15,state.index);
+ const progress=Math.min(TASKS.length,state.index);
  const active=!state.paused&&!done;
  root.innerHTML='<div class="shell"><header class="topbar"><div class="brand"><div class="brand-mark" lang="ja">'+esc(KANA[0].kana)+'</div><div>'
   +'<h2>Kana Foundations</h2><p class="eyebrow">UNIT '+unit.number+' · '+unit.row+'-ROW</p></div></div>'
   +(active?'<button class="top-exit" data-action="pause" aria-label="Exit lesson; progress is saved">Exit</button>':'')+'</header>'
-  +(active?'<div class="progress-track" aria-hidden="true"><div class="progress-bar" style="width:'+Math.round(progress/15*100)+'%"></div></div>'
-   +'<div class="progress-caption"><span>'+(state.index>=15?'Correction practice':'New characters and words')+'</span><span>'+progress+' / 15 first prompts</span></div>':'')
+  +(active?'<div class="progress-track" aria-hidden="true"><div class="progress-bar" style="width:'+Math.round(progress/TASKS.length*100)+'%"></div></div>'
+   +'<div class="progress-caption"><span>'+(state.index>=TASKS.length?'Correction practice':'New characters and words')+'</span><span>'+progress+' / '+TASKS.length+' first prompts</span></div>':'')
   +'<main id="main" tabindex="-1">'+(warning?'<div role="alert" class="warning">'+esc(warning)+'</div>':'')+body+'</main>'
   +'<footer class="action-area">'+actions+'</footer>'
   +'<p class="footer-note">Isolated prototype · No Account, FSRS or production progress changes</p></div>';
@@ -57,7 +59,9 @@ function wrap(body,actions=''){
 function welcome(){
  const kanaList=KANA.map(k=>k.kana).join('・');
  const wordList=WORDS.map(w=>w.kana).join('、');
- const description=isMRow
+ const description=isYRow
+  ?'The modern basic Y-row has only three kana: や (ya), ゆ (yu), and よ (yo). There are no regular yi or ye characters to learn. Read five real words using kana from the preceding units.'
+  :isMRow
   ?'Learn ま・み・む・め・も with clear m + vowel sounds, distinguish the curved shapes of む and め, and decode five genuine Japanese words. The meal word めし is informal.'
   :isHRow
   ?'Add five H-row characters: は・ひ・ふ・へ・ほ. Learn why ふ is written fu (also hu), compare は and ほ, then read five everyday Japanese words.'
@@ -72,7 +76,7 @@ function welcome(){
    +'<p class="lead">'+esc(description)+'</p>'
    +'<div class="vowel-strip" lang="ja">'+KANA.map(k=>'<span>'+k.kana+'</span>').join('')+'</div>'
    +'<div class="teaching-note"><span class="mini-label">What you will do</span>'
-   +'See each character with its reading, recall it without the answer, recognize all five, then read '
+   +'See each character with its reading, recall it without the answer, recognize all '+KANA.length+' new characters, then read '
    +esc(wordList)+'. Incorrect or revealed first answers return once as correction practice.</div>'
    +'<p class="status">Earlier unit progress is preserved separately. This page never writes canonical study events or grades.</p>',
    button('start',state.index>0?'Resume Unit '+unit.number:'Start Unit '+unit.number)
@@ -81,7 +85,7 @@ function welcome(){
 function results(){
  const s=summary(state);
  const metric=(name,v)=>'<div class="metric"><strong>'+v.independentCorrect+' / '+v.total+'</strong><span>'+name+' · independent first answers</span></div>';
- wrap('<p class="kicker">Unit '+unit.number+' · First-attempt evidence</p><h1>Five more hiragana learned</h1>'
+ wrap('<p class="kicker">Unit '+unit.number+' · First-attempt evidence</p><h1>'+KANA.length+' more hiragana learned</h1>'
  +'<p class="lead">Completion shows today’s practice, not long-term retention or certified mastery.</p>'
  +'<div class="vowel-strip" lang="ja">'+KANA.map(k=>'<span>'+k.kana+'</span>').join('')+'</div>'
  +'<div class="metrics">'+metric('Character recall',s.introduction)+metric('Recognition',s.recognition)+metric('Word decoding',s.decoding)+'</div>'
@@ -97,8 +101,9 @@ function taskView(){
  const teaching=t.mode==='introduction'&&!state.checking&&!t.correction;
  const heading=t.mode==='introduction'?'Meet '+t.kana:t.mode==='recognition'?'Choose the reading':'Read the word';
  const caption=t.correction?'Correction practice · first attempt retained':
-  t.mode==='introduction'?'Character '+(state.index+1)+' of 5':
-  t.mode==='recognition'?'Recognition '+(state.index-4)+' of 5':'Word decoding '+(state.index-9)+' of 5';
+  t.mode==='introduction'?'Character '+(state.index+1)+' of '+KANA.length:
+  t.mode==='recognition'?'Recognition '+(state.index-KANA.length+1)+' of '+KANA.length:
+  'Word decoding '+(state.index-2*KANA.length+1)+' of '+WORDS.length;
  const glyph='<div class="glyph-panel"><span class="'+(t.mode==='decoding'?'japanese-word':'hero-glyph')+'" lang="ja">'+esc(t.kana)+'</span>'
   +(teaching?'<span class="roman">'+esc(t.answer)+'</span>':'')+'</div>';
  const lead=teaching?'Look at the shape and sound. When ready, hide the reading and recall it.':
@@ -128,7 +133,7 @@ function taskView(){
    +(t.correction?'<small>This correction does not replace your first attempt.</small>':'')+'</div>';
  }
  const actions=teaching?button('check','Try recalling '+t.kana):
-  state.feedback?button('next',state.index===14&&state.corrections.length===0?'See next step':'Continue'):'';
+  state.feedback?button('next',state.index===TASKS.length-1&&state.corrections.length===0?'See next step':'Continue'):'';
  wrap('<section class="practice-screen"><p class="kicker">'+esc(caption)+'</p><h1>'+esc(heading)+'</h1>'
   +'<p class="lead">'+esc(lead)+'</p>'+glyph+interaction+'</section>',actions);
  if(state.feedback)root.querySelector('[role="status"].feedback')?.focus({preventScroll:true});
