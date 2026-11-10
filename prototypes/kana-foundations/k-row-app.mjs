@@ -1,11 +1,17 @@
-import {STORAGE_KEY,KANA,TASKS,initialState,validState,taskAt,resume,pause,beginRecall,answer,reveal,advance,summary} from './k-row-engine.mjs';
+// Shared Unit 02/03 presentation. Each unit keeps its own persisted state and engine.
+const isSRow=document.documentElement.dataset.kanaRow==='s';
+const unit=isSRow
+ ?{number:'03',previous:'02',previousPage:'./k-row.html',nextPage:null,row:'S',slug:'s-row'}
+ :{number:'02',previous:'01',previousPage:'./index.html',nextPage:'./s-row.html',row:'K',slug:'k-row'};
+const {STORAGE_KEY,KANA,TASKS,WORDS,initialState,validState,taskAt,resume,pause,beginRecall,answer,reveal,advance,summary}
+ =await import(isSRow?'./s-row-engine.mjs':'./k-row-engine.mjs');
 const root=document.getElementById('app');
 let state=initialState(),lastRaw=null,writeAllowed=true,warning='',inputWarning='';
 try{
  lastRaw=localStorage.getItem(STORAGE_KEY);
- if(lastRaw){const parsed=JSON.parse(lastRaw);if(!validState(parsed))throw Error('Saved Unit 02 data is invalid');state=parsed;}
+ if(lastRaw){const parsed=JSON.parse(lastRaw);if(!validState(parsed))throw Error('Saved Unit '+unit.number+' data is invalid');state=parsed;}
 }catch{
- writeAllowed=false;warning='Saved Unit 02 progress is invalid or unavailable. It will not be overwritten. This session runs in memory and can be exported.';
+ writeAllowed=false;warning='Saved Unit '+unit.number+' progress is invalid or unavailable. It will not be overwritten. This session runs in memory and can be exported.';
 }
 const esc=value=>String(value??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
 function commit(next){
@@ -27,8 +33,8 @@ function wrap(body,actions=''){
  const done=state.finished;
  const progress=Math.min(15,state.index);
  const active=!state.paused&&!done;
- root.innerHTML='<div class="shell"><header class="topbar"><div class="brand"><div class="brand-mark" lang="ja">か</div><div>'
-  +'<h2>Kana Foundations</h2><p class="eyebrow">UNIT 02 · K-ROW</p></div></div>'
+ root.innerHTML='<div class="shell"><header class="topbar"><div class="brand"><div class="brand-mark" lang="ja">'+esc(KANA[0].kana)+'</div><div>'
+  +'<h2>Kana Foundations</h2><p class="eyebrow">UNIT '+unit.number+' · '+unit.row+'-ROW</p></div></div>'
   +(active?'<button class="top-exit" data-action="pause" aria-label="Exit lesson; progress is saved">Exit</button>':'')+'</header>'
   +(active?'<div class="progress-track" aria-hidden="true"><div class="progress-bar" style="width:'+Math.round(progress/15*100)+'%"></div></div>'
    +'<div class="progress-caption"><span>'+(state.index>=15?'Correction practice':'New characters and words')+'</span><span>'+progress+' / 15 first prompts</span></div>':'')
@@ -40,28 +46,37 @@ function wrap(body,actions=''){
  else root.querySelector('#main')?.focus({preventScroll:true});
 }
 function welcome(){
- wrap('<p class="kicker">Unit 02 · Hiragana</p><h1>Learn か・き・く・け・こ</h1>'
-   +'<p class="lead">Build on the five vowels from Unit 01. Learn five new characters, recall their readings, and decode five real Japanese words.</p>'
+ const kanaList=KANA.map(k=>k.kana).join('・');
+ const wordList=WORDS.map(w=>w.kana).join('、');
+ const description=isSRow
+  ?'Build on the vowels and K-row from Units 01–02. Learn five S-row characters and the special reading し = shi, then read real words.'
+  :'Build on the five vowels from Unit 01. Learn five new characters, recall their readings, and decode five real Japanese words.';
+ wrap('<p class="kicker">Unit '+unit.number+' · Hiragana</p><h1>Learn '+esc(kanaList)+'</h1>'
+   +'<p class="lead">'+esc(description)+'</p>'
    +'<div class="vowel-strip" lang="ja">'+KANA.map(k=>'<span>'+k.kana+'</span>').join('')+'</div>'
    +'<div class="teaching-note"><span class="mini-label">What you will do</span>'
-   +'See each character with its reading, recall it without the answer, recognize all five, then read かお, いけ, こえ, きく and ここ. Incorrect or revealed first answers return once as correction practice.</div>'
-   +'<p class="status">Unit 01 progress is preserved separately. This page never writes canonical study events or grades.</p>',
-   button('start',state.index>0?'Resume Unit 02':'Start Unit 02')+link('./index.html','Back to Unit 01'));
+   +'See each character with its reading, recall it without the answer, recognize all five, then read '
+   +esc(wordList)+'. Incorrect or revealed first answers return once as correction practice.</div>'
+   +'<p class="status">Earlier unit progress is preserved separately. This page never writes canonical study events or grades.</p>',
+   button('start',state.index>0?'Resume Unit '+unit.number:'Start Unit '+unit.number)
+    +link(unit.previousPage,'Back to Unit '+unit.previous));
 }
 function results(){
  const s=summary(state);
  const metric=(name,v)=>'<div class="metric"><strong>'+v.independentCorrect+' / '+v.total+'</strong><span>'+name+' · independent first answers</span></div>';
- wrap('<p class="kicker">Unit 02 · First-attempt evidence</p><h1>Five more hiragana learned</h1>'
+ wrap('<p class="kicker">Unit '+unit.number+' · First-attempt evidence</p><h1>Five more hiragana learned</h1>'
  +'<p class="lead">Completion shows today’s practice, not long-term retention or certified mastery.</p>'
  +'<div class="vowel-strip" lang="ja">'+KANA.map(k=>'<span>'+k.kana+'</span>').join('')+'</div>'
  +'<div class="metrics">'+metric('Character recall',s.introduction)+metric('Recognition',s.recognition)+metric('Word decoding',s.decoding)+'</div>'
  +'<div class="teaching-note"><span class="mini-label">Correction round</span>'
  +s.corrected+' of '+s.correctionCount+' correction responses were correct. Original first answers are unchanged.'
  +'<p class="status">Try reading again after a delay to check what you still remember.</p></div>',
- link('./index.html','Return to Unit 01')+button('export','Export Unit 02 progress',true));
+ (unit.nextPage?link(unit.nextPage,'Continue to Unit 03 · さしすせそ'):'')
+ +link(unit.previousPage,'Return to Unit '+unit.previous)
+ +button('export','Export Unit '+unit.number+' progress',true));
 }
 function taskView(){
- const t=taskAt(state);if(!t){wrap('<h1>Session unavailable</h1><p>Export your saved data for recovery.</p>',button('export','Export Unit 02 progress'));return;}
+ const t=taskAt(state);if(!t){wrap('<h1>Session unavailable</h1><p>Export your saved data for recovery.</p>',button('export','Export Unit '+unit.number+' progress'));return;}
  const teaching=t.mode==='introduction'&&!state.checking&&!t.correction;
  const heading=t.mode==='introduction'?'Meet '+t.kana:t.mode==='recognition'?'Choose the reading':'Read the word';
  const caption=t.correction?'Correction practice · first attempt retained':
@@ -103,8 +118,8 @@ function taskView(){
 }
 function render(){if(state.paused)welcome();else if(state.finished)results();else taskView();}
 function download(){
- const blob=new Blob([JSON.stringify({prototype:true,unit:'k-row',exportedAt:new Date().toISOString(),state},null,2)],{type:'application/json'});
- const url=URL.createObjectURL(blob),node=document.createElement('a');node.href=url;node.download='kana-foundations-unit02.json';
+ const blob=new Blob([JSON.stringify({prototype:true,unit:unit.slug,exportedAt:new Date().toISOString(),state},null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob),node=document.createElement('a');node.href=url;node.download='kana-foundations-unit'+unit.number+'.json';
  document.body.append(node);node.click();node.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 root.addEventListener('click',event=>{
