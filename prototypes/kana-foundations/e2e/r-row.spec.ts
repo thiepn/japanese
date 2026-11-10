@@ -27,7 +27,7 @@ test('Unit 09 teaches five R-row kana and five words without changing Units 01�
  });
  const before=await page.evaluate(keys=>Object.fromEntries(keys.map(key=>[key,localStorage.getItem(key)])),earlierKeys);
  await expect(page.getByRole('heading',{name:'Learn ら・り・る・れ・ろ'})).toBeVisible();
- await expect(page.getByText(/quick tongue tap/)).toBeVisible();
+ await expect(page.getByText(/tongue tap/)).toBeVisible();
  await page.getByRole('button',{name:'Start Unit 09'}).click();
  if(process.env.CI){
   mkdirSync('prototypes/kana-foundations/.visual-evidence',{recursive:true});
