@@ -140,6 +140,23 @@ test('pause/resume and new practice archive preserve original and earlier practi
  assert.deepEqual(s.records,old().records);
  assert.equal(s.practiceSession.prompts.length,15);
 });
+test('practice answer and five-choice data must match the displayed kana in saved state',()=>{
+ const source=session(1701);
+ assert.equal(E.validState(source),true);
+ const broken=[
+  ['recognition answer',s=>{const p=s.practiceSession.prompts[0];p.answer=p.answer==='a'?'i':'a';}],
+  ['reverse answer',s=>{const p=s.practiceSession.prompts[5];p.answer=p.answer==='h-a'?'h-i':'h-a';}],
+  ['sequence answer',s=>{const p=s.practiceSession.prompts[10];p.answer=p.answer==='aaa'?'iii':'aaa';}],
+  ['duplicated choices',s=>{const p=s.practiceSession.prompts[0];p.choices=Array(5).fill(p.answer);}],
+  ['foreign choice',s=>{s.practiceSession.prompts[5].choices[0]='h-foreign';}]
+ ];
+ for(const [label,mutate] of broken){
+  const candidate=structuredClone(source);
+  mutate(candidate);
+  assert.equal(E.validState(candidate),false,label+' must fail closed without overwriting evidence');
+ }
+});
+
 test('invalid optional practice session cannot be saved as a valid resumed state',()=>{
  const sample=session();
  const malformed={...sample,practiceSession:{version:1,status:'active',prompts:'not-an-array'}};
