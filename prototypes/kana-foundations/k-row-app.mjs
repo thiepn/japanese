@@ -85,7 +85,7 @@ function welcome(){
 function results(){
  const s=summary(state);
  const metric=(name,v)=>'<div class="metric"><strong>'+v.independentCorrect+' / '+v.total+'</strong><span>'+name+' · independent first answers</span></div>';
- wrap('<p class="kicker">Unit '+unit.number+' · First-attempt evidence</p><h1>'+KANA.length+' more hiragana learned</h1>'
+ wrap('<p class="kicker">Unit '+unit.number+' · First-attempt evidence</p><h1>'+(KANA.length===5?'Five':String(KANA.length))+' more hiragana learned</h1>'
  +'<p class="lead">Completion shows today’s practice, not long-term retention or certified mastery.</p>'
  +'<div class="vowel-strip" lang="ja">'+KANA.map(k=>'<span>'+k.kana+'</span>').join('')+'</div>'
  +'<div class="metrics">'+metric('Character recall',s.introduction)+metric('Recognition',s.recognition)+metric('Word decoding',s.decoding)+'</div>'
