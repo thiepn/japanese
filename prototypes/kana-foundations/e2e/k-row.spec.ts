@@ -25,10 +25,10 @@ test('Unit 02 is fully learnable, persists separately and can return to the vowe
   await page.getByRole('button',{name:/Continue|See next step/}).click();
  }
  await expect(page.getByRole('heading',{name:'Five more hiragana learned'})).toBeVisible();
- const state=await page.evaluate(()=>({
+ const state=await page.evaluate(async()=>({
   old:localStorage.getItem('thiepn:kana-foundations:prototype-only:v1'),
   unit:JSON.parse(localStorage.getItem('thiepn:kana-foundations:k-row:prototype-only:v1')),
-  dbs:typeof indexedDB.databases==='function'?indexedDB.databases().then(list=>list.map(d=>d.name)):Promise.resolve([])
+  dbs:typeof indexedDB.databases==='function'?(await indexedDB.databases()).map(d=>d.name):[]
  }));
  expect(state.old).toBeNull();
  expect(state.unit.records).toHaveLength(15);
