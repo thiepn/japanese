@@ -1,13 +1,15 @@
-// Shared Units 02–04 interface. Each unit owns its own engine and storage key.
+// Shared Units 02–05 presentation; each unit keeps its own engine and storage key.
 const rowCode=document.documentElement.dataset.kanaRow;
-const isSRow=rowCode==='s',isTRow=rowCode==='t';
-const unit=isTRow
- ?{number:'04',previous:'03',previousPage:'./s-row.html',nextPage:null,nextLabel:null,row:'T',slug:'t-row'}
+const isSRow=rowCode==='s',isTRow=rowCode==='t',isNRow=rowCode==='n';
+const unit=isNRow
+ ?{number:'05',previous:'04',previousPage:'./t-row.html',nextPage:null,nextLabel:null,row:'N',slug:'n-row'}
+ :isTRow
+ ?{number:'04',previous:'03',previousPage:'./s-row.html',nextPage:'./n-row.html',nextLabel:'Continue to Unit 05 · なにぬねの',row:'T',slug:'t-row'}
  :isSRow
  ?{number:'03',previous:'02',previousPage:'./k-row.html',nextPage:'./t-row.html',nextLabel:'Continue to Unit 04 · たちつてと',row:'S',slug:'s-row'}
  :{number:'02',previous:'01',previousPage:'./index.html',nextPage:'./s-row.html',nextLabel:'Continue to Unit 03 · さしすせそ',row:'K',slug:'k-row'};
 const {STORAGE_KEY,KANA,TASKS,WORDS,initialState,validState,taskAt,resume,pause,beginRecall,answer,reveal,advance,summary}
- =await import(isTRow?'./t-row-engine.mjs':isSRow?'./s-row-engine.mjs':'./k-row-engine.mjs');
+ =await import(isNRow?'./n-row-engine.mjs':isTRow?'./t-row-engine.mjs':isSRow?'./s-row-engine.mjs':'./k-row-engine.mjs');
 const root=document.getElementById('app');
 let state=initialState(),lastRaw=null,writeAllowed=true,warning='',inputWarning='';
 try{
@@ -51,7 +53,9 @@ function wrap(body,actions=''){
 function welcome(){
  const kanaList=KANA.map(k=>k.kana).join('・');
  const wordList=WORDS.map(w=>w.kana).join('、');
- const description=isTRow
+ const description=isNRow
+  ?'Learn the five N-row kana な・に・ぬ・ね・の. Listen to the sounds in your mind, distinguish the looped ぬ from the simpler の, then read five familiar Japanese words.'
+  :isTRow
   ?'Use the vowels, K-row, and S-row you know to learn た・ち・つ・て・と. Watch for ち = chi and つ = tsu. Build confidence by decoding five everyday words.'
   :isSRow
   ?'Build on the vowels and K-row from Units 01–02. Learn five S-row characters and the special reading し = shi, then read real words.'
