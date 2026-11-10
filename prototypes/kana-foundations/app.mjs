@@ -278,7 +278,7 @@ function results(){
   +'<p class="status">Return after a delay to check retention. No real Account or FSRS dates are changed.</p></div>';
  const pr=practiceSummary(state);
  const practiceResult=pr?'<div class="teaching-note practice-summary"><span class="mini-label">Optional mixed practice · No mastery credit</span><strong>'+pr.firstIndependentCorrect+' independent answers out of 15</strong><p class="status">'+pr.firstCompleted+' first prompts completed; '+pr.corrections+' correction responses. No Account or FSRS progress was changed.</p></div>':'';
- const actions='<div class="results-actions">'+(state.introduced.length===5?primary('start-practice',pr?'Start new 15-question practice':'Start 15-question mixed practice'):'')
+ const actions='<div class="results-actions">'+(state.introduced.length===5?'<a class="secondary unit-link" href="./k-row.html">Continue to Unit 02 · かきくけこ</a>':'')+(state.introduced.length===5?primary('start-practice',pr?'Start new 15-question practice':'Start 15-question mixed practice'):'')
   +(weak.length?primary('practice-weak','Practice '+weak.length+' weak character'+(weak.length===1?'':'s')):'')
   +secondary('practice-again','Repeat mixed practice (no mastery credit)')
   +secondary('export','Export prototype progress')+'</div>';
