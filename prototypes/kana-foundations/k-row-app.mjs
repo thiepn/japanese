@@ -2,7 +2,7 @@
 const rowCode=document.documentElement.dataset.kanaRow;
 const isSRow=rowCode==='s',isTRow=rowCode==='t',isNRow=rowCode==='n',isHRow=rowCode==='h',isMRow=rowCode==='m',isYRow=rowCode==='y',isRRow=rowCode==='r',isWRow=rowCode==='w';
 const unit=isWRow
- ?{number:'10',previous:'09',previousPage:'./r-row.html',nextPage:null,nextLabel:null,row:'W/N',slug:'w-row'}
+ ?{number:'10',previous:'09',previousPage:'./r-row.html',nextPage:'./reading-review.html',nextLabel:'Continue to Unit 11 · Hiragana in action',row:'W/N',slug:'w-row'}
  :isRRow
  ?{number:'09',previous:'08',previousPage:'./y-row.html',nextPage:'./w-row.html',nextLabel:'Continue to Unit 10 · わをん',row:'R',slug:'r-row'}
  :isYRow
