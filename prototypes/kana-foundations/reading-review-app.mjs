@@ -97,7 +97,7 @@ function practice(){
  let interaction='';
  if(!state.feedback){
   if(task.choices){
-   interaction='<div class="choices">'+task.choices.map(c=>'<button type="button" class="choice" data-action="choice" data-value="'+esc(c.value)+'" aria-label="'+esc((task.mode==='particle'?'Particle ':'Answer ')+c.label)+'">'+esc(c.label)+'</button>').join('')+'</div>';
+   interaction='<div class="choices review-choices">'+task.choices.map(c=>'<button type="button" class="choice" data-action="choice" data-value="'+esc(c.value)+'" aria-label="'+esc((task.mode==='particle'?'Particle ':'Answer ')+c.label)+'">'+esc(c.label)+'</button>').join('')+'</div>';
   }else{
    interaction='<form id="answer-form"><label class="form-label" for="answer">Type the romaji reading</label>'
     +'<input id="answer" class="answer-input" type="text" inputmode="latin" autocapitalize="off" autocomplete="off" spellcheck="false" maxlength="60" required>'
@@ -118,7 +118,7 @@ function practice(){
  }
  const last=state.index===TASKS.length-1&&state.corrections.length===0;
  frame('<section class="practice-screen"><p class="kicker">'+esc(title)+'</p><h1>'+esc(heading)+'</h1>'
-  +'<p class="lead">'+esc(instruction)+'</p><div class="glyph-panel"><span class="japanese-word" lang="ja">'+esc(task.kana)+'</span></div>'
+  +'<p class="lead">'+esc(instruction)+'</p><div class="glyph-panel review-glyph"><span class="japanese-word" lang="ja">'+esc(task.kana)+'</span></div>'
   +interaction+'</section>',state.feedback?button('next',last?'See results':'Continue'):'');
  if(state.feedback)root.querySelector('[role="status"].feedback')?.focus({preventScroll:true});
 }
