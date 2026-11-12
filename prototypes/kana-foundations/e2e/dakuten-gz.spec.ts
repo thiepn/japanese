@@ -143,7 +143,7 @@ test('G-row checkpoint cannot be skipped; Exit, resume and Stage B keep evidence
  await page.reload();
  await page.getByRole('button',{name:'Resume Unit 12'}).click();
  await expect(page.getByRole('heading',{name:'G-row checkpoint'})).toBeVisible();
- expect(await page.evaluate(key=>localStorage.getItem(key),KEY)).not.toBe(before);
+ expect(await page.evaluate(key=>localStorage.getItem(key),KEY)).toBe(before); // no evidence or checkpoint state changed during Exit → Resume
  await page.getByRole('button',{name:'Continue to Stage B · Z-row'}).click();
  await expect(page.getByRole('heading',{name:'Meet ざ'})).toBeVisible();
  const saved=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),KEY);
