@@ -157,7 +157,7 @@ test('Unit 13 is usable by keyboard at 320px with no overflow and preserved resu
  await page.getByRole('textbox',{name:'Type the romaji reading'}).press('Enter');
  await expect(page.getByText('Correct.')).toBeVisible();
  await page.getByRole('button',{name:'Continue'}).click();
- await page.getByRole('button',{name:'Exit',exact:true}).click();
+ await page.getByRole('button',{name:'Exit lesson; progress is saved',exact:true}).click();
  await expect(page.getByRole('heading',{name:'Voiced D-row'})).toBeVisible();
  await page.reload();
  await page.getByRole('button',{name:'Resume Unit 13'}).click();
