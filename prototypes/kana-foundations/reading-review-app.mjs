@@ -75,7 +75,7 @@ function completed(){
   +'<div class="metrics">'+MODES.map(m=>'<div class="metric"><strong>'+scores[m.id].independentCorrect+' / '+scores[m.id].total+'</strong><span>'+esc(m.label)+' · independent first answers</span></div>').join('')+'</div>'
   +'<div class="teaching-note"><span class="mini-label">Correction round</span>'+scores.corrected+' of '+scores.correctionCount+' correction answers were correct. Earlier evidence remains unchanged.'
   +'<p class="status">Read the sentences again after a delay to test retention.</p></div>',
-  link('./w-row.html','Return to Unit 10')+button('export','Export Unit 11 progress',true));
+  link('./dakuten-gz.html','Continue to Unit 12 · Dakuten G/Z')+link('./w-row.html','Return to Unit 10')+button('export','Export Unit 11 progress',true));
 }
 function labelFor(task,value){
  const choice=task.choices?.find(c=>c.value===value);
