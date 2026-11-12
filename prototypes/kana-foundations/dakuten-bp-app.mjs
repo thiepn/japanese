@@ -91,7 +91,7 @@ function results(){
  +'<div class="teaching-note"><span class="mini-label">Separate correction evidence</span>'
  +s.corrected+' of '+s.correctionCount+' correction answers were independently correct. Earlier first-attempt evidence remains unchanged.</div>'
  +'<p class="status">Review again later to test retention; no unapproved audio was incorporated.</p>',
- link('./dakuten-d.html','Return to Unit 13')
+ link('./sokuon-rhythm.html','Continue to Unit 15 · Sokuon & Rhythm')+link('./dakuten-d.html','Return to Unit 13')
  +button('export','Export Unit 14 progress',true));
 }
 function taskView(){
