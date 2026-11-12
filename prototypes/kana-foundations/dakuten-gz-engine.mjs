@@ -9,7 +9,7 @@ export const KANA=Object.freeze([
  {id:'ge',kana:'げ',base:'け',reading:'ge',stage:'g',note:'け (ke) becomes げ (ge). Compare the dakuten carefully when reading quickly.'},
  {id:'go',kana:'ご',base:'こ',reading:'go',stage:'g',note:'こ (ko) becomes ご (go). Dakuten mark the voiced consonant, not a longer vowel.'},
  {id:'za',kana:'ざ',base:'さ',reading:'za',stage:'z',note:'さ (sa) becomes ざ (za). The voiced z sound contrasts with the unvoiced s sound.'},
- {id:'ji',kana:'じ',base:'し',reading:'ji',aliases:['zi'],stage:'z',note:'し (shi) becomes じ, read ji in standard Japanese. Type zi if your keyboard convention uses it; it is not a different spoken sound.'},
+ {id:'ji',kana:'じ',base:'し',reading:'ji',aliases:['zi'],stage:'z',note:'し (shi) becomes じ, pronounced ji in standard Japanese. Type zi if your keyboard convention uses it; it is not a different spoken sound.'},
  {id:'zu',kana:'ず',base:'す',reading:'zu',stage:'z',note:'す (su) becomes ず (zu). The similarly pronounced づ is taught later and is not this character.'},
  {id:'ze',kana:'ぜ',base:'せ',reading:'ze',stage:'z',note:'せ (se) becomes ぜ (ze). Look for both dakuten marks.'},
  {id:'zo',kana:'ぞ',base:'そ',reading:'zo',stage:'z',note:'そ (so) becomes ぞ (zo). In ぞう (elephant) the following う makes a long o sound.'}
