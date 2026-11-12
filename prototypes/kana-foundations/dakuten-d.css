@@ -1,0 +1,13 @@
+/* Scoped Unit 13 presentation; earlier kana lessons retain their styles. */
+.d-kana-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:18px 0}
+.d-kana-strip span{font-family:"Noto Sans JP","Hiragino Sans",sans-serif;font-size:clamp(24px,7vw,36px);text-align:center;padding:10px 0;background:var(--soft);border-radius:12px}
+.practice-screen .d-glyph-panel{max-width:100%;min-width:0}
+.practice-screen .d-glyph-panel .japanese-word{font-size:clamp(26px,9vw,58px);max-width:100%;line-height:1.4;overflow-wrap:anywhere;word-break:normal;text-align:center}
+.practice-screen .d-glyph-panel .hero-glyph{font-size:clamp(92px,28vw,134px)}
+.practice-screen .choices.d-choices{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.practice-screen .choices.d-choices .choice{font-size:clamp(20px,5vw,26px);min-width:0;overflow-wrap:anywhere}
+.practice-screen .choices.d-spelling-choices .choice{font-size:clamp(26px,7vw,35px);font-family:"Noto Sans JP","Hiragino Sans",sans-serif}
+.practice-screen .choices.d-meaning-choices{grid-template-columns:minmax(0,1fr)}
+.practice-screen .choices.d-meaning-choices .choice{font-size:clamp(16px,4vw,20px);font-weight:600;text-align:left}
+@media(max-width:359px){.practice-screen .choices.d-choices{gap:7px}.practice-screen .choices.d-choices .choice{padding:9px}.practice-screen .d-glyph-panel .japanese-word{font-size:26px}}
+@media(prefers-reduced-motion:reduce){.practice-screen .d-glyph-panel *{transition:none!important}}

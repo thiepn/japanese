@@ -83,7 +83,7 @@ function results(){
  +'<div class="teaching-note"><span class="mini-label">Correction round</span>'
  +s.corrected+' of '+s.correctionCount+' correction answers were independently correct. Original first-attempt records remain unchanged.'
  +'<p class="status">Review again later to measure retention. Audio review-only materials have not been published.</p></div>',
- link('./reading-review.html','Return to Unit 11')+button('export','Export Unit 12 progress',true));
+ link('./dakuten-d.html','Continue to Unit 13 · D-row')+link('./reading-review.html','Return to Unit 11')+button('export','Export Unit 12 progress',true));
 }
 function taskView(){
  const task=taskAt(state);
