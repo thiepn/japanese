@@ -58,7 +58,7 @@ test('all ten genuine words and both applications use only previously learned an
 test('mimetic word meaning is contextual, and kanji or katakana conventions are not misrepresented',()=>{
  const hunger=BP.WORDS.find(w=>w.id==='pekopeko');
  assert.match(hunger.meaning,/context/);
- assert.match(hunger.note,/other meanings/);
+ assert.match(hunger.note,/bowing or bending repeatedly/);
  const barabara=BP.WORDS.find(w=>w.id==='barabara');
  assert.match(barabara.note,/mimetic/);
  assert.match(BP.WORDS.find(w=>w.id==='tenpura').note,/天ぷら or テンプラ/);
