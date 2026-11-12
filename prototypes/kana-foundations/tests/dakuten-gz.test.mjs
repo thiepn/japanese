@@ -123,7 +123,7 @@ test('zo must not receive credit for the long-vowel word zou',()=>{
  let s=D.resume(D.initialState());
  for(let i=0;i<17;i++)s=respond(s,D.taskAt(s));
  s=D.acknowledgeCheckpoint(s);
- for(let i=17;i<32;i++)s=respond(s,D.taskAt(s));
+ for(let i=17;i<31;i++)s=respond(s,D.taskAt(s));
  assert.equal(D.taskAt(s).id,'word-zou');
  s=D.answer(s,'zo',at);
  assert.equal(s.feedback.correct,false);
@@ -135,7 +135,7 @@ test('wrong, assisted and incorrect contrast answers produce separate correction
   if(i===17)s=D.acknowledgeCheckpoint(s);
   const t=D.taskAt(s);
   if(t.mode==='introduction')s=D.beginRecall(s);
-  s=i===0?D.answer(s,'ka',at):i===12?D.reveal(s,at):i===32?D.answer(s,'す',at):D.answer(s,t.answer,at);
+  s=i===0?D.answer(s,'ka',at):i===12?D.reveal(s,at):i===33?D.answer(s,'す',at):D.answer(s,t.answer,at);
   assert(D.validState(s));
   s=D.advance(s);
  }
@@ -144,7 +144,7 @@ test('wrong, assisted and incorrect contrast answers produce separate correction
  assert.equal(s.records[0].correct,false);
  assert.equal(s.records[12].correct,null);
  assert.equal(s.records[12].assisted,true);
- assert.equal(s.records[32].correct,false);
+ assert.equal(s.records[33].correct,false);
  const originals=structuredClone(s.records);
  for(const response of ['ga','kagu','ず']){
   s=D.answer(s,response,at);
