@@ -78,7 +78,7 @@ function completed(){
   +'<span>'+esc(m.label)+' · independent first answers</span></div>').join('')+'</div>'
  +'<div class="teaching-note"><span class="mini-label">Corrections do not change original evidence</span>'
  +s.corrected+' / '+s.correctionCount+' correction answers were correct. Revisit the words later to test retention.</div>',
- link('./dakuten-gz.html','Return to Unit 12')+button('export','Export Unit 13 progress',true));
+ link('./dakuten-bp.html','Continue to Unit 14 · B/P rows')+link('./dakuten-gz.html','Return to Unit 12')+button('export','Export Unit 13 progress',true));
 }
 function practice(){
  const t=taskAt(state);
