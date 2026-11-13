@@ -33,7 +33,7 @@ async function correct(page,t,input=t.answer){
   await field.fill(input);
   await page.getByRole('button',{name:'Check answer'}).click();
  }
- await expect(page.getByText('Correct.')).toBeVisible();
+ await expect(page.getByText('Correct.',{exact:true})).toBeVisible();
  await page.getByRole('button',{name:'Continue',exact:true}).click();
 }
 test('24 original Unit 15 prompts, saved checkpoint, all six browsers, old data preserved',async({page},info)=>{
@@ -182,7 +182,7 @@ test('320px keyboard, choices, mobile no-overflow and persistence after pause/re
  await start(page);
  await page.getByRole('button',{name:'Option っ (small tsu)'}).focus();
  await page.keyboard.press('Enter');
- await expect(page.getByText('Correct.')).toBeVisible();
+ await expect(page.getByText('Correct.',{exact:true})).toBeVisible();
  await page.getByRole('button',{name:'Continue'}).click();
  await expect(page.getByText(/How many morae does きって/)).toBeVisible();
  await page.getByRole('button',{name:'Exit lesson; progress is saved'}).click();
