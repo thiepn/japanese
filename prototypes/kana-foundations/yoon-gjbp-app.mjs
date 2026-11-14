@@ -82,7 +82,7 @@ function results(){
  +'<div class="metrics">'+MODES.map(m=>'<div class="metric"><strong>'+score[m.id].independentCorrect+' / '+m.total+'</strong><span>'+esc(m.label)+' · independent first answers</span></div>').join('')+'</div>'
  +'<div class="teaching-note"><span class="mini-label">Separate correction evidence</span>'+score.corrected+' / '+score.correctionCount+' corrected independently. First-attempt scores are not overwritten.</div>'
  +'<p class="status">Japanese-language specialist review and audio-rights clearance remain pending.</p>',
- link('./yoon-nhmr.html','Return to Unit 17')+button('export','Export Unit 18 progress',true));
+ link('./integrated-reading.html','Continue to Unit 19 · Integrated Reading')+link('./yoon-nhmr.html','Return to Unit 17')+button('export','Export Unit 18 progress',true));
 }
 function taskView(){
  const task=taskAt(state);
