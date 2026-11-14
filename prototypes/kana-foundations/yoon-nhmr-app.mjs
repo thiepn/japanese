@@ -82,7 +82,7 @@ function results(){
  +'<div class="metrics">'+MODES.map(m=>'<div class="metric"><strong>'+score[m.id].independentCorrect+' / '+m.total+'</strong><span>'+esc(m.label)+' · independent first answers</span></div>').join('')+'</div>'
  +'<div class="teaching-note"><span class="mini-label">Correction evidence</span>'+score.corrected+' / '+score.correctionCount+' corrected independently. Original first-attempt records are unchanged.</div>'
  +'<p class="status">Japanese-language and audio-rights review remains unapproved.</p>',
- link('./yoon-kshch.html','Return to Unit 16')+button('export','Export Unit 17 progress',true));
+ link('./yoon-gjbp.html','Continue to Unit 18 · G/J/B/P')+link('./yoon-kshch.html','Return to Unit 16')+button('export','Export Unit 17 progress',true));
 }
 function taskView(){
  const task=taskAt(state);
