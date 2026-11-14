@@ -72,7 +72,7 @@ function results(){
  +'<p class="lead">You practiced written small-っ forms, meaning contrasts, consonant doubling, long vowels and full expressions. This does not verify spoken timing or retention.</p>'
  +'<div class="metrics">'+MODES.map(m=>'<div class="metric"><strong>'+score[m.id].independentCorrect+' / '+m.total+'</strong><span>'+esc(m.label)+' · independent first answers</span></div>').join('')+'</div>'
  +'<div class="teaching-note"><span class="mini-label">Separate corrections</span>'+score.corrected+' of '+score.correctionCount+' correction answers were independently correct. First attempts were not replaced.</div>',
- link('./dakuten-bp.html','Return to Unit 14')+button('export','Export Unit 15 progress',true));
+ link('./yoon-kshch.html','Continue to Unit 16 · Yōon K/SH/CH')+link('./dakuten-bp.html','Return to Unit 14')+button('export','Export Unit 15 progress',true));
 }
 function taskView(){
  const t=taskAt(state);
