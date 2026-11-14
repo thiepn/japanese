@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "phase": 4,
+  "cursor": 2,
+  "retryMode": false,
+  "retryItems": [],
+  "nextRetryItems": [],
+  "retryRounds": 0,
+  "targeted": false,
+  "introStep": "explain",
+  "feedback": null,
+  "hint": false,
+  "hintLevel": 0,
+  "audioPlayed": false,
+  "paused": true,
+  "practiceOnly": false,
+  "introduced": [
+    "h-a",
+    "h-i",
+    "h-u",
+    "h-e",
+    "h-o"
+  ],
+  "records": [
+    {
+      "stage": "recall",
+      "mode": "recall",
+      "item": "h-u",
+      "correct": false,
+      "assisted": false,
+      "correction": false,
+      "practiceOnly": false,
+      "submitted": "o",
+      "at": "2026-11-04T12:00:00.000Z"
+    }
+  ],
+  "savedAt": "2026-11-04T12:01:00.000Z"
+}

@@ -1,0 +1,12 @@
+/* Unit 14-only layout additions; earlier lesson CSS is unchanged. */
+.dakuten-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:18px 0}
+.dakuten-strip span{font-family:"Noto Sans JP","Hiragino Sans",sans-serif;background:var(--soft);text-align:center;padding:10px 1px;border-radius:12px;font-size:clamp(24px,7vw,36px)}
+.bp-review-glyph .japanese-word{font-size:clamp(27px,8.7vw,58px);max-width:100%;text-align:center;line-height:1.5;overflow-wrap:anywhere}
+.bp-review-glyph .hero-glyph{font-size:clamp(92px,26vw,132px)}
+.practice-screen .choices.bp-choices{grid-template-columns:repeat(auto-fit,minmax(76px,1fr));gap:10px}
+.practice-screen .choices.bp-choices .choice{font-size:clamp(22px,5.7vw,30px);min-width:0;overflow-wrap:anywhere}
+.bp-checkpoint{padding:15px;border-radius:17px;background:var(--soft);margin:20px 0}
+.bp-checkpoint strong{display:block;font-size:26px}
+.bp-checkpoint span{color:var(--muted);font-size:13px}
+@media(max-width:359px){.practice-screen .choices.bp-choices{gap:7px;grid-template-columns:repeat(3,minmax(0,1fr))}.practice-screen .choices.bp-choices .choice{padding:9px;font-size:25px}.bp-review-glyph .japanese-word{font-size:27px}}
+@media(prefers-reduced-motion:reduce){.bp-checkpoint{scroll-behavior:auto}}
