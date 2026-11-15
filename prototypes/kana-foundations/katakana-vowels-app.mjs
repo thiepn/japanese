@@ -76,7 +76,7 @@ function results(){
  +'<div class="metrics">'+MODES.map(m=>'<div class="metric"><strong>'+score[m.id].independentCorrect+' / '+m.total+'</strong><span>'+esc(m.label)+' · independent first answers</span></div>').join('')+'</div>'
  +'<div class="teaching-note"><span class="mini-label">Correction evidence</span>'+score.corrected+' / '+score.correctionCount+' independently corrected. No first attempt was overwritten.</div>'
  +'<p class="status">Written recognition only: not listening, speaking, delayed retention or validated proficiency.</p>',
- link('./integrated-reading.html','Return to Unit 19')+button('export','Export Unit 20 progress',true));
+ link('./katakana-k-row.html','Continue to Unit 21 · K-row')+link('./integrated-reading.html','Return to Unit 19')+button('export','Export Unit 20 progress',true));
 }
 function taskView(){
  const task=taskAt(state);
