@@ -79,13 +79,13 @@ test('valid shi/si and chi/ti variants are accepted but word meanings remain con
  await expect(page.getByText('Correct.')).toBeVisible();await expect(page.getByText(/Meaning: insect/)).toBeVisible();
  await page.getByRole('button',{name:/^Continue/}).click();
  await respond(page,U.TASKS[13]);await respond(page,U.TASKS[14]);await page.getByRole('button',{name:'Continue to Stage B · Words'}).click();
- for(let i=15;i<21;i++)await respond(page,U.TASKS[i]);
+ for(let i=15;i<20;i++)await respond(page,U.TASKS[i]);
  await expect(page.getByText(/Meaning: mochi/)).toHaveCount(0);
  await page.getByRole('textbox',{name:'Type the romaji reading'}).fill('MOTI');await page.getByRole('button',{name:'Check answer'}).click();
  await expect(page.getByText('Correct.')).toBeVisible();await expect(page.getByText(/Meaning: mochi/)).toBeVisible();
  const s=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),KEY);
  expect(s.records[12]).toMatchObject({submitted:'musi',correct:true,assisted:false});
- expect(s.records[21]).toMatchObject({submitted:'moti',correct:true,assisted:false});
+ expect(s.records[20]).toMatchObject({submitted:'moti',correct:true,assisted:false});
 });
 test('320px mobile reflow and invalid save or stale writer never overwrite foreign progress bytes',async({page})=>{
  await page.setViewportSize({width:320,height:700});await page.emulateMedia({reducedMotion:'reduce'});await page.goto('/katakana-m-row.html');
