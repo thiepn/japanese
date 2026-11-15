@@ -79,7 +79,7 @@ function results(){
  +'<div class="metrics">'+MODES.map(m=>'<div class="metric"><strong>'+score[m.id].independentCorrect+' / '+m.total+'</strong><span>'+esc(m.label)+' · independent first answers</span></div>').join('')+'</div>'
  +'<div class="teaching-note"><span class="mini-label">Correction evidence</span>'+score.corrected+' / '+score.correctionCount+' corrected independently. Earlier first responses remain unchanged.</div>'
  +'<p class="status">Written recognition and decoding are not evidence of spoken pronunciation, listening, delayed retention or independent human linguistic approval.</p>',
- link('./katakana-n-row.html','Return to Unit 24')+button('export','Export Unit 25 progress',true));
+ link('./katakana-m-row.html','Continue to Unit 26 · M-row')+link('./katakana-n-row.html','Return to Unit 24')+button('export','Export Unit 25 progress',true));
 }
 function taskView(){
  const task=taskAt(state);
