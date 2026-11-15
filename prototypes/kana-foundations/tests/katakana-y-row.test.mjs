@@ -35,7 +35,7 @@ test('each new Y-row character gets both a full-word reading and isolated recall
  for(const k of U.KANA){assert(inventory.includes(k.kana));assert(U.TASKS.find(t=>t.id==='intro-'+k.id));}
 });
 test('normal native words honestly identify kanji/hiragana as typical writing',()=>{
- for(const id of ['yama','yuki','yoko','yasai','yane'])assert.match(U.WORDS.find(w=>w.id===id).note,/normal|ordinary|usually|more usual|typically/);
+ for(const id of ['yama','yuki','yoko','yasai','yane'])assert.match(U.WORDS.find(w=>w.id===id).note,/normal|ordinary|ordinarily|usually|more usual|typically/);
 });
 test('焼き芋 roasted sweet potato differs from 山芋 Japanese yam in reading and meaning',()=>{
  const a=U.WORDS.find(w=>w.id==='yakiimo'),b=U.WORDS.find(w=>w.id==='yamaimo');
