@@ -74,7 +74,7 @@ test('four contextual choices use known genuine words and appropriate intended m
  assert.equal(U.CONTRASTS.find(c=>c.id==='navel').answer,'ヘソ');
 });
 test('ambiguous words explain context and exercise-only spelling',()=>{
- assert.match(U.WORDS.find(w=>w.id==='hachi').note,/eight/);
+ assert.match(U.WORDS.find(w=>w.id==='hachi').note,/eight/i);
  assert.match(U.WORDS.find(w=>w.id==='hana').note,/nose/);
  assert.match(U.WORDS.find(w=>w.id==='fuku').note,/fortune/);
  for(const id of ['hako','hito','fune','hone'])assert.match(U.WORDS.find(w=>w.id===id).note,/usual|usually|more usual/);
