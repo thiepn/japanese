@@ -79,7 +79,7 @@ function results(){
  +'<div class="metrics">'+MODES.map(m=>'<div class="metric"><strong>'+score[m.id].independentCorrect+' / '+m.total+'</strong><span>'+esc(m.label)+' · independent first answers</span></div>').join('')+'</div>'
  +'<div class="teaching-note"><span class="mini-label">Correction evidence</span>'+score.corrected+' / '+score.correctionCount+' independently corrected. Original first attempts remain unchanged.</div>'
  +'<p class="status">Written decoding is not spoken fluency, listening comprehension or delayed retention; independent human review remains pending.</p>',
- link('./katakana-vowels.html','Return to Unit 20')+button('export','Export Unit 21 progress',true));
+ link('./katakana-s-row.html','Continue to Unit 22 · S-row')+link('./katakana-vowels.html','Return to Unit 20')+button('export','Export Unit 21 progress',true));
 }
 function taskView(){
  const task=taskAt(state);
