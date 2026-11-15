@@ -74,7 +74,7 @@ function results(){
  +'<p class="lead">You read 12 genuine words, eight natural sentences and eight orthographic, meaning or mora contrasts. This is not a listening, spoken fluency or delayed-retention test.</p>'
  +'<div class="metrics">'+MODES.map(m=>'<div class="metric"><strong>'+score[m.id].independentCorrect+' / '+m.total+'</strong><span>'+esc(m.label)+' · independent first answers</span></div>').join('')+'</div>'
  +'<div class="teaching-note"><span class="mini-label">Correction evidence</span>'+score.corrected+' / '+score.correctionCount+' independently corrected. Original answers remain unchanged.</div>',
- link('./yoon-gjbp.html','Return to Unit 18')+button('export','Export Unit 19 progress',true));
+ link('./katakana-vowels.html','Continue to Unit 20 · Katakana Vowels')+link('./yoon-gjbp.html','Return to Unit 18')+button('export','Export Unit 19 progress',true));
 }
 function taskView(){
  const task=taskAt(state);
