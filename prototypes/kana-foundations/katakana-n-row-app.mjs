@@ -79,7 +79,7 @@ function results(){
  +'<div class="metrics">'+MODES.map(m=>'<div class="metric"><strong>'+score[m.id].independentCorrect+' / '+m.total+'</strong><span>'+esc(m.label)+' · independent first answers</span></div>').join('')+'</div>'
  +'<div class="teaching-note"><span class="mini-label">Correction evidence</span>'+score.corrected+' / '+score.correctionCount+' corrected independently. Earlier first responses remain unchanged.</div>'
  +'<p class="status">These results reflect written decoding, not spoken proficiency, listening, delayed recall, or human Japanese-language approval.</p>',
- link('./katakana-t-row.html','Return to Unit 23')+button('export','Export Unit 24 progress',true));
+ link('./katakana-h-row.html','Continue to Unit 25 · H-row')+link('./katakana-t-row.html','Return to Unit 23')+button('export','Export Unit 24 progress',true));
 }
 function taskView(){
  const task=taskAt(state);
