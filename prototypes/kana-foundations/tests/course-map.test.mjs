@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {UNITS,GROUPS,statusFromSnapshot,suggestedUnit} from '../course-map-model.mjs';
+import {UNITS,GROUPS,COURSE_FILTERS,statusFromSnapshot,suggestedUnit,filterRows} from '../course-map-model.mjs';
 import * as K from '../k-row-engine.mjs';
 test('27 unique existing lesson routes ordered into three groups',()=>{
  assert.deepEqual(UNITS.map(x=>x.id),Array.from({length:27},(_,i)=>i+1));
@@ -36,4 +36,24 @@ test('resumes unfinished lessons before earliest untouched lesson',()=>{
  assert.equal(suggestedUnit([r(1,'finished'),r(2,'not-started'),r(3,'in-progress')]).unit.id,3);
  assert.equal(suggestedUnit([r(1,'finished'),r(2,'not-started')]).unit.id,2);
  assert.equal(suggestedUnit([r(1,'finished')]),null);
+});
+
+test('filtering by status preserves original row references, groups and order',()=>{
+ const rows=UNITS.map(unit=>({unit,status:{kind:unit.id===27?'in-progress':unit.id===1?'finished':unit.id===2?'invalid':'not-started'}}));
+ assert.deepEqual(COURSE_FILTERS.map(f=>f.id),['all','in-progress','not-started','finished','attention']);
+ assert.deepEqual(filterRows(rows,{filter:'in-progress'}).map(x=>x.unit.id),[27]);
+ assert.deepEqual(filterRows(rows,{filter:'finished'}).map(x=>x.unit.id),[1]);
+ assert.deepEqual(filterRows(rows,{filter:'attention'}).map(x=>x.unit.id),[2]);
+ assert.equal(filterRows(rows,{filter:'not-started'}).length,24);
+ assert.equal(filterRows(rows,{filter:'all'}).length,27);
+ assert.strictEqual(filterRows(rows,{filter:'in-progress'})[0],rows[26]);
+});
+test('kana, romaji and numbered unit queries combine with status without changing state',()=>{
+ const rows=UNITS.map(unit=>({unit,status:{kind:unit.id===27?'in-progress':'not-started'}}));
+ assert.deepEqual(filterRows(rows,{query:'ヤ'}).map(x=>x.unit.id),[27]);
+ assert.deepEqual(filterRows(rows,{query:'unit 27'}).map(x=>x.unit.id),[27]);
+ assert.deepEqual(filterRows(rows,{query:'katakana y'}).map(x=>x.unit.id),[27]);
+ assert.deepEqual(filterRows(rows,{query:'yo',filter:'in-progress'}).map(x=>x.unit.id),[27]);
+ assert.deepEqual(filterRows(rows,{query:'does-not-exist'}),[]);
+ assert.deepEqual(filterRows(rows,{query:' katakana   y '}).map(x=>x.unit.id),[27]);
 });

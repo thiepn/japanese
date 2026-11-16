@@ -1,4 +1,4 @@
-import {UNITS,GROUPS,statusFromSnapshot,suggestedUnit} from './course-map-model.mjs';
+import {UNITS,GROUPS,COURSE_FILTERS,statusFromSnapshot,suggestedUnit,filterRows} from './course-map-model.mjs';
 const root=document.getElementById('app');
 const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
 async function readUnit(unit){
@@ -18,6 +18,18 @@ function card({unit:u,status:s}){
   +'<span class="course-kana" lang="ja">'+esc(u.kana)+'</span>'
   +'<span class="course-status">'+esc(s.detail)+'</span></a>';
 }
+let rowsCache=[];
+let selectedFilter='all';
+let searchText='';
+
+ const filterControls='<section class="course-tools" aria-label="Find and filter units">'
+  +'<label for="unit-search">Find a unit</label>'
+  +'<input id="unit-search" type="search" autocomplete="off" placeholder="Unit number, kana, reading or row">'
+  +'<div class="course-filters" role="group" aria-label="Lesson status">'
+  +COURSE_FILTERS.map(f=>'<button type="button" data-filter="'+f.id+'" aria-pressed="'+(f.id==='all'?'true':'false')+'">'+esc(f.label)+'</button>').join('')
+  +'</div></section>'
+  +'<p class="course-result-count" id="result-count" role="status" aria-live="polite"></p>'
+  +'<div id="unit-results"></div>';
 function render(rows){
  const done=rows.filter(r=>r.status.kind==='finished').length;
  const active=rows.filter(r=>r.status.kind==='in-progress').length;
@@ -35,11 +47,41 @@ function render(rows){
    +(next.status.kind==='in-progress'?'Resume unfinished lesson':'Next unstarted lesson')+'</strong>'
    +'<p>Unit '+String(next.unit.id).padStart(2,'0')+' · '+esc(next.unit.title)+'</p></div>'
    +'<a href="'+next.unit.href+'">'+(next.status.kind==='in-progress'?'Resume':'Open lesson')+'</a></section>';
- for(const group of GROUPS){
-  out+='<section class="course-group" aria-labelledby="group-'+group.id+'">'
-   +'<h2 id="group-'+group.id+'">'+esc(group.name)+'</h2><div class="course-grid">'
-   +rows.filter(r=>r.unit.group===group.id).map(card).join('')+'</div></section>';
- }
- root.innerHTML=out+'<footer class="course-footer">No learner records were imported, migrated or rescheduled.</footer></main></div>';
+
+ out+=filterControls+'<footer class="course-footer">No learner records were imported, migrated or rescheduled.</footer></main></div>';
+ root.innerHTML=out;
+ rowsCache=rows;
+ refreshResults();
 }
+function refreshResults(){
+ const filtered=filterRows(rowsCache,{filter:selectedFilter,query:searchText});
+ const count=document.getElementById('result-count'),target=document.getElementById('unit-results');
+ if(!count||!target)return;
+ count.textContent=filtered.length+' of '+rowsCache.length+' units shown';
+ target.innerHTML=filtered.length?GROUPS.map(g=>{
+  const items=filtered.filter(r=>r.unit.group===g.id);
+  return items.length?'<section class="course-group" aria-labelledby="group-'+g.id+'">'
+   +'<h2 id="group-'+g.id+'">'+esc(g.name)+'</h2><div class="course-grid">'
+   +items.map(card).join('')+'</div></section>':'';
+ }).join(''):'<div class="course-empty"><p>No units match this search or status.</p><button type="button" data-reset>Show all units</button></div>';
+ for(const button of root.querySelectorAll('[data-filter]')){
+  button.setAttribute('aria-pressed',String(button.dataset.filter===selectedFilter));
+ }
+}
+root.addEventListener('input',event=>{
+ if(event.target.id!=='unit-search')return;
+ searchText=event.target.value;
+ refreshResults(); // Does not replace the focused search input.
+});
+root.addEventListener('click',event=>{
+ const filter=event.target.closest('button[data-filter]');
+ if(filter){selectedFilter=filter.dataset.filter;refreshResults();return;}
+ if(event.target.closest('button[data-reset]')){
+  selectedFilter='all';searchText='';
+  const input=document.getElementById('unit-search');
+  if(input){input.value='';input.focus();}
+  refreshResults();
+ }
+});
 render(await Promise.all(UNITS.map(readUnit)));
+

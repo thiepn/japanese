@@ -59,3 +59,35 @@ export function suggestedUnit(rows){
  return rows.find(r=>r.status.kind==='in-progress')||
   rows.find(r=>r.status.kind==='not-started')||null;
 }
+
+export const COURSE_FILTERS=Object.freeze([
+ {id:'all',label:'All units'},
+ {id:'in-progress',label:'In progress'},
+ {id:'not-started',label:'Not started'},
+ {id:'finished',label:'Finished'},
+ {id:'attention',label:'Needs review'}
+]);
+// Sound spellings supplement title and script search; these are unit-level
+// phonetics only, not a vocabulary or Japanese dictionary index.
+const basicSounds=[
+ 'a i u e o','ka ki ku ke ko','sa shi si su se so','ta chi ti tsu tu te to',
+ 'na ni nu ne no','ha hi fu hu he ho','ma mi mu me mo','ya yu yo',
+ 'ra ri ru re ro','wa wo o n'
+];
+const soundIndex=Object.freeze(Object.fromEntries([
+ ...basicSounds.map((sounds,i)=>[i+1,sounds]),
+ ...basicSounds.slice(0,7).map((sounds,i)=>[20+i,sounds]),
+ [27,basicSounds[7]]
+]));
+export function filterRows(rows,{filter='all',query=''}={}){
+ const words=String(query??'').normalize('NFKC').toLowerCase().trim().split(/\s+/u).filter(Boolean);
+ return rows.filter(({unit,status})=>{
+  if(filter==='attention'){
+   if(!['invalid','unavailable'].includes(status.kind))return false;
+  }else if(filter!=='all'&&filter!==status.kind)return false;
+  const haystack=[unit.title,unit.kana,unit.group,unit.slug,
+   'unit '+unit.id,'unit '+String(unit.id).padStart(2,'0'),soundIndex[unit.id]||'']
+    .join(' ').normalize('NFKC').toLowerCase();
+  return words.every(word=>haystack.includes(word));
+ });
+}
