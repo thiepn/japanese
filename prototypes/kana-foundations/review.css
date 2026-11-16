@@ -36,3 +36,19 @@
 .review-finish{margin:10px 0}
 .review-finish button{min-height:46px;border:1px solid var(--teal);color:var(--teal-strong);background:white;border-radius:11px;padding:9px 15px;font-weight:700}
 @media(max-width:359px){.review-summary{padding:14px}.review-summary dl{gap:5px}.review-summary dl div{padding:9px}}
+
+
+/* Optional IME-friendly typed retrieval before showing the original answer. */
+.review-response{display:grid;gap:8px;margin:16px 0 0;max-width:640px}
+.review-response label{font-size:15px;font-weight:700}
+.review-response input{display:block;box-sizing:border-box;width:100%;min-width:0;
+ min-height:48px;padding:11px 13px;font-size:17px;color:var(--ink);
+ background:#fff;border:1px solid var(--line);border-radius:11px}
+.review-response input:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.review-response input:disabled{opacity:.75;background:var(--soft)}
+.review-response p{margin:0;color:var(--muted);font-size:14px}
+.review-your-response{margin-top:15px;padding:16px;border:1px solid var(--line);
+ border-radius:12px;overflow-wrap:anywhere}
+.review-your-response span,.review-answer span{display:block;font-size:14px;color:var(--muted)}
+.review-your-response strong{display:block;font-size:22px;line-height:1.4;margin-top:4px}
+.review-comparison-note{font-size:14px;color:var(--muted)}

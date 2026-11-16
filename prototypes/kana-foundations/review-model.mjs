@@ -30,8 +30,12 @@ export function reviewFromSnapshot(unit,engine,raw){
     Array.isArray(option)?option[0]===answer:option?.value===answer);
    const label=typeof chosen==='string'?chosen:
     Array.isArray(chosen)?chosen[1]:typeof chosen?.label==='string'?chosen.label:answer;
+   // Variants are taken ONLY from the lesson engine; never guess spellings,
+   // translations or romanization equivalents for automated scoring.
+   const alternatives=Array.isArray(task.aliases)?[...new Set(task.aliases
+    .filter(x=>typeof x==='string'&&x.trim()&&x!==answer))]:[];
    items.push({unitId:unit.id,unitTitle:unit.title,href:unit.href,
-    prompt:task.kana,answer:label,meaning:task.meaning||'',
+    prompt:task.kana,answer:label,alternatives,meaning:task.meaning||'',
     note:task.note||task.tip||'',
     reason:wrong?'Incorrect first response':
       helped?'Assisted first response':'Answer revealed without an independent response'});

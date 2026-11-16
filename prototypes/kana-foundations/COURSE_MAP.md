@@ -21,3 +21,8 @@ The course map provides **Download local progress**. The export reads all 27 ver
 ## Self-check rounds (in-memory only)
 
 First-attempt review now supports optional self-rating after revealing the source-grounded answer: **I remembered** or **Review again**. Each rating moves to the next card, with a Round summary of self-reported remembered/again/skipped. **Retry missed or skipped** repeats only not-remembered prompts; **Review all again** restarts the selected unit scope. Unrated navigations count as skipped. Filtering starts a fresh in-memory round; refreshing the page discards ratings. There is no grading, FSRS scheduling, Account storage, IndexedDB, extra localStorage data or saved mastery claim. The original read-only first-attempt evidence remains unchanged.
+
+
+## Optional typed response before reveal
+
+On every review card, learners may enter kana, romaji or free text using the native IME-friendly input. The response is kept verbatim in memory and frozen on the card's first answer reveal, so the initial attempt is available for manual comparison. Returning to a card keeps its response within the current round; a new round, filter change or page reload clears drafts and attempts. Source-authored alternate answer spellings (when present) appear alongside the reference answer, but the app does not generate alternative pronunciations, score approximate matches or infer comprehension. Blank responses still allow reveal and self-rating. This feature does not write localStorage, IndexedDB, Account, FSRS, lesson records or backups.

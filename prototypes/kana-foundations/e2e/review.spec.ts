@@ -110,3 +110,63 @@ test('skipped prompts stay in retry queue; ratings reset on unit switch and relo
  await expect(page.locator('#review-count')).toContainText('Round 1');
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
 });
+
+
+test('typed kana is retained verbatim, compared manually and never written to learner storage',async({page})=>{
+ await page.setViewportSize({width:320,height:700});
+ await page.goto('/review.html');
+ const raw=await page.evaluate(async()=>{
+  const m=await import('./k-row-engine.mjs');
+  let s=m.resume(m.initialState());s=m.beginRecall(s);s=m.answer(s,'wrong');
+  s=m.advance(s);s=m.beginRecall(s);s=m.answer(s,'wrong');
+  const save=JSON.stringify(s);
+  localStorage.setItem(m.STORAGE_KEY,save);
+  localStorage.setItem('thiepn:account:typed','keep');
+  return save;
+ });
+ await page.reload();
+ const input=page.getByRole('textbox',{name:'Your answer (optional)'});
+ await expect(input).toBeVisible();
+ await input.fill('カ・ｋａ');
+ await expect(input).toHaveValue('カ・ｋａ');
+ await page.getByRole('button',{name:'Reveal answer'}).click();
+ await expect(page.locator('#review-your-response strong')).toHaveText('カ・ｋａ');
+ await expect(page.locator('#review-answer strong')).toHaveText('ka');
+ await expect(page.getByText('no automatic score is assigned.',{exact:false})).toBeVisible();
+ await expect(page.getByText('Correct',{exact:true})).toHaveCount(0);
+ await page.getByRole('button',{name:'Hide answer'}).click();
+ await expect(input).toBeDisabled();
+ await expect(input).toHaveValue('カ・ｋａ');
+ await page.getByRole('button',{name:'Next'}).click();
+ await page.getByRole('textbox',{name:'Your answer (optional)'}).fill('ki');
+ await page.getByRole('button',{name:'Previous'}).click();
+ await expect(page.getByRole('textbox',{name:'Your answer (optional)'})).toHaveValue('カ・ｋａ');
+ await page.getByRole('button',{name:'Next'}).click();
+ await expect(page.getByRole('textbox',{name:'Your answer (optional)'})).toHaveValue('ki');
+ expect(await page.evaluate(k=>localStorage.getItem(k),K.STORAGE_KEY)).toBe(raw);
+ expect(await page.evaluate(()=>localStorage.getItem('thiepn:account:typed'))).toBe('keep');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+ await page.reload();
+ await expect(page.getByRole('textbox',{name:'Your answer (optional)'})).toHaveValue('');
+});
+test('romanized draft stays until reveal and resets for a retry round',async({page})=>{
+ await page.goto('/review.html');
+ await page.evaluate(async()=>{
+  const m=await import('./k-row-engine.mjs');
+  let s=m.resume(m.initialState());s=m.beginRecall(s);s=m.answer(s,'wrong');
+  localStorage.setItem(m.STORAGE_KEY,JSON.stringify(s));
+ });
+ await page.reload();
+ const input=page.getByRole('textbox',{name:'Your answer (optional)'});
+ await input.fill('ko');
+ await expect(input).toBeFocused();
+ await input.fill('ka');
+ await page.getByRole('button',{name:'Reveal answer'}).click();
+ await expect(page.locator('#review-your-response strong')).toHaveText('ka');
+ await page.getByRole('button',{name:'Review again',exact:true}).click();
+ await expect(page.getByRole('heading',{name:'Round 1 summary'})).toBeVisible();
+ await page.getByRole('button',{name:'Retry missed or skipped'}).click();
+ await expect(page.getByRole('textbox',{name:'Your answer (optional)'})).toHaveValue('');
+ await expect(page.locator('#review-answer')).toHaveCount(0);
+ await expect(page.locator('#review-count')).toContainText('Round 2');
+});

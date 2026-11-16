@@ -44,3 +44,23 @@ test('unreadable and invalid states never produce guessed review prompts',()=>{
  assert.deepEqual(reviewFromSnapshot(UNITS[1],K,'not-json'),{items:[],unavailable:true});
  assert.deepEqual(reviewFromSnapshot(UNITS[1],K,'{"schema":999}'),{items:[],unavailable:true});
 });
+
+
+test('real lesson aliases appear only as source-authored alternatives, never invented synonyms',async()=>{
+ const review=await import('../reading-review-engine.mjs');
+ const task=review.TASKS.find(t=>Array.isArray(t.aliases)&&t.aliases.includes('hasiru'));
+ assert.ok(task,'source must contain a known alternate romanization');
+ const engine={TASKS:review.TASKS,validState:()=>true};
+ const raw=JSON.stringify({records:[{taskId:task.id,correction:false,
+  correct:false,assisted:false,practiceOnly:false}]});
+ const out=reviewFromSnapshot(UNITS[10],engine,raw);
+ assert.equal(out.items.length,1);
+ assert.equal(out.items[0].answer,task.answer);
+ assert.deepEqual(out.items[0].alternatives,task.aliases);
+ assert.equal(out.items[0].alternatives.includes('はしる'),false);
+});
+test('tasks without lesson-authored aliases do not fabricate alternatives',()=>{
+ let state=K.resume(K.initialState());state=K.beginRecall(state);state=K.answer(state,'bad');
+ const out=reviewFromSnapshot(UNITS[1],K,JSON.stringify(state));
+ assert.deepEqual(out.items[0].alternatives,[]);
+});
