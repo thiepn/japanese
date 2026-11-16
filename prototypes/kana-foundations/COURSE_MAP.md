@@ -17,3 +17,7 @@ The course map provides **Download local progress**. The export reads all 27 ver
 ## Read-only first-attempt review
 
 `review.html` presents one source-authored difficult first-attempt prompt at a time (wrong, assisted, or revealed). The answer, note and meaning come from the existing original lesson task definitions; the answer is concealed by default. Learners can filter units and move between prompts without changing lesson evidence. The review excludes correction rounds, practice-only answers, unassessed skips and unapproved listening exercises. Unit 01 uses its existing vowel and word records. Invalid or unavailable snapshots are not overwritten. No grading, mastery inference, IndexedDB, Account or FSRS writes.
+
+## Self-check rounds (in-memory only)
+
+First-attempt review now supports optional self-rating after revealing the source-grounded answer: **I remembered** or **Review again**. Each rating moves to the next card, with a Round summary of self-reported remembered/again/skipped. **Retry missed or skipped** repeats only not-remembered prompts; **Review all again** restarts the selected unit scope. Unrated navigations count as skipped. Filtering starts a fresh in-memory round; refreshing the page discards ratings. There is no grading, FSRS scheduling, Account storage, IndexedDB, extra localStorage data or saved mastery claim. The original read-only first-attempt evidence remains unchanged.
