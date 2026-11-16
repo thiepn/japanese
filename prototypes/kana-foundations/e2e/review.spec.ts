@@ -35,9 +35,9 @@ test('review filters and advances through real missed items at 320px',async({pag
   localStorage.setItem(v.PROTOTYPE_STORAGE_KEY,JSON.stringify(a));
  });
  await page.reload();
- await expect(page.locator('#review-count')).toHaveText('1 / 3 prompts');
+ await expect(page.locator('#review-count')).toHaveText('1 / 3 prompts · Round 1');
  await page.getByLabel('Review unit').selectOption('2');
- await expect(page.locator('#review-count')).toHaveText('1 / 2 prompts');
+ await expect(page.locator('#review-count')).toHaveText('1 / 2 prompts · Round 1');
  await expect(page.getByRole('heading',{name:'か'})).toBeVisible();
  await page.getByRole('button',{name:'Next'}).click();
  await expect(page.getByRole('heading',{name:'き'})).toBeVisible();
@@ -78,8 +78,8 @@ test('self-check ratings advance, summarize and retry only missed items without 
  await page.getByRole('button',{name:'Reveal answer'}).click();
  await page.getByRole('button',{name:'Review again',exact:true}).click();
  await expect(page.getByRole('heading',{name:'Round 1 summary'})).toBeVisible();
- await expect(page.getByText('Remembered').locator('..').locator('dd')).toHaveText('1');
- await expect(page.getByText('Review again',{exact:true}).first().locator('..').locator('dd')).toHaveText('1');
+ await expect(page.locator('.review-summary dt').filter({hasText:'Remembered'}).locator('..').locator('dd')).toHaveText('1');
+ await expect(page.locator('.review-summary dt').filter({hasText:'Review again'}).locator('..').locator('dd')).toHaveText('1');
  await page.getByRole('button',{name:'Retry missed or skipped'}).click();
  await expect(page.locator('#review-count')).toContainText('1 / 1 prompts · Round 2');
  await expect(page.getByRole('heading',{name:'き'})).toBeVisible();
