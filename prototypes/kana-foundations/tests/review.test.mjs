@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {UNITS} from '../course-map-model.mjs';
-import {reviewFromSnapshot} from '../review-model.mjs';
+import {reviewFromSnapshot,reviewScopeIds} from '../review-model.mjs';
 import * as K from '../k-row-engine.mjs';
 import * as V from '../engine.mjs';
 
@@ -86,4 +86,18 @@ test('expanded review includes difficult and correct first attempts exactly once
  assert.deepEqual(hard.items.map(x=>[x.prompt,x.needsReview]),[['か',true]]);
  assert.deepEqual(all.items.map(x=>[x.prompt,x.needsReview]),[['か',true],['き',false]]);
  assert.equal(JSON.stringify(state),raw);
+});
+
+
+test('section review selects existing canonical groups without renumbering units',()=>{
+ const rows=[{unitId:2},{unitId:11},{unitId:20},{unitId:18},{unitId:2}];
+ assert.deepEqual(reviewScopeIds(rows,UNITS,'all'),[0,1,2,3,4]);
+ assert.deepEqual(reviewScopeIds(rows,UNITS,'2'),[0,4]);
+ assert.deepEqual(reviewScopeIds(rows,UNITS,'group:hiragana'),[0,4]);
+ assert.deepEqual(reviewScopeIds(rows,UNITS,'group:combinations'),[1,3]);
+ assert.deepEqual(reviewScopeIds(rows,UNITS,'group:katakana'),[2]);
+ assert.deepEqual(reviewScopeIds(rows,UNITS,'group:nonexistent'),[]);
+ assert.equal(UNITS[10].id,11);
+ assert.equal(UNITS[14].id,15);
+ assert.equal(UNITS[17].id,18);
 });

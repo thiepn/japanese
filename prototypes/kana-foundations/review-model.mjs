@@ -47,3 +47,15 @@ export function reviewFromSnapshot(unit,engine,raw,{includeIndependent=false}={}
   return {items,unavailable:false};
  }catch{return {items:[],unavailable:true};}
 }
+
+
+// Unit groups come solely from the existing course map, never from guessed ranges.
+export function reviewScopeIds(items,units,selection='all'){
+ const groups=new Map(units.map(unit=>[unit.id,unit.group]));
+ const group=selection.startsWith('group:')?selection.slice(6):null;
+ return items.flatMap((item,index)=>{
+  const matches=selection==='all'||(group?groups.get(item.unitId)===group:
+   String(item.unitId)===selection);
+  return matches?[index]:[];
+ });
+}

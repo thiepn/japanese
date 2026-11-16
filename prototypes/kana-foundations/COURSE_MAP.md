@@ -31,3 +31,8 @@ On every review card, learners may enter kana, romaji or free text using the nat
 ## Practice all recorded first attempts
 
 The review page defaults to **Difficult first attempts**, preserving its established missed/assisted/revealed set. A new **All recorded first attempts** option includes independently correct first answers from the same engine-validated records, enabling recall practice even when the learner initially answered everything correctly. Each card identifies the first response as independent or difficult without calling it mastery. Unassessed skips, correction rounds, practice-only rounds and unverified audio remain excluded. Switching sets resets only the browser-page review round, temporary typed responses and self-ratings. No learner progress, export format, Account or FSRS changes.
+
+
+## Section-level first-attempt review
+
+The existing unit selector now groups valid recorded first attempts by the course's canonical sections: Hiragana basic characters, Hiragana reading and sound patterns, and Katakana basic characters. The group values come from the exact 27-unit course map, not guessed unit ranges. Section filtering works for either the default Difficult first attempts or optional All recorded first attempts practice set; sections without recorded prompts are omitted. Selecting a section resets only temporary typed answers and self-ratings, never original learner evidence, backup bytes or Account/FSRS. The formerly misleading "All units with difficult prompts" label is now simply "All units" for both practice sets.

@@ -227,3 +227,43 @@ test('switching between mixed and difficult sets resets only temporary review in
  await expect(page.getByRole('heading',{name:'か'})).toBeVisible();
  expect(await page.evaluate(k=>localStorage.getItem(k),K.STORAGE_KEY)).toBe(original);
 });
+
+
+test('section choice reviews recorded hiragana, patterns and katakana separately at 320px',async({page})=>{
+ await page.setViewportSize({width:320,height:700});
+ await page.goto('/review.html');
+ const originals=await page.evaluate(async()=>{
+  const k=await import('./k-row-engine.mjs');
+  let a=k.resume(k.initialState());a=k.beginRecall(a);a=k.answer(a,'wrong');
+  const reading=await import('./reading-review-engine.mjs');
+  let b=reading.resume(reading.initialState());b=reading.answer(b,'wrong');
+  const katakana=await import('./katakana-vowels-engine.mjs');
+  let c=katakana.resume(katakana.initialState());c=katakana.beginRecall(c);
+  c=katakana.answer(c,'wrong');
+  const values=[[k.STORAGE_KEY,JSON.stringify(a)],
+   [reading.STORAGE_KEY,JSON.stringify(b)],
+   [katakana.STORAGE_KEY,JSON.stringify(c)]];
+  values.forEach(([key,raw])=>localStorage.setItem(key,raw));
+  localStorage.setItem('thiepn:account:sections','preserve');
+  return values;
+ });
+ await page.reload();
+ await expect(page.locator('#review-count')).toContainText('1 / 3 prompts');
+ await page.getByLabel('Review unit or section').selectOption('group:katakana');
+ await expect(page.locator('#review-count')).toContainText('1 / 1 prompts');
+ await expect(page.getByText('Unit 20',{exact:false}).first()).toBeVisible();
+ await page.getByRole('textbox',{name:'Your answer (optional)'}).fill('temporary');
+ await page.getByLabel('Review unit or section').selectOption('group:combinations');
+ await expect(page.locator('#review-count')).toContainText('1 / 1 prompts');
+ await expect(page.getByText('Unit 11',{exact:false}).first()).toBeVisible();
+ await expect(page.getByRole('textbox',{name:'Your answer (optional)'})).toHaveValue('');
+ await page.getByLabel('Review unit or section').selectOption('group:hiragana');
+ await expect(page.locator('#review-count')).toContainText('1 / 1 prompts');
+ await expect(page.getByRole('heading',{name:'か'})).toBeVisible();
+ await page.getByLabel('Review unit or section').selectOption('all');
+ await expect(page.locator('#review-count')).toContainText('1 / 3 prompts');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+ const actual=await page.evaluate(keys=>keys.map(([key])=>[key,localStorage.getItem(key)]),originals);
+ expect(actual).toEqual(originals);
+ expect(await page.evaluate(()=>localStorage.getItem('thiepn:account:sections'))).toBe('preserve');
+});

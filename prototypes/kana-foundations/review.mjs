@@ -1,5 +1,5 @@
-import {UNITS} from './course-map-model.mjs';
-import {reviewFromSnapshot} from './review-model.mjs';
+import {UNITS,GROUPS} from './course-map-model.mjs';
+import {reviewFromSnapshot,reviewScopeIds} from './review-model.mjs';
 import {createReviewRound,rateReviewPrompt,moveReviewPrompt,finishReviewRound,
  reviewRoundSummary,retryReviewRound} from './review-session-model.mjs';
 const root=document.getElementById('app');
@@ -24,14 +24,18 @@ let selected='all',show=false;
 // Each card freezes its first input when its answer is revealed.
 const drafts=new Map(),attempts=new Map();
 function clearTypedAnswers(){drafts.clear();attempts.clear();}
-const scope=()=>items.map((item,id)=>({item,id})).filter(({item})=>
- selected==='all'||String(item.unitId)===selected).map(({id})=>id);
+const scope=()=>reviewScopeIds(items,UNITS,selected);
 let round=createReviewRound(scope());
 const button=(action,label,disabled=false)=>
  '<button type="button" data-action="'+action+'"'+(disabled?' disabled':'')+'>'+label+'</button>';
 function render(focus=''){
  const available=UNITS.filter(u=>items.some(x=>x.unitId===u.id));
- const options=available.map(u=>'<option value="'+u.id+'"'+(selected===String(u.id)?' selected':'')
+ const sections=GROUPS.filter(group=>available.some(unit=>unit.group===group.id))
+  .map(group=>'<option value="group:'+esc(group.id)+'"'
+   +(selected==='group:'+group.id?' selected':'')
+   +'>Section · '+esc(group.name)+'</option>').join('');
+ const options=sections+available.map(u=>'<option value="'+u.id+'"'
+  +(selected===String(u.id)?' selected':'')
   +'>Unit '+String(u.id).padStart(2,'0')+' · '+esc(u.title)+'</option>').join('');
  const item=items[round.ids[round.position]];
  const results=reviewRoundSummary(round);
@@ -42,8 +46,8 @@ function render(focus=''){
   +'>All recorded first attempts ('+allItems.length+')</option></select></label>':'';
  let content='';
  if(items.length){
-  content='<div class="review-toolbar">'+setControl+'<label for="review-unit">Review unit'
-   +'<select id="review-unit"><option value="all">All units with difficult prompts</option>'
+  content='<div class="review-toolbar">'+setControl+'<label for="review-unit">Review unit or section'
+   +'<select id="review-unit"><option value="all">All units</option>'
    +options+'</select></label><span class="review-count" id="review-count" role="status" aria-live="polite">'
    +(round.finished?'Round '+round.number+' complete':(round.position+1)+' / '+round.ids.length+' prompts · Round '+round.number)
    +'</span></div>';
