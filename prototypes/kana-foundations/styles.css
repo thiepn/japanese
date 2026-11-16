@@ -146,3 +146,17 @@ p{line-height:1.55}
 /* Unit progression links reuse the established secondary-control hit target. */
 .unit-link{display:grid;place-items:center;text-align:center;text-decoration:none}
 .unit-link:hover{background:#f1f7f6}
+
+/* Direct route back to the lesson map on paused or completed unit screens.
+   Active tasks retain their Exit action instead of competing navigation. */
+.topbar .top-course-map-link{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+ min-width:74px;min-height:44px;padding:8px 10px;border:1px solid var(--line);
+ border-radius:11px;text-decoration:none;font-size:13px;font-weight:750;color:var(--teal-strong)}
+.topbar .top-course-map-link:hover{background:var(--soft)}
+.topbar:has(.top-course-map-link){gap:8px}
+.topbar:has(.top-course-map-link) .brand{min-width:0}
+@media(max-width:359px){
+ .topbar:has(.top-course-map-link) .brand h2{font-size:15px}
+ .topbar:has(.top-course-map-link) .eyebrow{font-size:10px;letter-spacing:0}
+ .topbar .top-course-map-link{min-width:68px;padding:7px;font-size:12px}
+}

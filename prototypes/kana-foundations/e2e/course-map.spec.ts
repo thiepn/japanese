@@ -72,3 +72,23 @@ test('status filter shows unfinished and invalid local records without changing 
  await page.getByRole('button',{name:'All units',exact:true}).click();
  await expect(page.locator('.course-card')).toHaveCount(27);
 });
+
+test('intermediate lessons expose the course map when paused, not during active assessment',async({page})=>{
+ await page.setViewportSize({width:320,height:700});
+ for(const route of ['k-row.html','reading-review.html','sokuon-rhythm.html','yoon-kshch.html','katakana-n-row.html']){
+  await page.goto('/'+route);
+  const nav=page.getByRole('link',{name:'All units',exact:true});
+  await expect(nav).toBeVisible();
+  await expect(nav).toHaveAttribute('href','./course-map.html');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+ }
+ await page.goto('/k-row.html');
+ await page.getByRole('button',{name:'Start Unit 02'}).click();
+ await expect(page.getByRole('link',{name:'All units',exact:true})).toHaveCount(0);
+ await page.getByRole('button',{name:'Exit lesson; progress is saved'}).click();
+ const before=await page.evaluate(key=>localStorage.getItem(key),K.STORAGE_KEY);
+ expect(before).toBeTruthy();
+ await page.getByRole('link',{name:'All units',exact:true}).click();
+ await expect(page.getByRole('heading',{name:'Choose a kana unit'})).toBeVisible();
+ expect(await page.evaluate(key=>localStorage.getItem(key),K.STORAGE_KEY)).toBe(before);
+});

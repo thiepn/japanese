@@ -41,7 +41,7 @@ function frame(body,actions=''){
  const progress=Math.min(TASKS.length,state.index);
  root.innerHTML='<div class="shell"><header class="topbar"><div class="brand"><div class="brand-mark" lang="ja">だ</div><div>'
   +'<h2>Kana Foundations</h2><p class="eyebrow">UNIT 13 · D-ROW & ORTHOGRAPHY</p></div></div>'
-  +(active?'<button class="top-exit" data-action="pause" aria-label="Exit lesson; progress is saved">Exit</button>':'')
+  +(active?'<button class="top-exit" data-action="pause" aria-label="Exit lesson; progress is saved">Exit</button>':'<a class="top-course-map-link" href="./course-map.html">All units</a>')
   +'</header>'
   +(active?'<div class="progress-track" aria-hidden="true"><div class="progress-bar" style="width:'+Math.round(progress/TASKS.length*100)+'%"></div></div>'
    +'<div class="progress-caption"><span>'+(state.index>=TASKS.length?'Correction practice':'Voiced D-row and authentic reading')+'</span>'

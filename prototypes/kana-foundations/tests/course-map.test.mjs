@@ -71,3 +71,14 @@ test('every map unit number matches its existing HTML lesson title, including 11
   'sokuon-rhythm','yoon-kshch','yoon-nhmr','yoon-gjbp','integrated-reading'
  ]);
 });
+
+test('every intermediate lesson app exposes a read-only map link on inactive screens',async()=>{
+ const {readFileSync}=await import('node:fs');
+ const files=new Set(UNITS.filter(u=>u.id>1&&u.id<27).map(u=>u.id<=10?'k-row-app.mjs':u.slug+'-app.mjs'));
+ assert.equal(files.size,17);
+ for(const file of files){
+  const src=readFileSync(new URL('../'+file,import.meta.url),'utf8');
+  assert.match(src,/class=\\"top-course-map-link\\" href=\\"\.\/course-map\.html\\"/,file);
+  assert.match(src,/top-exit/,file);
+ }
+});

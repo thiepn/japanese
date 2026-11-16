@@ -51,7 +51,7 @@ function wrap(body,actions=''){
  const active=!state.paused&&!done;
  root.innerHTML='<div class="shell"><header class="topbar"><div class="brand"><div class="brand-mark" lang="ja">'+esc(KANA[0].kana)+'</div><div>'
   +'<h2>Kana Foundations</h2><p class="eyebrow">UNIT '+unit.number+' · '+unit.row+'-ROW</p></div></div>'
-  +(active?'<button class="top-exit" data-action="pause" aria-label="Exit lesson; progress is saved">Exit</button>':'')+'</header>'
+  +(active?'<button class="top-exit" data-action="pause" aria-label="Exit lesson; progress is saved">Exit</button>':'<a class="top-course-map-link" href="./course-map.html">All units</a>')+'</header>'
   +(active?'<div class="progress-track" aria-hidden="true"><div class="progress-bar" style="width:'+Math.round(progress/TASKS.length*100)+'%"></div></div>'
    +'<div class="progress-caption"><span>'+(state.index>=TASKS.length?'Correction practice':'New characters and words')+'</span><span>'+progress+' / '+TASKS.length+' first prompts</span></div>':'')
   +'<main id="main" tabindex="-1">'+(warning?'<div role="alert" class="warning">'+esc(warning)+'</div>':'')+body+'</main>'
