@@ -36,3 +36,8 @@ The review page defaults to **Difficult first attempts**, preserving its establi
 ## Section-level first-attempt review
 
 The existing unit selector now groups valid recorded first attempts by the course's canonical sections: Hiragana basic characters, Hiragana reading and sound patterns, and Katakana basic characters. The group values come from the exact 27-unit course map, not guessed unit ranges. Section filtering works for either the default Difficult first attempts or optional All recorded first attempts practice set; sections without recorded prompts are omitted. Selecting a section resets only temporary typed answers and self-ratings, never original learner evidence, backup bytes or Account/FSRS. The formerly misleading "All units with difficult prompts" label is now simply "All units" for both practice sets.
+
+
+## Optional mixed-order retrieval
+
+**Card order** defaults to **Lesson order**. Switching to **Mixed order** uses an in-memory Fisher–Yates permutation of the currently selected, engine-validated prompt indices; the algorithm neither adds nor drops entries. Changing the order restarts only the current session round, clearing its temporary typed responses and self-ratings. Navigation stays within the selected permutation. **Retry missed or skipped** reshuffles only unresolved cards when mixed order is selected, preserving the round number; **Review all again** mixes a fresh complete selected set. Selecting a different practice set or unit/section keeps the chosen order preference within this page view. Reload restores the original Lesson order. No shuffle state, guesses, grades, Account data, FSRS data or original lesson records are persisted or modified.

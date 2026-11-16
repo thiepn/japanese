@@ -267,3 +267,78 @@ test('section choice reviews recorded hiragana, patterns and katakana separately
  expect(actual).toEqual(originals);
  expect(await page.evaluate(()=>localStorage.getItem('thiepn:account:sections'))).toBe('preserve');
 });
+
+
+test('mixed order is opt-in, retains all prompts and restores lesson order without writes',async({page})=>{
+ await page.setViewportSize({width:320,height:700});
+ await page.goto('/review.html');
+ const original=await page.evaluate(async()=>{
+  const k=await import('./k-row-engine.mjs');
+  let s=k.resume(k.initialState());
+  for(let i=0;i<3;i++){
+   s=k.beginRecall(s);s=k.answer(s,'wrong');
+   if(i<2)s=k.advance(s);
+  }
+  const raw=JSON.stringify(s);
+  localStorage.setItem(k.STORAGE_KEY,raw);
+  localStorage.setItem('thiepn:account:mixed-order','unchanged');
+  return raw;
+ });
+ await page.reload();
+ await expect(page.getByLabel('Card order')).toHaveValue('lesson');
+ await expect(page.locator('#review-count')).toContainText('1 / 3 prompts');
+ await expect(page.getByRole('heading',{name:'か'})).toBeVisible();
+ // Deterministic Fisher-Yates: three items [0,1,2] -> [1,2,0].
+ await page.evaluate(()=>{Math.random=()=>0;});
+ await page.getByRole('textbox',{name:'Your answer (optional)'}).fill('temporary');
+ await page.getByLabel('Card order').selectOption('mixed');
+ await expect(page.getByLabel('Card order')).toHaveValue('mixed');
+ await expect(page.getByRole('heading',{name:'き'})).toBeVisible();
+ await expect(page.getByRole('textbox',{name:'Your answer (optional)'})).toHaveValue('');
+ await page.getByRole('button',{name:'Next'}).click();
+ await expect(page.getByRole('heading',{name:'く'})).toBeVisible();
+ await page.getByRole('button',{name:'Next'}).click();
+ await expect(page.getByRole('heading',{name:'か'})).toBeVisible();
+ await page.getByLabel('Card order').selectOption('lesson');
+ await expect(page.getByRole('heading',{name:'か'})).toBeVisible();
+ await expect(page.locator('#review-count')).toContainText('1 / 3 prompts · Round 1');
+ expect(await page.evaluate(key=>localStorage.getItem(key),K.STORAGE_KEY)).toBe(original);
+ expect(await page.evaluate(()=>localStorage.getItem('thiepn:account:mixed-order'))).toBe('unchanged');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+ await page.reload();
+ await expect(page.getByLabel('Card order')).toHaveValue('lesson');
+});
+test('mixed retry includes only missed or skipped cards and clears temporary guesses',async({page})=>{
+ await page.goto('/review.html');
+ const original=await page.evaluate(async()=>{
+  const k=await import('./k-row-engine.mjs');
+  let s=k.resume(k.initialState());
+  for(let i=0;i<3;i++){
+   s=k.beginRecall(s);s=k.answer(s,'wrong');
+   if(i<2)s=k.advance(s);
+  }
+  const raw=JSON.stringify(s);localStorage.setItem(k.STORAGE_KEY,raw);return raw;
+ });
+ await page.reload();
+ await page.evaluate(()=>{Math.random=()=>0;});
+ await page.getByLabel('Card order').selectOption('mixed');
+ await expect(page.getByRole('heading',{name:'き'})).toBeVisible();
+ await page.getByRole('textbox',{name:'Your answer (optional)'}).fill('ki');
+ await page.getByRole('button',{name:'Reveal answer'}).click();
+ await page.getByRole('button',{name:'I remembered'}).click();
+ await expect(page.getByRole('heading',{name:'く'})).toBeVisible();
+ await page.getByRole('button',{name:'Reveal answer'}).click();
+ await page.getByRole('button',{name:'Review again',exact:true}).click();
+ await expect(page.getByRole('heading',{name:'か'})).toBeVisible();
+ await page.getByRole('button',{name:'Finish round'}).click();
+ await expect(page.locator('.review-summary dt').filter({hasText:'Skipped'}).locator('..').locator('dd')).toHaveText('1');
+ await page.getByRole('button',{name:'Retry missed or skipped'}).click();
+ await expect(page.getByLabel('Card order')).toHaveValue('mixed');
+ await expect(page.locator('#review-count')).toContainText('1 / 2 prompts · Round 2');
+ // Remaining [く, か] are shuffled to [か, く], never き.
+ await expect(page.getByRole('heading',{name:'か'})).toBeVisible();
+ await expect(page.getByRole('textbox',{name:'Your answer (optional)'})).toHaveValue('');
+ await page.getByRole('button',{name:'Next'}).click();
+ await expect(page.getByRole('heading',{name:'く'})).toBeVisible();
+ expect(await page.evaluate(key=>localStorage.getItem(key),K.STORAGE_KEY)).toBe(original);
+});

@@ -1,7 +1,7 @@
 import {UNITS,GROUPS} from './course-map-model.mjs';
 import {reviewFromSnapshot,reviewScopeIds} from './review-model.mjs';
 import {createReviewRound,rateReviewPrompt,moveReviewPrompt,finishReviewRound,
- reviewRoundSummary,retryReviewRound} from './review-session-model.mjs';
+ reviewRoundSummary,retryReviewRound,orderReviewIds} from './review-session-model.mjs';
 const root=document.getElementById('app');
 const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;')
  .replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
@@ -19,13 +19,14 @@ const allItems=loaded.flatMap(x=>x.items);
 const difficultItems=allItems.filter(x=>x.needsReview);
 const unavailable=loaded.filter(x=>x.unavailable).length;
 let setMode='difficult',items=difficultItems;
-let selected='all',show=false;
+let selected='all',orderMode='lesson',show=false;
 // Typed practice answers are kept in memory, never in the lesson records.
 // Each card freezes its first input when its answer is revealed.
 const drafts=new Map(),attempts=new Map();
 function clearTypedAnswers(){drafts.clear();attempts.clear();}
 const scope=()=>reviewScopeIds(items,UNITS,selected);
-let round=createReviewRound(scope());
+const startRound=(number=1,ids=scope())=>createReviewRound(orderReviewIds(ids,orderMode),number);
+let round=startRound();
 const button=(action,label,disabled=false)=>
  '<button type="button" data-action="'+action+'"'+(disabled?' disabled':'')+'>'+label+'</button>';
 function render(focus=''){
@@ -37,6 +38,11 @@ function render(focus=''){
  const options=sections+available.map(u=>'<option value="'+u.id+'"'
   +(selected===String(u.id)?' selected':'')
   +'>Unit '+String(u.id).padStart(2,'0')+' · '+esc(u.title)+'</option>').join('');
+ const orderControl='<label for="review-order">Card order'
+  +'<select id="review-order"><option value="lesson"'
+  +(orderMode==='lesson'?' selected':'')+'>Lesson order</option>'
+  +'<option value="mixed"'+(orderMode==='mixed'?' selected':'')
+  +'>Mixed order</option></select></label>';
  const item=items[round.ids[round.position]];
  const results=reviewRoundSummary(round);
  const setControl=allItems.length?'<label for="review-set">Practice set<select id="review-set">'
@@ -48,7 +54,7 @@ function render(focus=''){
  if(items.length){
   content='<div class="review-toolbar">'+setControl+'<label for="review-unit">Review unit or section'
    +'<select id="review-unit"><option value="all">All units</option>'
-   +options+'</select></label><span class="review-count" id="review-count" role="status" aria-live="polite">'
+   +options+'</select></label>'+orderControl+'<span class="review-count" id="review-count" role="status" aria-live="polite">'
    +(round.finished?'Round '+round.number+' complete':(round.position+1)+' / '+round.ids.length+' prompts · Round '+round.number)
    +'</span></div>';
   if(round.finished){
@@ -128,12 +134,17 @@ root.addEventListener('change',event=>{
  if(event.target.id==='review-set'){
   setMode=event.target.value==='all'?'all':'difficult';
   items=setMode==='all'?allItems:difficultItems;
-  selected='all';round=createReviewRound(scope());show=false;
+  selected='all';round=startRound();show=false;
   clearTypedAnswers();render('#review-set');
   return;
  }
+ if(event.target.id==='review-order'){
+  orderMode=event.target.value==='mixed'?'mixed':'lesson';
+  round=startRound();show=false;clearTypedAnswers();render('#review-order');
+  return;
+ }
  if(event.target.id==='review-unit'){
-  selected=event.target.value;round=createReviewRound(scope());show=false;clearTypedAnswers();render('#review-unit');
+  selected=event.target.value;round=startRound();show=false;clearTypedAnswers();render('#review-unit');
  }
 });
 root.addEventListener('click',event=>{
@@ -154,10 +165,10 @@ root.addEventListener('click',event=>{
   round=finishReviewRound(round);show=false;
  }else if(act==='retry'){
   const newRound=retryReviewRound(round);
-  if(newRound){round=newRound;clearTypedAnswers();}
+  if(newRound){round=startRound(newRound.number,newRound.ids);clearTypedAnswers();}
   show=false;
  }else if(act==='restart'){
-  round=createReviewRound(scope());clearTypedAnswers();show=false;
+  round=startRound();clearTypedAnswers();show=false;
  }
  const focus=(act==='toggle')?'[data-action="toggle"]':
   round.finished?'[data-action="restart"]':'[data-action="toggle"]';

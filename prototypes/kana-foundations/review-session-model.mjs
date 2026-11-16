@@ -30,3 +30,23 @@ export function retryReviewRound(round){
  const ids=round.ids.filter(id=>round.ratings[id]!=='remembered');
  return ids.length?createReviewRound(ids,round.number+1):null;
 }
+
+
+// Pure order-only transform: no card changes, scheduler updates or persistence.
+// Injecting random enables deterministic tests; normal pages use Math.random.
+export function orderReviewIds(ids,mode='lesson',random=Math.random){
+ if(!Array.isArray(ids)||!ids.every(id=>Number.isInteger(id)&&id>=0)||
+    new Set(ids).size!==ids.length)throw Error('Invalid review queue.');
+ if(mode!=='lesson'&&mode!=='mixed')throw Error('Unknown review order.');
+ const ordered=[...ids];
+ if(mode==='mixed'){
+  if(typeof random!=='function')throw Error('Invalid random source.');
+  for(let i=ordered.length-1;i>0;i--){
+   const v=random();
+   if(!Number.isFinite(v)||v<0||v>=1)throw Error('Invalid random source.');
+   const j=Math.floor(v*(i+1));
+   [ordered[i],ordered[j]]=[ordered[j],ordered[i]];
+  }
+ }
+ return ordered;
+}
