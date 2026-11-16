@@ -78,7 +78,7 @@ test('every intermediate lesson app exposes a read-only map link on inactive scr
  assert.equal(files.size,17);
  for(const file of files){
   const src=readFileSync(new URL('../'+file,import.meta.url),'utf8');
-  assert.match(src,/class=\\"top-course-map-link\\" href=\\"\.\/course-map\.html\\"/,file);
+  assert.match(src,/class="top-course-map-link" href="\.\/course-map\.html"/,file);
   assert.match(src,/top-exit/,file);
  }
 });
