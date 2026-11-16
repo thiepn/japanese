@@ -26,3 +26,8 @@ First-attempt review now supports optional self-rating after revealing the sourc
 ## Optional typed response before reveal
 
 On every review card, learners may enter kana, romaji or free text using the native IME-friendly input. The response is kept verbatim in memory and frozen on the card's first answer reveal, so the initial attempt is available for manual comparison. Returning to a card keeps its response within the current round; a new round, filter change or page reload clears drafts and attempts. Source-authored alternate answer spellings (when present) appear alongside the reference answer, but the app does not generate alternative pronunciations, score approximate matches or infer comprehension. Blank responses still allow reveal and self-rating. This feature does not write localStorage, IndexedDB, Account, FSRS, lesson records or backups.
+
+
+## Practice all recorded first attempts
+
+The review page defaults to **Difficult first attempts**, preserving its established missed/assisted/revealed set. A new **All recorded first attempts** option includes independently correct first answers from the same engine-validated records, enabling recall practice even when the learner initially answered everything correctly. Each card identifies the first response as independent or difficult without calling it mastery. Unassessed skips, correction rounds, practice-only rounds and unverified audio remain excluded. Switching sets resets only the browser-page review round, temporary typed responses and self-ratings. No learner progress, export format, Account or FSRS changes.

@@ -64,3 +64,26 @@ test('tasks without lesson-authored aliases do not fabricate alternatives',()=>{
  const out=reviewFromSnapshot(UNITS[1],K,JSON.stringify(state));
  assert.deepEqual(out.items[0].alternatives,[]);
 });
+
+
+test('independent original correct answers are optionally reviewable, never marked difficult',()=>{
+ let state=K.resume(K.initialState());state=K.beginRecall(state);state=K.answer(state,'ka');
+ assert.equal(K.validState(state),true);
+ const raw=JSON.stringify(state);
+ assert.equal(reviewFromSnapshot(UNITS[1],K,raw).items.length,0);
+ const all=reviewFromSnapshot(UNITS[1],K,raw,{includeIndependent:true});
+ assert.deepEqual(all.items.map(x=>[x.prompt,x.answer,x.needsReview,x.reason]),
+  [['か','ka',false,'Independent first response']]);
+ assert.equal(JSON.stringify(state),raw);
+});
+test('expanded review includes difficult and correct first attempts exactly once',()=>{
+ let state=K.resume(K.initialState());state=K.beginRecall(state);state=K.answer(state,'wrong');
+ state=K.advance(state);state=K.beginRecall(state);state=K.answer(state,'ki');
+ assert.equal(K.validState(state),true);
+ const raw=JSON.stringify(state);
+ const hard=reviewFromSnapshot(UNITS[1],K,raw);
+ const all=reviewFromSnapshot(UNITS[1],K,raw,{includeIndependent:true});
+ assert.deepEqual(hard.items.map(x=>[x.prompt,x.needsReview]),[['か',true]]);
+ assert.deepEqual(all.items.map(x=>[x.prompt,x.needsReview]),[['か',true],['き',false]]);
+ assert.equal(JSON.stringify(state),raw);
+});

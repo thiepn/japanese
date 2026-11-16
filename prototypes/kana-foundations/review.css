@@ -52,3 +52,7 @@
 .review-your-response span,.review-answer span{display:block;font-size:14px;color:var(--muted)}
 .review-your-response strong{display:block;font-size:22px;line-height:1.4;margin-top:4px}
 .review-comparison-note{font-size:14px;color:var(--muted)}
+
+/* Responsive practice-set selector, sharing the existing review-unit controls. */
+.review-toolbar label{flex:1 1 205px;min-width:0}
+.review-toolbar select{box-sizing:border-box;width:100%;max-width:100%;text-overflow:ellipsis}

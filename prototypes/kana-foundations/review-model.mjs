@@ -1,5 +1,5 @@
 // Read-only first-attempt review. No learner evidence, grades or scheduler writes.
-export function reviewFromSnapshot(unit,engine,raw){
+export function reviewFromSnapshot(unit,engine,raw,{includeIndependent=false}={}){
  if(raw===null)return {items:[],unavailable:false};
  if(typeof raw!=='string')return {items:[],unavailable:true};
  try{
@@ -20,7 +20,10 @@ export function reviewFromSnapshot(unit,engine,raw){
    const helped=record.correct===true&&record.assisted===true;
    const revealed=record.revealed===true||
      (record.correct===null&&record.assisted===true);
-   if(!wrong&&!helped&&!revealed)continue;
+   const independent=record.correct===true&&record.assisted===false;
+   // The default remains difficult-only. The optional wider set includes
+   // independent original responses; it never adds corrections or practice.
+   if(!wrong&&!helped&&!revealed&&!(includeIndependent&&independent))continue;
    const task=lookup.get(firstUnit?record.item:record.taskId);
    if(!task)continue;
    const answer=firstUnit?task.reading:task.answer;
@@ -36,9 +39,10 @@ export function reviewFromSnapshot(unit,engine,raw){
     .filter(x=>typeof x==='string'&&x.trim()&&x!==answer))]:[];
    items.push({unitId:unit.id,unitTitle:unit.title,href:unit.href,
     prompt:task.kana,answer:label,alternatives,meaning:task.meaning||'',
-    note:task.note||task.tip||'',
+    note:task.note||task.tip||'',needsReview:Boolean(wrong||helped||revealed),
     reason:wrong?'Incorrect first response':
-      helped?'Assisted first response':'Answer revealed without an independent response'});
+      helped?'Assisted first response':revealed?
+      'Answer revealed without an independent response':'Independent first response'});
   }
   return {items,unavailable:false};
  }catch{return {items:[],unavailable:true};}

@@ -11,12 +11,14 @@ async function load(unit){
   const key=unit.id===1?engine.PROTOTYPE_STORAGE_KEY:engine.STORAGE_KEY;
   if(typeof key!=='string'||!key.startsWith('thiepn:kana-foundations:'))
    return {items:[],unavailable:true};
-  return reviewFromSnapshot(unit,engine,localStorage.getItem(key));
+  return reviewFromSnapshot(unit,engine,localStorage.getItem(key),{includeIndependent:true});
  }catch{return {items:[],unavailable:true};}
 }
 const loaded=await Promise.all(UNITS.map(load));
-const items=loaded.flatMap(x=>x.items);
+const allItems=loaded.flatMap(x=>x.items);
+const difficultItems=allItems.filter(x=>x.needsReview);
 const unavailable=loaded.filter(x=>x.unavailable).length;
+let setMode='difficult',items=difficultItems;
 let selected='all',show=false;
 // Typed practice answers are kept in memory, never in the lesson records.
 // Each card freezes its first input when its answer is revealed.
@@ -33,9 +35,14 @@ function render(focus=''){
   +'>Unit '+String(u.id).padStart(2,'0')+' · '+esc(u.title)+'</option>').join('');
  const item=items[round.ids[round.position]];
  const results=reviewRoundSummary(round);
+ const setControl=allItems.length?'<label for="review-set">Practice set<select id="review-set">'
+  +'<option value="difficult"'+(setMode==='difficult'?' selected':'')
+  +'>Difficult first attempts ('+difficultItems.length+')</option>'
+  +'<option value="all"'+(setMode==='all'?' selected':'')
+  +'>All recorded first attempts ('+allItems.length+')</option></select></label>':'';
  let content='';
  if(items.length){
-  content='<div class="review-toolbar"><label for="review-unit">Review unit'
+  content='<div class="review-toolbar">'+setControl+'<label for="review-unit">Review unit'
    +'<select id="review-unit"><option value="all">All units with difficult prompts</option>'
    +options+'</select></label><span class="review-count" id="review-count" role="status" aria-live="polite">'
    +(round.finished?'Round '+round.number+' complete':(round.position+1)+' / '+round.ids.length+' prompts · Round '+round.number)
@@ -93,7 +100,9 @@ function render(focus=''){
     +String(item.unitId).padStart(2,'0')+'</a>';
   }
  }else{
-  content='<p class="review-empty">No first-attempt difficulties are saved in this browser.</p>';
+  content=allItems.length?'<div class="review-toolbar">'+setControl+'</div>'
+   +'<p class="review-empty">No difficult first attempts recorded. Choose All recorded first attempts to practise material you have seen.</p>'
+   :'<p class="review-empty">No first-attempt difficulties are saved in this browser.</p>';
  }
  root.innerHTML='<div class="course-shell"><header class="course-header">'
   +'<div class="brand"><div class="brand-mark" lang="ja">あ</div><div><h2>Kana Foundations</h2></div></div>'
@@ -112,6 +121,13 @@ root.addEventListener('input',event=>{
  }
 });
 root.addEventListener('change',event=>{
+ if(event.target.id==='review-set'){
+  setMode=event.target.value==='all'?'all':'difficult';
+  items=setMode==='all'?allItems:difficultItems;
+  selected='all';round=createReviewRound(scope());show=false;
+  clearTypedAnswers();render('#review-set');
+  return;
+ }
  if(event.target.id==='review-unit'){
   selected=event.target.value;round=createReviewRound(scope());show=false;clearTypedAnswers();render('#review-unit');
  }

@@ -170,3 +170,60 @@ test('romanized draft stays until reveal and resets for a retry round',async({pa
  await expect(page.locator('#review-answer')).toHaveCount(0);
  await expect(page.locator('#review-count')).toContainText('Round 2');
 });
+
+
+test('all-recorded mode allows useful practice after a fully correct first response without persistence',async({page})=>{
+ await page.setViewportSize({width:320,height:700});
+ await page.goto('/review.html');
+ const original=await page.evaluate(async()=>{
+  const k=await import('./k-row-engine.mjs');
+  let s=k.resume(k.initialState());s=k.beginRecall(s);s=k.answer(s,'ka');
+  const raw=JSON.stringify(s);
+  localStorage.setItem(k.STORAGE_KEY,raw);
+  localStorage.setItem('thiepn:account:all-attempts','preserve');
+  return raw;
+ });
+ await page.reload();
+ await expect(page.getByText('No difficult first attempts recorded.',{exact:false})).toBeVisible();
+ await page.getByLabel('Practice set').selectOption('all');
+ await expect(page.locator('#review-count')).toContainText('1 / 1 prompts');
+ await expect(page.getByRole('heading',{name:'か'})).toBeVisible();
+ await expect(page.getByText('Independent first response',{exact:true})).toBeVisible();
+ await page.getByRole('textbox',{name:'Your answer (optional)'}).fill('か');
+ await page.getByRole('button',{name:'Reveal answer'}).click();
+ await expect(page.locator('#review-your-response strong')).toHaveText('か');
+ await expect(page.locator('#review-answer strong')).toHaveText('ka');
+ await page.getByRole('button',{name:'I remembered'}).click();
+ await expect(page.getByRole('heading',{name:'Round 1 summary'})).toBeVisible();
+ await page.getByLabel('Practice set').selectOption('difficult');
+ await expect(page.getByText('No difficult first attempts recorded.',{exact:false})).toBeVisible();
+ expect(await page.evaluate(k=>localStorage.getItem(k),K.STORAGE_KEY)).toBe(original);
+ expect(await page.evaluate(()=>localStorage.getItem('thiepn:account:all-attempts'))).toBe('preserve');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+ await page.reload();
+ await expect(page.getByLabel('Practice set')).toHaveValue('difficult');
+});
+test('switching between mixed and difficult sets resets only temporary review inputs',async({page})=>{
+ await page.goto('/review.html');
+ const original=await page.evaluate(async()=>{
+  const k=await import('./k-row-engine.mjs');
+  let s=k.resume(k.initialState());s=k.beginRecall(s);s=k.answer(s,'wrong');
+  s=k.advance(s);s=k.beginRecall(s);s=k.answer(s,'ki');
+  const raw=JSON.stringify(s);localStorage.setItem(k.STORAGE_KEY,raw);return raw;
+ });
+ await page.reload();
+ await expect(page.locator('#review-count')).toContainText('1 / 1 prompts');
+ await page.getByRole('textbox',{name:'Your answer (optional)'}).fill('temporary');
+ await page.getByLabel('Practice set').selectOption('all');
+ await expect(page.locator('#review-count')).toContainText('1 / 2 prompts');
+ await expect(page.getByRole('textbox',{name:'Your answer (optional)'})).toHaveValue('');
+ await page.getByRole('button',{name:'Next'}).click();
+ await expect(page.getByRole('heading',{name:'き'})).toBeVisible();
+ await expect(page.getByText('Independent first response',{exact:true})).toBeVisible();
+ await page.getByLabel('Review unit').selectOption('2');
+ await expect(page.locator('#review-count')).toContainText('1 / 2 prompts');
+ await page.getByLabel('Practice set').selectOption('difficult');
+ await expect(page.locator('#review-count')).toContainText('1 / 1 prompts');
+ await expect(page.getByRole('heading',{name:'か'})).toBeVisible();
+ expect(await page.evaluate(k=>localStorage.getItem(k),K.STORAGE_KEY)).toBe(original);
+});
