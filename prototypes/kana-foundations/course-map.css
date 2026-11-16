@@ -1,0 +1,36 @@
+/* Read-only prototype course map; no production component changes. */
+.course-shell{max-width:900px;min-height:100dvh;margin:auto;background:#fff;padding:0 20px 36px}
+.course-header{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:22px 0;border-bottom:1px solid var(--line)}
+.course-back{display:grid;place-items:center;min-height:44px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;color:var(--ink);text-decoration:none;font-weight:650}
+.course-back:hover{background:var(--soft)}
+.course-main{padding:24px 0}
+.course-main h1{font-size:clamp(29px,5vw,42px)}
+.course-intro{font-size:15px;line-height:1.6;color:var(--muted);max-width:700px;margin:0 0 22px}
+.course-counts{display:flex;flex-wrap:wrap;gap:12px 24px;margin:20px 0 26px;padding:16px 0;border-block:1px solid var(--line)}
+.course-counts strong{font-size:25px;margin-right:6px;font-variant-numeric:tabular-nums}
+.course-counts span{font-size:14px;color:var(--muted)}
+.course-next{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:17px 20px;background:var(--soft);border-radius:16px;margin:0 0 29px}
+.course-next p{font-size:14px;color:var(--muted);margin:4px 0 0}
+.course-next a{display:grid;place-items:center;flex-shrink:0;min-height:48px;padding:11px 17px;border-radius:12px;background:var(--teal);color:white;text-decoration:none;font-weight:750}
+.course-next a:hover{background:var(--teal-strong)}
+.course-group{margin-bottom:30px}
+.course-group h2{font-size:19px;margin:0 0 13px}
+.course-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.course-card{display:flex;flex-direction:column;gap:8px;min-width:0;min-height:152px;padding:16px;border:1px solid var(--line);border-radius:16px;color:var(--ink);text-decoration:none}
+.course-card:hover{background:#f4fbf9;border-color:#9bcabd}
+.course-number{font-size:12px;font-weight:750;color:var(--teal-strong)}
+.course-title{font-size:15px;font-weight:750}
+.course-kana{font-family:"Noto Sans JP","Hiragino Sans",sans-serif;font-size:25px;line-height:1.4;overflow-wrap:anywhere}
+.course-status{margin-top:auto;font-size:13px;color:var(--muted)}
+.course-card[data-status="finished"]{border-color:#9bcabd}
+.course-card[data-status="finished"] .course-status{color:#09644e}
+.course-card[data-status="invalid"] .course-status,.course-card[data-status="unavailable"] .course-status{color:#784900}
+.course-footer{font-size:14px;color:var(--muted);padding-top:12px}
+@media(max-width:590px){.course-shell{padding:0 16px 20px}.course-main{padding-top:20px}.course-grid{grid-template-columns:1fr}
+.course-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 10px;min-height:118px}
+.course-number,.course-title,.course-status{grid-column:1}
+.course-card .course-kana{grid-column:2;grid-row:1/span 3;align-self:center;text-align:right;max-width:138px;font-size:clamp(23px,7vw,33px)}
+.course-next{flex-direction:column;align-items:stretch}.course-next a{text-align:center}}
+@media(max-width:359px){.course-shell{padding:0 12px 20px}.course-card{padding:12px;grid-template-columns:minmax(0,1fr) 95px}.course-kana{font-size:23px}}
+@media(min-width:700px){body{background:#eaf0ee;padding:24px}.course-shell{border-radius:24px;box-shadow:0 14px 50px rgba(18,51,45,.10)}}
+@media(prefers-reduced-motion:reduce){.course-card,.course-next a{transition:none}}

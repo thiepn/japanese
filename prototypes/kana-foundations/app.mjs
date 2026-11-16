@@ -177,6 +177,7 @@ function welcome(){
     +'<div><strong>4 · Return</strong><span>Review later</span></div></div>'
     +'<p class="status">Your activity stays in this browser under a separate prototype-only storage key. Nothing is transferred to your Japanese account.</p>';
   const actions=primary('start',done?'Resume learning':'Start learning')
+    +'<a class="secondary unit-link" href="./course-map.html">Browse all 27 units</a>'
     +(done?secondary('export','Export prototype progress'):'');
   wrap(body,actions);
 }
@@ -281,7 +282,7 @@ function results(){
  const actions='<div class="results-actions">'+(state.introduced.length===5?'<a class="secondary unit-link" href="./k-row.html">Continue to Unit 02 · かきくけこ</a>':'')+(state.introduced.length===5?primary('start-practice',pr?'Start new 15-question practice':'Start 15-question mixed practice'):'')
   +(weak.length?primary('practice-weak','Practice '+weak.length+' weak character'+(weak.length===1?'':'s')):'')
   +secondary('practice-again','Repeat mixed practice (no mastery credit)')
-  +secondary('export','Export prototype progress')+'</div>';
+  +secondary('export','Export prototype progress')+'<a class="secondary unit-link" href="./course-map.html">Browse all 27 units</a></div>';
  wrap(body+practiceResult+actions,'');
 }
 

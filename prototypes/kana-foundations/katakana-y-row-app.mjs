@@ -62,7 +62,7 @@ function welcome(){
  +'<div class="teaching-note"><span class="mini-label">Writing and decoding scope</span>'
  +'All eight words are genuine Japanese expressions. ヤマ, ユキ, ヨコ, ヤサイ and ヤネ are normally written in kanji or hiragana, not katakana; their spelling here is intentional reading practice. ヤキイモ and ヤマイモ are different foods, not alternate spellings. We use only the 38 basic katakana taught through this unit, without small kana, ー, ッ or ン.</div>'
  +'<p class="status">22 independent first responses, a saved checkpoint after 11 and separately preserved correction evidence. No Account, FSRS, audio or production progress writes.</p>',
- button('start',state.index?'Resume Unit 27':'Start Unit 27')+link('./katakana-m-row.html','Back to Unit 26')+button('export','Export Unit 27 progress',true));
+ button('start',state.index?'Resume Unit 27':'Start Unit 27')+link('./katakana-m-row.html','Back to Unit 26')+link('./course-map.html','Browse all 27 units')+button('export','Export Unit 27 progress',true));
 }
 function checkpoint(){
  const score=summary(state);
@@ -79,7 +79,7 @@ function results(){
  +'<div class="metrics">'+MODES.map(m=>'<div class="metric"><strong>'+score[m.id].independentCorrect+' / '+m.total+'</strong><span>'+esc(m.label)+' · independent first attempts</span></div>').join('')+'</div>'
  +'<div class="teaching-note"><span class="mini-label">Correction evidence</span>'+score.corrected+' / '+score.correctionCount+' corrected independently; first responses were not overwritten.</div>'
  +'<p class="status">This written decoding lesson is not evidence of spoken proficiency, listening, delayed retention or human Japanese-language acceptance.</p>',
- link('./katakana-m-row.html','Return to Unit 26')+button('export','Export Unit 27 progress',true));
+ link('./katakana-m-row.html','Return to Unit 26')+link('./course-map.html','Browse all 27 units')+button('export','Export Unit 27 progress',true));
 }
 function taskView(){
  const task=taskAt(state);
