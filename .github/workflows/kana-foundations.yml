@@ -1,0 +1,152 @@
+name: Kana Foundations - Isolated Prototype
+on:
+  push:
+    branches: ["feature/kana-foundations-v1-*"]
+  pull_request:
+    paths:
+      - "prototypes/kana-foundations/**"
+      - "playwright.kana-foundations.config.ts"
+      - "playwright.kana-audio-evidence.config.ts"
+      - "scripts/kana-foundations-audio-evidence.py"
+      - "scripts/kana-foundations-acoustic-review.py"
+      - "scripts/kana-foundations-original-baseline.sh"
+      - ".github/workflows/kana-foundations.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prototype:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: {version: "11.19.0"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "24.15.0"}
+      - name: Install workspace dependencies
+        run: pnpm install --no-frozen-lockfile
+      - name: Validate JS syntax and lesson evidence
+        run: |
+          node --check prototypes/kana-foundations/app.mjs
+          node --check prototypes/kana-foundations/engine.mjs
+          node --test prototypes/kana-foundations/tests/*.test.mjs
+      - name: Install genuine Chromium, Firefox and WebKit
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - name: Cross-browser desktop, Android, iOS and 320px tests
+        run: pnpm exec playwright test --config playwright.kana-foundations.config.ts
+      - name: Preserve representative browser captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kana-foundations-browser-evidence
+          path: prototypes/kana-foundations/.visual-evidence/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+      - name: Preserve only failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kana-foundations-test-failures
+          path: |
+            test-results/
+            playwright-report/
+          if-no-files-found: ignore
+  historical-original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: pnpm/action-setup@v4
+        with: {version: "11.19.0"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "24.15.0"}
+      - name: Rebuild original Studio from exact October 26 source
+        run: bash scripts/kana-foundations-original-baseline.sh "/tmp/kana-original-build"
+      - name: Verify historical artifact and pin
+        run: |
+          test -s "/tmp/kana-original-build/index.html"
+          test "$(cat /tmp/kana-original-build/ORIGINAL_COMMIT.txt)" = "5974a2353d9d001aae47a1dde846f6839e95b3c7"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: kana-original-oct26-build
+          path: /tmp/kana-original-build/
+          retention-days: 7
+
+  audio-source-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install and verify original-audio analysis tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          ffmpeg -version | head -n 1
+          ffprobe -version | head -n 1
+      - name: Download current original Commons media and verify source and audio metadata
+        run: python3 scripts/kana-foundations-audio-evidence.py --output "$RUNNER_TEMP/kana-vowels-review"
+      - name: Quantify original acoustic activity and generate UNAPPROVED temporary reviewer comparisons
+        run: python3 scripts/kana-foundations-acoustic-review.py --review-root "$RUNNER_TEMP/kana-vowels-review"
+      - name: Assert original integrity, bounded artifact outputs and withheld approvals
+        run: |
+          cd "$RUNNER_TEMP/kana-vowels-review"
+          sha256sum --check sha256sums.txt
+          cd acoustic-forensics-review-only
+          sha256sum --check review-derivative-sha256sums.txt
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path("acoustic-measurements.json")
+          d=json.loads(root.read_text())
+          assert len(d["items"])==5
+          assert d["release_approved"] is False
+          assert d["qualified_japanese_approval"]=="PENDING"
+          assert d["independent_rights_approval"]=="PENDING"
+          assert sum(len(x["activity_intervals_at_minus45"]) for x in d["items"])==15
+          assert all(not x["same_phoneme_or_repetition_identity_verified"] for x in d["items"])
+          assert all(w["periodicity_proxy"]["speech_identity"]=="UNVERIFIED" for x in d["items"] for w in x["activity_intervals_at_minus45"])
+          assert all(w["periodicity_proxy"]["status"] in ("PERIODICITY_PROXY_AVAILABLE","NO_MEASURABLE_PERIODICITY","INSUFFICIENT_WINDOW") for x in d["items"] for w in x["activity_intervals_at_minus45"])
+          assert all(len(x["silence_sensitivity"])==4 for x in d["items"])
+          assert len(list(Path("audition-segments").glob("*.wav")))==15
+          assert len(list(Path("peak-comparison").glob("*.wav")))==5
+          print("ACOUSTIC_REVIEW_CANDIDATES=20 UNAPPROVED ALL_HASHES_VALID")
+          PY
+      - uses: pnpm/action-setup@v4
+        with: {version: "11.19.0"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "24.15.0"}
+      - name: Install workspace dependencies
+        run: pnpm install --no-frozen-lockfile
+      - name: Install genuine Chromium Firefox WebKit
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - name: Test original hash-pinned bytes in real browser audio decoders
+        env:
+          KANA_AUDIO_REVIEW_DIR: ${{ runner.temp }}/kana-vowels-review
+        run: pnpm exec playwright test --config playwright.kana-audio-evidence.config.ts
+      - name: Preserve review-only originals and evidence, never app assets
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kana-foundations-original-audio-review-only
+          path: ${{ runner.temp }}/kana-vowels-review/
+          retention-days: 7
+          if-no-files-found: error
+      - name: Preserve diagnostics if evidence job fails
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kana-foundations-audio-review-diagnostics
+          path: |
+            test-results/
+            playwright-report/
+            ${{ runner.temp }}/kana-vowels-review/
+          if-no-files-found: ignore
+          retention-days: 7

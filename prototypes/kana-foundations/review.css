@@ -1,0 +1,58 @@
+.review-intro{max-width:680px;font-size:15px;line-height:1.6;color:var(--muted)}
+.review-warning{font-size:14px;border:1px solid #c6ac7f;border-radius:11px;padding:13px;margin:15px 0}
+.review-toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:14px;margin:22px 0 14px}
+.review-toolbar label{display:grid;gap:7px;font-size:14px;font-weight:700}
+.review-toolbar select{max-width:100%;min-height:46px;font-size:15px;padding:9px;border:1px solid var(--line);border-radius:10px;background:white;color:var(--ink)}
+.review-count{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.review-card{padding:clamp(16px,4vw,26px);border:1px solid var(--line);border-radius:16px}
+.review-card p{font-size:14px;line-height:1.5}
+.review-card .context,.review-card .reason{color:var(--muted)}
+.review-card h2{font-size:clamp(27px,6vw,40px);line-height:1.32;overflow-wrap:anywhere}
+.review-answer{margin-top:14px;padding:16px;background:var(--soft);border-radius:12px}
+.review-answer strong{display:block;font-size:25px;overflow-wrap:anywhere}
+.review-answer p{margin:8px 0 0;font-size:15px}
+.review-actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 10px}
+.review-actions button{min-height:47px;border:1px solid var(--line);border-radius:11px;background:white;color:var(--ink);font-size:15px;font-weight:700;padding:10px 15px}
+.review-actions button[data-action="toggle"]{color:#fff;background:var(--teal);border-color:var(--teal)}
+.review-actions button:disabled{opacity:.45}
+.review-lesson{display:inline-flex;align-items:center;min-height:44px;color:var(--teal-strong);font-size:14px;font-weight:700}
+.review-empty{font-size:15px;padding:18px 0;color:var(--muted)}
+@media(max-width:359px){.review-toolbar label,.review-toolbar select{width:100%}.review-actions button{flex:1 1 96px}}
+
+
+/* Read-only memory-only retrieval round and accessible completion. */
+.review-previous-rating{color:var(--muted);font-size:14px}
+.review-rating{margin:14px 0;padding:13px 16px;border-radius:12px;background:var(--soft)}
+.review-rating p{margin:0;font-size:15px;line-height:1.5;font-weight:700}
+.review-rating .review-actions{margin:12px 0 0}
+.review-rating button[data-action="remembered"]{background:var(--teal);border-color:var(--teal);color:white}
+.review-summary{padding:22px;border:1px solid var(--line);border-radius:15px}
+.review-summary h2{font-size:22px;margin:0 0 16px}
+.review-summary dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 16px}
+.review-summary dl div{padding:12px;background:var(--soft);border-radius:10px;min-width:0}
+.review-summary dt{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.review-summary dd{font-size:24px;font-weight:750;margin:4px 0 0}
+.review-summary p{font-size:14px;line-height:1.5}
+.review-finish{margin:10px 0}
+.review-finish button{min-height:46px;border:1px solid var(--teal);color:var(--teal-strong);background:white;border-radius:11px;padding:9px 15px;font-weight:700}
+@media(max-width:359px){.review-summary{padding:14px}.review-summary dl{gap:5px}.review-summary dl div{padding:9px}}
+
+
+/* Optional IME-friendly typed retrieval before showing the original answer. */
+.review-response{display:grid;gap:8px;margin:16px 0 0;max-width:640px}
+.review-response label{font-size:15px;font-weight:700}
+.review-response input{display:block;box-sizing:border-box;width:100%;min-width:0;
+ min-height:48px;padding:11px 13px;font-size:17px;color:var(--ink);
+ background:#fff;border:1px solid var(--line);border-radius:11px}
+.review-response input:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.review-response input:disabled{opacity:.75;background:var(--soft)}
+.review-response p{margin:0;color:var(--muted);font-size:14px}
+.review-your-response{margin-top:15px;padding:16px;border:1px solid var(--line);
+ border-radius:12px;overflow-wrap:anywhere}
+.review-your-response span,.review-answer span{display:block;font-size:14px;color:var(--muted)}
+.review-your-response strong{display:block;font-size:22px;line-height:1.4;margin-top:4px}
+.review-comparison-note{font-size:14px;color:var(--muted)}
+
+/* Responsive practice-set selector, sharing the existing review-unit controls. */
+.review-toolbar label{flex:1 1 205px;min-width:0}
+.review-toolbar select{box-sizing:border-box;width:100%;max-width:100%;text-overflow:ellipsis}

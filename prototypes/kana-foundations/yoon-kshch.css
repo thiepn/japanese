@@ -1,0 +1,13 @@
+/* Unit 16 only: new yōon lesson uses the existing Kana Foundations visual system. */
+.yoon-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:16px 0}
+.yoon-strip span{font-family:"Noto Sans JP","Hiragino Sans",sans-serif;background:var(--soft);text-align:center;padding:11px 2px;border-radius:12px;font-size:clamp(27px,7.2vw,38px)}
+.yoon-review-glyph .japanese-word{max-width:100%;font-size:clamp(27px,8vw,54px);line-height:1.6;text-align:center;overflow-wrap:anywhere}
+.yoon-review-glyph .hero-glyph{font-size:clamp(78px,22vw,125px)}
+.practice-screen .choices.yoon-choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:10px}
+.practice-screen .choices.yoon-choices .choice{min-width:0;overflow-wrap:anywhere;font-size:clamp(19px,5vw,27px)}
+.practice-screen .choices.yoon-choices.letter-choices .choice{font-family:"Noto Sans JP","Hiragino Sans",sans-serif;font-size:clamp(18px,5.1vw,26px)}
+.yoon-checkpoint{padding:15px;border-radius:16px;background:var(--soft);margin:20px 0}
+.yoon-checkpoint strong{display:block;font-size:26px}
+.yoon-checkpoint span{color:var(--muted);font-size:13px}
+@media(max-width:359px){.practice-screen .choices.yoon-choices{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.practice-screen .choices.yoon-choices .choice{padding:9px;font-size:20px}.yoon-review-glyph .japanese-word{font-size:27px}}
+@media(prefers-reduced-motion:reduce){.yoon-checkpoint,.yoon-strip{scroll-behavior:auto}}

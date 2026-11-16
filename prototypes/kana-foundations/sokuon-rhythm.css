@@ -1,0 +1,14 @@
+/* Unit 15-only responsive styles; earlier lessons remain unchanged. */
+.rhythm-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0}
+.rhythm-strip span{text-align:center;font-family:"Noto Sans JP","Hiragino Sans",sans-serif;font-size:clamp(30px,9vw,52px);font-weight:700;border-radius:12px;background:var(--soft);padding:10px 0}
+.rhythm-glyph .japanese-word{max-width:100%;font-size:clamp(30px,9vw,58px);line-height:1.5;text-align:center;overflow-wrap:anywhere;word-break:normal}
+.rhythm-question{font-size:clamp(17px,4.7vw,23px);font-weight:600}
+.practice-screen .choices.rhythm-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.practice-screen .choices.rhythm-choices.rhythm-phrase-choices{grid-template-columns:minmax(0,1fr)}
+.practice-screen .choices.rhythm-choices .choice{text-align:center;min-width:0;overflow-wrap:anywhere;font-size:clamp(18px,5vw,24px)}
+.practice-screen .choices.rhythm-choices.rhythm-phrase-choices .choice{font-size:clamp(16px,4.2vw,21px);text-align:left}
+.rhythm-checkpoint{padding:15px;border-radius:16px;background:var(--soft);margin:20px 0}
+.rhythm-checkpoint strong{display:block;font-size:26px}
+.rhythm-checkpoint span{color:var(--muted);font-size:13px}
+@media(max-width:359px){.practice-screen .choices.rhythm-choices{gap:7px}.practice-screen .choices.rhythm-choices .choice{padding:9px}.rhythm-glyph .japanese-word{font-size:30px}}
+@media(prefers-reduced-motion:reduce){.rhythm-checkpoint,.rhythm-strip{scroll-behavior:auto}}
