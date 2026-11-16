@@ -5,3 +5,5 @@ A read-only map for 27 existing Kana Foundations prototype lessons. It reads eac
 Unit 01 is considered complete only at its original results phase, or during later optional practice with all original readings recorded. Corrections and optional practice are never portrayed as mastery. Invalid and inaccessible saved data is identified rather than overwritten. The next-lesson link prioritizes unfinished work, then earliest unstarted.
 
 Open `course-map.html`, or follow the added navigation on Unit 01 and Unit 27 welcome/results pages. This is not a production route. Test with the prototype Node suite and six Playwright profiles. No deployment, merge, release or physical-device qualification authorized.
+
+Course-map unit numbers are anchored to existing HTML `<title>` numbering (especially reading-review Unit 11, sokuon Unit 15, yōon Units 16–18), checked by a Node regression test rather than assigning IDs from an assumed pedagogical order.

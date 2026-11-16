@@ -57,3 +57,17 @@ test('kana, romaji and numbered unit queries combine with status without changin
  assert.deepEqual(filterRows(rows,{query:'does-not-exist'}),[]);
  assert.deepEqual(filterRows(rows,{query:' katakana   y '}).map(x=>x.unit.id),[27]);
 });
+
+test('every map unit number matches its existing HTML lesson title, including 11–18',async()=>{
+ const {readFileSync}=await import('node:fs');
+ for(const unit of UNITS.filter(x=>x.id!==1)){
+  const path=new URL('../'+unit.slug+'.html',import.meta.url);
+  const html=readFileSync(path,'utf8');
+  const title=html.match(/<title>(.*?)<\/title>/s)?.[1]||'';
+  assert.match(title,new RegExp('\\bUnit '+String(unit.id).padStart(2,'0')+'\\b'),unit.href);
+ }
+ assert.deepEqual(UNITS.slice(10,19).map(x=>x.slug),[
+  'reading-review','dakuten-gz','dakuten-d','dakuten-bp',
+  'sokuon-rhythm','yoon-kshch','yoon-nhmr','yoon-gjbp','integrated-reading'
+ ]);
+});

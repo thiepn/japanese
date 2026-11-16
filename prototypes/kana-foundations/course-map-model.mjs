@@ -6,12 +6,13 @@ const groups=[
   ['N-row','な・に・ぬ・ね・の','n-row'],['H-row','は・ひ・ふ・へ・ほ','h-row'],
   ['M-row','ま・み・む・め・も','m-row'],['Y-row','や・ゆ・よ','y-row'],
   ['R-row','ら・り・る・れ・ろ','r-row'],['W-row and ん','わ・を・ん','w-row']]],
- ['combinations','Hiragana · Combined sounds and reading',[
+ ['combinations','Hiragana · Reading and sound patterns',[
+  ['Reading review','ひらがな','reading-review'],
   ['Voiced G/Z sounds','が・ざ・じ','dakuten-gz'],['Voiced D sounds','だ・ぢ・づ','dakuten-d'],
-  ['B/P sounds','ば・ぱ','dakuten-bp'],['Combined sounds I','きゃ・しゃ・ちゃ','yoon-kshch'],
+  ['B/P sounds','ば・ぱ','dakuten-bp'],['Small っ and rhythm','っ','sokuon-rhythm'],
+  ['Combined sounds I','きゃ・しゃ・ちゃ','yoon-kshch'],
   ['Combined sounds II','にゃ・ひゃ・みゃ・りゃ','yoon-nhmr'],
   ['Voiced combined sounds','ぎゃ・じゃ・びゃ・ぴゃ','yoon-gjbp'],
-  ['Small っ and rhythm','っ','sokuon-rhythm'],['Reading review','ひらがな','reading-review'],
   ['Integrated reading','よむ','integrated-reading']]],
  ['katakana','Katakana · Basic characters',[
   ['Katakana vowels','ア・イ・ウ・エ・オ','katakana-vowels'],
