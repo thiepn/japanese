@@ -53,6 +53,7 @@ function render(rows){
    +'<p>Unit '+String(next.unit.id).padStart(2,'0')+' · '+esc(next.unit.title)+'</p></div>'
    +'<a href="'+next.unit.href+'">'+(next.status.kind==='in-progress'?'Resume':'Open lesson')+'</a></section>';
 
+ out+='<div class="course-review-link"><a href="./review.html">Review difficult first attempts</a></div>';
  out+=backupPanel+filterControls+'<footer class="course-footer">No learner records were imported, migrated or rescheduled.</footer></main></div>';
  root.innerHTML=out;
  rowsCache=rows;

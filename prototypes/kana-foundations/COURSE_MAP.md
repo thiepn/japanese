@@ -13,3 +13,7 @@ Units 02–26 now display a small **All units** return link in the top bar only 
 ## Local backup export
 
 The course map provides **Download local progress**. The export reads all 27 verified, separate prototype localStorage keys fresh on click. Version 1 JSON contains format, version, createdAt, and records with unitId, exact key, and verbatim raw string. Absent keys are omitted; malformed/incompatible saved records are included byte-for-byte. The operation makes no storage, network, Account or FSRS writes. Unavailable keys or a failed read block the entire export rather than misleadingly saving an incomplete backup. An empty browser does not download a file. Export does not offer restore/import and is not cross-device synchronization. Test Node unit cases and Playwright downloads in all six projects.
+
+## Read-only first-attempt review
+
+`review.html` presents one source-authored difficult first-attempt prompt at a time (wrong, assisted, or revealed). The answer, note and meaning come from the existing original lesson task definitions; the answer is concealed by default. Learners can filter units and move between prompts without changing lesson evidence. The review excludes correction rounds, practice-only answers, unassessed skips and unapproved listening exercises. Unit 01 uses its existing vowel and word records. Invalid or unavailable snapshots are not overwritten. No grading, mastery inference, IndexedDB, Account or FSRS writes.

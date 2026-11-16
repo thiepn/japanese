@@ -60,3 +60,7 @@
 .course-backup>div{flex:1 1 230px;min-width:0}
 .course-backup p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
 .course-backup #backup-feedback:not(:empty){margin-top:8px;color:var(--ink);font-weight:650}
+
+.course-review-link{margin:0 0 17px}
+.course-review-link a{display:inline-flex;align-items:center;min-height:47px;padding:11px 16px;background:var(--teal);color:white;border-radius:11px;font-size:15px;font-weight:750;text-decoration:none}
+.course-review-link a:hover{background:var(--teal-strong)}
