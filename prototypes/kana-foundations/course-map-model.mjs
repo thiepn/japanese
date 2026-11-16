@@ -92,3 +92,26 @@ export function filterRows(rows,{filter='all',query=''}={}){
   return words.every(word=>haystack.includes(word));
  });
 }
+
+
+// Explicit export of Kana Foundations localStorage only. A snapshot never
+// mutates storage, interprets corrupt bytes, or includes foreign app keys.
+export const PROGRESS_BACKUP_FORMAT='thiepn-kana-foundations-local-progress';
+export function makeProgressBackup(rows,getRaw,createdAt){
+ if(!Array.isArray(rows)||rows.length!==UNITS.length||typeof getRaw!=='function'||
+    typeof createdAt!=='string'||!Number.isFinite(Date.parse(createdAt)))
+  throw Error('Cannot verify the complete local course map.');
+ const seen=new Set(),records=[];
+ for(let i=0;i<UNITS.length;i++){
+  const row=rows[i],unit=UNITS[i],key=row?.key;
+  if(row?.unit?.id!==unit.id||row?.unit?.slug!==unit.slug||
+     typeof key!=='string'||!key.startsWith('thiepn:kana-foundations:')||
+     seen.has(key))throw Error('Local progress keys are missing or inconsistent.');
+  seen.add(key);
+  const raw=getRaw(key); // Read every key fresh, even when the map is filtered.
+  if(raw===null)continue;
+  if(typeof raw!=='string')throw Error('Local progress could not be read.');
+  records.push({unitId:unit.id,key,raw}); // Exact bytes; no JSON.parse/re-serialize.
+ }
+ return {format:PROGRESS_BACKUP_FORMAT,version:1,createdAt,records};
+}

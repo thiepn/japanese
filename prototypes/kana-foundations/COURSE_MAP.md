@@ -9,3 +9,7 @@ Open `course-map.html`, or follow the added navigation on Unit 01 and Unit 27 we
 Course-map unit numbers are anchored to existing HTML `<title>` numbering (especially reading-review Unit 11, sokuon Unit 15, yōon Units 16–18), checked by a Node regression test rather than assigning IDs from an assumed pedagogical order.
 
 Units 02–26 now display a small **All units** return link in the top bar only when paused or completed. Active questions retain the existing Exit action; use Exit to save and then return to the map. Unit 01 and Unit 27 keep their existing welcome/results course-map links. This is navigation-only; no persistence or grader changes.
+
+## Local backup export
+
+The course map provides **Download local progress**. The export reads all 27 verified, separate prototype localStorage keys fresh on click. Version 1 JSON contains format, version, createdAt, and records with unitId, exact key, and verbatim raw string. Absent keys are omitted; malformed/incompatible saved records are included byte-for-byte. The operation makes no storage, network, Account or FSRS writes. Unavailable keys or a failed read block the entire export rather than misleadingly saving an incomplete backup. An empty browser does not download a file. Export does not offer restore/import and is not cross-device synchronization. Test Node unit cases and Playwright downloads in all six projects.

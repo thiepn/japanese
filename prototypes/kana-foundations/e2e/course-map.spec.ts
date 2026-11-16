@@ -92,3 +92,48 @@ test('intermediate lessons expose the course map when paused, not during active 
  await expect(page.getByRole('heading',{name:'Choose a kana unit'})).toBeVisible();
  expect(await page.evaluate(key=>localStorage.getItem(key),K.STORAGE_KEY)).toBe(before);
 });
+
+
+test('download exports every saved lesson exactly, even when view is filtered',async({page})=>{
+ const {readFileSync}=await import('node:fs');
+ await page.goto('/course-map.html');
+ const invalid=' { "schema": 999, "kana": "あ", "padding": " " }  ';
+ const stored=await page.evaluate(async([k,y,bad])=>{
+  const m=await import('./katakana-y-row-engine.mjs');
+  let state=m.resume(m.initialState());
+  state=m.beginRecall(state);state=m.answer(state,'ya');
+  const raw=JSON.stringify(state);
+  localStorage.setItem(k,bad);localStorage.setItem(y,raw);
+  localStorage.setItem('thiepn:account:secret','do-not-export');
+  localStorage.setItem('thiepn:kana-foundations:unlisted','do-not-export-either');
+  return raw;
+ },[K.STORAGE_KEY,Y.STORAGE_KEY,invalid]);
+ const before=await page.evaluate(()=>Object.keys(localStorage).sort().map(key=>[key,localStorage.getItem(key)]));
+ await page.getByRole('searchbox',{name:'Find a unit'}).fill('unit 27');
+ await expect(page.locator('.course-card')).toHaveCount(1);
+ const [download]=await Promise.all([
+  page.waitForEvent('download'),
+  page.getByRole('button',{name:'Download local progress'}).click()
+ ]);
+ expect(download.suggestedFilename()).toMatch(/^kana-foundations-progress-\d{4}-\d{2}-\d{2}\.json$/);
+ const backup=JSON.parse(readFileSync(await download.path(),'utf8'));
+ expect(backup.format).toBe('thiepn-kana-foundations-local-progress');
+ expect(backup.version).toBe(1);
+ expect(backup.records).toEqual([
+  {unitId:2,key:K.STORAGE_KEY,raw:invalid},
+  {unitId:27,key:Y.STORAGE_KEY,raw:stored}
+ ]);
+ await expect(page.locator('#backup-feedback')).toHaveText('Backup download prepared for 2 saved units.');
+ expect(await page.evaluate(()=>Object.keys(localStorage).sort().map(key=>[key,localStorage.getItem(key)]))).toEqual(before);
+});
+test('no progress or inaccessible saved data cannot produce a misleading backup',async({page})=>{
+ await page.goto('/course-map.html');
+ await page.getByRole('button',{name:'Download local progress'}).click();
+ await expect(page.locator('#backup-feedback')).toHaveText('No Kana Foundations lesson progress is saved in this browser.');
+ await page.evaluate(key=>{
+  const original=Storage.prototype.getItem;
+  Storage.prototype.getItem=function(k){if(k===key)throw Error('blocked');return original.call(this,k);};
+ },K.STORAGE_KEY);
+ await page.getByRole('button',{name:'Download local progress'}).click();
+ await expect(page.locator('#backup-feedback')).toHaveText('Unable to prepare a complete backup. Saved lessons were not changed.');
+});

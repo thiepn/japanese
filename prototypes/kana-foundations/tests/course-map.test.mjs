@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {UNITS,GROUPS,COURSE_FILTERS,statusFromSnapshot,suggestedUnit,filterRows} from '../course-map-model.mjs';
+import {UNITS,GROUPS,COURSE_FILTERS,statusFromSnapshot,suggestedUnit,filterRows,PROGRESS_BACKUP_FORMAT,makeProgressBackup} from '../course-map-model.mjs';
 import * as K from '../k-row-engine.mjs';
 test('27 unique existing lesson routes ordered into three groups',()=>{
  assert.deepEqual(UNITS.map(x=>x.id),Array.from({length:27},(_,i)=>i+1));
@@ -81,4 +81,32 @@ test('every intermediate lesson app exposes a read-only map link on inactive scr
   assert.match(src,/class="top-course-map-link" href="\.\/course-map\.html"/,file);
   assert.match(src,/top-exit/,file);
  }
+});
+
+
+test('backup includes only whitelisted course keys and preserves invalid bytes verbatim',()=>{
+ const rows=UNITS.map(unit=>({unit,key:'thiepn:kana-foundations:unit-'+unit.id}));
+ const saved=new Map([
+  [rows[1].key,'{"schema":99, "kana": "あ"} \n'],
+  [rows[26].key,'{"schema":1,"lesson":"ヤ"}']
+ ]);
+ let calls=0;
+ const backup=makeProgressBackup(rows,key=>{calls++;return saved.get(key)??null;},'2026-11-16T00:00:00.000Z');
+ assert.equal(calls,27);
+ assert.equal(backup.format,PROGRESS_BACKUP_FORMAT);
+ assert.equal(backup.version,1);
+ assert.equal(backup.createdAt,'2026-11-16T00:00:00.000Z');
+ assert.deepEqual(backup.records,[{unitId:2,key:rows[1].key,raw:saved.get(rows[1].key)},
+  {unitId:27,key:rows[26].key,raw:saved.get(rows[26].key)}]);
+ assert.equal(saved.get(rows[1].key),backup.records[0].raw);
+ assert.equal(JSON.stringify(backup).includes('thiepn:account:'),false);
+});
+test('backup refuses partial/unreadable data rather than delivering incomplete snapshots',()=>{
+ const rows=UNITS.map(unit=>({unit,key:'thiepn:kana-foundations:unit-'+unit.id}));
+ const args=['2026-11-16T00:00:00.000Z'];
+ assert.throws(()=>makeProgressBackup(rows.slice(1),()=>null,...args),/complete/);
+ assert.throws(()=>makeProgressBackup(rows.map((r,i)=>i===3?{...r,key:rows[2].key}:r),()=>null,...args),/inconsistent/);
+ assert.throws(()=>makeProgressBackup(rows,()=>undefined,...args),/could not be read/);
+ assert.throws(()=>makeProgressBackup(rows,()=>{throw Error('blocked');},...args),/blocked/);
+ assert.deepEqual(makeProgressBackup(rows,()=>null,...args).records,[]);
 });

@@ -1,4 +1,4 @@
-import {UNITS,GROUPS,COURSE_FILTERS,statusFromSnapshot,suggestedUnit,filterRows} from './course-map-model.mjs';
+import {UNITS,GROUPS,COURSE_FILTERS,statusFromSnapshot,suggestedUnit,filterRows,makeProgressBackup} from './course-map-model.mjs';
 const root=document.getElementById('app');
 const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
 async function readUnit(unit){
@@ -7,8 +7,8 @@ async function readUnit(unit){
   const key=unit.id===1?engine.PROTOTYPE_STORAGE_KEY:engine.STORAGE_KEY;
   if(typeof key!=='string'||!key.startsWith('thiepn:kana-foundations:'))throw Error('Invalid prototype key');
   // Reads only. No setItem, removeItem, IndexedDB, Account or scheduler code.
-  return {unit,status:statusFromSnapshot(unit.id,engine,localStorage.getItem(key))};
- }catch{return {unit,status:{kind:'unavailable',detail:'Local progress unavailable'}};}
+  return {unit,key,status:statusFromSnapshot(unit.id,engine,localStorage.getItem(key))};
+ }catch{return {unit,key:null,status:{kind:'unavailable',detail:'Local progress unavailable'}};}
 }
 function card({unit:u,status:s}){
  return '<a class="course-card" data-status="'+s.kind+'" href="'+u.href
@@ -30,6 +30,11 @@ let searchText='';
   +'</div></section>'
   +'<p class="course-result-count" id="result-count" role="status" aria-live="polite"></p>'
   +'<div id="unit-results"></div>';
+
+ const backupPanel='<section class="course-backup" aria-label="Progress backup">'
+  +'<button id="download-progress" type="button">Download local progress</button>'
+  +'<div><p>Saves all existing Kana Foundations lesson records to JSON, including invalid records. Restore is not available yet.</p>'
+  +'<p id="backup-feedback" role="status" aria-live="polite"></p></div></section>';
 function render(rows){
  const done=rows.filter(r=>r.status.kind==='finished').length;
  const active=rows.filter(r=>r.status.kind==='in-progress').length;
@@ -48,7 +53,7 @@ function render(rows){
    +'<p>Unit '+String(next.unit.id).padStart(2,'0')+' · '+esc(next.unit.title)+'</p></div>'
    +'<a href="'+next.unit.href+'">'+(next.status.kind==='in-progress'?'Resume':'Open lesson')+'</a></section>';
 
- out+=filterControls+'<footer class="course-footer">No learner records were imported, migrated or rescheduled.</footer></main></div>';
+ out+=backupPanel+filterControls+'<footer class="course-footer">No learner records were imported, migrated or rescheduled.</footer></main></div>';
  root.innerHTML=out;
  rowsCache=rows;
  refreshResults();
@@ -73,7 +78,31 @@ root.addEventListener('input',event=>{
  searchText=event.target.value;
  refreshResults(); // Does not replace the focused search input.
 });
+
+function downloadProgress(){
+ const feedback=document.getElementById('backup-feedback');
+ try{
+  const backup=makeProgressBackup(rowsCache,key=>localStorage.getItem(key),new Date().toISOString());
+  if(backup.records.length===0){
+   feedback.textContent='No Kana Foundations lesson progress is saved in this browser.';
+   return;
+  }
+  const blob=new Blob([JSON.stringify(backup,null,2)+'\n'],{type:'application/json'});
+  const url=URL.createObjectURL(blob),link=document.createElement('a');
+  link.download='kana-foundations-progress-'+backup.createdAt.slice(0,10)+'.json';
+  link.href=url;link.hidden=true;document.body.append(link);
+  try{link.click();}finally{
+   link.remove();
+   setTimeout(()=>URL.revokeObjectURL(url),30000);
+  }
+  feedback.textContent='Backup download prepared for '+backup.records.length
+   +' saved '+(backup.records.length===1?'unit.':'units.');
+ }catch{
+  feedback.textContent='Unable to prepare a complete backup. Saved lessons were not changed.';
+ }
+}
 root.addEventListener('click',event=>{
+ if(event.target.closest('button#download-progress')){downloadProgress();return;}
  const filter=event.target.closest('button[data-filter]');
  if(filter){selectedFilter=filter.dataset.filter;refreshResults();return;}
  if(event.target.closest('button[data-reset]')){
