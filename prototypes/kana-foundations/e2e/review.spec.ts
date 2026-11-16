@@ -251,11 +251,11 @@ test('section choice reviews recorded hiragana, patterns and katakana separately
  await expect(page.locator('#review-count')).toContainText('1 / 3 prompts');
  await page.getByLabel('Review unit or section').selectOption('group:katakana');
  await expect(page.locator('#review-count')).toContainText('1 / 1 prompts');
- await expect(page.getByText('Unit 20',{exact:false}).first()).toBeVisible();
+ await expect(page.locator('.review-card .context')).toContainText('Unit 20');
  await page.getByRole('textbox',{name:'Your answer (optional)'}).fill('temporary');
  await page.getByLabel('Review unit or section').selectOption('group:combinations');
  await expect(page.locator('#review-count')).toContainText('1 / 1 prompts');
- await expect(page.getByText('Unit 11',{exact:false}).first()).toBeVisible();
+ await expect(page.locator('.review-card .context')).toContainText('Unit 11');
  await expect(page.getByRole('textbox',{name:'Your answer (optional)'})).toHaveValue('');
  await page.getByLabel('Review unit or section').selectOption('group:hiragana');
  await expect(page.locator('#review-count')).toContainText('1 / 1 prompts');
