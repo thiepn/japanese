@@ -460,9 +460,14 @@ export function App(){
       setAccountConnected(false);
       setAccount(ANONYMOUS_AUTH);
       setAccountMessage(null);
-    }catch{
+    }catch(error){
       if(action==="connect"&&(!ticket||!lease.isCurrent(ticket)))return;
       if(action==="signOut"&&!lease.isAnonymous())return;
+      if(action==="signIn" && error instanceof Error &&
+          error.message==="JAPANESE_OAUTH_CALLBACK_ORIGIN_MISMATCH") {
+        setAccountMessage("Account sign-in is not configured for this address. Your local Japanese study data is unchanged; switching domains does not transfer progress.");
+        return;
+      }
       setAccountMessage("THIEPN Account is temporarily unavailable. Your local Japanese data has not been changed.");
     }finally{
       setAccountBusy(false);

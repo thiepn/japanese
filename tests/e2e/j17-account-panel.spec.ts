@@ -31,16 +31,14 @@ test("Account popover dismisses on outside click and provides safe diagnostics e
   await expect(panel).toHaveCount(0);
 });
 
-test("Google sign-in starts only after its explicit Account panel button is pressed",async({page})=>{
-  await page.route("https://account.thiepn.dev/japanese/entry/**",route=>route.fulfill({
-    status:200,contentType:"text/html",body:"<title>Google handoff interception</title>",
-  }));
+test("unregistered local build does not initiate cross-origin Google OAuth",async({page})=>{
   await page.goto("./");
-  const account=page.getByRole("button",{name:"Open THIEPN Account"});
-  await account.click();
-  await expect(page).toHaveURL(/127\.0\.0\.1/);
-  await page.getByRole("dialog",{name:"THIEPN Account"}).getByRole("button",{name:"Sign in with THIEPN Account"}).click();
-  await expect(page).toHaveURL(/account\.thiepn\.dev\/japanese\/entry\//);
+  const startUrl=page.url();
+  await page.getByRole("button",{name:"Open THIEPN Account"}).click();
+  const panel=page.getByRole("dialog",{name:"THIEPN Account"});
+  await expect(panel.getByRole("button",{name:"Sign in with THIEPN Account"})).toBeDisabled();
+  await expect(panel.getByText(/sign-in is not yet configured for this address/i)).toBeVisible();
+  expect(page.url()).toBe(startUrl);
 });
 
 test("Account popover stays within mobile viewport and controls are touch-sized",async({page},testInfo)=>{

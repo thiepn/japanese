@@ -1,0 +1,75 @@
+name: Japanese consolidated finalization
+on:
+  push:
+    branches: [integration/japanese-finish-20261119]
+permissions:
+  contents: read
+concurrency:
+  group: japanese-finalization-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  combined:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      VITE_PUBLIC_BASE: /japanese/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify exact checkout and preserved main/candidate ancestry
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor b6acd3fbe99ab5a6b638758145814cd0d13e2be4 HEAD
+          git merge-base --is-ancestor f99ff0de037613d5b7b7edfa6556ae0d64719f8b HEAD
+          git merge-base --is-ancestor 3a8e0a32b71372eb50e2c13341e7b9d78d1c54be HEAD
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm validate:content
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Combined curriculum, owner, shell and Kana browser acceptance
+        run: env -u CI pnpm exec playwright test tests/e2e/cur03-deep-course.spec.ts tests/e2e/cur01-catalog.spec.ts tests/e2e/ui-defect-regressions.spec.ts tests/e2e/j17-account-panel.spec.ts tests/e2e/j20-device-recovery.spec.ts tests/e2e/kana-native-integration.spec.ts --workers=2 --retries=0
+      - name: Upload combined browser diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: combined-finalization-browser
+          path: test-results/
+          if-no-files-found: ignore
+  full-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      VITE_PUBLIC_BASE: /japanese/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm test
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Full existing browser regression without repeated CI runs
+        run: env -u CI pnpm exec playwright test --workers=4 --retries=0
+      - name: Upload real failure diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-finalization-browser
+          path: test-results/
+          if-no-files-found: ignore
