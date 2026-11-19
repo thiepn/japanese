@@ -40,10 +40,21 @@ test("P21 keeps advanced workspace tabs thumb-safe on mobile profiles",async({pa
   await page.getByRole("button",{name:"Immerse"}).evaluate((button)=>(button as HTMLButtonElement).click());
   // Advanced source studios are intentionally collapsed until explicitly
   // opened. Wait for asynchronous Immerse navigation and interact as a user.
-  await expect(page.locator(".j6-studios")).toBeVisible();
+  const studios=page.locator(".j6-studios");
+  await expect(studios).toBeVisible();
+  await expect(studios).toHaveCSS("content-visibility","visible");
   for(const id of ["p15","p17","p18","p19"]){
-    await page.locator("#j6-studio-"+id+" > summary").click();
-    await expect(page.locator("."+id+"-tabs button").first()).toBeVisible();
+    const studio=page.locator("#j6-studio-"+id);
+    const summary=studio.locator(":scope > summary");
+    await expect(studio).not.toHaveAttribute("open","");
+    await summary.scrollIntoViewIfNeeded();
+    await expect(summary).toBeInViewport();
+    await summary.click();
+    await expect(studio).toHaveAttribute("open","");
+    const firstTab=studio.locator("."+id+"-tabs button").first();
+    await expect(firstTab).toBeVisible();
+    await firstTab.scrollIntoViewIfNeeded();
+    await expect(firstTab).toBeInViewport();
   }
   const tabs=page.locator(".p15-tabs button,.p17-tabs button,.p18-tabs button,.p19-tabs button");
   expect(await tabs.count()).toBeGreaterThan(0);

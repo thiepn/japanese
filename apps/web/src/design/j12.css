@@ -224,8 +224,10 @@
   .j5-next{position:sticky;bottom:calc(8px + env(safe-area-inset-bottom));z-index:20;min-height:54px!important;box-shadow:0 7px 20px rgba(15,13,10,.12)}
   .j5-speak-button{min-height:56px!important}
 
-  /* Keep long lower sections cheap on lower-end Android. */
-  .j4-practice,.j6-feature,.j6-series,.j6-missions,.j6-studios,.j8-skills,.j8-milestones,.j8-ledger,.j8-evidence-vaults{
+  /* Keep long lower sections cheap on lower-end Android. Keep the interactive
+     studio disclosures outside auto containment: their native open/close layout
+     and touch hit targets must remain stable while asynchronous content loads. */
+  .j4-practice,.j6-feature,.j6-series,.j6-missions,.j8-skills,.j8-milestones,.j8-ledger,.j8-evidence-vaults{
     content-visibility:auto;
     contain-intrinsic-size:auto 700px;
   }
