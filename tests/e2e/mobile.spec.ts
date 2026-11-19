@@ -17,7 +17,8 @@ test("mobile shell keeps navigation and study controls thumb-safe without horizo
     expect(box?.height??0).toBeGreaterThanOrEqual(48);
   }
 
-  await page.locator(".ux1-native-queue").click();
+  await page.getByRole("button",{name:"Start Japanese from Zero",exact:true}).click();
+  await expect(page.locator("main.j5-study-shell")).toBeVisible();
   const exit=page.getByRole("button",{name:"Exit"});
   const exitBox=await exit.boundingBox();
   expect(exitBox?.height??0).toBeGreaterThanOrEqual(44);

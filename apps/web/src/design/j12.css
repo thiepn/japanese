@@ -56,6 +56,7 @@
   .j2-content p{max-width:68ch}
   .j2-content details>summary{min-height:48px}
   .j2-content button:not(.j2-theme-toggle):not(.j9-sensory-toggle):not(.j2-account){min-height:44px}
+  .j2-content .beginner-entry .beginner-entry__actions button:is(.beginner-entry__primary,.beginner-entry__review){min-height:50px}
 
   /* Today becomes a compact mobile study launch, not a reduced desktop poster. */
   .j3-today__hero{border-radius:4px 18px 18px 18px}
