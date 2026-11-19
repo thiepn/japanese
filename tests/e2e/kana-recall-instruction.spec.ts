@@ -1,0 +1,34 @@
+import {expect,test} from "@playwright/test";
+
+test("Kana recall conceals answers and never creates premature study progress",async({page})=>{
+ await page.goto("./");
+ await page.getByRole("navigation",{name:"Primary"}).getByRole("button",{name:"Kana",exact:true}).click();
+ await page.getByRole("navigation",{name:"Kana sections"}).getByRole("button",{name:/Lessons/}).click();
+ await page.getByRole("button",{name:"Start",exact:true}).first().click();
+ const reading=page.getByTestId("kana-introduction-reading");
+ await expect(reading).toContainText("a");
+ await page.getByRole("button",{name:/Test Active Recall/}).click();
+ const answer=page.getByRole("textbox",{name:"Type the Romaji reading"});
+ await expect(answer).toBeFocused();
+ await expect(reading).toHaveCount(0);
+ await expect(page.getByRole("button",{name:"Play pronunciation"})).toHaveCount(0);
+ const verify=page.getByRole("button",{name:"Verify",exact:true});
+ await expect(verify).toBeDisabled();
+ await answer.fill("i");
+ await verify.click();
+ await expect(page.getByRole("status").filter({hasText:"Not quite"})).toBeVisible();
+ await expect(reading).toHaveCount(0);
+ await answer.fill("a");
+ await verify.click();
+ await expect(page.getByRole("status").filter({hasText:"Correct. Practice only"})).toBeVisible();
+ await page.getByRole("button",{name:"Return to explanation"}).click();
+ await expect(reading).toContainText("a");
+ await page.getByRole("button",{name:"Stages",exact:true}).click();
+ await expect(page.getByRole("button",{name:"Start",exact:true}).first()).toBeVisible();
+ await page.getByRole("button",{name:"Start",exact:true}).first().click();
+ await expect(page.getByText("Character 1 of 5")).toBeVisible();
+ await page.getByRole("button",{name:"Next Character"}).click();
+ await expect(page.getByText("Character 2 of 5")).toBeVisible();
+ await page.getByRole("button",{name:"Stages",exact:true}).click();
+ await expect(page.getByRole("button",{name:"Continue",exact:true}).first()).toBeVisible();
+});

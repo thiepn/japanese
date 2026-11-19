@@ -1,3 +1,4 @@
+import {openFullCourse} from "./helpers/learn-disclosure";
 import {readFileSync} from "node:fs";
 import {readFile} from "node:fs/promises";
 import {expect,test,type Page} from "@playwright/test";
@@ -36,6 +37,7 @@ async function qualifiedLearn(page:Page){
   },source);
   await page.reload();
   await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await openFullCourse(page);
 }
 function studio(page:Page){
   return page.getByRole("region",{name:"Follow the whole conversation, one speaker at a time"});
@@ -78,6 +80,7 @@ test("E17 private listening note survives reload and is included in existing own
   expect(after.outbox.length).toBe(before.outbox.length);
   await page.reload();
   await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await openFullCourse(page);
   const restored=notebook(page);
   await expect(restored).toContainText("Saved on this device");
   await restored.getByText("Read my last saved listening note").click();

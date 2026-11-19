@@ -56,6 +56,7 @@
   .j2-content p{max-width:68ch}
   .j2-content details>summary{min-height:48px}
   .j2-content button:not(.j2-theme-toggle):not(.j9-sensory-toggle):not(.j2-account){min-height:44px}
+  .j2-content .beginner-entry .beginner-entry__actions button:is(.beginner-entry__primary,.beginner-entry__review){min-height:50px}
 
   /* Today becomes a compact mobile study launch, not a reduced desktop poster. */
   .j3-today__hero{border-radius:4px 18px 18px 18px}
@@ -223,8 +224,10 @@
   .j5-next{position:sticky;bottom:calc(8px + env(safe-area-inset-bottom));z-index:20;min-height:54px!important;box-shadow:0 7px 20px rgba(15,13,10,.12)}
   .j5-speak-button{min-height:56px!important}
 
-  /* Keep long lower sections cheap on lower-end Android. */
-  .j4-practice,.j6-feature,.j6-series,.j6-missions,.j6-studios,.j8-skills,.j8-milestones,.j8-ledger,.j8-evidence-vaults{
+  /* Keep long lower sections cheap on lower-end Android. Keep the interactive
+     studio disclosures outside auto containment: their native open/close layout
+     and touch hit targets must remain stable while asynchronous content loads. */
+  .j4-practice,.j6-feature,.j6-series,.j6-missions,.j8-skills,.j8-milestones,.j8-ledger,.j8-evidence-vaults{
     content-visibility:auto;
     contain-intrinsic-size:auto 700px;
   }

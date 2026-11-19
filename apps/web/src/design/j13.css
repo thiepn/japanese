@@ -242,7 +242,7 @@
     width:100%;
     height:auto;
     display:grid;
-    grid-template-columns:repeat(5,minmax(0,1fr));
+    grid-template-columns:repeat(6,minmax(0,1fr));
     gap:0;
     padding:0 clamp(22px,5vw,92px);
     border:0;

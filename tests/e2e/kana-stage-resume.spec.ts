@@ -36,10 +36,14 @@ test('Kana Learn and Review have no sideways page overflow at mobile widths',asy
 
 test('review finishes after the remaining daily new card and preserves the summary on refresh',async({page})=>{
   await page.goto('kana/?view=review');
-  await expect(page.locator('.j2-brand')).toBeVisible();
+  // The shell renders before the real Kana database has been opened.
+  // Never let the fixture create an empty version-1 database.
+  await expect(page.getByPlaceholder('Type romaji... (or Space to reveal)')).toBeVisible();
+  await expect.poll(()=>page.evaluate(async owner=>(await indexedDB.databases()).some(db=>db.name==='kana_mastery_v1:'+owner&&db.version===1),owner)).toBe(true);
   await page.evaluate(async({owner})=>{
     const db=await new Promise<IDBDatabase>((resolve,reject)=>{
       const req=indexedDB.open('kana_mastery_v1:'+owner,1);
+      req.onupgradeneeded=()=>{req.transaction?.abort();reject(Error('Kana database not initialized by app'));};
       req.onsuccess=()=>resolve(req.result);
       req.onerror=()=>reject(req.error);
     });

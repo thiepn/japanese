@@ -144,6 +144,8 @@ export function App(){
   const cur09CommittedPromptIds=useRef(new Set<string>());
   const [ux1Outcome,setUx1Outcome]=useState<{owner:string;origin:Surface;pending:boolean;failed:boolean}|null>(null);
   const [e22Selection,setE22Selection]=useState<{owner:string;value:E22Selection}|null>(null);
+  // Transient navigation only; never stored in learner history or backups.
+  const learnDisclosure=useRef<{owner:string;value:import("./design/J4Learn").LearnDisclosure}|null>(null);
   const sessionOrigin=useRef<Surface>("Today");
   const [sessionStatus,setSessionStatus]=useState<"idle"|"loading"|"error"|"empty">("idle");
   const [summary,setSummary]=useState<StudySummary>(EMPTY_SUMMARY);
@@ -189,6 +191,7 @@ export function App(){
 
   // Never leave the previous owner's learner state visible after switching.
   function clearLearnerView(){
+    learnDisclosure.current=null;
     sessionFence.current.invalidate();
     dashboardRefreshGuard.current.invalidate();
     JAPANESE_LANGUAGE_DASHBOARD.invalidate();
@@ -460,9 +463,14 @@ export function App(){
       setAccountConnected(false);
       setAccount(ANONYMOUS_AUTH);
       setAccountMessage(null);
-    }catch{
+    }catch(error){
       if(action==="connect"&&(!ticket||!lease.isCurrent(ticket)))return;
       if(action==="signOut"&&!lease.isAnonymous())return;
+      if(action==="signIn" && error instanceof Error &&
+          error.message==="JAPANESE_OAUTH_CALLBACK_ORIGIN_MISMATCH") {
+        setAccountMessage("Account sign-in is not configured for this address. Your local Japanese study data is unchanged; switching domains does not transfer progress.");
+        return;
+      }
       setAccountMessage("THIEPN Account is temporarily unavailable. Your local Japanese data has not been changed.");
     }finally{
       setAccountBusy(false);
@@ -481,8 +489,14 @@ export function App(){
     const owner=sessionOwner.current;
     coursePositionRef.current=owner&&courseUnitId?{unitId:courseUnitId,ownerId:owner,steps:queue}:null;
     const restarting=Boolean(owner&&courseUnitId&&intent==="restart"&&queue.length);
-    setSessionInitialIndex(owner&&courseUnitId&&!restarting?readCoursePosition(owner,courseUnitId,queue):0);
-    setSessionPositionUnavailable(restarting&&!saveCoursePosition(owner!,courseUnitId!,queue,0));
+    const initialIndex=owner&&courseUnitId&&!restarting?readCoursePosition(owner,courseUnitId,queue):0;
+    setSessionInitialIndex(initialIndex);
+    // A1 starting the intro is a real visit. Refresh only its existing, source-fenced
+    // owner-scoped navigation receipt; do not grant an answer, grade or FSRS credit.
+    // All non-A1 launch behavior, including explicit review restarts, stays unchanged.
+    const enteringA1=Boolean(owner&&courseUnitId&&queue.length&&/^a1-unit-(?:0[1-9]|1[0-9]|20)$/.test(courseUnitId));
+    setSessionPositionUnavailable(Boolean((restarting||enteringA1)&&
+      !saveCoursePosition(owner!,courseUnitId!,queue,initialIndex)));
     setSession(queue.length?queue:null);
   }
 
@@ -762,6 +776,8 @@ export function App(){
           :<Suspense fallback={<p role="status" aria-live="polite">Opening Japanese section…</p>}>
             {surface==="Today"&&<J3Today key={getDevelopmentAccountId()} beginner={beginner} onStartBeginner={()=>void startBeginner()} onReviewDue={()=>void reviewDue()} kanaReview={kanaReview} onStartKanaReview={(script,skill)=>void startKanaReview(script,skill)} onFlashcardsChanged={()=>{navigateSurface("Kana");requestKanaStandardReview();}} engagement={engagement} e07={e07} onOpenE07={openE07Action} e06={e06} onStartE06={(id)=>void startE06(id)} onStartE11Micro={(id)=>void startE11Micro(id)} onStartE06Delayed={(id)=>void startE06Delayed(id)} e05={e05} onStartE05Repair={()=>void startE05Repair()} e04={e04} onStartE04={(id)=>void startE04(id)} onStartE04Delayed={(id)=>void startE04Delayed(id)} e03={e03} onStartE03={(id)=>void startE03(id)} onStartE03Delayed={(id)=>void startE03Delayed(id)} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE02Delayed={(id)=>void startE02Delayed(id)} summary={summary} completedToday={completedToday} status={sessionStatus} e01={e01} onStartE01={()=>void startE01()} onStartE01Delayed={()=>void startE01Delayed()} onStart={()=>void startStudy()}/>}
             {surface==="Learn"&&<J4Learn key={getDevelopmentAccountId()} beginner={beginner} onStartBeginner={()=>void startBeginner()} onReviewDue={()=>void reviewDue()} kanaReview={kanaReview} onStartKanaReview={(script,skill)=>void startKanaReview(script,skill)} onFlashcardsChanged={()=>{navigateSurface("Kana");requestKanaStandardReview();}} e07={e07} onOpenE07={openE07Action}
+              initialDisclosure={learnDisclosure.current?.owner===currentE17Owner?learnDisclosure.current.value:null}
+              onDisclosureChange={value=>{if(e17WorkspaceCurrent())learnDisclosure.current={owner:currentE17Owner,value};}}
               e22Selection={resolveE22OwnerSelection(currentE17Owner,e22Selection)}
               onE22Selection={value=>{if(e17WorkspaceCurrent())setE22Selection({owner:currentE17Owner,value});}} e06={e06} e16WorkspaceId={currentE17Owner} e16WorkspaceCurrent={e17WorkspaceCurrent} onStartE06={(id)=>void startE06(id)} onStartE06Full={(id)=>void startE06Full(id)} onStartE11Micro={(id)=>void startE11Micro(id)} onStartE13={(ids,mode)=>void startE13(ids,mode)} onStartE18={(keys,mode)=>void startE18(keys,mode)} e19={e19} onStartE19={key=>void startE19(key)} e14Reviews={e14Reviews} onStartE14={(id,mode)=>void startE14(id,mode)} onStartE15={(id,focus)=>void startE15(id,focus)} onStartE10Stage={(id,stage)=>void startE10Stage(id,stage)} onStartE06Delayed={(id)=>void startE06Delayed(id)} onStartE06FullDelayed={(id)=>void startE06FullDelayed(id)} onStartE10DelayedStage={(id,stage)=>void startE10DelayedStage(id,stage)} onStartE06Preview={(id)=>void startE06Preview(id)} e05={e05} onStartE05Repair={()=>void startE05Repair()} onStartE03Preview={(id)=>void startE03Preview(id)} onStartE02Preview={(id)=>void startE02Preview(id)} e04={e04} onStartE04={(id)=>void startE04(id)} onStartE04Delayed={(id)=>void startE04Delayed(id)} onStartE04Preview={(id)=>void startE04Preview(id)} e03={e03} onStartE03={(id)=>void startE03(id)} onStartE03Delayed={(id)=>void startE03Delayed(id)} e02={e02} onStartE02={(id)=>void startE02(id)} onStartE02Delayed={(id)=>void startE02Delayed(id)} e01={e01} onStartE01={()=>void startE01()} onStartE01Delayed={()=>void startE01Delayed()} summary={summary} reviewOverview={reviewOverview} onReviewLevels={(levels)=>void startLevelReview(levels)} onResumeReview={()=>void resumeLevelReview()} onPreviewWord={(id)=>void previewCourseWord(id)} onCur06Journey={(id,mode,unitId,intent,contrastId)=>void openVocabularyJourney(id,mode,unitId,intent,contrastId)} onCur07Recover={restoreVocabularyJourney} kana={kanaMastery} vocab={vocabMastery} conjugation={conjugationMastery} grammar={grammarMastery} sentence={sentenceMastery} lexicalFluency={lexicalFluency} course={courseProgress} milestone={milestone} b1Milestone={b1Milestone} b2Milestone={b2Milestone} c1Foundation={c1Foundation} preferredCoachChain={preferredCoachChain} onPreferredCoachChainApplied={()=>setPreferredCoachChain(null)} status={sessionStatus} onStart={()=>void startStudy()} onStartUnit={(id,intent)=>void startCourseUnit(id,intent)} onStartAssessment={(id)=>void startUnitAssessment(id)} onStartMilestone={()=>void startMilestoneAssessment()} onStartB1Milestone={()=>void startB1MilestoneAssessment()} onStartB2Milestone={()=>void startB2MilestoneAssessment()} onStartC1Foundation={()=>void startC1FoundationAssessment()} onC1Practice={()=>void startC1FoundationPractice()} onProductive={(mode)=>void startProductive(mode)} onLexicalFluency={()=>void startLexicalFluency()} onRealWorldChain={(id)=>void startRealWorldChain(id)} onRealWorldQualification={()=>void startRealWorldQualification()}/>}
             {surface==="Kana"&&<NativeKanaWorkspace key={getDevelopmentAccountId()} owner={getDevelopmentAccountId()}

@@ -30,8 +30,27 @@ self.addEventListener("fetch", (event) => {
   ) return;
   // Never persist an OAuth code/token in a CacheStorage request key. These
   // routes require a network round trip and cannot use an offline login page.
-  if (requestUrl.pathname.startsWith(`${BASE}auth/`) ||
-      requestUrl.search || requestUrl.hash) return;
+  if (requestUrl.pathname.startsWith(`${BASE}auth/`) || requestUrl.hash) return;
+
+  // Primary navigation stores its selected screen in a query parameter.
+  // Allow only a known view at the exact app root, never OAuth, arbitrary
+  // parameters, duplicates, or query-bearing resource requests.
+  // Do not write query-bearing requests to CacheStorage even on success.
+  if (requestUrl.search) {
+    const entries = [...requestUrl.searchParams.entries()];
+    const safeView = requestUrl.pathname === BASE &&
+      event.request.mode === "navigate" &&
+      entries.length === 1 && entries[0][0] === "view" &&
+      ["Today", "Learn", "Kana", "Immerse", "Library", "Progress"].includes(entries[0][1]);
+    if (!safeView) return;
+    event.respondWith(fetch(event.request).catch(async () => {
+      const cache = await caches.open(CACHE);
+      const shell = await cache.match(BASE);
+      if (shell) return shell;
+      throw new Error("Offline shell unavailable");
+    }));
+    return;
+  }
 
   event.respondWith(
     fetch(event.request)

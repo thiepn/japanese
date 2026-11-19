@@ -94,10 +94,7 @@ test("J20 cached PWA restores graded local evidence offline and after simulated 
   await context.setOffline(false);
 });
 
-test("J20 offline account panel never starts OAuth on passive open or resume",async({page,context})=>{
-  await page.route("https://account.thiepn.dev/japanese/entry/**",route=>route.fulfill({
-    status:200,contentType:"text/html",body:"<title>J20 intercepted Account entry</title>",
-  }));
+test("J20 offline account panel never starts unsupported OAuth on passive open or resume",async({page,context})=>{
   await page.goto("./");
   const startingUrl=page.url();
   await context.setOffline(true);
@@ -110,9 +107,10 @@ test("J20 offline account panel never starts OAuth on passive open or resume",as
   await expect(page.getByRole("dialog",{name:"THIEPN Account"})).toHaveCount(0);
   await context.setOffline(false);
   await page.getByRole("button",{name:"Open THIEPN Account"}).click();
-  await page.getByRole("dialog",{name:"THIEPN Account"})
-    .getByRole("button",{name:"Sign in with THIEPN Account"}).click();
-  await expect(page).toHaveURL(/account\.thiepn\.dev\/japanese\/entry\//);
+  const panel=page.getByRole("dialog",{name:"THIEPN Account"});
+  await expect(panel.getByRole("button",{name:"Sign in with THIEPN Account"})).toBeDisabled();
+  await expect(panel.getByText(/sign-in is not yet configured for this address/i)).toBeVisible();
+  expect(page.url()).toBe(startingUrl);
 });
 
 test("J20 keyboard, reduced motion and semantic current-page navigation remain available",async({page})=>{

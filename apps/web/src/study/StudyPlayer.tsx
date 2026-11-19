@@ -5,6 +5,7 @@ import "./e11Practice.css";
 import "./e08Revision.css";
 import {useEffect,useMemo,useRef,useState,type ReactNode} from "react";
 import {presentedKanaChoices} from "./kanaChoiceOrder";
+import {optionalA1ContextJump,optionalA1IndependentWritingJump,sourceLinkedA1WritingReview} from "./cur16A1Progression";
 import {eligibleE07Draft,e07DraftPreference,setE07DraftPreference,saveE07Draft,readE07Draft,clearE07Draft,clearAllE07Drafts,findE07RestorableStep,E07_DRAFT_LIMIT} from "./e07DraftBuffer";
 import {getDefaultAudioProvider} from "@thiepn/audio";
 import {gradeStudyPrompt,isStudyLesson,type GradeResult,type StudyPrompt,type StudyStep} from "@thiepn/study-player";
@@ -106,6 +107,9 @@ export function StudyPlayer({steps,accountScope,initialIndex=0,initialPositionUn
   if(!step)return null;
 
   const activeStep=step;
+  const originalCourseJump=optionalA1ContextJump(steps,index);
+  const independentWritingJump=optionalA1IndependentWritingJump(steps,index);
+  const a1SourceWritingReview=sourceLinkedA1WritingReview(steps,index);
   const e08StoredDraft=steps.filter(isStudyLesson).flatMap(item=>item.examples??[])
     .find(item=>item.expression==="Your prior submitted first draft (private)")?.note??"";
   const e08DraftReference=e08FirstDraft||e08StoredDraft;
@@ -171,6 +175,27 @@ export function StudyPlayer({steps,accountScope,initialIndex=0,initialPositionUn
     setSaveError(false);
     setAudioPlayed(false);
     setDraftNotice("restored");
+    startedAt.current=performance.now();
+  }
+
+  function jumpToA1Step(targetIndex:number){
+    if(savingRef.current||audioState==="playing")return;
+    // A navigation-only jump. A failed checkpoint must not silently move the learner.
+    if(onPositionSave&&!onPositionSave(targetIndex)){
+      setPositionUnavailable(true);
+      return;
+    }
+    setPositionUnavailable(false);
+    audioProvider.current.stop();
+    setIndex(targetIndex);
+    setResponse("");
+    setDraftNotice("idle");
+    setFeedback(null);
+    setSaveError(false);
+    setAudioPlayed(false);
+    setAudioState("idle");
+    setE08Checks([]);
+    setTimerTick(0);
     startedAt.current=performance.now();
   }
 
@@ -304,6 +329,13 @@ export function StudyPlayer({steps,accountScope,initialIndex=0,initialPositionUn
           ?<p role="status">Japanese device speech is unavailable. You can continue reading and return for listening later.</p>:null}
 
         {activeStep.sourceLabel?<p className="source-note">Source: {activeStep.sourceLabel}</p>:null}
+        {originalCourseJump?<div className="cur16-course-jump" role="group" aria-label="Optional A1 teaching shortcut">
+          <p>Optional contextual teaching: {originalCourseJump.skippedSteps} steps before the original course. You can study these or go directly to the original lessons. Skipping records no answers, no proficiency evidence and no FSRS progress.</p>
+          <button className="quiet-button" type="button" disabled={saving} onClick={()=>jumpToA1Step(originalCourseJump.index)}>Go to original course · skip optional contexts</button>
+          {independentWritingJump?<button type="button" className="quiet-button" disabled={saving}
+            onClick={()=>jumpToA1Step(independentWritingJump.index)}>Try independent A1 writing · ungraded</button>:null}
+          {independentWritingJump?<small>Skip optional explanation/checks without credit to practise original ungraded source writing. Restart to study the guided material.</small>:null}
+        </div>:null}
         <button className="primary j5-next" type="button" onClick={advance}><span>Continue</span><i aria-hidden="true">→</i></button>
       </div>
     </StudyFrame>;
@@ -526,6 +558,15 @@ export function StudyPlayer({steps,accountScope,initialIndex=0,initialPositionUn
           {currentPrompt.audio.reading?<small lang="ja">{currentPrompt.audio.reading}</small>:null}
         </div>:null}
         {currentPrompt.explanation?<p>{currentPrompt.explanation}</p>:null}
+        {a1SourceWritingReview?<details className="cur21-writing-self-review">
+          <summary>Self-review using THIEPN-authored A1 teaching examples</summary>
+          <p>Compare the writing task with your own response. Check the situation, the grammar contrast and polite form. This does not determine correctness.</p>
+          <p><strong>Grammar explanation:</strong> {a1SourceWritingReview.explanation}</p>
+          <ul>{a1SourceWritingReview.examples.map(example=><li key={example.expression}>
+            <strong lang="ja">{example.expression}</strong> — {example.note}
+          </li>)}</ul>
+          <p>These THIEPN-authored teaching examples are references, not necessarily quotations from the canonical unit sentence list or a model answer. No automatic language grade or FSRS progress is awarded.</p>
+        </details>:null}
         {misconceptionNote?<p className="e06-correction"><strong>Why that option does not fit:</strong> {misconceptionNote}</p>:null}
         {currentPrompt.eventMetadata?.e11===true&&currentPrompt.eventMetadata?.nonAuthoritative===true?<p className="e11-practice-disclaimer">E11 practice is independent of the eight required source-linked prompts. A recorded attempt, even with a correct bounded answer, is not Japanese proficiency or FSRS mastery.</p>:null}
         {currentPrompt.eventMetadata?.e06===true?<p className="e06-boundary">{currentPrompt.eventMetadata.e06Stage==="delayed"?"Changed-context bounded retrieval—not formal proficiency.":currentPrompt.eventMetadata.nonAuthoritative===true?(currentPrompt.promptType==="choice"?"Optional comprehension evidence only: no original FSRS or CEFR award.":"Unscored response: device recognition and structural checks cannot grade meaning or pronunciation."):"Controlled response: independent communication is practised separately."}</p>:null}
@@ -534,6 +575,12 @@ export function StudyPlayer({steps,accountScope,initialIndex=0,initialPositionUn
         {(currentPrompt.promptType==="textarea"||currentPrompt.promptType==="speech")&&currentPrompt.requiredTerms?.length?<p className="productive-rubric">
           Structural check: include at least 60% of these targets: {currentPrompt.requiredTerms.join(" · ")}. This is not a full semantic or pronunciation score.
         </p>:null}
+        {originalCourseJump?<div className="cur23-optional-exit" role="group" aria-label="Finish optional A1 contexts">
+          <p>Your response was recorded. You can skip the remaining optional contexts; skipped steps receive no answers, proficiency evidence or FSRS credit.</p>
+          <button className="quiet-button" type="button" disabled={saving} onClick={()=>jumpToA1Step(originalCourseJump.index)}>
+            Continue to original course · skip remaining optional contexts
+          </button>
+        </div>:null}
         <button className="primary j5-next" type="button" onClick={advance}>
           <span>{index+1>=steps.length?"Finish":"Continue"}</span><i aria-hidden="true">→</i>
         </button>

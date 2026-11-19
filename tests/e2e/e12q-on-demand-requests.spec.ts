@@ -7,12 +7,12 @@ import {expect,test} from "@playwright/test";
  */
 test("P22 requested route code is absent on Today and loaded on deliberate navigation",async({page})=>{
  await page.goto("./");
- await expect(page.getByRole("heading",{name:"Your Japanese today"})).toBeVisible();
+ await expect(page.getByRole("heading",{name:"Start Japanese from Zero"})).toBeVisible();
  const files=()=>page.evaluate(()=>performance.getEntriesByType("resource").map(row=>row.name));
  const first=await files();
  expect(first.filter(x=>/\/assets\/(J4Learn|J7Library|Immersion|StudyPlayer)-[^/]+\.(js|css)(\?|$)/.test(x))).toEqual([]);
  await page.getByRole("button",{name:"Learn",exact:true}).click();
- await expect(page.getByRole("heading",{name:"Your Japanese journey"})).toBeVisible();
+ await expect(page.getByRole("region",{name:"Six-level course catalog"})).toBeVisible();
  await expect.poll(async()=> (await files()).some(x=>/\/assets\/J4Learn-[^/]+\.js/.test(x))).toBe(true);
  const learned=await files();
  expect(learned.some(x=>/\/assets\/StudyPlayer-[^/]+\.js/.test(x))).toBe(false);

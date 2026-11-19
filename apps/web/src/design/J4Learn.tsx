@@ -51,7 +51,10 @@ import type {E13PracticeMode} from "../study/e13PracticalMixer";
 import type {E07Journey,E07Action} from "../study/e07LearningRoute";
 import {JCartouche,JInkProgress,JPattern,JSeal} from "./index";
 
+export type LearnDisclosure={advancedOpen:boolean;showFullCourse:boolean};
+
 type Props={
+   initialDisclosure:LearnDisclosure|null;onDisclosureChange:(value:LearnDisclosure)=>void;
    beginner:BeginnerOverview;onStartBeginner:()=>void;onReviewDue:()=>void;
    kanaReview:KanaReviewOverview;onStartKanaReview:(script:KanaReviewScript,skill:KanaReviewSkill)=>void;onFlashcardsChanged:()=>void;
   e01:E01Progress;onStartE01:()=>void;onStartE01Delayed:()=>void;
@@ -124,11 +127,19 @@ export function J4Learn(props:Props){
   }=props;
 
   const beginnerMode=!beginner.complete||Boolean(e01.unitId&&(e01.status==="not_started"||e01.status==="learning"))||Boolean(e02.nextSceneId);
-  const [showFullCourse,setShowFullCourse]=useState(!beginnerMode);
-  const [advancedOpen,setAdvancedOpen]=useState(!beginnerMode);
+  const [showFullCourse,setShowFullCourse]=useState(()=>props.initialDisclosure?.showFullCourse??!beginnerMode);
+  const [advancedOpen,setAdvancedOpen]=useState(()=>props.initialDisclosure?.advancedOpen??!beginnerMode);
   const coachDrawer=useRef<HTMLDetailsElement|null>(null);
-  // Hydrated A0/A1 progress can arrive after this screen initially mounts.
-  useEffect(()=>{if(!beginnerMode){setAdvancedOpen(true);setShowFullCourse(true);}},[beginnerMode]);
+  const previousBeginner=useRef(beginnerMode);
+  // Only an actual progression out of beginner mode opens the tools automatically.
+  // Re-entering Learn preserves the learner's deliberate disclosure choice.
+  useEffect(()=>{
+    if(previousBeginner.current&&!beginnerMode){setAdvancedOpen(true);setShowFullCourse(true);}
+    previousBeginner.current=beginnerMode;
+  },[beginnerMode]);
+  useEffect(()=>{
+    props.onDisclosureChange({advancedOpen,showFullCourse});
+  },[advancedOpen,showFullCourse,props.onDisclosureChange]);
   useEffect(()=>{
     if(!preferredCoachChain)return;
     setAdvancedOpen(true);
@@ -148,15 +159,15 @@ export function J4Learn(props:Props){
   useEffect(()=>{if(e07.primary.origin==="e06")setShowTransfer(true);},[e07.primary.key,e07.primary.origin]);
   // Open and focus the existing E13–E17 studio even if the catalogue was hidden.
   useEffect(()=>{
-    if(!studioTarget||!showFullCourse)return;
+    if(!studioTarget||!advancedOpen||!showFullCourse)return;
     const frame=window.requestAnimationFrame(()=>{
       const heading=document.getElementById(studioTarget);
       if(heading){heading.setAttribute("tabindex","-1");heading.focus({preventScroll:true});heading.scrollIntoView({block:"start"});}
       setStudioTarget(null);
     });
     return ()=>window.cancelAnimationFrame(frame);
-  },[studioTarget,showFullCourse]);
-  const openOriginalStudio=(target:UX2StudioTarget)=>{setShowFullCourse(true);setStudioTarget(target);};
+  },[studioTarget,advancedOpen,showFullCourse]);
+  const openOriginalStudio=(target:UX2StudioTarget)=>{setAdvancedOpen(true);setShowFullCourse(true);setStudioTarget(target);};
   const groups=useMemo(()=>{
     const byLevel=new Map<string,CourseUnitProgress[]>();
     for(const unit of course){
