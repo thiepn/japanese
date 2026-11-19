@@ -1,3 +1,4 @@
+import {openFullCourse} from "./helpers/learn-disclosure";
 import {readFileSync} from "node:fs";
 import {expect,test,type Page} from "@playwright/test";
 
@@ -35,6 +36,7 @@ async function qualifiedLearn(page:Page){
   },fixture);
   await page.reload();
   await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await openFullCourse(page);
 }
 function studio(page:Page){
   return page.getByRole("region",{
@@ -100,6 +102,7 @@ test("E16 shadow text is temporary, never creates StudyEvents and clears on navi
   await lab.getByLabel(/Try the next Japanese line/).fill(draft);
   await page.reload();
   await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await openFullCourse(page);
   const reloaded=studio(page);
   await reloaded.getByLabel("Rehearsal approach").selectOption("shadow-and-reply");
   await expect(reloaded.getByLabel(/Try the next Japanese line/)).toHaveValue("");

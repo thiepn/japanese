@@ -1,10 +1,10 @@
+import {openFullCourse} from "./helpers/learn-disclosure";
 import { expect,test } from "@playwright/test";
 
 test("structured A1→C1 course and canonical grammar/sentence search work on every certified viewport",async({page})=>{
   await page.goto("./");
   await page.getByRole("button",{name:"Learn"}).click();
-  await page.locator(".beginner-explore > summary").click();
-  await page.getByRole("button",{name:"Open full course and advanced practice"}).click();
+  await openFullCourse(page);
 
   await expect(page.getByRole("heading",{name:"Your Japanese journey"})).toBeVisible();
   await expect(page.locator(".j4-landmark")).toHaveCount(68);
@@ -17,7 +17,9 @@ test("structured A1→C1 course and canonical grammar/sentence search work on ev
 
   await firstUnit.getByRole("button",{name:/Enter landmark|Continue landmark|Review landmark|Study anyway/}).click();
   await expect(page.getByRole("heading",{name:"Identify people"})).toBeVisible();
-  await page.getByRole("button",{name:"Continue"}).click();
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await expect(page.getByRole("heading",{name:"Identify someone with a polite noun predicate",exact:true})).toBeVisible();
+  await page.getByRole("group",{name:"Optional A1 teaching shortcut"}).getByRole("button",{name:/Go to original course/}).click();
   await expect(page.getByRole("heading",{name:"です",exact:true})).toBeVisible();
   await expect(page.getByText(/polite/i).first()).toBeVisible();
 

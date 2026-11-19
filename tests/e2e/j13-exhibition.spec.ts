@@ -1,3 +1,4 @@
+import {openFullCourse} from "./helpers/learn-disclosure";
 import {expect,test} from "@playwright/test";
 
 test("J13 lazy-loads the exhibition layer on tablet and desktop only",async({page},testInfo)=>{
@@ -23,6 +24,7 @@ test("J13 Learn uses the wide canvas as a panoramic emakimono",async({page},test
   await page.goto("./");
   await expect.poll(()=>page.locator(".j2-shell").evaluate((node)=>getComputedStyle(node).getPropertyValue("--j13-exhibition").trim())).toBe("1");
   await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await openFullCourse(page);
 
   const emaki=page.locator(".j4-emaki");
   await expect(emaki).toBeVisible();
@@ -117,6 +119,7 @@ test("J13 keeps keyboard focus visible across the exhibition shell",async({page}
   expect(outline).not.toBe("none");
 
   await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await openFullCourse(page);
   const emaki=page.locator(".j4-emaki");
   await emaki.focus();
   const emakiOutline=await emaki.evaluate((node)=>getComputedStyle(node).outlineStyle);

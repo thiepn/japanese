@@ -2,7 +2,7 @@ import { expect,test } from "@playwright/test";
 
 test("P21 keeps the complete product shell navigable without horizontal overflow",async({page})=>{
   await page.goto("./");
-  const surfaces=["Today","Learn","Immerse","Library","Progress"] as const;
+  const surfaces=["Today","Learn","Kana","Immerse","Library","Progress"] as const;
   for(const surface of surfaces){
     await page.getByRole("button",{name:surface,exact:true}).evaluate((button)=>(button as HTMLButtonElement).click());
     await expect(page.locator("main#main-content")).toBeVisible();
@@ -25,7 +25,7 @@ test("P21 provides keyboard skip navigation and visible semantic navigation stat
   await expect(skip).toBeFocused();
 
   const nav=page.getByRole("navigation",{name:"Primary"});
-  await expect(nav.getByRole("button")).toHaveCount(5);
+  await expect(nav.getByRole("button")).toHaveCount(6);
   await expect(nav.getByRole("button",{name:"Today"})).toHaveAttribute("aria-current","page");
 
   await nav.getByRole("button",{name:"Progress"}).evaluate((button)=>(button as HTMLButtonElement).click());
