@@ -917,6 +917,9 @@
 }
 
 .j4-practice__drawer>summary::-webkit-details-marker{display:none}
+/* Summary elements remain keyboard-focusable after pointer-opened disclosures,
+ * including hybrid touch/keyboard devices. Use an inset outline to avoid clipping. */
+.j2-content .j4-practice__drawer>summary:focus{outline:3px solid var(--j-focus);outline-offset:-3px;}
 
 .j4-practice__drawer>summary>span{
   width:34px;

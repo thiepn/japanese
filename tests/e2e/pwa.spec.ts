@@ -1,12 +1,18 @@
+import {openFullCourse} from "./helpers/learn-disclosure";
 import { expect,test } from "@playwright/test";
 
 test("PWA shell, integrated Study Player and canonical content survive offline reload",async({page,context},testInfo)=>{
   await page.goto("./");
-  await expect(page.getByRole("heading",{name:"Your Japanese today"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Start Japanese from Zero"})).toBeVisible();
   await page.evaluate(async()=>{if(!("serviceWorker" in navigator))throw new Error("SERVICE_WORKER_UNAVAILABLE");await navigator.serviceWorker.ready;});
   await page.reload();
 
-  await page.locator(".ux1-native-queue").click();
+  // The original mixed queue is still reachable from the full learning road.
+  // Keep its original vowel and vocabulary checks, rather than replacing them with A0.
+  await expect.poll(()=>page.evaluate(()=>Boolean(navigator.serviceWorker.controller))).toBe(true);
+  await page.getByRole("button",{name:"Learn",exact:true}).click();
+  await openFullCourse(page);
+  await page.locator(".j4-primary").click();
   await expect(page.getByRole("heading",{name:"Five vowel sounds"})).toBeVisible();
   await page.getByRole("button",{name:"Continue"}).click();
 
@@ -38,7 +44,8 @@ test("PWA shell, integrated Study Player and canonical content survive offline r
 
   await context.setOffline(true);
   await page.reload();
-  await expect(page.getByRole("heading",{name:"Your Japanese today"})).toBeVisible();
+  await expect(page.getByRole("navigation",{name:"Primary"}).getByRole("button",{name:"Library",exact:true})).toHaveAttribute("aria-current","page");
+  await expect(page.getByRole("textbox",{name:"Search Japanese"})).toBeVisible();
   if(testInfo.project.name!=="desktop-chromium"){
     await expect.poll(()=>page.locator(".j2-shell").evaluate((node)=>getComputedStyle(node).getPropertyValue("--j12-mobile").trim())).toBe("1");
   }

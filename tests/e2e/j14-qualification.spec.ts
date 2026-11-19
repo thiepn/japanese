@@ -14,6 +14,11 @@ test("J15 presents Japanese editorial navigation instead of SaaS dashboard chrom
   expect(navBox).not.toBeNull();
   expect(navBox!.width).toBeGreaterThan(1200);
   expect(navBox!.height).toBeLessThan(90);
+  const primaryButtons=await nav.getByRole("button").all();
+  expect(primaryButtons).toHaveLength(6);
+  const positions=await Promise.all(primaryButtons.map(button=>button.boundingBox()));
+  expect(positions.every(position=>position!==null)).toBe(true);
+  expect(Math.max(...positions.map(position=>position!.y))-Math.min(...positions.map(position=>position!.y))).toBeLessThan(2);
 
   const today=nav.getByRole("button",{name:"Today",exact:true});
   await expect(today).toHaveCSS("border-radius","0px");
@@ -263,6 +268,7 @@ test("J14 exposes visible keyboard focus without pointer-only navigation",async(
 
   const practice=page.locator(".j4-practice__drawer").first().locator("summary");
   await practice.focus();
+  await expect(practice).toBeFocused();
   await expectVisibleFocus(practice);
   await practice.press("Enter");
   await expect(page.locator(".j4-practice__drawer").first()).toHaveAttribute("open","");
