@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useId } from 'react';
 import { learningStages, type LearningStage } from '../data/kanaData';
 import { kanaMap } from '../data/kanaData';
 import { Volume2, ArrowLeft, ArrowRight, Check, Sparkles } from 'lucide-react';
@@ -32,6 +32,8 @@ export const LearnView: React.FC<LearnViewProps> = ({
   const advanceLock=useRef(false);
   const lastAdvanceAt=useRef(0);
   const [stageError,setStageError]=useState<string|null>(null);
+  const recallInputId=useId();
+  const resetRecall=()=>{setShowRecallTest(false);setTestedInput('');setRecallSuccess(null);};
 
   const filteredStages = learningStages.filter(stage => {
     if (activeScriptFilter === 'all') return true;
@@ -59,9 +61,7 @@ export const LearnView: React.FC<LearnViewProps> = ({
     setSelectedStage(stage);
     setCardIndex(nextStageCharacterIndex(stage,storedCards));
     setStageError(null);
-    setShowRecallTest(false);
-    setTestedInput('');
-    setRecallSuccess(null);
+    resetRecall();
   };
 
   const exitStage = async () => {
@@ -93,6 +93,7 @@ export const LearnView: React.FC<LearnViewProps> = ({
 
     const handleRecallSubmit = (e: React.FormEvent) => {
       e.preventDefault();
+      if(!testedInput.trim() || advanceBusy)return;
       const res = checkAnswer(currentKana.id, testedInput);
       if (res.isCorrect) {
         setRecallSuccess(true);
@@ -119,9 +120,7 @@ export const LearnView: React.FC<LearnViewProps> = ({
           await exitStage();
         } else {
           setCardIndex(prev => prev + 1);
-          setShowRecallTest(false);
-          setTestedInput('');
-          setRecallSuccess(null);
+          resetRecall();
         }
       } catch(error){
         setStageError(error instanceof Error?error.message:'Unable to save your lesson progress.');
@@ -165,7 +164,7 @@ export const LearnView: React.FC<LearnViewProps> = ({
             <span className="text-8xl sm:text-9xl font-kana font-normal tracking-wide text-[#202020] dark:text-[#F0EFEB] select-all">
               {currentKana.kana}
             </span>
-            {enableAudio && (
+            {enableAudio && !showRecallTest && (
               <button
                 onClick={handlePlayAudio}
                 className="absolute -right-8 top-2 p-2 text-[#737373] hover:text-[#C94B3C] dark:hover:text-[#E06A5B] transition-colors cursor-pointer"
@@ -177,8 +176,10 @@ export const LearnView: React.FC<LearnViewProps> = ({
             )}
           </div>
 
+          {/* Conceal answer-bearing instruction during optional retrieval. */}
+          {!showRecallTest && <>
           {/* Canonical Romaji */}
-          <div className="space-y-1">
+          <div data-testid="kana-introduction-reading" className="space-y-1">
             <div className="text-3xl font-bold tracking-tight text-[#C94B3C] dark:text-[#E06A5B] font-mono">
               {currentKana.romaji}
             </div>
@@ -208,6 +209,8 @@ export const LearnView: React.FC<LearnViewProps> = ({
             </p>
           )}
 
+          </>}
+
           {/* Active Recall Practice Step */}
           {!showRecallTest ? (
             <div className="pt-4">
@@ -220,40 +223,50 @@ export const LearnView: React.FC<LearnViewProps> = ({
             </div>
           ) : (
             <form onSubmit={handleRecallSubmit} className="pt-4 max-w-xs mx-auto space-y-3">
-              <label className="block text-xs font-mono uppercase text-[#737373]">
+              <label htmlFor={recallInputId} className="block text-xs font-mono uppercase text-[#737373] dark:text-[#AAA]">
                 Type the Romaji reading
               </label>
+              <p className="text-xs text-[#666] dark:text-[#AAA]">Optional practice only. No review grade or progress is recorded by this check.</p>
               <div className="flex gap-2">
                 <input
+                  id={recallInputId}
                   type="text"
                   autoFocus
+                  autoComplete="off"
+                  autoCapitalize="none"
+                  spellCheck={false}
                   value={testedInput}
                   onChange={(e) => {
                     setTestedInput(e.target.value);
                     setRecallSuccess(null);
                   }}
-                  placeholder="e.g. ka, kya..."
+                  placeholder="Your answer"
                   className="w-full px-3 py-2 text-center text-sm font-mono border border-[#DDD] dark:border-[#333] rounded bg-white dark:bg-[#181818] focus:outline-none focus:ring-2 focus:ring-[#C94B3C]"
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#C94B3C] text-white text-xs font-bold rounded cursor-pointer"
+                  disabled={!testedInput.trim()||advanceBusy}
+                  className="px-4 py-2 bg-[#C94B3C] text-white text-xs font-bold rounded cursor-pointer disabled:opacity-50"
                 >
                   Verify
                 </button>
               </div>
 
-              {recallSuccess === true && (
-                <div className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center justify-center gap-1">
-                  <Check className="w-4 h-4" />
-                  <span>Correct! Added to review queue.</span>
-                </div>
-              )}
-              {recallSuccess === false && (
-                <div className="text-xs text-[#C94B3C] dark:text-[#E06A5B]">
-                  Incorrect reading. Canonical is <span className="font-mono font-bold">{currentKana.romaji}</span>.
-                </div>
-              )}
+              <div role="status" aria-live="polite">
+                {recallSuccess === true && (
+                  <div className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 flex items-center justify-center gap-1">
+                    <Check className="w-4 h-4" aria-hidden="true" />
+                    <span>Correct. Practice only — not a saved review.</span>
+                  </div>
+                )}
+                {recallSuccess === false && (
+                  <p className="text-xs text-[#C94B3C] dark:text-[#E06A5B]">Not quite. Try again, or return to the explanation.</p>
+                )}
+              </div>
+              <button type="button" onClick={resetRecall}
+                className="min-h-[44px] px-3 border border-[#DDD] dark:border-[#444] rounded text-sm text-[#202020] dark:text-[#F0EFEB]">
+                Return to explanation
+              </button>
             </form>
           )}
 
@@ -263,9 +276,7 @@ export const LearnView: React.FC<LearnViewProps> = ({
               onClick={() => {
                 if (cardIndex > 0) {
                   setCardIndex(prev => prev - 1);
-                  setShowRecallTest(false);
-                  setTestedInput('');
-                  setRecallSuccess(null);
+                  resetRecall();
                 }
               }}
               disabled={cardIndex === 0}
